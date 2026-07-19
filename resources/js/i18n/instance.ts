@@ -3,7 +3,7 @@ import { useCallback, useSyncExternalStore } from "react";
 import { useConfig } from "./config";
 import { currentLocale, subscribeLocale, useLocale } from "./locale";
 
-const NAMESPACE = "lattice";
+export const DEFAULT_NAMESPACE = "lattice";
 
 type TranslationFunction = (
   key: string,
@@ -60,8 +60,8 @@ export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise
     const base: InitOptions = {
       lng: currentLocale(),
       fallbackLng: "en",
-      ns: [NAMESPACE],
-      defaultNS: NAMESPACE,
+      ns: [DEFAULT_NAMESPACE],
+      defaultNS: DEFAULT_NAMESPACE,
       interpolation: { escapeValue: false },
     };
 

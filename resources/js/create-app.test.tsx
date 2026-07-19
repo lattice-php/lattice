@@ -11,7 +11,6 @@ const router = vi.hoisted(() => ({
 const configureI18nFromPageProps = vi.hoisted(() =>
   vi.fn<(props: unknown, options?: unknown) => Promise<void>>(() => Promise.resolve()),
 );
-
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
     createInertiaApp,
@@ -176,6 +175,48 @@ describe("createLatticeApp", () => {
 
     expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
       namespaces: ["lattice", "app"],
+    });
+  });
+
+  it("merges plugin i18n namespaces into the i18n bootstrap", async () => {
+    createLatticeApp({
+      plugins: [{ name: "tree", i18n: { namespace: "tree" } }],
+    });
+
+    render(
+      captureOptions().withApp(<div data-test="app" />, {
+        ssr: false,
+        page: fakePage(i18nProps),
+      }),
+    );
+
+    await waitFor(() => expect(screen.getByTestId("app")).toBeInTheDocument());
+
+    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
+      namespaces: ["lattice", "tree"],
+    });
+  });
+
+  it("combines caller namespaces with plugin namespaces without duplicates", async () => {
+    createLatticeApp({
+      i18n: { namespaces: ["lattice", "app"] },
+      plugins: [
+        { name: "tree", i18n: { namespace: "tree" } },
+        { name: "dup", i18n: { namespace: "app" } },
+      ],
+    });
+
+    render(
+      captureOptions().withApp(<div data-test="app" />, {
+        ssr: false,
+        page: fakePage(i18nProps),
+      }),
+    );
+
+    await waitFor(() => expect(screen.getByTestId("app")).toBeInTheDocument());
+
+    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
+      namespaces: ["lattice", "app", "tree"],
     });
   });
 

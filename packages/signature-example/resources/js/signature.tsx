@@ -1,7 +1,10 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { useT } from "@lattice-php/lattice/i18n";
 
 const Signature: RendererComponent<"signature"> = ({ node }) => {
-  const label = typeof node.props?.label === "string" ? node.props.label : "Sign here";
+  const { t } = useT("signature-example");
+  const label =
+    typeof node.props?.label === "string" ? node.props.label : t("placeholder", "Sign here");
 
   return (
     <div

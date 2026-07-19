@@ -26,11 +26,17 @@ export type ComponentRegistryFor<TTypes extends keyof ComponentPropsMap & string
   ComponentRegistration
 >;
 
+export type PluginI18n = {
+  /** i18next namespace the plugin's components translate under. */
+  namespace: string;
+};
+
 export type Plugin = {
   name: string;
   components?: ComponentRegistry;
   columns?: ColumnRegistry;
   effects?: EffectHandlerRegistry;
+  i18n?: PluginI18n;
 };
 
 export type Registry = {

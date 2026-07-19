@@ -2,9 +2,10 @@ import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
 import { createInertiaApp } from "@inertiajs/react";
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { initializeTheme } from "./appearance";
-import { extendRegistry, type Plugin, type Registry } from "./core/registry";
+import { extendRegistry, type Plugin, type PluginI18n, type Registry } from "./core/registry";
 import { setDefaultRegistry } from "./core/registry-context";
 import type { SpriteValue } from "./icons/sprite";
+import { DEFAULT_NAMESPACE } from "./i18n/instance";
 import { LocaleReload } from "./i18n/locale-reload";
 import { i18nConfigFromPageProps } from "./i18n/shared-props";
 import {
@@ -20,7 +21,10 @@ import { registry as defaultRegistry } from "./registry";
 type InertiaAppOptions = NonNullable<Parameters<typeof createInertiaApp>[0]>;
 
 export type CreateLatticeAppI18nOptions = {
-  /** i18next namespaces to load, e.g. `["lattice", "app"]`. Defaults to the package's own. */
+  /**
+   * i18next namespaces to load, e.g. `["lattice", "app"]`. Defaults to the
+   * package's own. Namespaces declared by plugins are merged in on top.
+   */
   namespaces?: string[];
 };
 
@@ -32,7 +36,8 @@ export type CreateLatticeAppOptions = Omit<
   /**
    * Component-package plugins to merge onto the registry — pass the
    * Composer-discovered `virtual:lattice/plugins` here to register vendor
-   * components with no manual `extendRegistry` call.
+   * components with no manual `extendRegistry` call. A plugin's declared
+   * i18n namespace joins the i18n bootstrap automatically.
    */
   plugins?: Plugin[];
   sprite?: SpriteValue;
@@ -60,6 +65,22 @@ export type CreateLatticeAppOptions = Omit<
    */
   wrap?: (app: ReactElement) => ReactElement;
 };
+
+function withPluginNamespaces(
+  options: CreateLatticeAppI18nOptions,
+  entries: PluginI18n[],
+): CreateLatticeAppI18nOptions {
+  if (entries.length === 0) {
+    return options;
+  }
+
+  const namespaces = new Set([
+    ...(options.namespaces ?? [DEFAULT_NAMESPACE]),
+    ...entries.map((entry) => entry.namespace),
+  ]);
+
+  return { ...options, namespaces: [...namespaces] };
+}
 
 // Fail-open: a failed bootstrap renders the app anyway (with fallback strings)
 // rather than a blank page.
@@ -110,6 +131,8 @@ export function createLatticeApp({
   setDefaultRegistry(activeRegistry);
 
   const i18nEnabled = i18n !== false;
+  const pluginI18n = plugins?.flatMap((plugin) => (plugin.i18n ? [plugin.i18n] : [])) ?? [];
+  const i18nOptions = i18nEnabled ? withPluginNamespaces(i18n ?? {}, pluginI18n) : {};
   const userVisitOptions = inertiaOptions.defaults?.visitOptions;
   const defaults = i18nEnabled
     ? {
@@ -134,7 +157,7 @@ export function createLatticeApp({
         if (i18nEnabled && i18nConfigFromPageProps(page.props) !== undefined) {
           pending.push(
             import("./i18n/page-props").then((module) =>
-              module.configureI18nFromPageProps(page.props, i18n ?? {}),
+              module.configureI18nFromPageProps(page.props, i18nOptions),
             ),
           );
         }

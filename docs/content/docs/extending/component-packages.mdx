@@ -134,4 +134,47 @@ Signature::make('signature')->label('Sign the contract');
   Tailwind content sources.
 </Warning>
 
+## Translations
+
+A package component translates like a built-in one: declare an i18next namespace on the plugin and read keys with `useT`, passing the English default inline at the call site:
+
+```ts
+import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+
+export default createPlugin({
+  name: "acme-signature",
+  components: {
+    signature: lazyComponent(() => import("./signature")),
+  },
+  i18n: {
+    namespace: "acme-signature",
+  },
+});
+```
+
+```tsx
+import { useT } from "@lattice-php/lattice/i18n";
+
+const Signature: RendererComponent<"signature"> = ({ node }) => {
+  const { t } = useT("acme-signature");
+
+  return (
+    <div>
+      {typeof node.props?.label === "string" ? node.props.label : t("placeholder", "Sign here")}
+    </div>
+  );
+};
+```
+
+`createLatticeApp` merges every plugin's namespace into the [i18n bootstrap](/core/i18n/), so when the app enables the translation backend the namespace loads from `/locales/{lng}/acme-signature.json` like any other — serve the package's lang files by registering them on the translation loader in the package's service provider:
+
+```php
+$this->app->make('translation.loader')->addNamespace('acme-signature', __DIR__.'/../lang');
+```
+
+<Info>
+  The inline defaults are the no-backend fallback: apps that never enable the translation backend
+  render them as-is, and a loaded translation for the key always wins.
+</Info>
+
 See [Registry and types](/extending/registry-and-types/) for how the `type` string couples the two sides, and how generated types keep `node.props` sound.

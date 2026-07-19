@@ -5,4 +5,7 @@ export default createPlugin({
   components: {
     signature: lazyComponent(() => import("./signature")),
   },
+  i18n: {
+    namespace: "signature-example",
+  },
 });
