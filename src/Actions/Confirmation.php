@@ -15,7 +15,7 @@ use Lattice\Lattice\Attributes\TypeScript;
 final readonly class Confirmation
 {
     public function __construct(
-        public string $title,
+        public ?string $title = null,
         public ?string $description = null,
         public ?string $confirmLabel = null,
         public ?string $cancelLabel = null,

@@ -174,10 +174,9 @@ describe("BulkBar", () => {
           id: "archive",
           method: "patch",
           endpoint: "/bulk/archive",
-          // BulkAction.ref is non-nullable by contract (getBulkActions always
-          // defaults it); this forces the out-of-contract value the component's
-          // `action.ref ?? ""` defensively guards against.
-          ref: null as unknown as string,
+          // "" is the real normalized "no ref" value: getBulkActions always
+          // defaults `props.ref ?? ""`, so this is an in-contract fixture.
+          ref: "",
         }),
       ],
     });
@@ -263,10 +262,9 @@ describe("BulkBar", () => {
             id: "archive",
             label: "Archive",
             confirmation: {
-              // Confirmation.title is non-nullable by contract; this forces the
-              // out-of-contract value the component's `?? label` fallback
-              // defensively guards against.
-              title: null as unknown as string,
+              // Confirmation.title is nullable by contract: a title-less
+              // confirmation falls back to the action's label.
+              title: null,
               description: null,
               confirmLabel: null,
               cancelLabel: null,
