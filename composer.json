@@ -62,7 +62,7 @@
         "spatie/laravel-typescript-transformer": "^3.2"
     },
     "suggest": {
-        "spatie/typescript-transformer": "Required to run `php artisan lattice:typescript` and generate TypeScript types for your custom components"
+        "spatie/laravel-typescript-transformer": "Only needed to run `php artisan lattice:typescript` when your app defines custom PHP wire types (components, fields, columns, filters, effects)"
     },
     "autoload": {
         "psr-4": {

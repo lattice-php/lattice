@@ -114,7 +114,7 @@ The `'frontend'` block configures the prebuilt-asset path, theme variables, and 
 
 ## TypeScript
 
-Where `php artisan lattice:typescript` writes the generated type definitions, and the module name they are published under (the command requires the suggested dev dependency: `composer require --dev spatie/typescript-transformer`):
+Where `php artisan lattice:typescript` writes the generated type definitions, and the module name they are published under (generating types for custom wire types needs the suggested dev dependency: `composer require --dev spatie/laravel-typescript-transformer`):
 
 ```php
 'typescript' => [
