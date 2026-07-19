@@ -63,7 +63,7 @@ it('opens a modal form from a toast action', function (): void {
         ->click('@action-form-submit')
         ->assertNoSmoke();
 
-    eventually(function () use ($product): void {
+    retryUntil(function () use ($product): void {
         expect($product->fresh()->status)->toBe('archived');
     });
 });

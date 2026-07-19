@@ -7,7 +7,6 @@ afterEach(() => {
   document.cookie = "appearance=;path=/;max-age=0";
   document.documentElement.className = "";
   document.documentElement.style.colorScheme = "";
-  vi.unstubAllGlobals();
   vi.resetModules();
 });
 

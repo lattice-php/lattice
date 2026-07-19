@@ -2,19 +2,17 @@
 declare(strict_types=1);
 
 it('opens the centered dialog and closes it again', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    $page = visit('/components/modals')
+    $page = $this->visitAsWorkbenchUser('/components/modals')
         ->assertDontSee('Centered dialog')
         ->click('[data-test="open-centered"]');
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertSee('Centered dialog');
     });
 
     $page->click('[data-test="dialog-close"]');
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertDontSee('Centered dialog');
     });
 
@@ -22,15 +20,13 @@ it('opens the centered dialog and closes it again', function (): void {
 });
 
 it('docks the end sheet to the trailing viewport edge at full height', function (): void {
-    $this->actingAs(workbenchTestUser());
+    $page = $this->visitAsWorkbenchUser('/components/modals')->click('[data-test="open-end-sheet"]');
 
-    $page = visit('/components/modals')->click('[data-test="open-end-sheet"]');
-
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertSee('End sheet');
     });
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $metrics = $page->script(<<<'JS'
             () => {
                 const rect = document.querySelector('[data-slot="dialog-content"]').getBoundingClientRect();
@@ -52,15 +48,13 @@ it('docks the end sheet to the trailing viewport edge at full height', function 
 });
 
 it('docks the start sheet to the leading viewport edge', function (): void {
-    $this->actingAs(workbenchTestUser());
+    $page = $this->visitAsWorkbenchUser('/components/modals')->click('[data-test="open-start-sheet"]');
 
-    $page = visit('/components/modals')->click('[data-test="open-start-sheet"]');
-
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertSee('Start sheet');
     });
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $left = $page->script(<<<'JS'
             () => Math.round(document.querySelector('[data-slot="dialog-content"]').getBoundingClientRect().left)
         JS);
@@ -72,17 +66,15 @@ it('docks the start sheet to the leading viewport edge', function (): void {
 });
 
 it('closes a sheet with Escape', function (): void {
-    $this->actingAs(workbenchTestUser());
+    $page = $this->visitAsWorkbenchUser('/components/modals')->click('[data-test="open-end-sheet"]');
 
-    $page = visit('/components/modals')->click('[data-test="open-end-sheet"]');
-
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertSee('End sheet');
     });
 
     $page->keys('[data-slot="dialog-content"]', ['Escape']);
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertNotPresent('[data-slot="dialog-content"]');
     });
 
@@ -90,15 +82,13 @@ it('closes a sheet with Escape', function (): void {
 });
 
 it('opens the feedback action form as an end sheet', function (): void {
-    $this->actingAs(workbenchTestUser());
+    $page = $this->visitAsWorkbenchUser('/components/modals')->click('[data-test="action-submit-feedback"]');
 
-    $page = visit('/components/modals')->click('[data-test="action-submit-feedback"]');
-
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertSee('Message');
     });
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $rightGap = $page->script(<<<'JS'
             () => Math.round(window.innerWidth - document.querySelector('[data-slot="dialog-content"]').getBoundingClientRect().right)
         JS);

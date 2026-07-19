@@ -1,14 +1,6 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { jsonResponse } from "@lattice-php/lattice/test/http";
 import { clearAll, dismiss, fetchNotifications, markAllRead, markRead } from "./api";
-
-function jsonResponse(body: unknown): Response {
-  return new Response(JSON.stringify(body), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-}
-
-afterEach(() => vi.unstubAllGlobals());
 
 describe("notifications api", () => {
   it("fetches a page of notifications", async () => {

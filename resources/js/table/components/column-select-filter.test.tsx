@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
@@ -109,10 +109,6 @@ function node(filter: ColumnFilter): TableNode {
 }
 
 describe("column select filter", () => {
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
   it("emits an eq clause for a single select column", async () => {
     const fetch = stubFetch();
 

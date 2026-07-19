@@ -4,8 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('expands nested menu groups and navigates to a field page', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/')
+    $this->visitAsWorkbenchUser('/')
         ->assertSee('Home')
         ->assertSee('Forms')
         ->assertSee('Tables')
@@ -37,7 +36,7 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
         ->assertPresent('[data-test="sidebar"][data-collapsed="false"]')
         ->click('@sidebar-toggle');
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertAttribute('[data-test="sidebar"]', 'data-collapsed', 'true');
     });
 
@@ -50,9 +49,7 @@ it('collapses to an icon rail and opens a group submenu as a flyout', function (
 });
 
 it('opens the sidebar as an off-canvas drawer on mobile', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    $page = visit('/')
+    $page = $this->visitAsWorkbenchUser('/')
         ->on()->mobile()
         ->assertMissing('[data-test="sidebar-backdrop"]')
         ->click('@sidebar-toggle');

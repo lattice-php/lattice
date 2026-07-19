@@ -40,13 +40,13 @@ it('returns a prefilled schema for a lazy form action', function (): void {
 
 it('validates submitted values against a lazy form schema', function (): void {
     Lattice::actions([EditActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(EditActionFixture::class)->context(['current_title' => 'Existing'])));
+    $ref = $this->latticeRef(wire(ActionComponent::use(EditActionFixture::class)->context(['current_title' => 'Existing'])));
 
-    postJson('/lattice/actions/test.edit', ['title' => ''], latticeHeaders($ref))
+    postJson('/lattice/actions/test.edit', ['title' => ''], $this->latticeHeaders($ref))
         ->assertUnprocessable()
         ->assertJsonValidationErrors('title');
 
-    postJson('/lattice/actions/test.edit', ['title' => 'Renamed'], latticeHeaders($ref))
+    postJson('/lattice/actions/test.edit', ['title' => 'Renamed'], $this->latticeHeaders($ref))
         ->assertOk()
         ->assertJsonPath('data.title', 'Renamed');
 });
@@ -100,9 +100,9 @@ it('validates final embedded form submissions before handle is called', function
 
 it('validates the embedded form precognitively without running handle', function (): void {
     Lattice::actions([RejectActionFixture::class]);
-    $ref = componentRef(wire(ActionComponent::use(RejectActionFixture::class)));
+    $ref = $this->latticeRef(wire(ActionComponent::use(RejectActionFixture::class)));
 
-    $precognition = array_merge(latticeHeaders($ref), [
+    $precognition = array_merge($this->latticeHeaders($ref), [
         'Precognition' => 'true',
         'Precognition-Validate-Only' => 'reason',
     ]);

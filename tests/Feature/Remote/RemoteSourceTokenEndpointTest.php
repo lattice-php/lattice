@@ -28,7 +28,7 @@ test('source token endpoint returns a fake browser token after ref verification'
         'nodeType' => 'remote.data-list',
         'audience' => 'https://crm.example.test',
         'scopes' => ['customers.read'],
-    ], latticeHeaders($ref));
+    ], $this->latticeHeaders($ref));
 
     $response
         ->assertOk()
@@ -56,7 +56,7 @@ test('source token endpoint verifies refs for remote chat components', function 
         'nodeType' => 'chat.box',
         'audience' => 'https://crm.example.test',
         'scopes' => ['chat.read', 'chat.write'],
-    ], latticeHeaders($ref));
+    ], $this->latticeHeaders($ref));
 
     $response
         ->assertOk()
@@ -96,7 +96,7 @@ test('source token endpoint rejects audience and scope escalation', function ():
         'nodeType' => 'remote.data-list',
         'audience' => 'https://admin.crm.example.test',
         'scopes' => ['customers.read', 'customers.write'],
-    ], latticeHeaders($ref))->assertForbidden();
+    ], $this->latticeHeaders($ref))->assertForbidden();
 });
 
 test('source token endpoint rejects refs for a different source', function (): void {
@@ -114,5 +114,5 @@ test('source token endpoint rejects refs for a different source', function (): v
         'nodeType' => 'remote.data-list',
         'audience' => 'https://crm.example.test',
         'scopes' => ['customers.read'],
-    ], latticeHeaders($ref))->assertForbidden();
+    ], $this->latticeHeaders($ref))->assertForbidden();
 });

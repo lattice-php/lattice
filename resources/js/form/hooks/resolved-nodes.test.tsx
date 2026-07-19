@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "./field-scope";
 import { ResolvedNodesProvider, useResolvedNode } from "./resolved-nodes";
 
@@ -11,11 +12,17 @@ function Probe({ node }: { node: Node }) {
 
 describe("ResolvedNodes", () => {
   it("overrides a node by name", () => {
-    const original = { type: "field.text-input", props: { name: "total", value: "0" } } as Node;
+    const original = fakeNode({
+      type: "field.text-input",
+      props: { name: "total", value: "0" },
+    });
     render(
       <ResolvedNodesProvider
         nodes={{
-          total: { type: "field.text-input", props: { name: "total", value: "12" } } as Node,
+          total: fakeNode({
+            type: "field.text-input",
+            props: { name: "total", value: "12" },
+          }),
         }}
       >
         <Probe node={original} />
@@ -25,7 +32,10 @@ describe("ResolvedNodes", () => {
   });
 
   it("falls back to the original node", () => {
-    const original = { type: "field.text-input", props: { name: "total", value: "0" } } as Node;
+    const original = fakeNode({
+      type: "field.text-input",
+      props: { name: "total", value: "0" },
+    });
     render(
       <ResolvedNodesProvider nodes={{}}>
         <Probe node={original} />
@@ -35,15 +45,18 @@ describe("ResolvedNodes", () => {
   });
 
   it("overrides a scoped node by full path", () => {
-    const original = { type: "field.text-input", props: { name: "price", value: "0" } } as Node;
+    const original = fakeNode({
+      type: "field.text-input",
+      props: { name: "price", value: "0" },
+    });
 
     render(
       <ResolvedNodesProvider
         nodes={{
-          "items.0.price": {
+          "items.0.price": fakeNode({
             type: "field.text-input",
             props: { name: "price", value: "12" },
-          } as Node,
+          }),
         }}
       >
         <FieldScopeProvider

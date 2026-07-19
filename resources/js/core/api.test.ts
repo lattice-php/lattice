@@ -15,7 +15,6 @@ function okResponse(body: unknown = {}): Response {
 
 afterEach(() => {
   clearRemoteTokenCache();
-  vi.unstubAllGlobals();
   document.cookie = "XSRF-TOKEN=;path=/;max-age=0";
 });
 

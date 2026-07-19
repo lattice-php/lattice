@@ -31,7 +31,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'action' => '/custom/forms/settings.profile',
                 'errorBag' => 'settings_profile',
                 'method' => 'patch',
-                'ref' => componentRef($form),
+                'ref' => $this->latticeRef($form),
                 'submitButton' => false,
                 'submitLabel' => null,
                 'validationSummaryLabel' => 'Fix these fields to continue:',
@@ -87,7 +87,7 @@ test('registered form endpoints require a valid component reference', function (
 test('registered form submissions validate before handle is called', function (): void {
     Lattice::forms([WorkbenchRequiredProfileForm::class]);
 
-    $ref = componentRef(wire(Form::use(WorkbenchRequiredProfileForm::class)));
+    $ref = $this->latticeRef(wire(Form::use(WorkbenchRequiredProfileForm::class)));
 
     patchJson('/lattice/forms/workbench.required-profile', [], $this->latticeHeaders($ref))
         ->assertUnprocessable()

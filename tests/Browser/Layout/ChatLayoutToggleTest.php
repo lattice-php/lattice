@@ -3,16 +3,14 @@
 declare(strict_types=1);
 
 it('reveals the docked chat panel when the chat layout is toggled', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    $page = visit('/')
+    $page = $this->visitAsWorkbenchUser('/')
         ->assertVisible('@assistant-chat-trigger')
         ->assertMissing('@chat-box')
         ->click('@user-menu')
         ->assertSee('Reveal chat in a side rail')
         ->click('@chat-layout-toggle');
 
-    eventually(function () use ($page): void {
+    retryUntil(function () use ($page): void {
         $page->assertVisible('@chat-box');
     });
 

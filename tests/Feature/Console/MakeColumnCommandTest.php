@@ -5,17 +5,8 @@ use Illuminate\Support\Facades\File;
 
 use function Pest\Laravel\artisan;
 
-function withColumnScaffold(Closure $callback): mixed
-{
-    return withScaffoldWorkspace(function () use ($callback): mixed {
-        File::put(resource_path('js/registry.ts'), latticeRegistryStub());
-
-        return $callback();
-    });
-}
-
 it('scaffolds a column class, a cell tsx and registers it in registry.ts', function (): void {
-    withColumnScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:column', ['name' => 'StatusBadge'])->assertSuccessful();
 
         $columnFile = app_path('Tables/Columns/StatusBadge.php');
@@ -40,7 +31,7 @@ it('scaffolds a column class, a cell tsx and registers it in registry.ts', funct
 });
 
 it('is idempotent and honors --type', function (): void {
-    withColumnScaffold(function (): void {
+    withRegistryScaffold(function (): void {
         artisan('lattice:column', ['name' => 'StatusBadge'])->assertSuccessful();
         artisan('lattice:column', ['name' => 'StatusBadge'])->assertSuccessful();
         expect(substr_count(File::get(resource_path('js/registry.ts')), '"column.status-badge": StatusBadgeCell'))->toBe(1);

@@ -19,7 +19,6 @@ beforeEach(() => {
 afterEach(() => {
   document.documentElement.classList.remove("dark");
   localStorage.clear();
-  vi.unstubAllGlobals();
 });
 
 function emitAppearance(value: unknown): void {

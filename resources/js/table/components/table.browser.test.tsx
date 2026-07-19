@@ -1,6 +1,6 @@
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { TableNode, TableResult, TableQuery } from "@lattice-php/lattice/table/types";
 import type { TableColumn } from "@lattice-php/lattice/table/types";
 import TableComponent from "./table";
@@ -93,10 +93,6 @@ describe("Lattice table component in a browser", () => {
   beforeEach(async () => {
     await page.viewport(1280, 800);
     window.localStorage.clear();
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
   });
 
   it("renders the desktop table as a CSS grid and hides mobile labels", async () => {

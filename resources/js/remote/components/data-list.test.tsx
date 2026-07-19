@@ -1,13 +1,15 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
-import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { actionComponents } from "@lattice-php/lattice/action";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { uiComponents } from "@lattice-php/lattice/ui/plugin";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { ReactNode } from "react";
 import { DataList } from "./data-list";
+
+const registry = createRegistry(uiComponents, actionComponents);
 
 function node(): Node<"remote.data-list"> {
   return {
@@ -58,7 +60,7 @@ function node(): Node<"remote.data-list"> {
 }
 
 function schemaNode(): Node<"remote.data-list"> {
-  return {
+  return fakeNode({
     ...node(),
     schema: [
       {
@@ -107,21 +109,12 @@ function schemaNode(): Node<"remote.data-list"> {
         type: "card",
       },
     ],
-  } as unknown as Node<"remote.data-list">;
-}
-
-function withRegistry(ui: ReactNode): ReactNode {
-  return (
-    <RegistryContext.Provider value={createRegistry(uiComponents, actionComponents)}>
-      {ui}
-    </RegistryContext.Provider>
-  );
+  });
 }
 
 describe("DataList", () => {
   afterEach(() => {
     clearRemoteTokenCache();
-    vi.unstubAllGlobals();
     document.cookie = "XSRF-TOKEN=;path=/;max-age=0";
   });
 
@@ -148,7 +141,7 @@ describe("DataList", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    render(withRegistry(<DataList node={node()}>{null}</DataList>));
+    renderWithRegistry(<DataList node={node()}>{null}</DataList>, registry);
 
     expect(await screen.findByText("Ada Lovelace")).toBeVisible();
     expect(screen.getByText("ada@example.test")).toBeVisible();
@@ -168,20 +161,19 @@ describe("DataList", () => {
   });
 
   it("shows the loading fallback when remote access is missing", () => {
-    render(
-      withRegistry(
-        <DataList
-          node={{
-            ...node(),
-            props: {
-              ...node().props,
-              remote: null,
-            },
-          }}
-        >
-          {null}
-        </DataList>,
-      ),
+    renderWithRegistry(
+      <DataList
+        node={{
+          ...node(),
+          props: {
+            ...node().props,
+            remote: null,
+          },
+        }}
+      >
+        {null}
+      </DataList>,
+      registry,
     );
 
     expect(screen.getByText("Loading...")).toBeVisible();
@@ -206,7 +198,7 @@ describe("DataList", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    render(withRegistry(<DataList node={node()}>{null}</DataList>));
+    renderWithRegistry(<DataList node={node()}>{null}</DataList>, registry);
 
     expect(await screen.findByText("HTTP 500")).toBeVisible();
   });
@@ -233,20 +225,19 @@ describe("DataList", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    render(
-      withRegistry(
-        <DataList
-          node={{
-            ...node(),
-            props: {
-              ...node().props,
-              emptyLabel: "No customers yet",
-            },
-          }}
-        >
-          {null}
-        </DataList>,
-      ),
+    renderWithRegistry(
+      <DataList
+        node={{
+          ...node(),
+          props: {
+            ...node().props,
+            emptyLabel: "No customers yet",
+          },
+        }}
+      >
+        {null}
+      </DataList>,
+      registry,
     );
 
     expect(await screen.findByText("No customers yet")).toBeVisible();
@@ -289,7 +280,7 @@ describe("DataList", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    render(withRegistry(<DataList node={schemaNode()}>{null}</DataList>));
+    renderWithRegistry(<DataList node={schemaNode()}>{null}</DataList>, registry);
 
     expect(await screen.findByText("Ada Lovelace")).toBeVisible();
     expect(screen.getByText("ada@example.test")).toBeVisible();

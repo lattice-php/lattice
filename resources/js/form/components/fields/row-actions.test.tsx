@@ -1,14 +1,5 @@
-import { expect, it, vi, beforeAll, afterAll } from "vitest";
-import { configure, getConfig, fireEvent, render, screen } from "@testing-library/react";
-
-let prevTestIdAttribute: string;
-beforeAll(() => {
-  prevTestIdAttribute = getConfig().testIdAttribute;
-  configure({ testIdAttribute: "data-test" });
-});
-afterAll(() => {
-  configure({ testIdAttribute: prevTestIdAttribute });
-});
+import { expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import { RowActions } from "./row-actions";
 

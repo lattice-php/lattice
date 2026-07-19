@@ -2,8 +2,7 @@
 declare(strict_types=1);
 
 it('picks a palette swatch into the field value', function (): void {
-    $this->actingAs(workbenchTestUser());
-    visit('/form/fields/color-picker')
+    $this->visitAsWorkbenchUser('/form/fields/color-picker')
         ->assertSee('Pick a color')
         ->click('[data-test="color-picker-color"]')
         ->click('button[aria-label="#3b82f6"]')

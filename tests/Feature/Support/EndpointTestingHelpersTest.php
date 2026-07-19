@@ -36,7 +36,7 @@ test('submitForm seals the ref and submits to the form endpoint with the declare
 
     $response = $this->submitForm(HelperDemoForm::class, ['name' => 'Taylor'], ['team' => 'lattice-core']);
 
-    expect($response::class)->toBe(LatticeTestResponse::class);
+    $this->assertInstanceOf(LatticeTestResponse::class, $response);
 
     $response->assertRedirect('/submitted');
 
@@ -49,7 +49,7 @@ test('callAction seals the ref and posts to the action endpoint', function (): v
 
     $response = $this->callAction(HelperDemoAction::class, ['name' => 'Taylor'], ['team' => 'trusted-team']);
 
-    expect($response::class)->toBe(LatticeTestResponse::class);
+    $this->assertInstanceOf(LatticeTestResponse::class, $response);
 
     $response->assertOk()
         ->assertJsonPath('data.handled', 'Taylor')
@@ -107,7 +107,7 @@ test('callBulkAction seals the ref against the bound table and patches the endpo
         ['table' => 'helper.demo'],
     );
 
-    expect($response::class)->toBe(LatticeTestResponse::class);
+    $this->assertInstanceOf(LatticeTestResponse::class, $response);
 
     $response->assertOk()
         ->assertJsonPath('data.count', 2);
@@ -118,7 +118,7 @@ test('loadTable seals the ref and gets the table endpoint with query parameters'
 
     $response = $this->loadTable(HelperDemoTable::class, ['per_page' => 10]);
 
-    expect($response::class)->toBe(LatticeTestResponse::class);
+    $this->assertInstanceOf(LatticeTestResponse::class, $response);
 
     $response->assertOk()
         ->assertJsonPath('data.0.name', 'Ada')
@@ -143,11 +143,21 @@ test('loadFragment seals the ref and gets the lazy fragment endpoint', function 
 
     $response = $this->loadFragment(HelperDemoFragment::class);
 
-    expect($response::class)->toBe(LatticeTestResponse::class);
+    $this->assertInstanceOf(LatticeTestResponse::class, $response);
 
     $response->assertOk()
         ->assertJsonPath('schema.0.type', 'text')
         ->assertJsonPath('schema.0.props.text', 'Fragment loaded.');
+});
+
+test('latticeGet sends a signed component reference header', function (): void {
+    Route::get('/helper/lattice-ref', fn (Request $request): array => [
+        'ref' => $request->header('X-Lattice-Ref'),
+    ]);
+
+    $this->latticeGet('/helper/lattice-ref', 'signed-ref')
+        ->assertOk()
+        ->assertJsonPath('ref', 'signed-ref');
 });
 
 #[AsForm('helper.demo')]

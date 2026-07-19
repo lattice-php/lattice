@@ -1,24 +1,20 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { ReactNode } from "react";
-import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createPlugin, createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import type { ComponentRegistry } from "@lattice-php/lattice/core/registry";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { Message } from "./message";
-
-function withRegistry(ui: ReactNode, extraComponents?: ComponentRegistry): ReactNode {
-  const registry = createRegistry(
-    chatComponents,
-    ...(extraComponents ? [createPlugin({ name: "test", components: extraComponents })] : []),
-  );
-  return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
-}
 
 const CustomPart: RendererComponent = ({ node }) => (
   <span data-test="custom-part">{(node.props as { label: string }).label}</span>
+);
+
+const registry = createRegistry(chatComponents);
+const customRegistry = createRegistry(
+  chatComponents,
+  createPlugin({ name: "test", components: { custom: eagerComponent(CustomPart) } }),
 );
 
 describe("Message", () => {
@@ -29,7 +25,7 @@ describe("Message", () => {
       parts: [{ type: "chat.part.text", props: { text: "Hello there" } }],
     };
 
-    render(withRegistry(<Message message={message} />));
+    renderWithRegistry(<Message message={message} />, registry);
 
     expect(screen.getByText("Hello there")).toBeVisible();
     const messageWrapper = screen.getByTestId("chat-message-user");
@@ -45,7 +41,7 @@ describe("Message", () => {
       parts: [{ type: "chat.part.text", props: { text: "Hi, how can I help?" } }],
     };
 
-    render(withRegistry(<Message message={message} />));
+    renderWithRegistry(<Message message={message} />, registry);
 
     expect(screen.getByText("Hi, how can I help?")).toBeVisible();
     expect(screen.getByTestId("chat-message-assistant")).toBeInTheDocument();
@@ -61,7 +57,7 @@ describe("Message", () => {
       ],
     };
 
-    render(withRegistry(<Message message={message} />, { custom: eagerComponent(CustomPart) }));
+    renderWithRegistry(<Message message={message} />, customRegistry);
 
     expect(screen.getByText("Thinking…")).toBeVisible();
     expect(screen.getByTestId("custom-part")).toHaveTextContent("my-tool");
@@ -74,7 +70,7 @@ describe("Message", () => {
       parts: [{ type: "unknown-type-xyz", props: {} }],
     };
 
-    const { container } = render(withRegistry(<Message message={message} />));
+    const { container } = renderWithRegistry(<Message message={message} />, registry);
     const bubble = container.querySelector('[data-test="chat-message-user"]');
     expect(bubble).toBeInTheDocument();
     expect(
@@ -86,9 +82,13 @@ describe("Message", () => {
     const userMsg: ChatMessage = { id: "u1", role: "user", parts: [] };
     const assistantMsg: ChatMessage = { id: "a1", role: "assistant", parts: [] };
 
-    const { container: userContainer } = render(withRegistry(<Message message={userMsg} />));
-    const { container: assistantContainer } = render(
-      withRegistry(<Message message={assistantMsg} />),
+    const { container: userContainer } = renderWithRegistry(
+      <Message message={userMsg} />,
+      registry,
+    );
+    const { container: assistantContainer } = renderWithRegistry(
+      <Message message={assistantMsg} />,
+      registry,
     );
 
     const userEl = userContainer.querySelector('[data-test="chat-message-user"]');

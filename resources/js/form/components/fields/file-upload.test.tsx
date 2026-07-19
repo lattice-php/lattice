@@ -153,7 +153,6 @@ describe("FileUploadComponent image previews", () => {
   });
 
   afterEach(() => {
-    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 

@@ -1,7 +1,8 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { jsonResponse } from "@lattice-php/lattice/test/http";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
 import NotificationsComponent from "./notifications";
@@ -16,24 +17,15 @@ const registry = createRegistry({
   name: "test/notifications",
 });
 
-function jsonResponse(body: unknown): Response {
-  return new Response(JSON.stringify(body), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-}
-
 const node: Node = {
   type: "notifications",
   props: {
     endpoint: "/lattice/notifications",
     channel: "App.Models.User.1",
-    slideOut: false,
+    slideOut: true,
     pollingInterval: null,
   },
 };
-
-afterEach(() => vi.unstubAllGlobals());
 
 describe("NotificationsComponent", () => {
   it("shows the unread badge and opens the panel with items", async () => {
@@ -66,5 +58,6 @@ describe("NotificationsComponent", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /notifications/i }));
     expect(await screen.findByText("Order shipped")).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).not.toHaveAttribute("aria-describedby");
   });
 });

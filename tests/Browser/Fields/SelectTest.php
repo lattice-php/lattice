@@ -4,8 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('selects a static option from the select field', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $page = visit('/form/fields/select');
+    $page = $this->visitAsWorkbenchUser('/form/fields/select');
 
     $page->assertSee('Pick a country')
         ->click('Pick a country')
@@ -53,8 +52,7 @@ it('renders rich option rows in the products search', function (): void {
 });
 
 it('adds free-text tags on the creatable tab', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $page = visit('/form/fields/select?type=creatable');
+    $page = $this->visitAsWorkbenchUser('/form/fields/select?type=creatable');
 
     $page->click('[data-test="select-keywords"]')
         ->fill('[data-test="select-keywords-search"]', 'steel')
@@ -64,8 +62,7 @@ it('adds free-text tags on the creatable tab', function (): void {
 });
 
 it('adds a new tag on the tags tab', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $page = visit('/form/fields/select?type=tags');
+    $page = $this->visitAsWorkbenchUser('/form/fields/select?type=tags');
 
     $page->click('[data-test="select-topics"]')
         ->fill('[data-test="select-topics-search"]', 'Logistics')

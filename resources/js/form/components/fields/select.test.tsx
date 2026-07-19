@@ -1,5 +1,5 @@
-import { act, configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
-import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
@@ -26,17 +26,6 @@ vi.mock("@lattice-php/lattice/form/lib/form-transport", () => ({
   FORM_DEBOUNCE_MS: 250,
   postFormAction,
 }));
-
-let previousTestIdAttribute: string;
-
-beforeAll(() => {
-  previousTestIdAttribute = getConfig().testIdAttribute;
-  configure({ testIdAttribute: "data-test" });
-});
-
-afterAll(() => {
-  configure({ testIdAttribute: previousTestIdAttribute });
-});
 
 afterEach(() => {
   vi.clearAllMocks();

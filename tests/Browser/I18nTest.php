@@ -57,7 +57,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
     } finally {
         try {
             $page->script('window.location.assign("/")');
-            eventually(function () use ($page): void {
+            retryUntil(function () use ($page): void {
                 $page->assertPathIs('/');
             }, attempts: 15, sleepMicroseconds: 100_000);
         } finally {

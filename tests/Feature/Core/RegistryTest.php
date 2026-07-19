@@ -34,7 +34,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'action' => '/lattice/forms/fixtures.profile',
                 'errorBag' => 'fixtures_profile',
                 'method' => 'patch',
-                'ref' => componentRef($form),
+                'ref' => $this->latticeRef($form),
                 'submitLabel' => null,
                 'validationSummaryLabel' => 'Fix these fields to continue:',
                 'precognitive' => false,
@@ -52,7 +52,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
             'id' => 'fixtures.users',
         ])
         ->and($table['props']['endpoint'])->toBe('/lattice/tables/fixtures.users')
-        ->and($table['props']['ref'])->toBe(componentRef($table))
+        ->and($table['props']['ref'])->toBe($this->latticeRef($table))
         ->and($action)
         ->toMatchArray([
             'type' => 'action',
@@ -61,7 +61,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'endpoint' => '/lattice/actions/fixtures.ping',
                 'label' => 'Ping',
                 'method' => 'post',
-                'ref' => componentRef($action),
+                'ref' => $this->latticeRef($action),
                 'icon' => null,
                 'confirmation' => null,
                 'form' => null,
@@ -78,7 +78,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
             'props' => [
                 'endpoint' => '/lattice/fragments/fixtures.panel',
                 'lazy' => true,
-                'ref' => componentRef($fragment),
+                'ref' => $this->latticeRef($fragment),
                 'size' => 'md',
             ],
         ]);
@@ -100,13 +100,13 @@ test('interaction endpoints return 404 for unknown component ids', function (): 
         'fragment' => $signer->seal('fragment', 'workbench.missing', []),
     ];
 
-    postJson('/lattice/actions/workbench.missing', [], latticeHeaders($refs['action']))
+    postJson('/lattice/actions/workbench.missing', [], $this->latticeHeaders($refs['action']))
         ->assertNotFound();
-    patch('/lattice/forms/workbench.missing', [], latticeHeaders($refs['form']))
+    patch('/lattice/forms/workbench.missing', [], $this->latticeHeaders($refs['form']))
         ->assertNotFound();
-    latticeGet('/lattice/tables/workbench.missing', $refs['table'])
+    $this->latticeGet('/lattice/tables/workbench.missing', $refs['table'])
         ->assertNotFound();
-    latticeGet('/lattice/fragments/workbench.missing', $refs['fragment'])
+    $this->latticeGet('/lattice/fragments/workbench.missing', $refs['fragment'])
         ->assertNotFound();
 });
 
@@ -124,13 +124,13 @@ test('interaction endpoints re-run authorization for every interaction', functio
         'fragment' => $signer->seal('fragment', 'workbench.denied', []),
     ];
 
-    postJson('/lattice/actions/workbench.denied', [], latticeHeaders($refs['action']))
+    postJson('/lattice/actions/workbench.denied', [], $this->latticeHeaders($refs['action']))
         ->assertForbidden();
-    patch('/lattice/forms/workbench.denied', [], latticeHeaders($refs['form']))
+    patch('/lattice/forms/workbench.denied', [], $this->latticeHeaders($refs['form']))
         ->assertForbidden();
-    latticeGet('/lattice/tables/workbench.denied', $refs['table'])
+    $this->latticeGet('/lattice/tables/workbench.denied', $refs['table'])
         ->assertForbidden();
-    latticeGet('/lattice/fragments/workbench.denied', $refs['fragment'])
+    $this->latticeGet('/lattice/fragments/workbench.denied', $refs['fragment'])
         ->assertForbidden();
 });
 

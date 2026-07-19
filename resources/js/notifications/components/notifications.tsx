@@ -108,7 +108,7 @@ const NotificationsComponent: RendererComponent<"notifications"> = ({ node }) =>
             {trigger}
           </button>
           <Dialog open={store.open} onOpenChange={store.setOpen}>
-            <DialogContent className="p-0" placement="end" width="sm">
+            <DialogContent aria-describedby={undefined} className="p-0" placement="end" width="sm">
               <DialogTitle className="sr-only">{label}</DialogTitle>
               {panel}
             </DialogContent>

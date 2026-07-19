@@ -2,9 +2,7 @@
 declare(strict_types=1);
 
 it('loads dashboard chart examples through lazy fragments', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    visit('/')
+    $this->visitAsWorkbenchUser('/')
         ->assertSee('Workbench page')
         ->assertSee('Dashboard charts')
         ->assertPresent('[data-lattice-fragment="workbench.revenue-trend-chart"]')
@@ -17,9 +15,7 @@ it('loads dashboard chart examples through lazy fragments', function (): void {
 });
 
 it('translates dashboard chart examples in lazy fragments', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    $page = visit('/')
+    $page = $this->visitAsWorkbenchUser('/')
         ->click('@locale-switcher')
         ->click('@locale-de');
 
@@ -36,9 +32,7 @@ it('translates dashboard chart examples in lazy fragments', function (): void {
 });
 
 it('renders the charts gallery with every demo chart', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    visit('/components/charts')
+    $this->visitAsWorkbenchUser('/components/charts')
         ->assertSee('Chart gallery')
         ->assertSee('Signups')
         ->assertSee('Orders by channel')
@@ -54,9 +48,7 @@ it('renders the charts gallery with every demo chart', function (): void {
 });
 
 it('switches appearance to dark from the topbar switcher', function (): void {
-    $this->actingAs(workbenchTestUser());
-
-    visit('/components/charts')
+    $this->visitAsWorkbenchUser('/components/charts')
         ->assertSee('Chart gallery')
         ->click('@appearance-dark')
         ->assertPresent('html.dark')

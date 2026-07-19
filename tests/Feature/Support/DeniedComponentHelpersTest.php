@@ -25,8 +25,9 @@ use Symfony\Component\HttpFoundation\Response;
 test('a plain callAction cannot even build the request for a denied action', function (): void {
     Lattice::actions([DeniedHelperAction::class]);
 
-    expect(fn () => $this->callAction(DeniedHelperAction::class))
-        ->toThrow(LogicException::class, 'must not serialize');
+    expect(function (): void {
+        $this->callAction(DeniedHelperAction::class);
+    })->toThrow(LogicException::class, 'must not serialize');
 });
 
 test('callDeniedAction seals the ref directly and reaches the endpoint as a 403', function (): void {

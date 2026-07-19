@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import GridComponent from "./grid";
 
 function renderGrid(columns: number | null, key?: string) {
-  const node = { type: "grid", key, props: { columns } } as Node<"grid">;
+  const node = fakeNode({ type: "grid", key, props: { columns } });
   return render(
     <GridComponent node={node}>
       <span>child</span>

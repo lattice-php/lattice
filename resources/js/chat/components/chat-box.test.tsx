@@ -1,18 +1,14 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { ReactNode } from "react";
 import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { ChatBox } from "./chat-box";
 
-function withRegistry(ui: ReactNode): ReactNode {
-  const registry = createRegistry(chatComponents);
-  return <RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>;
-}
+const registry = createRegistry(chatComponents);
 
 function historyResponse(): Response {
   return {
@@ -41,28 +37,26 @@ function streamResponse(lines: string[]): Response {
 }
 
 function renderChatBox(props: Partial<ChatBoxProps> = {}): void {
-  render(
-    withRegistry(
-      <ChatBox
-        node={fakeNode({
-          type: "chat.box",
-          props: {
-            streamEndpoint: "/s",
-            historyEndpoint: "/h",
-            title: "Assistant",
-            placeholder: "Ask…",
-            ...props,
-          },
-        })}
-      >
-        {null}
-      </ChatBox>,
-    ),
+  renderWithRegistry(
+    <ChatBox
+      node={fakeNode({
+        type: "chat.box",
+        props: {
+          streamEndpoint: "/s",
+          historyEndpoint: "/h",
+          title: "Assistant",
+          placeholder: "Ask…",
+          ...props,
+        },
+      })}
+    >
+      {null}
+    </ChatBox>,
+    registry,
   );
 }
 
 afterEach(() => {
-  vi.unstubAllGlobals();
   vi.restoreAllMocks();
   clearRemoteTokenCache();
   document.cookie = "XSRF-TOKEN=;path=/;max-age=0";
@@ -137,12 +131,11 @@ describe("ChatBox component", () => {
     const fetchMock = vi.fn<() => Promise<Response>>(async () => historyResponse());
     vi.stubGlobal("fetch", fetchMock);
 
-    render(
-      withRegistry(
-        <ChatBox node={fakeNode({ type: "chat.box", props: { historyEndpoint: "/h" } })}>
-          {null}
-        </ChatBox>,
-      ),
+    renderWithRegistry(
+      <ChatBox node={fakeNode({ type: "chat.box", props: { historyEndpoint: "/h" } })}>
+        {null}
+      </ChatBox>,
+      registry,
     );
 
     expect(await screen.findByTestId("chat-box")).toBeVisible();
@@ -206,30 +199,29 @@ describe("ChatBox component", () => {
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    render(
-      withRegistry(
-        <ChatBox
-          node={fakeNode({
-            type: "chat.box",
-            props: {
-              streamEndpoint: "https://crm.example.test/chat/stream",
-              historyEndpoint: "https://crm.example.test/chat/history",
-              title: "CRM assistant",
-              remote: {
-                audience: "https://crm.example.test",
-                source: "fixtures.crm",
-                nodeId: "crm-chat",
-                nodeType: "chat.box",
-                ref: "sealed-ref",
-                scopes: ["chat.read", "chat.write"],
-                tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
-              },
+    renderWithRegistry(
+      <ChatBox
+        node={fakeNode({
+          type: "chat.box",
+          props: {
+            streamEndpoint: "https://crm.example.test/chat/stream",
+            historyEndpoint: "https://crm.example.test/chat/history",
+            title: "CRM assistant",
+            remote: {
+              audience: "https://crm.example.test",
+              source: "fixtures.crm",
+              nodeId: "crm-chat",
+              nodeType: "chat.box",
+              ref: "sealed-ref",
+              scopes: ["chat.read", "chat.write"],
+              tokenEndpoint: "/custom/remote-tokens/fixtures.crm",
             },
-          })}
-        >
-          {null}
-        </ChatBox>,
-      ),
+          },
+        })}
+      >
+        {null}
+      </ChatBox>,
+      registry,
     );
 
     expect(await screen.findByText("Previous answer")).toBeVisible();

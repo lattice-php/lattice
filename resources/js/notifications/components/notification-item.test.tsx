@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import { NotificationItemRow } from "./notification-item";
 
 vi.mock("@inertiajs/react", async () =>
@@ -63,7 +64,7 @@ describe("NotificationItemRow", () => {
       <ul>
         <NotificationItemRow
           notification={item({
-            actions: [{ type: "action", id: "acknowledge" } as Node],
+            actions: [fakeNode({ type: "action", id: "acknowledge" })],
             variant: "warning",
           })}
           onDismiss={onDismiss}

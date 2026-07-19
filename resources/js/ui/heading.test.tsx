@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import HeadingComponent from "./heading";
 
 function renderHeading(level: number, text = "Title", tooltip: string | null = null) {
-  const node = { type: "heading", props: { level, text, tooltip } } as Node<"heading">;
+  const node = fakeNode({ type: "heading", props: { level, text, tooltip } });
   return render(<HeadingComponent node={node}>{null}</HeadingComponent>);
 }
 
@@ -48,10 +48,10 @@ describe("HeadingComponent", () => {
   });
 
   it("wraps the heading in a copy control when copyable", () => {
-    const node = {
+    const node = fakeNode({
       type: "heading",
       props: { level: 2, text: "API Key", tooltip: null, copyable: true },
-    } as Node<"heading">;
+    });
     render(<HeadingComponent node={node}>{null}</HeadingComponent>);
 
     expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
@@ -59,10 +59,10 @@ describe("HeadingComponent", () => {
   });
 
   it("reveals a tooltip after the heading text on click", () => {
-    const node = {
+    const node = fakeNode({
       type: "heading",
       props: { level: 2, text: "Billing", tooltip: "Invoices go out monthly." },
-    } as Node<"heading">;
+    });
     render(<HeadingComponent node={node}>{null}</HeadingComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "More information" }));

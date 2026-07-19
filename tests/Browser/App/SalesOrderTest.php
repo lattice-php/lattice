@@ -50,8 +50,7 @@ it('auto-resolves, re-resolves on partner change, and persists a manual override
         ->fill('input[name="lines[0][unit_price]"]', '73.50')
         ->click('@form-submit')
         ->assertSee('Sales orders')
-        ->assertNoSmoke()
-        ->assertNoJavaScriptErrors();
+        ->assertNoSmoke();
 
     $line = $vipPartner->salesOrders()->firstOrFail()->lines()->firstOrFail();
 

@@ -72,7 +72,6 @@ afterEach(() => {
   createInertiaApp.mockReset();
   configureI18nFromPageProps.mockClear();
   localStorage.clear();
-  vi.unstubAllGlobals();
 });
 
 describe("createLatticeApp", () => {

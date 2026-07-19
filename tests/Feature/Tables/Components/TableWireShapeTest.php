@@ -67,6 +67,28 @@ it('serializes the searchable flag on table components', function (): void {
         ->and(wire(Table::make('demo'))['props']['searchable'])->toBeFalse();
 });
 
+it('serializes text column display modifiers', function (): void {
+    $wire = wire(TextColumn::make('published_at')
+        ->label('Published')
+        ->dateTime()
+        ->copyable()
+        ->link('/posts/{id}'));
+
+    expect($wire)->toMatchArray([
+        'key' => 'published_at',
+        'type' => 'column.text',
+    ]);
+
+    expect($wire['props'])->toMatchArray([
+        'label' => 'Published',
+        'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
+        'copyable' => true,
+        'link' => ['href' => '/posts/{id}', 'external' => false],
+        'badge' => null,
+        'multiple' => null,
+    ]);
+});
+
 it('defaults a column to its value type operator set', function (): void {
     $column = TextColumn::make('name')->filterable();
 

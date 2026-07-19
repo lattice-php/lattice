@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tests;
 
 use Bambamboole\LaravelI18Next\I18NextServiceProvider;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
@@ -17,6 +18,7 @@ use Workbench\App\Providers\WorkbenchServiceProvider;
 abstract class TestCase extends BaseTestCase
 {
     use InteractsWithLatticeComponents;
+    use RefreshDatabase;
     use WithLaravelMigrations;
     use WithWorkbench;
 

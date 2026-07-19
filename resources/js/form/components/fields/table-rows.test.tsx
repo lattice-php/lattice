@@ -1,15 +1,8 @@
-import { expect, it, vi, beforeAll, afterAll, afterEach } from "vitest";
-import { configure, fireEvent, getConfig, render, screen } from "@testing-library/react";
+import { afterEach, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
 
-let prev: string;
-beforeAll(() => {
-  prev = getConfig().testIdAttribute;
-  configure({ testIdAttribute: "data-test" });
-});
-afterAll(() => configure({ testIdAttribute: prev }));
 afterEach(() => {
   window.localStorage.clear();
-  vi.unstubAllGlobals();
 });
 
 vi.mock("@lattice-php/lattice/core/renderer", async () => {

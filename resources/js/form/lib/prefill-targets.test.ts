@@ -23,12 +23,9 @@ function priceField(): Node {
 }
 
 function builderNode(): Node {
-  return {
-    id: "b1",
-    type: "field.builder",
-    props: { name: "items" },
+  return Object.assign(fakeNode({ id: "b1", type: "field.builder", props: { name: "items" } }), {
     templates: [{ type: "product", label: "Product", schema: [priceField()] }],
-  } as unknown as Node;
+  });
 }
 
 function nestedRepeaterNode(): Node {

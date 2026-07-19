@@ -20,12 +20,12 @@ function priceField(): Node {
 }
 
 function builderNode(): Node {
-  return {
-    id: "builder",
-    type: "field.builder",
-    props: { name: "items" },
-    templates: [{ type: "product", label: "Product", schema: [priceField()] }],
-  } as unknown as Node;
+  return Object.assign(
+    fakeNode({ id: "builder", type: "field.builder", props: { name: "items" } }),
+    {
+      templates: [{ type: "product", label: "Product", schema: [priceField()] }],
+    },
+  );
 }
 
 function StampRowId() {
@@ -61,7 +61,6 @@ describe("useFormResolver", () => {
 
   afterEach(() => {
     vi.useRealTimers();
-    vi.unstubAllGlobals();
   });
 
   it("keeps seeded row overrides after client row ids are attached", async () => {

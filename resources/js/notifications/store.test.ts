@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { jsonResponse } from "@lattice-php/lattice/test/http";
 import { markReadIn, prependIncoming, removeIn, useNotifications } from "./store";
 import type { NotificationItem } from "./types";
 
@@ -16,15 +17,6 @@ function item(id: string, isRead = false): NotificationItem {
     actions: [],
   };
 }
-
-function jsonResponse(body: unknown): Response {
-  return new Response(JSON.stringify(body), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
-}
-
-afterEach(() => vi.unstubAllGlobals());
 
 describe("reducers", () => {
   it("prepends a new item without duplicating by id", () => {
@@ -56,6 +48,17 @@ describe("reducers", () => {
 });
 
 describe("useNotifications", () => {
+  it("enters the error state when hydration fails", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<() => Promise<Response>>(() => Promise.reject(new Error("offline"))),
+    );
+
+    const { result } = renderHook(() => useNotifications({ endpoint: "/lattice/notifications" }));
+
+    await waitFor(() => expect(result.current.status).toBe("error"));
+  });
+
   it("hydrates on mount", async () => {
     vi.stubGlobal(
       "fetch",
@@ -92,6 +95,30 @@ describe("useNotifications", () => {
     act(() => result.current.markRead("a"));
     expect(result.current.notifications[0].isRead).toBe(true);
     expect(result.current.unreadCount).toBe(0);
+  });
+
+  it("applies bulk read, dismiss, and clear mutations optimistically", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>(async (_url, init) =>
+        init?.method
+          ? jsonResponse({ unreadCount: 0 })
+          : jsonResponse({ notifications: [item("a"), item("b")], unreadCount: 2, hasMore: false }),
+      ),
+    );
+
+    const { result } = renderHook(() => useNotifications({ endpoint: "/lattice/notifications" }));
+    await waitFor(() => expect(result.current.notifications).toHaveLength(2));
+
+    act(() => result.current.markAllRead());
+    expect(result.current.notifications.every((notification) => notification.isRead)).toBe(true);
+    expect(result.current.unreadCount).toBe(0);
+
+    act(() => result.current.dismiss("a"));
+    expect(result.current.notifications.map((notification) => notification.id)).toEqual(["b"]);
+
+    act(() => result.current.clearAll());
+    expect(result.current.notifications).toEqual([]);
   });
 
   it("guards against concurrent double-clicked loadMore calls", async () => {

@@ -1,14 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Size } from "@lattice-php/lattice/types/generated";
 import AvatarComponent from "./avatar";
 
 function renderAvatar(props: { src?: string | null; name?: string | null; size?: Size }) {
-  const node = {
+  const node = fakeNode({
     type: "avatar",
     props: { src: null, name: null, size: "md", ...props },
-  } as Node<"avatar">;
+  });
   return render(<AvatarComponent node={node}>{null}</AvatarComponent>);
 }
 

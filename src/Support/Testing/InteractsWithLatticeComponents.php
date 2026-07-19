@@ -314,6 +314,15 @@ trait InteractsWithLatticeComponents
     }
 
     /**
+     * @param  array<string, mixed>|string  $component
+     * @return TestResponse<Response>
+     */
+    protected function latticeGet(string $url, array|string $component): TestResponse
+    {
+        return $this->getJson($url, $this->latticeHeaders($component));
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      * @return LatticeTestResponse<Response>
      */
