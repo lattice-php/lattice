@@ -2,8 +2,11 @@ import { Form as InertiaForm } from "@inertiajs/react";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
+import { nodeKey } from "@lattice-php/lattice/core/nodes";
+import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
+import type { ButtonVariant, Justify } from "@lattice-php/lattice/types/generated";
 import { useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
@@ -12,6 +15,15 @@ import { PrefillProvider } from "@lattice-php/lattice/form/hooks/prefill-context
 import { ResolvedNodesProvider } from "@lattice-php/lattice/form/hooks/resolved-nodes";
 import { useFormResolver } from "@lattice-php/lattice/form/hooks/use-form-resolver";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
+
+const JUSTIFY_CLASS: Record<Justify, string> = {
+  start: "justify-start",
+  center: "justify-center",
+  end: "justify-end",
+  between: "justify-between",
+  around: "justify-around",
+  evenly: "justify-evenly",
+};
 
 function FormResetListener({
   componentId,
@@ -37,7 +49,10 @@ function FormBody({
   componentRef,
   nodes,
   shouldRenderSubmitButton,
+  submitButtons,
+  submitJustify,
   submitLabel,
+  submitVariant,
   summaryLabel,
 }: {
   action: string;
@@ -45,7 +60,10 @@ function FormBody({
   componentRef: string;
   nodes: Node[] | undefined;
   shouldRenderSubmitButton: boolean;
+  submitButtons: Node<"button">[] | undefined;
+  submitJustify: Justify | undefined;
   submitLabel: string;
+  submitVariant: ButtonVariant | undefined;
   summaryLabel: string;
 }) {
   const { nodes: resolvedNodes, markUserEdit } = useFormResolver(action, componentRef, nodes);
@@ -57,8 +75,27 @@ function FormBody({
           {children}
 
           {shouldRenderSubmitButton && (
-            <div className="flex justify-end rounded-lt border border-lt-border bg-lt-surface px-lt-gutter py-4 shadow-lt-sm">
-              <FormSubmitButton label={submitLabel} summaryLabel={summaryLabel} />
+            <div className={`flex gap-3 ${JUSTIFY_CLASS[submitJustify ?? "end"]}`}>
+              {submitButtons?.length ? (
+                submitButtons.map((button, index) =>
+                  button.props.buttonType === "submit" ? (
+                    <FormSubmitButton
+                      key={nodeKey(button, index)}
+                      label={button.props.label ?? submitLabel}
+                      summaryLabel={summaryLabel}
+                      variant={button.props.variant ?? submitVariant ?? "default"}
+                    />
+                  ) : (
+                    <RenderNode key={nodeKey(button, index)} node={button} />
+                  ),
+                )
+              ) : (
+                <FormSubmitButton
+                  label={submitLabel}
+                  summaryLabel={summaryLabel}
+                  variant={submitVariant ?? "default"}
+                />
+              )}
             </div>
           )}
         </div>
@@ -84,7 +121,10 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   );
   const initialValues = useMemo(() => ({ ...fieldValues, ...state }), [fieldValues, state]);
   const shouldRenderSubmitButton = props.submitButton;
+  const submitButtons = props.submitButtons ?? undefined;
+  const submitJustify = props.submitJustify ?? undefined;
   const submitLabel = props.submitLabel ?? t("form.submit", "Submit");
+  const submitVariant = props.submitVariant ?? undefined;
   const summaryLabel = props.validationSummaryLabel;
   const validationTimeout = props.validationTimeout ?? undefined;
 
@@ -127,7 +167,10 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
               componentRef={componentRef}
               nodes={node.schema}
               shouldRenderSubmitButton={shouldRenderSubmitButton}
+              submitButtons={submitButtons}
+              submitJustify={submitJustify}
               submitLabel={submitLabel}
+              submitVariant={submitVariant}
               summaryLabel={summaryLabel}
             >
               {children}

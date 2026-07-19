@@ -19,6 +19,7 @@ use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\FloatingPanel;
 use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\Components\Icon as IconComponent;
 use Lattice\Lattice\Ui\Components\Image;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Components\Modal;
@@ -362,4 +363,17 @@ test('serializes progress bars and circles', function (): void {
         'color' => null,
         'size' => 'lg',
     ]);
+});
+
+test('bound components serialize identically to the dataKey idiom', function (): void {
+    expect(wire(Text::bound('email')))->toEqual(wire(Text::make('')->dataKey('text', 'email')))
+        ->and(wire(Badge::bound('sku')))->toEqual(wire(Badge::make('')->dataKey('label', 'sku')))
+        ->and(wire(IconComponent::bound('status_icon')))->toEqual(wire(IconComponent::make('')->dataKey('name', 'status_icon')))
+        ->and(wire(Image::bound('avatar_url')))->toEqual(wire(Image::make('')->dataKey('src', 'avatar_url')))
+        ->and(wire(Heading::bound('title')))->toEqual(wire(Heading::make('')->dataKey('text', 'title')));
+});
+
+test('bound accepts an explicit component key', function (): void {
+    expect(wire(Text::bound('email', 'contact-email')))
+        ->toMatchArray(['key' => 'contact-email']);
 });

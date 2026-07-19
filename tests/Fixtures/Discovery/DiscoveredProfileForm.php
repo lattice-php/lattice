@@ -6,9 +6,9 @@ namespace Lattice\Lattice\Tests\Fixtures\Discovery;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('fixtures.profile')]

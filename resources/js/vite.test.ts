@@ -9,6 +9,7 @@ import {
   discoverComponentPackages,
   lattice,
   latticeConfig,
+  resolveIconOptions,
 } from "./vite";
 
 type PackageJson = {
@@ -183,6 +184,19 @@ describe("lattice Vite helper", () => {
 
     expect(load("\0virtual:lattice/plugins")).toContain("export default [];");
     expect(config()).toEqual({});
+  });
+
+  it("merges a partial dts override over the default file/augment targets", () => {
+    const appRoot = path.resolve("/tmp/lattice-app");
+
+    const iconOptions = resolveIconOptions({ appRoot, icons: { dts: { indent: "\t" } } });
+
+    expect(iconOptions?.dts).toEqual({
+      file: "resources/js/types/sprite-icons.ts",
+      augmentModule: "@lattice-php/lattice",
+      augmentInterface: "KnownIcons",
+      indent: "\t",
+    });
   });
 
   it("keeps package exports explicit and internal test helpers private", () => {

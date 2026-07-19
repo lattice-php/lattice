@@ -9,8 +9,8 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
 

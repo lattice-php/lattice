@@ -53,7 +53,7 @@ The schema accepts fields and layout containers (`Card`, `Grid`, `Stack`) in any
 Render a form on a page with `Form::use()`, passing the definition class. Configure it fluently:
 
 ```php
-use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\Form;
 
 Form::use(ProfileForm::class)
@@ -165,9 +165,41 @@ See [Validation](/forms/validation/) for the full rule surface.
 The form renders its submit button for you, labelled by `->submitLabel()`. It is form-aware: it
 disables while submitting and while there are validation errors, and shows a spinner — the heading of
 that error summary is set with `->validationSummaryLabel()` (default "Fix these fields to continue:").
-To take over
-placement — render the button somewhere other than the form footer — call `->withoutSubmitButton()`
-and place a [`Button`](/components/buttons/) with `->submit()` in the schema yourself:
+
+The submit row itself is a plain flex row (right-aligned by default) — as of this version it no longer
+renders inside a bordered surface bar. Use `->submitJustify()` and `->submitVariant()` to adjust its
+alignment and button style:
+
+```php
+use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Justify;
+
+Form::use(ProfileForm::class)
+    ->submitLabel('Save changes')
+    ->submitJustify(Justify::Start)
+    ->submitVariant(ButtonVariant::Outline);
+```
+
+To replace the row's buttons entirely, call `->submitButtons()` with one or more `Button` components.
+A button marked `->submit()` keeps the managed submit button's spinner, disabled-while-invalid state,
+and error-summary tooltip — the others render as plain buttons:
+
+```php
+use Lattice\Lattice\Ui\Components\Button;
+
+$form->submitButtons(
+    Button::make('Cancel'),
+    Button::make('Save draft')->submit(),
+);
+```
+
+Only the label and variant of a `->submit()`-marked button carry over to the managed submit button —
+other props such as icon or size do not.
+
+To take over placement entirely — render the button somewhere other than the form footer — call
+`->withoutSubmitButton()`, which still removes the whole row, and place a
+[`Button`](/components/buttons/) with `->submit()` in the schema yourself:
 
 ```php
 use Lattice\Lattice\Ui\Components\Button;

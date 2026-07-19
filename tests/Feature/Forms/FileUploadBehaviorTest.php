@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\Rules\FileUploadItem;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 
 function fileData(): FormData
 {

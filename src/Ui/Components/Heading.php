@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
 use Lattice\Lattice\Ui\Concerns\HasCopyable;
 use Lattice\Lattice\Ui\Concerns\HasTooltip;
 
@@ -11,6 +12,7 @@ use Lattice\Lattice\Ui\Concerns\HasTooltip;
 class Heading extends Component
 {
     use HasCopyable;
+    use HasPrimaryBinding;
     use HasTooltip;
 
     public string $text = '';
@@ -24,5 +26,10 @@ class Heading extends Component
         $heading->level = $level;
 
         return $heading;
+    }
+
+    protected static function primaryBindableProp(): string
+    {
+        return 'text';
     }
 }

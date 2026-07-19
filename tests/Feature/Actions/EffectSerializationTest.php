@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Actions\Components\ActionGroup;
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 test('a toast serializes its lifetime, dismissibility and link', function (): void {

@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Effects\Builtin;
 
-use Lattice\Lattice\Core\Enums\HttpMethod;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\Link;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 /**

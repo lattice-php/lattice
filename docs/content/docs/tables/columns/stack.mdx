@@ -7,12 +7,12 @@ import ComponentExample from "@components/ComponentExample.astro";
 
 `StackColumn` groups several bound components into one cell, stacking them vertically — useful for
 showing a name and email together, or a title with a subtitle. Pass a schema of normal components to
-`->schema()`, each bound to a row field with `->dataKey($prop, $rowKey)`.
+`->schema()`, each bound to a row field with `->bound($rowKey)`.
 
 <ComponentExample
   php={`StackColumn::make('identity')->label('User')->schema([
-    Text::make('')->dataKey('text', 'name')->color(Color::default()),
-    Text::make('')->dataKey('text', 'email')->size(Size::Sm),
+    Text::bound('name')->color(Color::default()),
+    Text::bound('email')->size(Size::Sm),
 ]);
 
 TextColumn::make('role');`}
@@ -26,7 +26,11 @@ header; the bound components read their own row fields, not the stack's key.
 
 ```php
 StackColumn::make('product')->label('Product')->schema([
-    Text::make('')->dataKey('text', 'title'),
-    Badge::make('')->dataKey('label', 'sku'),
+    Text::bound('title'),
+    Badge::bound('sku'),
 ]);
 ```
+
+`->bound($rowKey)` is shorthand for `->make('')->dataKey($prop, $rowKey)` against the component's
+primary wire prop; use `->dataKey($prop, $rowKey)` directly to bind any other prop, and opt custom
+components into the shorthand with the `HasPrimaryBinding` concern.

@@ -4,10 +4,13 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
 
 #[AsComponent('image')]
 class Image extends Component
 {
+    use HasPrimaryBinding;
+
     public string $src = '';
 
     public ?string $alt = null;
@@ -59,5 +62,10 @@ class Image extends Component
         $this->previewable = $previewable;
 
         return $this;
+    }
+
+    protected static function primaryBindableProp(): string
+    {
+        return 'src';
     }
 }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Core\Enums\HttpMethod;
+use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\References\PhpClassReference;

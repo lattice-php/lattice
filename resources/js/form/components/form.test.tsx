@@ -1,8 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import ButtonComponent from "@lattice-php/lattice/ui/button";
 import { fakeNode } from "@lattice-php/lattice/test-support";
+import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import {
   CheckboxComponent,
   ChoiceComponent,
@@ -380,5 +382,68 @@ describe("Lattice form schema components", () => {
       new CustomEvent("lattice:reset-form", { detail: { form: "teams.create" } }),
     );
     expect(formSlotState.reset).toHaveBeenCalledOnce();
+  });
+
+  it("renders the submit row as a plain flex row without bar chrome", () => {
+    const formNode = fakeNode({
+      id: "plain-form",
+      props: {
+        action: "/plain",
+        submitButton: true,
+      },
+      type: "form",
+    });
+
+    render(<FormComponent node={formNode}>{null}</FormComponent>);
+
+    const row = screen.getByRole("button", { name: "Submit" }).closest("div");
+    expect(row).toHaveClass("justify-end");
+    expect(row).not.toHaveClass("border", "bg-lt-surface", "shadow-lt-sm");
+  });
+
+  it("applies submitJustify and submitVariant", () => {
+    const formNode = fakeNode({
+      id: "styled-form",
+      props: {
+        action: "/styled",
+        submitButton: true,
+        submitJustify: "between",
+        submitVariant: "outline",
+      },
+      type: "form",
+    });
+
+    render(<FormComponent node={formNode}>{null}</FormComponent>);
+
+    const submitButton = screen.getByRole("button", { name: "Submit" });
+    const row = submitButton.closest("div");
+    expect(row).toHaveClass("justify-between");
+    expect(submitButton).toHaveClass("border-lt-input", "bg-lt-bg");
+  });
+
+  it("renders custom submit buttons, substituting the managed submit button", () => {
+    const registry = createRegistry({
+      components: { button: eagerComponent(ButtonComponent) },
+      name: "test/form-submit-buttons",
+    });
+
+    const formNode = fakeNode({
+      id: "custom-submit-form",
+      props: {
+        action: "/custom",
+        submitButton: true,
+        submitButtons: [
+          fakeNode({ props: { buttonType: "button", label: "Cancel" }, type: "button" }),
+          fakeNode({ props: { buttonType: "submit", label: "Save" }, type: "button" }),
+        ],
+      },
+      type: "form",
+    });
+
+    renderWithRegistry(<FormComponent node={formNode}>{null}</FormComponent>, registry);
+
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveAttribute("type", "button");
+    expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute("type", "submit");
+    expect(screen.queryByRole("button", { name: "Submit" })).not.toBeInTheDocument();
   });
 });

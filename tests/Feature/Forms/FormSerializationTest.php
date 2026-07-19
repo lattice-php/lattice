@@ -5,7 +5,10 @@ use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\PasswordInput;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Justify;
 
 test('forms serialize schema children like pages', function (): void {
     expect(wire(Form::make('profile-form')->schema([
@@ -84,4 +87,22 @@ test('editable computed fields serialize an explicit client prefill flag', funct
         'prefillResetOn' => ['product'],
         'prefillRefreshOn' => ['@customer'],
     ])->not->toHaveKey('prefill');
+});
+
+test('forms serialize submit row configuration', function (): void {
+    $wire = wire(Form::make('checkout')
+        ->submitJustify(Justify::Between)
+        ->submitVariant(ButtonVariant::Outline)
+        ->submitButtons(
+            Button::make('Cancel'),
+            Button::make('Save')->submit(),
+        ));
+
+    expect($wire['props'])->toMatchArray([
+        'submitJustify' => 'between',
+        'submitVariant' => 'outline',
+    ])
+        ->and($wire['props']['submitButtons'])->toHaveCount(2)
+        ->and($wire['props']['submitButtons'][0])->toMatchArray(['type' => 'button'])
+        ->and($wire['props']['submitButtons'][1]['props'])->toMatchArray(['buttonType' => 'submit']);
 });
