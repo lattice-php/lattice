@@ -36,7 +36,7 @@ test('the bell defaults to popover mode', function (): void {
 });
 
 describe('docs fixtures', function (): void {
-    it('matches the bell example fixture', function (): void {
+    test('matches the bell example fixture', function (): void {
         assertFixtureMatches('notifications.bell', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Notifications::make('notifications-bell'),
         ]))));

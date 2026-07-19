@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { NumberFormat } from "@lattice-php/lattice/types";
+import type { NumberFormat } from "@lattice-php/lattice/types/generated";
 import { formatNumber } from "./number";
 
 const base: NumberFormat = {

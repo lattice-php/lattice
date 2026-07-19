@@ -1,4 +1,4 @@
-import type { NumberFormat } from "@lattice-php/lattice/types";
+import type { NumberFormat } from "@lattice-php/lattice/types/generated";
 import { numericValue } from "./numeric";
 
 export function formatNumber(value: unknown, format: NumberFormat, locale: string): string {
