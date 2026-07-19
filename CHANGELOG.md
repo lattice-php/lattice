@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.22.0](https://github.com/lattice-php/lattice/compare/0.21.0...0.22.0) (2026-07-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* **actions:** Confirmation.title (wire type) is now `string | null` instead of `string`.
+
+### Features
+
+* **actions:** dispatch rejected-action effects and keep overlays open on 422 ([025bd69](https://github.com/lattice-php/lattice/commit/025bd694e7cf9e966b632ac5345aeaa5e75868a7))
+* **actions:** reintroduce ActionResult::failure() as a 422 rejection ([78fa152](https://github.com/lattice-php/lattice/commit/78fa15269784cab11fe9fdafad0e8ccac030cfe6))
+* **testing:** denied-component helpers and submit-then-act session refresh ([406542e](https://github.com/lattice-php/lattice/commit/406542e8f7b10724b4b8dc332da8da9feedd5b6f))
+
+
+### Bug Fixes
+
+* **console:** lattice:typescript no-ops without custom wire types ([3383735](https://github.com/lattice-php/lattice/commit/338373543ca1fad026a1113ee27d647d452efc93))
+* **tables:** narrow final filter indicator() return types for phpstan ([ed31694](https://github.com/lattice-php/lattice/commit/ed31694a89cec5381ce02fa43648686523538b42))
+
+
+### Refactoring
+
+* **actions:** make confirmation title optional, drop dead bulk-bar ref guard ([8610520](https://github.com/lattice-php/lattice/commit/8610520e9ffe4c5094c8704d99503f70a0df52d5))
+* drop dead exports, fix type round-trip, refresh stale comment ([79f0276](https://github.com/lattice-php/lattice/commit/79f0276033a3314d7faa457c1f947d3309c1e8d4))
+* **i18n:** route default UI labels through the translation layer ([d3a54e7](https://github.com/lattice-php/lattice/commit/d3a54e7bb93458dea23b737bee7a55005a3d685e))
+* **tests:** streamline suite structure ([99e4e1d](https://github.com/lattice-php/lattice/commit/99e4e1d96e7b39a2dfb9207658d02dbfdac1d1fd))
+* **tests:** streamline suite structure ([5dda8d3](https://github.com/lattice-php/lattice/commit/5dda8d356da33ceaa62641304545fa32b70ef922))
+
+
+### Documentation
+
+* allow dashed and underscored translation keys ([84f9cb1](https://github.com/lattice-php/lattice/commit/84f9cb1cc30966cbbf1ed99cc7d93281e2c90506))
+* **boost:** refresh bundled skills to the 0.21 actions API ([6b65332](https://github.com/lattice-php/lattice/commit/6b65332d435241957689a3ce2a4df2f382a88eb1))
+* **console:** name spatie/laravel-typescript-transformer consistently ([3a26934](https://github.com/lattice-php/lattice/commit/3a2693423eb5bfdd63084c105c427719920ed460))
+
 ## [0.21.0](https://github.com/lattice-php/lattice/compare/0.20.0...0.21.0) (2026-07-17)
 
 
