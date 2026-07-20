@@ -185,9 +185,6 @@ return [
             'label' => 'Auswahl ablehnen',
             'toast' => ':count Produkte abgelehnt: :reason',
         ],
-        'tree-node-info' => [
-            'label' => 'Über diese Baumstruktur',
-        ],
     ],
     'auth' => [
         'login' => [
@@ -421,7 +418,6 @@ return [
         'tables' => 'Tabellen',
         'tabs' => 'Tabs',
         'toggle-sidebar' => 'Seitenleiste umschalten',
-        'tree' => 'Baumstruktur',
     ],
     'pages' => [
         'charts' => [
@@ -568,80 +564,6 @@ return [
                 'bars' => 'Fortschrittsbalken',
                 'circles' => 'Fortschrittskreise',
                 'title' => 'Fortschritt',
-            ],
-            'tree' => [
-                'categories' => [
-                    'automotive' => [
-                        'accessories' => [
-                            'floor-mats' => 'Fußmatten',
-                            'label' => 'Zubehör',
-                            'seat-covers' => 'Sitzbezüge',
-                        ],
-                        'label' => 'Kfz-Zubehör',
-                        'parts' => [
-                            'brakes' => 'Bremsen',
-                            'engine' => 'Motor',
-                            'label' => 'Teile',
-                        ],
-                    ],
-                    'clothing' => [
-                        'accessories' => [
-                            'belts' => 'Gürtel',
-                            'hats' => 'Hüte',
-                            'label' => 'Zubehör',
-                        ],
-                        'kids' => 'Kinder',
-                        'label' => 'Kleidung',
-                        'men' => 'Herren',
-                        'women' => 'Damen',
-                    ],
-                    'documents' => [
-                        'archive' => 'Archivieren',
-                        'label' => 'Dokumente',
-                        'rename' => 'Umbenennen',
-                    ],
-                    'electronics' => [
-                        'accessories' => [
-                            'cases' => 'Hüllen',
-                            'chargers' => 'Ladegeräte',
-                            'label' => 'Zubehör',
-                        ],
-                        'label' => 'Elektronik',
-                        'laptops' => 'Laptops',
-                        'phones' => 'Smartphones',
-                        'tablets' => 'Tablets',
-                    ],
-                    'furniture' => [
-                        'bedroom' => [
-                            'beds' => 'Betten',
-                            'label' => 'Schlafzimmer',
-                            'wardrobes' => 'Kleiderschränke',
-                        ],
-                        'label' => 'Möbel',
-                        'living-room' => [
-                            'coffee-tables' => 'Couchtische',
-                            'label' => 'Wohnzimmer',
-                            'sofas' => 'Sofas',
-                        ],
-                    ],
-                    'groceries' => [
-                        'bakery' => 'Bäckerei',
-                        'dairy' => 'Milchprodukte',
-                        'frozen' => 'Tiefkühlkost',
-                        'label' => 'Lebensmittel',
-                        'produce' => 'Obst & Gemüse',
-                    ],
-                    'help' => [
-                        'label' => 'Hilfe',
-                    ],
-                ],
-                'info-modal' => [
-                    'body' => 'Die Pfeiltasten bewegen den Fokus zwischen den Zeilen, ohne die Tab-Reihenfolge der Seite zu verlassen. Enter oder Leertaste aktiviert die fokussierte Zeile: sie folgt einem Link, führt eine Aktion aus oder markiert die Zeile als aktiv.',
-                    'description' => 'So funktioniert die Tastaturnavigation in dieser Komponente.',
-                    'title' => 'Tastaturnavigation',
-                ],
-                'intro' => 'Eine per Tastatur navigierbare Hierarchie mit aktivem Zustand, einem verlinkten Knoten, Zeilenaktionen und einer Aktion, die ein Modal öffnet.',
-                'title' => 'Baumstruktur',
             ],
         ],
         'dependent' => [

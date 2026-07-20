@@ -46,7 +46,6 @@ use Workbench\App\Pages\Components\ModalsPage;
 use Workbench\App\Pages\Components\NotificationsPage;
 use Workbench\App\Pages\Components\ProgressPage;
 use Workbench\App\Pages\Components\TabsPage;
-use Workbench\App\Pages\Components\TreePage;
 use Workbench\App\Pages\DependentFieldsPage;
 use Workbench\App\Pages\Fields\BooleanFieldsPage;
 use Workbench\App\Pages\Fields\BuilderPage;
@@ -159,7 +158,6 @@ class AppLayout extends LayoutDefinition
                     MenuItem::fromPage(ProgressPage::class)->key('progress')->label(__('workbench.navigation.progress')),
                     MenuItem::fromPage(ContainersPage::class)->key('containers')->label(__('workbench.navigation.containers')),
                     MenuItem::fromPage(ModalsPage::class)->key('modals')->label(__('workbench.navigation.modals')),
-                    MenuItem::fromPage(TreePage::class)->key('tree')->label(__('workbench.navigation.tree')),
                     MenuItem::fromPage(NotificationsPage::class)->key('notifications')->label(__('workbench.navigation.notifications')),
                     MenuItem::fromPage(ChatPage::class)->key('chat')->label(__('workbench.navigation.chat')),
                 ]),
