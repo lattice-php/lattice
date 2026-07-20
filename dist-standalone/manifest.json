@@ -1,7 +1,7 @@
 {
-  "version": "0.23.0",
+  "version": "0.24.0",
   "files": {
-    "lattice.js": "6f4566a831f1",
+    "lattice.js": "de39e3025b4d",
     "chunks/chart-view-DEwGTt9d.js": "3e80210cc3d7",
     "chunks/date-picker-field-CCQ9nWx0.js": "d97e934b112d",
     "chunks/dist-PaT1gYi_.js": "4da471d00496",
