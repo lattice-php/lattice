@@ -35,9 +35,8 @@ use Lattice\Lattice\Tables\TableRegistry;
  * only intentional cross-domain couplings are tables -> actions (row and bulk
  * actions), tables -> forms (table filters are form-field schemas), actions ->
  * forms (action forms), and layouts -> actions (menu items that trigger an
- * action). The UI layer likewise reaches Actions in two deliberate spots — the
- * Triggerable primitive (links/buttons that trigger an action) and TreeNode
- * (which can hold a row action).
+ * action). The UI layer likewise reaches Actions in one deliberate spot — the
+ * Triggerable primitive (links/buttons that trigger an action).
  *
  * Top: the orchestration and tooling layers — Http (which renders and routes
  * pages, including the page registry, by consuming the feature domains),

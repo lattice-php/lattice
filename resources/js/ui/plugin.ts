@@ -27,7 +27,6 @@ import StackComponent from "./stack";
 import TabComponent, { TabsComponent } from "./tabs";
 import TextComponent from "./text";
 import TooltipComponent from "./tooltip";
-import TreeComponent from "./tree";
 
 type UiComponentType = UiNodeType | FragmentNodeType;
 
@@ -57,7 +56,6 @@ export const uiComponents = createPlugin({
     tabs: eagerComponent(TabsComponent),
     text: eagerComponent(TextComponent),
     tooltip: eagerComponent(TooltipComponent),
-    tree: eagerComponent(TreeComponent),
   } satisfies ComponentRegistryFor<UiComponentType>,
   name: "lattice/ui",
 });

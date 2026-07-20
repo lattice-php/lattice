@@ -27,10 +27,6 @@ return [
     'action' => [
         'run' => 'Run action',
     ],
-    'tree' => [
-        'expand' => 'Expand :label',
-        'collapse' => 'Collapse :label',
-    ],
     'chat' => [
         'launcher' => 'Chat',
         'title' => 'Chat',

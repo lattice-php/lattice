@@ -7,7 +7,6 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Core\Concerns\ScopedEloquentQuery;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 
 /**
@@ -17,7 +16,8 @@ use Lattice\Lattice\Core\Contracts\OptionSource;
  */
 final class EloquentOptions implements OptionSource
 {
-    use ScopedEloquentQuery;
+    /** @var Closure(Builder<Model>): mixed|null */
+    private ?Closure $scope = null;
 
     /** @var list<string>|null */
     private ?array $searchColumns = null;
@@ -44,6 +44,18 @@ final class EloquentOptions implements OptionSource
     public static function make(string $model): self
     {
         return new self($model);
+    }
+
+    /**
+     * Constrain every query this source issues (e.g. only active rows).
+     *
+     * @param  Closure(Builder<Model>): mixed  $scope
+     */
+    public function scope(Closure $scope): self
+    {
+        $this->scope = $scope;
+
+        return $this;
     }
 
     public function label(string $column): self
@@ -121,6 +133,24 @@ final class EloquentOptions implements OptionSource
     private function valueColumn(): string
     {
         return $this->resolvedValueKey ??= $this->valueKey ?? (new $this->model)->getKeyName();
+    }
+
+    /**
+     * @return Builder<Model>
+     */
+    private function query(): Builder
+    {
+        $builder = $this->model::query();
+
+        if ($this->scope instanceof Closure) {
+            $scoped = ($this->scope)($builder);
+
+            if ($scoped instanceof Builder) {
+                $builder = $scoped;
+            }
+        }
+
+        return $builder;
     }
 
     /**

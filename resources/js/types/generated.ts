@@ -534,7 +534,6 @@ export type ComponentPropsMap = {
   text: Text;
   tooltip: Tooltip;
   topbar: Topbar;
-  tree: Tree;
 };
 export type Condition = {
   readonly field: string;
@@ -1030,8 +1029,7 @@ export type NodeType =
   | "tabs"
   | "text"
   | "tooltip"
-  | "topbar"
-  | "tree";
+  | "topbar";
 export type NotificationItem = {
   readonly actions: Node[];
   readonly body: string | null;
@@ -1603,22 +1601,6 @@ export type Translatable = {
   payload: Record<string, string>;
   replacements: Record<string, string | number | boolean>;
 };
-export type Tree = {
-  activeId: string | null;
-  defaultExpanded: string[];
-  rememberState: boolean;
-};
-export type TreeNode = {
-  actions: Node<"action"> | Node<"action.bulk"> | Node<"action.group"> | null;
-  badge: string | null;
-  children: TreeNode[];
-  disabled: boolean;
-  hasChildren: boolean;
-  href: string | null;
-  icon: string | null;
-  readonly id: string;
-  readonly label: string;
-};
 export type UiNodeType =
   | "avatar"
   | "badge"
@@ -1642,8 +1624,7 @@ export type UiNodeType =
   | "tab"
   | "tabs"
   | "text"
-  | "tooltip"
-  | "tree";
+  | "tooltip";
 export type UnreadCount = {
   readonly unreadCount: number;
 };

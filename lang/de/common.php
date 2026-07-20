@@ -27,10 +27,6 @@ return [
     'action' => [
         'run' => 'Aktion ausführen',
     ],
-    'tree' => [
-        'expand' => ':label ausklappen',
-        'collapse' => ':label einklappen',
-    ],
     'chat' => [
         'launcher' => 'Chat',
         'title' => 'Chat',
