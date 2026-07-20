@@ -209,6 +209,7 @@ const OPTIONAL_PEER_STUBS: Record<string, string> = {
     "export const useEcho = missing;",
     "export const useEchoPublic = missing;",
     "export const useEchoPresence = missing;",
+    "export const useEchoNotification = missing;",
   ].join("\n"),
 };
 
