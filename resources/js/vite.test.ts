@@ -97,6 +97,7 @@ describe("lattice Vite helper", () => {
     expect(code).toContain("export const useEcho =");
     expect(code).toContain("export const useEchoPublic =");
     expect(code).toContain("export const useEchoPresence =");
+    expect(code).toContain("export const useEchoNotification =");
   });
 
   it("defers to the real package when the optional Echo peer is installed", async () => {
@@ -189,13 +190,15 @@ describe("lattice Vite helper", () => {
   it("merges a partial dts override over the default file/augment targets", () => {
     const appRoot = path.resolve("/tmp/lattice-app");
 
-    const iconOptions = resolveIconOptions({ appRoot, icons: { dts: { indent: "\t" } } });
+    const iconOptions = resolveIconOptions({
+      appRoot,
+      icons: { dts: { augmentInterface: "MyIcons" } },
+    });
 
     expect(iconOptions?.dts).toEqual({
       file: "resources/js/types/sprite-icons.ts",
       augmentModule: "@lattice-php/lattice",
-      augmentInterface: "KnownIcons",
-      indent: "\t",
+      augmentInterface: "MyIcons",
     });
   });
 
