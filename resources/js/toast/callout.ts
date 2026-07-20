@@ -1,5 +1,6 @@
 import type { Callout } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
 import { isVariant } from "./toast";
 
 export type { Callout };
@@ -11,15 +12,20 @@ export function normalizeCallout(detail: unknown): Callout | null {
 
   const callout = detail as Record<string, unknown>;
 
-  if (typeof callout.message !== "string" || callout.message === "") {
+  const rawMessage = callout.message;
+  const message =
+    typeof rawMessage === "string" ? rawMessage : isTranslatable(rawMessage) ? rawMessage : null;
+
+  if (message === null || message === "") {
     return null;
   }
 
   return {
     action: (callout.action as Callout["action"]) ?? null,
     dismissible: callout.dismissible !== false,
-    message: callout.message,
-    title: typeof callout.title === "string" ? callout.title : null,
+    message,
+    title:
+      typeof callout.title === "string" || isTranslatable(callout.title) ? callout.title : null,
     variant: isVariant(callout.variant) ? callout.variant : "info",
   };
 }

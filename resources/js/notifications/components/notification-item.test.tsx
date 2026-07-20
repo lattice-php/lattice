@@ -85,6 +85,24 @@ describe("NotificationItemRow", () => {
     expect(onDismiss).toHaveBeenCalledWith("notice-a");
   });
 
+  it("resolves a translatable title and body to their keys when no catalog is loaded", () => {
+    render(
+      <ul>
+        <NotificationItemRow
+          notification={item({
+            title: { key: "orders.shipped.title", payload: {}, replacements: {} },
+            body: { key: "orders.shipped.body", payload: {}, replacements: {} },
+          })}
+          onDismiss={vi.fn<(id: string) => void>()}
+          onMarkRead={vi.fn<(id: string) => void>()}
+        />
+      </ul>,
+    );
+
+    expect(screen.getByText("orders.shipped.title")).toBeInTheDocument();
+    expect(screen.getByText("orders.shipped.body")).toBeInTheDocument();
+  });
+
   it("marks linked notifications read when the link is opened", () => {
     const onMarkRead = vi.fn<(id: string) => void>();
 

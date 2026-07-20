@@ -31,6 +31,21 @@ final class Translatable implements JsonSerializable
     }
 
     /**
+     * Rehydrate a Translatable from its serialized wire shape, e.g. when it
+     * comes back out of a database notification's stored payload.
+     *
+     * @param  array<string, mixed>  $wire
+     */
+    public static function fromWire(array $wire): self
+    {
+        $translatable = new self((string) $wire['key']);
+        $translatable->payload = (array) ($wire['payload'] ?? []);
+        $translatable->replacements = (array) ($wire['replacements'] ?? []);
+
+        return $translatable;
+    }
+
+    /**
      * @param  array<string, string>  $paths  replacement name => dotted payload path
      */
     public function fromPayload(array $paths): self
