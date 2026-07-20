@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.24.0](https://github.com/lattice-php/lattice/compare/0.23.0...0.24.0) (2026-07-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* The Tree component is no longer part of lattice-php/lattice. Run `composer require lattice-php/tree` and the discovered plugin registers it automatically; the `Tree`, `TreeNode`, and source classes move from the `Lattice\Lattice\Ui` namespace to the flat `Lattice\Tree` namespace.
+
+### Bug Fixes
+
+* **vite:** stub useEchoNotification for consumers without @laravel/echo-react ([b2a6e4f](https://github.com/lattice-php/lattice/commit/b2a6e4f1601cb3572f865592892e8e5683b5be23))
+* **vite:** stub useEchoNotification for consumers without @laravel/echo-react ([084923d](https://github.com/lattice-php/lattice/commit/084923dc8ff88f878caa8e62bbcc864e69495f05))
+
+
+### Refactoring
+
+* extract the Tree component into lattice-php/tree ([ddec3b9](https://github.com/lattice-php/lattice/commit/ddec3b942f56c1536b2722fdc2a03ab6f90ef1da))
+
 ## [0.23.0](https://github.com/lattice-php/lattice/compare/0.22.0...0.23.0) (2026-07-19)
 
 
