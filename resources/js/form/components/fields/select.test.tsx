@@ -70,7 +70,10 @@ function renderSelect({
         fieldLabels: {},
         precognitive: false,
         processing: false,
+        touch: () => {},
         validate: () => {},
+        validateFields: () => {},
+        validating: false,
       }}
     >
       <FormValuesProvider initial={initial}>{scoped}</FormValuesProvider>
@@ -158,7 +161,10 @@ function renderStaticSelect(props: Record<string, unknown>, initial: Record<stri
         fieldLabels: {},
         precognitive: false,
         processing: false,
+        touch: () => {},
         validate: () => {},
+        validateFields: () => {},
+        validating: false,
       }}
     >
       <FormValuesProvider initial={initial}>
@@ -428,7 +434,10 @@ describe("SelectComponent option schema", () => {
           fieldLabels: {},
           precognitive: false,
           processing: false,
+          touch: () => {},
           validate: () => {},
+          validateFields: () => {},
+          validating: false,
         }}
       >
         <FormValuesProvider initial={{}}>
@@ -467,7 +476,10 @@ describe("SelectComponent option schema", () => {
           fieldLabels: {},
           precognitive: false,
           processing: false,
+          touch: () => {},
           validate: () => {},
+          validateFields: () => {},
+          validating: false,
         }}
       >
         <FormValuesProvider initial={{}}>

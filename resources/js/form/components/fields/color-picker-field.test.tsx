@@ -27,7 +27,10 @@ function renderField(props: Record<string, unknown>, initial: Record<string, unk
         fieldLabels: {},
         precognitive: false,
         processing: false,
+        touch: () => {},
         validate: () => {},
+        validateFields: () => {},
+        validating: false,
       }}
     >
       <FormValuesProvider initial={initial}>

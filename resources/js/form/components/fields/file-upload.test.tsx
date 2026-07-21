@@ -62,7 +62,10 @@ function renderUpload({
         fieldLabels: {},
         precognitive: false,
         processing: false,
+        touch: () => {},
         validate: () => {},
+        validateFields: () => {},
+        validating: false,
       }}
     >
       <FormValuesProvider initial={values}>

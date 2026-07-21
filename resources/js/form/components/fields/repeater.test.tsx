@@ -43,7 +43,10 @@ function wrap(
         fieldLabels: {},
         precognitive: false,
         processing: false,
+        touch: () => {},
         validate: () => {},
+        validateFields: () => {},
+        validating: false,
       }}
     >
       <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>

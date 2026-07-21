@@ -22,7 +22,10 @@ function renderSubmit(overrides: ContextOverrides = {}) {
         fieldLabels: overrides.fieldLabels ?? {},
         precognitive: false,
         processing: overrides.processing ?? false,
+        touch: () => {},
         validate: () => {},
+        validateFields: () => {},
+        validating: false,
       }}
     >
       <FormSubmitButton label="Save" summaryLabel="Fix these fields" />

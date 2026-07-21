@@ -141,7 +141,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       headers={withHeaders(componentRef)}
       className="mx-auto flex w-full max-w-2xl flex-col gap-6"
     >
-      {({ clearErrors, errors, processing, reset, validate }) => (
+      {({ clearErrors, errors, processing, reset, touch, validate, validating }) => (
         <FormProvider
           value={{
             action,
@@ -152,7 +152,10 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
             fieldLabels,
             precognitive,
             processing,
+            touch: (fields) => touch(...fields),
             validate: (field) => validate(field),
+            validateFields: (fields, options) => validate({ only: fields, ...options }),
+            validating,
           }}
         >
           <FormResetListener componentId={node.id} reset={reset} />

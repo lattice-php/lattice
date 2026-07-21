@@ -56,7 +56,10 @@ function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
         fieldLabels: {},
         precognitive: false,
         processing: false,
+        touch: () => {},
         validate: () => {},
+        validateFields: () => {},
+        validating: false,
       }}
     >
       <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>

@@ -170,6 +170,41 @@ function ActionFormBody({
     [precognitive, runValidation],
   );
 
+  const touch = useCallback(() => {}, []);
+
+  const validateFields = useCallback(
+    (fields: string[], options?: { onSuccess?: () => void; onValidationError?: () => void }) => {
+      void request({ Precognition: "true", "Precognition-Validate-Only": fields.join(",") })
+        .then(async (response) => {
+          if (response.status === 422) {
+            const body = (await response.json()) as { errors?: Record<string, string[]> };
+            setErrors((current) => ({ ...current, ...firstErrors(body.errors) }));
+            options?.onValidationError?.();
+
+            return;
+          }
+
+          if (!response.ok) {
+            options?.onValidationError?.();
+
+            return;
+          }
+
+          const cleared = fields.filter((field) => !field.includes("*"));
+          setErrors((current) =>
+            Object.fromEntries(
+              Object.entries(current).filter(
+                ([key]) => !cleared.some((name) => key === name || key.startsWith(`${name}.`)),
+              ),
+            ),
+          );
+          options?.onSuccess?.();
+        })
+        .catch(() => options?.onValidationError?.());
+    },
+    [request],
+  );
+
   const submit = useCallback(() => {
     setProcessing(true);
 
@@ -206,9 +241,23 @@ function ActionFormBody({
       fieldLabels,
       precognitive,
       processing,
+      touch,
       validate,
+      validateFields,
+      validating: false,
     }),
-    [clearErrors, componentRef, endpoint, errors, fieldLabels, precognitive, processing, validate],
+    [
+      clearErrors,
+      componentRef,
+      endpoint,
+      errors,
+      fieldLabels,
+      precognitive,
+      processing,
+      touch,
+      validate,
+      validateFields,
+    ],
   );
 
   return (
