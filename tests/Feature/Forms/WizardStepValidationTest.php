@@ -15,23 +15,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\postJson;
 
-function wizardStepHeaders(string $ref, string $validateOnly): array
-{
-    return [
-        ...test()->latticeHeaders($ref),
-        'Precognition' => 'true',
-        'Precognition-Validate-Only' => $validateOnly,
-    ];
-}
-
 test('a precognitive request validates only the listed step fields', function (): void {
     Lattice::forms([WizardValidationTestForm::class]);
-    $ref = test()->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
+    $ref = $this->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
 
     postJson('/lattice/forms/workbench.wizard-validation', [
         'name' => 'Taylor',
         'email' => 'not-an-email',
-    ], wizardStepHeaders($ref, 'name,email'))
+    ], $this->latticeHeaders($ref, [
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'name,email',
+    ]))
         ->assertUnprocessable()
         ->assertJsonValidationErrors('email')
         ->assertJsonMissingValidationErrors(['street', 'items']);
@@ -39,12 +33,15 @@ test('a precognitive request validates only the listed step fields', function ()
 
 test('a passing step returns 204 without running handle, even when later steps are incomplete', function (): void {
     Lattice::forms([WizardValidationTestForm::class]);
-    $ref = test()->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
+    $ref = $this->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
 
     postJson('/lattice/forms/workbench.wizard-validation', [
         'name' => 'Taylor',
         'email' => 'taylor@example.com',
-    ], wizardStepHeaders($ref, 'name,email'))
+    ], $this->latticeHeaders($ref, [
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'name,email',
+    ]))
         ->assertNoContent()
         ->assertHeader('Precognition-Success', 'true');
 
@@ -53,13 +50,16 @@ test('a passing step returns 204 without running handle, even when later steps a
 
 test('expanded row paths match wildcard nested rules in a step validation', function (): void {
     Lattice::forms([WizardValidationTestForm::class]);
-    $ref = test()->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
+    $ref = $this->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
 
     postJson('/lattice/forms/workbench.wizard-validation', [
         'items' => [
             ['sku' => '', 'qty' => 'many'],
         ],
-    ], wizardStepHeaders($ref, 'items,items.0.sku,items.0.qty'))
+    ], $this->latticeHeaders($ref, [
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'items,items.0.sku,items.0.qty',
+    ]))
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['items.0.sku', 'items.0.qty'])
         ->assertJsonMissingValidationErrors(['name', 'email']);
@@ -67,13 +67,16 @@ test('expanded row paths match wildcard nested rules in a step validation', func
 
 test('wildcard validate-only patterns match concrete row rule keys', function (): void {
     Lattice::forms([WizardValidationTestForm::class]);
-    $ref = test()->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
+    $ref = $this->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
 
     postJson('/lattice/forms/workbench.wizard-validation', [
         'items' => [
             ['sku' => '', 'qty' => 'many'],
         ],
-    ], wizardStepHeaders($ref, 'items,items.*.sku,items.*.qty'))
+    ], $this->latticeHeaders($ref, [
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'items,items.*.sku,items.*.qty',
+    ]))
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['items.0.sku', 'items.0.qty'])
         ->assertJsonMissingValidationErrors(['name', 'email']);
@@ -81,11 +84,14 @@ test('wildcard validate-only patterns match concrete row rule keys', function ()
 
 test('wildcard validate-only patterns match wildcard item rule keys', function (): void {
     Lattice::forms([WizardValidationTestForm::class]);
-    $ref = test()->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
+    $ref = $this->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
 
     postJson('/lattice/forms/workbench.wizard-validation', [
         'tags' => ['not-an-option'],
-    ], wizardStepHeaders($ref, 'tags,tags.*'))
+    ], $this->latticeHeaders($ref, [
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'tags,tags.*',
+    ]))
         ->assertUnprocessable()
         ->assertJsonValidationErrors('tags.0')
         ->assertJsonMissingValidationErrors(['name', 'email']);
@@ -93,12 +99,12 @@ test('wildcard validate-only patterns match wildcard item rule keys', function (
 
 test('the final submit validates every step regardless of client step claims', function (): void {
     Lattice::forms([WizardValidationTestForm::class]);
-    $ref = test()->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
+    $ref = $this->latticeRef(wire(Form::use(WizardValidationTestForm::class)));
 
     postJson('/lattice/forms/workbench.wizard-validation', [
         'name' => 'Taylor',
         'email' => 'taylor@example.com',
-    ], test()->latticeHeaders($ref))
+    ], $this->latticeHeaders($ref))
         ->assertUnprocessable()
         ->assertJsonValidationErrors('street');
 
