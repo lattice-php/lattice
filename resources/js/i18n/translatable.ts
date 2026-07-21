@@ -24,6 +24,10 @@ function readPath(payload: Record<string, unknown>, path: string): unknown {
   }, payload);
 }
 
+export function resolveText(value: string | Translatable | null, t: Translate): string | null {
+  return isTranslatable(value) ? resolveTranslatable(value, {}, t) : value;
+}
+
 export function resolveTranslatable(
   value: Translatable,
   payload: Record<string, unknown>,

@@ -23,6 +23,16 @@ describe("normalizeCallout", () => {
     expect(normalizeCallout({ variant: "info" })).toBeNull();
   });
 
+  it("keeps translatable messages and titles", () => {
+    const message = { key: "billing.trial-ending", payload: {}, replacements: { days: 3 } };
+    const title = { key: "billing.trial-ending-title", payload: {}, replacements: {} };
+
+    const callout = normalizeCallout({ message, title });
+
+    expect(callout?.message).toEqual(message);
+    expect(callout?.title).toEqual(title);
+  });
+
   it("defaults variant and dismissible", () => {
     const callout = normalizeCallout({ message: "Hi" });
     expect(callout?.variant).toBe("info");

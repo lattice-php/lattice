@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Notifications\NotificationItem;
 use Lattice\Lattice\Notifications\NotificationList;
 use Lattice\Lattice\Notifications\Support\ActionDescriptor;
@@ -72,8 +73,8 @@ final class NotificationController
 
         return new NotificationItem(
             id: $notification->getAttribute('id'),
-            title: $data['title'] ?? $data['message'] ?? $data['subject'] ?? null,
-            body: $data['body'] ?? (($data['title'] ?? null) ? ($data['message'] ?? null) : null),
+            title: $this->text($data['title'] ?? $data['message'] ?? $data['subject'] ?? null),
+            body: $this->text($data['body'] ?? (($data['title'] ?? null) ? ($data['message'] ?? null) : null)),
             icon: $data['icon'] ?? null,
             variant: is_string($variant) ? Variant::tryFrom($variant) : null,
             href: $data['href'] ?? null,
@@ -84,5 +85,10 @@ final class NotificationController
                 $data['actions'] ?? [],
             ))),
         );
+    }
+
+    private function text(mixed $value): string|Translatable|null
+    {
+        return Translatable::tryFromWire($value) ?? (is_string($value) ? $value : null);
     }
 }

@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Notifications;
 
 use BackedEnum;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Notifications\Support\ActionDescriptor;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 final class Notification
 {
-    private ?string $title = null;
+    private string|Translatable|null $title = null;
 
-    private ?string $body = null;
+    private string|Translatable|null $body = null;
 
     private ?string $icon = null;
 
@@ -29,14 +30,14 @@ final class Notification
         return new self;
     }
 
-    public function title(string $title): self
+    public function title(string|Translatable $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function body(string $body): self
+    public function body(string|Translatable $body): self
     {
         $this->body = $body;
 
@@ -98,8 +99,8 @@ final class Notification
     {
         return [
             'format' => 'lattice',
-            'title' => $this->title,
-            'body' => $this->body,
+            'title' => Wire::toWire($this->title),
+            'body' => Wire::toWire($this->body),
             'icon' => $this->icon,
             'variant' => $this->variant->value,
             'href' => $this->href,

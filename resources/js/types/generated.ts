@@ -284,8 +284,8 @@ export type ButtonVariant =
 export type Callout = {
   action: Node | null;
   dismissible: boolean;
-  message: string;
-  title: string | null;
+  message: Translatable | string;
+  title: Translatable | string | null;
   variant: Variant;
 };
 export type Callouts = Record<string, never>;
@@ -1032,13 +1032,13 @@ export type NodeType =
   | "topbar";
 export type NotificationItem = {
   readonly actions: Node[];
-  readonly body: string | null;
+  readonly body: Translatable | string | null;
   readonly createdAt: string | null;
   readonly href: string | null;
   readonly icon: string | null;
   readonly id: string;
   readonly isRead: boolean;
-  readonly title: string | null;
+  readonly title: Translatable | string | null;
   readonly variant: Variant | null;
 };
 export type NotificationList = {

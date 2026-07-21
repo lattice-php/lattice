@@ -30,6 +30,22 @@ test('index returns the users notifications with an unread count', function (): 
         ->assertJsonPath('notifications.0.isRead', false);
 });
 
+test('index returns translatable titles and bodies as their wire shape', function (): void {
+    $user = workbenchTestUser();
+    Notification::make()
+        ->title(rt('orders.shipped.title'))
+        ->body(rt('orders.shipped.body')->with(['order' => 1234]))
+        ->send($user);
+
+    actingAs($user);
+
+    getJson('/lattice/notifications')
+        ->assertOk()
+        ->assertJsonPath('notifications.0.title.key', 'orders.shipped.title')
+        ->assertJsonPath('notifications.0.body.key', 'orders.shipped.body')
+        ->assertJsonPath('notifications.0.body.replacements.order', 1234);
+});
+
 test('index never leaks another users notifications', function (): void {
     $me = workbenchTestUser();
     $other = workbenchTestUser();

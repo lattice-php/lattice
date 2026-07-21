@@ -57,6 +57,29 @@ describe("Callouts slot", () => {
     expect(screen.queryByRole("button", { name: "Dismiss" })).not.toBeInTheDocument();
   });
 
+  it("resolves a translatable message and title to their keys when no catalog is loaded", () => {
+    render(
+      <Provider toaster={false}>
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+      </Provider>,
+    );
+
+    act(() => {
+      window.dispatchEvent(
+        new CustomEvent(LATTICE_EVENT.callout, {
+          detail: {
+            variant: "warning",
+            title: { key: "billing.trial-ending-title", payload: {}, replacements: {} },
+            message: { key: "billing.trial-ending", payload: {}, replacements: {} },
+          },
+        }),
+      );
+    });
+
+    expect(screen.getByText("billing.trial-ending-title")).toBeInTheDocument();
+    expect(screen.getByText("billing.trial-ending")).toBeInTheDocument();
+  });
+
   it("renders a link action inside the callout", () => {
     render(
       <Provider toaster={false}>

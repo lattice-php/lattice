@@ -170,6 +170,24 @@ Effects::flash(
 The flashed effects are stored in the `latticeEffects` session bag, drained on the next request, and
 run through the normal client-side effect pipeline in order.
 
+### Deferred translation with `rt()`
+
+Toast and callout messages (and callout titles) also accept `rt()` — a
+[`Translatable`](/core/i18n/) that carries an i18next key plus replacements instead of a finished
+string. The client resolves it in the viewer's locale at display time. Reach for it when the code
+producing the effect can't know that locale — a queued listener flashing a callout, or a
+[realtime toast](/core/realtime/) broadcast to many subscribers:
+
+```php
+Effects::flash(
+    Callout::make(rt('billing:trial-ending.body')->with(['days' => 3]), Variant::Warning)
+        ->title(rt('billing:trial-ending.title'))
+);
+```
+
+Effects built inside a normal request already run in the user's locale, so plain `__()` strings
+remain the default there.
+
 ## How effects reach the client
 
 The result serializes to `{ ok, data, effects }`. Each effect is a `{ type, props }` envelope — the

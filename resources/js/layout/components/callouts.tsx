@@ -6,6 +6,7 @@ import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { onCallout } from "@lattice-php/lattice/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
+import { resolveText } from "@lattice-php/lattice/i18n/translatable";
 import { variantStyles } from "@lattice-php/lattice/toast";
 
 type CalloutItem = Callout & { id: number };
@@ -47,9 +48,9 @@ const Callouts: RendererComponent<"callouts"> = () => {
           {variantStyles[callout.variant].icon}
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             {callout.title ? (
-              <p className="text-sm font-medium text-lt-fg">{callout.title}</p>
+              <p className="text-sm font-medium text-lt-fg">{resolveText(callout.title, t)}</p>
             ) : null}
-            <p className="text-sm text-lt-fg">{callout.message}</p>
+            <p className="text-sm text-lt-fg">{resolveText(callout.message, t)}</p>
             {callout.action ? (
               <div className="flex flex-wrap gap-2">
                 <RenderNode node={callout.action} />

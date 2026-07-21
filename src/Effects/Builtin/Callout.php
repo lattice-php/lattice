@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Effects\Builtin;
 
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
@@ -20,18 +21,18 @@ final class Callout extends Effect
 {
     private function __construct(
         public Variant $variant,
-        public string $message,
-        public ?string $title = null,
+        public string|Translatable $message,
+        public string|Translatable|null $title = null,
         public bool $dismissible = true,
         public ?Component $action = null,
     ) {}
 
-    public static function make(string $message, Variant $variant = Variant::Info): self
+    public static function make(string|Translatable $message, Variant $variant = Variant::Info): self
     {
         return new self($variant, $message);
     }
 
-    public function title(string $title): self
+    public function title(string|Translatable $title): self
     {
         $this->title = $title;
 
