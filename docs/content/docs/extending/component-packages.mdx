@@ -113,8 +113,10 @@ Signature::make('signature')->label('Sign the contract');
 ```
 
 <Info>
-  Run `php artisan lattice:typescript` after installing a package to refresh the `ComponentProps`
-  augmentation, so `node.props` is typed for its components.
+  The `lattice()` Vite plugin runs `php artisan lattice:typescript` for you when the dev server
+  starts, so the `ComponentProps` augmentation picks up a newly installed package automatically.
+  Run it by hand (`php artisan lattice:typescript`) for CI and editor tooling, which don't have a
+  dev server refreshing types in the background.
 </Info>
 
 <Warning title="Requires the Vite plugin">
@@ -139,7 +141,10 @@ an installed dependency. Both discovery sides account for this: PHP discovery al
 package's own `composer.json` for `extra.lattice.discover`, and the Vite plugin also reads it for
 `extra.lattice.plugin`. The same `composer.json` from [What a package ships](#what-a-package-ships)
 is enough — no pushing config into the workbench app, and no difference between how the package
-discovers itself and how a consumer discovers it once installed.
+discovers itself and how a consumer discovers it once installed. This isn't specific to a
+testbench workbench, either — any composer ROOT (including a real app) can declare
+`extra.lattice.discover`/`plugin` directly in its own `composer.json`, and it is picked up the same
+way.
 
 ## Styling
 

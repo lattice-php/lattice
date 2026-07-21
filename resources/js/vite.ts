@@ -1,9 +1,10 @@
-import { readFileSync } from "node:fs";
+import { spawn } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { svgSprite } from "@lattice-php/vite-svg-sprite";
 import type { IconTypesOptions, SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
 import { searchForWorkspaceRoot } from "vite";
-import type { Plugin, PluginOption, UserConfig } from "vite";
+import type { Logger, Plugin, PluginOption, UserConfig } from "vite";
 
 type InlineDependency = string | RegExp;
 
@@ -27,6 +28,8 @@ export type LatticeViteOptions = {
   icons?: boolean | LatticeViteIconsOptions;
   root?: string;
   source?: boolean;
+  /** Refresh generated TypeScript types via the dev server. Defaults to `true`. */
+  typescript?: boolean;
 };
 
 type Roots = {
@@ -40,6 +43,7 @@ export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
     corePlugin(options),
     optionalPeersPlugin(),
     componentPackagesPlugin(discoverComponentPackages(appRoot)),
+    typescriptPlugin(options),
   ];
   const iconOptions = resolveIconOptions(options);
 
@@ -272,6 +276,74 @@ function optionalPeersPlugin(): Plugin {
       return OPTIONAL_PEER_STUBS[id.slice(OPTIONAL_PEER_STUB_PREFIX.length)] ?? null;
     },
   };
+}
+
+/**
+ * Refreshes `node.props` typings from the app's own `php artisan
+ * lattice:typescript` whenever the dev server starts — installing or updating
+ * a component package would otherwise leave its generated types stale until
+ * someone remembers to run the command by hand. Dev-server only: a production
+ * build machine may not have PHP installed, and the generated file is a dev
+ * ergonomics artifact, not a build input.
+ *
+ * `refresh` is a seam for tests (defaults to the real `refreshTypeScriptTypes`)
+ * — this file is itself imported by `vite.config.ts` to build the workbench's
+ * own plugin list, which pins an unmocked module instance in Vitest's SSR
+ * cache, so mocking `node:child_process`/`node:fs` here would not reliably
+ * reach this closure. Exported so tests can inject a fake directly.
+ */
+export function typescriptPlugin(
+  options: LatticeViteOptions,
+  refresh: typeof refreshTypeScriptTypes = refreshTypeScriptTypes,
+): Plugin {
+  return {
+    name: "lattice:typescript",
+    apply: "serve",
+    configureServer(server) {
+      if (options.typescript === false) {
+        return;
+      }
+
+      const { appRoot } = resolveRoots(options);
+
+      refresh(appRoot, server.config.logger);
+    },
+  };
+}
+
+/**
+ * Best-effort: skips silently when the project has no `artisan` (e.g. a
+ * plain JS workspace, or a package's own workbench that isn't Laravel-shaped),
+ * logs one short line on success, and only warns — never throws — on failure,
+ * so a broken `php` install can't crash the dev server. `spawnProcess`/
+ * `fileExists` are seams for tests, defaulting to the real Node APIs.
+ */
+export function refreshTypeScriptTypes(
+  appRoot: string,
+  logger: Pick<Logger, "info" | "warn">,
+  spawnProcess: typeof spawn = spawn,
+  fileExists: typeof existsSync = existsSync,
+): void {
+  if (!fileExists(path.join(appRoot, "artisan"))) {
+    return;
+  }
+
+  const child = spawnProcess("php", ["artisan", "lattice:typescript"], {
+    cwd: appRoot,
+    stdio: "ignore",
+  });
+
+  child.on("error", (error) => {
+    logger.warn(`[lattice] could not refresh TypeScript types: ${error.message}`);
+  });
+
+  child.on("exit", (code) => {
+    if (code === 0) {
+      logger.info("[lattice] refreshed TypeScript types");
+    } else {
+      logger.warn(`[lattice] php artisan lattice:typescript exited with code ${code}`);
+    }
+  });
 }
 
 export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOptions | null {
