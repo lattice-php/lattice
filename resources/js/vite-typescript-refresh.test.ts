@@ -36,6 +36,7 @@ describe("refreshTypeScriptTypes", () => {
     });
 
     child.emit("exit", 0);
+    child.emit("close", 0);
 
     expect(logger.info).toHaveBeenCalledWith("[lattice] refreshed TypeScript types");
     expect(logger.warn).not.toHaveBeenCalled();
@@ -67,7 +68,18 @@ describe("refreshTypeScriptTypes", () => {
     );
   });
 
-  it("warns with the command's stderr when it exits with a non-zero code", () => {
+  it("does not crash when the piped stderr stream itself errors (e.g. EPIPE)", () => {
+    const child = fakeChild();
+    const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
+    const fileExists = vi.fn().mockReturnValue(true);
+    const logger = fakeLogger();
+
+    refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
+
+    expect(() => child.stderr.emit("error", new Error("EPIPE"))).not.toThrow();
+  });
+
+  it("warns with the command's stderr once the stream has closed", () => {
     const child = fakeChild();
     const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
     const fileExists = vi.fn().mockReturnValue(true);
@@ -76,11 +88,37 @@ describe("refreshTypeScriptTypes", () => {
     refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
     child.stderr.emit("data", Buffer.from('Class "App\\Models\\Widget" not found\n'));
     child.emit("exit", 1);
+    child.emit("close", 1);
 
     expect(logger.warn).toHaveBeenCalledWith(
       '[lattice] php artisan lattice:typescript exited with code 1: Class "App\\Models\\Widget" not found',
     );
     expect(logger.info).not.toHaveBeenCalled();
+  });
+
+  it("waits for close before warning, since exit can fire before stderr finishes flushing", () => {
+    // Regression test for the event-ordering race: Node documents that "exit"
+    // may fire before a child's stdio streams have flushed their final "data"
+    // events, while "close" is guaranteed to fire only after they have. Here
+    // the stderr chunk arrives strictly between "exit" and "close" — a
+    // premature (exit-based) read would warn without ever having seen it.
+    const child = fakeChild();
+    const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
+    const fileExists = vi.fn().mockReturnValue(true);
+    const logger = fakeLogger();
+
+    refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
+    child.emit("exit", 1);
+
+    expect(logger.warn).not.toHaveBeenCalled();
+
+    child.stderr.emit("data", Buffer.from("Class-not-found error from a slow flush"));
+    child.emit("close", 1);
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "[lattice] php artisan lattice:typescript exited with code 1: Class-not-found error from a slow flush",
+    );
+    expect(logger.warn).toHaveBeenCalledTimes(1);
   });
 
   it("warns with just the exit code when the command produced no stderr", () => {
@@ -91,6 +129,7 @@ describe("refreshTypeScriptTypes", () => {
 
     refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
     child.emit("exit", 1);
+    child.emit("close", 1);
 
     expect(logger.warn).toHaveBeenCalledWith(
       "[lattice] php artisan lattice:typescript exited with code 1",
@@ -106,10 +145,29 @@ describe("refreshTypeScriptTypes", () => {
     refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
     child.stderr.emit("data", Buffer.from("x".repeat(2000)));
     child.emit("exit", 1);
+    child.emit("close", 1);
 
     const [message] = (logger.warn as ReturnType<typeof vi.fn>).mock.calls[0] as [string];
 
     expect(message.length).toBeLessThan(600);
     expect(logger.warn).toHaveBeenCalledTimes(1);
+  });
+
+  it("warns only once when both the spawn error and close fire for the same failure", () => {
+    const child = fakeChild();
+    const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
+    const fileExists = vi.fn().mockReturnValue(true);
+    const logger = fakeLogger();
+
+    refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
+    child.emit("error", new Error("spawn php ENOENT"));
+    // Node still emits "close" (with a null code) alongside "error" when the
+    // process itself never spawned — this must not produce a second warning.
+    child.emit("close", null);
+
+    expect(logger.warn).toHaveBeenCalledTimes(1);
+    expect(logger.warn).toHaveBeenCalledWith(
+      "[lattice] could not refresh TypeScript types: spawn php ENOENT",
+    );
   });
 });

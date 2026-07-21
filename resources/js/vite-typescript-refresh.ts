@@ -38,6 +38,16 @@ export function refreshTypeScriptTypes(
   });
 
   let stderr = "";
+  let warned = false;
+
+  const warnOnce = (message: string): void => {
+    if (warned) {
+      return;
+    }
+
+    warned = true;
+    logger.warn(message);
+  };
 
   child.stderr?.on("data", (chunk: Buffer) => {
     if (stderr.length < MAX_STDERR_CHARS) {
@@ -45,19 +55,34 @@ export function refreshTypeScriptTypes(
     }
   });
 
+  // A piped stream can itself emit "error" (e.g. EPIPE) — without a listener
+  // here, Node treats it as unhandled and can crash the dev server, a failure
+  // surface that didn't exist while stderr was `stdio: "ignore"`.
+  child.stderr?.on("error", () => {});
+
   child.on("error", (error) => {
-    logger.warn(`[lattice] could not refresh TypeScript types: ${error.message}`);
+    warnOnce(`[lattice] could not refresh TypeScript types: ${error.message}`);
   });
 
   child.on("exit", (code) => {
     if (code === 0) {
       logger.info("[lattice] refreshed TypeScript types");
+    }
+  });
+
+  // "exit" can fire before the child's final stderr "data" events arrive —
+  // "close" is the event Node guarantees only fires once all stdio has
+  // finished flowing, so the buffered stderr is complete by the time we read
+  // it here. `warnOnce` keeps this and the "error" handler above from ever
+  // both firing a warning for the same failure.
+  child.on("close", (code) => {
+    if (code === 0) {
       return;
     }
 
     const detail = stderr.trim().slice(0, MAX_STDERR_CHARS);
 
-    logger.warn(
+    warnOnce(
       `[lattice] php artisan lattice:typescript exited with code ${code}${detail ? `: ${detail}` : ""}`,
     );
   });
