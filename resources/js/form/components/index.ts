@@ -16,3 +16,4 @@ export { TextareaComponent } from "./fields/textarea";
 export { TextInputComponent } from "./fields/text-input";
 export { TimeInputComponent } from "./fields/time-input";
 export { ToggleComponent } from "./fields/toggle";
+export { WizardComponent, WizardStepComponent } from "./wizard";
