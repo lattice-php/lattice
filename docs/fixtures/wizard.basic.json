@@ -1,0 +1,70 @@
+[
+    {
+        "props": {
+            "orientation": "vertical"
+        },
+        "schema": [
+            {
+                "props": {
+                    "description": "Who is this order for?",
+                    "label": "Customer",
+                    "name": "customer"
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Confirm the customer before moving on."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "wizard-step"
+            },
+            {
+                "props": {
+                    "description": "Where should we send it?",
+                    "label": "Shipping Address",
+                    "name": "shipping-address"
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Add the shipping details."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "wizard-step"
+            },
+            {
+                "props": {
+                    "description": "Check everything before you finish.",
+                    "label": "Review",
+                    "name": "review"
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Everything looks good — finish to place the order."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "wizard-step"
+            }
+        ],
+        "type": "wizard"
+    }
+]
