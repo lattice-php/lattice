@@ -89,10 +89,6 @@ final class NotificationController
 
     private function text(mixed $value): string|Translatable|null
     {
-        if (is_array($value) && is_string($value['key'] ?? null)) {
-            return Translatable::fromWire($value);
-        }
-
-        return is_string($value) ? $value : null;
+        return Translatable::tryFromWire($value) ?? (is_string($value) ? $value : null);
     }
 }

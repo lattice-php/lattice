@@ -99,8 +99,8 @@ final class Notification
     {
         return [
             'format' => 'lattice',
-            'title' => $this->title instanceof Translatable ? $this->title->jsonSerialize() : $this->title,
-            'body' => $this->body instanceof Translatable ? $this->body->jsonSerialize() : $this->body,
+            'title' => Wire::toWire($this->title),
+            'body' => Wire::toWire($this->body),
             'icon' => $this->icon,
             'variant' => $this->variant->value,
             'href' => $this->href,

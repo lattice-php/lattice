@@ -2,7 +2,7 @@ import { Link } from "@inertiajs/react";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
-import { isTranslatable, resolveTranslatable } from "@lattice-php/lattice/i18n/translatable";
+import { resolveText } from "@lattice-php/lattice/i18n/translatable";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
@@ -24,12 +24,8 @@ export function NotificationItemRow({
 }) {
   const { t } = useT("lattice");
 
-  const title = isTranslatable(notification.title)
-    ? resolveTranslatable(notification.title, {}, t)
-    : notification.title;
-  const body = isTranslatable(notification.body)
-    ? resolveTranslatable(notification.body, {}, t)
-    : notification.body;
+  const title = resolveText(notification.title, t);
+  const body = resolveText(notification.body, t);
 
   const content = (
     <>
