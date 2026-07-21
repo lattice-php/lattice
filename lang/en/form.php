@@ -51,4 +51,10 @@ return [
     ],
     'submit' => 'Submit',
     'validation-summary' => 'Fix these fields to continue:',
+    'wizard' => [
+        'back' => 'Back',
+        'finish' => 'Finish',
+        'next' => 'Next',
+        'steps' => 'Steps',
+    ],
 ];
