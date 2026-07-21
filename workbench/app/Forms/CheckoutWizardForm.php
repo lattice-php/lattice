@@ -10,8 +10,10 @@ use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\Components\Wizard;
 use Lattice\Lattice\Forms\Components\WizardStep;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Http\LatticeResponse;
+use Lattice\Lattice\Ui\Components\Grid;
 use Lattice\Lattice\Ui\Components\Text;
 
 #[AsForm('workbench.checkout-wizard')]
@@ -41,6 +43,27 @@ class CheckoutWizardForm extends FormDefinition
                     ->description(__('workbench.pages.wizard.steps.review.description'))
                     ->schema([
                         Text::make(__('workbench.pages.wizard.steps.review.body')),
+                        Grid::make()->columns(2)->schema([
+                            TextInput::make('review_name', __('workbench.pages.wizard.fields.name'))
+                                ->readOnly()
+                                ->value(fn (FormData $data): string => $data->string('name')),
+                            TextInput::make('review_email', __('workbench.pages.wizard.fields.email'))
+                                ->readOnly()
+                                ->value(fn (FormData $data): string => $data->string('email')),
+                        ]),
+                        TextInput::make('review_items', __('workbench.pages.wizard.fields.items'))
+                            ->readOnly()
+                            ->value(function (FormData $data): string {
+                                $lines = [];
+
+                                foreach ((array) $data->get('items', []) as $row) {
+                                    if (is_array($row) && ($row['sku'] ?? '') !== '') {
+                                        $lines[] = trim(($row['qty'] ?? '1').' × '.$row['sku']);
+                                    }
+                                }
+
+                                return implode(', ', $lines);
+                            }),
                     ]),
             ]),
         ]);

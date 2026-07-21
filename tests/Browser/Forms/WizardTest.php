@@ -44,6 +44,12 @@ it('walks all steps and submits the accumulated state on finish', function (): v
 
     assertSeeEventually($page, 'Review your input');
 
+    retryUntil(function () use ($page): void {
+        $page->assertValue('review_name', 'Taylor')
+            ->assertValue('review_email', 'taylor@example.com')
+            ->assertValue('review_items', '2 × SKU-1');
+    });
+
     $page->click('@wizard-finish');
 
     assertSeeEventually($page, 'Order placed.');

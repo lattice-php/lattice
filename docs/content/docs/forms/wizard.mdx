@@ -103,6 +103,28 @@ badges every errored step in the rail, so the user always lands where the proble
   the page restarts the wizard from its first step.
 </Warning>
 
+## Review steps
+
+A closing step summarizes what the user entered with computed, read-only fields: a field whose
+`value()` is a closure recomputes on the server whenever the form changes, so the summary follows
+the earlier steps' input automatically.
+
+```php
+WizardStep::make('review')->schema([
+    TextInput::make('review_name', 'Name')
+        ->readOnly()
+        ->value(fn (FormData $data): string => $data->string('name')),
+    TextInput::make('review_items', 'Items')
+        ->readOnly()
+        ->value(fn (FormData $data): string => collect($data->get('items', []))
+            ->map(fn (array $row): string => $row['qty'].' × '.$row['sku'])
+            ->join(', ')),
+]),
+```
+
+A step whose fields are all computed still advances through Next without validating anything —
+computed fields carry no rules of their own.
+
 ## Conditional fields and steps
 
 [`visibleWhen`, `requiredWhen`, `readOnlyWhen`, and `disabledWhen`](/forms/conditional-fields/) work
