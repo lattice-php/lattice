@@ -1,5 +1,3 @@
-import type { ChildProcess } from "node:child_process";
-import { EventEmitter } from "node:events";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { searchForWorkspaceRoot } from "vite";
@@ -12,10 +10,9 @@ import {
   discoverComponentPackages,
   lattice,
   latticeConfig,
-  refreshTypeScriptTypes,
   resolveIconOptions,
-  typescriptPlugin,
 } from "./vite";
+import * as typescriptRefresh from "./vite-typescript-refresh";
 
 type PackageJson = {
   exports: Record<string, unknown>;
@@ -26,10 +23,6 @@ type FakeServer = { config: { logger: FakeLogger } };
 
 function fakeLogger(): FakeLogger {
   return { info: vi.fn(), warn: vi.fn() };
-}
-
-function fakeChild(): EventEmitter {
-  return new EventEmitter();
 }
 
 type ResolveIdFn = (
@@ -46,6 +39,18 @@ function optionalPeersPlugin(): Plugin {
 
   if (!plugin) {
     throw new Error("optional-peers plugin not registered");
+  }
+
+  return plugin;
+}
+
+function typescriptPlugin(options: Parameters<typeof lattice>[0] = {}): Plugin {
+  const plugin = (lattice({ icons: false, ...options }) as Plugin[]).find(
+    (candidate) => candidate?.name === "lattice:typescript",
+  );
+
+  if (!plugin) {
+    throw new Error("typescript plugin not registered");
   }
 
   return plugin;
@@ -249,88 +254,34 @@ describe("lattice Vite helper", () => {
   it("refreshes TypeScript types on configureServer with default options", () => {
     const appRoot = path.resolve("/tmp/lattice-app");
     const logger = fakeLogger();
-    const refresh = vi.fn();
-    const configureServer = typescriptPlugin({ appRoot }, refresh).configureServer as unknown as (
+    const refresh = vi
+      .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
+      .mockImplementation(() => {});
+    const configureServer = typescriptPlugin({ appRoot }).configureServer as unknown as (
       server: FakeServer,
     ) => void;
 
     configureServer({ config: { logger } });
 
     expect(refresh).toHaveBeenCalledWith(appRoot, logger);
+
+    refresh.mockRestore();
   });
 
   it("does not refresh when the typescript option is false", () => {
-    const refresh = vi.fn();
-    const configureServer = typescriptPlugin(
-      { appRoot: path.resolve("/tmp/lattice-app"), typescript: false },
-      refresh,
-    ).configureServer as unknown as (server: FakeServer) => void;
+    const refresh = vi
+      .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
+      .mockImplementation(() => {});
+    const configureServer = typescriptPlugin({
+      appRoot: path.resolve("/tmp/lattice-app"),
+      typescript: false,
+    }).configureServer as unknown as (server: FakeServer) => void;
 
     configureServer({ config: { logger: fakeLogger() } });
 
     expect(refresh).not.toHaveBeenCalled();
-  });
 
-  it("spawns php artisan lattice:typescript when the project has an artisan file", () => {
-    const appRoot = path.resolve("/tmp/lattice-app");
-    const child = fakeChild();
-    const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
-    const fileExists = vi.fn().mockReturnValue(true);
-    const logger = fakeLogger();
-
-    refreshTypeScriptTypes(appRoot, logger, spawnProcess, fileExists);
-
-    expect(fileExists).toHaveBeenCalledWith(path.join(appRoot, "artisan"));
-    expect(spawnProcess).toHaveBeenCalledWith("php", ["artisan", "lattice:typescript"], {
-      cwd: appRoot,
-      stdio: "ignore",
-    });
-
-    child.emit("exit", 0);
-
-    expect(logger.info).toHaveBeenCalledWith("[lattice] refreshed TypeScript types");
-    expect(logger.warn).not.toHaveBeenCalled();
-  });
-
-  it("skips silently when the project has no artisan file", () => {
-    const spawnProcess = vi.fn();
-    const fileExists = vi.fn().mockReturnValue(false);
-    const logger = fakeLogger();
-
-    refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
-
-    expect(spawnProcess).not.toHaveBeenCalled();
-    expect(logger.warn).not.toHaveBeenCalled();
-    expect(logger.info).not.toHaveBeenCalled();
-  });
-
-  it("warns, without crashing, when the spawned process itself fails", () => {
-    const child = fakeChild();
-    const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
-    const fileExists = vi.fn().mockReturnValue(true);
-    const logger = fakeLogger();
-
-    refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
-
-    expect(() => child.emit("error", new Error("spawn php ENOENT"))).not.toThrow();
-    expect(logger.warn).toHaveBeenCalledWith(
-      "[lattice] could not refresh TypeScript types: spawn php ENOENT",
-    );
-  });
-
-  it("warns when the command exits with a non-zero code", () => {
-    const child = fakeChild();
-    const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
-    const fileExists = vi.fn().mockReturnValue(true);
-    const logger = fakeLogger();
-
-    refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
-    child.emit("exit", 1);
-
-    expect(logger.warn).toHaveBeenCalledWith(
-      "[lattice] php artisan lattice:typescript exited with code 1",
-    );
-    expect(logger.info).not.toHaveBeenCalled();
+    refresh.mockRestore();
   });
 
   it("merges a partial dts override over the default file/augment targets", () => {
