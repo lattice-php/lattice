@@ -105,6 +105,7 @@ export const WizardComponent: RendererComponent<"wizard"> = ({ children, node })
                     isActive ? "bg-lt-muted font-medium text-lt-fg" : "text-lt-muted-fg",
                     !visited.has(index) && "cursor-not-allowed opacity-60",
                   )}
+                  data-error={hasError || undefined}
                   data-test={`wizard-rail-${step.name}`}
                   disabled={!visited.has(index)}
                   id={`wizard-step-${step.name}-trigger`}

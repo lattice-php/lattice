@@ -35,8 +35,8 @@ const formStub = (overrides: Partial<Parameters<typeof FormProvider>[0]["value"]
   ...overrides,
 });
 
-function renderWizard(steps: Node<"wizard-step">[], stub = formStub()) {
-  return render(
+function wizardTree(steps: Node<"wizard-step">[], stub: ReturnType<typeof formStub>) {
+  return (
     <FormProvider value={stub}>
       <FormValuesProvider initial={{}}>
         <WizardComponent node={wizardNode(steps)}>
@@ -49,8 +49,12 @@ function renderWizard(steps: Node<"wizard-step">[], stub = formStub()) {
           </>
         </WizardComponent>
       </FormValuesProvider>
-    </FormProvider>,
+    </FormProvider>
   );
+}
+
+function renderWizard(steps: Node<"wizard-step">[], stub = formStub()) {
+  return render(wizardTree(steps, stub));
 }
 
 describe("WizardComponent", () => {
@@ -99,5 +103,26 @@ describe("WizardComponent", () => {
 
     expect(screen.getByTestId("wizard-finish")).toBeInTheDocument();
     expect(screen.queryByTestId("wizard-next")).not.toBeInTheDocument();
+  });
+
+  it("jumps back to the first errored step and badges it after a failed submit", () => {
+    const validateFields = vi.fn((_fields, options) => options?.onSuccess?.());
+    const steps = [fieldStep, emptyStep];
+    const { rerender } = renderWizard(steps, formStub({ validateFields }));
+
+    fireEvent.click(screen.getByTestId("wizard-next"));
+    expect(screen.getByTestId("content-review")).toBeInTheDocument();
+
+    rerender(wizardTree(steps, formStub({ validateFields, processing: true })));
+    rerender(
+      wizardTree(
+        steps,
+        formStub({ validateFields, processing: false, errors: { name: "Required" } }),
+      ),
+    );
+
+    expect(screen.getByTestId("content-customer").closest("section")).not.toHaveAttribute("hidden");
+    expect(screen.getByTestId("content-review").closest("section")).toHaveAttribute("hidden");
+    expect(screen.getByTestId("wizard-rail-customer")).toHaveAttribute("data-error");
   });
 });
