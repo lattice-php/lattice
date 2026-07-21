@@ -108,16 +108,14 @@ badges every errored step in the rail, so the user always lands where the proble
 [`visibleWhen`, `requiredWhen`, `readOnlyWhen`, and `disabledWhen`](/forms/conditional-fields/) work
 the same inside a wizard step as anywhere else — they react to other fields in the form.
 
-<Info>
-  A step carries the same render gate as every other component. `WizardStep::make('two')->hidden()`
-  drops the step from the serialized schema entirely, and `->visible()` is the inverse — both
-  resolved once when the form renders, including the closure form. `visibleWhen` and its siblings
-  stay scoped to fields; reach for `->hidden()` / `->visible()` when the step itself needs to come
-  and go.
+<Info title="Gate fields, not steps">
+  A field hidden by `visibleWhen` or `->hidden()` is skipped by server-side validation too, so
+  conditional behavior inside a wizard stays in sync on both sides when the conditions live on the
+  fields themselves.
 </Info>
 
 ## Common options
 
-`Wizard` and `WizardStep` share label, description, and schema with the rest of the component system.
-For the field types that go inside a step's schema, see [Fields](/forms/fields/overview/); for the
-rules that Next and Finish validate, see [Validation](/forms/validation/).
+`WizardStep` carries its own `name`, `label`, and `description`; `Wizard` carries `orientation`. For
+the field types that go inside a step's schema, see [Fields](/forms/fields/overview/); for the rules
+that Next and Finish validate, see [Validation](/forms/validation/).
