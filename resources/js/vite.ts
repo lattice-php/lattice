@@ -65,6 +65,11 @@ type InstalledPackage = {
   extra?: { lattice?: { plugin?: string } };
 };
 
+type RootPackageJson = {
+  name?: string;
+  extra?: { lattice?: { plugin?: string } };
+};
+
 /**
  * Resolve every Composer package that declares `extra.lattice.plugin` into an
  * absolute plugin-entry path. `installPathsRelativeTo` is `vendor/composer` (the
@@ -89,19 +94,52 @@ export function collectComponentPackages(
   });
 }
 
-/** Read `<appRoot>/vendor/composer/installed.json` and collect component packages. */
-export function discoverComponentPackages(appRoot: string): LatticeComponentPackage[] {
-  const composerDir = path.resolve(appRoot, "vendor/composer");
+/**
+ * Resolve the composer ROOT project's own `extra.lattice.plugin` — Composer
+ * never lists the root package in `installed.json`, so a component package
+ * declaring the plugin entry in its own composer.json would otherwise be
+ * invisible to its own dev server (e.g. inside a testbench workbench, where
+ * the package itself is the app root).
+ */
+export function collectRootComponentPackage(
+  composerJson: RootPackageJson,
+  appRoot: string,
+): LatticeComponentPackage[] {
+  const entry = composerJson.extra?.lattice?.plugin;
 
-  let raw: string;
-
-  try {
-    raw = readFileSync(path.join(composerDir, "installed.json"), "utf8");
-  } catch {
+  if (typeof entry !== "string" || typeof composerJson.name !== "string") {
     return [];
   }
 
-  return collectComponentPackages(JSON.parse(raw), composerDir);
+  return [{ name: composerJson.name, dir: appRoot, plugin: path.resolve(appRoot, entry) }];
+}
+
+/**
+ * Read `<appRoot>/vendor/composer/installed.json` and `<appRoot>/composer.json`
+ * and collect every component package they contribute.
+ */
+export function discoverComponentPackages(appRoot: string): LatticeComponentPackage[] {
+  const composerDir = path.resolve(appRoot, "vendor/composer");
+
+  let installed: LatticeComponentPackage[] = [];
+
+  try {
+    const raw = readFileSync(path.join(composerDir, "installed.json"), "utf8");
+    installed = collectComponentPackages(JSON.parse(raw), composerDir);
+  } catch {
+    installed = [];
+  }
+
+  let root: LatticeComponentPackage[] = [];
+
+  try {
+    const raw = readFileSync(path.join(appRoot, "composer.json"), "utf8");
+    root = collectRootComponentPackage(JSON.parse(raw), appRoot);
+  } catch {
+    root = [];
+  }
+
+  return [...installed, ...root];
 }
 
 const VIRTUAL_PLUGINS_ID = "virtual:lattice/plugins";

@@ -5,6 +5,7 @@ import type { Plugin } from "vite";
 import { describe, expect, it } from "vitest";
 import {
   collectComponentPackages,
+  collectRootComponentPackage,
   componentPackagesPlugin,
   discoverComponentPackages,
   lattice,
@@ -137,6 +138,49 @@ describe("lattice Vite helper", () => {
         name: "acme/signature",
         dir: path.resolve("/tmp/app/vendor/acme/signature"),
         plugin: path.resolve("/tmp/app/vendor/acme/signature/resources/js/plugin.ts"),
+      },
+    ]);
+  });
+
+  it("resolves the app root's own composer.json as a component package", () => {
+    const appRoot = path.resolve("/tmp/app");
+
+    expect(
+      collectRootComponentPackage(
+        { name: "acme/signature", extra: { lattice: { plugin: "resources/js/plugin.ts" } } },
+        appRoot,
+      ),
+    ).toEqual([
+      {
+        name: "acme/signature",
+        dir: appRoot,
+        plugin: path.resolve(appRoot, "resources/js/plugin.ts"),
+      },
+    ]);
+  });
+
+  it("ignores the app root's composer.json when it declares no plugin entry", () => {
+    const appRoot = path.resolve("/tmp/app");
+
+    expect(collectRootComponentPackage({ name: "acme/plain" }, appRoot)).toEqual([]);
+    expect(
+      collectRootComponentPackage(
+        { extra: { lattice: { plugin: "resources/js/plugin.ts" } } },
+        appRoot,
+      ),
+    ).toEqual([]);
+  });
+
+  it("discovers a component package that is its own composer ROOT project", () => {
+    // Mirrors a package's own testbench-driven test suite, where the package
+    // itself is the app root and never appears in vendor/composer/installed.json.
+    const appRoot = path.resolve("tests/Fixtures/PackageDiscovery/root-package");
+
+    expect(discoverComponentPackages(appRoot)).toEqual([
+      {
+        name: "acme/root-widget",
+        dir: appRoot,
+        plugin: path.resolve(appRoot, "resources/js/plugin.ts"),
       },
     ]);
   });

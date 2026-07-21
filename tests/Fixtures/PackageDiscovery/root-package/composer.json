@@ -1,0 +1,4 @@
+{
+    "name": "acme/root-widget",
+    "extra": { "lattice": { "discover": ["src"], "plugin": "resources/js/plugin.ts" } }
+}

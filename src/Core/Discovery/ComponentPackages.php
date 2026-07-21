@@ -13,6 +13,11 @@ use ReflectionClass;
  * to the `extra.lattice.plugin` the Vite plugin reads for the JS renderer. This
  * is what lets a plain `composer require` surface a package's components to
  * definition discovery and TypeScript generation without editing app config.
+ *
+ * Also reads the composer ROOT project's own `extra.lattice` (see
+ * `rootPackage()`), since `installed.json` never lists it — the mechanism a
+ * component package's own testbench-driven test suite relies on to discover
+ * its own `src/` declaratively.
  */
 final class ComponentPackages
 {
@@ -33,7 +38,9 @@ final class ComponentPackages
     /**
      * Every installed package that declares `extra.lattice`, with its discovery
      * roots resolved to absolute paths and its JS plugin entry (if any) — the
-     * data the `php artisan about` panel surfaces per package.
+     * data the `php artisan about` panel surfaces per package. Includes the
+     * composer ROOT project itself (see `rootPackage()`), since it never
+     * appears in `installed.json`.
      *
      * @return list<array{name: string, roots: list<string>, plugin: string|null}>
      */
@@ -41,9 +48,56 @@ final class ComponentPackages
     {
         $file = new ReflectionClass(InstalledVersions::class)->getFileName();
 
-        return is_string($file)
+        $installed = is_string($file)
             ? self::packagesFromInstalled(dirname($file).'/installed.json')
             : [];
+
+        return [...$installed, ...self::rootPackage()];
+    }
+
+    /**
+     * The composer ROOT project's own `extra.lattice`, read from its
+     * composer.json — Composer never lists the root package in
+     * `installed.json`, so without this a component package that declares
+     * `extra.lattice.discover` would be invisible to discovery inside its own
+     * testbench-driven test suite, where the package itself is the root.
+     *
+     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     */
+    public static function rootPackage(): array
+    {
+        $resolved = realpath(InstalledVersions::getRootPackage()['install_path']);
+
+        return $resolved !== false
+            ? self::packagesFromRootComposerJson($resolved.'/composer.json')
+            : [];
+    }
+
+    /**
+     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     */
+    public static function packagesFromRootComposerJson(string $composerJsonPath): array
+    {
+        if (! is_file($composerJsonPath)) {
+            return [];
+        }
+
+        $data = json_decode((string) file_get_contents($composerJsonPath), true);
+
+        if (! is_array($data)) {
+            return [];
+        }
+
+        $lattice = $data['extra']['lattice'] ?? null;
+        $name = $data['name'] ?? null;
+
+        if (! is_array($lattice) || ! is_string($name)) {
+            return [];
+        }
+
+        $package = self::resolvePackage($name, $lattice, dirname($composerJsonPath));
+
+        return $package !== null ? [$package] : [];
     }
 
     /**
@@ -74,39 +128,55 @@ final class ComponentPackages
                 continue;
             }
 
-            $discover = is_array($lattice['discover'] ?? null) ? $lattice['discover'] : [];
-            $plugin = is_string($lattice['plugin'] ?? null) ? $lattice['plugin'] : null;
-
-            if ($discover === [] && $plugin === null) {
-                continue;
-            }
-
             $installPath = is_string($package['install-path'] ?? null)
                 ? $package['install-path']
                 : '../'.$name;
-            $packageDir = $composerDir.'/'.$installPath;
-            $roots = [];
 
-            foreach ($discover as $relative) {
-                if (! is_string($relative)) {
-                    continue;
-                }
+            $resolvedPackage = self::resolvePackage($name, $lattice, $composerDir.'/'.$installPath);
 
-                $resolved = realpath($packageDir.'/'.$relative);
-
-                if ($resolved !== false) {
-                    $roots[$resolved] = $resolved;
-                }
+            if ($resolvedPackage !== null) {
+                $result[] = $resolvedPackage;
             }
-
-            $result[] = [
-                'name' => $name,
-                'roots' => array_values($roots),
-                'plugin' => $plugin !== null ? (realpath($packageDir.'/'.$plugin) ?: null) : null,
-            ];
         }
 
         return $result;
+    }
+
+    /**
+     * Resolve a package's `extra.lattice` entry to its absolute discovery roots
+     * and JS plugin path, or null when it declares neither.
+     *
+     * @param  array<string, mixed>  $lattice
+     * @return array{name: string, roots: list<string>, plugin: string|null}|null
+     */
+    private static function resolvePackage(string $name, array $lattice, string $packageDir): ?array
+    {
+        $discover = is_array($lattice['discover'] ?? null) ? $lattice['discover'] : [];
+        $plugin = is_string($lattice['plugin'] ?? null) ? $lattice['plugin'] : null;
+
+        if ($discover === [] && $plugin === null) {
+            return null;
+        }
+
+        $roots = [];
+
+        foreach ($discover as $relative) {
+            if (! is_string($relative)) {
+                continue;
+            }
+
+            $resolved = realpath($packageDir.'/'.$relative);
+
+            if ($resolved !== false) {
+                $roots[$resolved] = $resolved;
+            }
+        }
+
+        return [
+            'name' => $name,
+            'roots' => array_values($roots),
+            'plugin' => $plugin !== null ? (realpath($packageDir.'/'.$plugin) ?: null) : null,
+        ];
     }
 
     /**

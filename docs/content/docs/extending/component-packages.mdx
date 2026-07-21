@@ -131,6 +131,16 @@ roots and JS plugin each installed component package contributes, and whether th
 manifest is cached. Run it after `composer require`-ing a package to confirm it was picked up
 without inspecting `installed.json` by hand.
 
+## Testing your package
+
+A package's own test suite (a Testbench workbench, typically) never appears in
+`vendor/composer/installed.json` — Composer treats it as the ROOT project while its tests run, not
+an installed dependency. Both discovery sides account for this: PHP discovery also reads the
+package's own `composer.json` for `extra.lattice.discover`, and the Vite plugin also reads it for
+`extra.lattice.plugin`. The same `composer.json` from [What a package ships](#what-a-package-ships)
+is enough — no pushing config into the workbench app, and no difference between how the package
+discovers itself and how a consumer discovers it once installed.
+
 ## Styling
 
 <Warning title="Style with Lattice tokens">
