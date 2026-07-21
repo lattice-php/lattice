@@ -221,7 +221,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->filter(fn (array $package): bool => $package['roots'] !== [])
             ->map(fn (array $package): array => [
                 'name' => $package['name'],
-                'roots' => array_map(self::relativeToBase(...), $package['roots']),
+                'roots' => array_map($this->relativeToBase(...), $package['roots']),
             ])
             ->values()
             ->all();
@@ -230,14 +230,14 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->filter(fn (array $package): bool => $package['plugin'] !== null)
             ->map(fn (array $package): array => [
                 'name' => $package['name'],
-                'plugin' => self::relativeToBase($package['plugin']),
+                'plugin' => $this->relativeToBase($package['plugin']),
             ])
             ->values()
             ->all();
 
         return [
             'Discover Paths' => AboutCommand::format(
-                array_map(self::relativeToBase(...), $configured),
+                array_map($this->relativeToBase(...), $configured),
                 console: fn (array $paths): string => $paths === [] ? '<fg=yellow;options=bold>none</>' : implode(', ', $paths),
                 json: fn (array $paths): array => $paths,
             ),
@@ -258,14 +258,14 @@ final class LatticeServiceProvider extends PackageServiceProvider
             'Manifest Cache' => AboutCommand::format(
                 $manifest->isCached(),
                 console: fn (bool $cached): string => $cached
-                    ? '<fg=green;options=bold>CACHED</> '.self::relativeToBase($manifest->path())
+                    ? '<fg=green;options=bold>CACHED</> '.$this->relativeToBase($manifest->path())
                     : '<fg=yellow;options=bold>NOT CACHED</>',
                 json: fn (bool $cached): array => ['cached' => $cached, 'path' => $manifest->path()],
             ),
         ];
     }
 
-    private static function relativeToBase(string $path): string
+    private function relativeToBase(string $path): string
     {
         $base = base_path().DIRECTORY_SEPARATOR;
 
