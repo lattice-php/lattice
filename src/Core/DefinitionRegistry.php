@@ -50,6 +50,9 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
     }
 
     /**
+     * Imperative registration, layered over discovered definitions. Package
+     * authors should prefer composer `extra.lattice.discover` over calling this.
+     *
      * @param  class-string<TDefinition>|array<int, class-string<TDefinition>>  $definitions
      */
     public function register(string|array $definitions): void

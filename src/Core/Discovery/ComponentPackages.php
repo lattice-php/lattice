@@ -19,17 +19,37 @@ final class ComponentPackages
     /** @return list<string> */
     public static function discoverRoots(): array
     {
-        $file = new ReflectionClass(InstalledVersions::class)->getFileName();
-
-        return is_string($file)
-            ? self::fromInstalled(dirname($file).'/installed.json')
-            : [];
+        return self::rootsOf(self::packages());
     }
 
     /**
      * @return list<string>
      */
     public static function fromInstalled(string $installedJsonPath): array
+    {
+        return self::rootsOf(self::packagesFromInstalled($installedJsonPath));
+    }
+
+    /**
+     * Every installed package that declares `extra.lattice`, with its discovery
+     * roots resolved to absolute paths and its JS plugin entry (if any) — the
+     * data the `php artisan about` panel surfaces per package.
+     *
+     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     */
+    public static function packages(): array
+    {
+        $file = new ReflectionClass(InstalledVersions::class)->getFileName();
+
+        return is_string($file)
+            ? self::packagesFromInstalled(dirname($file).'/installed.json')
+            : [];
+    }
+
+    /**
+     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     */
+    public static function packagesFromInstalled(string $installedJsonPath): array
     {
         if (! is_file($installedJsonPath)) {
             return [];
@@ -44,13 +64,20 @@ final class ComponentPackages
         /** @var list<array<string, mixed>> $packages */
         $packages = is_array($data['packages'] ?? null) ? $data['packages'] : [];
         $composerDir = dirname($installedJsonPath);
-        $roots = [];
+        $result = [];
 
         foreach ($packages as $package) {
-            $discover = $package['extra']['lattice']['discover'] ?? null;
+            $lattice = $package['extra']['lattice'] ?? null;
             $name = $package['name'] ?? null;
 
-            if (! is_array($discover) || ! is_string($name)) {
+            if (! is_array($lattice) || ! is_string($name)) {
+                continue;
+            }
+
+            $discover = is_array($lattice['discover'] ?? null) ? $lattice['discover'] : [];
+            $plugin = is_string($lattice['plugin'] ?? null) ? $lattice['plugin'] : null;
+
+            if ($discover === [] && $plugin === null) {
                 continue;
             }
 
@@ -58,6 +85,7 @@ final class ComponentPackages
                 ? $package['install-path']
                 : '../'.$name;
             $packageDir = $composerDir.'/'.$installPath;
+            $roots = [];
 
             foreach ($discover as $relative) {
                 if (! is_string($relative)) {
@@ -69,6 +97,29 @@ final class ComponentPackages
                 if ($resolved !== false) {
                     $roots[$resolved] = $resolved;
                 }
+            }
+
+            $result[] = [
+                'name' => $name,
+                'roots' => array_values($roots),
+                'plugin' => $plugin !== null ? (realpath($packageDir.'/'.$plugin) ?: null) : null,
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param  list<array{name: string, roots: list<string>, plugin: string|null}>  $packages
+     * @return list<string>
+     */
+    private static function rootsOf(array $packages): array
+    {
+        $roots = [];
+
+        foreach ($packages as $package) {
+            foreach ($package['roots'] as $root) {
+                $roots[$root] = $root;
             }
         }
 

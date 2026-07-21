@@ -6,6 +6,7 @@ namespace Lattice\Lattice;
 use BackedEnum;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Blade;
@@ -38,6 +39,7 @@ use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\PageMetadataResolver;
@@ -164,6 +166,8 @@ final class LatticeServiceProvider extends PackageServiceProvider
             $this->publishes([
                 __DIR__.'/../lang' => $this->app->langPath('vendor/'.self::$name),
             ], 'lattice-translations');
+
+            AboutCommand::add('Lattice', fn (DiscoveryManifest $manifest): array => $this->aboutData($manifest));
         }
 
         $this->optimizes(
@@ -199,5 +203,72 @@ final class LatticeServiceProvider extends PackageServiceProvider
         }
 
         Route::getRoutes()->refreshNameLookups();
+    }
+
+    /**
+     * Data for the `Lattice` section of `php artisan about` — the configured
+     * discover paths, the roots and JS plugins contributed by installed
+     * component packages, and whether the discovery manifest is cached.
+     *
+     * @return array<string, mixed>
+     */
+    private function aboutData(DiscoveryManifest $manifest): array
+    {
+        $configured = array_values(array_filter((array) config('lattice.discover', []), is_string(...)));
+        $packages = ComponentPackages::packages();
+
+        $roots = collect($packages)
+            ->filter(fn (array $package): bool => $package['roots'] !== [])
+            ->map(fn (array $package): array => [
+                'name' => $package['name'],
+                'roots' => array_map(self::relativeToBase(...), $package['roots']),
+            ])
+            ->values()
+            ->all();
+
+        $plugins = collect($packages)
+            ->filter(fn (array $package): bool => $package['plugin'] !== null)
+            ->map(fn (array $package): array => [
+                'name' => $package['name'],
+                'plugin' => self::relativeToBase($package['plugin']),
+            ])
+            ->values()
+            ->all();
+
+        return [
+            'Discover Paths' => AboutCommand::format(
+                array_map(self::relativeToBase(...), $configured),
+                console: fn (array $paths): string => $paths === [] ? '<fg=yellow;options=bold>none</>' : implode(', ', $paths),
+                json: fn (array $paths): array => $paths,
+            ),
+            'Package Roots' => AboutCommand::format(
+                $roots,
+                console: fn (array $roots): string => $roots === []
+                    ? '<fg=yellow;options=bold>none</>'
+                    : implode(', ', array_map(fn (array $package): string => $package['name'].': '.implode(', ', $package['roots']), $roots)),
+                json: fn (array $roots): array => $roots,
+            ),
+            'Component Plugins' => AboutCommand::format(
+                $plugins,
+                console: fn (array $plugins): string => $plugins === []
+                    ? '<fg=yellow;options=bold>none</>'
+                    : implode(', ', array_map(fn (array $package): string => $package['name'].': '.$package['plugin'], $plugins)),
+                json: fn (array $plugins): array => $plugins,
+            ),
+            'Manifest Cache' => AboutCommand::format(
+                $manifest->isCached(),
+                console: fn (bool $cached): string => $cached
+                    ? '<fg=green;options=bold>CACHED</> '.self::relativeToBase($manifest->path())
+                    : '<fg=yellow;options=bold>NOT CACHED</>',
+                json: fn (bool $cached): array => ['cached' => $cached, 'path' => $manifest->path()],
+            ),
+        ];
+    }
+
+    private static function relativeToBase(string $path): string
+    {
+        $base = base_path().DIRECTORY_SEPARATOR;
+
+        return str_starts_with($path, $base) ? substr($path, strlen($base)) : $path;
     }
 }

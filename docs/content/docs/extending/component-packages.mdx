@@ -124,6 +124,13 @@ Signature::make('signature')->label('Sign the contract');
   kit already have it.
 </Warning>
 
+## Verifying your package is discovered
+
+`php artisan about` has a `Lattice` section listing the configured discover paths, the discovery
+roots and JS plugin each installed component package contributes, and whether the discovery
+manifest is cached. Run it after `composer require`-ing a package to confirm it was picked up
+without inspecting `installed.json` by hand.
+
 ## Styling
 
 <Warning title="Style with Lattice tokens">
