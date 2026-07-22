@@ -19,13 +19,7 @@ class Wizard extends ContainerComponent
      */
     public static function make(array $steps = [], ?string $key = null): static
     {
-        $wizard = new static($key);
-
-        if ($steps !== []) {
-            $wizard->schema($steps);
-        }
-
-        return $wizard;
+        return new static($key)->schema($steps);
     }
 
     public function orientation(Orientation $orientation): static

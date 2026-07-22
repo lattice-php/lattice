@@ -31,9 +31,4 @@ class WizardStep extends ContainerComponent
 
         return $this;
     }
-
-    public function name(): string
-    {
-        return $this->name;
-    }
 }
