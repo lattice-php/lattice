@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\AsForm;
@@ -11,10 +12,12 @@ use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\LatticeServiceProvider;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use Lattice\Lattice\Tables\Columns\BadgeColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
+use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredEmbeddedPage;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 
@@ -94,6 +97,18 @@ test('discovered pages are available through the page registry', function (): vo
     $classes = collect(Lattice::pageRegistry()->all())->pluck('class');
 
     expect($classes)->toContain(DiscoveredDemoPage::class);
+});
+
+test('a discovered route-less page registers no route, while a routed sibling still gets its route', function (): void {
+    discoverFixtures();
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    $actions = collect(Route::getRoutes()->getRoutes())->map(fn ($route) => $route->getActionName());
+
+    expect(collect(Lattice::pageRegistry()->all())->pluck('class'))->toContain(DiscoveredEmbeddedPage::class)
+        ->and($actions)->not->toContain(DiscoveredEmbeddedPage::class.'@render')
+        ->and(Route::getRoutes()->getByName('discovered.demo'))->not->toBeNull();
 });
 
 test('the class walker returns classes under a path and an empty list for a missing path', function (): void {

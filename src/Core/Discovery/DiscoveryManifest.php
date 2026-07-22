@@ -120,11 +120,7 @@ final class DiscoveryManifest
                 }
 
                 if (Attributes::has($class, DiscoveryKinds::PAGE_ATTRIBUTE)) {
-                    $metadata = PageMetadata::reflect($class);
-
-                    if ($metadata->route !== null) {
-                        $manifest['pages'][$class] = $metadata->toArray();
-                    }
+                    $manifest['pages'][$class] = PageMetadata::reflect($class)->toArray();
                 }
             }
         }

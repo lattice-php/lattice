@@ -3,7 +3,7 @@
         {
             "name": "acme/widget",
             "install-path": "../acme/widget",
-            "extra": { "lattice": { "discover": ["src"] } }
+            "extra": { "lattice": { "discover": ["src"], "plugin": "resources/js/plugin.ts" } }
         },
         {
             "name": "acme/plain",

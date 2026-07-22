@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 return [
+    // Component packages add their own roots via composer `extra.lattice.discover` — no app config needed.
     'discover' => [
         base_path('app'),
     ],
