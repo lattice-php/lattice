@@ -125,6 +125,12 @@ WizardStep::make('review')->schema([
 A step whose fields are all computed still advances through Next without validating anything —
 computed fields carry no rules of their own.
 
+## Wizards in actions
+
+A [form action](/actions/confirmation-and-forms/) can carry a wizard the same way: declare it as the sole root child
+of the action's form schema. The modal then drops its own submit button — Next validates the active
+step against the action endpoint, and Finish submits the action itself.
+
 ## Conditional fields and steps
 
 [`visibleWhen`, `requiredWhen`, `readOnlyWhen`, and `disabledWhen`](/forms/conditional-fields/) work

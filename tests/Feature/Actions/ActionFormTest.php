@@ -13,6 +13,8 @@ use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Lattice\Forms\Components\Wizard;
+use Lattice\Lattice\Forms\Components\WizardStep;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
@@ -114,6 +116,54 @@ it('validates the embedded form precognitively without running handle', function
     postJson('/lattice/actions/test.reject', ['reason' => 'ok'], $precognition)
         ->assertNoContent();
 });
+
+it('suppresses the submit row of a wizard form action so only the wizard controls submit', function (): void {
+    Lattice::actions([WizardActionFixture::class]);
+
+    $this->callAction(WizardActionFixture::class, ['_form' => true])
+        ->assertOk()
+        ->assertJsonPath('type', 'form')
+        ->assertJsonPath('props.submitButton', false)
+        ->assertJsonPath('schema.0.type', 'wizard');
+});
+
+it('validates an embedded wizard step precognitively without running handle', function (): void {
+    Lattice::actions([WizardActionFixture::class]);
+    $ref = $this->latticeRef(wire(ActionComponent::use(WizardActionFixture::class)));
+
+    postJson('/lattice/actions/test.wizard-checkout', ['name' => ''], array_merge($this->latticeHeaders($ref), [
+        'Precognition' => 'true',
+        'Precognition-Validate-Only' => 'name,name.*',
+    ]))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('name');
+});
+
+#[AsAction('test.wizard-checkout')]
+class WizardActionFixture extends FormActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Checkout');
+    }
+
+    public function formSchema(FormComponent $form, Request $request): FormComponent
+    {
+        return $form->schema([
+            Wizard::make([
+                WizardStep::make('customer')->schema([
+                    TextInput::make('name', 'Name')->required(),
+                ]),
+                WizardStep::make('review'),
+            ]),
+        ]);
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success($this->validate($request));
+    }
+}
 
 it('resolves searchable options for an embedded select', function (): void {
     Lattice::actions([AssignActionFixture::class]);

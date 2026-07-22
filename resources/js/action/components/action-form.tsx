@@ -17,6 +17,7 @@ import {
   FORM_DEBOUNCE_MS,
   FormProvider,
   FormValuesProvider,
+  errorKeyBelongsTo,
   firstErrors,
   PrefillProvider,
   ResolvedNodesProvider,
@@ -127,6 +128,7 @@ function ActionFormBody({
   const dispatch = useEffectDispatcher();
   const [errors, setErrors] = useState<FieldErrors>({});
   const [processing, setProcessing] = useState(false);
+  const [validating, setValidating] = useState(false);
 
   const request = useCallback(
     (extraHeaders?: Record<string, string>): Promise<Response> =>
@@ -174,6 +176,8 @@ function ActionFormBody({
 
   const validateFields = useCallback(
     (fields: string[], options?: { onSuccess?: () => void; onValidationError?: () => void }) => {
+      setValidating(true);
+
       void request({ Precognition: "true", "Precognition-Validate-Only": fields.join(",") })
         .then(async (response) => {
           if (response.status === 422) {
@@ -194,13 +198,14 @@ function ActionFormBody({
           setErrors((current) =>
             Object.fromEntries(
               Object.entries(current).filter(
-                ([key]) => !cleared.some((name) => key === name || key.startsWith(`${name}.`)),
+                ([key]) => !cleared.some((name) => errorKeyBelongsTo(key, name)),
               ),
             ),
           );
           options?.onSuccess?.();
         })
-        .catch(() => options?.onValidationError?.());
+        .catch(() => options?.onValidationError?.())
+        .finally(() => setValidating(false));
     },
     [request],
   );
@@ -244,7 +249,7 @@ function ActionFormBody({
       touch,
       validate,
       validateFields,
-      validating: false,
+      validating,
     }),
     [
       clearErrors,
@@ -257,6 +262,7 @@ function ActionFormBody({
       touch,
       validate,
       validateFields,
+      validating,
     ],
   );
 
@@ -286,10 +292,12 @@ function ActionFormBody({
             {cancelLabel}
           </Button>
 
-          <Button data-test="action-form-submit" disabled={processing} type="submit">
-            {processing && <Spinner />}
-            {submitLabel}
-          </Button>
+          {formNode.props?.submitButton !== false && (
+            <Button data-test="action-form-submit" disabled={processing} type="submit">
+              {processing && <Spinner />}
+              {submitLabel}
+            </Button>
+          )}
         </div>
       </form>
     </FormProvider>

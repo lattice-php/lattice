@@ -13,9 +13,10 @@ type ValidateFieldsOptions = { onSuccess?: () => void; onValidationError?: () =>
 
 let capturedValidateFields: ((fields: string[], options?: ValidateFieldsOptions) => void) | null =
   null;
+let capturedValidating = false;
 
 function ValidateFieldsProbe() {
-  ({ validateFields: capturedValidateFields } = useFormContext());
+  ({ validateFields: capturedValidateFields, validating: capturedValidating } = useFormContext());
 
   return null;
 }
@@ -45,6 +46,46 @@ function validateFieldsAction(): Node {
         type: "form",
       },
       label: "Validate",
+      method: "post",
+      ref: "sealed-ref",
+    },
+  });
+}
+
+function wizardAction(): Node {
+  return fakeNode({
+    id: "test.wizard",
+    type: "action",
+    props: {
+      confirmation: { confirmLabel: "Save", title: "Checkout wizard" },
+      endpoint: "/lattice/actions/test.wizard",
+      form: {
+        id: "test.wizard-form",
+        props: { submitButton: false },
+        schema: [
+          {
+            key: "wizard",
+            props: { orientation: "horizontal" },
+            schema: [
+              {
+                props: { label: "Customer", name: "customer" },
+                schema: [
+                  {
+                    key: "name",
+                    props: { label: "Name", name: "name" },
+                    type: "field.text-input",
+                  },
+                ],
+                type: "wizard-step",
+              },
+              { props: { label: "Review", name: "review" }, schema: [], type: "wizard-step" },
+            ],
+            type: "wizard",
+          },
+        ],
+        type: "form",
+      },
+      label: "Open wizard",
       method: "post",
       ref: "sealed-ref",
     },
@@ -153,6 +194,7 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.useRealTimers();
   capturedValidateFields = null;
+  capturedValidating = false;
 });
 
 describe("action form modal", () => {
@@ -528,6 +570,64 @@ describe("action form modal", () => {
     capturedValidateFields?.(["name"]);
     await waitFor(() => expect(screen.queryByText("Required")).not.toBeInTheDocument());
     expect(screen.getByText("Invalid email")).toBeVisible();
+  });
+
+  it("tracks a validating state across the validation round-trip", async () => {
+    let resolveFetch: (response: Response) => void = () => {};
+    const fetchMock = vi.fn<FetchMock>().mockImplementation(
+      () =>
+        new Promise<Response>((resolve) => {
+          resolveFetch = resolve;
+        }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderAction(validateFieldsAction(), validateFieldsProbePlugin);
+
+    fireEvent.click(screen.getByRole("button", { name: "Validate" }));
+    await screen.findByRole("textbox", { name: "Name" });
+
+    expect(capturedValidating).toBe(false);
+
+    capturedValidateFields?.(["name"]);
+    await waitFor(() => expect(capturedValidating).toBe(true));
+
+    resolveFetch({ json: async () => ({}), ok: true, status: 204 } as unknown as Response);
+    await waitFor(() => expect(capturedValidating).toBe(false));
+  });
+
+  it("drops its own save button when the form suppresses the submit row", async () => {
+    renderAction(wizardAction());
+
+    fireEvent.click(screen.getByRole("button", { name: "Open wizard" }));
+    await screen.findByRole("textbox", { name: "Name" });
+
+    expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Cancel" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Next" })).toBeVisible();
+  });
+
+  it("advances a wizard step once its precognitive validation passes", async () => {
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
+      json: async () => ({}),
+      ok: true,
+      status: 204,
+    } as unknown as Response);
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderAction(wizardAction());
+
+    fireEvent.click(screen.getByRole("button", { name: "Open wizard" }));
+    await screen.findByRole("textbox", { name: "Name" });
+
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+
+    expect(await screen.findByRole("button", { name: "Finish" })).toBeVisible();
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    const headers = init.headers as Record<string, string>;
+    expect(headers.Precognition).toBe("true");
+    expect(headers["Precognition-Validate-Only"]).toBe("name,name.*");
   });
 });
 
