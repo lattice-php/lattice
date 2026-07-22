@@ -219,10 +219,11 @@ class Form extends ContainerComponent
     {
         $children = $this->resolvedChildren();
         $hasRootWizard = count($children) === 1 && $children[0] instanceof Wizard;
-        $containsWizard = collect($this->descendants())
-            ->contains(fn (Component $component): bool => $component instanceof Wizard);
+        $wizardCount = collect($this->descendants())
+            ->filter(fn (Component $component): bool => $component instanceof Wizard)
+            ->count();
 
-        if ($containsWizard && ! $hasRootWizard) {
+        if ($wizardCount > 1 || ($wizardCount === 1 && ! $hasRootWizard)) {
             throw new LogicException('A wizard must be the sole root child of its form schema.');
         }
 

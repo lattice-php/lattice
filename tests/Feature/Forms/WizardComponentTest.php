@@ -73,6 +73,16 @@ test('a wizard nested below the form root is rejected', function (): void {
     ]));
 })->throws(LogicException::class, 'sole root child');
 
+test('a wizard nested inside a wizard step is rejected', function (): void {
+    wire(Form::make('inception')->schema([
+        Wizard::make([
+            WizardStep::make('outer')->schema([
+                Wizard::make([WizardStep::make('inner')]),
+            ]),
+        ]),
+    ]));
+})->throws(LogicException::class, 'sole root child');
+
 test('a render-gated sole-root wizard is valid placement and still suppresses the submit row', function (): void {
     $form = wire(Form::make('gated')->schema([
         Wizard::make([WizardStep::make('one')])->hidden(),
