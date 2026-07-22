@@ -31,6 +31,10 @@ final class PageRegistry
     }
 
     /**
+     * Every discovered and registered page, routed or not — a route-less
+     * `#[AsPage]` is a valid embedded page, so it belongs here; callers that
+     * only want routable pages (e.g. route registration) filter on `route`.
+     *
      * @return array<int, PageMetadata>
      */
     public function all(): array
@@ -50,11 +54,7 @@ final class PageRegistry
                 continue;
             }
 
-            $metadata = $this->metadata->for($page);
-
-            if ($metadata->route !== null) {
-                $pages[$page] = $metadata;
-            }
+            $pages[$page] = $this->metadata->for($page);
         }
 
         return array_values($pages);

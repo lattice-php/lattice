@@ -185,10 +185,15 @@ final class LatticeServiceProvider extends PackageServiceProvider
     }
 
     /**
-     * Build a route for every discovered and registered page — but only when the
-     * router is not serving a cached route table. With `route:cache` active,
-     * Laravel loads the routes from the cache, so re-scanning the filesystem and
-     * re-registering them here on every request would be redundant work.
+     * Build a route for every discovered and registered page that declares one
+     * — but only when the router is not serving a cached route table. With
+     * `route:cache` active, Laravel loads the routes from the cache, so
+     * re-scanning the filesystem and re-registering them here on every request
+     * would be redundant work.
+     *
+     * A page with no route is a valid embedded page (rendered by returning it
+     * from a developer-owned controller, never dispatched by Lattice itself),
+     * so it is skipped here rather than passed to `Route::get()`.
      */
     public function bootPages(): void
     {
@@ -197,6 +202,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
         }
 
         foreach (Lattice::pageRegistry()->all() as $page) {
+            if ($page->route === null) {
+                continue;
+            }
+
             Route::get($page->route, [$page->class, 'render'])
                 ->name($page->name)
                 ->middleware($page->middleware);
