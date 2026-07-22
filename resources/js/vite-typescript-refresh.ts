@@ -3,24 +3,12 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import type { Logger } from "vite";
 
-/**
- * Upper bound on how much of the child's stderr gets folded into the failure
- * warning — enough to see the actual error, not enough to flood the terminal
- * with a runaway stack trace or a misconfigured command's full output.
- */
 const MAX_STDERR_CHARS = 500;
 
 /**
- * Best-effort: skips silently when the project has no `artisan` (e.g. a
- * plain JS workspace, or a package's own workbench that isn't Laravel-shaped),
- * logs one short line on success, and only warns — never throws — on failure,
- * so a broken `php` install can't crash the dev server.
- *
- * Kept out of the published `vite` subpath on purpose: this module is not
- * listed in `package.json#exports`, so it's unreachable from outside the
- * package even though it compiles into `dist/`. `spawnProcess`/`fileExists`
- * are test seams (default to the real Node APIs) — `vite.ts`'s
- * `typescriptPlugin`, the only real caller, always uses the defaults.
+ * Deliberately absent from `package.json#exports`: unreachable from outside
+ * the package even though it compiles into `dist/`. `spawnProcess`/`fileExists`
+ * are test seams — the only real caller uses the defaults.
  */
 export function refreshTypeScriptTypes(
   appRoot: string,
@@ -55,9 +43,7 @@ export function refreshTypeScriptTypes(
     }
   });
 
-  // A piped stream can itself emit "error" (e.g. EPIPE) — without a listener
-  // here, Node treats it as unhandled and can crash the dev server, a failure
-  // surface that didn't exist while stderr was `stdio: "ignore"`.
+  // An unhandled "error" on the piped stream (e.g. EPIPE) would crash the dev server.
   child.stderr?.on("error", () => {});
 
   child.on("error", (error) => {
@@ -70,11 +56,7 @@ export function refreshTypeScriptTypes(
     }
   });
 
-  // "exit" can fire before the child's final stderr "data" events arrive —
-  // "close" is the event Node guarantees only fires once all stdio has
-  // finished flowing, so the buffered stderr is complete by the time we read
-  // it here. `warnOnce` keeps this and the "error" handler above from ever
-  // both firing a warning for the same failure.
+  // "exit" can fire before stderr has flushed; "close" only fires once all stdio has drained.
   child.on("close", (code) => {
     if (code === 0) {
       return;

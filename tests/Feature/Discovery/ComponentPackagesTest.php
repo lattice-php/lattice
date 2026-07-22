@@ -66,9 +66,7 @@ it('returns nothing when the root composer.json is absent', function (): void {
 });
 
 it('reads the root package via Composer\InstalledVersions::getRootPackage()', function (): void {
-    // Under this package's own testbench suite, the composer ROOT project is
-    // this repo itself — it declares no extra.lattice, so the real root
-    // resolution should degrade to no packages rather than throwing.
+    // The composer ROOT here is this repo itself, which declares no extra.lattice.
     expect(ComponentPackages::rootPackage())->toBe([]);
 });
 

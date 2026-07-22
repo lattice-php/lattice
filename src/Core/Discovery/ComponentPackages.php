@@ -36,11 +36,7 @@ final class ComponentPackages
     }
 
     /**
-     * Every installed package that declares `extra.lattice`, with its discovery
-     * roots resolved to absolute paths and its JS plugin entry (if any) — the
-     * data the `php artisan about` panel surfaces per package. Includes the
-     * composer ROOT project itself (see `rootPackage()`), since it never
-     * appears in `installed.json`.
+     * Includes the composer ROOT project — it never appears in `installed.json`.
      *
      * @return list<array{name: string, roots: list<string>, plugin: string|null}>
      */
@@ -143,9 +139,6 @@ final class ComponentPackages
     }
 
     /**
-     * Resolve a package's `extra.lattice` entry to its absolute discovery roots
-     * and JS plugin path, or null when it declares neither.
-     *
      * @param  array<string, mixed>  $lattice
      * @return array{name: string, roots: list<string>, plugin: string|null}|null
      */

@@ -206,10 +206,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
     }
 
     /**
-     * Data for the `Lattice` section of `php artisan about` — the configured
-     * discover paths, the roots and JS plugins contributed by installed
-     * component packages, and whether the discovery manifest is cached.
-     *
      * @return array<string, mixed>
      */
     private function aboutData(DiscoveryManifest $manifest): array

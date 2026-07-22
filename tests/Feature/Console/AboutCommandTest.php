@@ -10,9 +10,7 @@ afterEach(function (): void {
 });
 
 it('surfaces discovery state in the lattice section of php artisan about', function (): void {
-    // The discovery config value in this dev workbench points outside base_path()
-    // (Workbench mounts app/ from the repo, not the testbench skeleton), so pin
-    // it here to a path base_path() actually resolves against for the assertion.
+    // Workbench mounts app/ from the repo, outside base_path() — pin a path it resolves against.
     config()->set('lattice.discover', [base_path('app')]);
 
     $signaturePath = InstalledVersions::getInstallPath('lattice-php/signature-example') ?? '';

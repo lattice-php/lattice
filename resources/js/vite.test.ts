@@ -192,8 +192,6 @@ describe("lattice Vite helper", () => {
   });
 
   it("discovers a component package that is its own composer ROOT project", () => {
-    // Mirrors a package's own testbench-driven test suite, where the package
-    // itself is the app root and never appears in vendor/composer/installed.json.
     const appRoot = path.resolve("tests/Fixtures/PackageDiscovery/root-package");
 
     expect(discoverComponentPackages(appRoot)).toEqual([

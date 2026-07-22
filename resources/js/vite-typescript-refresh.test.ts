@@ -97,11 +97,6 @@ describe("refreshTypeScriptTypes", () => {
   });
 
   it("waits for close before warning, since exit can fire before stderr finishes flushing", () => {
-    // Regression test for the event-ordering race: Node documents that "exit"
-    // may fire before a child's stdio streams have flushed their final "data"
-    // events, while "close" is guaranteed to fire only after they have. Here
-    // the stderr chunk arrives strictly between "exit" and "close" — a
-    // premature (exit-based) read would warn without ever having seen it.
     const child = fakeChild();
     const spawnProcess = vi.fn().mockReturnValue(child as unknown as ChildProcess);
     const fileExists = vi.fn().mockReturnValue(true);
@@ -161,8 +156,7 @@ describe("refreshTypeScriptTypes", () => {
 
     refreshTypeScriptTypes(path.resolve("/tmp/lattice-app"), logger, spawnProcess, fileExists);
     child.emit("error", new Error("spawn php ENOENT"));
-    // Node still emits "close" (with a null code) alongside "error" when the
-    // process itself never spawned — this must not produce a second warning.
+    // Node emits "close" (null code) even when the process never spawned.
     child.emit("close", null);
 
     expect(logger.warn).toHaveBeenCalledTimes(1);
