@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.25.0](https://github.com/lattice-php/lattice/compare/0.24.0...0.25.0) (2026-07-22)
+
+
+### Features
+
+* **actions:** support wizards in action forms with per-step validation ([25f1652](https://github.com/lattice-php/lattice/commit/25f1652bdf77c14655ed72d5e8c7d13a6ec8cf14))
+* discover component roots from the root package manifest ([ef13bdf](https://github.com/lattice-php/lattice/commit/ef13bdf93806cfd8e158f787ebe2ac7a8bc8f0d0))
+* **forms:** suppress the submit row and enforce sole-root placement for wizard forms ([0b1a256](https://github.com/lattice-php/lattice/commit/0b1a25664bf002abc156264c5a4200c84d20cc80))
+* **forms:** Wizard container component with step-only children ([4397ade](https://github.com/lattice-php/lattice/commit/4397ade5285c7c625f2e761fcda8050855de84b1))
+* **forms:** wizard multi-step form with per-step precognitive validation ([dfe1868](https://github.com/lattice-php/lattice/commit/dfe186894c5d186aeb369df613218e146d4de742))
+* **forms:** WizardStep container component ([deee69c](https://github.com/lattice-php/lattice/commit/deee69c3f889e14d9ef0aeba1ca4d52d4d82d339))
+* **i18n:** accept rt() in notification titles/bodies and callout messages ([b197d0d](https://github.com/lattice-php/lattice/commit/b197d0d62e6b29924ef8ef058b514b495c97a5bc))
+* **i18n:** accept rt() in notification titles/bodies and callout messages ([93ed78b](https://github.com/lattice-php/lattice/commit/93ed78b9e274894179bc027de4a39d44401f9c91))
+* improve component-package authoring DX ([ad1326e](https://github.com/lattice-php/lattice/commit/ad1326e1400adda69f0a03f1fa2699f819516d44))
+* **js:** expose multi-field precognitive validation through the form context ([1d9e69f](https://github.com/lattice-php/lattice/commit/1d9e69f754e0c2146b45f8224692569301b62e6b))
+* **js:** register wizard node types and skeleton renderers ([0f41134](https://github.com/lattice-php/lattice/commit/0f41134b1a25e18f81006b769b84bd68561857fb))
+* **js:** wizard chrome with per-step validation and error-aware navigation ([9bbf19e](https://github.com/lattice-php/lattice/commit/9bbf19ee85b60ab4b37b0340a0f5d7a65ddde20d))
+* **js:** wizard step path collection and error partitioning ([4b3b16d](https://github.com/lattice-php/lattice/commit/4b3b16d02fd90620db1dbf2374155c2a46cdc9f3))
+* refresh typescript definitions from the vite dev server ([035be4d](https://github.com/lattice-php/lattice/commit/035be4da73a7ae2b19c7908ce793ef3d7f7df9b3))
+* surface discovery state in artisan about ([9e4fc04](https://github.com/lattice-php/lattice/commit/9e4fc04e252f6c21f8eb122f58f11a1fc1468be4))
+* treat route-less pages as first-class embedded pages ([eb77043](https://github.com/lattice-php/lattice/commit/eb7704396b64571ad13fdcce49c975b69f5fdf2b))
+* **workbench:** checkout wizard demo page ([9d2057f](https://github.com/lattice-php/lattice/commit/9d2057f4a31683cdb63a2f624fea191b1b58d5c7))
+* **workbench:** show entered data on the wizard review step ([e77902d](https://github.com/lattice-php/lattice/commit/e77902dbb1dbf1054c8697d7465f8b968e99a454))
+
+
+### Bug Fixes
+
+* flush stderr before warning on typescript refresh failures ([f959fa5](https://github.com/lattice-php/lattice/commit/f959fa5b7ff607a6ca13fcb2299d70c1792d2c75))
+* **forms:** reject wizards nested inside wizard steps ([7b348f0](https://github.com/lattice-php/lattice/commit/7b348f08b65e0f7c4a70b48beea88a4aa66a7faf))
+* keep the typescript refresh seam out of the published vite surface ([ad119c5](https://github.com/lattice-php/lattice/commit/ad119c59720f5434eb2c8df08d2113e8842284f2))
+* **tests:** resolve lattice test helpers through $this in wizard step validation ([ca303fd](https://github.com/lattice-php/lattice/commit/ca303fd823f4dcbc38442173411fa226717eb366))
+
+
+### Refactoring
+
+* cut comments down to constraint-bearing lines ([c70c7e7](https://github.com/lattice-php/lattice/commit/c70c7e714666c6bedd421433ae8ff6c2cc3921d4))
+* **forms:** drop wizard no-op schema guard and unused step accessor ([f7f5cae](https://github.com/lattice-php/lattice/commit/f7f5caea3b54ff91335d78a2aa17b926d538e5e9))
+* **i18n:** unify translatable resolution behind resolveText and Wire::toWire ([83f5d6a](https://github.com/lattice-php/lattice/commit/83f5d6a4b13c7b469c7e8e22c3263a95f43aeb0c))
+* **js:** share the row-field type set and error-key ownership helper ([84e7f08](https://github.com/lattice-php/lattice/commit/84e7f088d2b44f491383f101bb7710e10394cac5))
+* make the about path helper non-static ([3088c68](https://github.com/lattice-php/lattice/commit/3088c68af5c783f74eea7c301747f649b7cb4316))
+
+
+### Documentation
+
+* correct wizard conditional-step and shared-options guidance ([ac292b4](https://github.com/lattice-php/lattice/commit/ac292b46451e42f0fb0fe0cf7c3c161ba7a5d3aa))
+* wizard multi-step form guide ([bc4c713](https://github.com/lattice-php/lattice/commit/bc4c713bcbb9ddfd13a31caef7b046bd9b1d8333))
+
 ## [0.24.0](https://github.com/lattice-php/lattice/compare/0.23.0...0.24.0) (2026-07-20)
 
 
