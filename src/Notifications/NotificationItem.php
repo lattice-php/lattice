@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Notifications;
 
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Enums\Variant;
 
@@ -20,8 +21,8 @@ final readonly class NotificationItem
      */
     public function __construct(
         public string $id,
-        public ?string $title,
-        public ?string $body,
+        public string|Translatable|null $title,
+        public string|Translatable|null $body,
         public ?string $icon,
         public ?Variant $variant,
         public ?string $href,

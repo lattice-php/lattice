@@ -32,3 +32,13 @@ test('payload and replacement calls merge instead of replacing', function (): vo
 test('rt() returns a Translatable for the given key', function (): void {
     expect(rt('a.b')->jsonSerialize()['key'])->toBe('a.b');
 });
+
+test('it rehydrates from its wire shape', function (): void {
+    $wire = [
+        'key' => 'orders.shipped-live',
+        'payload' => ['id' => 'order.id'],
+        'replacements' => ['warehouse' => 'Berlin'],
+    ];
+
+    expect(Translatable::fromWire($wire)->jsonSerialize())->toBe($wire);
+});

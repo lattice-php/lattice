@@ -193,6 +193,54 @@ Lattice::pages([
 Discovery is cached alongside `route:cache`, so the filesystem scan does not run on production
 requests.
 
+## Embedded pages
+
+`#[AsPage]` means "this page owns a route" — its `route` argument is what Lattice needs to register one.
+A page can also have no route at all and be rendered by returning it from your own controller instead;
+`Page` implements `Responsable`, so returning an instance is enough:
+
+```php
+use Illuminate\Http\Request;
+use Lattice\Lattice\Http\Page;
+
+class ProductEmbedController
+{
+    public function show(Request $request): Page
+    {
+        return new ProductEmbedPage($request->route('product'));
+    }
+}
+```
+
+The page itself needs no `#[AsPage]` attribute — a plain `Page` subclass works, since `layout()` and
+`container()` method overrides take precedence over attribute metadata regardless of whether the
+attribute is present:
+
+```php
+use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\Enums\PageLayout;
+
+class ProductEmbedPage extends Page
+{
+    public function __construct(private readonly Product $product) {}
+
+    public function layout(): PageLayout
+    {
+        return PageLayout::App;
+    }
+
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Heading::make($this->product->name));
+    }
+}
+```
+
+A route-less `#[AsPage]` class is valid too — useful when the shared metadata (layout, container,
+middleware inheritance from a base page) is worth keeping even though the page has no route of its own.
+Either way, Lattice never builds a route for it: discovery and `Lattice::pages()` both register it in the
+page registry, but only entries with a `route` reach `Route::get()`.
+
 ## Title and breadcrumbs
 
 `title()` sets the document title. `breadcrumbs()` returns the page's trail; a layout's

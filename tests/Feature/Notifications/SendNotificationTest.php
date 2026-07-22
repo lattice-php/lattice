@@ -19,6 +19,20 @@ test('send persists a lattice payload to the native notifications table', functi
     ])->and($row->getAttribute('read_at'))->toBeNull();
 });
 
+test('send persists a translatable title and body as their wire shape', function (): void {
+    $user = workbenchTestUser();
+
+    Notification::make()
+        ->title(rt('orders.shipped.title'))
+        ->body(rt('orders.shipped.body')->with(['order' => 1234]))
+        ->send($user);
+
+    $data = $user->notifications()->first()->getAttribute('data');
+
+    expect($data['title'])->toBe(['key' => 'orders.shipped.title', 'payload' => [], 'replacements' => []])
+        ->and($data['body'])->toBe(['key' => 'orders.shipped.body', 'payload' => [], 'replacements' => ['order' => 1234]]);
+});
+
 test('via includes broadcast for send and omits it for sendToDatabase', function (): void {
     $user = workbenchTestUser();
 

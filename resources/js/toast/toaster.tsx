@@ -7,7 +7,7 @@ import { onToast } from "./toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import { variantStyles } from "./variant-styles";
-import { resolveTranslatable } from "@lattice-php/lattice/i18n/translatable";
+import { resolveText } from "@lattice-php/lattice/i18n/translatable";
 
 type ToastItem = ToastMessage & { id: number };
 
@@ -51,9 +51,7 @@ export function Toaster({ duration = 4000 }: { duration?: number }) {
           {variantStyles[toast.variant].icon}
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             <Toast.Title className="text-sm text-lt-fg">
-              {typeof toast.message === "string"
-                ? toast.message
-                : resolveTranslatable(toast.message, {}, t)}
+              {resolveText(toast.message, t)}
             </Toast.Title>
             {toast.action ? (
               <div className="flex flex-wrap gap-2">

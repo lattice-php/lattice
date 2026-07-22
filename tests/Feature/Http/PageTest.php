@@ -13,6 +13,7 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\PageLayout;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\Tables\PaginationPage;
@@ -233,6 +234,22 @@ test('directly returned pages resolve route arguments and bound models in render
         );
 });
 
+test('a plain page with no attribute renders through a developer-owned controller, honoring its layout override', function (): void {
+    Route::get('embedded-page', fn (): Page => new EmbeddedLayoutPage)
+        ->middleware('web')
+        ->name('embedded-page.show');
+
+    withoutVite();
+
+    get('/embedded-page')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->component('lattice/page')
+            ->where('lattice.layout.key', 'app')
+            ->where('lattice.schema.0.props.text', 'Embedded page')
+        );
+});
+
 test('directly returned pages resolve render dependencies through the container, including form requests', function (): void {
     Route::get('responsable-form-request', fn (): Page => new WorkbenchFormRequestPage)
         ->middleware('web')
@@ -333,6 +350,20 @@ final class WorkbenchFormRequestPage extends Page
     public function render(PageSchema $schema, WorkbenchPageFormRequest $request): PageSchema
     {
         return $schema->component(Text::make($request->string('label').' via form request'));
+    }
+}
+
+final class EmbeddedLayoutPage extends Page
+{
+    #[Override]
+    public function layout(): PageLayout
+    {
+        return PageLayout::App;
+    }
+
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Embedded page'));
     }
 }
 

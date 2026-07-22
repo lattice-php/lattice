@@ -4,6 +4,7 @@ import { svgSprite } from "@lattice-php/vite-svg-sprite";
 import type { IconTypesOptions, SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
 import { searchForWorkspaceRoot } from "vite";
 import type { Plugin, PluginOption, UserConfig } from "vite";
+import { refreshTypeScriptTypes } from "./vite-typescript-refresh";
 
 type InlineDependency = string | RegExp;
 
@@ -27,6 +28,8 @@ export type LatticeViteOptions = {
   icons?: boolean | LatticeViteIconsOptions;
   root?: string;
   source?: boolean;
+  /** Refresh generated TypeScript types via the dev server. Defaults to `true`. */
+  typescript?: boolean;
 };
 
 type Roots = {
@@ -40,6 +43,7 @@ export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
     corePlugin(options),
     optionalPeersPlugin(),
     componentPackagesPlugin(discoverComponentPackages(appRoot)),
+    typescriptPlugin(options),
   ];
   const iconOptions = resolveIconOptions(options);
 
@@ -62,6 +66,11 @@ export type LatticeComponentPackage = {
 type InstalledPackage = {
   name: string;
   "install-path"?: string;
+  extra?: { lattice?: { plugin?: string } };
+};
+
+type RootPackageJson = {
+  name?: string;
   extra?: { lattice?: { plugin?: string } };
 };
 
@@ -89,19 +98,52 @@ export function collectComponentPackages(
   });
 }
 
-/** Read `<appRoot>/vendor/composer/installed.json` and collect component packages. */
-export function discoverComponentPackages(appRoot: string): LatticeComponentPackage[] {
-  const composerDir = path.resolve(appRoot, "vendor/composer");
+/**
+ * Resolve the composer ROOT project's own `extra.lattice.plugin` — Composer
+ * never lists the root package in `installed.json`, so a component package
+ * declaring the plugin entry in its own composer.json would otherwise be
+ * invisible to its own dev server (e.g. inside a testbench workbench, where
+ * the package itself is the app root).
+ */
+export function collectRootComponentPackage(
+  composerJson: RootPackageJson,
+  appRoot: string,
+): LatticeComponentPackage[] {
+  const entry = composerJson.extra?.lattice?.plugin;
 
-  let raw: string;
-
-  try {
-    raw = readFileSync(path.join(composerDir, "installed.json"), "utf8");
-  } catch {
+  if (typeof entry !== "string" || typeof composerJson.name !== "string") {
     return [];
   }
 
-  return collectComponentPackages(JSON.parse(raw), composerDir);
+  return [{ name: composerJson.name, dir: appRoot, plugin: path.resolve(appRoot, entry) }];
+}
+
+/**
+ * Read `<appRoot>/vendor/composer/installed.json` and `<appRoot>/composer.json`
+ * and collect every component package they contribute.
+ */
+export function discoverComponentPackages(appRoot: string): LatticeComponentPackage[] {
+  const composerDir = path.resolve(appRoot, "vendor/composer");
+
+  let installed: LatticeComponentPackage[] = [];
+
+  try {
+    const raw = readFileSync(path.join(composerDir, "installed.json"), "utf8");
+    installed = collectComponentPackages(JSON.parse(raw), composerDir);
+  } catch {
+    installed = [];
+  }
+
+  let root: LatticeComponentPackage[] = [];
+
+  try {
+    const raw = readFileSync(path.join(appRoot, "composer.json"), "utf8");
+    root = collectRootComponentPackage(JSON.parse(raw), appRoot);
+  } catch {
+    root = [];
+  }
+
+  return [...installed, ...root];
 }
 
 const VIRTUAL_PLUGINS_ID = "virtual:lattice/plugins";
@@ -232,6 +274,37 @@ function optionalPeersPlugin(): Plugin {
       }
 
       return OPTIONAL_PEER_STUBS[id.slice(OPTIONAL_PEER_STUB_PREFIX.length)] ?? null;
+    },
+  };
+}
+
+/**
+ * Refreshes `node.props` typings from the app's own `php artisan
+ * lattice:typescript` whenever the dev server starts — installing or updating
+ * a component package would otherwise leave its generated types stale until
+ * someone remembers to run the command by hand. Dev-server only: a production
+ * build machine may not have PHP installed, and the generated file is a dev
+ * ergonomics artifact, not a build input.
+ *
+ * Module-private like its siblings `optionalPeersPlugin`/`corePlugin` — the
+ * `refreshTypeScriptTypes` DI seam it defers to lives in
+ * `./vite-typescript-refresh`, which isn't part of the published `vite`
+ * subpath either (see that module for why).
+ */
+function typescriptPlugin(options: LatticeViteOptions): Plugin {
+  return {
+    name: "lattice:typescript",
+    apply: "serve",
+    configureServer(server) {
+      const typescript = options.typescript ?? true;
+
+      if (typescript === false) {
+        return;
+      }
+
+      const { appRoot } = resolveRoots(options);
+
+      refreshTypeScriptTypes(appRoot, server.config.logger);
     },
   };
 }

@@ -1,20 +1,29 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { searchForWorkspaceRoot } from "vite";
-import type { Plugin } from "vite";
-import { describe, expect, it } from "vitest";
+import type { Logger, Plugin } from "vite";
+import { describe, expect, it, vi } from "vitest";
 import {
   collectComponentPackages,
+  collectRootComponentPackage,
   componentPackagesPlugin,
   discoverComponentPackages,
   lattice,
   latticeConfig,
   resolveIconOptions,
 } from "./vite";
+import * as typescriptRefresh from "./vite-typescript-refresh";
 
 type PackageJson = {
   exports: Record<string, unknown>;
 };
+
+type FakeLogger = Pick<Logger, "info" | "warn">;
+type FakeServer = { config: { logger: FakeLogger } };
+
+function fakeLogger(): FakeLogger {
+  return { info: vi.fn(), warn: vi.fn() };
+}
 
 type ResolveIdFn = (
   this: { resolve: (id: string, importer?: string, options?: unknown) => Promise<unknown> },
@@ -30,6 +39,18 @@ function optionalPeersPlugin(): Plugin {
 
   if (!plugin) {
     throw new Error("optional-peers plugin not registered");
+  }
+
+  return plugin;
+}
+
+function typescriptPlugin(options: Parameters<typeof lattice>[0] = {}): Plugin {
+  const plugin = (lattice({ icons: false, ...options }) as Plugin[]).find(
+    (candidate) => candidate?.name === "lattice:typescript",
+  );
+
+  if (!plugin) {
+    throw new Error("typescript plugin not registered");
   }
 
   return plugin;
@@ -141,6 +162,47 @@ describe("lattice Vite helper", () => {
     ]);
   });
 
+  it("resolves the app root's own composer.json as a component package", () => {
+    const appRoot = path.resolve("/tmp/app");
+
+    expect(
+      collectRootComponentPackage(
+        { name: "acme/signature", extra: { lattice: { plugin: "resources/js/plugin.ts" } } },
+        appRoot,
+      ),
+    ).toEqual([
+      {
+        name: "acme/signature",
+        dir: appRoot,
+        plugin: path.resolve(appRoot, "resources/js/plugin.ts"),
+      },
+    ]);
+  });
+
+  it("ignores the app root's composer.json when it declares no plugin entry", () => {
+    const appRoot = path.resolve("/tmp/app");
+
+    expect(collectRootComponentPackage({ name: "acme/plain" }, appRoot)).toEqual([]);
+    expect(
+      collectRootComponentPackage(
+        { extra: { lattice: { plugin: "resources/js/plugin.ts" } } },
+        appRoot,
+      ),
+    ).toEqual([]);
+  });
+
+  it("discovers a component package that is its own composer ROOT project", () => {
+    const appRoot = path.resolve("tests/Fixtures/PackageDiscovery/root-package");
+
+    expect(discoverComponentPackages(appRoot)).toEqual([
+      {
+        name: "acme/root-widget",
+        dir: appRoot,
+        plugin: path.resolve(appRoot, "resources/js/plugin.ts"),
+      },
+    ]);
+  });
+
   it("exposes the discovered plugins as the virtual:lattice/plugins module", () => {
     const plugin = componentPackagesPlugin([
       {
@@ -185,6 +247,39 @@ describe("lattice Vite helper", () => {
 
     expect(load("\0virtual:lattice/plugins")).toContain("export default [];");
     expect(config()).toEqual({});
+  });
+
+  it("refreshes TypeScript types on configureServer with default options", () => {
+    const appRoot = path.resolve("/tmp/lattice-app");
+    const logger = fakeLogger();
+    const refresh = vi
+      .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
+      .mockImplementation(() => {});
+    const configureServer = typescriptPlugin({ appRoot }).configureServer as unknown as (
+      server: FakeServer,
+    ) => void;
+
+    configureServer({ config: { logger } });
+
+    expect(refresh).toHaveBeenCalledWith(appRoot, logger);
+
+    refresh.mockRestore();
+  });
+
+  it("does not refresh when the typescript option is false", () => {
+    const refresh = vi
+      .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
+      .mockImplementation(() => {});
+    const configureServer = typescriptPlugin({
+      appRoot: path.resolve("/tmp/lattice-app"),
+      typescript: false,
+    }).configureServer as unknown as (server: FakeServer) => void;
+
+    configureServer({ config: { logger: fakeLogger() } });
+
+    expect(refresh).not.toHaveBeenCalled();
+
+    refresh.mockRestore();
   });
 
   it("merges a partial dts override over the default file/augment targets", () => {

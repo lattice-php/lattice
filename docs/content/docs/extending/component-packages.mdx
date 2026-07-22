@@ -90,6 +90,8 @@ The two `extra.lattice` keys are each read by one side of the stack:
 - **`plugin`** — the `lattice()` Vite plugin scans `vendor/composer/installed.json`, and for every package that declares it, grants Vite filesystem access to the package directory and exposes its plugin under the virtual module `virtual:lattice/plugins`. The package's TSX compiles straight into the consumer's bundle: no separate build step, one shared React instance, full tree-shaking.
 - **`discover`** — Lattice's PHP discovery merges these roots into `lattice.discover`, so the package's `#[AsComponent]` classes are picked up by `php artisan lattice:typescript` (which types `node.props` for the package's components) and by definition discovery for any forms, tables, or pages the package also ships.
 
+A package that owns full screens (an auth UI, say) does not need to register a route for each one — its controllers can return a `Page` directly instead; see [Embedded pages](/core/pages/#embedded-pages).
+
 ## Installing one
 
 For the consumer, it is a single dependency:
@@ -113,8 +115,10 @@ Signature::make('signature')->label('Sign the contract');
 ```
 
 <Info>
-  Run `php artisan lattice:typescript` after installing a package to refresh the `ComponentProps`
-  augmentation, so `node.props` is typed for its components.
+  The `lattice()` Vite plugin runs `php artisan lattice:typescript` for you when the dev server
+  starts, so the `ComponentProps` augmentation picks up a newly installed package automatically. Run
+  it by hand (`php artisan lattice:typescript`) for CI and editor tooling, which don't have a dev
+  server refreshing types in the background.
 </Info>
 
 <Warning title="Requires the Vite plugin">
@@ -123,6 +127,26 @@ Signature::make('signature')->label('Sign the contract');
   access to the vendor package so its source can compile. Apps scaffolded from the Lattice starter
   kit already have it.
 </Warning>
+
+## Verifying your package is discovered
+
+`php artisan about` has a `Lattice` section listing the configured discover paths, the discovery
+roots and JS plugin each installed component package contributes, and whether the discovery
+manifest is cached. Run it after `composer require`-ing a package to confirm it was picked up
+without inspecting `installed.json` by hand.
+
+## Testing your package
+
+A package's own test suite (a Testbench workbench, typically) never appears in
+`vendor/composer/installed.json` — Composer treats it as the ROOT project while its tests run, not
+an installed dependency. Both discovery sides account for this: PHP discovery also reads the
+package's own `composer.json` for `extra.lattice.discover`, and the Vite plugin also reads it for
+`extra.lattice.plugin`. The same `composer.json` from [What a package ships](#what-a-package-ships)
+is enough — no pushing config into the workbench app, and no difference between how the package
+discovers itself and how a consumer discovers it once installed. This isn't specific to a
+testbench workbench, either — any composer ROOT (including a real app) can declare
+`extra.lattice.discover`/`plugin` directly in its own `composer.json`, and it is picked up the same
+way.
 
 ## Styling
 

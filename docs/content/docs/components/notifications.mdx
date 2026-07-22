@@ -99,6 +99,29 @@ Notification::make()
   row instead of breaking the fetch.
 </Info>
 
+## Localized notifications
+
+A plain string bakes the sender's locale into the stored row — fine for content that is already
+user-specific, wrong for UI copy read later by someone whose language you don't know at send time.
+Pass `rt()` (a [`Translatable`](/core/i18n/)) instead and the notification stores the **key plus
+replacements**; the bell resolves it through i18next in the reading user's locale, at render time,
+and re-resolves it live when they switch languages:
+
+```php
+Notification::make()
+    ->title(rt('orders:notification.shipped.title'))
+    ->body(rt('orders:notification.shipped.body')->with(['order' => $order->number]))
+    ->href("/orders/{$order->id}")
+    ->send($order->user);
+```
+
+The key is an i18next key: with [laravel-i18next](/core/i18n/) serving your `lang/` files, each file
+is a namespace, so `lang/en/orders.php` with `'notification' => ['shipped' => ['title' => '…']]` is
+`orders:notification.shipped.title`. Make sure the namespace is in the `namespaces` list your app
+passes to `createLatticeApp` — an unloaded namespace renders the raw key. Laravel's `:placeholder`
+syntax is served as i18next `{{placeholder}}` tokens, so `->with([...])` replacements interpolate as
+usual. Mixing is fine — `title` can be an `rt()` key while `body` stays a plain string.
+
 ## Reusable notification classes
 
 For a notification that also needs other channels — mail, Slack, SMS — don't reach for a Lattice

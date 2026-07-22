@@ -25,6 +25,15 @@ final class RegWidgetsPage extends RegBasePage
     }
 }
 
+#[AsPage(name: 'registered.embedded')]
+final class RegEmbeddedPage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Embedded'));
+    }
+}
+
 test('Lattice::pageRegistry()->all() resolves route metadata for registered pages', function (): void {
     Lattice::pages([RegWidgetsPage::class]);
 
@@ -56,6 +65,18 @@ test('the service provider builds a named GET route for each page', function ():
         ->and($route->uri())->toBe('widgets')
         ->and($route->getActionName())->toBe(RegWidgetsPage::class.'@render')
         ->and($route->gatherMiddleware())->toContain('web');
+});
+
+test('an imperatively registered route-less page registers no route, while a routed sibling still gets its route', function (): void {
+    Lattice::pages([RegWidgetsPage::class, RegEmbeddedPage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    $actions = collect(Route::getRoutes()->getRoutes())->map(fn ($route) => $route->getActionName());
+
+    expect(collect(Lattice::pageRegistry()->all())->pluck('class'))->toContain(RegEmbeddedPage::class)
+        ->and($actions)->not->toContain(RegEmbeddedPage::class.'@render')
+        ->and(Route::getRoutes()->getByName('widgets.index'))->not->toBeNull();
 });
 
 test('the service provider skips building routes when the route cache is active', function (): void {

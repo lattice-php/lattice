@@ -96,6 +96,20 @@ test('a callout effect serializes its callout payload', function (): void {
         ->and($wire['props']['action']['props']['label'])->toBe('Upgrade');
 });
 
+test('a callout accepts a translatable message and title', function (): void {
+    $wire = wire(
+        Callout::make(Translatable::make('billing.trial-ending.body')->with(['days' => 3]), Variant::Warning)
+            ->title(Translatable::make('billing.trial-ending.title')),
+    );
+
+    expect($wire['props']['message'])->toBe([
+        'key' => 'billing.trial-ending.body',
+        'payload' => [],
+        'replacements' => ['days' => 3],
+    ])
+        ->and($wire['props']['title']['key'])->toBe('billing.trial-ending.title');
+});
+
 test('action results expose the callout effect', function (): void {
     $result = ActionResult::success()->callout(
         Callout::make('Saved as draft.', Variant::Info),
