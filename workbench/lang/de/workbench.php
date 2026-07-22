@@ -418,6 +418,7 @@ return [
         'tables' => 'Tabellen',
         'tabs' => 'Tabs',
         'toggle-sidebar' => 'Seitenleiste umschalten',
+        'wizard' => 'Assistent',
     ],
     'pages' => [
         'charts' => [
@@ -720,6 +721,26 @@ return [
             'title' => 'Lattice Tabs',
             'vertical' => 'Vertikale Tabs',
             'vertical-end' => 'Vertikale Tabs (rechts)',
+        ],
+        'wizard' => [
+            'title' => 'Checkout-Assistent',
+            'description' => 'Mehrstufiges Formular mit serverseitiger Validierung pro Schritt.',
+            'submitted' => 'Bestellung aufgegeben.',
+            'steps' => [
+                'customer' => ['description' => 'Wer bestellt'],
+                'items' => ['description' => 'Was bestellt wird'],
+                'review' => [
+                    'description' => 'Bestätigen und abschließen',
+                    'body' => 'Prüfen Sie Ihre Eingaben und schließen Sie ab, um das gesamte Formular zu senden.',
+                ],
+            ],
+            'fields' => [
+                'name' => 'Name',
+                'email' => 'E-Mail',
+                'items' => 'Artikel',
+                'sku' => 'SKU',
+                'qty' => 'Menge',
+            ],
         ],
     ],
     'status' => [

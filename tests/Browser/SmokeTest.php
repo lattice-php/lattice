@@ -17,6 +17,7 @@ it('renders every demo page without smoke failures', function (): void {
         '/form/fields/repeater',
         '/form/fields/builder',
         '/form/dependent',
+        '/form/wizard',
         '/tables/columns/text',
         '/tables/columns/number',
         '/tables/columns/visual',

@@ -132,6 +132,7 @@ export default defineConfig({
             },
             { label: "Validation", link: "/forms/validation/" },
             { label: "Conditional fields", link: "/forms/conditional-fields/" },
+            { label: "Wizard", link: "/forms/wizard/" },
           ],
         },
         {

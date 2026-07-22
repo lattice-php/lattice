@@ -11,7 +11,7 @@ import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 
 const repeaterNode = fakeNode({
   id: "r",
@@ -34,18 +34,7 @@ function wrap(
   errors: Record<string, string> = {},
 ) {
   return render(
-    <FormProvider
-      value={{
-        action: "#",
-        clearErrors: () => {},
-        componentRef: "",
-        errors,
-        fieldLabels: {},
-        precognitive: false,
-        processing: false,
-        validate: () => {},
-      }}
-    >
+    <FormProvider value={fakeFormContext({ errors })}>
       <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>
     </FormProvider>,
   );

@@ -1,0 +1,149 @@
+---
+title: Wizard
+description: A multi-step form that validates one step at a time and submits only when every step is complete.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+`Wizard::make([...WizardStep])` splits a form into steps the user moves through one at a time. It
+must be the only root child of the form's schema — placed beside another component, or nested inside
+a layout container, it throws. Declaring one replaces the form's default submit row with its own
+Back / Next / Finish controls.
+
+```php
+use Lattice\Lattice\Forms\Components\Wizard;
+use Lattice\Lattice\Forms\Components\WizardStep;
+
+$form->schema([
+    Wizard::make([
+        WizardStep::make('customer')->schema([
+            TextInput::make('name', 'Name')->required(),
+            TextInput::make('email', 'Email')->rules(['required', 'email']),
+        ]),
+        WizardStep::make('items')->schema([
+            Repeater::make('items', 'Line items')->schema([
+                TextInput::make('sku', 'SKU')->required(),
+                TextInput::make('qty', 'Qty')->rules(['required', 'integer']),
+            ]),
+        ]),
+        WizardStep::make('review')->schema([
+            Text::make('Everything looks good — finish to place the order.'),
+        ]),
+    ]),
+]);
+```
+
+## Steps
+
+Each `WizardStep::make($name)` carries its own `->schema()` of fields, exactly like a form's own
+schema. Its label defaults to a headline-cased version of the name — `shipping-address` becomes
+"Shipping Address" — or pass a second argument to set one explicitly. `->description()` adds a longer
+summary of the step, shown alongside the label when the wizard is [vertical](#orientation).
+
+## Orientation
+
+The default horizontal layout puts the steps in a strip above the active step's fields. Call
+`->vertical()` to move the steps into a sidebar rail instead — the only layout that also shows each
+step's description.
+
+<ComponentExample
+  php={`Wizard::make([
+    WizardStep::make('customer')
+        ->description('Who is this order for?')
+        ->schema([
+            Text::make('Confirm the customer before moving on.'),
+        ]),
+    WizardStep::make('shipping-address')
+        ->description('Where should we send it?')
+        ->schema([
+            Text::make('Add the shipping details.'),
+        ]),
+    WizardStep::make('review')
+        ->description('Check everything before you finish.')
+        ->schema([
+            Text::make('Everything looks good — finish to place the order.'),
+        ]),
+])->vertical();`}
+  fixture="wizard.basic"
+/>
+
+## Advancing with Next
+
+Next validates only the active step's fields, through the same
+[Precognition](/forms/validation/#live-validation) pipeline as the rest of the form — scoped to that
+step's field names, so a later step's rules never block an earlier one. A step with no fields, like
+the review step above, advances immediately with no round trip at all.
+
+<Info>
+  Dynamic rules and rule closures see the whole form, not just the active step. A rule that reads a
+  later step's field still runs during an earlier step's `Next` validation — at that point the later
+  field is empty, so write such rules to tolerate absence there. The [final submit](#finishing)
+  validates the complete data and is where they should actually apply.
+</Info>
+
+## Moving around
+
+Back always moves to the previous step, unvalidated. The step rail lets the user jump back to any
+step already visited, but not ahead — a step becomes reachable only once Next has cleared the one
+before it.
+
+## Finishing
+
+Finish is the form's real submit: it posts to the form's own endpoint and validates every step's rules
+at once, regardless of what Next already cleared client-side. This is the actual gating boundary —
+nothing reaches `handle()` until the whole form passes.
+
+If the submission comes back invalid, the wizard jumps to the first step that owns an error and
+badges every errored step in the rail, so the user always lands where the problem is.
+
+<Warning title="State lives on the client">
+  The wizard keeps the active step, visited steps, and field values in the browser only. Reloading
+  the page restarts the wizard from its first step.
+</Warning>
+
+## Review steps
+
+A closing step summarizes what the user entered with computed, read-only fields: a field whose
+`value()` is a closure recomputes on the server whenever the form changes, so the summary follows
+the earlier steps' input automatically.
+
+```php
+WizardStep::make('review')->schema([
+    TextInput::make('review_name', 'Name')
+        ->readOnly()
+        ->value(fn (FormData $data): string => $data->string('name')),
+    TextInput::make('review_items', 'Items')
+        ->readOnly()
+        ->value(fn (FormData $data): string => collect($data->get('items', []))
+            ->map(fn (array $row): string => $row['qty'].' × '.$row['sku'])
+            ->join(', ')),
+]),
+```
+
+A step whose fields are all computed still advances through Next without validating anything —
+computed fields carry no rules of their own.
+
+## Wizards in actions
+
+A [form action](/actions/confirmation-and-forms/) can carry a wizard the same way: declare it as the sole root child
+of the action's form schema. The modal then drops its own submit button — Next validates the active
+step against the action endpoint, and Finish submits the action itself.
+
+## Conditional fields and steps
+
+[`visibleWhen`, `requiredWhen`, `readOnlyWhen`, and `disabledWhen`](/forms/conditional-fields/) work
+the same inside a wizard step as anywhere else — they react to other fields in the form.
+
+<Info title="Gate fields, not steps">
+  A field hidden by `visibleWhen` or `->hidden()` is skipped by server-side validation too, so
+  conditional behavior inside a wizard stays in sync on both sides when the conditions live on the
+  fields themselves.
+</Info>
+
+## Common options
+
+`WizardStep` carries its own `name`, `label`, and `description`; `Wizard` carries `orientation`. For
+the field types that go inside a step's schema, see [Fields](/forms/fields/overview/); for the rules
+that Next and Finish validate, see [Validation](/forms/validation/).

@@ -1,5 +1,5 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import { fieldProps } from "./field-props";
+import { fieldProps, ROW_FIELD_TYPES } from "./field-props";
 import { rowSchemaFor } from "@lattice-php/lattice/form/components/fields/row-templates";
 import { appendPath, getPath } from "./form-path";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
@@ -15,8 +15,6 @@ type PrefillSnapshot = {
   targets: PrefillTarget[];
   values: Record<string, unknown>;
 };
-
-const ROW_COLLECTION_TYPES = new Set(["field.builder", "field.repeater"]);
 
 export { getPath } from "./form-path";
 
@@ -69,7 +67,7 @@ export function collectPrefillTargets(
     row: Record<string, unknown> = {},
   ): void => {
     for (const node of list ?? []) {
-      if (ROW_COLLECTION_TYPES.has(node.type)) {
+      if (ROW_FIELD_TYPES.has(node.type)) {
         const name = fieldProps(node).name;
         if (name) {
           const childCollectionPath = appendPath(rowPath, name);

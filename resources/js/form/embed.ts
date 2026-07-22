@@ -16,7 +16,7 @@ export { FormValuesProvider, useFormValues, useSetFormValue } from "./hooks/valu
 export { walkFields } from "./lib/field-props";
 export { collectFields } from "./lib/collect-fields";
 export type { CollectedFields } from "./lib/collect-fields";
-export { firstErrors } from "./lib/field-errors";
+export { errorKeyBelongsTo, firstErrors } from "./lib/field-errors";
 export type { FieldErrors } from "./lib/field-errors";
 export { appendPath, getPath, setPath } from "./lib/form-path";
 export { FORM_DEBOUNCE_MS } from "./lib/form-transport";

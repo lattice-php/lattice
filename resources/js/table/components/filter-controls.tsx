@@ -117,7 +117,10 @@ function SchemaControl({
         _values: Record<string, unknown>,
         signal: AbortSignal,
       ) => (onSearch ? onSearch(field, query, signal) : Promise.resolve([])),
+      touch: () => {},
       validate: () => {},
+      validateFields: () => {},
+      validating: false,
     }),
     [filter.key, onSearch, processing],
   );

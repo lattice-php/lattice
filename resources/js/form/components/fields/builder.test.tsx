@@ -1,7 +1,7 @@
 import { expect, it, vi } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { ComponentPropsOf, Node } from "@lattice-php/lattice/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 
 vi.mock("@lattice-php/lattice/core/renderer", async () => {
   const { RenderNode } = await import("@lattice-php/lattice/test/form-renderer-probe");
@@ -47,18 +47,7 @@ const node = builderNode(
 
 function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
   return render(
-    <FormProvider
-      value={{
-        action: "#",
-        clearErrors: () => {},
-        componentRef: "",
-        errors: {},
-        fieldLabels: {},
-        precognitive: false,
-        processing: false,
-        validate: () => {},
-      }}
-    >
+    <FormProvider value={fakeFormContext()}>
       <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>
     </FormProvider>,
   );

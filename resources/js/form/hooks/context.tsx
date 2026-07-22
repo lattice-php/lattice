@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import type { Option } from "@lattice-php/lattice/core/types";
 
-type FormContextValue = {
+export type FormContextValue = {
   action: string;
   clearErrors: (field: string) => void;
   componentId?: string;
@@ -17,7 +17,13 @@ type FormContextValue = {
     values: Record<string, unknown>,
     signal: AbortSignal,
   ) => Promise<Option[]>;
+  touch: (fields: string[]) => void;
   validate: (field: string) => void;
+  validateFields: (
+    fields: string[],
+    options?: { onSuccess?: () => void; onValidationError?: () => void },
+  ) => void;
+  validating: boolean;
 };
 
 const FormContext = createContext<FormContextValue>({
@@ -30,7 +36,10 @@ const FormContext = createContext<FormContextValue>({
   fieldLabels: {},
   precognitive: false,
   processing: false,
+  touch: () => {},
   validate: () => {},
+  validateFields: () => {},
+  validating: false,
 });
 
 export function FormProvider({

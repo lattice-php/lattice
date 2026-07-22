@@ -1,30 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
+import type { FormContextValue } from "@lattice-php/lattice/form/hooks/context";
+import { fakeFormContext } from "@lattice-php/lattice/test-support";
 import { FormSubmitButton } from "./submit-button";
 
-type ContextOverrides = {
-  errors?: Record<string, string | undefined>;
-  fieldLabels?: Record<string, string>;
-  processing?: boolean;
-  componentId?: string;
-};
-
-function renderSubmit(overrides: ContextOverrides = {}) {
+function renderSubmit(overrides: Partial<FormContextValue> = {}) {
   return render(
-    <FormProvider
-      value={{
-        action: "#",
-        clearErrors: () => {},
-        componentId: overrides.componentId,
-        componentRef: "",
-        errors: overrides.errors ?? {},
-        fieldLabels: overrides.fieldLabels ?? {},
-        precognitive: false,
-        processing: overrides.processing ?? false,
-        validate: () => {},
-      }}
-    >
+    <FormProvider value={fakeFormContext(overrides)}>
       <FormSubmitButton label="Save" summaryLabel="Fix these fields" />
     </FormProvider>,
   );

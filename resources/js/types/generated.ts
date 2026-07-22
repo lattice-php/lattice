@@ -534,6 +534,8 @@ export type ComponentPropsMap = {
   text: Text;
   tooltip: Tooltip;
   topbar: Topbar;
+  wizard: Wizard;
+  "wizard-step": WizardStep;
 };
 export type Condition = {
   readonly field: string;
@@ -795,7 +797,9 @@ export type FormFieldNodeType =
   | "field.text-input"
   | "field.textarea"
   | "field.time-input"
-  | "field.toggle";
+  | "field.toggle"
+  | "wizard"
+  | "wizard-step";
 export type FormNodeType =
   | "field.builder"
   | "field.checkbox"
@@ -815,7 +819,9 @@ export type FormNodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
-  | "form";
+  | "form"
+  | "wizard"
+  | "wizard-step";
 export type Fragment = {
   endpoint: string | null;
   lazy: boolean;
@@ -1029,7 +1035,9 @@ export type NodeType =
   | "tabs"
   | "text"
   | "tooltip"
-  | "topbar";
+  | "topbar"
+  | "wizard"
+  | "wizard-step";
 export type NotificationItem = {
   readonly actions: Node[];
   readonly body: Translatable | string | null;
@@ -1630,3 +1638,11 @@ export type UnreadCount = {
 };
 export type Variant = "success" | "info" | "warning" | "error";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
+export type Wizard = {
+  orientation: Orientation;
+};
+export type WizardStep = {
+  description: string | null;
+  label: string;
+  name: string;
+};

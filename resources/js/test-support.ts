@@ -1,8 +1,27 @@
 import { render, type RenderResult } from "@testing-library/react";
 import { createElement, type ComponentType, type ReactNode } from "react";
 import type { Node, ComponentPropsOf, Schema } from "./core/types";
+import type { FormContextValue } from "./form/hooks/context";
 import { FormValuesProvider } from "./form/hooks/values";
 import type { FieldConditions } from "./types/generated";
+
+/** A complete no-op form context; override only what a case asserts on. */
+export function fakeFormContext(overrides: Partial<FormContextValue> = {}): FormContextValue {
+  return {
+    action: "#",
+    clearErrors: () => {},
+    componentRef: "",
+    errors: {},
+    fieldLabels: {},
+    precognitive: false,
+    processing: false,
+    touch: () => {},
+    validate: () => {},
+    validateFields: () => {},
+    validating: false,
+    ...overrides,
+  };
+}
 
 /** Fill the intents a case omits so a partial reads as the full wire `conditions` shape. */
 export function fakeConditions(partial: Partial<FieldConditions>): FieldConditions {

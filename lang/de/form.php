@@ -51,4 +51,10 @@ return [
     ],
     'submit' => 'Absenden',
     'validation-summary' => 'Bitte diese Felder korrigieren:',
+    'wizard' => [
+        'back' => 'Zurück',
+        'finish' => 'Fertigstellen',
+        'next' => 'Weiter',
+        'steps' => 'Schritte',
+    ],
 ];

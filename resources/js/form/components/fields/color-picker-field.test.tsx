@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { ColorPickerFieldComponent } from "./color-picker-field";
@@ -18,18 +18,7 @@ function renderField(props: Record<string, unknown>, initial: Record<string, unk
   });
 
   return render(
-    <FormProvider
-      value={{
-        action: "/forms/tags",
-        clearErrors: () => {},
-        componentRef: "ref-1",
-        errors: {},
-        fieldLabels: {},
-        precognitive: false,
-        processing: false,
-        validate: () => {},
-      }}
-    >
+    <FormProvider value={fakeFormContext({ action: "/forms/tags", componentRef: "ref-1" })}>
       <FormValuesProvider initial={initial}>
         <ColorPickerFieldComponent node={node}>{null}</ColorPickerFieldComponent>
       </FormValuesProvider>

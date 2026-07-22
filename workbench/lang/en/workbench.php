@@ -418,6 +418,7 @@ return [
         'tables' => 'Tables',
         'tabs' => 'Tabs',
         'toggle-sidebar' => 'Toggle sidebar',
+        'wizard' => 'Wizard',
     ],
     'pages' => [
         'charts' => [
@@ -720,6 +721,26 @@ return [
             'title' => 'Lattice Tabs',
             'vertical' => 'Vertical tabs',
             'vertical-end' => 'Vertical tabs (right)',
+        ],
+        'wizard' => [
+            'title' => 'Checkout wizard',
+            'description' => 'Multi-step form with per-step server validation.',
+            'submitted' => 'Order placed.',
+            'steps' => [
+                'customer' => ['description' => 'Who is ordering'],
+                'items' => ['description' => 'What they are ordering'],
+                'review' => [
+                    'description' => 'Confirm and finish',
+                    'body' => 'Review your input, then finish to submit the whole form.',
+                ],
+            ],
+            'fields' => [
+                'name' => 'Name',
+                'email' => 'Email',
+                'items' => 'Items',
+                'sku' => 'SKU',
+                'qty' => 'Quantity',
+            ],
         ],
     ],
     'status' => [

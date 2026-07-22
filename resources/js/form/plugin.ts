@@ -23,6 +23,8 @@ import {
   TextInputComponent,
   TimeInputComponent,
   ToggleComponent,
+  WizardComponent,
+  WizardStepComponent,
 } from "./components";
 import { RichEditorComponent } from "./components/fields/rich-editor";
 
@@ -47,6 +49,8 @@ export const formComponents = createPlugin({
     "field.text-input": eagerComponent(TextInputComponent),
     "field.time-input": eagerComponent(TimeInputComponent),
     "field.toggle": eagerComponent(ToggleComponent),
+    wizard: eagerComponent(WizardComponent),
+    "wizard-step": eagerComponent(WizardStepComponent),
   } satisfies ComponentRegistryFor<FormNodeType>,
   name: "lattice/form",
 });

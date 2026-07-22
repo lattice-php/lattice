@@ -18,6 +18,7 @@ use Lattice\Lattice\Ui\Components\IsInteractive;
 use Lattice\Lattice\Ui\Concerns\HasHttpMethod;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Justify;
+use LogicException;
 
 #[AsComponent('form')]
 class Form extends ContainerComponent
@@ -207,6 +208,30 @@ class Form extends ContainerComponent
         $this->status = $status;
 
         return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 190)]
+    protected function configureWizard(array $data): array
+    {
+        $children = $this->resolvedChildren();
+        $hasRootWizard = count($children) === 1 && $children[0] instanceof Wizard;
+        $wizardCount = collect($this->descendants())
+            ->filter(fn (Component $component): bool => $component instanceof Wizard)
+            ->count();
+
+        if ($wizardCount > 1 || ($wizardCount === 1 && ! $hasRootWizard)) {
+            throw new LogicException('A wizard must be the sole root child of its form schema.');
+        }
+
+        if ($hasRootWizard) {
+            $this->submitButton = false;
+        }
+
+        return $data;
     }
 
     /**

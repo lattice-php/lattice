@@ -74,6 +74,7 @@ use Workbench\App\Pages\Tables\NumberColumnsPage;
 use Workbench\App\Pages\Tables\PaginationPage;
 use Workbench\App\Pages\Tables\TextColumnsPage;
 use Workbench\App\Pages\Tables\VisualColumnsPage;
+use Workbench\App\Pages\WizardPage;
 use Workbench\App\Support\Logo;
 
 #[AsLayout('app')]
@@ -140,6 +141,7 @@ class AppLayout extends LayoutDefinition
                         MenuItem::fromPage(BuilderPage::class)->key('field-builder')->label(__('workbench.navigation.field-builder')),
                     ]),
                     MenuItem::fromPage(DependentFieldsPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
+                    MenuItem::fromPage(WizardPage::class)->key('wizard')->label(__('workbench.navigation.wizard')),
                 ]),
                 MenuItem::make(__('workbench.navigation.tables'), 'tables')->prefix(Icon::Table)->children([
                     MenuItem::make(__('workbench.navigation.columns'), 'columns')->children([
