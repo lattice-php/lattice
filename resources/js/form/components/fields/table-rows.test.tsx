@@ -16,7 +16,7 @@ import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
 import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
 import { TableRows, type TableColumn } from "./table-rows";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 
 const columns: TableColumn[] = [
   { name: "qty", label: "Qty", columnWidth: "md" },
@@ -256,21 +256,7 @@ it("renders stack rows instead of the horizontal table below the table breakpoin
 
 function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
   return render(
-    <FormProvider
-      value={{
-        action: "#",
-        clearErrors: () => {},
-        componentRef: "",
-        errors: {},
-        fieldLabels: {},
-        precognitive: false,
-        processing: false,
-        touch: () => {},
-        validate: () => {},
-        validateFields: () => {},
-        validating: false,
-      }}
-    >
+    <FormProvider value={fakeFormContext()}>
       <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>
     </FormProvider>,
   );

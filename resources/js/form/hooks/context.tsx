@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import type { Option } from "@lattice-php/lattice/core/types";
 
-type FormContextValue = {
+export type FormContextValue = {
   action: string;
   clearErrors: (field: string) => void;
   componentId?: string;

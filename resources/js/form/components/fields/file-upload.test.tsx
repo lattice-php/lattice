@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider, useFormValues } from "@lattice-php/lattice/form/hooks/values";
@@ -53,21 +53,7 @@ function renderUpload({
   });
 
   return render(
-    <FormProvider
-      value={{
-        action: "/forms/products",
-        clearErrors: () => {},
-        componentRef: "ref-1",
-        errors: {},
-        fieldLabels: {},
-        precognitive: false,
-        processing: false,
-        touch: () => {},
-        validate: () => {},
-        validateFields: () => {},
-        validating: false,
-      }}
-    >
+    <FormProvider value={fakeFormContext({ action: "/forms/products", componentRef: "ref-1" })}>
       <FormValuesProvider initial={values}>
         <ValuesProbe onValues={onValues} />
         {scoped ? (

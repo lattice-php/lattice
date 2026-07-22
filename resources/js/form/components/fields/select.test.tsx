@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
@@ -61,21 +61,7 @@ function renderSelect({
   );
 
   return render(
-    <FormProvider
-      value={{
-        action: "/forms/products",
-        clearErrors: () => {},
-        componentRef: "ref-1",
-        errors: {},
-        fieldLabels: {},
-        precognitive: false,
-        processing: false,
-        touch: () => {},
-        validate: () => {},
-        validateFields: () => {},
-        validating: false,
-      }}
-    >
+    <FormProvider value={fakeFormContext({ action: "/forms/products", componentRef: "ref-1" })}>
       <FormValuesProvider initial={initial}>{scoped}</FormValuesProvider>
     </FormProvider>,
   );
@@ -152,21 +138,7 @@ function renderStaticSelect(props: Record<string, unknown>, initial: Record<stri
   });
 
   return render(
-    <FormProvider
-      value={{
-        action: "/forms/products",
-        clearErrors: () => {},
-        componentRef: "ref-1",
-        errors: {},
-        fieldLabels: {},
-        precognitive: false,
-        processing: false,
-        touch: () => {},
-        validate: () => {},
-        validateFields: () => {},
-        validating: false,
-      }}
-    >
+    <FormProvider value={fakeFormContext({ action: "/forms/products", componentRef: "ref-1" })}>
       <FormValuesProvider initial={initial}>
         <SelectComponent node={node}>{null}</SelectComponent>
       </FormValuesProvider>
@@ -425,21 +397,7 @@ describe("SelectComponent option schema", () => {
     ];
 
     renderWithRegistry(
-      <FormProvider
-        value={{
-          action: "/forms/customers",
-          clearErrors: () => {},
-          componentRef: "ref-1",
-          errors: {},
-          fieldLabels: {},
-          precognitive: false,
-          processing: false,
-          touch: () => {},
-          validate: () => {},
-          validateFields: () => {},
-          validating: false,
-        }}
-      >
+      <FormProvider value={fakeFormContext({ action: "/forms/customers", componentRef: "ref-1" })}>
         <FormValuesProvider initial={{}}>
           <SelectComponent node={node}>{null}</SelectComponent>
         </FormValuesProvider>
@@ -467,21 +425,7 @@ describe("SelectComponent option schema", () => {
     (node.props as { optionSchema?: Node[] }).optionSchema = [];
 
     render(
-      <FormProvider
-        value={{
-          action: "/forms/customers",
-          clearErrors: () => {},
-          componentRef: "ref-1",
-          errors: {},
-          fieldLabels: {},
-          precognitive: false,
-          processing: false,
-          touch: () => {},
-          validate: () => {},
-          validateFields: () => {},
-          validating: false,
-        }}
-      >
+      <FormProvider value={fakeFormContext({ action: "/forms/customers", componentRef: "ref-1" })}>
         <FormValuesProvider initial={{}}>
           <SelectComponent node={node}>{null}</SelectComponent>
         </FormValuesProvider>
