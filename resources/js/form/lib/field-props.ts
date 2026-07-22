@@ -28,6 +28,13 @@ type FieldProps = Partial<
   >
 >;
 
+/**
+ * Field types whose value is a collection of rows. Schema walkers must not
+ * descend into their child schemas as top-level fields; children live under
+ * `name.<index>.` paths instead.
+ */
+export const ROW_FIELD_TYPES = new Set(["field.builder", "field.repeater"]);
+
 export function fieldProps(node: Node): FieldProps {
   return node.props as FieldProps;
 }

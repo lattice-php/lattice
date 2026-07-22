@@ -1,7 +1,6 @@
 import type { Node } from "@lattice-php/lattice/core/types";
-import { fieldProps } from "./field-props";
-
-const ROW_FIELD_TYPES = new Set(["field.builder", "field.repeater"]);
+import { errorKeyBelongsTo } from "./field-errors";
+import { fieldProps, ROW_FIELD_TYPES } from "./field-props";
 
 export function stepFieldNames(step: Node): string[] {
   const names: string[] = [];
@@ -65,9 +64,7 @@ export function stepsWithErrors(
   const owners = new Set<number>();
 
   stepNames.forEach((names, index) => {
-    const owns = keys.some((key) =>
-      names.some((name) => key === name || key.startsWith(`${name}.`)),
-    );
+    const owns = keys.some((key) => names.some((name) => errorKeyBelongsTo(key, name)));
 
     if (owns) {
       owners.add(index);
