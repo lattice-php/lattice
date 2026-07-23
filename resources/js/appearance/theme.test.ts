@@ -82,4 +82,10 @@ describe("createTheme", () => {
     expect(root).toContain("--card:oklch(0.2 0 0)");
     expect(root).toContain("--card-foreground:oklch(0.985 0 0)");
   });
+
+  it("uses a dark foreground for the light warning color in both modes", () => {
+    const css = createTheme();
+    expect(block(css, ":root")).toContain("--warning-foreground:oklch(0.205 0 0)");
+    expect(block(css, ".dark")).toContain("--warning-foreground:oklch(0.205 0 0)");
+  });
 });

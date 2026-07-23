@@ -178,7 +178,7 @@ const darkMode: Mode = {
     info: "oklch(0.7 0.14 240)",
     infoFg: "oklch(0.205 0 0)",
     warning: "oklch(0.7 0.13 78)",
-    warningFg: "oklch(0.985 0 0)",
+    warningFg: "oklch(0.205 0 0)",
     border: "oklch(0.269 0 0)",
     input: "oklch(0.269 0 0)",
     ring: "oklch(0.55 0.08 182)",
