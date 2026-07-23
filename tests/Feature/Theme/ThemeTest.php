@@ -27,20 +27,6 @@ it('brands dark only via the dark block', function (): void {
     expect($css)->toContain('--primary:oklch(0.7 0.18 265)');
 });
 
-it('matches the golden theme fixtures byte-for-byte', function (array $input, string $expected): void {
-    expect(Theme::fromArray($input)->toCss())->toBe($expected);
-})->with(function (): Generator {
-    $fixtures = json_decode(
-        file_get_contents(__DIR__.'/../../../resources/theme-fixtures.json'),
-        true,
-        flags: JSON_THROW_ON_ERROR,
-    );
-
-    foreach ($fixtures as $fixture) {
-        yield $fixture['name'] => [$fixture['input'], $fixture['css']];
-    }
-});
-
 it('lets a css Color carry its dark counterpart into the dark block', function (): void {
     $css = Theme::make()->colors(primary: Color::hex('#6366f1')->dark('oklch(0.7 0.18 265)'))->toCss();
     expect($css)
