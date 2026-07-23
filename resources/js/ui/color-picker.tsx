@@ -31,7 +31,7 @@ export function ColorPicker({
   paletteLabel?: string;
 }) {
   const [draft, setDraft] = useState<string | null>(null);
-  const color = normalizeHex(value) ?? "var(--lt-muted-fg)";
+  const color = normalizeHex(value) ?? "#6b7280";
 
   return (
     <div className="flex w-56 flex-col gap-3" data-slot="color-picker">

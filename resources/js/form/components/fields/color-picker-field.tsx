@@ -42,7 +42,7 @@ export const ColorPickerFieldComponent: RendererComponent<"field.color-picker"> 
               <ColorPicker
                 onChange={(next) => commit(next)}
                 palette={props.palette}
-                value={hex ?? "var(--lt-muted-fg)"}
+                value={hex ?? "#6b7280"}
               />
             </PopoverContent>
           </Popover>
