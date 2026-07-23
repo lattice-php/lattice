@@ -1,4 +1,4 @@
-import { readableForeground, shiftLightness } from "./oklch";
+import { normalizeToOklch, readableForeground, shiftLightness } from "./oklch";
 
 export type ThemeColors = {
   bg: string;
@@ -227,15 +227,20 @@ function emitMode(
     const baseValue = userColors[baseKey] ?? base.colors[baseKey];
     const fg =
       userColors[fgKey] ??
-      (userColors[baseKey] !== undefined ? readableForeground(baseValue) : base.colors[fgKey]);
+      (userColors[baseKey] !== undefined
+        ? readableForeground(normalizeToOklch(baseValue))
+        : base.colors[fgKey]);
     lines.push(`--${HOST_VAR[fgKey]}:${fg};`);
   });
 
   STATEFUL.forEach((key) => {
     const baseValue = userColors[key] ?? base.colors[key];
     const overrode = userColors[key] !== undefined;
-    const hover = overrode ? shiftLightness(baseValue, deltas.hover) : base.states[key].hover;
-    const active = overrode ? shiftLightness(baseValue, deltas.active) : base.states[key].active;
+    const normalizedBase = normalizeToOklch(baseValue);
+    const hover = overrode ? shiftLightness(normalizedBase, deltas.hover) : base.states[key].hover;
+    const active = overrode
+      ? shiftLightness(normalizedBase, deltas.active)
+      : base.states[key].active;
     lines.push(`--${HOST_VAR[key]}-hover:${hover};`);
     lines.push(`--${HOST_VAR[key]}-active:${active};`);
   });

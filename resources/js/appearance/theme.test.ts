@@ -88,4 +88,12 @@ describe("createTheme", () => {
     expect(block(css, ":root")).toContain("--warning-foreground:oklch(0.205 0 0)");
     expect(block(css, ".dark")).toContain("--warning-foreground:oklch(0.205 0 0)");
   });
+
+  it("derives foreground and states from a hex brand color", () => {
+    const root = block(createTheme({ colors: { primary: "#6366f1" } }), ":root");
+    expect(root).toContain("--primary:#6366f1");
+    expect(root).toContain("--primary-foreground:oklch(0.985 0 0)");
+    expect(root).toContain("--primary-hover:oklch(0.535 0.204 277.117)");
+    expect(root).toContain("--primary-active:oklch(0.495 0.204 277.117)");
+  });
 });
