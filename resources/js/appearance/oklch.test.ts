@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseOklch, readableForeground, shiftLightness } from "./oklch";
+import { normalizeToOklch, parseOklch, readableForeground, shiftLightness } from "./oklch";
 
 describe("parseOklch", () => {
   it("parses L C H", () => {
@@ -40,5 +40,28 @@ describe("readableForeground", () => {
 
   it("falls back to the light foreground for non-oklch colors", () => {
     expect(readableForeground("#2563eb")).toBe("oklch(0.985 0 0)");
+  });
+});
+
+describe("normalizeToOklch", () => {
+  it("passes oklch through unchanged", () => {
+    expect(normalizeToOklch("oklch(0.55 0.2 265)")).toBe("oklch(0.55 0.2 265)");
+  });
+
+  it("converts white and black hex", () => {
+    expect(normalizeToOklch("#ffffff")).toBe("oklch(1 0 0)");
+    expect(normalizeToOklch("#000000")).toBe("oklch(0 0 0)");
+  });
+
+  it("converts a brand hex to oklch", () => {
+    expect(normalizeToOklch("#6366f1")).toBe("oklch(0.585 0.204 277.117)");
+  });
+
+  it("converts rgb()", () => {
+    expect(normalizeToOklch("rgb(99, 102, 241)")).toBe("oklch(0.585 0.204 277.117)");
+  });
+
+  it("returns non-convertible colors unchanged", () => {
+    expect(normalizeToOklch("rebeccapurple")).toBe("rebeccapurple");
   });
 });
