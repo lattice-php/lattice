@@ -39,7 +39,6 @@ type Scalars = {
   fontSans: string;
   fontMono: string;
   fontDisplay: string;
-  chart: string[];
 };
 
 export type Theme = Partial<Scalars> & {
@@ -83,7 +82,7 @@ const HOST_VAR: Record<keyof ThemeColors, string> = {
   disabledFg: "disabled-foreground",
 };
 
-const SCALAR_VAR: Record<keyof Omit<Scalars, "chart">, string> = {
+const SCALAR_VAR: Record<keyof Scalars, string> = {
   radius: "radius",
   ringWidth: "ring-width",
   ringOffset: "ring-offset",
@@ -152,7 +151,6 @@ const lightMode: Mode = {
   fontSans: "",
   fontMono: "",
   fontDisplay: "",
-  chart: [],
 };
 
 const darkMode: Mode = {
@@ -200,7 +198,6 @@ const darkMode: Mode = {
   fontSans: "",
   fontMono: "",
   fontDisplay: "",
-  chart: [],
 };
 
 const DELTAS = {
