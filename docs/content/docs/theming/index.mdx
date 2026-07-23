@@ -75,6 +75,10 @@ to resolve it per request — for example per-tenant branding:
 Lattice::theme(fn (): Theme => Theme::make()->colors(primary: tenant()->brand_color));
 ```
 
+Prefer this closure form for per-request or per-tenant themes: a concrete `Theme` registered directly
+persists for the life of the worker process, so under Octane it would leak the first request's theme
+into every later one.
+
 Or configure a theme declaratively in `config/lattice.php` under `frontend.theme`, using the same
 structured shape:
 

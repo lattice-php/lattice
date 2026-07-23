@@ -16,6 +16,7 @@ const inputs: Array<{ name: string; input: Theme }> = [
   { name: "scalars", input: { radius: "0.75rem", fontSans: "'Geist', sans-serif" } },
   { name: "light-surface-override", input: { colors: { surface: "#101010" } } },
   { name: "non-derivable-named", input: { colors: { primary: "rebeccapurple" } } },
+  { name: "stateful-near-gray", input: { colors: { primary: "#808080" } } },
 ];
 
 const path = resolve(process.cwd(), "resources/theme-fixtures.json");

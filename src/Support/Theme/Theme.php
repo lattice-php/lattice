@@ -203,7 +203,7 @@ final class Theme
         if (is_array($colors)) {
             foreach ($colors as $key => $value) {
                 if (is_string($key) && array_key_exists($key, self::HOST_VAR) && is_string($value)) {
-                    $instance->colors[$key] = $value;
+                    $instance->colors[$key] = self::guardValue($value);
                 }
             }
         }
@@ -211,7 +211,7 @@ final class Theme
         foreach (array_keys(self::SCALAR_VAR) as $key) {
             $value = $theme[$key] ?? null;
             if (is_string($value)) {
-                $instance->scalars[$key] = $value;
+                $instance->scalars[$key] = self::guardValue($value);
             }
         }
 
@@ -330,7 +330,7 @@ final class Theme
     private function withScalar(string $key, string $value): self
     {
         $clone = clone $this;
-        $clone->scalars[$key] = $value;
+        $clone->scalars[$key] = self::guardValue($value);
 
         return $clone;
     }
@@ -341,14 +341,27 @@ final class Theme
     private function resolveColor(Color|string $value): array
     {
         if (! $value instanceof Color) {
-            return [$value, null];
+            return [self::guardValue($value), null];
         }
 
         if ($value->kind === ColorKind::Named) {
             throw new InvalidArgumentException('A theme color cannot be defined in terms of a named token.');
         }
 
-        return [$value->value, $value->dark];
+        return [self::guardValue($value->value), $value->dark !== null ? self::guardValue($value->dark) : null];
+    }
+
+    /**
+     * Blocks CSS-breakout characters so a tenant-supplied value cannot escape
+     * the assembled :root{}/.dark{} rule (e.g. `red} html{background:url(//evil)`).
+     */
+    private static function guardValue(string $value): string
+    {
+        if (preg_match('/[<>{};]/', $value) === 1) {
+            throw new InvalidArgumentException(sprintf('Theme value [%s] contains invalid characters.', $value));
+        }
+
+        return $value;
     }
 
     /**
