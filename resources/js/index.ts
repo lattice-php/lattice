@@ -10,7 +10,13 @@ export {
 export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { registerRichEditorExtension } from "./form/rich-editor/registry";
-export { initializeTheme, updateAppearance, useAppearance } from "./appearance";
+export {
+  initializeTheme,
+  updateAppearance,
+  useAppearance,
+  createTheme,
+  injectTheme,
+} from "./appearance";
 export { copyToClipboard } from "./clipboard";
 export {
   createLatticeApp,
@@ -105,7 +111,13 @@ export type {
   ToolbarControl,
   ToolbarItem,
 } from "./form/rich-editor/registry";
-export type { Appearance, ResolvedAppearance, UseAppearanceReturn } from "./appearance";
+export type {
+  Appearance,
+  ResolvedAppearance,
+  UseAppearanceReturn,
+  Theme,
+  ThemeColors,
+} from "./appearance";
 export type { Callout, ToastMessage, Variant } from "./toast";
 export type {
   IconName,

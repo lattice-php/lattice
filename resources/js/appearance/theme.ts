@@ -261,3 +261,14 @@ export function createTheme(theme: Theme = {}): string {
 }
 
 export const defaultTheme = { light: lightMode, dark: darkMode } as const;
+
+export function injectTheme(theme: Theme = {}): void {
+  if (typeof document === "undefined") {
+    return;
+  }
+  const id = "lattice-theme";
+  const style =
+    document.getElementById(id) ??
+    document.head.appendChild(Object.assign(document.createElement("style"), { id }));
+  style.textContent = createTheme(theme);
+}

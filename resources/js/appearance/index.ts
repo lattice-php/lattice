@@ -128,3 +128,6 @@ export function useAppearance(): UseAppearanceReturn {
 
   return { appearance, resolvedAppearance, updateAppearance } as const;
 }
+
+export { createTheme, injectTheme, defaultTheme } from "./theme";
+export type { Theme, ThemeColors } from "./theme";
