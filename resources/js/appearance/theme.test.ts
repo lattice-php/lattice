@@ -60,4 +60,26 @@ describe("createTheme", () => {
     expect(root).toContain("--radius:0.75rem");
     expect(root).toContain("--font-sans:'Geist', sans-serif");
   });
+
+  it("reproduces the hand-tuned hover and active defaults for every stateful color", () => {
+    const root = block(createTheme(), ":root");
+    expect(root).toContain("--secondary-hover:oklch(0.93 0 0)");
+    expect(root).toContain("--secondary-active:oklch(0.9 0 0)");
+    expect(root).toContain("--destructive-hover:oklch(0.53 0.21 27.3)");
+    expect(root).toContain("--destructive-active:oklch(0.48 0.21 27.3)");
+    expect(root).toContain("--success-active:oklch(0.52 0.125 160)");
+    expect(root).toContain("--info-active:oklch(0.52 0.14 240)");
+  });
+
+  it("leaves dark mode at its defaults when only a light brand color is set", () => {
+    const dark = block(createTheme({ colors: { primary: "oklch(0.55 0.2 265)" } }), ".dark");
+    expect(dark).toContain("--primary:oklch(0.74 0.105 182)");
+    expect(dark).toContain("--primary-hover:oklch(0.79 0.105 182)");
+  });
+
+  it("derives a legible foreground for any overridden base color, not just stateful ones", () => {
+    const root = block(createTheme({ colors: { surface: "oklch(0.2 0 0)" } }), ":root");
+    expect(root).toContain("--card:oklch(0.2 0 0)");
+    expect(root).toContain("--card-foreground:oklch(0.985 0 0)");
+  });
 });

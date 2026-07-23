@@ -47,7 +47,10 @@ export type Theme = Partial<Scalars> & {
   dark?: Partial<Scalars> & { colors?: Partial<ThemeColors> };
 };
 
-type Mode = { colors: ThemeColors } & Scalars;
+const STATEFUL = ["primary", "secondary", "danger", "success", "info"] as const;
+type StatefulKey = (typeof STATEFUL)[number];
+type State = { hover: string; active: string };
+type Mode = { colors: ThemeColors; states: Record<StatefulKey, State> } & Scalars;
 
 const HOST_VAR: Record<keyof ThemeColors, string> = {
   bg: "background",
@@ -90,15 +93,18 @@ const SCALAR_VAR: Record<keyof Omit<Scalars, "chart">, string> = {
   fontDisplay: "font-display",
 };
 
-const STATEFUL = ["primary", "secondary", "danger", "success", "info"] as const;
-type StatefulKey = (typeof STATEFUL)[number];
-
-const FG_OF: Record<StatefulKey, keyof ThemeColors> = {
+const FG_PAIR: Partial<Record<keyof ThemeColors, keyof ThemeColors>> = {
+  surface: "surfaceFg",
+  popover: "popoverFg",
   primary: "primaryFg",
   secondary: "secondaryFg",
+  muted: "mutedFg",
+  accent: "accentFg",
   danger: "dangerFg",
   success: "successFg",
   info: "infoFg",
+  warning: "warningFg",
+  disabled: "disabledFg",
 };
 
 const lightMode: Mode = {
@@ -132,6 +138,13 @@ const lightMode: Mode = {
     disabled: "oklch(0.95 0 0)",
     disabledFg: "oklch(0.7 0 0)",
   },
+  states: {
+    primary: { hover: "oklch(0.43 0.092 182)", active: "oklch(0.39 0.092 182)" },
+    secondary: { hover: "oklch(0.93 0 0)", active: "oklch(0.9 0 0)" },
+    danger: { hover: "oklch(0.53 0.21 27.3)", active: "oklch(0.48 0.21 27.3)" },
+    success: { hover: "oklch(0.57 0.125 160)", active: "oklch(0.52 0.125 160)" },
+    info: { hover: "oklch(0.57 0.14 240)", active: "oklch(0.52 0.14 240)" },
+  },
   radius: "0.5rem",
   ringWidth: "3px",
   ringOffset: "0px",
@@ -143,9 +156,7 @@ const lightMode: Mode = {
 };
 
 const darkMode: Mode = {
-  ...lightMode,
   colors: {
-    ...lightMode.colors,
     bg: "oklch(0.145 0 0)",
     fg: "oklch(0.985 0 0)",
     surface: "oklch(0.145 0 0)",
@@ -167,7 +178,7 @@ const darkMode: Mode = {
     info: "oklch(0.7 0.14 240)",
     infoFg: "oklch(0.205 0 0)",
     warning: "oklch(0.7 0.13 78)",
-    warningFg: "oklch(0.205 0 0)",
+    warningFg: "oklch(0.985 0 0)",
     border: "oklch(0.269 0 0)",
     input: "oklch(0.269 0 0)",
     ring: "oklch(0.55 0.08 182)",
@@ -175,6 +186,21 @@ const darkMode: Mode = {
     disabled: "oklch(0.32 0 0)",
     disabledFg: "oklch(0.55 0 0)",
   },
+  states: {
+    primary: { hover: "oklch(0.79 0.105 182)", active: "oklch(0.84 0.105 182)" },
+    secondary: { hover: "oklch(0.32 0 0)", active: "oklch(0.36 0 0)" },
+    danger: { hover: "oklch(0.47 0.13 26)", active: "oklch(0.52 0.13 26)" },
+    success: { hover: "oklch(0.75 0.15 162)", active: "oklch(0.8 0.15 162)" },
+    info: { hover: "oklch(0.75 0.14 240)", active: "oklch(0.8 0.14 240)" },
+  },
+  radius: "0.5rem",
+  ringWidth: "3px",
+  ringOffset: "0px",
+  borderWidth: "1px",
+  fontSans: "",
+  fontMono: "",
+  fontDisplay: "",
+  chart: [],
 };
 
 const DELTAS = {
@@ -182,9 +208,11 @@ const DELTAS = {
   dark: { hover: 0.05, active: 0.1 },
 };
 
+type ModeInput = Partial<Scalars> & { colors?: Partial<ThemeColors> };
+
 function emitMode(
   base: Mode,
-  input: (Partial<Scalars> & { colors?: Partial<ThemeColors> }) | undefined,
+  input: ModeInput | undefined,
   deltas: { hover: number; active: number },
 ): string {
   const userColors = input?.colors ?? {};
@@ -194,40 +222,23 @@ function emitMode(
     if (key.endsWith("Fg")) {
       return;
     }
-    const value = userColors[key] ?? base.colors[key];
-    lines.push(`--${HOST_VAR[key]}:${value};`);
-  });
-
-  (Object.keys(FG_OF) as StatefulKey[]).forEach((key) => {
-    const baseValue = userColors[key] ?? base.colors[key];
-    const fgKey = FG_OF[key];
-    const fg =
-      userColors[fgKey] ?? (userColors[key] ? readableForeground(baseValue) : base.colors[fgKey]);
-    lines.push(`--${HOST_VAR[fgKey]}:${fg};`);
-  });
-
-  (
-    [
-      "surfaceFg",
-      "popoverFg",
-      "mutedFg",
-      "accentFg",
-      "warningFg",
-      "disabledFg",
-    ] as (keyof ThemeColors)[]
-  ).forEach((key) => {
     lines.push(`--${HOST_VAR[key]}:${userColors[key] ?? base.colors[key]};`);
+  });
+
+  (Object.keys(FG_PAIR) as (keyof ThemeColors)[]).forEach((baseKey) => {
+    const fgKey = FG_PAIR[baseKey]!;
+    const baseValue = userColors[baseKey] ?? base.colors[baseKey];
+    const fg =
+      userColors[fgKey] ??
+      (userColors[baseKey] !== undefined ? readableForeground(baseValue) : base.colors[fgKey]);
+    lines.push(`--${HOST_VAR[fgKey]}:${fg};`);
   });
 
   STATEFUL.forEach((key) => {
     const baseValue = userColors[key] ?? base.colors[key];
     const overrode = userColors[key] !== undefined;
-    const hover = overrode
-      ? shiftLightness(baseValue, deltas.hover)
-      : shiftLightness(base.colors[key], deltas.hover);
-    const active = overrode
-      ? shiftLightness(baseValue, deltas.active)
-      : shiftLightness(base.colors[key], deltas.active);
+    const hover = overrode ? shiftLightness(baseValue, deltas.hover) : base.states[key].hover;
+    const active = overrode ? shiftLightness(baseValue, deltas.active) : base.states[key].active;
     lines.push(`--${HOST_VAR[key]}-hover:${hover};`);
     lines.push(`--${HOST_VAR[key]}-active:${active};`);
   });
