@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
-import ChartComponent from "./chart-view";
+import ChartComponent, { colorAt } from "./chart-view";
 import ChartWrapper from "./chart";
 
 vi.mock("recharts", async () => {
@@ -939,5 +939,10 @@ describe("Chart component", () => {
     );
 
     expect(await screen.findByTestId("responsive-container")).toBeInTheDocument();
+  });
+
+  it("colors categorical series from the chart palette, not semantic tokens", () => {
+    expect(colorAt(0)).toBe("var(--lt-chart-1)");
+    expect(colorAt(5)).toBe("var(--lt-chart-6)");
   });
 });

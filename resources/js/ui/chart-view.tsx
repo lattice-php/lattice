@@ -63,16 +63,18 @@ const tooltipProps = {
 } as const;
 
 const palette = [
-  "var(--lt-primary)",
-  "var(--lt-success)",
-  "var(--lt-info)",
-  "var(--lt-warning)",
-  "var(--lt-danger)",
-  "var(--lt-muted-fg)",
+  "var(--lt-chart-1)",
+  "var(--lt-chart-2)",
+  "var(--lt-chart-3)",
+  "var(--lt-chart-4)",
+  "var(--lt-chart-5)",
+  "var(--lt-chart-6)",
+  "var(--lt-chart-7)",
+  "var(--lt-chart-8)",
 ];
 
-function colorAt(index: number): string {
-  return palette[index % palette.length] ?? "var(--lt-primary)";
+export function colorAt(index: number): string {
+  return palette[index % palette.length] ?? "var(--lt-chart-1)";
 }
 
 function datumColor(datum: ChartDatum, series: ChartSeries, index: number): string {
