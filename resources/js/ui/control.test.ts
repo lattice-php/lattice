@@ -8,7 +8,7 @@ describe("controlSurface", () => {
 
     for (const classes of [comfortable, compact]) {
       expect(classes).toContain("border-lt-input");
-      expect(classes).toContain("focus-visible:ring-[3px]");
+      expect(classes).toContain("focus-visible:ring-[length:var(--lt-ring-width)]");
     }
   });
 
@@ -21,5 +21,9 @@ describe("controlSurface", () => {
 
   it("exposes the focus ring constant", () => {
     expect(FOCUS_RING).toContain("focus-visible:border-lt-ring");
+  });
+
+  it("uses the ring-width token for the focus ring", () => {
+    expect(FOCUS_RING).toContain("var(--lt-ring-width)");
   });
 });

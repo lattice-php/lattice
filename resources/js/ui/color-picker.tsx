@@ -31,7 +31,7 @@ export function ColorPicker({
   paletteLabel?: string;
 }) {
   const [draft, setDraft] = useState<string | null>(null);
-  const color = normalizeHex(value) ?? "#6b7280";
+  const color = normalizeHex(value) ?? "var(--lt-muted-fg)";
 
   return (
     <div className="flex w-56 flex-col gap-3" data-slot="color-picker">
@@ -47,7 +47,7 @@ export function ColorPicker({
                 aria-selected={normalized === color}
                 className={cn(
                   "size-6 shrink-0 rounded-full border border-lt-border",
-                  normalized === color && "ring-2 ring-lt-ring ring-offset-1",
+                  normalized === color && "ring-[length:var(--lt-ring-width)] ring-lt-ring/50",
                 )}
                 key={swatch}
                 onClick={() => onChange(normalized)}
