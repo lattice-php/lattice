@@ -7,14 +7,47 @@ import TokenReference from "@components/TokenReference.astro";
 import Info from "@components/Info.astro";
 
 Lattice renders with a small set of semantic design tokens — CSS custom properties prefixed
-with `--lt-`. Every token resolves through a host variable with a built-in fallback, so you can
-theme Lattice by defining the host variables (the same names shadcn/ui uses) on `:root` and
-`.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
+with `--lt-`. Theme it by calling `createTheme`/`injectTheme` with a partial `Theme` — set only the
+colors and scalars you want to change, and Lattice merges them over its defaults, deriving readable
+foregrounds and hover/active states for you. For direct control over the underlying host variables,
+see [Advanced: host variables](#advanced-host-variables).
 
 Tokens are global and shared across components. The **Style** tab on each component example lists
 the tokens that example uses in its initial rendered state. Tokens that only appear in
 interactive or overlay content — a dropdown panel, a dialog, a popover that opens on demand — are
 not captured there; this page is the complete reference.
+
+## Rebranding
+
+Pass a partial theme to `createTheme` and inject it before your app renders. Set only what you
+want to change — Lattice derives readable foregrounds and hover/active states for you.
+
+```tsx
+import { injectTheme, initializeTheme } from "@lattice-php/lattice";
+
+injectTheme({
+  colors: { primary: "oklch(0.55 0.2 265)" },
+  radius: "0.75rem",
+  fontSans: "'Geist', sans-serif",
+});
+initializeTheme();
+```
+
+Brand dark mode by adding a `dark` block; otherwise Lattice keeps its tuned dark defaults:
+
+```tsx
+injectTheme({
+  colors: { primary: "oklch(0.55 0.2 265)" },
+  dark: { colors: { primary: "oklch(0.7 0.18 265)" } },
+});
+```
+
+<Info>
+  `injectTheme` writes to a managed `<style id="lattice-theme">` tag — it's SSR-safe and idempotent,
+  so calling it again (e.g. after a runtime theme change) replaces the previous CSS in place. Prefer
+  `createTheme(theme)` directly if you want the CSS string to inline yourself, for example during
+  server-side rendering.
+</Info>
 
 ## Dark mode
 
@@ -58,3 +91,25 @@ function AppearanceToggle() {
 ## Token reference
 
 <TokenReference />
+
+## Advanced: host variables
+
+Every token resolves through a host variable with a built-in fallback, so you can theme Lattice
+without `createTheme` by defining the host variables (the same names shadcn/ui uses) directly on
+`:root` and `.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
+
+```css
+:root {
+  --primary: oklch(0.55 0.2 265);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --primary: oklch(0.7 0.18 265);
+}
+```
+
+This is the lower-level mechanism `createTheme` generates CSS for. Reach for it when you already
+own a design-token pipeline emitting these variable names, or need finer control than `Theme`
+exposes — otherwise prefer `createTheme`/`injectTheme`, which also derives foregrounds and
+hover/active states for you.
