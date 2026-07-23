@@ -49,6 +49,68 @@ injectTheme({
   server-side rendering.
 </Info>
 
+## Server-side theming (PHP)
+
+For themes known at boot — a single brand, or one resolved per tenant — build a `Theme` in PHP and
+register it with the `Lattice` facade, typically in a service provider's `boot()` method:
+
+```php
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Support\Theme\Theme;
+
+Lattice::theme(
+    Theme::make()
+        ->colors(primary: '#6366f1')
+        ->radius('0.75rem')
+        ->dark(fn (Theme $theme): Theme => $theme->colors(primary: 'oklch(0.7 0.18 265)')),
+);
+```
+
+`colors()` accepts named arguments for any token (`primary`, `secondary`, `danger`, …) and derives
+readable foregrounds and hover/active states, same as the JS path. `dark()` takes a closure that
+builds the dark-mode overrides from a fresh `Theme`. Pass a closure instead of a `Theme` to `Lattice::theme()`
+to resolve it per request — for example per-tenant branding:
+
+```php
+Lattice::theme(fn (): Theme => Theme::make()->colors(primary: tenant()->brand_color));
+```
+
+Or configure a theme declaratively in `config/lattice.php` under `frontend.theme`, using the same
+structured shape:
+
+```php
+'frontend' => [
+    'theme' => [
+        'colors' => ['primary' => '#6366f1'],
+        'radius' => '0.75rem',
+        'dark' => ['colors' => ['primary' => 'oklch(0.7 0.18 265)']],
+    ],
+],
+```
+
+A theme registered via `Lattice::theme()` takes precedence over the config value.
+
+Render it by adding `@latticeTheme` to your root Blade layout's `<head>`:
+
+```blade
+<head>
+    @latticeTheme
+    @vite(['resources/css/app.css', 'resources/js/app.tsx'])
+    @inertiaHead
+</head>
+```
+
+It emits a `<style id="lattice-theme">` block server-side, so the correct theme is present on first
+paint — no flash of the default theme before JS runs.
+
+<Info>
+  The PHP `Theme` path is for themes known server-side (static or per-tenant), with correct first
+  paint. The JS `injectTheme` path above is for runtime switching — a user-facing theme picker, for
+  example. Both write to the same `lattice-theme` style id, so a client `injectTheme` call cleanly
+  overrides the server-rendered theme. Hex, `rgb()`, and `oklch()` colors are all accepted on either
+  path and get derived foregrounds and hover/active states automatically.
+</Info>
+
 ## Dark mode
 
 Every token ships a light and a dark value (the **Light** and **Dark** columns below). Dark mode is
