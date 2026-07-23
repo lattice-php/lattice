@@ -57,6 +57,7 @@ use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\Frontend\StandaloneAssets;
+use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TableRegistry;
@@ -121,6 +122,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(DiscoveryManifest::class);
         $this->app->singleton(PageMetadataResolver::class);
         $this->app->singleton(StandaloneAssets::class);
+        $this->app->singleton(ThemeRenderer::class);
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
         $this->app->scoped(EffectFlasher::class);
 
@@ -182,6 +184,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         Blade::directive('latticeHead', static fn (string $expression): string => sprintf('<?php echo app(\%s::class)->head(%s); ?>', StandaloneAssets::class, $expression));
         Blade::directive('latticeScripts', static fn (): string => sprintf('<?php echo app(\%s::class)->scripts(); ?>', StandaloneAssets::class));
+        Blade::directive('latticeTheme', static fn (): string => sprintf('<?php echo app(\%s::class)->style(); ?>', ThemeRenderer::class));
     }
 
     /**

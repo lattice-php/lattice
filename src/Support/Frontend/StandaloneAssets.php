@@ -6,6 +6,8 @@ namespace Lattice\Lattice\Support\Frontend;
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
+use Lattice\Lattice\Support\Theme\Theme;
+use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use RuntimeException;
 
 final class StandaloneAssets
@@ -24,8 +26,8 @@ final class StandaloneAssets
 
         $theme = $frontend['theme'] ?? [];
 
-        if ($theme !== []) {
-            $tags[] = $this->themeStyle($theme);
+        if (is_array($theme) && $theme !== []) {
+            $tags[] = $this->renderTheme($theme);
         }
 
         $tags[] = $this->configScript($frontend);
@@ -52,21 +54,39 @@ final class StandaloneAssets
         );
     }
 
+    /**
+     * @param  array<string, mixed>  $theme
+     */
+    private function renderTheme(array $theme): string
+    {
+        if (ThemeRenderer::isStructured($theme)) {
+            return ThemeRenderer::wrap(Theme::fromArray($theme));
+        }
+
+        /** @var array<string, string> $theme */
+        return $this->themeStyle($theme);
+    }
+
     /** @param array<string, string> $theme */
     private function themeStyle(array $theme): string
     {
         $declarations = '';
 
         foreach ($theme as $key => $value) {
-            if (preg_match('/[<>{}]/', $key.$value) === 1) {
-                throw new InvalidArgumentException("Invalid characters in the [{$key}] theme value.");
-            }
+            self::guardAgainstUnsafeCharacters($key, $key.$value);
 
             $property = str_starts_with($key, '--') ? $key : '--'.$key;
             $declarations .= "{$property}:{$value};";
         }
 
         return "<style>:root{{$declarations}}</style>";
+    }
+
+    public static function guardAgainstUnsafeCharacters(string $key, string $subject, string $pattern = '/[<>{}]/'): void
+    {
+        if (preg_match($pattern, $subject) === 1) {
+            throw new InvalidArgumentException("Invalid characters in the [{$key}] theme value.");
+        }
     }
 
     private function versionedUrl(string $file): string

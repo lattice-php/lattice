@@ -19,6 +19,8 @@ use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Lattice\Support\Theme\Theme;
+use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Ui\SlotRegistry;
@@ -35,6 +37,7 @@ final readonly class LatticeRegistry
         private TableRegistry $tables,
         private RemoteSourceRegistry $remoteSources,
         private SlotRegistry $slots,
+        private ThemeRenderer $themeRenderer,
     ) {}
 
     /**
@@ -112,6 +115,11 @@ final readonly class LatticeRegistry
     public function extend(string $name, Closure $factory, int $priority = 0): void
     {
         $this->slots->extend($name, $factory, $priority);
+    }
+
+    public function theme(Theme|Closure $theme): void
+    {
+        $this->themeRenderer->register($theme);
     }
 
     public function layoutRegistry(): LayoutRegistry
