@@ -32,7 +32,7 @@ final class ThemeRenderer
     {
         $theme = $this->resolve();
 
-        return $theme === null ? '' : self::wrap($theme);
+        return $theme instanceof Theme ? self::wrap($theme) : '';
     }
 
     public static function wrap(Theme $theme): string
@@ -49,13 +49,7 @@ final class ThemeRenderer
      */
     public static function isStructured(array $config): bool
     {
-        foreach (self::STRUCTURED_KEYS as $key) {
-            if (array_key_exists($key, $config)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(self::STRUCTURED_KEYS, fn (string $key): bool => array_key_exists($key, $config));
     }
 
     private function resolve(): ?Theme

@@ -208,7 +208,7 @@ final class Theme
             }
         }
 
-        foreach (self::SCALAR_VAR as $key => $ignored) {
+        foreach (array_keys(self::SCALAR_VAR) as $key) {
             $value = $theme[$key] ?? null;
             if (is_string($value)) {
                 $instance->scalars[$key] = $value;
@@ -262,7 +262,7 @@ final class Theme
                 continue;
             }
 
-            [$resolved, $darkResolved] = self::resolveColor($value);
+            [$resolved, $darkResolved] = $this->resolveColor($value);
             $clone->colors[$key] = $resolved;
 
             if ($darkResolved !== null) {
@@ -321,8 +321,8 @@ final class Theme
 
     public function toCss(): string
     {
-        $root = self::emitMode(self::LIGHT_COLORS, self::LIGHT_STATES, self::LIGHT_SCALARS, $this->colors, $this->scalars, self::LIGHT_DELTAS);
-        $dark = self::emitMode(self::DARK_COLORS, self::DARK_STATES, self::DARK_SCALARS, $this->darkColors, $this->darkScalars, self::DARK_DELTAS);
+        $root = $this->emitMode(self::LIGHT_COLORS, self::LIGHT_STATES, self::LIGHT_SCALARS, $this->colors, $this->scalars, self::LIGHT_DELTAS);
+        $dark = $this->emitMode(self::DARK_COLORS, self::DARK_STATES, self::DARK_SCALARS, $this->darkColors, $this->darkScalars, self::DARK_DELTAS);
 
         return ":root{{$root}}\n.dark{{$dark}}";
     }
@@ -338,7 +338,7 @@ final class Theme
     /**
      * @return array{0: string, 1: string|null}
      */
-    private static function resolveColor(Color|string $value): array
+    private function resolveColor(Color|string $value): array
     {
         if (! $value instanceof Color) {
             return [$value, null];
@@ -359,7 +359,7 @@ final class Theme
      * @param  array<string, string>  $userScalars
      * @param  array{hover: float, active: float}  $deltas
      */
-    private static function emitMode(
+    private function emitMode(
         array $baseColors,
         array $baseStates,
         array $baseScalars,
