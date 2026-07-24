@@ -30,6 +30,7 @@ final class Theme
         'info' => '--info', 'infoForeground' => '--info-foreground',
         'warning' => '--warning', 'warningForeground' => '--warning-foreground',
         'border' => '--border', 'input' => '--input', 'ring' => '--ring', 'overlay' => '--overlay',
+        'disabled' => '--disabled', 'disabledForeground' => '--disabled-foreground',
     ];
 
     /** @var array<string, string> */
@@ -71,6 +72,8 @@ final class Theme
         Color|string|null $input = null,
         Color|string|null $ring = null,
         Color|string|null $overlay = null,
+        Color|string|null $disabled = null,
+        Color|string|null $disabledForeground = null,
     ): self {
         $clone = clone $this;
         $values = [
@@ -86,6 +89,7 @@ final class Theme
             '--info' => $info, '--info-foreground' => $infoForeground,
             '--warning' => $warning, '--warning-foreground' => $warningForeground,
             '--border' => $border, '--input' => $input, '--ring' => $ring, '--overlay' => $overlay,
+            '--disabled' => $disabled, '--disabled-foreground' => $disabledForeground,
         ];
         foreach ($values as $token => $value) {
             if ($value !== null) {
@@ -203,6 +207,10 @@ final class Theme
 
         if ($value->kind === ColorKind::Named) {
             throw new InvalidArgumentException('A named colour cannot define a theme; use Color::hex()/css() or a raw CSS string.');
+        }
+
+        if ($value->dark !== null) {
+            throw new InvalidArgumentException("A colour's dark() counterpart is not used in a theme; set dark values via Theme::dark().");
         }
 
         return $value->value;

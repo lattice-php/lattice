@@ -43,3 +43,13 @@ it('builds the same result from fromArray as the fluent builder', function (): v
 it('rejects values that could break out of the style rule', function (string $bad): void {
     $css = Theme::make()->set('primary', $bad)->toCss();
 })->with(['red}html{x:y', 'red;x:y', '</style>'])->throws(InvalidArgumentException::class);
+
+it('rejects a Color that carries a dark counterpart', function (): void {
+    $css = Theme::make()->colors(primary: Color::hex('#6366f1')->dark('#818cf8'))->toCss();
+})->throws(InvalidArgumentException::class);
+
+it('maps the disabled token pair', function (): void {
+    expect(Theme::make()->colors(disabled: '#eeeeee', disabledForeground: '#999999')->toCss())
+        ->toContain('--disabled:#eeeeee;')
+        ->toContain('--disabled-foreground:#999999;');
+});
