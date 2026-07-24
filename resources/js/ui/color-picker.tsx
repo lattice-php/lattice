@@ -47,7 +47,7 @@ export function ColorPicker({
                 aria-selected={normalized === color}
                 className={cn(
                   "size-6 shrink-0 rounded-full border border-lt-border",
-                  normalized === color && "ring-[length:var(--lt-ring-width)] ring-lt-ring/50",
+                  normalized === color && "ring-2 ring-lt-ring ring-offset-1",
                 )}
                 key={swatch}
                 onClick={() => onChange(normalized)}
