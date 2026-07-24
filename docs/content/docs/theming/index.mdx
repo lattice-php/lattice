@@ -7,52 +7,20 @@ import TokenReference from "@components/TokenReference.astro";
 import Info from "@components/Info.astro";
 
 Lattice renders with a small set of semantic design tokens — CSS custom properties prefixed
-with `--lt-`. Theme it by calling `createTheme`/`injectTheme` with a partial `Theme` — set only the
-colors and scalars you want to change, and Lattice merges them over its defaults, deriving readable
-foregrounds and hover/active states for you. For direct control over the underlying host variables,
-see [Advanced: host variables](#advanced-host-variables).
+with `--lt-`. Theme it server-side with a PHP `Theme` builder — set only the colors and scalars
+you want to change; Lattice emits them as CSS custom properties, layered over its defaults. For
+direct control over the underlying host variables, see
+[Advanced: host variables](#advanced-host-variables).
 
 Tokens are global and shared across components. The **Style** tab on each component example lists
 the tokens that example uses in its initial rendered state. Tokens that only appear in
 interactive or overlay content — a dropdown panel, a dialog, a popover that opens on demand — are
 not captured there; this page is the complete reference.
 
-## Rebranding
-
-Pass a partial theme to `createTheme` and inject it before your app renders. Set only what you
-want to change — Lattice derives readable foregrounds and hover/active states for you.
-
-```tsx
-import { injectTheme, initializeTheme } from "@lattice-php/lattice";
-
-injectTheme({
-  colors: { primary: "oklch(0.55 0.2 265)" },
-  radius: "0.75rem",
-  fontSans: "'Geist', sans-serif",
-});
-initializeTheme();
-```
-
-Brand dark mode by adding a `dark` block; otherwise Lattice keeps its tuned dark defaults:
-
-```tsx
-injectTheme({
-  colors: { primary: "oklch(0.55 0.2 265)" },
-  dark: { colors: { primary: "oklch(0.7 0.18 265)" } },
-});
-```
-
-<Info>
-  `injectTheme` writes to a managed `<style id="lattice-theme">` tag — it's SSR-safe and idempotent,
-  so calling it again (e.g. after a runtime theme change) replaces the previous CSS in place. Prefer
-  `createTheme(theme)` directly if you want the CSS string to inline yourself, for example during
-  server-side rendering.
-</Info>
-
 ## Server-side theming (PHP)
 
-For themes known at boot — a single brand, or one resolved per tenant — build a `Theme` in PHP and
-register it with the `Lattice` facade, typically in a service provider's `boot()` method:
+Build a `Theme` in PHP and register it with the `Lattice` facade, typically in a service
+provider's `boot()` method:
 
 ```php
 use Lattice\Lattice\Facades\Lattice;
@@ -62,22 +30,37 @@ Lattice::theme(
     Theme::make()
         ->colors(primary: '#6366f1')
         ->radius('0.75rem')
-        ->dark(fn (Theme $theme): Theme => $theme->colors(primary: 'oklch(0.7 0.18 265)')),
+        ->dark(fn (Theme $theme): Theme => $theme->colors(primary: '#818cf8')),
 );
 ```
 
-`colors()` accepts named arguments for any token (`primary`, `secondary`, `danger`, …) and derives
-readable foregrounds and hover/active states, same as the JS path. `dark()` takes a closure that
-builds the dark-mode overrides from a fresh `Theme`. Pass a closure instead of a `Theme` to `Lattice::theme()`
-to resolve it per request — for example per-tenant branding:
+`colors()` accepts named arguments for any token — `background`, `foreground`, `card`,
+`cardForeground`, `popover`, `popoverForeground`, `primary`, `primaryForeground`, `secondary`,
+`secondaryForeground`, `muted`, `mutedForeground`, `accent`, `accentForeground`, `danger`,
+`dangerForeground`, `success`, `successForeground`, `info`, `infoForeground`, `warning`,
+`warningForeground`, `border`, `input`, `ring`, `overlay`. Scalars have their own methods —
+`radius()`, `ringWidth()`, `ringOffset()`, `borderWidth()`, `fontSans()`, `fontMono()`,
+`fontDisplay()` — or fall back to `set('--token', $value)` for anything else. `dark()` takes a
+closure that builds the dark-mode overrides from a fresh `Theme`.
+
+<Info>
+  The theme emits the CSS variables you set verbatim — there is no auto-derivation of foregrounds
+  or hover/active states. Set them explicitly when you need them, e.g.
+  `colors(primary: '#6366f1', primaryForeground: '#fff')` or
+  `->set('--primary-hover', '#4f46e5')`. Any valid CSS color is accepted — hex, `rgb()`, `oklch()`,
+  and so on.
+</Info>
+
+Pass a closure instead of a `Theme` to `Lattice::theme()` to resolve it per request — for example
+per-tenant branding:
 
 ```php
 Lattice::theme(fn (): Theme => Theme::make()->colors(primary: tenant()->brand_color));
 ```
 
-Prefer this closure form for per-request or per-tenant themes: a concrete `Theme` registered directly
-persists for the life of the worker process, so under Octane it would leak the first request's theme
-into every later one.
+Prefer this closure form for per-request or per-tenant themes: a concrete `Theme` registered
+directly persists for the life of the worker process, so under Octane it would leak the first
+request's theme into every later one.
 
 Or configure a theme declaratively in `config/lattice.php` under `frontend.theme`, using the same
 structured shape:
@@ -87,7 +70,7 @@ structured shape:
     'theme' => [
         'colors' => ['primary' => '#6366f1'],
         'radius' => '0.75rem',
-        'dark' => ['colors' => ['primary' => 'oklch(0.7 0.18 265)']],
+        'dark' => ['colors' => ['primary' => '#818cf8']],
     ],
 ],
 ```
@@ -104,16 +87,8 @@ Render it by adding `@latticeTheme` to your root Blade layout's `<head>`:
 </head>
 ```
 
-It emits a `<style id="lattice-theme">` block server-side, so the correct theme is present on first
-paint — no flash of the default theme before JS runs.
-
-<Info>
-  The PHP `Theme` path is for themes known server-side (static or per-tenant), with correct first
-  paint. The JS `injectTheme` path above is for runtime switching — a user-facing theme picker, for
-  example. Both write to the same `lattice-theme` style id, so a client `injectTheme` call cleanly
-  overrides the server-rendered theme. Hex, `rgb()`, and `oklch()` colors are all accepted on either
-  path and get derived foregrounds and hover/active states automatically.
-</Info>
+It emits a `<style id="lattice-theme">` block server-side, so the correct theme is present on
+first paint — no flash of the default theme before JS runs.
 
 ## Dark mode
 
@@ -161,8 +136,8 @@ function AppearanceToggle() {
 ## Advanced: host variables
 
 Every token resolves through a host variable with a built-in fallback, so you can theme Lattice
-without `createTheme` by defining the host variables (the same names shadcn/ui uses) directly on
-`:root` and `.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
+without the PHP `Theme` builder by defining the host variables (the same names shadcn/ui uses)
+directly on `:root` and `.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
 
 ```css
 :root {
@@ -175,7 +150,6 @@ without `createTheme` by defining the host variables (the same names shadcn/ui u
 }
 ```
 
-This is the lower-level mechanism `createTheme` generates CSS for. Reach for it when you already
-own a design-token pipeline emitting these variable names, or need finer control than `Theme`
-exposes — otherwise prefer `createTheme`/`injectTheme`, which also derives foregrounds and
-hover/active states for you.
+This is the lower-level mechanism `Theme::toCss()` generates output for. Reach for it when you
+already own a design-token pipeline emitting these variable names, or need finer control than
+`Theme` exposes — otherwise prefer [server-side theming](#server-side-theming-php).
