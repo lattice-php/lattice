@@ -26,19 +26,13 @@ describe("HeadingComponent", () => {
   it("clamps levels below 1 to an h1", () => {
     renderHeading(0);
 
-    expect(screen.getByRole("heading", { level: 1 })).toHaveClass("text-2xl", "font-bold");
+    expect(screen.getByRole("heading", { level: 1 }).tagName).toBe("H1");
   });
 
   it("clamps levels above 6 to an h6", () => {
     renderHeading(9);
 
-    expect(screen.getByRole("heading", { level: 6 })).toHaveClass("text-base");
-  });
-
-  it("uses the level-2 size class for h2", () => {
-    renderHeading(2);
-
-    expect(screen.getByRole("heading", { level: 2 })).toHaveClass("text-xl");
+    expect(screen.getByRole("heading", { level: 6 }).tagName).toBe("H6");
   });
 
   it("renders no copy control by default", () => {

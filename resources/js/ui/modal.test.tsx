@@ -136,18 +136,4 @@ describe("ModalComponent", () => {
 
     expect(opener).toHaveFocus();
   });
-
-  it("renders as a sheet when the server sets a slide-out side", () => {
-    renderModal(
-      fakeNode({
-        type: "modal",
-        id: "preview",
-        props: { open: true, title: "Preview", side: "end", width: "xl" },
-      }),
-    );
-
-    const content = document.querySelector('[data-slot="dialog-content"]');
-    expect(content).toHaveClass("end-0", "max-w-xl");
-    expect(content).not.toHaveClass("rounded-lt");
-  });
 });

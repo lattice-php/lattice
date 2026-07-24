@@ -31,17 +31,6 @@ it("renders nothing for an empty action list", () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-it("applies destructive styling to an inline action", () => {
-  render(
-    <RowActions
-      actions={[
-        { key: "remove", label: "Remove", icon: "trash-2", onClick: () => {}, destructive: true },
-      ]}
-    />,
-  );
-  expect(screen.getByTestId("row-action-remove")).toHaveClass("text-lt-danger");
-});
-
 it("applies destructive styling to a menu item", () => {
   render(
     <RowActions

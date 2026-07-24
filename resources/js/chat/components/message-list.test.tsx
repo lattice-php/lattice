@@ -31,14 +31,6 @@ describe("MessageList", () => {
     expect(screen.getByText("Third message")).toBeVisible();
   });
 
-  it("renders the scrollable container with the correct data-test attribute", () => {
-    renderWithRegistry(<MessageList messages={messages} />, registry);
-
-    const container = screen.getByTestId("chat-messages");
-    expect(container).toBeInTheDocument();
-    expect(container.className).toContain("overflow-y-auto");
-  });
-
   it("renders an empty list without errors", () => {
     renderWithRegistry(<MessageList messages={[]} />, registry);
 

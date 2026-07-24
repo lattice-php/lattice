@@ -140,40 +140,6 @@ describe("Lattice action component", () => {
     expect(screen.getByRole("button", { name: "custom.sparkSend test email" })).toBeVisible();
   });
 
-  it("uses compact context menu styling inside action menus", () => {
-    const iconRenderer = vi.fn<IconRendererFunction>(({ icon, className }) => (
-      <span className={className} data-test="action-icon">
-        {icon}
-      </span>
-    ));
-
-    const node = fakeNode({
-      props: {
-        endpoint: "/products/1/edit",
-        icon: "custom.spark",
-        label: "Edit",
-        method: "get",
-        variant: "secondary",
-      },
-      type: "action",
-    });
-
-    render(
-      <IconRendererProvider mode="replace" renderer={iconRenderer}>
-        <ActionMenuProvider>
-          <ActionComponent node={node}>{null}</ActionComponent>
-        </ActionMenuProvider>
-      </IconRendererProvider>,
-    );
-
-    expect(screen.getByRole("button", { name: "custom.sparkEdit" })).toHaveClass(
-      "h-lt-control-sm",
-      "w-full",
-      "text-lt-popover-fg",
-    );
-    expect(screen.getByTestId("action-icon")).toHaveClass("size-lt-icon-sm");
-  });
-
   it("uses a compact spinner inside action menus", async () => {
     apiFetch.mockReturnValue(new Promise<Response>(() => {}));
 

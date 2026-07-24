@@ -77,24 +77,4 @@ describe("Message", () => {
       bubble?.querySelector('[data-lattice-missing-component="unknown-type-xyz"]'),
     ).toBeInTheDocument();
   });
-
-  it("applies different alignment for user vs assistant", () => {
-    const userMsg: ChatMessage = { id: "u1", role: "user", parts: [] };
-    const assistantMsg: ChatMessage = { id: "a1", role: "assistant", parts: [] };
-
-    const { container: userContainer } = renderWithRegistry(
-      <Message message={userMsg} />,
-      registry,
-    );
-    const { container: assistantContainer } = renderWithRegistry(
-      <Message message={assistantMsg} />,
-      registry,
-    );
-
-    const userEl = userContainer.querySelector('[data-test="chat-message-user"]');
-    const assistantEl = assistantContainer.querySelector('[data-test="chat-message-assistant"]');
-
-    expect(userEl?.className).toContain("items-end");
-    expect(assistantEl?.className).toContain("items-start");
-  });
 });

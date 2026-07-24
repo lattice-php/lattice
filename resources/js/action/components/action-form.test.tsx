@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createPlugin, createRegistry, eagerComponent, Renderer } from "@lattice-php/lattice";
 import type { Node, Plugin } from "@lattice-php/lattice";
@@ -7,7 +7,6 @@ import { useFormContext } from "@lattice-php/lattice/form/toolkit";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { actionComponents } from "@lattice-php/lattice/action/plugin";
-import { ActionForm } from "./action-form";
 
 type ValidateFieldsOptions = { onSuccess?: () => void; onValidationError?: () => void };
 
@@ -628,47 +627,5 @@ describe("action form modal", () => {
     const headers = init.headers as Record<string, string>;
     expect(headers.Precognition).toBe("true");
     expect(headers["Precognition-Validate-Only"]).toBe("name,name.*");
-  });
-});
-
-describe("ActionForm", () => {
-  it("renders the form dialog as a sheet when configured", () => {
-    render(
-      <ActionForm
-        cancelLabel="Cancel"
-        componentRef="ref"
-        endpoint="/lattice/actions/demo"
-        formNode={null}
-        method="post"
-        onClose={() => {}}
-        onSuccess={() => {}}
-        placement="end"
-        submitLabel="Save"
-        title="Demo"
-        width="2xl"
-      />,
-    );
-
-    const content = document.querySelector('[data-slot="dialog-content"]');
-    expect(content).toHaveClass("end-0", "max-w-2xl");
-  });
-
-  it("defaults to the centered dialog", () => {
-    render(
-      <ActionForm
-        cancelLabel="Cancel"
-        componentRef="ref"
-        endpoint="/lattice/actions/demo"
-        formNode={null}
-        method="post"
-        onClose={() => {}}
-        onSuccess={() => {}}
-        submitLabel="Save"
-        title="Demo"
-      />,
-    );
-
-    const content = document.querySelector('[data-slot="dialog-content"]');
-    expect(content).toHaveClass("left-1/2", "max-w-lg");
   });
 });

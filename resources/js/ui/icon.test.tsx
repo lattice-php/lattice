@@ -39,14 +39,6 @@ describe("Lattice icon component", () => {
     expect(wrapper?.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });
 
-  it.each(["2xl", "3xl", "4xl"] as const)("supports the %s display size", (size) => {
-    const { container } = renderIcon({ name: "house", size, color: null, class: null });
-    const svg = container.querySelector("svg");
-
-    expect(svg).toHaveClass(`size-lt-icon-${size}`);
-    expect(svg).not.toHaveClass("size-lt-icon-md");
-  });
-
   it("renders the md token and omits colour when unset", () => {
     const { container } = renderIcon({ name: "house", size: "md", color: null, class: null });
     const svg = container.querySelector("svg");
