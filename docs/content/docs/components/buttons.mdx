@@ -1,6 +1,6 @@
 ---
 title: Buttons & links
-description: Buttons, navigational links, and standalone segmented controls.
+description: Buttons, badges, navigational links, and standalone segmented controls.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
@@ -36,6 +36,18 @@ optional styling:
   to the server, e.g. `->effects(Effects::toggleSidebar('app-sidebar'))`.
 - `->submit()` makes it a form's submit control — see [Forms](/forms/overview/#the-submit-button).
 - `->icon($name)` adds a sprite [icon](/core/icons/) before the label.
+
+## Badge
+
+`Badge::make($label)` renders the soft tone chip used across the system — the same look
+[badge columns](/tables/columns/badge/) produce in tables. Color it with `->color()`, which takes
+any of the 14 named tones or a raw CSS color; unset badges render gray:
+
+```php
+Badge::make('Active')->color('green');
+Badge::make('Beta')->color(Color::purple());
+Badge::make('Draft');
+```
 
 ## Link
 

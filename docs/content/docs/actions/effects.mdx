@@ -56,7 +56,7 @@ return ActionResult::success()
 
 ### Toasts
 
-`->toast()` accepts a message and an optional `Variant` (`Success`, `Error`, `Warning`, `Info`),
+`->toast()` accepts a message and an optional `Variant` (the shared `Primary`…`Danger` vocabulary),
 defaulting to success: `->toast('Saved.')`, `->toast('Could not save.', Variant::Danger)`. Pass a
 `Toast` instead to set a lifetime, control dismissal, or attach a link or action — see
 [Toasts](/actions/toasts/).

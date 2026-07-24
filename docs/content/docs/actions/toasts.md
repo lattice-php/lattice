@@ -4,7 +4,8 @@ description: Transient notifications raised from the server — from an action's
 ---
 
 A toast is a short notification the client shows and dismisses. Toasts are raised on the server and
-carry a `Variant` — `Success`, `Info`, `Warning`, or `Error` — that styles them.
+carry a `Variant` — the shared vocabulary (`Primary`, `Secondary`, `Success`, `Info`, `Warning`,
+`Danger`) buttons use — that styles them.
 
 ## From an action
 
@@ -14,7 +15,7 @@ returns; the variant is optional and defaults to success:
 ```php
 return ActionResult::success()
     ->toast('Product archived.')                       // defaults to Success
-    ->toast('Could not reach the warehouse.', Variant::Error);
+    ->toast('Could not reach the warehouse.', Variant::Danger);
 ```
 
 See [Effects & results](/actions/effects/#toasts) for the full effect list.

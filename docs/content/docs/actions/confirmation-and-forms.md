@@ -16,7 +16,7 @@ public function definition(Action $action): Action
 {
     return $action
         ->label('Archive')
-        ->variant(ButtonVariant::Destructive)
+        ->variant(Variant::Danger)
         ->confirm(
             'Archive product?',
             'This hides it from the catalogue.',
@@ -40,7 +40,7 @@ public function definition(Action $action): Action
 {
     return $action
         ->label('Reject')
-        ->variant(ButtonVariant::Destructive)
+        ->variant(Variant::Danger)
         ->confirm('Reject product?', 'Tell the seller why.', 'Submit rejection')
         ->form([
             Textarea::make('reason', 'Reason')->required()->rules(['string', 'max:255']),
