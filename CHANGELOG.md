@@ -1,5 +1,72 @@
 # Changelog
 
+## [0.26.0](https://github.com/lattice-php/lattice/compare/0.25.0...0.26.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* collapse the shadcn host-variable layer into the lt token namespace
+* align the last off-vocabulary names
+* one variant vocabulary — semantic variant everywhere, emphasis for looks
+* unify Badge on the tone palette with a single color prop
+* split Button and Action styling into variant (emphasis) and color (intent)
+* rename the feedback variant error to danger
+
+### Features
+
+* add font, ring, border, radius, shadow, and chart tokens ([fc05276](https://github.com/lattice-php/lattice/commit/fc05276ee81aa4acaed10acdac261b904c8b86a5))
+* add normalizeToOklch for hex and rgb theme inputs ([3265d53](https://github.com/lattice-php/lattice/commit/3265d53b1122baa3778265fecdc039b677ca8eca))
+* add oklch color math utilities for theme derivation ([e1233db](https://github.com/lattice-php/lattice/commit/e1233dbddfabdef8a36f87ae7957456e361ffd7c))
+* add PHP oklch color math mirroring the JS derivation ([557d033](https://github.com/lattice-php/lattice/commit/557d033fc758ab75a7cd186d4d6a4fbd2df35e4c))
+* add PHP Theme value object with createTheme-parity toCss ([62cf761](https://github.com/lattice-php/lattice/commit/62cf7613cb4527ff207697aa5b0278b79dbba878))
+* add Theme schema and createTheme CSS emitter ([85fdb86](https://github.com/lattice-php/lattice/commit/85fdb86117c5bfb905c59955c4bc4c18cc0b1f19))
+* backend-driven theming, token gaps, styling cleanup ([a69f3dd](https://github.com/lattice-php/lattice/commit/a69f3ddd34e807e3de9524d21c0571eac72c9c7c))
+* collapse the shadcn host-variable layer into the lt token namespace ([61af59c](https://github.com/lattice-php/lattice/commit/61af59ce83b7fe7d74d877f8186c5b9551e0b782))
+* color chart series from the categorical palette ([cccc124](https://github.com/lattice-php/lattice/commit/cccc124142e8ed2cfc02d587f3cce7fdfc4780c1))
+* derive theme foreground and states from normalized hex/rgb inputs ([f609095](https://github.com/lattice-php/lattice/commit/f609095480dc1ac147809271ed5da7ea49e0ceb1))
+* expose injectTheme and theme API from package barrels ([2e14dbb](https://github.com/lattice-php/lattice/commit/2e14dbb9c1076a92743a2770db273df1ff0edf68))
+* rename the feedback variant error to danger ([bf541c0](https://github.com/lattice-php/lattice/commit/bf541c0546853d48c0a4f1ee9567eb73f89d7f96))
+* render the PHP theme via the latticeTheme directive and Lattice::theme ([2d90c71](https://github.com/lattice-php/lattice/commit/2d90c71ebf656f3b6afaedfc8d4383306f51b5bd))
+* split Button and Action styling into variant (emphasis) and color (intent) ([2e2ff2c](https://github.com/lattice-php/lattice/commit/2e2ff2c5ed8d309232df94735841f6c49d063931))
+* unify Badge on the tone palette with a single color prop ([7ef2ddb](https://github.com/lattice-php/lattice/commit/7ef2ddb530b944b91b37779dfdbe3eafacac51e1))
+
+
+### Bug Fixes
+
+* keep a concrete hex fallback for the color picker default ([a656061](https://github.com/lattice-php/lattice/commit/a65606135cb3b6c73ce30d8934d0c5bcb64a2098))
+* keep the disabled treatment on checked checkboxes ([f49aa06](https://github.com/lattice-php/lattice/commit/f49aa06c5865d9dc7884b8eed90658a357f28810))
+* reject Color dark counterparts and expose the disabled token pair ([0ae81a8](https://github.com/lattice-php/lattice/commit/0ae81a830ef1b4bff2a65cd38039eea1da8818ff))
+* reject CSS-breakout characters in theme values and cover near-gray parity ([66fde6c](https://github.com/lattice-php/lattice/commit/66fde6ccbf512aefc71b61d5219e5d2e3fda09f4))
+* reproduce default color states and generalize on-color foreground derivation ([c5f6de9](https://github.com/lattice-php/lattice/commit/c5f6de9bb38b54fe9b4b3f71b7992b204b13a247))
+* restore the color-picker selection ring and wire the ring-offset token ([0e79290](https://github.com/lattice-php/lattice/commit/0e79290d67dc11e9b29643ce6bbc8862fbbebbdb))
+* use a dark foreground for the warning color in dark mode ([68d6a27](https://github.com/lattice-php/lattice/commit/68d6a273f3696016623b13cd060f78e0ae632d88))
+
+
+### Refactoring
+
+* align the last off-vocabulary names ([c74b7b8](https://github.com/lattice-php/lattice/commit/c74b7b8ea3795166de67e395295bd15190551448))
+* apply rector suggestions to the slim Theme ([e07d8a1](https://github.com/lattice-php/lattice/commit/e07d8a1063a354f599c4471ab19eda41cb452c3f))
+* apply rector suggestions to theme classes ([cc4d942](https://github.com/lattice-php/lattice/commit/cc4d94216b2f70812e1e8451bf6c18fddbb29597))
+* drop config-based theming, register themes via Lattice::theme() only ([8ff1707](https://github.com/lattice-php/lattice/commit/8ff1707e8c635ec5b13242ab2bc189b3e15bf5b9))
+* drop the unimplemented chart field from the Theme type ([e01aaaf](https://github.com/lattice-php/lattice/commit/e01aaafccef99139fae3a098db922558690620c1))
+* let Button own variant and emphasis defaulting ([5124727](https://github.com/lattice-php/lattice/commit/512472738db4dc0f462928ee1b26d21682fa3adb))
+* make ThemeRenderer the single owner of theme rendering ([30c0339](https://github.com/lattice-php/lattice/commit/30c0339b715fd3fab8e4f53ce68f93750b0b05ff))
+* one variant vocabulary — semantic variant everywhere, emphasis for looks ([d0bba21](https://github.com/lattice-php/lattice/commit/d0bba21936db21160c06f4afa3a60f9bec22958e))
+* remove the JS theming emitter, keep the appearance mode API ([46e87c2](https://github.com/lattice-php/lattice/commit/46e87c23db3370bc597785ed39a0e538ba819939))
+* route all focus rings through the ring-width token and tokenize toggle disabled state ([9029e27](https://github.com/lattice-php/lattice/commit/9029e27e79be2756718b1b798222e75b19fc079f))
+* route chart tokens through host variables and drop inert tokens ([ad7cf38](https://github.com/lattice-php/lattice/commit/ad7cf38ef2e3b55c4bc425bf5c3381dc318bb54d))
+* slim Theme to a flat token map, drop oklch and derivation ([adf936d](https://github.com/lattice-php/lattice/commit/adf936d66e2af24159ae8f444ebf5ed17e530021))
+* tokenize focus ring and disabled treatment, drop raw hex ([0a0655f](https://github.com/lattice-php/lattice/commit/0a0655f7c8c6f3af7ba3a9e3da28ca9223516acc))
+* tokenize remaining disabled treatments outside the otp group dim ([20e78b8](https://github.com/lattice-php/lattice/commit/20e78b88f2c8612ff7e3b1f9a100585732f66799))
+
+
+### Documentation
+
+* align prose and examples with the variant, emphasis, and danger vocabulary ([54bcd81](https://github.com/lattice-php/lattice/commit/54bcd8181585ef55deaa04754042d7009b0736e3))
+* document backend-only theming ([f655f21](https://github.com/lattice-php/lattice/commit/f655f2196380b4abee6abb3cae8bc663d724572f))
+* document server-side PHP theming ([8280a1d](https://github.com/lattice-php/lattice/commit/8280a1db4835d490df8eada175cc8478db09cedd))
+* lead theming page with createTheme ([ffdf538](https://github.com/lattice-php/lattice/commit/ffdf53809f70da1c0979310c37c22f1b7cb6991c))
+
 ## [0.25.0](https://github.com/lattice-php/lattice/compare/0.24.0...0.25.0) (2026-07-22)
 
 
