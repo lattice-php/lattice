@@ -18,7 +18,6 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 #[AsBulkAction('app.products.archive-selected')]
@@ -28,7 +27,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
     {
         return $action
             ->label('Archive selected')
-            ->variant(ButtonVariant::Destructive);
+            ->variant(Variant::Danger);
     }
 
     public function handle(Collection $records, Request $request): ActionResult

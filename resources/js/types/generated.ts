@@ -157,6 +157,7 @@ export type EffectOf<TType extends string> = string extends TType
 // ─── Generated shapes ───────────────────────────────────────────────────────
 export type Action = {
   confirmation: Confirmation | null;
+  emphasis: Emphasis | null;
   endpoint: string | null;
   form: Node<"form"> | null;
   icon: string | null;
@@ -166,7 +167,7 @@ export type Action = {
   modalSide: Side | null;
   modalWidth: ModalWidth | null;
   ref: string | null;
-  variant: ButtonVariant | null;
+  variant: Variant | null;
 };
 export type ActionGroup = {
   label: string | null;
@@ -189,6 +190,7 @@ export type Avatar = {
   src: string | null;
 };
 export type Badge = {
+  color: Color | null;
   label: string;
 };
 export type BadgeColumn = {
@@ -250,6 +252,7 @@ export type Builder = {
 };
 export type BulkAction = {
   confirmation: Confirmation | null;
+  emphasis: Emphasis | null;
   endpoint: string | null;
   form: Node<"form"> | null;
   icon: string | null;
@@ -259,28 +262,20 @@ export type BulkAction = {
   modalSide: Side | null;
   modalWidth: ModalWidth | null;
   ref: string | null;
-  variant: ButtonVariant | null;
+  variant: Variant | null;
 };
 export type Button = {
   action: Node<"action"> | Node<"action.bulk"> | null;
   buttonType: ButtonType;
   effects: Effect[];
+  emphasis: Emphasis | null;
   href: string | null;
   icon: string | null;
   label: string | null;
   method: HttpMethod | null;
-  variant: ButtonVariant | null;
+  variant: Variant | null;
 };
 export type ButtonType = "button" | "submit" | "reset";
-export type ButtonVariant =
-  | "default"
-  | "destructive"
-  | "ghost"
-  | "info"
-  | "link"
-  | "outline"
-  | "secondary"
-  | "success";
 export type Callout = {
   action: Node | null;
   dismissible: boolean;
@@ -686,6 +681,7 @@ export type EffectPropsMap = {
   toast: Toast;
   "toggle-sidebar": ToggleSidebar;
 };
+export type Emphasis = "solid" | "outline" | "ghost" | "link";
 export type FieldConditions = {
   readonly disabled: Condition[];
   readonly readOnly: Condition[];
@@ -773,9 +769,10 @@ export type Form = {
   status: string | null;
   submitButton: boolean;
   submitButtons: Node<"button">[] | null;
+  submitEmphasis: Emphasis | null;
   submitJustify: Justify | null;
   submitLabel: string | null;
-  submitVariant: ButtonVariant | null;
+  submitVariant: Variant | null;
   validationSummaryLabel: string;
   validationTimeout: number | null;
 };
@@ -1219,12 +1216,12 @@ export type Placement = "top" | "bottom" | "right";
 export type Progress = {
   color: Color | null;
   max: number;
+  shape: ProgressShape;
   showValue: boolean;
   size: Size;
   value: number;
-  variant: ProgressVariant;
 };
-export type ProgressVariant = "bar" | "circle";
+export type ProgressShape = "bar" | "circle";
 export type RawBlock = {
   html: string;
 };
@@ -1300,7 +1297,7 @@ export type RichEditor = {
   value: unknown;
 };
 export type RowAction = {
-  destructive: boolean;
+  danger: boolean;
   icon: string | null;
   key: string;
   label: string | null;
@@ -1636,7 +1633,7 @@ export type UiNodeType =
 export type UnreadCount = {
   readonly unreadCount: number;
 };
-export type Variant = "success" | "info" | "warning" | "error";
+export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
 export type Wizard = {
   orientation: Orientation;

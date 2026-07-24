@@ -15,11 +15,12 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Save",
                     "method": null,
-                    "variant": "default"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -28,11 +29,12 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": "ghost",
                     "href": null,
                     "icon": null,
                     "label": "Cancel",
                     "method": null,
-                    "variant": "ghost"
+                    "variant": null
                 },
                 "type": "button"
             }

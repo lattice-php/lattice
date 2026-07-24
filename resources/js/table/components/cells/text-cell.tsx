@@ -1,6 +1,5 @@
 import { DateTime } from "@lattice-php/lattice/i18n";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { coerceColor, namedColor, toneProps } from "@lattice-php/lattice/lib/color";
+import { Badge } from "@lattice-php/lattice/ui/badge";
 import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "@lattice-php/lattice/table/lib/format";
 import type { ColumnCellArgs, ColumnCellComponent } from "@lattice-php/lattice/table/registry";
@@ -21,18 +20,12 @@ export const TextCell: ColumnCellComponent<"column.text"> = (args) => {
   return <PlainTextCell {...args} />;
 };
 
-function Badge({ label, color }: { label: string; color?: string | null }): ReactNode {
+function TextBadge({ label, color }: { label: string; color?: string | null }): ReactNode {
   if (label === "") {
     return null;
   }
 
-  const tone = toneProps(coerceColor(color) ?? namedColor("gray"));
-
-  return (
-    <span className={cn("lt-cell-badge", tone.className)} style={tone.style}>
-      {label}
-    </span>
-  );
+  return <Badge color={color}>{label}</Badge>;
 }
 
 function MultipleCell({ column, props, value }: ColumnCellArgs<"column.text">): ReactNode {
@@ -51,7 +44,7 @@ function MultipleCell({ column, props, value }: ColumnCellArgs<"column.text">): 
       {items.map((item, index) => {
         const chip = item as { value: unknown; color?: string };
 
-        return <Badge key={index} label={formatCell(chip.value, column)} color={chip.color} />;
+        return <TextBadge key={index} label={formatCell(chip.value, column)} color={chip.color} />;
       })}
     </div>
   );
@@ -60,7 +53,7 @@ function MultipleCell({ column, props, value }: ColumnCellArgs<"column.text">): 
 function SingleBadgeCell({ column, props, row, value }: ColumnCellArgs<"column.text">): ReactNode {
   const colorKey = (props.badge as NonNullable<TextProps["badge"]>).colorKey;
 
-  return <Badge label={formatCell(value, column)} color={String(row[colorKey] ?? "")} />;
+  return <TextBadge label={formatCell(value, column)} color={String(row[colorKey] ?? "")} />;
 }
 
 function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.text">): ReactNode {

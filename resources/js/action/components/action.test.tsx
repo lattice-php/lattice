@@ -177,7 +177,7 @@ describe("Lattice action component", () => {
         endpoint: "/lattice/actions/delete-account",
         label: "Delete account",
         method: "delete",
-        variant: "destructive",
+        variant: "danger",
       },
       type: "action",
     });
@@ -311,7 +311,7 @@ describe("Lattice action component", () => {
         endpoint: "/lattice/actions/delete-account",
         label: "Delete account",
         method: "delete",
-        variant: "destructive",
+        variant: "danger",
       },
       type: "action",
     });

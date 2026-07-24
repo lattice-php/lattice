@@ -24,10 +24,10 @@ function DropdownMenuContent({ className, ...props }: React.ComponentProps<typeo
 function DropdownMenuItem({
   children,
   className,
-  destructive = false,
+  danger = false,
   icon,
   ...props
-}: React.ComponentProps<"button"> & { destructive?: boolean; icon?: string }) {
+}: React.ComponentProps<"button"> & { danger?: boolean; icon?: string }) {
   return (
     <PopoverClose asChild>
       <button
@@ -35,7 +35,7 @@ function DropdownMenuItem({
         role="menuitem"
         className={cn(
           "flex w-full items-center gap-2 rounded-lt-sm px-3 py-1.5 text-left text-sm [&_svg]:size-lt-icon-sm",
-          destructive
+          danger
             ? "text-lt-danger hover:bg-lt-danger/10"
             : "hover:bg-lt-accent hover:text-lt-accent-fg",
           className,

@@ -45,7 +45,7 @@ it('renders a registered theme as a managed style tag', function (): void {
 
     expect(Blade::render('@latticeHead'))
         ->toContain('<style id="lattice-theme">')
-        ->toContain('--primary:#6366f1');
+        ->toContain('--lt-primary:#6366f1');
 });
 
 it('renders no style tag when no theme is registered', function (): void {

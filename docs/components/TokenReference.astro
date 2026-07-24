@@ -15,7 +15,6 @@ const groups = [
         <thead>
           <tr>
             <th>Token</th>
-            <th>Host variable</th>
             <th>Light</th>
             <th>Dark</th>
           </tr>
@@ -26,7 +25,6 @@ const groups = [
               <td>
                 <code>{token.name}</code>
               </td>
-              <td>{token.hostVar ? <code>{token.hostVar}</code> : <span>—</span>}</td>
               <td>
                 <span class="swatch" style={`background:${token.light}`} />
                 <code>{token.light}</code>

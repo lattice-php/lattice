@@ -10,7 +10,6 @@ use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
@@ -23,7 +22,7 @@ class RejectSelectedProductsAction extends BulkActionDefinition
         return $action
             ->label(__('workbench.actions.reject-selected.label'))
             ->method(HttpMethod::Patch)
-            ->variant(ButtonVariant::Destructive)
+            ->variant(Variant::Danger)
             ->confirm(__('workbench.actions.reject-selected.confirm-title'), __('workbench.actions.reject-selected.confirm-description'), __('workbench.actions.reject-selected.confirm-label'))
             ->form([
                 Textarea::make('reason', __('workbench.common.reason'))->required()->rules(['string', 'max:255']),

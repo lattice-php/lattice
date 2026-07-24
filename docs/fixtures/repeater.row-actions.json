@@ -25,14 +25,14 @@
             "resizeIndicator": false,
             "rowActions": [
                 {
-                    "destructive": false,
+                    "danger": false,
                     "icon": null,
                     "key": "duplicate",
                     "label": null,
                     "type": "duplicate"
                 },
                 {
-                    "destructive": true,
+                    "danger": true,
                     "icon": null,
                     "key": "remove",
                     "label": "Delete",

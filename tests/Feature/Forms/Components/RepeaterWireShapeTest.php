@@ -62,7 +62,7 @@ it('serialises declared rowActions into the field props', function (): void {
         ->and($wire['props']['rowActions'][0]['type'])->toBe('duplicate')
         ->and($wire['props']['rowActions'][1]['type'])->toBe('remove')
         ->and($wire['props']['rowActions'][1]['label'])->toBe('Delete')
-        ->and($wire['props']['rowActions'][1]['destructive'])->toBeTrue();
+        ->and($wire['props']['rowActions'][1]['danger'])->toBeTrue();
 });
 
 it('omits a rowAction hidden via visible(false) from the serialized rowActions', function (): void {

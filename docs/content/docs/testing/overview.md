@@ -216,14 +216,14 @@ $this->assertLatticePage($this->get('/products'))
 ## Actions
 
 ```php
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Lattice\Lattice\Support\Testing\Assertions\ActionAssertions;
 
 $this->assertLatticeComponent($action)
     ->action('archive', fn (ActionAssertions $action) => $action
         ->assertLabel('Archive')
         ->assertEndpoint('/lattice/actions/archive')
-        ->assertVariant(ButtonVariant::Destructive)
+        ->assertVariant(Variant::Danger)
         ->assertHasConfirmation()
         ->assertConfirmationTitle('Archive product?')
         ->assertHasForm());

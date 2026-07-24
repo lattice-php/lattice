@@ -1,5 +1,4 @@
 import { Component, lazy, Suspense, type ReactNode } from "react";
-import { Badge } from "@lattice-php/lattice/ui/badge";
 import { Dialog, DialogContent, DialogTitle } from "@lattice-php/lattice/ui/dialog";
 import {
   Popover as PopoverRoot,
@@ -48,13 +47,12 @@ const NotificationsComponent: RendererComponent<"notifications"> = ({ node }) =>
     <span className="relative inline-flex items-center justify-center rounded-lt-sm p-2 hover:bg-lt-muted">
       <Icon name="bell" className="size-lt-icon-md" />
       {store.unreadCount > 0 ? (
-        <Badge
-          variant="destructive"
+        <span
           data-test="notifications-badge"
-          className="absolute -right-0.5 -top-0.5 min-w-4 px-1 py-0 text-[10px]"
+          className="absolute -right-0.5 -top-0.5 inline-flex min-w-4 items-center justify-center rounded-lt-full bg-lt-danger px-1 py-0 text-[10px] font-medium text-lt-danger-fg"
         >
           {store.unreadCount}
-        </Badge>
+        </span>
       ) : null}
     </span>
   );

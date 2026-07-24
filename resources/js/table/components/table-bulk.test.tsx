@@ -51,7 +51,7 @@ const node = {
           method: "patch",
           endpoint: "/lattice/bulk-actions/workbench.products.archive-selected",
           ref: "sealed-ref",
-          variant: "destructive",
+          variant: "danger",
         },
       }),
     ],

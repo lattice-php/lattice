@@ -38,6 +38,7 @@
                     },
                     {
                         "props": {
+                            "color": null,
                             "label": "3 active"
                         },
                         "type": "badge"
@@ -50,6 +51,7 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Invite member",

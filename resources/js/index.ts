@@ -10,7 +10,7 @@ export {
 export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { registerRichEditorExtension } from "./form/rich-editor/registry";
-export { initializeTheme, updateAppearance, useAppearance } from "./appearance";
+export { initializeAppearance, updateAppearance, useAppearance } from "./appearance";
 export { copyToClipboard } from "./clipboard";
 export {
   createLatticeApp,
@@ -57,7 +57,7 @@ export { Renderer } from "./core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "./core/component-ref";
 export { withHeaders } from "./core/headers";
 export { LATTICE_EVENT } from "./core/event-names";
-export type { ButtonVariant } from "./ui/button";
+export type { Emphasis } from "./ui/button";
 export type { ReloadComponentEvent } from "./core/event-names";
 export type {
   ComponentProps,

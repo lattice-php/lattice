@@ -147,7 +147,7 @@ export function DatePickerField({
           disabled={disabled || readOnly}
           size="icon"
           type="button"
-          variant="secondary"
+          color="secondary"
         >
           <Icon name="calendar" className="size-lt-icon-md" aria-hidden="true" />
         </Button>
@@ -159,11 +159,11 @@ export function DatePickerField({
         >
           <div {...api.getContentProps()} className="grid gap-3">
             <div className="flex items-center justify-between gap-2">
-              <Button {...api.getPrevTriggerProps()} size="icon" type="button" variant="ghost">
+              <Button {...api.getPrevTriggerProps()} emphasis="ghost" size="icon" type="button">
                 <Icon name="chevron-left" className="size-lt-icon-md" aria-hidden="true" />
               </Button>
               <div {...api.getRangeTextProps()} className="text-sm font-medium text-lt-fg" />
-              <Button {...api.getNextTriggerProps()} size="icon" type="button" variant="ghost">
+              <Button {...api.getNextTriggerProps()} emphasis="ghost" size="icon" type="button">
                 <Icon name="chevron-right" className="size-lt-icon-md" aria-hidden="true" />
               </Button>
             </div>

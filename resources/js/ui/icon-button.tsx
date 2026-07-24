@@ -6,7 +6,7 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 /**
  * A compact, resizable icon button — the shared affordance behind toolbar
  * triggers, popover triggers, and inline clear/remove buttons. `ghost` matches
- * `Button variant="ghost"` (accent hover) and reacts to `aria-pressed` (toggle)
+ * `Button emphasis="ghost"` (accent hover) and reacts to `aria-pressed` (toggle)
  * and `data-[state=open]` (a popover trigger). `segmented` joins onto the right
  * of an adjacent input. Size defaults to `sm`; pass `size` to resize.
  */
@@ -18,7 +18,7 @@ const iconButtonVariants = cva(
   ),
   {
     variants: {
-      variant: {
+      emphasis: {
         ghost: cn(
           "text-lt-muted-fg hover:bg-lt-accent hover:text-lt-accent-fg",
           "data-[state=open]:bg-lt-accent data-[state=open]:text-lt-accent-fg",
@@ -35,7 +35,7 @@ const iconButtonVariants = cva(
         md: "size-lt-control-md [&_svg]:size-lt-icon-md",
       },
     },
-    defaultVariants: { variant: "ghost", size: "sm" },
+    defaultVariants: { emphasis: "ghost", size: "sm" },
   },
 );
 
@@ -44,7 +44,7 @@ export function IconButton({
   label,
   active,
   size,
-  variant,
+  emphasis,
   className,
   children,
   ref,
@@ -64,7 +64,7 @@ export function IconButton({
       type="button"
       aria-label={label}
       aria-pressed={active}
-      className={cn(iconButtonVariants({ variant, size }), className)}
+      className={cn(iconButtonVariants({ emphasis, size }), className)}
       {...props}
     >
       {icon ? <Icon name={icon} aria-hidden="true" /> : null}

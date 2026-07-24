@@ -76,8 +76,8 @@ it("renders declared row actions in a kebab and duplicates a row", () => {
       maxItems: 3,
       label: "Line items",
       rowActions: [
-        { type: "duplicate", key: "duplicate", label: null, icon: null, destructive: false },
-        { type: "remove", key: "remove", label: null, icon: null, destructive: true },
+        { type: "duplicate", key: "duplicate", label: null, icon: null, danger: false },
+        { type: "remove", key: "remove", label: null, icon: null, danger: true },
       ],
     },
     schema: [{ id: "c", type: "field.text-input", props: { name: "name", label: "Name" } }],

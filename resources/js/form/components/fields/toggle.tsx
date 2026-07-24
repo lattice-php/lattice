@@ -47,7 +47,7 @@ export const ToggleComponent: RendererComponent<"field.toggle"> = ({ node }) => 
         aria-label={props.label ?? localName}
         autoFocus={props.autoFocus ?? false}
         className={cn(
-          "inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-lt-muted p-0.5 shadow-lt-xs transition-colors outline-none focus-visible:border-lt-ring focus-visible:ring-[3px] focus-visible:ring-lt-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-lt-primary",
+          "inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-lt-muted p-0.5 shadow-lt-xs transition-colors outline-none focus-visible:border-lt-ring focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50 disabled:cursor-not-allowed disabled:bg-lt-disabled data-[state=checked]:bg-lt-primary disabled:data-[state=checked]:bg-lt-disabled",
         )}
         data-state={checked ? "checked" : "unchecked"}
         data-test={testIdentity(localName)}

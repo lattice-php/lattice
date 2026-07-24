@@ -71,7 +71,7 @@ export function PreviewableImage({
               aria-label={t("common.close", "Close")}
               data-test="lightbox-close"
               size="icon"
-              variant="ghost"
+              emphasis="ghost"
               className="absolute top-2 right-2 bg-lt-bg/80 hover:bg-lt-bg"
             />
           </DialogClose>

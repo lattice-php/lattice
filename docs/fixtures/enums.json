@@ -473,44 +473,6 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ButtonVariant": {
-        "name": "ButtonVariant",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums",
-        "cases": [
-            {
-                "name": "Default",
-                "value": "default"
-            },
-            {
-                "name": "Destructive",
-                "value": "destructive"
-            },
-            {
-                "name": "Ghost",
-                "value": "ghost"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Link",
-                "value": "link"
-            },
-            {
-                "name": "Outline",
-                "value": "outline"
-            },
-            {
-                "name": "Secondary",
-                "value": "secondary"
-            },
-            {
-                "name": "Success",
-                "value": "success"
-            }
-        ]
-    },
     "Lattice\\Lattice\\Ui\\Enums\\ChartSeriesType": {
         "name": "ChartSeriesType",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
@@ -586,6 +548,28 @@
             {
                 "name": "Short",
                 "value": "short"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Emphasis": {
+        "name": "Emphasis",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Solid",
+                "value": "solid"
+            },
+            {
+                "name": "Outline",
+                "value": "outline"
+            },
+            {
+                "name": "Ghost",
+                "value": "ghost"
+            },
+            {
+                "name": "Link",
+                "value": "link"
             }
         ]
     },
@@ -871,8 +855,8 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ProgressVariant": {
-        "name": "ProgressVariant",
+    "Lattice\\Lattice\\Ui\\Enums\\ProgressShape": {
+        "name": "ProgressShape",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
         "cases": [
             {
@@ -978,6 +962,14 @@
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
         "cases": [
             {
+                "name": "Primary",
+                "value": "primary"
+            },
+            {
+                "name": "Secondary",
+                "value": "secondary"
+            },
+            {
                 "name": "Success",
                 "value": "success"
             },
@@ -990,8 +982,8 @@
                 "value": "warning"
             },
             {
-                "name": "Error",
-                "value": "error"
+                "name": "Danger",
+                "value": "danger"
             }
         ]
     },

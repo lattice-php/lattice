@@ -11,7 +11,6 @@ use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
@@ -24,7 +23,7 @@ class RejectProductAction extends ActionDefinition
         return $action
             ->label(__('workbench.actions.reject.label'))
             ->method(HttpMethod::Patch)
-            ->variant(ButtonVariant::Destructive)
+            ->variant(Variant::Danger)
             ->confirm(__('workbench.actions.reject.confirm-title'), __('workbench.actions.reject.confirm-description'), __('workbench.actions.reject.confirm-label'))
             ->form([
                 Textarea::make('reason', __('workbench.common.reason'))->required()->rules(['string', 'max:255']),

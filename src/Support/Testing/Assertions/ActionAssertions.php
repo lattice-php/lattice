@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\Testing\Assertions;
 
 use Lattice\Lattice\Support\Testing\ComponentNode;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
+use Lattice\Lattice\Ui\Enums\Variant;
 use PHPUnit\Framework\Assert;
 
 final readonly class ActionAssertions
@@ -37,12 +38,23 @@ final readonly class ActionAssertions
         return $this;
     }
 
-    public function assertVariant(ButtonVariant $variant): self
+    public function assertVariant(Variant $variant): self
     {
         Assert::assertSame($variant->value, $this->node->prop('variant'), sprintf(
             'Expected action [%s] variant to be [%s].',
             $this->node->id() ?? '*',
             $variant->value,
+        ));
+
+        return $this;
+    }
+
+    public function assertEmphasis(Emphasis $emphasis): self
+    {
+        Assert::assertSame($emphasis->value, $this->node->prop('emphasis'), sprintf(
+            'Expected action [%s] emphasis to be [%s].',
+            $this->node->id() ?? '*',
+            $emphasis->value,
         ));
 
         return $this;

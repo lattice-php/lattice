@@ -45,12 +45,12 @@ the toggle button can live anywhere (here, in the `Topbar`):
 
 ```php
 use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Facades\Effects;
 
 Button::make('Toggle sidebar', 'sidebar-toggle')
     ->icon('panel-left')
-    ->variant(ButtonVariant::Ghost)
+    ->emphasis(Emphasis::Ghost)
     ->effects(Effects::toggleSidebar('app-sidebar'));
 ```
 

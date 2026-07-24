@@ -54,7 +54,7 @@ export function AffixGroup({
 
   return (
     <div
-      className="group flex w-full rounded-lt-sm transition-[color,box-shadow] has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-lt-ring/50"
+      className="group flex w-full rounded-lt-sm transition-[color,box-shadow] has-[:focus-visible]:ring-[length:var(--lt-ring-width)] has-[:focus-visible]:ring-lt-ring/50"
       data-slot="affix-group"
     >
       {prefix ? <AffixSegment affix={prefix} side="start" /> : null}

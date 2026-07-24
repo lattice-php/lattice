@@ -131,7 +131,7 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
     >
       <div
         className={cn(
-          "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-lt-xs focus-within:border-lt-ring focus-within:ring-[3px] focus-within:ring-lt-ring/50",
+          "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-lt-xs focus-within:border-lt-ring focus-within:ring-[length:var(--lt-ring-width)] focus-within:ring-lt-ring/50",
           locked && "opacity-60",
         )}
       >

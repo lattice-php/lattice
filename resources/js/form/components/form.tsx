@@ -6,7 +6,7 @@ import { nodeKey } from "@lattice-php/lattice/core/nodes";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { ButtonVariant, Justify } from "@lattice-php/lattice/types/generated";
+import type { Emphasis, Justify, Variant } from "@lattice-php/lattice/types/generated";
 import { useMemo } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
@@ -50,6 +50,7 @@ function FormBody({
   nodes,
   shouldRenderSubmitButton,
   submitButtons,
+  submitEmphasis,
   submitJustify,
   submitLabel,
   submitVariant,
@@ -61,9 +62,10 @@ function FormBody({
   nodes: Node[] | undefined;
   shouldRenderSubmitButton: boolean;
   submitButtons: Node<"button">[] | undefined;
+  submitEmphasis: Emphasis | undefined;
   submitJustify: Justify | undefined;
   submitLabel: string;
-  submitVariant: ButtonVariant | undefined;
+  submitVariant: Variant | undefined;
   summaryLabel: string;
 }) {
   const { nodes: resolvedNodes, markUserEdit } = useFormResolver(action, componentRef, nodes);
@@ -81,9 +83,10 @@ function FormBody({
                   button.props.buttonType === "submit" ? (
                     <FormSubmitButton
                       key={nodeKey(button, index)}
+                      emphasis={button.props.emphasis ?? submitEmphasis}
                       label={button.props.label ?? submitLabel}
                       summaryLabel={summaryLabel}
-                      variant={button.props.variant ?? submitVariant ?? "default"}
+                      variant={button.props.variant ?? submitVariant}
                     />
                   ) : (
                     <RenderNode key={nodeKey(button, index)} node={button} />
@@ -91,9 +94,10 @@ function FormBody({
                 )
               ) : (
                 <FormSubmitButton
+                  emphasis={submitEmphasis}
                   label={submitLabel}
                   summaryLabel={summaryLabel}
-                  variant={submitVariant ?? "default"}
+                  variant={submitVariant}
                 />
               )}
             </div>
@@ -125,6 +129,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const submitJustify = props.submitJustify ?? undefined;
   const submitLabel = props.submitLabel ?? t("form.submit", "Submit");
   const submitVariant = props.submitVariant ?? undefined;
+  const submitEmphasis = props.submitEmphasis ?? undefined;
   const summaryLabel = props.validationSummaryLabel;
   const validationTimeout = props.validationTimeout ?? undefined;
 
@@ -171,6 +176,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
               nodes={node.schema}
               shouldRenderSubmitButton={shouldRenderSubmitButton}
               submitButtons={submitButtons}
+              submitEmphasis={submitEmphasis}
               submitJustify={submitJustify}
               submitLabel={submitLabel}
               submitVariant={submitVariant}

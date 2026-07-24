@@ -96,7 +96,7 @@ export function ColumnFilterControl({
       <Popover>
         <PopoverTrigger asChild>
           <IconButton
-            variant="segmented"
+            emphasis="segmented"
             size="md"
             icon="filter"
             label={t("table.filter.column-filters", "{{label}} filters", { label })}
@@ -387,7 +387,7 @@ function FilterClauseRow({
           <span className="flex-1 text-sm font-medium">{operatorLabel(clause.operator)}</span>
         )}
         <Button
-          variant="outline"
+          emphasis="outline"
           size="icon"
           icon="trash-2"
           aria-label={t("table.filter.remove", "Remove {{label}} filter", { label })}

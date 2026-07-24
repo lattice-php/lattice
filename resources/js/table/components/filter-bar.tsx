@@ -70,7 +70,7 @@ export function FilterBar({
         <button
           type="button"
           data-test="table-filters-reset"
-          className="text-lt-muted-fg underline-offset-2 hover:underline disabled:opacity-50"
+          className="text-lt-muted-fg underline-offset-2 hover:underline disabled:text-lt-disabled-fg"
           disabled={processing}
           onClick={onReset}
         >

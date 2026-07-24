@@ -22,7 +22,7 @@ start folded, or `rememberState: false` to not persist the state across reloads 
     ->collapsible()
     ->tooltip('Only admins can change who has access.')
     ->headerActions([
-        Button::make('Invite member')->variant(ButtonVariant::Outline),
+        Button::make('Invite member')->emphasis(Emphasis::Outline),
     ])
     ->schema([
         Text::make('Three people have access to this team.'),

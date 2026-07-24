@@ -101,6 +101,7 @@ export function BulkBar({
             type="button"
             data-test={prefixedTestId("bulk-action", action.id)}
             variant={action.variant}
+            emphasis={action.emphasis}
             disabled={processing}
             onClick={() => run(action)}
           >
@@ -117,6 +118,7 @@ export function BulkBar({
           confirmLabel={confirming.confirmation.confirmLabel ?? confirming.label}
           cancelLabel={confirming.confirmation.cancelLabel ?? t("common.cancel", "Cancel")}
           confirmVariant={confirming.variant}
+          confirmEmphasis={confirming.emphasis}
           processing={processing}
           onConfirm={() => void submit(confirming)}
           onCancel={() => setConfirming(null)}

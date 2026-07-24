@@ -10,11 +10,12 @@
                         "action": null,
                         "buttonType": "button",
                         "effects": [],
+                        "emphasis": "outline",
                         "href": null,
                         "icon": null,
                         "label": "Invite member",
                         "method": null,
-                        "variant": "outline"
+                        "variant": null
                     },
                     "type": "button"
                 }
@@ -36,6 +37,7 @@
             },
             {
                 "props": {
+                    "color": null,
                     "label": "3 active"
                 },
                 "type": "badge"

@@ -8,7 +8,6 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Variant;
 
@@ -20,7 +19,7 @@ class WorkbenchPingAction extends ActionDefinition
         return $action
             ->label('Ping')
             ->method(HttpMethod::Post)
-            ->variant(ButtonVariant::Secondary);
+            ->variant(Variant::Secondary);
     }
 
     public function handle(Request $request): ActionResult

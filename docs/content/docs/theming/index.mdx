@@ -6,11 +6,10 @@ description: The CSS custom properties Lattice exposes, their defaults, and how 
 import TokenReference from "@components/TokenReference.astro";
 import Info from "@components/Info.astro";
 
-Lattice renders with a small set of semantic design tokens — CSS custom properties prefixed
-with `--lt-`. Theme it server-side with a PHP `Theme` builder — set only the colors and scalars
-you want to change; Lattice emits them as CSS custom properties, layered over its defaults. For
-direct control over the underlying host variables, see
-[Advanced: host variables](#advanced-host-variables).
+Lattice renders with a single set of semantic design tokens — CSS custom properties prefixed
+with `--lt-`. Theme it server-side with the PHP `Theme` builder, or override the tokens directly
+in [plain CSS](#plain-css-overrides) — the defaults live in a cascade layer, so any override you
+write wins regardless of stylesheet order.
 
 Tokens are global and shared across components. The **Style** tab on each component example lists
 the tokens that example uses in its initial rendered state. Tokens that only appear in
@@ -34,21 +33,21 @@ Lattice::theme(
 );
 ```
 
-`colors()` accepts named arguments for any token — `background`, `foreground`, `card`,
-`cardForeground`, `popover`, `popoverForeground`, `primary`, `primaryForeground`, `secondary`,
+`colors()` accepts named arguments for any token — `background`, `foreground`, `surface`,
+`surfaceForeground`, `popover`, `popoverForeground`, `primary`, `primaryForeground`, `secondary`,
 `secondaryForeground`, `muted`, `mutedForeground`, `accent`, `accentForeground`, `danger`,
 `dangerForeground`, `success`, `successForeground`, `info`, `infoForeground`, `warning`,
 `warningForeground`, `border`, `input`, `ring`, `overlay`. Scalars have their own methods —
 `radius()`, `ringWidth()`, `ringOffset()`, `fontSans()`, `fontMono()`, `fontDisplay()` — or fall
-back to `set('--token', $value)` for anything else, e.g. `set('--chart-1', '#0ea5e9')` for the
-categorical chart palette. `dark()` takes a closure that builds the dark-mode overrides from a
-fresh `Theme`.
+back to `set('token', $value)` for anything else; bare names get the `--lt-` prefix, so
+`set('chart-1', '#0ea5e9')` sets `--lt-chart-1`. `dark()` takes a closure that builds the
+dark-mode overrides from a fresh `Theme`.
 
 <Info>
   The theme emits the CSS variables you set verbatim — there is no auto-derivation of foregrounds
   or hover/active states. Set them explicitly when you need them, e.g.
   `colors(primary: '#6366f1', primaryForeground: '#fff')` or
-  `->set('--primary-hover', '#4f46e5')`. Any valid CSS color is accepted — hex, `rgb()`, `oklch()`,
+  `->set('primary-hover', '#4f46e5')`. Any valid CSS color is accepted — hex, `rgb()`, `oklch()`,
   and so on.
 </Info>
 
@@ -79,13 +78,13 @@ first paint — no flash of the default theme before JS runs.
 ## Dark mode
 
 Every token ships a light and a dark value (the **Light** and **Dark** columns below). Dark mode is
-driven by a `dark` class on the `<html>` element: when it is present, the `.dark` host variables
-take over and Lattice's tokens follow. You theme dark mode the same way as light — by defining the
-host variables under `.dark`.
+driven by a `dark` class on the `<html>` element: when it is present, the `.dark` token values
+take over. You theme dark mode the same way as light — via `Theme::dark()` on the server, or by
+overriding `--lt-*` tokens under `.dark` in your CSS.
 
 Lattice manages the class for you through its appearance helpers, exported from the package:
 
-- **`initializeTheme()`** — call once before your app mounts (e.g. in your entry file). It reads the
+- **`initializeAppearance()`** — call once before your app mounts (e.g. in your entry file). It reads the
   stored preference (`localStorage` key `appearance`, default `system`), applies the `dark` class and
   `color-scheme`, and keeps them in sync when the OS preference changes.
 - **`useAppearance()`** — a hook returning `{ appearance, resolvedAppearance, updateAppearance }`.
@@ -95,9 +94,9 @@ Lattice manages the class for you through its appearance helpers, exported from 
   on top of it.
 
 ```tsx
-import { initializeTheme, useAppearance } from "@lattice-php/lattice";
+import { initializeAppearance, useAppearance } from "@lattice-php/lattice";
 
-initializeTheme();
+initializeAppearance();
 
 function AppearanceToggle() {
   const { appearance, updateAppearance } = useAppearance();
@@ -119,23 +118,23 @@ function AppearanceToggle() {
 
 <TokenReference />
 
-## Advanced: host variables
+## Plain CSS overrides
 
-Every token resolves through a host variable with a built-in fallback, so you can theme Lattice
-without the PHP `Theme` builder by defining the host variables (the same names shadcn/ui uses)
-directly on `:root` and `.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
+The defaults ship inside a `@layer lattice` cascade layer, and layered styles always lose to
+unlayered ones — so overriding a token is a plain declaration in your own stylesheet, no
+specificity tricks and no import-order care needed:
 
 ```css
 :root {
-  --primary: oklch(0.55 0.2 265);
-  --radius: 0.75rem;
+  --lt-primary: oklch(0.55 0.2 265);
+  --lt-radius: 0.75rem;
 }
 
 .dark {
-  --primary: oklch(0.7 0.18 265);
+  --lt-primary: oklch(0.7 0.18 265);
 }
 ```
 
-This is the lower-level mechanism `Theme::toCss()` generates output for. Reach for it when you
-already own a design-token pipeline emitting these variable names, or need finer control than
-`Theme` exposes — otherwise prefer [server-side theming](#server-side-theming-php).
+This is exactly the output `Theme::toCss()` generates. Reach for it when a design-token pipeline
+already owns your CSS, or when a one-off override doesn't warrant a server round trip — otherwise
+prefer [server-side theming](#server-side-theming-php).

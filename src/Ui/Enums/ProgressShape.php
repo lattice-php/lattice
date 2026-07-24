@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Ui\Enums;
 use Lattice\Lattice\Attributes\TypeScript;
 
 #[TypeScript]
-enum ProgressVariant: string
+enum ProgressShape: string
 {
     case Bar = 'bar';
     case Circle = 'circle';

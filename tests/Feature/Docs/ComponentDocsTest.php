@@ -20,11 +20,12 @@ use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Components\Tooltip;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
 use Lattice\Lattice\Ui\Enums\StackDirection;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 it('serializes a card tooltip', function (): void {
     $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));
@@ -69,7 +70,7 @@ describe('docs fixtures', function (): void {
             Section::make('Members', 'People with access to this team.')
                 ->collapsible()
                 ->tooltip('Only admins can change who has access.')
-                ->headerActions([Button::make('Invite member')->variant(ButtonVariant::Outline)])
+                ->headerActions([Button::make('Invite member')->emphasis(Emphasis::Outline)])
                 ->schema([
                     Text::make('Three people have access to this team.'),
                     Badge::make('3 active'),
@@ -102,13 +103,14 @@ describe('docs fixtures', function (): void {
     it('matches the button variants example fixture', function (): void {
         assertFixtureMatches('components.buttons', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
-                Button::make('Default')->variant(ButtonVariant::Default),
-                Button::make('Secondary')->variant(ButtonVariant::Secondary),
-                Button::make('Success')->variant(ButtonVariant::Success),
-                Button::make('Info')->variant(ButtonVariant::Info),
-                Button::make('Destructive')->variant(ButtonVariant::Destructive),
-                Button::make('Outline')->variant(ButtonVariant::Outline),
-                Button::make('Ghost')->variant(ButtonVariant::Ghost),
+                Button::make('Primary'),
+                Button::make('Secondary')->variant(Variant::Secondary),
+                Button::make('Success')->variant(Variant::Success),
+                Button::make('Info')->variant(Variant::Info),
+                Button::make('Warning')->variant(Variant::Warning),
+                Button::make('Danger')->variant(Variant::Danger),
+                Button::make('Outline')->emphasis(Emphasis::Outline),
+                Button::make('Ghost')->emphasis(Emphasis::Ghost),
             ]),
         ]))));
     });
@@ -116,8 +118,8 @@ describe('docs fixtures', function (): void {
     it('matches the stack example fixture', function (): void {
         assertFixtureMatches('components.stack', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
-                Button::make('Save')->variant(ButtonVariant::Default),
-                Button::make('Cancel')->variant(ButtonVariant::Ghost),
+                Button::make('Save'),
+                Button::make('Cancel')->emphasis(Emphasis::Ghost),
             ]),
         ]))));
     });

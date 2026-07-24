@@ -9,14 +9,14 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 
 #[AsAction('workbench.logout')]
 class LogoutAction extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent
     {
-        return $action->variant(ButtonVariant::Ghost);
+        return $action->emphasis(Emphasis::Ghost);
     }
 
     public function handle(Request $request): ActionResult

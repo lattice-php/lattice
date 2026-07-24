@@ -16,8 +16,9 @@ use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
 use Lattice\Lattice\Ui\Components\IsInteractive;
 use Lattice\Lattice\Ui\Concerns\HasHttpMethod;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Lattice\Ui\Enums\Variant;
 use LogicException;
 
 #[AsComponent('form')]
@@ -42,7 +43,9 @@ class Form extends ContainerComponent
 
     public ?Justify $submitJustify = null;
 
-    public ?ButtonVariant $submitVariant = null;
+    public ?Variant $submitVariant = null;
+
+    public ?Emphasis $submitEmphasis = null;
 
     /**
      * @var array<int, Button>|null
@@ -113,9 +116,16 @@ class Form extends ContainerComponent
         return $this;
     }
 
-    public function submitVariant(ButtonVariant $variant): static
+    public function submitVariant(Variant $variant): static
     {
         $this->submitVariant = $variant;
+
+        return $this;
+    }
+
+    public function submitEmphasis(Emphasis $emphasis): static
+    {
+        $this->submitEmphasis = $emphasis;
 
         return $this;
     }

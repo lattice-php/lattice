@@ -7,7 +7,7 @@ use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Justify;
 
 test('forms serialize schema children like pages', function (): void {
@@ -92,7 +92,7 @@ test('editable computed fields serialize an explicit client prefill flag', funct
 test('forms serialize submit row configuration', function (): void {
     $wire = wire(Form::make('checkout')
         ->submitJustify(Justify::Between)
-        ->submitVariant(ButtonVariant::Outline)
+        ->submitEmphasis(Emphasis::Outline)
         ->submitButtons(
             Button::make('Cancel'),
             Button::make('Save')->submit(),
@@ -100,7 +100,7 @@ test('forms serialize submit row configuration', function (): void {
 
     expect($wire['props'])->toMatchArray([
         'submitJustify' => 'between',
-        'submitVariant' => 'outline',
+        'submitEmphasis' => 'outline',
     ])
         ->and($wire['props']['submitButtons'])->toHaveCount(2)
         ->and($wire['props']['submitButtons'][0])->toMatchArray(['type' => 'button'])

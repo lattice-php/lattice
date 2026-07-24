@@ -635,13 +635,14 @@ return [
         'home' => [
             'badge' => 'Lattice Package',
             'buttons' => [
-                'default' => 'Default',
-                'destructive' => 'Destructive',
+                'danger' => 'Danger',
                 'ghost' => 'Ghost',
                 'info' => 'Info',
                 'outline' => 'Outline',
+                'primary' => 'Primary',
                 'secondary' => 'Secondary',
                 'success' => 'Success',
+                'warning' => 'Warning',
             ],
             'button-variants' => 'Button variants',
             'charts' => 'Dashboard charts',

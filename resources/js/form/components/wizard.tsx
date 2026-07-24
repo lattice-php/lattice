@@ -151,7 +151,7 @@ export const WizardComponent: RendererComponent<"wizard"> = ({ children, node })
               disabled={activeIndex === 0 || processing}
               onClick={() => goTo(activeIndex - 1)}
               type="button"
-              variant="outline"
+              emphasis="outline"
             >
               {t("form.wizard.back", "Back")}
             </Button>

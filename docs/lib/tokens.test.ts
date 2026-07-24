@@ -8,20 +8,24 @@ import {
 } from "./tokens";
 
 const SAMPLE_CSS = `
-:root,
-[data-theme="light"] {
-  --lt-bg: var(--background, oklch(1 0 0));
-  --lt-primary: var(--primary, oklch(0.205 0 0));
-  --lt-radius: var(--radius, 0.625rem);
+@layer lattice {
+  :root,
+  [data-theme="light"] {
+  --lt-bg: oklch(1 0 0);
+  --lt-primary: oklch(0.205 0 0);
+  --lt-radius: 0.625rem;
   --lt-radius-sm: calc(var(--lt-radius) - 2px);
   color-scheme: light;
+  }
 }
 
-[data-theme="dark"],
-.dark {
-  --lt-bg: var(--background, oklch(0.145 0 0));
-  --lt-primary: var(--primary, oklch(0.985 0 0));
+@layer lattice {
+  [data-theme="dark"],
+  .dark {
+  --lt-bg: oklch(0.145 0 0);
+  --lt-primary: oklch(0.985 0 0);
   color-scheme: dark;
+  }
 }
 
 @theme inline {
@@ -33,12 +37,11 @@ const SAMPLE_CSS = `
 `;
 
 describe("parseTokens", () => {
-  it("extracts host var and light/dark defaults", () => {
+  it("extracts light and dark values", () => {
     const tokens = parseTokens(SAMPLE_CSS);
     const primary = tokens.find((t) => t.name === "--lt-primary");
     expect(primary).toEqual({
       name: "--lt-primary",
-      hostVar: "--primary",
       light: "oklch(0.205 0 0)",
       dark: "oklch(0.985 0 0)",
       category: "color",
@@ -52,7 +55,6 @@ describe("parseTokens", () => {
       category: "radius",
       light: "calc(var(--lt-radius) - 2px)",
       dark: "calc(var(--lt-radius) - 2px)",
-      hostVar: null,
     });
   });
 

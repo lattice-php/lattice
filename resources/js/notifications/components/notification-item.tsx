@@ -7,10 +7,12 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
 const variantIconClass: Record<NonNullable<NotificationItem["variant"]>, string> = {
+  primary: "text-lt-primary",
+  secondary: "text-lt-muted-fg",
   success: "text-lt-success",
   info: "text-lt-info",
   warning: "text-lt-warning",
-  error: "text-lt-danger",
+  danger: "text-lt-danger",
 };
 
 export function NotificationItemRow({

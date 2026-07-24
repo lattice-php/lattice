@@ -20,7 +20,7 @@ const TooltipComponent: RendererComponent<"tooltip"> = ({ node }) => {
     <Popover>
       <PopoverTrigger
         type="button"
-        className="inline-flex items-center rounded-lt-sm outline-none focus-visible:ring-lt-ring/50 focus-visible:ring-[3px]"
+        className="inline-flex items-center rounded-lt-sm outline-none focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]"
       >
         <Renderer nodes={trigger} />
       </PopoverTrigger>

@@ -1,7 +1,7 @@
 import type { Node, NodeProps, ComponentPropsOf } from "./types";
 
 // 1. Built-in type narrows correctly: badge requires props.label: string
-const _okBadge: Node<"badge"> = { type: "badge", props: { label: "x" } };
+const _okBadge: Node<"badge"> = { type: "badge", props: { label: "x", color: null } };
 // @ts-expect-error label must be a string, not a number
 const _badBadge: Node<"badge"> = { type: "badge", props: { label: 1 } };
 

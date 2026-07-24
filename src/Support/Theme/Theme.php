@@ -16,21 +16,21 @@ final class Theme
     /** @var array<string, string> */
     private array $darkVars = [];
 
-    /** @var array<string, string> friendly name => host-var token */
+    /** @var array<string, string> friendly name => token */
     private const array COLOR_TOKENS = [
-        'background' => '--background', 'foreground' => '--foreground',
-        'card' => '--card', 'cardForeground' => '--card-foreground',
-        'popover' => '--popover', 'popoverForeground' => '--popover-foreground',
-        'primary' => '--primary', 'primaryForeground' => '--primary-foreground',
-        'secondary' => '--secondary', 'secondaryForeground' => '--secondary-foreground',
-        'muted' => '--muted', 'mutedForeground' => '--muted-foreground',
-        'accent' => '--accent', 'accentForeground' => '--accent-foreground',
-        'danger' => '--destructive', 'dangerForeground' => '--destructive-foreground',
-        'success' => '--success', 'successForeground' => '--success-foreground',
-        'info' => '--info', 'infoForeground' => '--info-foreground',
-        'warning' => '--warning', 'warningForeground' => '--warning-foreground',
-        'border' => '--border', 'input' => '--input', 'ring' => '--ring', 'overlay' => '--overlay',
-        'disabled' => '--disabled', 'disabledForeground' => '--disabled-foreground',
+        'background' => '--lt-bg', 'foreground' => '--lt-fg',
+        'surface' => '--lt-surface', 'surfaceForeground' => '--lt-surface-fg',
+        'popover' => '--lt-popover', 'popoverForeground' => '--lt-popover-fg',
+        'primary' => '--lt-primary', 'primaryForeground' => '--lt-primary-fg',
+        'secondary' => '--lt-secondary', 'secondaryForeground' => '--lt-secondary-fg',
+        'muted' => '--lt-muted', 'mutedForeground' => '--lt-muted-fg',
+        'accent' => '--lt-accent', 'accentForeground' => '--lt-accent-fg',
+        'danger' => '--lt-danger', 'dangerForeground' => '--lt-danger-fg',
+        'success' => '--lt-success', 'successForeground' => '--lt-success-fg',
+        'info' => '--lt-info', 'infoForeground' => '--lt-info-fg',
+        'warning' => '--lt-warning', 'warningForeground' => '--lt-warning-fg',
+        'border' => '--lt-border', 'input' => '--lt-input', 'ring' => '--lt-ring', 'overlay' => '--lt-overlay',
+        'disabled' => '--lt-disabled', 'disabledForeground' => '--lt-disabled-fg',
     ];
 
     public static function make(): self
@@ -41,8 +41,8 @@ final class Theme
     public function colors(
         Color|string|null $background = null,
         Color|string|null $foreground = null,
-        Color|string|null $card = null,
-        Color|string|null $cardForeground = null,
+        Color|string|null $surface = null,
+        Color|string|null $surfaceForeground = null,
         Color|string|null $popover = null,
         Color|string|null $popoverForeground = null,
         Color|string|null $primary = null,
@@ -83,32 +83,32 @@ final class Theme
 
     public function radius(string $value): self
     {
-        return $this->set('--radius', $value);
+        return $this->set('--lt-radius', $value);
     }
 
     public function ringWidth(string $value): self
     {
-        return $this->set('--ring-width', $value);
+        return $this->set('--lt-ring-width', $value);
     }
 
     public function ringOffset(string $value): self
     {
-        return $this->set('--ring-offset', $value);
+        return $this->set('--lt-ring-offset', $value);
     }
 
     public function fontSans(string $value): self
     {
-        return $this->set('--font-sans', $value);
+        return $this->set('--lt-font-sans', $value);
     }
 
     public function fontMono(string $value): self
     {
-        return $this->set('--font-mono', $value);
+        return $this->set('--lt-font-mono', $value);
     }
 
     public function fontDisplay(string $value): self
     {
-        return $this->set('--font-display', $value);
+        return $this->set('--lt-font-display', $value);
     }
 
     public function set(string $token, string $value): self
@@ -163,7 +163,7 @@ final class Theme
 
     private function normalize(string $token): string
     {
-        return str_starts_with($token, '--') ? $token : '--'.$token;
+        return str_starts_with($token, '--') ? $token : '--lt-'.$token;
     }
 
     private function guard(string $value): string

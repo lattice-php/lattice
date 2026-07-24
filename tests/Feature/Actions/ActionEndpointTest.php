@@ -31,6 +31,7 @@ test('registered actions serialize their configured endpoint method and label', 
                 'method' => 'post',
                 'ref' => $this->latticeRef($action),
                 'variant' => 'secondary',
+                'emphasis' => null,
                 'icon' => null,
                 'confirmation' => null,
                 'form' => null,
@@ -123,7 +124,7 @@ test('a failure result returns 422 and still serializes its effects', function (
     $this->callAction(WorkbenchFailingAction::class, [])
         ->assertStatus(422)
         ->assertJsonPath('effects.0.type', 'toast')
-        ->assertJsonPath('effects.0.props.variant', 'error')
+        ->assertJsonPath('effects.0.props.variant', 'danger')
         ->assertJsonPath('effects.0.props.message', 'Could not process.');
 });
 

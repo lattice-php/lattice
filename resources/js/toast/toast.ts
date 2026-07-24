@@ -4,7 +4,14 @@ import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
 
 export type { ToastMessage, Variant };
 
-const variants = ["success", "info", "warning", "error"] as const satisfies readonly Variant[];
+const variants = [
+  "primary",
+  "secondary",
+  "success",
+  "info",
+  "warning",
+  "danger",
+] as const satisfies readonly Variant[];
 
 export function isVariant(value: unknown): value is Variant {
   return variants.some((variant) => variant === value);

@@ -15,11 +15,12 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
-                    "label": "Default",
+                    "label": "Primary",
                     "method": null,
-                    "variant": "default"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -28,6 +29,7 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Secondary",
@@ -41,6 +43,7 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Success",
@@ -54,6 +57,7 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Info",
@@ -67,11 +71,12 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
-                    "label": "Destructive",
+                    "label": "Warning",
                     "method": null,
-                    "variant": "destructive"
+                    "variant": "warning"
                 },
                 "type": "button"
             },
@@ -80,11 +85,26 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": null,
+                    "href": null,
+                    "icon": null,
+                    "label": "Danger",
+                    "method": null,
+                    "variant": "danger"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "action": null,
+                    "buttonType": "button",
+                    "effects": [],
+                    "emphasis": "outline",
                     "href": null,
                     "icon": null,
                     "label": "Outline",
                     "method": null,
-                    "variant": "outline"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -93,11 +113,12 @@
                     "action": null,
                     "buttonType": "button",
                     "effects": [],
+                    "emphasis": "ghost",
                     "href": null,
                     "icon": null,
                     "label": "Ghost",
                     "method": null,
-                    "variant": "ghost"
+                    "variant": null
                 },
                 "type": "button"
             }

@@ -1,16 +1,18 @@
 import { Button } from "@lattice-php/lattice/ui/button";
 import { Spinner } from "@lattice-php/lattice/ui/spinner";
-import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
+import type { Emphasis, Variant } from "@lattice-php/lattice/types/generated";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 
 export function FormSubmitButton({
   label,
   summaryLabel,
-  variant = "default",
+  variant,
+  emphasis,
 }: {
   label: string;
   summaryLabel: string;
-  variant?: ButtonVariant;
+  variant?: Variant | null;
+  emphasis?: Emphasis | null;
 }) {
   const { componentId, errors, fieldLabels, processing } = useFormContext();
 
@@ -25,6 +27,7 @@ export function FormSubmitButton({
         data-lattice-form={componentId}
         data-test="form-submit"
         disabled={processing || hasErrors}
+        emphasis={emphasis}
         type="submit"
         variant={variant}
       >
