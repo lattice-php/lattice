@@ -1636,7 +1636,7 @@ export type UiNodeType =
 export type UnreadCount = {
   readonly unreadCount: number;
 };
-export type Variant = "success" | "info" | "warning" | "error";
+export type Variant = "success" | "info" | "warning" | "danger";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
 export type Wizard = {
   orientation: Orientation;

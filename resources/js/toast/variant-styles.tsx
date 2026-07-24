@@ -15,7 +15,7 @@ export const variantStyles: Record<Variant, { accent: string; icon: ReactNode }>
     accent: "border-l-lt-warning",
     icon: <Icon name="circle-alert" className="size-lt-icon-lg shrink-0 text-lt-warning" />,
   },
-  error: {
+  danger: {
     accent: "border-l-lt-danger",
     icon: <Icon name="circle-x" className="size-lt-icon-lg shrink-0 text-lt-danger" />,
   },

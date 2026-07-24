@@ -40,7 +40,7 @@ final readonly class ActionResult
     {
         $result = new self(status: Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        return $message === null ? $result : $result->toast($message, Variant::Error);
+        return $message === null ? $result : $result->toast($message, Variant::Danger);
     }
 
     public function status(): int

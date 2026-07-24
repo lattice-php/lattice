@@ -25,7 +25,7 @@ test('failure with a message attaches an error toast and stays 422', function ()
         ->toMatchArray([
             'type' => 'toast',
             'props' => [
-                'variant' => 'error',
+                'variant' => 'danger',
                 'message' => 'Order already shipped.',
                 'duration' => null,
                 'persistent' => false,
