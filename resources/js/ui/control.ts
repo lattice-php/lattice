@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const FOCUS_RING =
-  "focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[3px]";
+  "focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-offset-[length:var(--lt-ring-offset)]";
 
 /**
  * The shared chrome for single-line form/table controls (text inputs, native

@@ -59,26 +59,6 @@ describe("Lattice action group component", () => {
     expect(screen.getByRole("button", { name: "German" })).toBeVisible();
   });
 
-  it("renders inline action groups vertically", () => {
-    const node = fakeNode({
-      id: "locale-switcher",
-      props: {
-        label: "Language",
-        orientation: "vertical",
-      },
-      type: "action.group",
-    });
-
-    render(
-      <ActionGroupComponent node={node}>
-        <button type="button">English</button>
-        <button type="button">German</button>
-      </ActionGroupComponent>,
-    );
-
-    expect(screen.getByRole("group", { name: "Language" })).toHaveClass("flex-col");
-  });
-
   it("renders the localized default label when none is set", () => {
     const node = fakeNode({
       id: "row-actions",

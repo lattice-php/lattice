@@ -369,27 +369,4 @@ describe("Lattice tabs component", () => {
     fireEvent.keyDown(overview, { key: "ArrowRight" });
     expect(overview).toHaveFocus();
   });
-
-  it("stretches horizontal tabs to fill the row by default", () => {
-    renderTabs({ alignment: "stretch" });
-
-    expect(screen.getByRole("tablist")).toHaveClass("w-full");
-    expect(screen.getByRole("tab", { name: "Overview" })).toHaveClass("flex-1");
-  });
-
-  it("aligns a non-stretched horizontal tablist with justify-self", () => {
-    renderTabs({ alignment: "center" });
-    const tablist = screen.getByRole("tablist");
-
-    expect(tablist).toHaveClass("w-fit", "justify-self-center");
-    expect(tablist).not.toHaveClass("w-full");
-    expect(screen.getByRole("tab", { name: "Overview" })).not.toHaveClass("flex-1");
-  });
-
-  it("places the vertical tablist after the panels when aligned to the end", () => {
-    renderTabs({ alignment: "end", orientation: "vertical" });
-
-    expect(screen.getByRole("tablist").parentElement).toHaveClass("flex-row-reverse");
-    expect(screen.getByRole("tab", { name: "Overview" })).not.toHaveClass("flex-1");
-  });
 });

@@ -13,8 +13,8 @@ import { cn } from "@lattice-php/lattice/lib/utils";
 const iconButtonVariants = cva(
   cn(
     "relative inline-flex shrink-0 items-center justify-center rounded-lt-sm transition-colors",
-    "outline-none focus-visible:ring-2 focus-visible:ring-lt-ring/50",
-    "disabled:pointer-events-none disabled:opacity-50",
+    "outline-none focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50",
+    "disabled:pointer-events-none disabled:bg-lt-disabled disabled:text-lt-disabled-fg",
   ),
   {
     variants: {

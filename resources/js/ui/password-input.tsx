@@ -26,7 +26,7 @@ export default function PasswordInput({ className, ref, ...props }: PasswordInpu
           typeof props.name === "string" ? `${props.name}-visibility` : "password-visibility"
         }
         onClick={() => setShowPassword((prev) => !prev)}
-        className="absolute inset-y-0 right-0 flex items-center rounded-r-lt-sm px-3 text-lt-muted-fg hover:text-lt-fg focus-visible:ring-[3px] focus-visible:ring-lt-ring focus-visible:outline-none"
+        className="absolute inset-y-0 right-0 flex items-center rounded-r-lt-sm px-3 text-lt-muted-fg hover:text-lt-fg focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50 focus-visible:outline-none"
         aria-label={showPassword ? "Hide password" : "Show password"}
         tabIndex={-1}
       >

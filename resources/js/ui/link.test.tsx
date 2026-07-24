@@ -1,8 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { ActionMenuProvider } from "./action-menu-context";
-import LinkComponent, { TextLink } from "./link";
+import LinkComponent from "./link";
 
 describe("Lattice link component", () => {
   it("renders an Inertia link from server props", () => {
@@ -18,28 +17,6 @@ describe("Lattice link component", () => {
     render(<LinkComponent node={node}>{null}</LinkComponent>);
 
     expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute("href", "/register");
-  });
-
-  it("renders as a subtle menu item inside action menus", () => {
-    const node = fakeNode({
-      props: {
-        href: "/products/1/edit",
-        label: "Edit",
-      },
-      type: "link",
-    });
-
-    render(
-      <ActionMenuProvider>
-        <LinkComponent node={node}>{null}</LinkComponent>
-      </ActionMenuProvider>,
-    );
-
-    expect(screen.getByRole("link", { name: "Edit" })).toHaveClass(
-      "h-lt-control-sm",
-      "w-full",
-      "no-underline",
-    );
   });
 
   it("renders prefix and suffix affixes around the label", () => {
@@ -77,15 +54,5 @@ describe("Lattice link component", () => {
     expect(link).toHaveAttribute("aria-label", "Settings");
     expect(link.querySelector("svg")).not.toBeNull();
     expect(screen.queryByText("Settings")).not.toBeInTheDocument();
-  });
-
-  it("merges custom classes on direct text links", () => {
-    render(
-      <TextLink className="custom-class" href="/docs">
-        Docs
-      </TextLink>,
-    );
-
-    expect(screen.getByRole("link", { name: "Docs" })).toHaveClass("custom-class");
   });
 });

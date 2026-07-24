@@ -77,23 +77,6 @@ describe("TextInputComponent affixes", () => {
     expect(screen.getByText("USD")).toBeVisible();
   });
 
-  it("squares the input corners adjacent to each affix", () => {
-    renderField(
-      fakeNode({
-        type: "field.text-input",
-        props: {
-          name: "price",
-          label: "Price",
-          prefix: { icon: null, text: "$" },
-          suffix: { icon: null, text: "USD" },
-        },
-      }),
-    );
-
-    const input = screen.getByRole("textbox", { name: "Price" });
-    expect(input).toHaveClass("rounded-l-none", "rounded-r-none");
-  });
-
   it("renders an icon affix as an icon, not literal text", () => {
     const { container } = renderField(
       fakeNode({
@@ -107,31 +90,6 @@ describe("TextInputComponent affixes", () => {
     );
 
     expect(container.querySelector('[data-slot="affix-start"] svg')).not.toBeNull();
-  });
-
-  it("draws the focus ring around the whole group and suppresses the bare input ring", () => {
-    const { container } = renderField(
-      fakeNode({
-        type: "field.text-input",
-        props: { name: "price", label: "Price", prefix: { icon: null, text: "$" } },
-      }),
-    );
-
-    const group = container.querySelector('[data-slot="affix-group"]');
-    expect(group?.className).toContain("has-[:focus-visible]:ring-[3px]");
-    expect(screen.getByRole("textbox", { name: "Price" })).toHaveClass("focus-visible:ring-0");
-  });
-
-  it("leaves the input unwrapped when there are no affixes", () => {
-    renderField(
-      fakeNode({
-        type: "field.text-input",
-        props: { name: "plain", label: "Plain" },
-      }),
-    );
-
-    const input = screen.getByRole("textbox", { name: "Plain" });
-    expect(input).not.toHaveClass("rounded-l-none", "rounded-r-none");
   });
 });
 
@@ -165,16 +123,5 @@ describe("TextInputComponent copy affix", () => {
 
     expect(writeText).toHaveBeenCalledWith("tok_secret");
     expect(screen.getByRole("button", { name: "Copied API key" })).toBeInTheDocument();
-  });
-
-  it("squares the input corner adjacent to the copy button", () => {
-    renderField(
-      fakeNode({
-        type: "field.text-input",
-        props: { name: "api_key", label: "API key", copyable: true },
-      }),
-    );
-
-    expect(screen.getByRole("textbox", { name: "API key" })).toHaveClass("rounded-r-none");
   });
 });

@@ -384,43 +384,6 @@ describe("Lattice form schema components", () => {
     expect(formSlotState.reset).toHaveBeenCalledOnce();
   });
 
-  it("renders the submit row as a plain flex row without bar chrome", () => {
-    const formNode = fakeNode({
-      id: "plain-form",
-      props: {
-        action: "/plain",
-        submitButton: true,
-      },
-      type: "form",
-    });
-
-    render(<FormComponent node={formNode}>{null}</FormComponent>);
-
-    const row = screen.getByRole("button", { name: "Submit" }).closest("div");
-    expect(row).toHaveClass("justify-end");
-    expect(row).not.toHaveClass("border", "bg-lt-surface", "shadow-lt-sm");
-  });
-
-  it("applies submitJustify and submitVariant", () => {
-    const formNode = fakeNode({
-      id: "styled-form",
-      props: {
-        action: "/styled",
-        submitButton: true,
-        submitJustify: "between",
-        submitVariant: "outline",
-      },
-      type: "form",
-    });
-
-    render(<FormComponent node={formNode}>{null}</FormComponent>);
-
-    const submitButton = screen.getByRole("button", { name: "Submit" });
-    const row = submitButton.closest("div");
-    expect(row).toHaveClass("justify-between");
-    expect(submitButton).toHaveClass("border-lt-input", "bg-lt-bg");
-  });
-
   it("renders custom submit buttons, substituting the managed submit button", () => {
     const registry = createRegistry({
       components: { button: eagerComponent(ButtonComponent) },

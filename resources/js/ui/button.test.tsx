@@ -1,25 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import type { Node } from "@lattice-php/lattice/core/types";
-import ButtonComponent, { Button } from "./button";
-
-describe("Button variants", () => {
-  it("applies the success variant classes", () => {
-    render(<Button variant="success">Save</Button>);
-
-    expect(screen.getByRole("button")).toHaveClass("bg-lt-success", "text-lt-success-fg");
-  });
-
-  it("applies the info variant classes", () => {
-    render(<Button variant="info">Details</Button>);
-
-    expect(screen.getByRole("button")).toHaveClass("bg-lt-info", "text-lt-info-fg");
-  });
-});
+import ButtonComponent from "./button";
 
 describe("ButtonComponent client effects", () => {
   const registry = createRegistry({

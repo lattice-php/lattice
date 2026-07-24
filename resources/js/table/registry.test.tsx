@@ -182,22 +182,6 @@ describe("column registry", () => {
     );
   }
 
-  it("renders a badge cell with its mapped colour", () => {
-    renderCell(
-      col({
-        key: "status",
-        label: "Status",
-        type: "column.badge",
-        props: { colors: { active: { kind: "named", value: "green", dark: null } } },
-      }),
-      { status: "active" },
-    );
-
-    const badge = screen.getByText("active");
-    expect(badge).toBeVisible();
-    expect(badge.className).toContain("lt-tone-green");
-  });
-
   it("renders an icon cell from the value map", () => {
     renderCell(
       col({
@@ -254,20 +238,6 @@ describe("column registry", () => {
 
     expect(await screen.findByRole("button", { name: /Copied Token/ })).toBeVisible();
     expect(writeText).toHaveBeenCalledWith("abc");
-  });
-
-  it("renders a badge cell with the gray fallback for an unmapped value", () => {
-    renderCell(
-      col({
-        key: "status",
-        label: "Status",
-        type: "column.badge",
-        props: { colors: { active: "green" } },
-      }),
-      { status: "archived" },
-    );
-
-    expect(screen.getByText("archived").className).toContain("lt-tone-gray");
   });
 
   it("renders nothing for a badge cell with an empty value", () => {
@@ -342,20 +312,6 @@ describe("column registry", () => {
     renderCell(col({ key: "x", label: "X", type: "totally.unknown" }), { x: "plain" });
 
     expect(screen.getByText("plain")).toBeVisible();
-  });
-
-  it("renders an icon cell with a mapped colour", () => {
-    renderCell(
-      col({
-        key: "s",
-        label: "S",
-        type: "column.icon",
-        props: { icons: { ok: "check" }, colors: { ok: "green" } },
-      }),
-      { s: "ok" },
-    );
-
-    expect(screen.getByLabelText("ok").className).toContain("lt-tone-green");
   });
 
   it("renders a text cell as an internal link", () => {

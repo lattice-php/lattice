@@ -33,7 +33,6 @@ return [
     'frontend' => [
         'dist_path' => null,
         'path' => 'vendor/lattice',
-        'theme' => [],
         'echo' => null,
     ],
 

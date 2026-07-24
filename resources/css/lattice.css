@@ -42,6 +42,28 @@
   --lt-radius: var(--radius, 0.5rem);
   --lt-radius-sm: calc(var(--lt-radius) - 0.125rem);
   --lt-radius-xs: calc(var(--lt-radius) - 0.25rem);
+  --lt-radius-lg: calc(var(--lt-radius) + 0.25rem);
+  --lt-radius-xl: calc(var(--lt-radius) + 0.5rem);
+  --lt-radius-full: 9999px;
+
+  --lt-ring-width: var(--ring-width, 3px);
+  --lt-ring-offset: var(--ring-offset, 0px);
+
+  --lt-font-mono: var(--font-mono, ui-monospace, "SFMono-Regular", "Menlo", monospace);
+  --lt-font-display: var(--font-display, var(--font-sans));
+
+  --lt-warning-fg: var(--warning-foreground, oklch(0.205 0 0));
+
+  --lt-shadow-inner: inset 0 1px 2px 0 oklch(0 0 0 / 0.05);
+
+  --lt-chart-1: var(--chart-1, oklch(0.62 0.14 250));
+  --lt-chart-2: var(--chart-2, oklch(0.62 0.13 150));
+  --lt-chart-3: var(--chart-3, oklch(0.68 0.15 60));
+  --lt-chart-4: var(--chart-4, oklch(0.58 0.19 305));
+  --lt-chart-5: var(--chart-5, oklch(0.6 0.16 20));
+  --lt-chart-6: var(--chart-6, oklch(0.68 0.12 190));
+  --lt-chart-7: var(--chart-7, oklch(0.6 0.13 100));
+  --lt-chart-8: var(--chart-8, oklch(0.55 0.05 280));
 
   --lt-icon-xs: 0.75rem;
   --lt-icon-sm: 0.875rem;
@@ -150,6 +172,15 @@
   --lt-disabled: var(--disabled, oklch(0.32 0 0));
   --lt-disabled-fg: var(--disabled-foreground, oklch(0.55 0 0));
 
+  --lt-chart-1: var(--chart-1, oklch(0.72 0.13 250));
+  --lt-chart-2: var(--chart-2, oklch(0.72 0.12 150));
+  --lt-chart-3: var(--chart-3, oklch(0.76 0.14 60));
+  --lt-chart-4: var(--chart-4, oklch(0.7 0.16 305));
+  --lt-chart-5: var(--chart-5, oklch(0.7 0.16 20));
+  --lt-chart-6: var(--chart-6, oklch(0.76 0.11 190));
+  --lt-chart-7: var(--chart-7, oklch(0.72 0.12 100));
+  --lt-chart-8: var(--chart-8, oklch(0.68 0.05 280));
+
   color-scheme: dark;
 }
 
@@ -198,6 +229,24 @@
   --shadow-lt-sm: var(--lt-shadow-sm);
   --shadow-lt-md: var(--lt-shadow-md);
   --shadow-lt-lg: var(--lt-shadow-lg);
+  --shadow-lt-inner: var(--lt-shadow-inner);
+  --radius-lt-lg: var(--lt-radius-lg);
+  --radius-lt-xl: var(--lt-radius-xl);
+  --radius-lt-full: var(--lt-radius-full);
+  --color-lt-warning-fg: var(--lt-warning-fg);
+  --color-lt-chart-1: var(--lt-chart-1);
+  --color-lt-chart-2: var(--lt-chart-2);
+  --color-lt-chart-3: var(--lt-chart-3);
+  --color-lt-chart-4: var(--lt-chart-4);
+  --color-lt-chart-5: var(--lt-chart-5);
+  --color-lt-chart-6: var(--lt-chart-6);
+  --color-lt-chart-7: var(--lt-chart-7);
+  --color-lt-chart-8: var(--lt-chart-8);
+  --font-lt-mono: var(--lt-font-mono);
+  --font-lt-display: var(--lt-font-display);
+  --spacing-lt-sidebar: var(--lt-sidebar-w);
+  --spacing-lt-sidebar-collapsed: var(--lt-sidebar-w-collapsed);
+  --spacing-lt-container: var(--lt-container-max);
   --spacing-lt-icon-xs: var(--lt-icon-xs);
   --spacing-lt-icon-sm: var(--lt-icon-sm);
   --spacing-lt-icon-md: var(--lt-icon-md);
@@ -233,6 +282,7 @@
     "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
 
   --spacing: 0.25rem;
 
@@ -629,7 +679,7 @@
   background: var(--lt-muted);
   border-radius: var(--lt-radius-sm);
   padding: calc(var(--spacing) * 0.5) var(--spacing);
-  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  font-family: var(--lt-font-mono);
   font-size: 0.875em;
 }
 
@@ -639,7 +689,7 @@
   padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
   margin: calc(var(--spacing) * 3) 0;
   overflow-x: auto;
-  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  font-family: var(--lt-font-mono);
   font-size: var(--text-lg);
 }
 

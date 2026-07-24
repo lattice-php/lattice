@@ -7,14 +7,74 @@ import TokenReference from "@components/TokenReference.astro";
 import Info from "@components/Info.astro";
 
 Lattice renders with a small set of semantic design tokens — CSS custom properties prefixed
-with `--lt-`. Every token resolves through a host variable with a built-in fallback, so you can
-theme Lattice by defining the host variables (the same names shadcn/ui uses) on `:root` and
-`.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
+with `--lt-`. Theme it server-side with a PHP `Theme` builder — set only the colors and scalars
+you want to change; Lattice emits them as CSS custom properties, layered over its defaults. For
+direct control over the underlying host variables, see
+[Advanced: host variables](#advanced-host-variables).
 
 Tokens are global and shared across components. The **Style** tab on each component example lists
 the tokens that example uses in its initial rendered state. Tokens that only appear in
 interactive or overlay content — a dropdown panel, a dialog, a popover that opens on demand — are
 not captured there; this page is the complete reference.
+
+## Server-side theming (PHP)
+
+Build a `Theme` in PHP and register it with the `Lattice` facade, typically in a service
+provider's `boot()` method:
+
+```php
+use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\Support\Theme\Theme;
+
+Lattice::theme(
+    Theme::make()
+        ->colors(primary: '#6366f1')
+        ->radius('0.75rem')
+        ->dark(fn (Theme $theme): Theme => $theme->colors(primary: '#818cf8')),
+);
+```
+
+`colors()` accepts named arguments for any token — `background`, `foreground`, `card`,
+`cardForeground`, `popover`, `popoverForeground`, `primary`, `primaryForeground`, `secondary`,
+`secondaryForeground`, `muted`, `mutedForeground`, `accent`, `accentForeground`, `danger`,
+`dangerForeground`, `success`, `successForeground`, `info`, `infoForeground`, `warning`,
+`warningForeground`, `border`, `input`, `ring`, `overlay`. Scalars have their own methods —
+`radius()`, `ringWidth()`, `ringOffset()`, `fontSans()`, `fontMono()`, `fontDisplay()` — or fall
+back to `set('--token', $value)` for anything else, e.g. `set('--chart-1', '#0ea5e9')` for the
+categorical chart palette. `dark()` takes a closure that builds the dark-mode overrides from a
+fresh `Theme`.
+
+<Info>
+  The theme emits the CSS variables you set verbatim — there is no auto-derivation of foregrounds
+  or hover/active states. Set them explicitly when you need them, e.g.
+  `colors(primary: '#6366f1', primaryForeground: '#fff')` or
+  `->set('--primary-hover', '#4f46e5')`. Any valid CSS color is accepted — hex, `rgb()`, `oklch()`,
+  and so on.
+</Info>
+
+Pass a closure instead of a `Theme` to `Lattice::theme()` to resolve it per request — for example
+per-tenant branding:
+
+```php
+Lattice::theme(fn (): Theme => Theme::make()->colors(primary: tenant()->brand_color));
+```
+
+Prefer this closure form for per-request or per-tenant themes: a concrete `Theme` registered
+directly persists for the life of the worker process, so under Octane it would leak the first
+request's theme into every later one.
+
+Render it by adding `@latticeTheme` to your root Blade layout's `<head>`:
+
+```blade
+<head>
+    @latticeTheme
+    @vite(['resources/css/app.css', 'resources/js/app.tsx'])
+    @inertiaHead
+</head>
+```
+
+It emits a `<style id="lattice-theme">` block server-side, so the correct theme is present on
+first paint — no flash of the default theme before JS runs.
 
 ## Dark mode
 
@@ -58,3 +118,24 @@ function AppearanceToggle() {
 ## Token reference
 
 <TokenReference />
+
+## Advanced: host variables
+
+Every token resolves through a host variable with a built-in fallback, so you can theme Lattice
+without the PHP `Theme` builder by defining the host variables (the same names shadcn/ui uses)
+directly on `:root` and `.dark`. For example, set `--primary` and Lattice's `--lt-primary` follows.
+
+```css
+:root {
+  --primary: oklch(0.55 0.2 265);
+  --radius: 0.75rem;
+}
+
+.dark {
+  --primary: oklch(0.7 0.18 265);
+}
+```
+
+This is the lower-level mechanism `Theme::toCss()` generates output for. Reach for it when you
+already own a design-token pipeline emitting these variable names, or need finer control than
+`Theme` exposes — otherwise prefer [server-side theming](#server-side-theming-php).

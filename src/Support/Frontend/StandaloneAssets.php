@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Support\Frontend;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
-use InvalidArgumentException;
+use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use RuntimeException;
 
 final class StandaloneAssets
@@ -13,7 +13,10 @@ final class StandaloneAssets
     /** @var array{version: string, files: array<string, string>}|null */
     private ?array $manifest = null;
 
-    public function __construct(private readonly ?string $installedVersion = null) {}
+    public function __construct(
+        private readonly ThemeRenderer $themeRenderer,
+        private readonly ?string $installedVersion = null,
+    ) {}
 
     /** @param array<string, mixed> $config */
     public function head(array $config = []): string
@@ -22,10 +25,10 @@ final class StandaloneAssets
 
         $tags = [sprintf('<link rel="stylesheet" href="%s">', $this->versionedUrl('lattice.css'))];
 
-        $theme = $frontend['theme'] ?? [];
+        $theme = $this->themeRenderer->style();
 
-        if ($theme !== []) {
-            $tags[] = $this->themeStyle($theme);
+        if ($theme !== '') {
+            $tags[] = $theme;
         }
 
         $tags[] = $this->configScript($frontend);
@@ -50,23 +53,6 @@ final class StandaloneAssets
             '<script type="application/json" data-lattice-config>%s</script>',
             json_encode($config, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES),
         );
-    }
-
-    /** @param array<string, string> $theme */
-    private function themeStyle(array $theme): string
-    {
-        $declarations = '';
-
-        foreach ($theme as $key => $value) {
-            if (preg_match('/[<>{}]/', $key.$value) === 1) {
-                throw new InvalidArgumentException("Invalid characters in the [{$key}] theme value.");
-            }
-
-            $property = str_starts_with($key, '--') ? $key : '--'.$key;
-            $declarations .= "{$property}:{$value};";
-        }
-
-        return "<style>:root{{$declarations}}</style>";
     }
 
     private function versionedUrl(string $file): string

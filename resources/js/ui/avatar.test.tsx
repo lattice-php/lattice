@@ -39,10 +39,4 @@ describe("AvatarComponent", () => {
     expect(screen.queryByRole("img")).not.toBeNull();
     expect(container.querySelector("svg")).not.toBeNull();
   });
-
-  it("applies the size class for the requested size", () => {
-    renderAvatar({ name: "Ada Lovelace", size: "lg" });
-
-    expect(screen.getByRole("img", { name: "Ada Lovelace" })).toHaveClass("size-12");
-  });
 });

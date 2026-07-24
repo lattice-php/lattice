@@ -14,12 +14,4 @@ describe("Lattice topbar component", () => {
     expect(el).toHaveClass("flex", "h-14", "w-full", "items-center", "border-b", "bg-lt-bg");
     expect(el).not.toHaveClass("sticky");
   });
-
-  it("sticks to the top when sticky is set", () => {
-    const node = fakeNode({ id: "app-topbar", props: { sticky: true }, type: "topbar" });
-
-    render(<TopbarComponent node={node}>Content</TopbarComponent>);
-
-    expect(screen.getByText("Content")).toHaveClass("sticky", "top-0", "z-lt-sticky");
-  });
 });

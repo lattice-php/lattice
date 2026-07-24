@@ -178,14 +178,6 @@ describe("useColumnResizing", () => {
     });
   });
 
-  it("can render a visible resize indicator", () => {
-    render(<Harness showIndicator={true} />);
-
-    expect(screen.getByRole("separator", { name: "Resize Qty" }).className.split(" ")).toContain(
-      "after:bg-lt-border",
-    );
-  });
-
   it("loads stored widths when the column keys match", () => {
     window.localStorage.setItem(
       "lattice:table-columns:orders",

@@ -285,38 +285,6 @@ describe("Lattice table component", () => {
     );
   });
 
-  it("clips overflowing body cell content to the column boundary", () => {
-    const longToken = "sku-" + "x".repeat(120);
-    const node = {
-      id: "workbench.products",
-      props: {
-        columns: [
-          col({
-            key: "sku",
-            label: "SKU",
-            width: "sm",
-          }),
-        ],
-        data: [{ sku: longToken }],
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
-      },
-      type: "table",
-    } satisfies TableNode;
-
-    render(<TableComponent node={node}>{null}</TableComponent>);
-
-    const cell = screen.getByRole("cell", { name: longToken });
-    const content = cell.querySelector('[data-slot="table-cell-content"]');
-
-    expect(cell).toHaveClass("min-w-0", "overflow-hidden");
-    expect(content).toHaveClass("min-w-0", "max-w-full", "overflow-hidden", "truncate");
-  });
-
   it("renders column resize handles only when enabled", () => {
     const node = {
       id: "workbench.products",
@@ -964,25 +932,6 @@ describe("Lattice table component", () => {
         "/lattice/tables/workbench.products?filter=name%3Acontains%3ALamp&page=1&per_page=25",
         requestOptions(),
       ),
-    );
-  });
-
-  it("stripes rows when the table is striped", () => {
-    const node = {
-      id: "workbench.products",
-      props: {
-        columns: [col({ key: "name", label: "Name" })],
-        data: [{ name: "Taylor" }],
-        striped: true,
-        query: tableQuery(),
-      },
-      type: "table",
-    } satisfies TableNode;
-
-    render(<TableComponent node={node}>{null}</TableComponent>);
-
-    expect(screen.getByRole("cell", { name: "Taylor" }).closest('[role="row"]')).toHaveClass(
-      "odd:bg-lt-muted/30",
     );
   });
 

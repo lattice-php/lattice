@@ -8,6 +8,7 @@
         <script crossorigin="anonymous" src="https://unpkg.com/react-scan@latest/dist/auto.global.js"></script>
     @endif
     @viteReactRefresh
+    @latticeTheme
     @vite(['workbench/resources/css/app.css', 'workbench/resources/js/app.tsx'])
     @inertiaHead
 </head>

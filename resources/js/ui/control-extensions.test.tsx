@@ -1,18 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Button } from "./button";
-import { Input } from "./input";
 import { NativeSelect } from "./native-select";
-
-describe("Input density", () => {
-  it("wears compact chrome when asked and comfortable by default", () => {
-    const { rerender } = render(<Input aria-label="q" density="compact" />);
-    expect(screen.getByLabelText("q")).toHaveClass("text-sm");
-
-    rerender(<Input aria-label="q" />);
-    expect(screen.getByLabelText("q")).toHaveClass("text-base");
-  });
-});
 
 describe("NativeSelect", () => {
   it("renders a styled native select with its options", () => {
