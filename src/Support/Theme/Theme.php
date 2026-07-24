@@ -17,7 +17,7 @@ final class Theme
     private array $darkVars = [];
 
     /** @var array<string, string> friendly name => host-var token */
-    private const COLOR_TOKENS = [
+    private const array COLOR_TOKENS = [
         'background' => '--background', 'foreground' => '--foreground',
         'card' => '--card', 'cardForeground' => '--card-foreground',
         'popover' => '--popover', 'popoverForeground' => '--popover-foreground',
@@ -33,7 +33,7 @@ final class Theme
     ];
 
     /** @var array<string, string> */
-    private const SCALAR_TOKENS = [
+    private const array SCALAR_TOKENS = [
         'radius' => '--radius', 'ringWidth' => '--ring-width', 'ringOffset' => '--ring-offset',
         'borderWidth' => '--border-width', 'fontSans' => '--font-sans',
         'fontMono' => '--font-mono', 'fontDisplay' => '--font-display',
@@ -89,7 +89,7 @@ final class Theme
         ];
         foreach ($values as $token => $value) {
             if ($value !== null) {
-                $clone->vars[$token] = self::guard(self::stringValue($value));
+                $clone->vars[$token] = $this->guard($this->stringValue($value));
             }
         }
 
@@ -134,7 +134,7 @@ final class Theme
     public function set(string $token, string $value): self
     {
         $clone = clone $this;
-        $clone->vars[self::normalize($token)] = self::guard($value);
+        $clone->vars[$this->normalize($token)] = $this->guard($value);
 
         return $clone;
     }
@@ -181,11 +181,11 @@ final class Theme
 
     public function toCss(): string
     {
-        return sprintf(":root{%s}\n.dark{%s}", self::emit($this->vars), self::emit($this->darkVars));
+        return sprintf(":root{%s}\n.dark{%s}", $this->emit($this->vars), $this->emit($this->darkVars));
     }
 
     /** @param array<string, string> $vars */
-    private static function emit(array $vars): string
+    private function emit(array $vars): string
     {
         $css = '';
         foreach ($vars as $token => $value) {
@@ -195,7 +195,7 @@ final class Theme
         return $css;
     }
 
-    private static function stringValue(Color|string $value): string
+    private function stringValue(Color|string $value): string
     {
         if (! $value instanceof Color) {
             return $value;
@@ -208,12 +208,12 @@ final class Theme
         return $value->value;
     }
 
-    private static function normalize(string $token): string
+    private function normalize(string $token): string
     {
         return str_starts_with($token, '--') ? $token : '--'.$token;
     }
 
-    private static function guard(string $value): string
+    private function guard(string $value): string
     {
         if (preg_match('/[<>{};]/', $value) === 1) {
             throw new InvalidArgumentException(sprintf('Theme value [%s] contains invalid characters.', $value));

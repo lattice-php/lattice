@@ -10,7 +10,7 @@ it('emits a :root and .dark block from configured tokens only', function (): voi
 });
 
 it('maps friendly names to host-var tokens and accepts the Color VO', function (): void {
-    $css = Theme::make()->colors(danger: Color::hex('#e11d48'), primaryForeground: '#ffffff')->toCss();
+    $css = Theme::make()->colors(primaryForeground: '#ffffff', danger: Color::hex('#e11d48'))->toCss();
     expect($css)->toContain('--destructive:#e11d48;')->toContain('--primary-foreground:#ffffff;');
 });
 
