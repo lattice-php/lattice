@@ -190,6 +190,7 @@ export type Avatar = {
   src: string | null;
 };
 export type Badge = {
+  color: Color | null;
   label: string;
 };
 export type BadgeColumn = {

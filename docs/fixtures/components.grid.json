@@ -6,18 +6,21 @@
         "schema": [
             {
                 "props": {
+                    "color": null,
                     "label": "First"
                 },
                 "type": "badge"
             },
             {
                 "props": {
+                    "color": null,
                     "label": "Second"
                 },
                 "type": "badge"
             },
             {
                 "props": {
+                    "color": null,
                     "label": "Third"
                 },
                 "type": "badge"

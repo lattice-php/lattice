@@ -50,8 +50,8 @@ final class ButtonsPage extends WorkbenchPage
                         ->direction(StackDirection::Row)
                         ->gap(Gap::Small)
                         ->schema([
-                            Badge::make(__('workbench.pages.components.buttons.badge-active')),
-                            Badge::make(__('workbench.pages.components.buttons.badge-trialing')),
+                            Badge::make(__('workbench.pages.components.buttons.badge-active'))->color('green'),
+                            Badge::make(__('workbench.pages.components.buttons.badge-trialing'))->color('yellow'),
                         ]),
                     Heading::make(__('workbench.pages.components.buttons.avatars'), 2),
                     Stack::make('avatar-examples')

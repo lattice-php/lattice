@@ -37,6 +37,7 @@
             },
             {
                 "props": {
+                    "color": null,
                     "label": "3 active"
                 },
                 "type": "badge"

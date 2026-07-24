@@ -12,6 +12,7 @@
         "schema": [
             {
                 "props": {
+                    "color": null,
                     "label": "Plan: Pro"
                 },
                 "type": "badge"

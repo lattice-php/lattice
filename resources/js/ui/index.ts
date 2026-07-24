@@ -1,6 +1,6 @@
 export { AffixGroup } from "./affix-group";
 export { ActionMenuProvider, actionMenuItemClassName, useActionMenu } from "./action-menu-context";
-export { Badge, badgeVariants } from "./badge";
+export { Badge } from "./badge";
 export { Button, buttonVariants } from "./button";
 export type { ButtonVariant } from "./button";
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";

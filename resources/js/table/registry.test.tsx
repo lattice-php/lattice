@@ -248,7 +248,7 @@ describe("column registry", () => {
       },
     );
 
-    expect(container.querySelector(".lt-cell-badge")).toBeNull();
+    expect(container.querySelector(".lt-badge")).toBeNull();
   });
 
   it("renders nothing for an icon cell with no matching icon", () => {
