@@ -478,36 +478,20 @@
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
         "cases": [
             {
-                "name": "Default",
-                "value": "default"
-            },
-            {
-                "name": "Destructive",
-                "value": "destructive"
-            },
-            {
-                "name": "Ghost",
-                "value": "ghost"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Link",
-                "value": "link"
+                "name": "Solid",
+                "value": "solid"
             },
             {
                 "name": "Outline",
                 "value": "outline"
             },
             {
-                "name": "Secondary",
-                "value": "secondary"
+                "name": "Ghost",
+                "value": "ghost"
             },
             {
-                "name": "Success",
-                "value": "success"
+                "name": "Link",
+                "value": "link"
             }
         ]
     },
@@ -678,6 +662,36 @@
             {
                 "name": "Delete",
                 "value": "delete"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Intent": {
+        "name": "Intent",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Primary",
+                "value": "primary"
+            },
+            {
+                "name": "Secondary",
+                "value": "secondary"
+            },
+            {
+                "name": "Success",
+                "value": "success"
+            },
+            {
+                "name": "Info",
+                "value": "info"
+            },
+            {
+                "name": "Warning",
+                "value": "warning"
+            },
+            {
+                "name": "Danger",
+                "value": "danger"
             }
         ]
     },
@@ -990,8 +1004,8 @@
                 "value": "warning"
             },
             {
-                "name": "Error",
-                "value": "error"
+                "name": "Danger",
+                "value": "danger"
             }
         ]
     },

@@ -61,7 +61,7 @@ class ArchiveProductAction extends ActionDefinition
     {
         return $action
             ->label('Archive')
-            ->variant(ButtonVariant::Destructive)
+            ->color(Intent::Danger)
             ->confirm('Archive product?', 'This hides it from the catalogue.');
     }
 

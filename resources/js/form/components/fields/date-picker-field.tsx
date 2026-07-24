@@ -21,6 +21,10 @@ import {
 import { TimePicker } from "./time-picker";
 import { parseTimeString } from "./time-picker-columns";
 
+function omitColor<T extends { color?: unknown }>({ color: _color, ...props }: T) {
+  return props;
+}
+
 export type DatePickerFieldProps = {
   mode: "date" | "date-time";
   label: string;
@@ -147,7 +151,7 @@ export function DatePickerField({
           disabled={disabled || readOnly}
           size="icon"
           type="button"
-          variant="secondary"
+          color="secondary"
         >
           <Icon name="calendar" className="size-lt-icon-md" aria-hidden="true" />
         </Button>
@@ -159,11 +163,21 @@ export function DatePickerField({
         >
           <div {...api.getContentProps()} className="grid gap-3">
             <div className="flex items-center justify-between gap-2">
-              <Button {...api.getPrevTriggerProps()} size="icon" type="button" variant="ghost">
+              <Button
+                {...omitColor(api.getPrevTriggerProps())}
+                size="icon"
+                type="button"
+                variant="ghost"
+              >
                 <Icon name="chevron-left" className="size-lt-icon-md" aria-hidden="true" />
               </Button>
               <div {...api.getRangeTextProps()} className="text-sm font-medium text-lt-fg" />
-              <Button {...api.getNextTriggerProps()} size="icon" type="button" variant="ghost">
+              <Button
+                {...omitColor(api.getNextTriggerProps())}
+                size="icon"
+                type="button"
+                variant="ghost"
+              >
                 <Icon name="chevron-right" className="size-lt-icon-md" aria-hidden="true" />
               </Button>
             </div>

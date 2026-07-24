@@ -49,6 +49,7 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": null,
                     "effects": [],
                     "href": null,
                     "icon": null,

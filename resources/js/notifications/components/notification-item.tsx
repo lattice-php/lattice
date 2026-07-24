@@ -10,7 +10,7 @@ const variantIconClass: Record<NonNullable<NotificationItem["variant"]>, string>
   success: "text-lt-success",
   info: "text-lt-info",
   warning: "text-lt-warning",
-  error: "text-lt-danger",
+  danger: "text-lt-danger",
 };
 
 export function NotificationItemRow({

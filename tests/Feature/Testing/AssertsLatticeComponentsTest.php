@@ -23,7 +23,7 @@ use Lattice\Lattice\Tables\Enums\FilterType;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Intent;
 use Lattice\Lattice\Ui\Enums\Side;
 use Lattice\Lattice\Ui\Enums\StackDirection;
 use PHPUnit\Framework\AssertionFailedError;
@@ -100,7 +100,7 @@ it('asserts action state', function (): void {
     $action = Action::make('archive')
         ->endpoint('/lattice/actions/archive')
         ->label('Archive')
-        ->variant(ButtonVariant::Destructive)
+        ->color(Intent::Danger)
         ->confirm('Archive product?', 'This hides the product.')
         ->form([Textarea::make('reason')->label('Reason')]);
 
@@ -108,7 +108,7 @@ it('asserts action state', function (): void {
         ->action('archive', fn (ActionAssertions $a): ActionAssertions => $a
             ->assertLabel('Archive')
             ->assertEndpoint('/lattice/actions/archive')
-            ->assertVariant(ButtonVariant::Destructive)
+            ->assertColor(Intent::Danger)
             ->assertHasConfirmation()
             ->assertConfirmationTitle('Archive product?')
             ->assertHasForm());

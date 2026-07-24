@@ -42,6 +42,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'submitButton' => true,
                 'submitJustify' => null,
                 'submitVariant' => null,
+                'submitColor' => null,
                 'submitButtons' => null,
                 'resetOnSuccess' => null,
                 'resetOnError' => null,
@@ -72,6 +73,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'modalSide' => null,
                 'modalWidth' => null,
                 'variant' => null,
+                'color' => null,
             ],
         ])
         ->and($fragment)

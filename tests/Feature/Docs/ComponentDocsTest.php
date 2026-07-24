@@ -22,6 +22,7 @@ use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Components\Tooltip;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\Intent;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Size;
 use Lattice\Lattice\Ui\Enums\StackDirection;
@@ -102,11 +103,12 @@ describe('docs fixtures', function (): void {
     it('matches the button variants example fixture', function (): void {
         assertFixtureMatches('components.buttons', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
-                Button::make('Default')->variant(ButtonVariant::Default),
-                Button::make('Secondary')->variant(ButtonVariant::Secondary),
-                Button::make('Success')->variant(ButtonVariant::Success),
-                Button::make('Info')->variant(ButtonVariant::Info),
-                Button::make('Destructive')->variant(ButtonVariant::Destructive),
+                Button::make('Primary'),
+                Button::make('Secondary')->color(Intent::Secondary),
+                Button::make('Success')->color(Intent::Success),
+                Button::make('Info')->color(Intent::Info),
+                Button::make('Warning')->color(Intent::Warning),
+                Button::make('Danger')->color(Intent::Danger),
                 Button::make('Outline')->variant(ButtonVariant::Outline),
                 Button::make('Ghost')->variant(ButtonVariant::Ghost),
             ]),
@@ -116,7 +118,7 @@ describe('docs fixtures', function (): void {
     it('matches the stack example fixture', function (): void {
         assertFixtureMatches('components.stack', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
-                Button::make('Save')->variant(ButtonVariant::Default),
+                Button::make('Save'),
                 Button::make('Cancel')->variant(ButtonVariant::Ghost),
             ]),
         ]))));

@@ -14,12 +14,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": null,
                     "effects": [],
                     "href": null,
                     "icon": null,
-                    "label": "Default",
+                    "label": "Primary",
                     "method": null,
-                    "variant": "default"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -27,12 +28,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": "secondary",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Secondary",
                     "method": null,
-                    "variant": "secondary"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -40,12 +42,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": "success",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Success",
                     "method": null,
-                    "variant": "success"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -53,12 +56,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": "info",
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Info",
                     "method": null,
-                    "variant": "info"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -66,12 +70,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": "warning",
                     "effects": [],
                     "href": null,
                     "icon": null,
-                    "label": "Destructive",
+                    "label": "Warning",
                     "method": null,
-                    "variant": "destructive"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -79,6 +84,21 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": "danger",
+                    "effects": [],
+                    "href": null,
+                    "icon": null,
+                    "label": "Danger",
+                    "method": null,
+                    "variant": null
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "action": null,
+                    "buttonType": "button",
+                    "color": null,
                     "effects": [],
                     "href": null,
                     "icon": null,
@@ -92,6 +112,7 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": null,
                     "effects": [],
                     "href": null,
                     "icon": null,

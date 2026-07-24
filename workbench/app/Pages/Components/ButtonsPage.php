@@ -12,6 +12,7 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\Enums\Intent;
 use Lattice\Lattice\Ui\Enums\Size;
 use Lattice\Lattice\Ui\Enums\StackDirection;
 use Workbench\App\Pages\WorkbenchPage;
@@ -35,11 +36,12 @@ final class ButtonsPage extends WorkbenchPage
                         ->direction(StackDirection::Row)
                         ->gap(Gap::Small)
                         ->schema([
-                            Button::make(__('workbench.pages.home.buttons.default'), 'button-default')->variant(ButtonVariant::Default),
-                            Button::make(__('workbench.pages.home.buttons.secondary'), 'button-secondary')->variant(ButtonVariant::Secondary),
-                            Button::make(__('workbench.pages.home.buttons.success'), 'button-success')->variant(ButtonVariant::Success),
-                            Button::make(__('workbench.pages.home.buttons.info'), 'button-info')->variant(ButtonVariant::Info),
-                            Button::make(__('workbench.pages.home.buttons.destructive'), 'button-destructive')->variant(ButtonVariant::Destructive),
+                            Button::make(__('workbench.pages.home.buttons.primary'), 'button-primary'),
+                            Button::make(__('workbench.pages.home.buttons.secondary'), 'button-secondary')->color(Intent::Secondary),
+                            Button::make(__('workbench.pages.home.buttons.success'), 'button-success')->color(Intent::Success),
+                            Button::make(__('workbench.pages.home.buttons.info'), 'button-info')->color(Intent::Info),
+                            Button::make(__('workbench.pages.home.buttons.warning'), 'button-warning')->color(Intent::Warning),
+                            Button::make(__('workbench.pages.home.buttons.danger'), 'button-danger')->color(Intent::Danger),
                             Button::make(__('workbench.pages.home.buttons.outline'), 'button-outline')->variant(ButtonVariant::Outline),
                             Button::make(__('workbench.pages.home.buttons.ghost'), 'button-ghost')->variant(ButtonVariant::Ghost),
                         ]),

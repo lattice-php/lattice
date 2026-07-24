@@ -156,6 +156,7 @@ export type EffectOf<TType extends string> = string extends TType
 
 // ─── Generated shapes ───────────────────────────────────────────────────────
 export type Action = {
+  color: Intent | null;
   confirmation: Confirmation | null;
   endpoint: string | null;
   form: Node<"form"> | null;
@@ -249,6 +250,7 @@ export type Builder = {
   value: unknown;
 };
 export type BulkAction = {
+  color: Intent | null;
   confirmation: Confirmation | null;
   endpoint: string | null;
   form: Node<"form"> | null;
@@ -264,6 +266,7 @@ export type BulkAction = {
 export type Button = {
   action: Node<"action"> | Node<"action.bulk"> | null;
   buttonType: ButtonType;
+  color: Intent | null;
   effects: Effect[];
   href: string | null;
   icon: string | null;
@@ -272,15 +275,7 @@ export type Button = {
   variant: ButtonVariant | null;
 };
 export type ButtonType = "button" | "submit" | "reset";
-export type ButtonVariant =
-  | "default"
-  | "destructive"
-  | "ghost"
-  | "info"
-  | "link"
-  | "outline"
-  | "secondary"
-  | "success";
+export type ButtonVariant = "solid" | "outline" | "ghost" | "link";
 export type Callout = {
   action: Node | null;
   dismissible: boolean;
@@ -773,6 +768,7 @@ export type Form = {
   status: string | null;
   submitButton: boolean;
   submitButtons: Node<"button">[] | null;
+  submitColor: Intent | null;
   submitJustify: Justify | null;
   submitLabel: string | null;
   submitVariant: ButtonVariant | null;
@@ -905,6 +901,7 @@ export type ImageColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
+export type Intent = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LabelAction = {
   readonly href: string;

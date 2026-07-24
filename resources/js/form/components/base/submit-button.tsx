@@ -1,16 +1,18 @@
 import { Button } from "@lattice-php/lattice/ui/button";
 import { Spinner } from "@lattice-php/lattice/ui/spinner";
-import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
+import type { ButtonVariant, Intent } from "@lattice-php/lattice/types/generated";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 
 export function FormSubmitButton({
   label,
   summaryLabel,
-  variant = "default",
+  variant = "solid",
+  color,
 }: {
   label: string;
   summaryLabel: string;
   variant?: ButtonVariant;
+  color?: Intent | null;
 }) {
   const { componentId, errors, fieldLabels, processing } = useFormContext();
 
@@ -22,6 +24,7 @@ export function FormSubmitButton({
   return (
     <span className="group relative inline-flex flex-col">
       <Button
+        color={color}
         data-lattice-form={componentId}
         data-test="form-submit"
         disabled={processing || hasErrors}

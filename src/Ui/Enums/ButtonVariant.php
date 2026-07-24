@@ -8,12 +8,8 @@ use Lattice\Lattice\Attributes\TypeScript;
 #[TypeScript]
 enum ButtonVariant: string
 {
-    case Default = 'default';
-    case Destructive = 'destructive';
-    case Ghost = 'ghost';
-    case Info = 'info';
-    case Link = 'link';
+    case Solid = 'solid';
     case Outline = 'outline';
-    case Secondary = 'secondary';
-    case Success = 'success';
+    case Ghost = 'ghost';
+    case Link = 'link';
 }

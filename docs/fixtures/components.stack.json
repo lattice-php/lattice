@@ -14,12 +14,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": null,
                     "effects": [],
                     "href": null,
                     "icon": null,
                     "label": "Save",
                     "method": null,
-                    "variant": "default"
+                    "variant": null
                 },
                 "type": "button"
             },
@@ -27,6 +28,7 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
+                    "color": null,
                     "effects": [],
                     "href": null,
                     "icon": null,

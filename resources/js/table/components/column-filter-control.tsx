@@ -327,7 +327,7 @@ function FilterClauseList({
 
       <div className="border-t border-lt-border pt-3">
         <Button
-          variant="secondary"
+          color="secondary"
           icon="plus"
           data-test={`filter-${column.key}-add`}
           className="w-full"

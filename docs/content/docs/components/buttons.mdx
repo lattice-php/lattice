@@ -14,11 +14,12 @@ import Info from "@components/Info.astro";
 
 <ComponentExample
   php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
-    Button::make('Default')->variant(ButtonVariant::Default),
-    Button::make('Secondary')->variant(ButtonVariant::Secondary),
-    Button::make('Success')->variant(ButtonVariant::Success),
-    Button::make('Info')->variant(ButtonVariant::Info),
-    Button::make('Destructive')->variant(ButtonVariant::Destructive),
+    Button::make('Primary'),
+    Button::make('Secondary')->color(Intent::Secondary),
+    Button::make('Success')->color(Intent::Success),
+    Button::make('Info')->color(Intent::Info),
+    Button::make('Warning')->color(Intent::Warning),
+    Button::make('Danger')->color(Intent::Danger),
     Button::make('Outline')->variant(ButtonVariant::Outline),
     Button::make('Ghost')->variant(ButtonVariant::Ghost),
 ]);`}

@@ -45,7 +45,7 @@ export const TimeInputComponent: RendererComponent<"field.time-input"> = ({ node
                 disabled={disabled || readOnly}
                 size="icon"
                 type="button"
-                variant="secondary"
+                color="secondary"
               >
                 <Icon name="clock" className="size-lt-icon-md" aria-hidden="true" />
               </Button>

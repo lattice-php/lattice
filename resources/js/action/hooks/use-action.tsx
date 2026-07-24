@@ -32,7 +32,8 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
   const componentRef = node.props.ref ?? "";
   const method: Method = node.props.method ?? "post";
   const label = actionLabel(node);
-  const variant = node.props.variant ?? "default";
+  const variant = node.props.variant ?? "solid";
+  const color = node.props.color ?? null;
   const confirmation = node.props.confirmation;
   const inlineForm = node.props.form;
   const lazyForm = node.props.lazyForm === true;
@@ -101,6 +102,7 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
           confirmLabel={confirmationConfirmLabel}
           cancelLabel={confirmationCancelLabel}
           confirmVariant={variant}
+          confirmColor={color}
           processing={processing}
           confirmDisabled={!endpoint}
           onConfirm={() => void submit()}

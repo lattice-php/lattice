@@ -1,4 +1,4 @@
-import type { ButtonVariant } from "@lattice-php/lattice/types/generated";
+import type { ButtonVariant, Intent } from "@lattice-php/lattice/types/generated";
 import { Button } from "./button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "./dialog";
 import { Spinner } from "./spinner";
@@ -8,7 +8,8 @@ export function ConfirmDialog({
   description,
   confirmLabel,
   cancelLabel = "Cancel",
-  confirmVariant = "default",
+  confirmVariant = "solid",
+  confirmColor = null,
   processing = false,
   confirmDisabled = false,
   onConfirm,
@@ -19,6 +20,7 @@ export function ConfirmDialog({
   confirmLabel: string;
   cancelLabel?: string;
   confirmVariant?: ButtonVariant;
+  confirmColor?: Intent | null;
   processing?: boolean;
   confirmDisabled?: boolean;
   onConfirm: () => void;
@@ -61,6 +63,7 @@ export function ConfirmDialog({
           </Button>
           <Button
             type="button"
+            color={confirmColor}
             variant={confirmVariant}
             data-test="confirm-accept"
             disabled={processing || confirmDisabled}

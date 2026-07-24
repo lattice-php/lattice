@@ -15,7 +15,8 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const icon = node.props.icon;
   const label = actionLabel(node);
   const isMenuItem = useActionMenu();
-  const variant = node.props.variant ?? "default";
+  const variant = node.props.variant ?? "solid";
+  const color = node.props.color ?? null;
   const { processing, requestSubmit, overlays } = useAction(node);
   const testId = node.key ?? prefixedTestId("action", node.id);
 
@@ -28,6 +29,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
         disabled={processing || !endpoint}
         onClick={requestSubmit}
         type="button"
+        color={isMenuItem ? null : color}
         variant={isMenuItem ? "ghost" : variant}
       >
         {processing ? (

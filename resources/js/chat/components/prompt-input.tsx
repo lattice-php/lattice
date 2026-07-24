@@ -57,7 +57,6 @@ export function PromptInput({
         onClick={submit}
         size="sm"
         type="button"
-        variant="default"
       >
         {t("common.chat.send", "Send")}
       </Button>

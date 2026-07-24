@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Support\Testing\Assertions;
 
 use Lattice\Lattice\Support\Testing\ComponentNode;
 use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Intent;
 use PHPUnit\Framework\Assert;
 
 final readonly class ActionAssertions
@@ -43,6 +44,17 @@ final readonly class ActionAssertions
             'Expected action [%s] variant to be [%s].',
             $this->node->id() ?? '*',
             $variant->value,
+        ));
+
+        return $this;
+    }
+
+    public function assertColor(Intent $color): self
+    {
+        Assert::assertSame($color->value, $this->node->prop('color'), sprintf(
+            'Expected action [%s] color to be [%s].',
+            $this->node->id() ?? '*',
+            $color->value,
         ));
 
         return $this;

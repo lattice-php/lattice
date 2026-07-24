@@ -9,8 +9,8 @@ use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Lattice\Ui\Enums\Intent;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 test('a toast serializes its lifetime, dismissibility and link', function (): void {
@@ -131,7 +131,7 @@ test('action groups serialize grouped child actions', function (): void {
                 ->endpoint('/lattice/actions/workbench.users.remove')
                 ->label('Remove')
                 ->method(HttpMethod::Delete)
-                ->variant(ButtonVariant::Destructive),
+                ->color(Intent::Danger),
         ]));
 
     expect($group)
@@ -158,6 +158,7 @@ test('action groups serialize grouped child actions', function (): void {
                         'modalSide' => null,
                         'modalWidth' => null,
                         'variant' => null,
+                        'color' => null,
                         'ref' => $this->latticeRef($group['schema'][0]),
                     ],
                 ],
@@ -174,7 +175,8 @@ test('action groups serialize grouped child actions', function (): void {
                         'lazyForm' => false,
                         'modalSide' => null,
                         'modalWidth' => null,
-                        'variant' => 'destructive',
+                        'variant' => null,
+                        'color' => 'danger',
                         'ref' => $this->latticeRef($group['schema'][1]),
                     ],
                 ],
