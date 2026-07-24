@@ -14,8 +14,8 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": null,
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Save",
@@ -28,13 +28,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": null,
                     "effects": [],
+                    "emphasis": "ghost",
                     "href": null,
                     "icon": null,
                     "label": "Cancel",
                     "method": null,
-                    "variant": "ghost"
+                    "variant": null
                 },
                 "type": "button"
             }

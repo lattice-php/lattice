@@ -3,25 +3,25 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Concerns;
 
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
-use Lattice\Lattice\Ui\Enums\Intent;
+use Lattice\Lattice\Ui\Enums\Emphasis;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 trait HasVariant
 {
-    public ?ButtonVariant $variant = null;
+    public ?Variant $variant = null;
 
-    public ?Intent $color = null;
+    public ?Emphasis $emphasis = null;
 
-    public function variant(ButtonVariant $variant): static
+    public function variant(Variant $variant): static
     {
         $this->variant = $variant;
 
         return $this;
     }
 
-    public function color(Intent $color): static
+    public function emphasis(Emphasis $emphasis): static
     {
-        $this->color = $color;
+        $this->emphasis = $emphasis;
 
         return $this;
     }

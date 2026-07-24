@@ -8,20 +8,21 @@ import Info from "@components/Info.astro";
 
 ## Button
 
-`Button::make($label)` renders a button. Style it with `->variant()`: `Default`, `Secondary`,
-`Success`, `Info`, `Destructive`, `Outline`, `Ghost`, or `Link` (see
-[`ButtonVariant`](/advanced/enums/)).
+`Button::make($label)` renders a button. Colour it with `->variant()` (`Primary`, `Secondary`,
+`Success`, `Info`, `Warning`, `Danger`) and shape its emphasis with `->emphasis()`
+(`Solid`, `Outline`, `Ghost`, `Link`) — see [`Variant` and `Emphasis`](/advanced/enums/).
+Solid is the default emphasis and reads as primary until you set a variant.
 
 <ComponentExample
   php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
     Button::make('Primary'),
-    Button::make('Secondary')->color(Intent::Secondary),
-    Button::make('Success')->color(Intent::Success),
-    Button::make('Info')->color(Intent::Info),
-    Button::make('Warning')->color(Intent::Warning),
-    Button::make('Danger')->color(Intent::Danger),
-    Button::make('Outline')->variant(ButtonVariant::Outline),
-    Button::make('Ghost')->variant(ButtonVariant::Ghost),
+    Button::make('Secondary')->variant(Variant::Secondary),
+    Button::make('Success')->variant(Variant::Success),
+    Button::make('Info')->variant(Variant::Info),
+    Button::make('Warning')->variant(Variant::Warning),
+    Button::make('Danger')->variant(Variant::Danger),
+    Button::make('Outline')->emphasis(Emphasis::Outline),
+    Button::make('Ghost')->emphasis(Emphasis::Ghost),
 ]);`}
   fixture="components.buttons"
 />

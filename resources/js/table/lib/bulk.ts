@@ -1,6 +1,6 @@
 import type { Method } from "@inertiajs/core";
 import type { Node } from "@lattice-php/lattice/core/types";
-import type { Action, ButtonVariant, Intent } from "@lattice-php/lattice/types/generated";
+import type { Action, Emphasis, Variant } from "@lattice-php/lattice/types/generated";
 import type { ActionNode } from "@lattice-php/lattice/table/types";
 import { actionLabel } from "@lattice-php/lattice/action/lib/action-label";
 
@@ -10,8 +10,8 @@ export type BulkAction = {
   method: Method;
   endpoint: string;
   ref: string;
-  variant: ButtonVariant;
-  color: Intent | null;
+  variant: Variant | null;
+  emphasis: Emphasis;
   confirmation: Action["confirmation"];
   form: Node | null;
   modalSide: Action["modalSide"];
@@ -37,8 +37,8 @@ export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] 
         method: props.method ?? "post",
         endpoint: props.endpoint,
         ref: props.ref ?? "",
-        variant: props.variant ?? "solid",
-        color: props.color ?? null,
+        variant: props.variant ?? null,
+        emphasis: props.emphasis ?? "solid",
         confirmation: props.confirmation,
         form: props.form,
         modalSide: props.modalSide,

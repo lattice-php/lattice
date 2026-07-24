@@ -156,8 +156,8 @@ export type EffectOf<TType extends string> = string extends TType
 
 // ─── Generated shapes ───────────────────────────────────────────────────────
 export type Action = {
-  color: Intent | null;
   confirmation: Confirmation | null;
+  emphasis: Emphasis | null;
   endpoint: string | null;
   form: Node<"form"> | null;
   icon: string | null;
@@ -167,7 +167,7 @@ export type Action = {
   modalSide: Side | null;
   modalWidth: ModalWidth | null;
   ref: string | null;
-  variant: ButtonVariant | null;
+  variant: Variant | null;
 };
 export type ActionGroup = {
   label: string | null;
@@ -251,8 +251,8 @@ export type Builder = {
   value: unknown;
 };
 export type BulkAction = {
-  color: Intent | null;
   confirmation: Confirmation | null;
+  emphasis: Emphasis | null;
   endpoint: string | null;
   form: Node<"form"> | null;
   icon: string | null;
@@ -262,21 +262,20 @@ export type BulkAction = {
   modalSide: Side | null;
   modalWidth: ModalWidth | null;
   ref: string | null;
-  variant: ButtonVariant | null;
+  variant: Variant | null;
 };
 export type Button = {
   action: Node<"action"> | Node<"action.bulk"> | null;
   buttonType: ButtonType;
-  color: Intent | null;
   effects: Effect[];
+  emphasis: Emphasis | null;
   href: string | null;
   icon: string | null;
   label: string | null;
   method: HttpMethod | null;
-  variant: ButtonVariant | null;
+  variant: Variant | null;
 };
 export type ButtonType = "button" | "submit" | "reset";
-export type ButtonVariant = "solid" | "outline" | "ghost" | "link";
 export type Callout = {
   action: Node | null;
   dismissible: boolean;
@@ -682,6 +681,7 @@ export type EffectPropsMap = {
   toast: Toast;
   "toggle-sidebar": ToggleSidebar;
 };
+export type Emphasis = "solid" | "outline" | "ghost" | "link";
 export type FieldConditions = {
   readonly disabled: Condition[];
   readonly readOnly: Condition[];
@@ -769,10 +769,10 @@ export type Form = {
   status: string | null;
   submitButton: boolean;
   submitButtons: Node<"button">[] | null;
-  submitColor: Intent | null;
+  submitEmphasis: Emphasis | null;
   submitJustify: Justify | null;
   submitLabel: string | null;
-  submitVariant: ButtonVariant | null;
+  submitVariant: Variant | null;
   validationSummaryLabel: string;
   validationTimeout: number | null;
 };
@@ -902,7 +902,6 @@ export type ImageColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
-export type Intent = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LabelAction = {
   readonly href: string;
@@ -1634,7 +1633,7 @@ export type UiNodeType =
 export type UnreadCount = {
   readonly unreadCount: number;
 };
-export type Variant = "success" | "info" | "warning" | "danger";
+export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
 export type Wizard = {
   orientation: Orientation;

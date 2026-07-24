@@ -50,8 +50,8 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": null,
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Invite member",

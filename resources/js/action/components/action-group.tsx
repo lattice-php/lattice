@@ -42,7 +42,7 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
             data-test={nodeIdentity(node)}
             size="icon"
             type="button"
-            variant="ghost"
+            emphasis="ghost"
           >
             <Icon name="more-horizontal" aria-hidden="true" className="size-lt-icon-md" />
           </Button>

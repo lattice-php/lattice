@@ -14,8 +14,8 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": null,
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Primary",
@@ -28,13 +28,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": "secondary",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Secondary",
                     "method": null,
-                    "variant": null
+                    "variant": "secondary"
                 },
                 "type": "button"
             },
@@ -42,13 +42,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": "success",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Success",
                     "method": null,
-                    "variant": null
+                    "variant": "success"
                 },
                 "type": "button"
             },
@@ -56,13 +56,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": "info",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Info",
                     "method": null,
-                    "variant": null
+                    "variant": "info"
                 },
                 "type": "button"
             },
@@ -70,13 +70,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": "warning",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Warning",
                     "method": null,
-                    "variant": null
+                    "variant": "warning"
                 },
                 "type": "button"
             },
@@ -84,12 +84,26 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": "danger",
                     "effects": [],
+                    "emphasis": null,
                     "href": null,
                     "icon": null,
                     "label": "Danger",
                     "method": null,
+                    "variant": "danger"
+                },
+                "type": "button"
+            },
+            {
+                "props": {
+                    "action": null,
+                    "buttonType": "button",
+                    "effects": [],
+                    "emphasis": "outline",
+                    "href": null,
+                    "icon": null,
+                    "label": "Outline",
+                    "method": null,
                     "variant": null
                 },
                 "type": "button"
@@ -98,27 +112,13 @@
                 "props": {
                     "action": null,
                     "buttonType": "button",
-                    "color": null,
                     "effects": [],
-                    "href": null,
-                    "icon": null,
-                    "label": "Outline",
-                    "method": null,
-                    "variant": "outline"
-                },
-                "type": "button"
-            },
-            {
-                "props": {
-                    "action": null,
-                    "buttonType": "button",
-                    "color": null,
-                    "effects": [],
+                    "emphasis": "ghost",
                     "href": null,
                     "icon": null,
                     "label": "Ghost",
                     "method": null,
-                    "variant": "ghost"
+                    "variant": null
                 },
                 "type": "button"
             }

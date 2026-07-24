@@ -8,9 +8,9 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Textarea;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Icon;
-use Lattice\Lattice\Ui\Enums\Intent;
 use Lattice\Lattice\Ui\Enums\ModalWidth;
 use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Models\Product;
@@ -21,7 +21,7 @@ it('serializes the action wire shape', function (): void {
         ->label('Archive')
         ->method(HttpMethod::Patch)
         ->icon(Icon::Send)
-        ->color(Intent::Danger)
+        ->variant(Variant::Danger)
         ->confirm('Archive product?', 'This hides the product.', 'Archive', 'Keep');
 
     $payload = wire($action);
@@ -33,7 +33,8 @@ it('serializes the action wire shape', function (): void {
         'label' => 'Archive',
         'method' => 'patch',
         'icon' => 'send',
-        'color' => 'danger',
+        'variant' => 'danger',
+        'emphasis' => null,
         'confirmation' => [
             'title' => 'Archive product?',
             'description' => 'This hides the product.',
@@ -159,7 +160,8 @@ it('carries typed props through Action::use from the registry', function (): voi
         'endpoint' => '/lattice/actions/workbench.products.archive',
         'label' => 'Archive',
         'method' => 'patch',
-        'color' => 'danger',
+        'variant' => 'danger',
+        'emphasis' => null,
         'confirmation' => [
             'title' => 'Archive product?',
             'description' => 'This hides the product from the catalogue.',
@@ -181,7 +183,8 @@ it('carries typed props through BulkAction::use from the registry', function ():
         'endpoint' => '/lattice/bulk-actions/workbench.products.archive-selected',
         'label' => 'Archive selected',
         'method' => 'patch',
-        'color' => 'danger',
+        'variant' => 'danger',
+        'emphasis' => null,
     ]);
     expect($payload['props']['ref'])->toBeString();
 });

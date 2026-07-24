@@ -26,7 +26,7 @@ use Lattice\Lattice\Ui\Components\RawBlock;
 use Lattice\Lattice\Ui\Components\SegmentedControl;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Align;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon;
@@ -183,7 +183,7 @@ class AppLayout extends LayoutDefinition
         return Topbar::make('app-topbar')->sticky()->items([
             Button::make(__('workbench.navigation.toggle-sidebar'), 'sidebar-toggle')
                 ->icon('panel-left')
-                ->variant(ButtonVariant::Ghost)
+                ->emphasis(Emphasis::Ghost)
                 ->effects(Effects::toggleSidebar('app-sidebar')),
             Stack::make('topbar-end')
                 ->direction(StackDirection::Row)
@@ -239,7 +239,7 @@ class AppLayout extends LayoutDefinition
 
         return ActionComponent::use(ToggleChatLayoutAction::class)
             ->key('chat-layout-toggle')
-            ->variant(ButtonVariant::Ghost)
+            ->emphasis(Emphasis::Ghost)
             ->label($inline ? __('workbench.chat-layout.hide') : __('workbench.chat-layout.reveal'));
     }
 
@@ -271,11 +271,11 @@ class AppLayout extends LayoutDefinition
                 ActionComponent::use(SetLocaleAction::class, ['locale' => 'en'])
                     ->key('locale-en')
                     ->label(__('workbench.language.en'))
-                    ->variant(ButtonVariant::Ghost),
+                    ->emphasis(Emphasis::Ghost),
                 ActionComponent::use(SetLocaleAction::class, ['locale' => 'de'])
                     ->key('locale-de')
                     ->label(__('workbench.language.de'))
-                    ->variant(ButtonVariant::Ghost),
+                    ->emphasis(Emphasis::Ghost),
             ]);
     }
 

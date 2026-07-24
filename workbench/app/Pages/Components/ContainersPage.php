@@ -16,7 +16,7 @@ use Lattice\Lattice\Ui\Components\Separator;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Components\Tooltip;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\StackDirection;
 use Workbench\App\Pages\WorkbenchPage;
@@ -49,7 +49,7 @@ final class ContainersPage extends WorkbenchPage
                     ]),
                     Section::make(__('workbench.pages.components.containers.section-title'), __('workbench.pages.components.containers.section-description'))
                         ->collapsible()
-                        ->headerActions([Button::make(__('workbench.pages.components.containers.section-action'))->variant(ButtonVariant::Outline)])
+                        ->headerActions([Button::make(__('workbench.pages.components.containers.section-action'))->emphasis(Emphasis::Outline)])
                         ->schema([
                             Text::make(__('workbench.pages.components.containers.section-body')),
                         ]),

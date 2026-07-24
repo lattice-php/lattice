@@ -287,7 +287,7 @@ function ActionFormBody({
             disabled={processing}
             onClick={onClose}
             type="button"
-            variant="ghost"
+            emphasis="ghost"
           >
             {cancelLabel}
           </Button>

@@ -10,11 +10,11 @@ use Lattice\Lattice\Ui\Components\Badge;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\Intent;
 use Lattice\Lattice\Ui\Enums\Size;
 use Lattice\Lattice\Ui\Enums\StackDirection;
+use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Pages\WorkbenchPage;
 
 #[AsPage(route: '/components/buttons')]
@@ -37,13 +37,13 @@ final class ButtonsPage extends WorkbenchPage
                         ->gap(Gap::Small)
                         ->schema([
                             Button::make(__('workbench.pages.home.buttons.primary'), 'button-primary'),
-                            Button::make(__('workbench.pages.home.buttons.secondary'), 'button-secondary')->color(Intent::Secondary),
-                            Button::make(__('workbench.pages.home.buttons.success'), 'button-success')->color(Intent::Success),
-                            Button::make(__('workbench.pages.home.buttons.info'), 'button-info')->color(Intent::Info),
-                            Button::make(__('workbench.pages.home.buttons.warning'), 'button-warning')->color(Intent::Warning),
-                            Button::make(__('workbench.pages.home.buttons.danger'), 'button-danger')->color(Intent::Danger),
-                            Button::make(__('workbench.pages.home.buttons.outline'), 'button-outline')->variant(ButtonVariant::Outline),
-                            Button::make(__('workbench.pages.home.buttons.ghost'), 'button-ghost')->variant(ButtonVariant::Ghost),
+                            Button::make(__('workbench.pages.home.buttons.secondary'), 'button-secondary')->variant(Variant::Secondary),
+                            Button::make(__('workbench.pages.home.buttons.success'), 'button-success')->variant(Variant::Success),
+                            Button::make(__('workbench.pages.home.buttons.info'), 'button-info')->variant(Variant::Info),
+                            Button::make(__('workbench.pages.home.buttons.warning'), 'button-warning')->variant(Variant::Warning),
+                            Button::make(__('workbench.pages.home.buttons.danger'), 'button-danger')->variant(Variant::Danger),
+                            Button::make(__('workbench.pages.home.buttons.outline'), 'button-outline')->emphasis(Emphasis::Outline),
+                            Button::make(__('workbench.pages.home.buttons.ghost'), 'button-ghost')->emphasis(Emphasis::Ghost),
                         ]),
                     Heading::make(__('workbench.pages.components.buttons.badges'), 2),
                     Stack::make('badge-examples')

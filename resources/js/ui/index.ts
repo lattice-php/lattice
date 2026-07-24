@@ -2,7 +2,7 @@ export { AffixGroup } from "./affix-group";
 export { ActionMenuProvider, actionMenuItemClassName, useActionMenu } from "./action-menu-context";
 export { Badge } from "./badge";
 export { Button, buttonVariants } from "./button";
-export type { ButtonVariant } from "./button";
+export type { Emphasis, Variant } from "./button";
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
 export { Checkbox } from "./checkbox";
 export { Combobox } from "./combobox";

@@ -11,7 +11,6 @@ use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\Enums\Intent;
 use Lattice\Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
 
@@ -23,7 +22,7 @@ class ArchiveProductAction extends ActionDefinition
         return $action
             ->label(__('workbench.actions.archive.label'))
             ->method(HttpMethod::Patch)
-            ->color(Intent::Danger)
+            ->variant(Variant::Danger)
             ->confirm(__('workbench.actions.archive.confirm-title'), __('workbench.actions.archive.confirm-description'));
     }
 

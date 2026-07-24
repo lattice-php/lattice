@@ -172,13 +172,13 @@ alignment and button style:
 
 ```php
 use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Justify;
 
 Form::use(ProfileForm::class)
     ->submitLabel('Save changes')
     ->submitJustify(Justify::Start)
-    ->submitVariant(ButtonVariant::Outline);
+    ->submitEmphasis(Emphasis::Outline);
 ```
 
 To replace the row's buttons entirely, call `->submitButtons()` with one or more `Button` components.
@@ -203,7 +203,7 @@ To take over placement entirely — render the button somewhere other than the f
 
 ```php
 use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Lattice\Ui\Enums\Emphasis;
 
 Button::make('Create account')->submit();
 ```

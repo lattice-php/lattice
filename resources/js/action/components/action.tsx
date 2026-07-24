@@ -15,8 +15,8 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const icon = node.props.icon;
   const label = actionLabel(node);
   const isMenuItem = useActionMenu();
-  const variant = node.props.variant ?? "solid";
-  const color = node.props.color ?? null;
+  const variant = node.props.variant ?? null;
+  const emphasis = node.props.emphasis ?? "solid";
   const { processing, requestSubmit, overlays } = useAction(node);
   const testId = node.key ?? prefixedTestId("action", node.id);
 
@@ -29,8 +29,8 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
         disabled={processing || !endpoint}
         onClick={requestSubmit}
         type="button"
-        color={isMenuItem ? null : color}
-        variant={isMenuItem ? "ghost" : variant}
+        emphasis={isMenuItem ? "ghost" : emphasis}
+        variant={isMenuItem ? null : variant}
       >
         {processing ? (
           <Spinner className={isMenuItem ? "size-lt-icon-sm" : undefined} />

@@ -52,7 +52,7 @@ describe("Lattice action component", () => {
         endpoint: "/settings/teams/acme",
         label: "Edit",
         method: "get",
-        color: "secondary",
+        variant: "secondary",
       },
       type: "action",
     });
@@ -177,7 +177,7 @@ describe("Lattice action component", () => {
         endpoint: "/lattice/actions/delete-account",
         label: "Delete account",
         method: "delete",
-        color: "danger",
+        variant: "danger",
       },
       type: "action",
     });
@@ -248,7 +248,7 @@ describe("Lattice action component", () => {
         endpoint: "/lattice/actions/update-profile",
         label: "Save",
         method: "patch",
-        color: "secondary",
+        variant: "secondary",
       },
       type: "action",
     });
@@ -311,7 +311,7 @@ describe("Lattice action component", () => {
         endpoint: "/lattice/actions/delete-account",
         label: "Delete account",
         method: "delete",
-        color: "danger",
+        variant: "danger",
       },
       type: "action",
     });

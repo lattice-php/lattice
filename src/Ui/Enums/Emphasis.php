@@ -6,7 +6,7 @@ namespace Lattice\Lattice\Ui\Enums;
 use Lattice\Lattice\Attributes\TypeScript;
 
 #[TypeScript]
-enum ButtonVariant: string
+enum Emphasis: string
 {
     case Solid = 'solid';
     case Outline = 'outline';

@@ -45,7 +45,7 @@ export function TablePagination({
         <div ref={infiniteLoaderRef} className="flex items-center gap-2">
           {pagination.hasMore ? (
             <Button
-              variant="outline"
+              emphasis="outline"
               data-test="pagination-load-more"
               disabled={processing}
               onClick={onLoadMore}
@@ -63,7 +63,7 @@ export function TablePagination({
       ) : mode === "simple" ? (
         <div className="flex items-center gap-2">
           <Button
-            variant="outline"
+            emphasis="outline"
             data-test="pagination-previous"
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
@@ -71,7 +71,7 @@ export function TablePagination({
             {t("table.pagination.previous", "Previous")}
           </Button>
           <Button
-            variant="outline"
+            emphasis="outline"
             data-test="pagination-next"
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}
@@ -82,7 +82,7 @@ export function TablePagination({
       ) : mode === "table" ? (
         <div className="flex items-center gap-2">
           <Button
-            variant="outline"
+            emphasis="outline"
             data-test="pagination-previous"
             disabled={processing || currentPage <= 1}
             onClick={() => onPage(currentPage - 1)}
@@ -92,7 +92,7 @@ export function TablePagination({
           {visiblePages.map((pageNumber) => (
             <Button
               key={pageNumber}
-              variant="outline"
+              emphasis="outline"
               size="icon"
               data-test={`pagination-page-${pageNumber}`}
               disabled={processing || pageNumber === currentPage}
@@ -104,7 +104,7 @@ export function TablePagination({
             </Button>
           ))}
           <Button
-            variant="outline"
+            emphasis="outline"
             data-test="pagination-next"
             disabled={processing || !hasNextPage}
             onClick={() => onPage(currentPage + 1)}

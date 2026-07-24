@@ -473,28 +473,6 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ButtonVariant": {
-        "name": "ButtonVariant",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums",
-        "cases": [
-            {
-                "name": "Solid",
-                "value": "solid"
-            },
-            {
-                "name": "Outline",
-                "value": "outline"
-            },
-            {
-                "name": "Ghost",
-                "value": "ghost"
-            },
-            {
-                "name": "Link",
-                "value": "link"
-            }
-        ]
-    },
     "Lattice\\Lattice\\Ui\\Enums\\ChartSeriesType": {
         "name": "ChartSeriesType",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
@@ -570,6 +548,28 @@
             {
                 "name": "Short",
                 "value": "short"
+            }
+        ]
+    },
+    "Lattice\\Lattice\\Ui\\Enums\\Emphasis": {
+        "name": "Emphasis",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums",
+        "cases": [
+            {
+                "name": "Solid",
+                "value": "solid"
+            },
+            {
+                "name": "Outline",
+                "value": "outline"
+            },
+            {
+                "name": "Ghost",
+                "value": "ghost"
+            },
+            {
+                "name": "Link",
+                "value": "link"
             }
         ]
     },
@@ -662,36 +662,6 @@
             {
                 "name": "Delete",
                 "value": "delete"
-            }
-        ]
-    },
-    "Lattice\\Lattice\\Ui\\Enums\\Intent": {
-        "name": "Intent",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums",
-        "cases": [
-            {
-                "name": "Primary",
-                "value": "primary"
-            },
-            {
-                "name": "Secondary",
-                "value": "secondary"
-            },
-            {
-                "name": "Success",
-                "value": "success"
-            },
-            {
-                "name": "Info",
-                "value": "info"
-            },
-            {
-                "name": "Warning",
-                "value": "warning"
-            },
-            {
-                "name": "Danger",
-                "value": "danger"
             }
         ]
     },
@@ -991,6 +961,14 @@
         "name": "Variant",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
         "cases": [
+            {
+                "name": "Primary",
+                "value": "primary"
+            },
+            {
+                "name": "Secondary",
+                "value": "secondary"
+            },
             {
                 "name": "Success",
                 "value": "success"
