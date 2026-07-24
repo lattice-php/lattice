@@ -7,7 +7,7 @@ function Slot({ char, hasFakeCaret, isActive }: SlotProps) {
     <div
       className={cn(
         "relative flex h-lt-control-md w-10 items-center justify-center border-y border-r border-lt-input text-base shadow-lt-xs transition-all first:rounded-l-lt-sm first:border-l last:rounded-r-lt-sm",
-        isActive && "z-10 border-lt-ring ring-lt-ring/50 ring-[3px]",
+        isActive && "z-10 border-lt-ring ring-lt-ring/50 ring-[length:var(--lt-ring-width)]",
       )}
     >
       {char}

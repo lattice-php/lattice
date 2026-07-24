@@ -14,7 +14,7 @@ export function InfoTooltip({ content }: { content?: string | null }) {
       <PopoverTrigger
         type="button"
         aria-label={t("common.more-info", "More information")}
-        className="ml-1 inline-flex rounded-lt-sm text-lt-muted-fg outline-none hover:text-lt-fg focus-visible:text-lt-fg focus-visible:ring-lt-ring/50 focus-visible:ring-[3px]"
+        className="ml-1 inline-flex rounded-lt-sm text-lt-muted-fg outline-none hover:text-lt-fg focus-visible:text-lt-fg focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]"
       >
         <Icon name="info" className="size-lt-icon-sm" />
       </PopoverTrigger>
