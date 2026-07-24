@@ -83,10 +83,10 @@ function FormBody({
                   button.props.buttonType === "submit" ? (
                     <FormSubmitButton
                       key={nodeKey(button, index)}
-                      emphasis={button.props.emphasis ?? submitEmphasis ?? "solid"}
+                      emphasis={button.props.emphasis ?? submitEmphasis}
                       label={button.props.label ?? submitLabel}
                       summaryLabel={summaryLabel}
-                      variant={button.props.variant ?? submitVariant ?? null}
+                      variant={button.props.variant ?? submitVariant}
                     />
                   ) : (
                     <RenderNode key={nodeKey(button, index)} node={button} />
@@ -94,10 +94,10 @@ function FormBody({
                 )
               ) : (
                 <FormSubmitButton
-                  emphasis={submitEmphasis ?? "solid"}
+                  emphasis={submitEmphasis}
                   label={submitLabel}
                   summaryLabel={summaryLabel}
-                  variant={submitVariant ?? null}
+                  variant={submitVariant}
                 />
               )}
             </div>

@@ -15,8 +15,7 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const icon = node.props.icon;
   const label = actionLabel(node);
   const isMenuItem = useActionMenu();
-  const variant = node.props.variant ?? null;
-  const emphasis = node.props.emphasis ?? "solid";
+  const { variant, emphasis } = node.props;
   const { processing, requestSubmit, overlays } = useAction(node);
   const testId = node.key ?? prefixedTestId("action", node.id);
 

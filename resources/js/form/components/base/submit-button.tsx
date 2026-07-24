@@ -6,13 +6,13 @@ import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 export function FormSubmitButton({
   label,
   summaryLabel,
-  variant = null,
-  emphasis = "solid",
+  variant,
+  emphasis,
 }: {
   label: string;
   summaryLabel: string;
   variant?: Variant | null;
-  emphasis?: Emphasis;
+  emphasis?: Emphasis | null;
 }) {
   const { componentId, errors, fieldLabels, processing } = useFormContext();
 

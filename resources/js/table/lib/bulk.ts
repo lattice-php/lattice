@@ -11,7 +11,7 @@ export type BulkAction = {
   endpoint: string;
   ref: string;
   variant: Variant | null;
-  emphasis: Emphasis;
+  emphasis: Emphasis | null;
   confirmation: Action["confirmation"];
   form: Node | null;
   modalSide: Action["modalSide"];
@@ -37,8 +37,8 @@ export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] 
         method: props.method ?? "post",
         endpoint: props.endpoint,
         ref: props.ref ?? "",
-        variant: props.variant ?? null,
-        emphasis: props.emphasis ?? "solid",
+        variant: props.variant,
+        emphasis: props.emphasis,
         confirmation: props.confirmation,
         form: props.form,
         modalSide: props.modalSide,

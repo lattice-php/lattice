@@ -9,7 +9,7 @@ export function ConfirmDialog({
   confirmLabel,
   cancelLabel = "Cancel",
   confirmVariant = null,
-  confirmEmphasis = "solid",
+  confirmEmphasis = null,
   processing = false,
   confirmDisabled = false,
   onConfirm,
@@ -20,7 +20,7 @@ export function ConfirmDialog({
   confirmLabel: string;
   cancelLabel?: string;
   confirmVariant?: Variant | null;
-  confirmEmphasis?: Emphasis;
+  confirmEmphasis?: Emphasis | null;
   processing?: boolean;
   confirmDisabled?: boolean;
   onConfirm: () => void;
