@@ -14,10 +14,10 @@
                 "props": {
                     "color": null,
                     "max": 100,
+                    "shape": "bar",
                     "showValue": true,
                     "size": "md",
-                    "value": 65,
-                    "variant": "bar"
+                    "value": 65
                 },
                 "type": "progress"
             },
@@ -29,10 +29,10 @@
                         "value": "success"
                     },
                     "max": 100,
+                    "shape": "bar",
                     "showValue": false,
                     "size": "lg",
-                    "value": 80,
-                    "variant": "bar"
+                    "value": 80
                 },
                 "type": "progress"
             },
@@ -51,10 +51,10 @@
                         "props": {
                             "color": null,
                             "max": 100,
+                            "shape": "circle",
                             "showValue": true,
                             "size": "md",
-                            "value": 65,
-                            "variant": "circle"
+                            "value": 65
                         },
                         "type": "progress"
                     },
@@ -66,10 +66,10 @@
                                 "value": "warning"
                             },
                             "max": 50,
+                            "shape": "circle",
                             "showValue": true,
                             "size": "xl",
-                            "value": 35,
-                            "variant": "circle"
+                            "value": 35
                         },
                         "type": "progress"
                     }

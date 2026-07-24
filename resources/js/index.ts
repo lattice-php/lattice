@@ -10,7 +10,7 @@ export {
 export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { registerRichEditorExtension } from "./form/rich-editor/registry";
-export { initializeTheme, updateAppearance, useAppearance } from "./appearance";
+export { initializeAppearance, updateAppearance, useAppearance } from "./appearance";
 export { copyToClipboard } from "./clipboard";
 export {
   createLatticeApp,

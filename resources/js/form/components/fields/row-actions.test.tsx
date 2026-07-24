@@ -31,12 +31,12 @@ it("renders nothing for an empty action list", () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-it("applies destructive styling to a menu item", () => {
+it("applies danger styling to a menu item", () => {
   render(
     <RowActions
       actions={[
         { key: "duplicate", label: "Duplicate", icon: "copy", onClick: () => {} },
-        { key: "remove", label: "Remove", icon: "trash-2", onClick: () => {}, destructive: true },
+        { key: "remove", label: "Remove", icon: "trash-2", onClick: () => {}, danger: true },
       ]}
     />,
   );

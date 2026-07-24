@@ -1,7 +1,7 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
 import { createInertiaApp } from "@inertiajs/react";
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
-import { initializeTheme } from "./appearance";
+import { initializeAppearance } from "./appearance";
 import { extendRegistry, type Plugin, type PluginI18n, type Registry } from "./core/registry";
 import { setDefaultRegistry } from "./core/registry-context";
 import type { SpriteValue } from "./icons/sprite";
@@ -194,7 +194,7 @@ export function createLatticeApp({
     },
   });
 
-  initializeTheme();
+  initializeAppearance();
 
   return app;
 }

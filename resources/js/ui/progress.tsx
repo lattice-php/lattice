@@ -38,7 +38,7 @@ const circleReadouts: Record<Size, string> = {
 };
 
 const ProgressComponent: RendererComponent<"progress"> = ({ node }) => {
-  const { value, max, variant, showValue, color, size } = node.props;
+  const { value, max, shape, showValue, color, size } = node.props;
   const { locale } = useLocale();
   const paint = colorValue(coerceColor(color) ?? namedColor("primary"));
 
@@ -57,7 +57,7 @@ const ProgressComponent: RendererComponent<"progress"> = ({ node }) => {
     role: "progressbar",
   } as const;
 
-  if (variant === "circle") {
+  if (shape === "circle") {
     const diameter = circleDiameters[size];
     const strokeWidth = Math.max(3, diameter / 10);
     const radius = (diameter - strokeWidth) / 2;

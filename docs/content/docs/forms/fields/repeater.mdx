@@ -120,7 +120,7 @@ same menu renders in both the stacked and table layouts — reorder controls sta
 />
 
 `RowAction::duplicate()` and `RowAction::remove()` are the built-ins; chain `->label()`, `->icon()`, or
-`->destructive()` to customise each. Remove is hidden automatically while the row sits at `minItems`.
+`->danger()` to customise each. Remove is hidden automatically while the row sits at `minItems`.
 Pass an empty array — `->rowActions([])` — to drop the menu entirely.
 
 ## Labels

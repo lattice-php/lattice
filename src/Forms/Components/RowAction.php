@@ -33,7 +33,7 @@ final class RowAction implements Renderable
     private function __construct(
         public RowActionType $type,
         public string $key,
-        public bool $destructive = false,
+        public bool $danger = false,
     ) {}
 
     public static function duplicate(): self
@@ -43,12 +43,12 @@ final class RowAction implements Renderable
 
     public static function remove(): self
     {
-        return new self(RowActionType::Remove, 'remove', destructive: true);
+        return new self(RowActionType::Remove, 'remove', danger: true);
     }
 
-    public function destructive(bool $destructive = true): self
+    public function danger(bool $danger = true): self
     {
-        $this->destructive = $destructive;
+        $this->danger = $danger;
 
         return $this;
     }

@@ -1216,12 +1216,12 @@ export type Placement = "top" | "bottom" | "right";
 export type Progress = {
   color: Color | null;
   max: number;
+  shape: ProgressShape;
   showValue: boolean;
   size: Size;
   value: number;
-  variant: ProgressVariant;
 };
-export type ProgressVariant = "bar" | "circle";
+export type ProgressShape = "bar" | "circle";
 export type RawBlock = {
   html: string;
 };
@@ -1297,7 +1297,7 @@ export type RichEditor = {
   value: unknown;
 };
 export type RowAction = {
-  destructive: boolean;
+  danger: boolean;
   icon: string | null;
   key: string;
   label: string | null;

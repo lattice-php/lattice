@@ -9,7 +9,7 @@ function wireAction(
     key: overrides.type,
     label: null,
     icon: null,
-    destructive: false,
+    danger: false,
     ...overrides,
   };
 }

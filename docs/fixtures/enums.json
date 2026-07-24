@@ -855,8 +855,8 @@
             }
         ]
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ProgressVariant": {
-        "name": "ProgressVariant",
+    "Lattice\\Lattice\\Ui\\Enums\\ProgressShape": {
+        "name": "ProgressShape",
         "namespace": "Lattice\\Lattice\\Ui\\Enums",
         "cases": [
             {

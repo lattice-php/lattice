@@ -347,7 +347,7 @@ test('serializes progress bars and circles', function (): void {
         ->and($bar['props'])->toMatchArray([
             'value' => 72.5,
             'max' => 100.0,
-            'variant' => 'bar',
+            'shape' => 'bar',
             'showValue' => true,
             'color' => ['kind' => 'named', 'value' => 'success', 'dark' => null],
             'size' => 'md',
@@ -358,7 +358,7 @@ test('serializes progress bars and circles', function (): void {
     expect($circle['props'])->toMatchArray([
         'value' => 35.0,
         'max' => 50.0,
-        'variant' => 'circle',
+        'shape' => 'circle',
         'showValue' => false,
         'color' => null,
         'size' => 'lg',

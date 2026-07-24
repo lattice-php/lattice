@@ -39,7 +39,7 @@ function defaultActions(removable: boolean): WireRowAction[] {
     return [];
   }
 
-  return [{ type: "remove", key: "remove", label: null, icon: null, destructive: true }];
+  return [{ type: "remove", key: "remove", label: null, icon: null, danger: true }];
 }
 
 function toClientAction(action: WireRowAction, ctx: RowActionContext): RowAction | null {
@@ -50,7 +50,7 @@ function toClientAction(action: WireRowAction, ctx: RowActionContext): RowAction
       key: action.key,
       label: action.label ?? ctx.t(builtIn.key, builtIn.fallback),
       icon: action.icon ?? builtIn.icon,
-      destructive: action.destructive,
+      danger: action.danger,
       onClick: () => ctx.onDuplicate(ctx.index),
     };
   }
@@ -66,7 +66,7 @@ function toClientAction(action: WireRowAction, ctx: RowActionContext): RowAction
       key: action.key,
       label: action.label ?? ctx.t(builtIn.key, builtIn.fallback),
       icon: action.icon ?? builtIn.icon,
-      destructive: action.destructive,
+      danger: action.danger,
       onClick: () => ctx.onRemove(ctx.index),
     };
   }

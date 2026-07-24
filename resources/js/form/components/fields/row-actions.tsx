@@ -12,11 +12,11 @@ export type RowAction = {
   label: string;
   icon: string;
   onClick: () => void;
-  destructive?: boolean;
+  danger?: boolean;
 };
 
-function inlineClass(destructive?: boolean): string {
-  return destructive
+function inlineClass(danger?: boolean): string {
+  return danger
     ? "text-lt-danger hover:text-lt-danger [&_svg]:size-lt-icon-sm"
     : "text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm";
 }
@@ -34,7 +34,7 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
         type="button"
         aria-label={action.label}
         data-test={`row-action-${action.key}`}
-        className={inlineClass(action.destructive)}
+        className={inlineClass(action.danger)}
         onClick={action.onClick}
       >
         <Icon name={action.icon} />
@@ -59,7 +59,7 @@ export function RowActions({ actions }: { actions: RowAction[] }) {
           <DropdownMenuItem
             key={action.key}
             data-test={`row-action-${action.key}`}
-            destructive={action.destructive}
+            danger={action.danger}
             icon={action.icon}
             onClick={action.onClick}
           >

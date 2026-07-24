@@ -10,7 +10,7 @@ function renderProgress(props: Partial<Progress>) {
     props: {
       value: 0,
       max: 100,
-      variant: "bar",
+      shape: "bar",
       showValue: false,
       color: null,
       size: "md",
@@ -72,7 +72,7 @@ describe("ProgressComponent bar", () => {
 
 describe("ProgressComponent circle", () => {
   it("renders the ring offset from value and max", () => {
-    const { container } = renderProgress({ value: 25, variant: "circle" });
+    const { container } = renderProgress({ value: 25, shape: "circle" });
 
     const circumference = 2 * Math.PI * 18;
     const circles = container.querySelectorAll("circle");
@@ -93,7 +93,7 @@ describe("ProgressComponent circle", () => {
     const { container } = renderProgress({
       value: 35,
       max: 50,
-      variant: "circle",
+      shape: "circle",
       size: "xl",
       showValue: true,
     });
@@ -105,7 +105,7 @@ describe("ProgressComponent circle", () => {
   it("colors the ring stroke from the color prop", () => {
     const { container } = renderProgress({
       value: 10,
-      variant: "circle",
+      shape: "circle",
       color: { kind: "named", value: "danger", dark: null },
     });
 

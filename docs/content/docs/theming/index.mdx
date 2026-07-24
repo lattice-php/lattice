@@ -85,7 +85,7 @@ host variables under `.dark`.
 
 Lattice manages the class for you through its appearance helpers, exported from the package:
 
-- **`initializeTheme()`** — call once before your app mounts (e.g. in your entry file). It reads the
+- **`initializeAppearance()`** — call once before your app mounts (e.g. in your entry file). It reads the
   stored preference (`localStorage` key `appearance`, default `system`), applies the `dark` class and
   `color-scheme`, and keeps them in sync when the OS preference changes.
 - **`useAppearance()`** — a hook returning `{ appearance, resolvedAppearance, updateAppearance }`.
@@ -95,9 +95,9 @@ Lattice manages the class for you through its appearance helpers, exported from 
   on top of it.
 
 ```tsx
-import { initializeTheme, useAppearance } from "@lattice-php/lattice";
+import { initializeAppearance, useAppearance } from "@lattice-php/lattice";
 
-initializeTheme();
+initializeAppearance();
 
 function AppearanceToggle() {
   const { appearance, updateAppearance } = useAppearance();
