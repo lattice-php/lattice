@@ -25,7 +25,7 @@ final class StandaloneAssets
 
         $tags = [sprintf('<link rel="stylesheet" href="%s">', $this->versionedUrl('lattice.css'))];
 
-        $theme = $this->themeRenderer->style($frontend['theme'] ?? null);
+        $theme = $this->themeRenderer->style();
 
         if ($theme !== '') {
             $tags[] = $theme;

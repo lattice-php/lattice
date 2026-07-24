@@ -20,7 +20,7 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static void remoteSourceResolver(callable $resolver)
  * @method static \Lattice\Lattice\Remote\RemoteSourceRegistry remoteSourceRegistry()
  * @method static void extend(string $name, \Closure $factory, int $priority = 0)
- * @method static void theme(\Lattice\Lattice\Support\Theme\Theme|array<string, mixed>|\Closure $theme)
+ * @method static void theme(\Lattice\Lattice\Support\Theme\Theme|\Closure $theme)
  *
  * @see LatticeRegistry
  */

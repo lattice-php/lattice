@@ -9,23 +9,16 @@ use InvalidArgumentException;
 
 final class ThemeRenderer
 {
-    /** @var Theme|array<string, mixed>|Closure|null */
-    private Theme|array|Closure|null $theme = null;
+    private Theme|Closure|null $theme = null;
 
-    /** @param Theme|array<string, mixed>|Closure $theme */
-    public function register(Theme|array|Closure $theme): void
+    public function register(Theme|Closure $theme): void
     {
         $this->theme = $theme;
     }
 
-    /**
-     * Render the active theme: a registered theme wins, then the given config
-     * value, then `lattice.frontend.theme`. Returns '' when none is set.
-     */
-    public function style(mixed $configTheme = null): string
+    public function style(): string
     {
-        $theme = $this->themeFrom($this->registered())
-            ?? $this->themeFrom($configTheme ?? config('lattice.frontend.theme'));
+        $theme = $this->theme instanceof Closure ? ($this->theme)() : $this->theme;
 
         return $theme instanceof Theme ? self::wrap($theme) : '';
     }
@@ -39,24 +32,5 @@ final class ThemeRenderer
         }
 
         return '<style id="lattice-theme">'.$css.'</style>';
-    }
-
-    private function registered(): mixed
-    {
-        return $this->theme instanceof Closure ? ($this->theme)() : $this->theme;
-    }
-
-    private function themeFrom(mixed $theme): ?Theme
-    {
-        if ($theme instanceof Theme) {
-            return $theme;
-        }
-
-        if (is_array($theme) && $theme !== []) {
-            /** @var array<string, mixed> $theme */
-            return Theme::fromArray($theme);
-        }
-
-        return null;
     }
 }

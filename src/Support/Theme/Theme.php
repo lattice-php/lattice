@@ -33,12 +33,6 @@ final class Theme
         'disabled' => '--disabled', 'disabledForeground' => '--disabled-foreground',
     ];
 
-    /** @var array<string, string> */
-    private const array SCALAR_TOKENS = [
-        'radius' => '--radius', 'ringWidth' => '--ring-width', 'ringOffset' => '--ring-offset',
-        'fontSans' => '--font-sans', 'fontMono' => '--font-mono', 'fontDisplay' => '--font-display',
-    ];
-
     public static function make(): self
     {
         return new self;
@@ -132,41 +126,6 @@ final class Theme
         $clone->darkVars = [...$clone->darkVars, ...$built->vars];
 
         return $clone;
-    }
-
-    /**
-     * Accepts the structured shape (`colors`, scalar names, `dark`) as well as a flat
-     * `token => value` map; unknown keys pass through as custom properties so both
-     * styles — and mixes of the two — render.
-     *
-     * @param  array<string, mixed>  $theme
-     */
-    public static function fromArray(array $theme): self
-    {
-        $instance = self::make();
-
-        $colors = $theme['colors'] ?? [];
-        if (is_array($colors)) {
-            foreach ($colors as $name => $value) {
-                if (isset(self::COLOR_TOKENS[$name]) && is_string($value)) {
-                    $instance = $instance->set(self::COLOR_TOKENS[$name], $value);
-                }
-            }
-        }
-
-        foreach ($theme as $name => $value) {
-            if ($name !== 'colors' && is_string($value)) {
-                $instance = $instance->set(self::SCALAR_TOKENS[$name] ?? $name, $value);
-            }
-        }
-
-        $dark = $theme['dark'] ?? null;
-        if (is_array($dark)) {
-            /** @var array<string, mixed> $dark */
-            $instance = $instance->dark(fn (): Theme => self::fromArray($dark));
-        }
-
-        return $instance;
     }
 
     public function toCss(): string

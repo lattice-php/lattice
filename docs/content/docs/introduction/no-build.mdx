@@ -38,7 +38,7 @@ Add `@latticeHead` before `@inertiaHead`, and `@latticeScripts` after `@inertia`
 
 ```blade
 <head>
-    @latticeHead(['theme' => ['primary' => 'oklch(0.48 0.09 182)']])
+    @latticeHead
     @inertiaHead
 </head>
 <body>
@@ -47,9 +47,9 @@ Add `@latticeHead` before `@inertiaHead`, and `@latticeScripts` after `@inertia`
 </body>
 ```
 
-`@latticeHead` renders the stylesheet link, an optional inline theme `<style>` block, and a small JSON config script the bundle reads on boot. `@latticeScripts` renders the module `<script>` tag for the JS entry. Both read the published `manifest.json` to version their URLs (`?v=<hash>`), so browsers pick up new assets after every republish without manual cache-busting.
+`@latticeHead` renders the stylesheet link, the [theme](/theming/) registered via `Lattice::theme()` (if any), and a small JSON config script the bundle reads on boot. `@latticeScripts` renders the module `<script>` tag for the JS entry. Both read the published `manifest.json` to version their URLs (`?v=<hash>`), so browsers pick up new assets after every republish without manual cache-busting.
 
-## Configuring theme and realtime
+## Configuring realtime
 
 `@latticeHead` takes an optional array with the same keys as the `lattice.frontend` config — anything passed to the directive merges over the config file's values for that render. Publish the config to set defaults that apply everywhere:
 
@@ -60,14 +60,10 @@ php artisan vendor:publish --tag="lattice-config"
 ```php
 'frontend' => [
     'path' => 'vendor/lattice',
-    'theme' => [
-        'primary' => 'oklch(0.48 0.09 182)',
-    ],
     'echo' => null,
 ],
 ```
 
-- **`theme`** — a map of CSS custom properties written to `:root` in an inline `<style>` tag. Bare keys get a `--` prefix, so `'primary'` becomes `--primary`; these are the same shadcn-style variables (`--primary`, `--background`, …) the [regular install](/introduction/installation/#import-the-stylesheet) reads as theme overrides. Pass an explicit `--lt-*` key (e.g. `'--lt-radius' => '0.5rem'`) to target a Lattice component token directly instead — it passes through unchanged.
 - **`echo`** — passed verbatim to `configureEcho()` from `@laravel/echo-react`. When you set it, the boot script dynamically imports the realtime chunk instead of bundling it into the initial `lattice.js`, so apps that don't use [Realtime](/core/realtime/) pay nothing for it.
 
 ## Limitations

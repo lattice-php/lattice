@@ -29,17 +29,6 @@ it('merges dark overrides only into the dark block', function (): void {
     expect($css)->toBe(":root{--primary:#6366f1;}\n.dark{--primary:#818cf8;}");
 });
 
-it('builds the same result from fromArray as the fluent builder', function (): void {
-    $fluent = Theme::make()->colors(primary: '#6366f1')->radius('0.75rem')
-        ->dark(fn (Theme $t): Theme => $t->colors(primary: '#818cf8'))->toCss();
-    $array = Theme::fromArray([
-        'colors' => ['primary' => '#6366f1'],
-        'radius' => '0.75rem',
-        'dark' => ['colors' => ['primary' => '#818cf8']],
-    ])->toCss();
-    expect($array)->toBe($fluent);
-});
-
 it('rejects values that could break out of the style rule', function (string $bad): void {
     $css = Theme::make()->set('primary', $bad)->toCss();
 })->with(['red}html{x:y', 'red;x:y', '</style>'])->throws(InvalidArgumentException::class);

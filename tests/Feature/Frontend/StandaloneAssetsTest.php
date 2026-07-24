@@ -40,29 +40,16 @@ it('embeds the boot config with the versioned sprite url', function (): void {
         ->and($html)->toContain('vendor/lattice/sprite.svg?v=svghash12345');
 });
 
-it('renders theme overrides as css custom properties', function (): void {
-    $html = Blade::render("@latticeHead(['theme' => ['primary' => 'oklch(0.5 0.1 200)', '--lt-radius' => '0.5rem']])");
-
-    expect($html)
-        ->toContain('<style id="lattice-theme">')
-        ->toContain('--primary:oklch(0.5 0.1 200);--lt-radius:0.5rem;');
-});
-
-it('routes a structured config theme through the head as a managed style tag', function (): void {
-    config()->set('lattice.frontend.theme', ['colors' => ['primary' => '#e11d48']]);
-
-    expect(Blade::render('@latticeHead'))
-        ->toContain('<style id="lattice-theme">')
-        ->toContain('--primary:#e11d48');
-});
-
-it('prefers a registered theme over the config theme in the head', function (): void {
-    config()->set('lattice.frontend.theme', ['colors' => ['primary' => '#e11d48']]);
+it('renders a registered theme as a managed style tag', function (): void {
     Lattice::theme(Theme::make()->colors(primary: '#6366f1'));
 
     expect(Blade::render('@latticeHead'))
-        ->toContain('--primary:#6366f1')
-        ->not->toContain('#e11d48');
+        ->toContain('<style id="lattice-theme">')
+        ->toContain('--primary:#6366f1');
+});
+
+it('renders no style tag when no theme is registered', function (): void {
+    expect(Blade::render('@latticeHead'))->not->toContain('lattice-theme');
 });
 
 it('merges the directive argument over the configured frontend settings', function (): void {
@@ -71,10 +58,6 @@ it('merges the directive argument over the configured frontend settings', functi
     expect(Blade::render('@latticeHead'))->toContain('"broadcaster":"reverb"');
     expect(Blade::render("@latticeHead(['echo' => null])"))->not->toContain('"broadcaster"');
 });
-
-it('rejects theme values that could break out of the style tag', function (): void {
-    app(StandaloneAssets::class)->head(['theme' => ['primary' => '</style><script>1</script>']]);
-})->throws(InvalidArgumentException::class);
 
 it('renders the module script tag', function (): void {
     expect(Blade::render('@latticeScripts'))

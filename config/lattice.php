@@ -33,15 +33,6 @@ return [
     'frontend' => [
         'dist_path' => null,
         'path' => 'vendor/lattice',
-        // Either a flat map of raw CSS custom properties (e.g. ['primary' => '#6366f1'])
-        // or a structured theme shape consumed by Lattice\Lattice\Support\Theme\Theme::fromArray():
-        // ['colors' => ['primary' => '#6366f1', ...], 'radius' => '0.5rem',
-        //  'ringWidth' => '3px', 'ringOffset' => '0px',
-        //  'fontSans' => '...', 'fontMono' => '...', 'fontDisplay' => '...',
-        //  'dark' => ['colors' => [...], 'radius' => '...', ...]]
-        // Both render into the managed <style id="lattice-theme"> tag.
-        // A theme registered via Lattice::theme() takes precedence over this config.
-        'theme' => [],
         'echo' => null,
     ],
 
