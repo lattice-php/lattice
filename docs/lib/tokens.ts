@@ -1,6 +1,5 @@
 export type ThemeToken = {
   name: string;
-  hostVar: string | null;
   light: string;
   dark: string;
   category: "color" | "radius";
@@ -28,30 +27,16 @@ function parseDeclarations(block: string): Map<string, string> {
   return declarations;
 }
 
-function splitVar(value: string): { hostVar: string | null; fallback: string } {
-  const match = value.match(/^var\(\s*(--[\w-]+)\s*,\s*(.+)\)$/);
-  if (match) {
-    return { hostVar: match[1], fallback: match[2].trim() };
-  }
-  return { hostVar: null, fallback: value };
-}
-
 export function parseTokens(css: string): ThemeToken[] {
   const light = parseDeclarations(extractBlock(css, /:root,\s*\[data-theme="light"\]\s*\{/));
   const dark = parseDeclarations(extractBlock(css, /\[data-theme="dark"\],\s*\.dark\s*\{/));
 
-  return [...light].map(([name, lightValue]) => {
-    const { hostVar, fallback: lightFallback } = splitVar(lightValue);
-    const darkValue = dark.get(name);
-    const darkFallback = darkValue ? splitVar(darkValue).fallback : lightFallback;
-    return {
-      name,
-      hostVar,
-      light: lightFallback,
-      dark: darkFallback,
-      category: name.includes("radius") ? "radius" : "color",
-    };
-  });
+  return [...light].map(([name, lightValue]) => ({
+    name,
+    light: lightValue,
+    dark: dark.get(name) ?? lightValue,
+    category: name.includes("radius") ? "radius" : "color",
+  }));
 }
 
 export function parseSuffixMap(css: string): SuffixMap {

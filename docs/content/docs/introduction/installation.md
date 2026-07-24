@@ -125,7 +125,7 @@ Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines
 @import "@lattice-php/lattice/css";
 ```
 
-The component tokens (`--lt-*`) fall back to sensible defaults, so the UI is styled out of the box. They also read from shadcn-style variables (`--background`, `--primary`, …) when you define them, which lets Lattice inherit an existing theme.
+The component tokens (`--lt-*`) ship sensible defaults inside a cascade layer, so the UI is styled out of the box — and any `--lt-*` value you declare in your own CSS (or via the [PHP `Theme` builder](/theming/)) overrides them regardless of import order.
 
 ### Register the Inertia renderer
 

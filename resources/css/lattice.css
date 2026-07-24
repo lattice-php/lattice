@@ -1,71 +1,81 @@
-:root,
-[data-theme="light"] {
-  --lt-bg: var(--background, oklch(0.97 0 0));
-  --lt-fg: var(--foreground, oklch(0.145 0 0));
-  --lt-surface: var(--card, oklch(1 0 0));
-  --lt-surface-fg: var(--card-foreground, oklch(0.145 0 0));
-  --lt-popover: var(--popover, oklch(1 0 0));
-  --lt-popover-fg: var(--popover-foreground, oklch(0.145 0 0));
-  --lt-primary: var(--primary, oklch(0.48 0.092 182));
-  --lt-primary-fg: var(--primary-foreground, oklch(0.985 0 0));
-  --lt-secondary: var(--secondary, oklch(0.97 0 0));
-  --lt-secondary-fg: var(--secondary-foreground, oklch(0.205 0 0));
-  --lt-muted: var(--muted, oklch(0.97 0 0));
-  --lt-muted-fg: var(--muted-foreground, oklch(0.556 0 0));
-  --lt-accent: var(--accent, oklch(0.965 0.013 182));
-  --lt-accent-fg: var(--accent-foreground, oklch(0.4 0.07 182));
-  --lt-danger: var(--destructive, oklch(0.585 0.21 27.3));
-  --lt-danger-fg: var(--destructive-foreground, oklch(0.985 0 0));
-  --lt-border: var(--border, oklch(0.922 0 0));
-  --lt-input: var(--input, oklch(0.922 0 0));
-  --lt-ring: var(--ring, oklch(0.72 0.075 182));
-  --lt-overlay: var(--overlay, oklch(0 0 0 / 0.5));
-  --lt-warning: var(--warning, oklch(0.84 0.14 88));
-  --lt-success: var(--success, oklch(0.62 0.125 160));
-  --lt-success-fg: var(--success-foreground, oklch(0.985 0 0));
-  --lt-info: var(--info, oklch(0.62 0.14 240));
-  --lt-info-fg: var(--info-foreground, oklch(0.985 0 0));
-  --lt-primary-hover: var(--primary-hover, oklch(0.43 0.092 182));
-  --lt-primary-active: var(--primary-active, oklch(0.39 0.092 182));
-  --lt-danger-hover: var(--destructive-hover, oklch(0.53 0.21 27.3));
-  --lt-danger-active: var(--destructive-active, oklch(0.48 0.21 27.3));
-  --lt-success-hover: var(--success-hover, oklch(0.57 0.125 160));
-  --lt-success-active: var(--success-active, oklch(0.52 0.125 160));
-  --lt-info-hover: var(--info-hover, oklch(0.57 0.14 240));
-  --lt-info-active: var(--info-active, oklch(0.52 0.14 240));
-  --lt-warning-hover: var(--warning-hover, oklch(0.79 0.14 88));
-  --lt-warning-active: var(--warning-active, oklch(0.74 0.14 88));
-  --lt-secondary-hover: var(--secondary-hover, oklch(0.93 0 0));
-  --lt-secondary-active: var(--secondary-active, oklch(0.9 0 0));
-  --lt-disabled: var(--disabled, oklch(0.95 0 0));
-  --lt-disabled-fg: var(--disabled-foreground, oklch(0.7 0 0));
+/*
+ * Token defaults live in a cascade layer so any unlayered override wins
+ * regardless of stylesheet order — the @latticeTheme style tag and plain
+ * `:root { --lt-primary: … }` rules in an app's CSS both take precedence.
+ */
+@layer lattice {
+  :root,
+  [data-theme="light"] {
+  --lt-bg: oklch(0.97 0 0);
+  --lt-fg: oklch(0.145 0 0);
+  --lt-surface: oklch(1 0 0);
+  --lt-surface-fg: oklch(0.145 0 0);
+  --lt-popover: oklch(1 0 0);
+  --lt-popover-fg: oklch(0.145 0 0);
+  --lt-primary: oklch(0.48 0.092 182);
+  --lt-primary-fg: oklch(0.985 0 0);
+  --lt-secondary: oklch(0.97 0 0);
+  --lt-secondary-fg: oklch(0.205 0 0);
+  --lt-muted: oklch(0.97 0 0);
+  --lt-muted-fg: oklch(0.556 0 0);
+  --lt-accent: oklch(0.965 0.013 182);
+  --lt-accent-fg: oklch(0.4 0.07 182);
+  --lt-danger: oklch(0.585 0.21 27.3);
+  --lt-danger-fg: oklch(0.985 0 0);
+  --lt-border: oklch(0.922 0 0);
+  --lt-input: oklch(0.922 0 0);
+  --lt-ring: oklch(0.72 0.075 182);
+  --lt-overlay: oklch(0 0 0 / 0.5);
+  --lt-warning: oklch(0.84 0.14 88);
+  --lt-success: oklch(0.62 0.125 160);
+  --lt-success-fg: oklch(0.985 0 0);
+  --lt-info: oklch(0.62 0.14 240);
+  --lt-info-fg: oklch(0.985 0 0);
+  --lt-primary-hover: oklch(0.43 0.092 182);
+  --lt-primary-active: oklch(0.39 0.092 182);
+  --lt-danger-hover: oklch(0.53 0.21 27.3);
+  --lt-danger-active: oklch(0.48 0.21 27.3);
+  --lt-success-hover: oklch(0.57 0.125 160);
+  --lt-success-active: oklch(0.52 0.125 160);
+  --lt-info-hover: oklch(0.57 0.14 240);
+  --lt-info-active: oklch(0.52 0.14 240);
+  --lt-warning-hover: oklch(0.79 0.14 88);
+  --lt-warning-active: oklch(0.74 0.14 88);
+  --lt-secondary-hover: oklch(0.93 0 0);
+  --lt-secondary-active: oklch(0.9 0 0);
+  --lt-disabled: oklch(0.95 0 0);
+  --lt-disabled-fg: oklch(0.7 0 0);
 
   /* Radius: base = cards, -sm = controls, -xs = chips */
-  --lt-radius: var(--radius, 0.5rem);
+  --lt-radius: 0.5rem;
   --lt-radius-sm: calc(var(--lt-radius) - 0.125rem);
   --lt-radius-xs: calc(var(--lt-radius) - 0.25rem);
   --lt-radius-lg: calc(var(--lt-radius) + 0.25rem);
   --lt-radius-xl: calc(var(--lt-radius) + 0.5rem);
   --lt-radius-full: 9999px;
 
-  --lt-ring-width: var(--ring-width, 3px);
-  --lt-ring-offset: var(--ring-offset, 0px);
+  --lt-ring-width: 3px;
+  --lt-ring-offset: 0px;
 
-  --lt-font-mono: var(--font-mono, ui-monospace, "SFMono-Regular", "Menlo", monospace);
-  --lt-font-display: var(--font-display, var(--font-sans));
+  --lt-font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --lt-font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  --lt-font-display: var(--lt-font-sans);
 
-  --lt-warning-fg: var(--warning-foreground, oklch(0.205 0 0));
+  --lt-warning-fg: oklch(0.205 0 0);
 
   --lt-shadow-inner: inset 0 1px 2px 0 oklch(0 0 0 / 0.05);
 
-  --lt-chart-1: var(--chart-1, oklch(0.62 0.14 250));
-  --lt-chart-2: var(--chart-2, oklch(0.62 0.13 150));
-  --lt-chart-3: var(--chart-3, oklch(0.68 0.15 60));
-  --lt-chart-4: var(--chart-4, oklch(0.58 0.19 305));
-  --lt-chart-5: var(--chart-5, oklch(0.6 0.16 20));
-  --lt-chart-6: var(--chart-6, oklch(0.68 0.12 190));
-  --lt-chart-7: var(--chart-7, oklch(0.6 0.13 100));
-  --lt-chart-8: var(--chart-8, oklch(0.55 0.05 280));
+  --lt-chart-1: oklch(0.62 0.14 250);
+  --lt-chart-2: oklch(0.62 0.13 150);
+  --lt-chart-3: oklch(0.68 0.15 60);
+  --lt-chart-4: oklch(0.58 0.19 305);
+  --lt-chart-5: oklch(0.6 0.16 20);
+  --lt-chart-6: oklch(0.68 0.12 190);
+  --lt-chart-7: oklch(0.6 0.13 100);
+  --lt-chart-8: oklch(0.55 0.05 280);
 
   --lt-icon-xs: 0.75rem;
   --lt-icon-sm: 0.875rem;
@@ -117,6 +127,7 @@
   --lt-gutter: calc(var(--spacing) * 6);
 
   color-scheme: light;
+  }
 }
 
 /*
@@ -133,62 +144,66 @@
   }
 }
 
-[data-theme="dark"],
-.dark {
-  --lt-bg: var(--background, oklch(0.145 0 0));
-  --lt-fg: var(--foreground, oklch(0.985 0 0));
-  --lt-surface: var(--card, oklch(0.145 0 0));
-  --lt-surface-fg: var(--card-foreground, oklch(0.985 0 0));
-  --lt-popover: var(--popover, oklch(0.145 0 0));
-  --lt-popover-fg: var(--popover-foreground, oklch(0.985 0 0));
-  --lt-primary: var(--primary, oklch(0.74 0.105 182));
-  --lt-primary-fg: var(--primary-foreground, oklch(0.2 0.025 182));
-  --lt-secondary: var(--secondary, oklch(0.269 0 0));
-  --lt-secondary-fg: var(--secondary-foreground, oklch(0.985 0 0));
-  --lt-muted: var(--muted, oklch(0.269 0 0));
-  --lt-muted-fg: var(--muted-foreground, oklch(0.708 0 0));
-  --lt-accent: var(--accent, oklch(0.278 0.018 182));
-  --lt-accent-fg: var(--accent-foreground, oklch(0.985 0 0));
-  --lt-danger: var(--destructive, oklch(0.42 0.13 26));
-  --lt-danger-fg: var(--destructive-foreground, oklch(0.985 0 0));
-  --lt-border: var(--border, oklch(0.269 0 0));
-  --lt-input: var(--input, oklch(0.269 0 0));
-  --lt-ring: var(--ring, oklch(0.55 0.08 182));
-  --lt-overlay: var(--overlay, oklch(0 0 0 / 0.6));
-  --lt-warning: var(--warning, oklch(0.7 0.13 78));
-  --lt-success: var(--success, oklch(0.7 0.15 162));
-  --lt-success-fg: var(--success-foreground, oklch(0.205 0 0));
-  --lt-info: var(--info, oklch(0.7 0.14 240));
-  --lt-info-fg: var(--info-foreground, oklch(0.205 0 0));
+@layer lattice {
+  [data-theme="dark"],
+  .dark {
+  --lt-bg: oklch(0.145 0 0);
+  --lt-fg: oklch(0.985 0 0);
+  --lt-surface: oklch(0.145 0 0);
+  --lt-surface-fg: oklch(0.985 0 0);
+  --lt-popover: oklch(0.145 0 0);
+  --lt-popover-fg: oklch(0.985 0 0);
+  --lt-primary: oklch(0.74 0.105 182);
+  --lt-primary-fg: oklch(0.2 0.025 182);
+  --lt-secondary: oklch(0.269 0 0);
+  --lt-secondary-fg: oklch(0.985 0 0);
+  --lt-muted: oklch(0.269 0 0);
+  --lt-muted-fg: oklch(0.708 0 0);
+  --lt-accent: oklch(0.278 0.018 182);
+  --lt-accent-fg: oklch(0.985 0 0);
+  --lt-danger: oklch(0.42 0.13 26);
+  --lt-danger-fg: oklch(0.985 0 0);
+  --lt-border: oklch(0.269 0 0);
+  --lt-input: oklch(0.269 0 0);
+  --lt-ring: oklch(0.55 0.08 182);
+  --lt-overlay: oklch(0 0 0 / 0.6);
+  --lt-warning: oklch(0.7 0.13 78);
+  --lt-success: oklch(0.7 0.15 162);
+  --lt-success-fg: oklch(0.205 0 0);
+  --lt-info: oklch(0.7 0.14 240);
+  --lt-info-fg: oklch(0.205 0 0);
 
-  --lt-primary-hover: var(--primary-hover, oklch(0.79 0.105 182));
-  --lt-primary-active: var(--primary-active, oklch(0.84 0.105 182));
-  --lt-danger-hover: var(--destructive-hover, oklch(0.47 0.13 26));
-  --lt-danger-active: var(--destructive-active, oklch(0.52 0.13 26));
-  --lt-success-hover: var(--success-hover, oklch(0.75 0.15 162));
-  --lt-success-active: var(--success-active, oklch(0.8 0.15 162));
-  --lt-info-hover: var(--info-hover, oklch(0.75 0.14 240));
-  --lt-info-active: var(--info-active, oklch(0.8 0.14 240));
-  --lt-warning-hover: var(--warning-hover, oklch(0.75 0.13 78));
-  --lt-warning-active: var(--warning-active, oklch(0.8 0.13 78));
-  --lt-secondary-hover: var(--secondary-hover, oklch(0.32 0 0));
-  --lt-secondary-active: var(--secondary-active, oklch(0.36 0 0));
-  --lt-disabled: var(--disabled, oklch(0.32 0 0));
-  --lt-disabled-fg: var(--disabled-foreground, oklch(0.55 0 0));
+  --lt-primary-hover: oklch(0.79 0.105 182);
+  --lt-primary-active: oklch(0.84 0.105 182);
+  --lt-danger-hover: oklch(0.47 0.13 26);
+  --lt-danger-active: oklch(0.52 0.13 26);
+  --lt-success-hover: oklch(0.75 0.15 162);
+  --lt-success-active: oklch(0.8 0.15 162);
+  --lt-info-hover: oklch(0.75 0.14 240);
+  --lt-info-active: oklch(0.8 0.14 240);
+  --lt-warning-hover: oklch(0.75 0.13 78);
+  --lt-warning-active: oklch(0.8 0.13 78);
+  --lt-secondary-hover: oklch(0.32 0 0);
+  --lt-secondary-active: oklch(0.36 0 0);
+  --lt-disabled: oklch(0.32 0 0);
+  --lt-disabled-fg: oklch(0.55 0 0);
 
-  --lt-chart-1: var(--chart-1, oklch(0.72 0.13 250));
-  --lt-chart-2: var(--chart-2, oklch(0.72 0.12 150));
-  --lt-chart-3: var(--chart-3, oklch(0.76 0.14 60));
-  --lt-chart-4: var(--chart-4, oklch(0.7 0.16 305));
-  --lt-chart-5: var(--chart-5, oklch(0.7 0.16 20));
-  --lt-chart-6: var(--chart-6, oklch(0.76 0.11 190));
-  --lt-chart-7: var(--chart-7, oklch(0.72 0.12 100));
-  --lt-chart-8: var(--chart-8, oklch(0.68 0.05 280));
+  --lt-chart-1: oklch(0.72 0.13 250);
+  --lt-chart-2: oklch(0.72 0.12 150);
+  --lt-chart-3: oklch(0.76 0.14 60);
+  --lt-chart-4: oklch(0.7 0.16 305);
+  --lt-chart-5: oklch(0.7 0.16 20);
+  --lt-chart-6: oklch(0.76 0.11 190);
+  --lt-chart-7: oklch(0.72 0.12 100);
+  --lt-chart-8: oklch(0.68 0.05 280);
 
   color-scheme: dark;
+  }
 }
 
 @theme inline {
+  --font-sans: var(--lt-font-sans);
+  --font-mono: var(--lt-font-mono);
   --color-lt-bg: var(--lt-bg);
   --color-lt-fg: var(--lt-fg);
   --color-lt-surface: var(--lt-surface);
@@ -284,11 +299,6 @@
 }
 
 @theme {
-  --font-sans:
-    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
 
   --spacing: 0.25rem;
 
@@ -453,7 +463,8 @@
  * theme and can be overridden, and so a colour can be picked by name at
  * runtime without Tailwind needing to see every class.
  */
-:root {
+@layer lattice {
+  :root {
   --lt-color-default: var(--lt-fg);
   --lt-color-muted: var(--lt-muted-fg);
   --lt-color-primary: var(--lt-primary);
@@ -468,16 +479,17 @@
   --lt-color-green: oklch(0.52 0.13 152);
   --lt-color-blue: oklch(0.54 0.17 252);
   --lt-color-purple: oklch(0.53 0.19 305);
-}
+  }
 
-[data-theme="dark"],
-.dark {
+  [data-theme="dark"],
+  .dark {
   --lt-color-red: oklch(0.83 0.11 27);
   --lt-color-orange: oklch(0.84 0.1 65);
   --lt-color-yellow: oklch(0.87 0.11 100);
   --lt-color-green: oklch(0.85 0.13 155);
   --lt-color-blue: oklch(0.84 0.11 250);
   --lt-color-purple: oklch(0.85 0.11 305);
+  }
 }
 
 .lt-badge {

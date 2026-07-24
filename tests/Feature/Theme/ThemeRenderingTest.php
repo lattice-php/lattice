@@ -18,14 +18,14 @@ it('renders a registered theme as a managed style tag', function (): void {
 
     expect($style)
         ->toStartWith('<style id="lattice-theme">')
-        ->toContain('--primary:#6366f1')
+        ->toContain('--lt-primary:#6366f1')
         ->toEndWith('</style>');
 });
 
 it('resolves a closure registration to a theme', function (): void {
     Lattice::theme(fn (): Theme => Theme::make()->colors(primary: '#22c55e'));
 
-    expect(app(ThemeRenderer::class)->style())->toContain('--primary:#22c55e');
+    expect(app(ThemeRenderer::class)->style())->toContain('--lt-primary:#22c55e');
 });
 
 it('renders nothing when a closure registration resolves to no theme', function (): void {
@@ -37,5 +37,5 @@ it('renders nothing when a closure registration resolves to no theme', function 
 it('renders the directive', function (): void {
     Lattice::theme(Theme::make()->radius('0.75rem'));
 
-    expect(Blade::render('@latticeTheme'))->toContain('--radius:0.75rem');
+    expect(Blade::render('@latticeTheme'))->toContain('--lt-radius:0.75rem');
 });
