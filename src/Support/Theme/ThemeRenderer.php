@@ -5,32 +5,27 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Support\Theme;
 
 use Closure;
-use Lattice\Lattice\Support\Frontend\StandaloneAssets;
+use InvalidArgumentException;
 
 final class ThemeRenderer
 {
-    private const array STRUCTURED_KEYS = [
-        'colors',
-        'radius',
-        'dark',
-        'ringWidth',
-        'borderWidth',
-        'fontSans',
-        'fontMono',
-        'fontDisplay',
-        'ringOffset',
-    ];
+    /** @var Theme|array<string, mixed>|Closure|null */
+    private Theme|array|Closure|null $theme = null;
 
-    private Theme|Closure|null $theme = null;
-
-    public function register(Theme|Closure $theme): void
+    /** @param Theme|array<string, mixed>|Closure $theme */
+    public function register(Theme|array|Closure $theme): void
     {
         $this->theme = $theme;
     }
 
-    public function style(): string
+    /**
+     * Render the active theme: a registered theme wins, then the given config
+     * value, then `lattice.frontend.theme`. Returns '' when none is set.
+     */
+    public function style(mixed $configTheme = null): string
     {
-        $theme = $this->resolve();
+        $theme = $this->themeFrom($this->registered())
+            ?? $this->themeFrom($configTheme ?? config('lattice.frontend.theme'));
 
         return $theme instanceof Theme ? self::wrap($theme) : '';
     }
@@ -39,35 +34,27 @@ final class ThemeRenderer
     {
         $css = $theme->toCss();
 
-        StandaloneAssets::guardAgainstUnsafeCharacters('theme', $css, '/[<>]/');
+        if (preg_match('/[<>]/', $css) === 1) {
+            throw new InvalidArgumentException('The theme CSS contains invalid characters.');
+        }
 
         return '<style id="lattice-theme">'.$css.'</style>';
     }
 
-    /**
-     * @param  array<array-key, mixed>  $config
-     */
-    public static function isStructured(array $config): bool
+    private function registered(): mixed
     {
-        return array_any(self::STRUCTURED_KEYS, fn (string $key): bool => array_key_exists($key, $config));
+        return $this->theme instanceof Closure ? ($this->theme)() : $this->theme;
     }
 
-    private function resolve(): ?Theme
+    private function themeFrom(mixed $theme): ?Theme
     {
-        $theme = $this->theme;
-
-        if ($theme instanceof Closure) {
-            $theme = $theme();
-        }
-
         if ($theme instanceof Theme) {
             return $theme;
         }
 
-        $config = config('lattice.frontend.theme', []);
-
-        if (is_array($config) && self::isStructured($config)) {
-            return Theme::fromArray($config);
+        if (is_array($theme) && $theme !== []) {
+            /** @var array<string, mixed> $theme */
+            return Theme::fromArray($theme);
         }
 
         return null;

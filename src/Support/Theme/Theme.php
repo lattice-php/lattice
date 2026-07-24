@@ -36,8 +36,7 @@ final class Theme
     /** @var array<string, string> */
     private const array SCALAR_TOKENS = [
         'radius' => '--radius', 'ringWidth' => '--ring-width', 'ringOffset' => '--ring-offset',
-        'borderWidth' => '--border-width', 'fontSans' => '--font-sans',
-        'fontMono' => '--font-mono', 'fontDisplay' => '--font-display',
+        'fontSans' => '--font-sans', 'fontMono' => '--font-mono', 'fontDisplay' => '--font-display',
     ];
 
     public static function make(): self
@@ -75,25 +74,13 @@ final class Theme
         Color|string|null $disabled = null,
         Color|string|null $disabledForeground = null,
     ): self {
+        /** @var array<string, Color|string|null> $arguments */
+        $arguments = get_defined_vars();
+
         $clone = clone $this;
-        $values = [
-            '--background' => $background, '--foreground' => $foreground,
-            '--card' => $card, '--card-foreground' => $cardForeground,
-            '--popover' => $popover, '--popover-foreground' => $popoverForeground,
-            '--primary' => $primary, '--primary-foreground' => $primaryForeground,
-            '--secondary' => $secondary, '--secondary-foreground' => $secondaryForeground,
-            '--muted' => $muted, '--muted-foreground' => $mutedForeground,
-            '--accent' => $accent, '--accent-foreground' => $accentForeground,
-            '--destructive' => $danger, '--destructive-foreground' => $dangerForeground,
-            '--success' => $success, '--success-foreground' => $successForeground,
-            '--info' => $info, '--info-foreground' => $infoForeground,
-            '--warning' => $warning, '--warning-foreground' => $warningForeground,
-            '--border' => $border, '--input' => $input, '--ring' => $ring, '--overlay' => $overlay,
-            '--disabled' => $disabled, '--disabled-foreground' => $disabledForeground,
-        ];
-        foreach ($values as $token => $value) {
+        foreach ($arguments as $name => $value) {
             if ($value !== null) {
-                $clone->vars[$token] = $this->guard($this->stringValue($value));
+                $clone->vars[self::COLOR_TOKENS[$name]] = $this->guard($this->stringValue($value));
             }
         }
 
@@ -115,11 +102,6 @@ final class Theme
         return $this->set('--ring-offset', $value);
     }
 
-    public function borderWidth(string $value): self
-    {
-        return $this->set('--border-width', $value);
-    }
-
     public function fontSans(string $value): self
     {
         return $this->set('--font-sans', $value);
@@ -138,7 +120,7 @@ final class Theme
     public function set(string $token, string $value): self
     {
         $clone = clone $this;
-        $clone->vars[$this->normalize($token)] = $this->guard($value);
+        $clone->vars[$this->guard($this->normalize($token))] = $this->guard($value);
 
         return $clone;
     }
@@ -152,7 +134,13 @@ final class Theme
         return $clone;
     }
 
-    /** @param array<string, mixed> $theme */
+    /**
+     * Accepts the structured shape (`colors`, scalar names, `dark`) as well as a flat
+     * `token => value` map; unknown keys pass through as custom properties so both
+     * styles — and mixes of the two — render.
+     *
+     * @param  array<string, mixed>  $theme
+     */
     public static function fromArray(array $theme): self
     {
         $instance = self::make();
@@ -166,18 +154,16 @@ final class Theme
             }
         }
 
-        foreach (self::SCALAR_TOKENS as $name => $token) {
-            $value = $theme[$name] ?? null;
-            if (is_string($value)) {
-                $instance = $instance->set($token, $value);
+        foreach ($theme as $name => $value) {
+            if ($name !== 'colors' && is_string($value)) {
+                $instance = $instance->set(self::SCALAR_TOKENS[$name] ?? $name, $value);
             }
         }
 
         $dark = $theme['dark'] ?? null;
         if (is_array($dark)) {
-            $built = self::fromArray($dark);
-            $instance = clone $instance;
-            $instance->darkVars = [...$instance->darkVars, ...$built->vars];
+            /** @var array<string, mixed> $dark */
+            $instance = $instance->dark(fn (): Theme => self::fromArray($dark));
         }
 
         return $instance;

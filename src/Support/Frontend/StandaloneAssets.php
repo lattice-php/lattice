@@ -5,8 +5,6 @@ namespace Lattice\Lattice\Support\Frontend;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
-use InvalidArgumentException;
-use Lattice\Lattice\Support\Theme\Theme;
 use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use RuntimeException;
 
@@ -15,7 +13,10 @@ final class StandaloneAssets
     /** @var array{version: string, files: array<string, string>}|null */
     private ?array $manifest = null;
 
-    public function __construct(private readonly ?string $installedVersion = null) {}
+    public function __construct(
+        private readonly ThemeRenderer $themeRenderer,
+        private readonly ?string $installedVersion = null,
+    ) {}
 
     /** @param array<string, mixed> $config */
     public function head(array $config = []): string
@@ -24,10 +25,10 @@ final class StandaloneAssets
 
         $tags = [sprintf('<link rel="stylesheet" href="%s">', $this->versionedUrl('lattice.css'))];
 
-        $theme = $frontend['theme'] ?? [];
+        $theme = $this->themeRenderer->style($frontend['theme'] ?? null);
 
-        if (is_array($theme) && $theme !== []) {
-            $tags[] = $this->renderTheme($theme);
+        if ($theme !== '') {
+            $tags[] = $theme;
         }
 
         $tags[] = $this->configScript($frontend);
@@ -52,41 +53,6 @@ final class StandaloneAssets
             '<script type="application/json" data-lattice-config>%s</script>',
             json_encode($config, JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES),
         );
-    }
-
-    /**
-     * @param  array<string, mixed>  $theme
-     */
-    private function renderTheme(array $theme): string
-    {
-        if (ThemeRenderer::isStructured($theme)) {
-            return ThemeRenderer::wrap(Theme::fromArray($theme));
-        }
-
-        /** @var array<string, string> $theme */
-        return $this->themeStyle($theme);
-    }
-
-    /** @param array<string, string> $theme */
-    private function themeStyle(array $theme): string
-    {
-        $declarations = '';
-
-        foreach ($theme as $key => $value) {
-            self::guardAgainstUnsafeCharacters($key, $key.$value);
-
-            $property = str_starts_with($key, '--') ? $key : '--'.$key;
-            $declarations .= "{$property}:{$value};";
-        }
-
-        return "<style>:root{{$declarations}}</style>";
-    }
-
-    public static function guardAgainstUnsafeCharacters(string $key, string $subject, string $pattern = '/[<>{}]/'): void
-    {
-        if (preg_match($pattern, $subject) === 1) {
-            throw new InvalidArgumentException("Invalid characters in the [{$key}] theme value.");
-        }
     }
 
     private function versionedUrl(string $file): string

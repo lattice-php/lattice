@@ -117,7 +117,8 @@ final readonly class LatticeRegistry
         $this->slots->extend($name, $factory, $priority);
     }
 
-    public function theme(Theme|Closure $theme): void
+    /** @param Theme|array<string, mixed>|Closure $theme */
+    public function theme(Theme|array|Closure $theme): void
     {
         $this->themeRenderer->register($theme);
     }
