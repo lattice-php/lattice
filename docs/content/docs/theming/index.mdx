@@ -39,9 +39,10 @@ Lattice::theme(
 `secondaryForeground`, `muted`, `mutedForeground`, `accent`, `accentForeground`, `danger`,
 `dangerForeground`, `success`, `successForeground`, `info`, `infoForeground`, `warning`,
 `warningForeground`, `border`, `input`, `ring`, `overlay`. Scalars have their own methods —
-`radius()`, `ringWidth()`, `ringOffset()`, `borderWidth()`, `fontSans()`, `fontMono()`,
-`fontDisplay()` — or fall back to `set('--token', $value)` for anything else. `dark()` takes a
-closure that builds the dark-mode overrides from a fresh `Theme`.
+`radius()`, `ringWidth()`, `ringOffset()`, `fontSans()`, `fontMono()`, `fontDisplay()` — or fall
+back to `set('--token', $value)` for anything else, e.g. `set('--chart-1', '#0ea5e9')` for the
+categorical chart palette. `dark()` takes a closure that builds the dark-mode overrides from a
+fresh `Theme`.
 
 <Info>
   The theme emits the CSS variables you set verbatim — there is no auto-derivation of foregrounds
