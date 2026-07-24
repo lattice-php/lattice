@@ -73,7 +73,7 @@ const palette = [
   "var(--lt-chart-8)",
 ];
 
-export function colorAt(index: number): string {
+function colorAt(index: number): string {
   return palette[index % palette.length] ?? "var(--lt-chart-1)";
 }
 
