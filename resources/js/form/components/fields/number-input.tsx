@@ -16,7 +16,7 @@ export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ 
           <div className="flex items-center gap-3">
             <input
               aria-label={props.label ?? ""}
-              className="h-2 w-full cursor-pointer appearance-none rounded-lt-sm bg-lt-muted accent-lt-primary disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-2 w-full cursor-pointer appearance-none rounded-lt-sm bg-lt-muted accent-lt-primary disabled:cursor-not-allowed disabled:accent-lt-disabled"
               data-test={testId}
               disabled={disabled || readOnly}
               id={name}
