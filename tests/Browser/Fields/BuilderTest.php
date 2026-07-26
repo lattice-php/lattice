@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+// The form redirects back to the same URL on success, which leaves no
+// client-observable state change (form values live in the client store and
+// survive same-page visits). The server-side round-trip is asserted in
+// NestedFieldFormSubmitTest; these tests cover the client interactions.
 it('adds heterogeneous blocks and submits a typed payload', function (): void {
     $this->visitAsWorkbenchUser('/form/fields/builder')
         ->assertSee('Builder')
@@ -14,7 +18,6 @@ it('adds heterogeneous blocks and submits a typed payload', function (): void {
         ->fill('input[name="items[1][qty]"]', '3')
         ->fill('input[name="items[1][price]"]', '9.50')
         ->click('@form-submit')
-        ->assertSee('Builder')
         ->assertNoSmoke();
 });
 
@@ -44,7 +47,6 @@ it('renders the table layout with a shared header and round-trips a typed payloa
         ->assertNoJavaScriptErrors();
 
     $page->click('@form-submit')
-        ->assertSee('Builder')
         ->assertNoSmoke();
 });
 

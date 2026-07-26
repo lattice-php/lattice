@@ -58,7 +58,11 @@ it('opens the sidebar as an off-canvas drawer on mobile', function (): void {
 
     $page
         ->click('@menu-components')
-        ->click('@menu-tabs')
-        ->assertMissing('[data-test="sidebar-backdrop"]')
-        ->assertNoSmoke();
+        ->click('@menu-tabs');
+
+    retryUntil(function () use ($page): void {
+        $page->assertMissing('[data-test="sidebar-backdrop"]');
+    });
+
+    $page->assertNoSmoke();
 });

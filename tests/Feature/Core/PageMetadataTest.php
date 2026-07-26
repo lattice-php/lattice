@@ -32,7 +32,7 @@ test('metadata inherits layout and container from a base AsPage attribute', func
         ->and($meta->name)->toBe('products.index')
         ->and($meta->layout)->toBe(PageLayout::App)
         ->and($meta->container)->toBe(PageContainer::Default)
-        ->and($meta->middleware)->toBe([]);
+        ->and($meta->middleware)->toBeNull();
 });
 
 test('metadata derives the route name when none is given', function (): void {
@@ -56,7 +56,7 @@ test('a page without any attribute resolves to defaults', function (): void {
     expect($meta->route)->toBeNull()
         ->and($meta->layout)->toBe(PageLayout::None)
         ->and($meta->container)->toBe(PageContainer::Centered)
-        ->and($meta->middleware)->toBe([]);
+        ->and($meta->middleware)->toBeNull();
 });
 
 test('page metadata round-trips through an array descriptor', function (): void {

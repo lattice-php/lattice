@@ -211,7 +211,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
             Route::get($page->route, [$page->class, 'render'])
                 ->name($page->name)
-                ->middleware($page->middleware);
+                ->middleware($page->middleware ?? config('lattice.pages.middleware', ['web']));
         }
 
         Route::getRoutes()->refreshNameLookups();

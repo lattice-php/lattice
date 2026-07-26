@@ -11,6 +11,10 @@ it('renders the repeater with one default row', function (): void {
         ->assertNoSmoke();
 });
 
+// The form redirects back to the same URL on success, which leaves no
+// client-observable state change (form values live in the client store and
+// survive same-page visits). The server-side round-trip is asserted in
+// NestedFieldFormSubmitTest; these tests cover the client interactions.
 it('round-trips a repeater payload through submit', function (): void {
     $this->visitAsWorkbenchUser('/form/fields/repeater')
         ->assertSee('Line items')
@@ -21,12 +25,11 @@ it('round-trips a repeater payload through submit', function (): void {
         ->fill('input[name="items[1][name]"]', 'Gadget')
         ->fill('input[name="items[1][qty]"]', '5')
         ->click('@form-submit')
-        ->assertSee('Line items')
         ->assertNoSmoke();
 });
 
 it('reorders rows and submits successfully', function (): void {
-    $this->visitAsWorkbenchUser('/form/fields/repeater')
+    $page = $this->visitAsWorkbenchUser('/form/fields/repeater')
         ->assertSee('Line items')
         ->fill('input[name="items[0][name]"]', 'First')
         ->fill('input[name="items[0][qty]"]', '1')
@@ -34,9 +37,13 @@ it('reorders rows and submits successfully', function (): void {
         ->assertPresent('[data-test="repeater-items-row-1"]')
         ->fill('input[name="items[1][name]"]', 'Second')
         ->fill('input[name="items[1][qty]"]', '2')
-        ->click('@repeater-items-down-0')
-        ->click('@form-submit')
-        ->assertSee('Line items')
+        ->click('@repeater-items-down-0');
+
+    retryUntil(function () use ($page): void {
+        $page->assertValue('input[name="items[0][name]"]', 'Second');
+    });
+
+    $page->click('@form-submit')
         ->assertNoSmoke();
 });
 

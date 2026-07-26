@@ -25,4 +25,13 @@ interface SignsComponentReferences
      * @return array<string, mixed>|null
      */
     public function unseal(string $token, string $type, string $key): ?array;
+
+    /**
+     * Re-seal a token whose lifetime has (or is about to have) run out. The
+     * token's integrity and identity binding are fully verified — only expiry
+     * is ignored, so a long-lived tab can renew its refs without a reload while
+     * a forged token or a rotated session still fails. Returns the fresh token,
+     * or null when the token is missing, forged, or bound to another identity.
+     */
+    public function refresh(string $token): ?string;
 }

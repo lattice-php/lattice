@@ -69,9 +69,10 @@ function FormBody({
   summaryLabel: string;
 }) {
   const { nodes: resolvedNodes, markUserEdit } = useFormResolver(action, componentRef, nodes);
+  const prefill = useMemo(() => ({ markUserEdit }), [markUserEdit]);
 
   return (
-    <PrefillProvider value={{ markUserEdit }}>
+    <PrefillProvider value={prefill}>
       <ResolvedNodesProvider nodes={resolvedNodes}>
         <div className="flex flex-col gap-6">
           {children}

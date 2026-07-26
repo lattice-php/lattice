@@ -15,6 +15,10 @@ return [
         'ref_lifetime' => 30,
     ],
 
+    'refs' => [
+        'middleware' => ['web'],
+    ],
+
     'files' => [
         'disk' => env('LATTICE_FILES_DISK', 'public'),
         'temp_prefix' => 'tmp',
@@ -34,6 +38,13 @@ return [
         'dist_path' => null,
         'path' => 'vendor/lattice',
         'echo' => null,
+    ],
+
+    // Pages ship unauthenticated by default; authorization is opt-in via
+    // attribute middleware or Page::authorize(). `#[AsPage(middleware: [])]`
+    // opts a page out of this default entirely.
+    'pages' => [
+        'middleware' => ['web'],
     ],
 
     'forms' => [

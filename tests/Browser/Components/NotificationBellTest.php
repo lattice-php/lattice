@@ -9,15 +9,19 @@ it('shows the bell, opens the panel, and marks notifications read', function ():
 
     $this->actingAs($user);
 
-    visit('/')
+    $page = visit('/')
         ->assertPresent('@notifications-trigger')
         ->assertPresent('[data-test="notifications-badge"]')
         ->assertSeeIn('[data-test="notifications-badge"]', '1')
         ->click('@notifications-trigger')
         ->assertSee('Order #1234 shipped')
-        ->click('Mark all read')
-        ->assertNotPresent('[data-test="notifications-badge"]')
-        ->assertNoSmoke();
+        ->click('Mark all read');
+
+    retryUntil(function () use ($page): void {
+        $page->assertNotPresent('[data-test="notifications-badge"]');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('renders the slide-out variant when configured', function (): void {

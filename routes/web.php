@@ -7,6 +7,7 @@ use Lattice\Lattice\Http\Controllers\BulkActionController;
 use Lattice\Lattice\Http\Controllers\FormController;
 use Lattice\Lattice\Http\Controllers\FragmentController;
 use Lattice\Lattice\Http\Controllers\NotificationController;
+use Lattice\Lattice\Http\Controllers\RefRefreshController;
 use Lattice\Lattice\Http\Controllers\RemoteSourceTokenController;
 use Lattice\Lattice\Http\Controllers\TableController;
 
@@ -24,6 +25,13 @@ Route::middleware(config('lattice.fragments.middleware', ['web', 'auth']))
     ->get(config('lattice.fragments.endpoint', 'lattice/fragments/{fragment}'), FragmentController::class)
     ->where('fragment', '.*')
     ->name('lattice.fragments.show');
+
+// The path is fixed (not config-templated) because the client hardcodes it as
+// its recovery route for expired refs; auth comes from the identity binding
+// inside the signer, so the route itself stays on the page-level default.
+Route::middleware(config('lattice.refs.middleware', ['web']))
+    ->post('lattice/refs/refresh', RefRefreshController::class)
+    ->name('lattice.refs.refresh');
 
 Route::middleware(config('lattice.remote-sources.middleware', ['web', 'auth']))
     ->post(config('lattice.remote-sources.endpoint', 'lattice/remote-sources/{source}/token'), RemoteSourceTokenController::class)

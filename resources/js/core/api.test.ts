@@ -8,6 +8,7 @@ import {
   remoteJson,
   type RemoteAccess,
 } from "./api";
+import { clearRefreshedRefs } from "./component-ref";
 
 function okResponse(body: unknown = {}): Response {
   return { ok: true, status: 200, json: async () => body } as unknown as Response;
@@ -15,6 +16,7 @@ function okResponse(body: unknown = {}): Response {
 
 afterEach(() => {
   clearRemoteTokenCache();
+  clearRefreshedRefs();
   document.cookie = "XSRF-TOKEN=;path=/;max-age=0";
 });
 
@@ -138,6 +140,69 @@ describe("apiFetch", () => {
     );
 
     await expect(apiFetch("/x", { throwOnError: false })).resolves.toBe(response);
+  });
+});
+
+describe("ref refresh", () => {
+  const forbidden = () => ({ ok: false, status: 403 }) as unknown as Response;
+
+  it("refreshes an expired ref on 403 and retries with the renewed token", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(forbidden())
+      .mockResolvedValueOnce(okResponse({ ref: "renewed-ref" }))
+      .mockResolvedValueOnce(okResponse());
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await apiFetch("/x", { ref: "sealed-ref" });
+
+    expect(response.ok).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock.mock.calls[1]?.[0]).toBe("/lattice/refs/refresh");
+    expect(fetchMock.mock.calls[1]?.[1]?.body).toBe(JSON.stringify({ ref: "sealed-ref" }));
+    expect(fetchMock.mock.calls[2]?.[1]?.headers).toMatchObject({
+      "X-Lattice-Ref": "renewed-ref",
+    });
+  });
+
+  it("sends the renewed token for subsequent requests without another refresh", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(forbidden())
+      .mockResolvedValueOnce(okResponse({ ref: "renewed-ref" }))
+      .mockResolvedValue(okResponse());
+    vi.stubGlobal("fetch", fetchMock);
+
+    await apiFetch("/x", { ref: "sealed-ref" });
+    await apiFetch("/x", { ref: "sealed-ref" });
+
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+    expect(fetchMock.mock.calls[3]?.[1]?.headers).toMatchObject({
+      "X-Lattice-Ref": "renewed-ref",
+    });
+  });
+
+  it("throws the original 403 when the refresh is rejected", async () => {
+    const original = forbidden();
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(original)
+      .mockResolvedValueOnce(forbidden());
+    vi.stubGlobal("fetch", fetchMock);
+
+    const error = await apiFetch("/x", { ref: "sealed-ref" }).catch((reason: unknown) => reason);
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).response).toBe(original);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not attempt a refresh for a 403 without a ref", async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(forbidden());
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(apiFetch("/x")).rejects.toBeInstanceOf(ApiError);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
 

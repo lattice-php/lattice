@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 it('opens the composed user dropdown and reveals its items', function (): void {
     $this->visitAsWorkbenchUser('/')
-        ->assertSee('Workbench User')
+        ->assertSeeIn('[data-test="user-menu"]', 'Workbench User')
         ->assertDontSee('Log out')
         ->click('@user-menu')
         ->assertSee('Log out')
@@ -25,11 +25,13 @@ it('keeps the user dropdown usable when the sidebar is collapsed', function (): 
 });
 
 it('logs the user out through the user dropdown action', function (): void {
-    $this->visitAsWorkbenchUser('/')
+    $page = $this->visitAsWorkbenchUser('/')
         ->click('@user-menu')
-        ->click('Log out')
-        ->assertSee('Use the seeded account to enter the workbench.')
-        ->assertNoSmoke();
+        ->click('Log out');
+
+    assertSeeEventually($page, 'Use the seeded account to enter the workbench.');
+
+    $page->assertNoSmoke();
 });
 
 it('renders the workbench locale switcher as a topbar dropdown', function (): void {

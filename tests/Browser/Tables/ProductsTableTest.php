@@ -9,8 +9,7 @@ it('renders the custom status-badge column cell', function (): void {
 
     visit('/products')
         ->assertSee('Badge Product')
-        ->assertPresent('[data-testid="status-badge"]')
-        ->assertSee('Active')
+        ->assertSeeIn('[data-testid="status-badge"]', 'Active')
         ->assertNoSmoke();
 });
 
@@ -18,14 +17,18 @@ it('archives a product via the row action with confirmation', function (): void 
     $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
-    visit('/products')
+    $page = visit('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
         ->click('@action-archive')
         ->assertSee('Archive product?')
-        ->click('@confirm-accept')
-        ->assertSee('Archived')
-        ->assertNoSmoke();
+        ->click('@confirm-accept');
+
+    retryUntil(function () use ($page): void {
+        $page->assertSeeIn('[data-testid="status-badge"]', 'Archived');
+    });
+
+    $page->assertNoSmoke();
 
     expect($product->fresh()->status)->toBe('archived');
 });
@@ -48,29 +51,41 @@ it('rejects a product through a modal form', function (): void {
     $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 
-    visit('/products')
+    $page = visit('/products')
         ->click('@product-actions')
         ->click('@action-reject')
         ->assertSee('Reject product?')
-        ->click('@action-form-submit')
-        ->assertSee('The Reason field is required.')
-        ->fill('@reason', 'Counterfeit listing')
-        ->click('@action-form-submit')
-        ->assertNoSmoke();
+        ->click('@action-form-submit');
 
-    expect($product->fresh()->status)->toBe('archived');
+    assertSeeEventually($page, 'The Reason field is required.');
+
+    $page->fill('@reason', 'Counterfeit listing')
+        ->click('@action-form-submit');
+
+    retryUntil(function () use ($page): void {
+        $page->assertDontSee('Reject product?');
+    });
+
+    retryUntil(function () use ($product): void {
+        expect($product->fresh()->status)->toBe('archived');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('archives selected products in bulk', function (): void {
     $this->actingAs(workbenchTestUser());
     Product::factory()->count(3)->create(['status' => 'active']);
 
-    visit('/products')
+    $page = visit('/products')
         ->click('@select-all')
-        ->click('@bulk-action-archive-selected')
-        ->assertNoSmoke();
+        ->click('@bulk-action-archive-selected');
 
-    expect(Product::query()->where('status', 'archived')->count())->toBe(3);
+    retryUntil(function (): void {
+        expect(Product::query()->where('status', 'archived')->count())->toBe(3);
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('edits a product in a prefilled modal form', function (): void {
@@ -81,17 +96,20 @@ it('edits a product in a prefilled modal form', function (): void {
         'status' => 'active',
     ]);
 
-    visit('/products')
+    $page = visit('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
         ->click('@action-edit-modal')
         ->assertSee('Edit product')
         ->assertValue('#name', 'Desk Lamp')
         ->fill('#name', 'Renamed Lamp')
-        ->click('@action-form-submit')
-        ->assertNoSmoke();
+        ->click('@action-form-submit');
 
-    expect(Product::query()->where('sku', 'LAMP-001')->value('name'))->toBe('Renamed Lamp');
+    retryUntil(function (): void {
+        expect(Product::query()->where('sku', 'LAMP-001')->value('name'))->toBe('Renamed Lamp');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('searches products inside the reject modal form', function (): void {

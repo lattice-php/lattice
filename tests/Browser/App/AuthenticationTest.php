@@ -14,19 +14,27 @@ beforeEach(function (): void {
 });
 
 it('signs a workbench user in through the rendered login form', function (): void {
-    visit('/login')
+    $page = visit('/login')
         ->assertSee('Lattice Workbench')
-        ->click('@form-submit')
-        ->assertPathIs('/')
-        ->assertSee('Workbench page')
+        ->click('@form-submit');
+
+    retryUntil(function () use ($page): void {
+        $page->assertPathIs('/');
+    });
+
+    $page->assertSee('Workbench page')
         ->assertNoSmoke();
 });
 
 it('keeps invalid credentials on the login form', function (): void {
-    visit('/login')
+    $page = visit('/login')
         ->fill('@password', 'wrong-password')
-        ->click('@form-submit')
-        ->assertPathIs('/login')
-        ->assertSee('These credentials do not match the seeded workbench user.')
+        ->click('@form-submit');
+
+    retryUntil(function () use ($page): void {
+        $page->assertSee('These credentials do not match the seeded workbench user.');
+    });
+
+    $page->assertPathIs('/login')
         ->assertNoSmoke();
 });

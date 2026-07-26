@@ -13,6 +13,9 @@ concurrency:
 
 jobs:
   build:
+    # The asset commit below is pushed with a PAT and would re-trigger this
+    # workflow; skip runs caused by our own commit to break the loop.
+    if: github.event.head_commit.message != 'chore: build standalone assets'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

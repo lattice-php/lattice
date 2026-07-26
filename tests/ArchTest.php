@@ -164,10 +164,6 @@ arch('the support utilities do not depend on the feature domains')
     ]);
 
 /*
- * Structural conventions.
- */
-
-/*
  * Cross-boundary contracts live in a `Contracts` namespace and are interfaces.
  * Local capability interfaces that are not cross-boundary contracts, such as
  * Support\TypeScript\TypeScriptProfile, can sit beside their implementations.

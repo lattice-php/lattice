@@ -34,6 +34,24 @@ final class RegEmbeddedPage extends RegBasePage
     }
 }
 
+#[AsPage(route: '/gadgets', name: 'gadgets.index')]
+final class RegGadgetsPage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Gadgets'));
+    }
+}
+
+#[AsPage(route: '/bare', name: 'bare.index', middleware: [])]
+final class RegBarePage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Bare'));
+    }
+}
+
 test('Lattice::pageRegistry()->all() resolves route metadata for registered pages', function (): void {
     Lattice::pages([RegWidgetsPage::class]);
 
@@ -65,6 +83,31 @@ test('the service provider builds a named GET route for each page', function ():
         ->and($route->uri())->toBe('widgets')
         ->and($route->getActionName())->toBe(RegWidgetsPage::class.'@render')
         ->and($route->gatherMiddleware())->toContain('web');
+});
+
+test('a page without attribute middleware registers with the configured default', function (): void {
+    Lattice::pages([RegGadgetsPage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    expect(Route::getRoutes()->getByName('gadgets.index')->gatherMiddleware())->toBe(['web']);
+});
+
+test('the page middleware default is configurable', function (): void {
+    config(['lattice.pages.middleware' => ['web', 'auth']]);
+    Lattice::pages([RegGadgetsPage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    expect(Route::getRoutes()->getByName('gadgets.index')->gatherMiddleware())->toBe(['web', 'auth']);
+});
+
+test('an explicit empty middleware attribute opts the page out of the default', function (): void {
+    Lattice::pages([RegBarePage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    expect(Route::getRoutes()->getByName('bare.index')->gatherMiddleware())->toBe([]);
 });
 
 test('an imperatively registered route-less page registers no route, while a routed sibling still gets its route', function (): void {
