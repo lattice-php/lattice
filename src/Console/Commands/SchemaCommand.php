@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lattice\Lattice\Support\WireSchema\WireSchemaBuilder;
-use Lattice\Lattice\Support\WireSchema\WireSchemaProfile;
-use Lattice\Lattice\Support\WireSchema\WireSchemaWriter;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaBuilder;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaProfile;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaWriter;
 
 final class SchemaCommand extends Command
 {
@@ -14,9 +14,9 @@ final class SchemaCommand extends Command
 
     protected $description = 'Export the Lattice wire-protocol JSON Schema for the current project';
 
-    public function handle(WireSchemaProfile $profile): int
+    public function handle(JsonSchemaProfile $profile): int
     {
-        $this->components->info($profile->run(new WireSchemaBuilder, new WireSchemaWriter));
+        $this->components->info($profile->run(new JsonSchemaBuilder, new JsonSchemaWriter));
 
         return self::SUCCESS;
     }

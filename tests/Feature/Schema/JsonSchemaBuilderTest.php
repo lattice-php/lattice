@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
-use Lattice\Lattice\Support\WireSchema\WireSchemaBuilder;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaBuilder;
 use Lattice\Lattice\Ui\Enums\ButtonType;
 
 /**
@@ -12,7 +12,7 @@ function builtDocument(): array
 {
     static $document = null;
 
-    return $document ??= new WireSchemaBuilder()->build([dirname(__DIR__, 3).'/src']);
+    return $document ??= new JsonSchemaBuilder()->build([dirname(__DIR__, 3).'/src']);
 }
 
 it('declares the 2020-12 dialect, the stable $id, and the protocol version', function (): void {

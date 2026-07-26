@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\WireSchema;
+namespace Lattice\Lattice\Support\JsonSchema;
 
 use Lattice\Lattice\Attributes\AsComponent;
 use LogicException;
@@ -23,7 +23,7 @@ use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 /**
  * Maps one wire prop to its JSON Schema fragment: the property's type-info
  * model (native reflection merged with `@var` docblocks) walked into standard
- * keywords, with class references resolved through the WireSchemaContext name
+ * keywords, with class references resolved through the JsonSchemaContext name
  * tables. The empty array is the empty schema (PHP `mixed`); the writer
  * encodes it as `{}`.
  */
@@ -37,7 +37,7 @@ final readonly class PropertySchemaMapper
 
     private TypeResolver $resolver;
 
-    public function __construct(private WireSchemaContext $context)
+    public function __construct(private JsonSchemaContext $context)
     {
         $this->resolver = TypeResolver::create();
     }

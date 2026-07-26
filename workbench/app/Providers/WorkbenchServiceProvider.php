@@ -14,15 +14,15 @@ use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Support\WireSchema\WireSchemaProfile;
 use Workbench\App\Http\Middleware\ShareReverbConnection;
 use Workbench\App\Models\User;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
+use Workbench\App\Support\JsonSchema\BaseSchemaProfile;
 use Workbench\App\Support\TypeScript\BaseProfile;
-use Workbench\App\Support\WireSchema\BaseSchemaProfile;
 
 use function Orchestra\Testbench\package_path;
 
@@ -43,7 +43,7 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         // Rebind so lattice:typescript / lattice:schema regenerate the package's own built-ins.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
-        $this->app->bind(WireSchemaProfile::class, BaseSchemaProfile::class);
+        $this->app->bind(JsonSchemaProfile::class, BaseSchemaProfile::class);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
         $this->serveLatticeTranslations();

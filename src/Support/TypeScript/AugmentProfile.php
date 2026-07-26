@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Support\WireSchema\WireSchemaBuilder;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaBuilder;
 
 /**
  * Default profile: builds the app's effective schema document in memory and
@@ -16,7 +16,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
 {
     public function run(): string
     {
-        $document = new WireSchemaBuilder()->build(
+        $document = new JsonSchemaBuilder()->build(
             [dirname(__DIR__, 2)],
             DiscoveryManifest::configuredPaths(),
         );

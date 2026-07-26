@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\WireSchema;
+namespace Lattice\Lattice\Support\JsonSchema;
 
 /**
  * The name tables a schema fragment resolves against: class-string → `$defs`
  * key for enums/value objects/props, per-family concrete wire classes for
  * node references, and the abstract markers with their loose envelope defs.
  */
-final readonly class WireSchemaContext
+final readonly class JsonSchemaContext
 {
     /**
      * @param  array<class-string, string>  $defNames

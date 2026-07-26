@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\WireSchema;
+namespace Lattice\Lattice\Support\JsonSchema;
 
 use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
@@ -11,9 +11,9 @@ use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
  * package built-ins merged with every discovered app wire type, the latter
  * marked `origin: "app"`.
  */
-final readonly class ExportSchemaProfile implements WireSchemaProfile
+final readonly class ExportSchemaProfile implements JsonSchemaProfile
 {
-    public function run(WireSchemaBuilder $builder, WireSchemaWriter $writer): string
+    public function run(JsonSchemaBuilder $builder, JsonSchemaWriter $writer): string
     {
         $document = $builder->build(
             [dirname(__DIR__, 2)],

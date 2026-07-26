@@ -58,11 +58,11 @@ use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\Frontend\StandaloneAssets;
+use Lattice\Lattice\Support\JsonSchema\ExportSchemaProfile;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaProfile;
 use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Support\WireSchema\ExportSchemaProfile;
-use Lattice\Lattice\Support\WireSchema\WireSchemaProfile;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\SlotRegistry;
@@ -135,7 +135,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         // Default roles; the workbench rebinds these to the base profiles.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
-        $this->app->bind(WireSchemaProfile::class, ExportSchemaProfile::class);
+        $this->app->bind(JsonSchemaProfile::class, ExportSchemaProfile::class);
 
         if (! ResponseFactory::hasMacro('toRoute')) {
             ResponseFactory::macro(

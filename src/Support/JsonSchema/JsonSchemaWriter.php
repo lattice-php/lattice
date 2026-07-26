@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\WireSchema;
+namespace Lattice\Lattice\Support\JsonSchema;
 
 use stdClass;
 
@@ -11,7 +11,7 @@ use stdClass;
  * the document never contains a legitimately empty JSON array, while the empty
  * schema `{}` (PHP `mixed`) and propless `properties` maps are common.
  */
-final readonly class WireSchemaWriter
+final readonly class JsonSchemaWriter
 {
     /**
      * @param  array<string, mixed>  $document

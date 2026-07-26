@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace Workbench\App\Support\WireSchema;
+namespace Workbench\App\Support\JsonSchema;
 
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Support\WireSchema\WireSchemaBuilder;
-use Lattice\Lattice\Support\WireSchema\WireSchemaProfile;
-use Lattice\Lattice\Support\WireSchema\WireSchemaWriter;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaBuilder;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaProfile;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaWriter;
 
 /**
  * The package's own dev profile: regenerates the committed built-ins-only
  * schema artifact from src/. Bound in the workbench so lattice:schema rebuilds
  * the published contract; workbench-only, so this build code never ships.
  */
-final readonly class BaseSchemaProfile implements WireSchemaProfile
+final readonly class BaseSchemaProfile implements JsonSchemaProfile
 {
-    public function run(WireSchemaBuilder $builder, WireSchemaWriter $writer): string
+    public function run(JsonSchemaBuilder $builder, JsonSchemaWriter $writer): string
     {
         $packageRoot = dirname(__DIR__, 4);
 

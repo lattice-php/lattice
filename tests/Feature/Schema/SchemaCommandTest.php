@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Support\WireSchema\ExportSchemaProfile;
-use Lattice\Lattice\Support\WireSchema\WireSchemaProfile;
+use Lattice\Lattice\Support\JsonSchema\ExportSchemaProfile;
+use Lattice\Lattice\Support\JsonSchema\JsonSchemaProfile;
 
 use function Pest\Laravel\artisan;
 
 // Restore the default profile; the workbench binds BaseSchemaProfile.
 beforeEach(function (): void {
-    app()->bind(WireSchemaProfile::class, ExportSchemaProfile::class);
+    app()->bind(JsonSchemaProfile::class, ExportSchemaProfile::class);
 });
 
 it('writes the merged document with app defs marked as app-origin', function (): void {

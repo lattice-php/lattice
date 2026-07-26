@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\WireSchema;
+namespace Lattice\Lattice\Support\JsonSchema;
 
 use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\AsComponent;
@@ -25,7 +25,7 @@ use Spatie\Attributes\Attributes;
  * `x-lattice` vocabulary the TypeScript emitter consumes. The document is the
  * published contract; everything else is derived from it.
  */
-final class WireSchemaBuilder
+final class JsonSchemaBuilder
 {
     private const string ID = 'https://lattice-php.dev/schema/v1.json';
 
@@ -67,7 +67,7 @@ final class WireSchemaBuilder
         $markers = $this->markers();
         $nodeDefs = $this->nodeDefs($manifest);
 
-        $mapper = new PropertySchemaMapper(new WireSchemaContext($names, $nodeDefs, $markers));
+        $mapper = new PropertySchemaMapper(new JsonSchemaContext($names, $nodeDefs, $markers));
 
         $defs = [];
 
