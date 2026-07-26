@@ -11,6 +11,7 @@ import { i18nConfigFromPageProps } from "./i18n/shared-props";
 import {
   createLayoutResolver,
   createPageResolver,
+  registerRefRenewal,
   withVisitHeaders,
   type CreateLayoutResolverOptions,
   type PageModules,
@@ -129,6 +130,7 @@ export function createLatticeApp({
     plugins && plugins.length > 0 ? extendRegistry(baseRegistry, ...plugins) : baseRegistry;
 
   setDefaultRegistry(activeRegistry);
+  registerRefRenewal();
 
   const i18nEnabled = i18n !== false;
   const pluginI18n = plugins?.flatMap((plugin) => (plugin.i18n ? [plugin.i18n] : [])) ?? [];

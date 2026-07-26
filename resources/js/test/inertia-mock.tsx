@@ -31,6 +31,11 @@ export function inertiaMock(overrides: Record<string, unknown> = {}): Record<str
       reload: vi.fn<() => void>(),
       visit: vi.fn<(url: string, options?: unknown) => void>(),
     },
+    http: {
+      onError: vi.fn<(handler: unknown) => () => void>(() => () => undefined),
+      onRequest: vi.fn<(handler: unknown) => () => void>(() => () => undefined),
+      onResponse: vi.fn<(handler: unknown) => () => void>(() => () => undefined),
+    },
     ...overrides,
   };
 }

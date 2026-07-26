@@ -72,9 +72,12 @@ const pendingRefRefreshes = new Map<string, Promise<string | null>>();
 
 /**
  * Trade an expired-but-authentic ref for a fresh one. Deduped per original ref
- * so a burst of 403s from one component costs a single round-trip.
+ * so a burst of 403s from one component costs a single round-trip. The renewed
+ * token lands in the component-ref map, so every later request that resolves
+ * its ref through withHeaders picks it up — this is the transport-agnostic
+ * primitive both the fetch funnel below and the Inertia form retry build on.
  */
-async function refreshRef(componentRef: string): Promise<string | null> {
+export async function refreshRef(componentRef: string): Promise<string | null> {
   const pending = pendingRefRefreshes.get(componentRef);
 
   if (pending) {
