@@ -49,6 +49,9 @@ it('renders a registered theme as a managed style tag', function (): void {
 });
 
 it('renders no style tag when no theme is registered', function (): void {
+    // The workbench provider registers a demo theme; clear it to test the bare directive.
+    app(ThemeRenderer::class)->register(fn (): ?Theme => null);
+
     expect(Blade::render('@latticeHead'))->not->toContain('lattice-theme');
 });
 

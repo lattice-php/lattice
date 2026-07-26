@@ -14,7 +14,10 @@ use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
 use Laravel\Roster\Roster;
+use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Lattice\Theme\Swatch;
+use Lattice\Lattice\Theme\Theme;
 use Workbench\App\Http\Middleware\ShareReverbConnection;
 use Workbench\App\Models\User;
 use Workbench\App\Support\BoostConfig;
@@ -123,6 +126,8 @@ class WorkbenchServiceProvider extends ServiceProvider
         }
 
         $this->loadMigrationsFrom(package_path('workbench/database/migrations'));
+
+        Lattice::theme(Theme::make()->primary(Swatch::Indigo));
 
         $this->pointBoostAtPackageRoot();
         $this->redirectBoostSkillsToPackageRoot();
