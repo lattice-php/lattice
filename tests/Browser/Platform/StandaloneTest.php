@@ -13,4 +13,6 @@ it('boots a server-driven page through the published standalone bundle', functio
     visit('/standalone-demo')
         ->assertSee('Workbench page')
         ->assertNoSmoke();
-});
+    // lattice:assets delete-then-copies the shared skeleton public/ — parallel
+    // workers requesting assets mid-delete would 404 and trip their smoke checks.
+})->group('serial');

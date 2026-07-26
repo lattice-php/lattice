@@ -27,6 +27,12 @@ class BrowserTestCase extends TestCase
         // CI runners are slower than Playwright's tight 5s default, which
         // intermittently trips browser actions/assertions under load.
         Playwright::setTimeout(15_000);
+
+        // The saveMissing dumper writes into the package's tracked lang/ dir
+        // (the workbench points lang_path() there), so any page hitting a
+        // missing key mid-suite would leave junk behind. No browser test
+        // needs the dump — keep it off.
+        config(['i18next.save_missing.enabled' => false]);
     }
 
     private function assertWorkbenchManifestExists(): void

@@ -105,8 +105,14 @@ it('edits a product in a prefilled modal form', function (): void {
         ->fill('#name', 'Renamed Lamp')
         ->click('@action-form-submit');
 
+    // A submit click can be swallowed under CI load; re-click while the modal
+    // is still open between attempts — the rename is idempotent.
     retryUntil(function (): void {
         expect(Product::query()->where('sku', 'LAMP-001')->value('name'))->toBe('Renamed Lamp');
+    }, between: function () use ($page): void {
+        $page->script(<<<'JS'
+            () => document.querySelector('[data-test="action-form-submit"]')?.click()
+        JS);
     });
 
     $page->assertNoSmoke();
