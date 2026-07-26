@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Support\Frontend;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Support\Theme\ThemeRenderer;
+use Lattice\Lattice\Theme\ThemeRenderer;
 use RuntimeException;
 
 final class StandaloneAssets

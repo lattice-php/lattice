@@ -19,10 +19,10 @@ use Lattice\Lattice\Layouts\LayoutDefinition;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Lattice\Support\Theme\Theme;
-use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Lattice\Theme\Theme;
+use Lattice\Lattice\Theme\ThemeRenderer;
 use Lattice\Lattice\Ui\SlotRegistry;
 
 final readonly class LatticeRegistry

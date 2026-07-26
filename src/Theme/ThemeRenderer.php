@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Theme;
+namespace Lattice\Lattice\Theme;
 
 use Closure;
 use InvalidArgumentException;
