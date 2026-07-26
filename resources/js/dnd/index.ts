@@ -33,11 +33,15 @@ export {
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 export type { Edge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 export {
-  attachInstruction,
-  extractInstruction,
+  attachInstruction as attachTreeItemInstruction,
+  extractInstruction as extractTreeItemInstruction,
 } from "@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item";
-export type { Instruction, ItemMode } from "@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item";
+export type {
+  Instruction as TreeItemInstruction,
+  ItemMode as TreeItemMode,
+} from "@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item";
 export { getReorderDestinationIndex } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index";
+export { reorderWithEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge";
 export {
   announce,
   cleanup as cleanupLiveRegion,
@@ -46,3 +50,4 @@ export {
   autoScrollForElements,
   autoScrollWindowForElements,
 } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
+export { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";

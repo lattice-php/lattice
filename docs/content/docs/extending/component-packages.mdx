@@ -208,10 +208,16 @@ primitives from `@lattice-php/lattice/dnd` (Atlassian's `pragmatic-drag-and-drop
 core) instead of depending on the library directly:
 
 ```ts
-import { draggable, attachInstruction, announce, type Edge } from "@lattice-php/lattice/dnd";
+import {
+  draggable,
+  attachTreeItemInstruction,
+  announce,
+  type Edge,
+} from "@lattice-php/lattice/dnd";
 ```
 
 A Composer package has no way to deliver npm dependencies into the consumer's bundle, so core owns
-the dependency and republishes it under its export map, the same way it does for `.../i18n` above.
+the dependency and republishes it under its export map, the same way core owns i18next behind
+`.../i18n` above.
 
 See [Registry and types](/extending/registry-and-types/) for how the `type` string couples the two sides, and how generated types keep `node.props` sound.
