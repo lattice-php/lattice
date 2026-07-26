@@ -7,6 +7,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -22,7 +23,7 @@ use Lattice\Lattice\Ui\Enums\Variant;
 use LogicException;
 
 #[AsComponent('form')]
-class Form extends ContainerComponent
+class Form extends ContainerComponent implements InteractiveComponent
 {
     use HasHttpMethod;
     use IsInteractive;

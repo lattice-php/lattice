@@ -4,11 +4,12 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Components;
 
 use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Lattice\Ui\Enums\ModalWidth;
 use Lattice\Lattice\Ui\Enums\Side;
 
 #[AsComponent('modal')]
-class Modal extends ContainerComponent
+class Modal extends ContainerComponent implements InteractiveComponent
 {
     use IsInteractive;
 

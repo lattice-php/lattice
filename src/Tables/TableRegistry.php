@@ -64,36 +64,32 @@ final class TableRegistry extends DefinitionRegistry
      */
     private function buildComponent(string $table, callable $result, array $context = [], bool $lazy = false): TableComponent
     {
-        $key = $this->registeredKeyFor($table);
-        $definition = $this->make($table)->withContext($context);
+        return $this->gatedComponent(
+            $table,
+            fn (string $key): TableComponent => TableComponent::make($key),
+            function (TableDefinition $definition, TableComponent $component, string $key) use ($result, $context, $lazy): TableComponent {
+                $columns = $definition->columns();
+                $query = TableQuery::empty($definition->perPage());
 
-        if (! $this->authorizedToRender($definition)) {
-            return TableComponent::make($key)->hidden();
-        }
+                $component
+                    ->endpoint($this->endpointFor($key))
+                    ->columns($columns)
+                    ->filters($definition->filters())
+                    ->searchable($this->hasSearchableColumns($columns))
+                    ->layout($definition->layout())
+                    ->striped($definition->striped())
+                    ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
+                    ->actionsLabel($definition->actionsLabel())
+                    ->emptyLabel($definition->emptyLabel())
+                    ->bulkActions($this->bulkActions($definition, $key, $context))
+                    ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
 
-        $columns = $definition->columns();
-        $query = TableQuery::empty($definition->perPage());
+                $component->lazy = $lazy;
 
-        $component = TableComponent::make($key)
-            ->signedAs($key)
-            ->context($context)
-            ->endpoint($this->endpointFor($key))
-            ->columns($columns)
-            ->filters($definition->filters())
-            ->searchable($this->hasSearchableColumns($columns))
-            ->layout($definition->layout())
-            ->striped($definition->striped())
-            ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
-            ->actionsLabel($definition->actionsLabel())
-            ->emptyLabel($definition->emptyLabel())
-            ->bulkActions($this->bulkActions($definition, $key, $context))
-            ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
-
-        if ($lazy) {
-            $component->lazy = true;
-        }
-
-        return $component;
+                return $component;
+            },
+            $context,
+        );
     }
 
     public function response(string $key, Request $request, ?TableDefinition $definition = null): TableResult

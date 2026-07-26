@@ -37,6 +37,34 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
     }
 
     /**
+     * The gate every wire component build passes through: an unauthorized
+     * definition yields a bare hidden component; an authorized one is
+     * configured and then sealed. Registries supply only the construction
+     * closures so this sequence cannot drift between them.
+     *
+     * @template TComponent of \Lattice\Lattice\Ui\Components\Component&Contracts\InteractiveComponent
+     *
+     * @param  class-string<TDefinition>  $definitionClass
+     * @param  callable(string): TComponent  $component
+     * @param  callable(TDefinition, TComponent, string): TComponent  $configure
+     * @param  array<string, mixed>  $context
+     * @return TComponent
+     */
+    protected function gatedComponent(string $definitionClass, callable $component, callable $configure, array $context = [])
+    {
+        $key = $this->registeredKeyFor($definitionClass);
+        $definition = $this->make($definitionClass)->withContext($context);
+
+        if (! $this->authorizedToRender($definition)) {
+            return $component($key)->hidden();
+        }
+
+        return $configure($definition, $component($key), $key)
+            ->signedAs($key)
+            ->context($context);
+    }
+
+    /**
      * Explicit registrations layered over the discovered manifest entries.
      *
      * @return array<string, class-string<TDefinition>>
