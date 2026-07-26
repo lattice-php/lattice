@@ -11,17 +11,39 @@ it('emits only the configured tokens into the :root block', function (): void {
     expect($css)->toBe(":root{--lt-primary:#6366f1;--lt-radius:0.75rem;}\n.dark{}");
 });
 
-it('writes an interactive group with all four states', function (): void {
+it('writes all four state tokens for every interactive group', function (string $group): void {
     $css = Theme::make()
-        ->primary('#6366f1', foreground: '#ffffff', hover: '#4f46e5', active: '#4338ca')
+        ->{$group}('#6366f1', foreground: '#ffffff', hover: '#4f46e5', active: '#4338ca')
         ->toCss();
 
     expect($css)
-        ->toContain('--lt-primary:#6366f1;')
-        ->toContain('--lt-primary-fg:#ffffff;')
-        ->toContain('--lt-primary-hover:#4f46e5;')
-        ->toContain('--lt-primary-active:#4338ca;');
-});
+        ->toContain("--lt-{$group}:#6366f1;")
+        ->toContain("--lt-{$group}-fg:#ffffff;")
+        ->toContain("--lt-{$group}-hover:#4f46e5;")
+        ->toContain("--lt-{$group}-active:#4338ca;");
+})->with(['primary', 'secondary', 'danger', 'success', 'warning', 'info']);
+
+it('writes the colour and foreground tokens for every surface pair', function (string $pair): void {
+    expect(Theme::make()->{$pair}('#fafafa', foreground: '#18181b')->toCss())
+        ->toContain("--lt-{$pair}:#fafafa;")
+        ->toContain("--lt-{$pair}-fg:#18181b;");
+})->with(['surface', 'popover', 'muted', 'accent', 'disabled']);
+
+it('writes each single token', function (string $method): void {
+    expect(Theme::make()->{$method}('#e4e4e7')->toCss())
+        ->toContain("--lt-{$method}:#e4e4e7;");
+})->with(['border', 'input', 'ring', 'overlay']);
+
+it('writes each scalar token', function (string $method, string $token): void {
+    expect(Theme::make()->{$method}('7px')->toCss())->toContain("{$token}:7px;");
+})->with([
+    'radius' => ['radius', '--lt-radius'],
+    'ring width' => ['ringWidth', '--lt-ring-width'],
+    'ring offset' => ['ringOffset', '--lt-ring-offset'],
+    'sans font' => ['fontSans', '--lt-font-sans'],
+    'mono font' => ['fontMono', '--lt-font-mono'],
+    'display font' => ['fontDisplay', '--lt-font-display'],
+]);
 
 it('leaves unset hover and active states to the stylesheet derivation', function (): void {
     expect(Theme::make()->danger('#e11d48')->toCss())
@@ -65,6 +87,14 @@ it('expands a swatch into base, dark, and foreground', function (): void {
         ->toContain(':root{--lt-primary:#4f46e5;--lt-primary-fg:#ffffff;}')
         ->toContain('.dark{--lt-primary:#818cf8;--lt-primary-fg:#1e1b4b;}');
 });
+
+it('expands every swatch into a light base, dark base, and foreground', function (Swatch $swatch): void {
+    $css = Theme::make()->primary($swatch)->toCss();
+
+    expect($css)
+        ->toMatch('/:root\{--lt-primary:#[0-9a-f]{6};--lt-primary-fg:#[0-9a-f]{6};\}/')
+        ->toMatch('/\.dark\{--lt-primary:#[0-9a-f]{6}(;--lt-primary-fg:#[0-9a-f]{6})?;\}/');
+})->with(Swatch::cases());
 
 it('lets an explicit foreground win over the swatch foreground', function (): void {
     expect(Theme::make()->primary(Swatch::Indigo, foreground: '#000000')->toCss())
