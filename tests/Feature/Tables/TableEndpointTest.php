@@ -26,8 +26,6 @@ use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 use function Pest\Laravel\getJson;
 
 test('registered tables serialize their configured endpoint columns state and initial data', function (): void {
-    config(['lattice.tables.endpoint' => 'custom/tables/{table}']);
-
     Lattice::tables([WorkbenchUsersTable::class]);
 
     $table = wire(Table::use(WorkbenchUsersTable::class));
@@ -37,7 +35,7 @@ test('registered tables serialize their configured endpoint columns state and in
             'type' => 'table',
             'id' => 'workbench.users',
             'props' => [
-                'endpoint' => '/custom/tables/workbench.users',
+                'endpoint' => '/lattice/tables/workbench.users',
                 'ref' => $this->latticeRef($table),
                 'layout' => null,
                 'bulkActions' => [],
@@ -143,8 +141,6 @@ test('registered tables serialize their configured endpoint columns state and in
 });
 
 test('registered tables can serialize lazily without running their query', function (): void {
-    config(['lattice.tables.endpoint' => 'custom/tables/{table}']);
-
     Lattice::tables([WorkbenchLazyUsersTable::class]);
 
     $table = wire(Table::lazy(WorkbenchLazyUsersTable::class));
@@ -154,7 +150,7 @@ test('registered tables can serialize lazily without running their query', funct
             'type' => 'table',
             'id' => 'workbench.lazy-users',
             'props' => [
-                'endpoint' => '/custom/tables/workbench.lazy-users',
+                'endpoint' => '/lattice/tables/workbench.lazy-users',
                 'lazy' => true,
                 'ref' => $this->latticeRef($table),
                 'layout' => null,

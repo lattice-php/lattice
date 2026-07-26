@@ -51,6 +51,11 @@ final class BulkActionRegistry extends DefinitionRegistry
         return 'bulkAction';
     }
 
+    protected function routeName(): string
+    {
+        return 'lattice.bulk-actions.handle';
+    }
+
     public function group(): string
     {
         return 'bulk-actions';

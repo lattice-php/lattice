@@ -48,32 +48,26 @@ return [
     ],
 
     'forms' => [
-        'endpoint' => 'lattice/forms/{form}',
         'middleware' => ['web', 'auth'],
     ],
 
     'tables' => [
-        'endpoint' => 'lattice/tables/{table}',
         'middleware' => ['web', 'auth'],
     ],
 
     'fragments' => [
-        'endpoint' => 'lattice/fragments/{fragment}',
         'middleware' => ['web', 'auth'],
     ],
 
     'remote-sources' => [
-        'endpoint' => 'lattice/remote-sources/{source}/token',
         'middleware' => ['web', 'auth'],
     ],
 
     'actions' => [
-        'endpoint' => 'lattice/actions/{action}',
         'middleware' => ['web', 'auth'],
     ],
 
     'bulk-actions' => [
-        'endpoint' => 'lattice/bulk-actions/{bulkAction}',
         'middleware' => ['web', 'auth'],
     ],
 

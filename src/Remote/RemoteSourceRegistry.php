@@ -48,6 +48,11 @@ final class RemoteSourceRegistry extends DefinitionRegistry
         return 'source';
     }
 
+    protected function routeName(): string
+    {
+        return 'lattice.remote-sources.token';
+    }
+
     public function group(): string
     {
         return 'remote-sources';

@@ -57,6 +57,11 @@ final class FormRegistry extends DefinitionRegistry
         return 'form';
     }
 
+    protected function routeName(): string
+    {
+        return 'lattice.forms.handle';
+    }
+
     public function group(): string
     {
         return 'forms';

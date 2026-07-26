@@ -66,7 +66,15 @@ function defaultHeaders(method: string | undefined): Record<string, string> {
   };
 }
 
-const REF_REFRESH_ENDPOINT = "/lattice/refs/refresh";
+let refRefreshEndpoint = "/lattice/refs/refresh";
+
+/**
+ * Boot paths call this with the server-minted URL so subdirectory installs
+ * refresh against the right path; the default covers root installs.
+ */
+export function setRefRefreshEndpoint(url: string): void {
+  refRefreshEndpoint = url;
+}
 
 const pendingRefRefreshes = new Map<string, Promise<string | null>>();
 
@@ -84,7 +92,7 @@ export async function refreshRef(componentRef: string): Promise<string | null> {
     return pending;
   }
 
-  const request = apiJson<{ ref: string }>(REF_REFRESH_ENDPOINT, {
+  const request = apiJson<{ ref: string }>(refRefreshEndpoint, {
     method: "POST",
     body: JSON.stringify({ ref: latestRef(componentRef) }),
   })

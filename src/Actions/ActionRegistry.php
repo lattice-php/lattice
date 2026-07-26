@@ -56,6 +56,11 @@ final class ActionRegistry extends DefinitionRegistry
         return 'action';
     }
 
+    protected function routeName(): string
+    {
+        return 'lattice.actions.handle';
+    }
+
     public function group(): string
     {
         return 'actions';

@@ -24,8 +24,6 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
      */
     protected array $definitions = [];
 
-    private ?string $endpointTemplate = null;
-
     public function __construct(
         protected readonly Container $container,
         protected readonly DiscoveryManifest $manifest,
@@ -104,15 +102,19 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
         return $this->make($definitions[$key]);
     }
 
+    /**
+     * Minted from the named route so the path honours the app's base path —
+     * subdirectory installs included. Apps needing a different path
+     * re-register the route under the same name.
+     */
     public function endpointFor(string $key): string
     {
-        $this->endpointTemplate ??= (string) config(
-            "lattice.{$this->group()}.endpoint",
-            "lattice/{$this->group()}/{{$this->name()}}",
-        );
-        $path = str_replace('{'.$this->name().'}', rawurlencode($key), ltrim($this->endpointTemplate, '/'));
+        return route($this->routeName(), [$this->name() => $key], absolute: false);
+    }
 
-        return '/'.$path;
+    protected function routeName(): string
+    {
+        return "lattice.{$this->group()}.show";
     }
 
     /**
