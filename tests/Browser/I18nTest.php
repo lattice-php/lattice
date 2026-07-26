@@ -35,6 +35,10 @@ function waitForLatticeBrowserTestTranslation(string $file, string $key): mixed
 }
 
 it('dumps missing React lattice keys back into the package lang file', function (): void {
+    // Opt back in over BrowserTestCase's suite-wide guard: this test removes a
+    // key deliberately and restores the file in its finally block.
+    config(['i18next.save_missing.enabled' => true]);
+
     $this->actingAs(workbenchTestUser());
     $file = package_path('lang/en/form.php');
     $original = File::get($file);
