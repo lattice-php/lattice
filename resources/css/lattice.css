@@ -18,31 +18,37 @@
   --lt-secondary-fg: oklch(0.25 0.012 220);
   --lt-muted: oklch(0.955 0.004 210);
   --lt-muted-fg: oklch(0.52 0.015 220);
-  --lt-accent: oklch(0.95 0.024 195);
-  --lt-accent-fg: oklch(0.36 0.085 195);
+  /* Accent tint and focus ring take their hue from the primary, so a themed
+     primary keeps them coherent; an explicit override still wins. */
+  --lt-accent: oklch(from var(--lt-primary) 0.95 0.024 h);
+  --lt-accent-fg: oklch(from var(--lt-primary) 0.36 0.085 h);
   --lt-danger: oklch(0.55 0.2 26);
   --lt-danger-fg: oklch(0.985 0 0);
   --lt-border: oklch(0.915 0.005 210);
   --lt-input: oklch(0.88 0.007 210);
-  --lt-ring: oklch(0.7 0.1 195);
+  --lt-ring: oklch(from var(--lt-primary) 0.7 0.1 h);
   --lt-overlay: oklch(0.15 0.02 225 / 0.5);
   --lt-warning: oklch(0.83 0.15 85);
+  --lt-warning-fg: oklch(0.28 0.06 70);
   --lt-success: oklch(0.56 0.13 158);
   --lt-success-fg: oklch(0.985 0 0);
   --lt-info: oklch(0.55 0.13 245);
   --lt-info-fg: oklch(0.985 0 0);
-  --lt-primary-hover: oklch(0.46 0.12 195);
-  --lt-primary-active: oklch(0.41 0.12 195);
-  --lt-danger-hover: oklch(0.5 0.2 26);
-  --lt-danger-active: oklch(0.45 0.2 26);
-  --lt-success-hover: oklch(0.51 0.13 158);
-  --lt-success-active: oklch(0.47 0.13 158);
-  --lt-info-hover: oklch(0.5 0.13 245);
-  --lt-info-active: oklch(0.46 0.13 245);
-  --lt-warning-hover: oklch(0.78 0.15 85);
-  --lt-warning-active: oklch(0.73 0.15 85);
-  --lt-secondary-hover: oklch(0.925 0.006 210);
-  --lt-secondary-active: oklch(0.9 0.007 210);
+  /* Hover/active derive from the base colour so a themed base recolours its
+     whole state family; setting the state token directly still wins. Light
+     surfaces darken on interaction, the near-white secondary by less. */
+  --lt-primary-hover: oklch(from var(--lt-primary) calc(l - 0.05) c h);
+  --lt-primary-active: oklch(from var(--lt-primary) calc(l - 0.1) c h);
+  --lt-danger-hover: oklch(from var(--lt-danger) calc(l - 0.05) c h);
+  --lt-danger-active: oklch(from var(--lt-danger) calc(l - 0.1) c h);
+  --lt-success-hover: oklch(from var(--lt-success) calc(l - 0.05) c h);
+  --lt-success-active: oklch(from var(--lt-success) calc(l - 0.1) c h);
+  --lt-info-hover: oklch(from var(--lt-info) calc(l - 0.05) c h);
+  --lt-info-active: oklch(from var(--lt-info) calc(l - 0.1) c h);
+  --lt-warning-hover: oklch(from var(--lt-warning) calc(l - 0.05) c h);
+  --lt-warning-active: oklch(from var(--lt-warning) calc(l - 0.1) c h);
+  --lt-secondary-hover: oklch(from var(--lt-secondary) calc(l - 0.03) c h);
+  --lt-secondary-active: oklch(from var(--lt-secondary) calc(l - 0.06) c h);
   --lt-disabled: oklch(0.945 0.003 210);
   --lt-disabled-fg: oklch(0.68 0.008 220);
 
@@ -64,8 +70,6 @@
   --lt-font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
   --lt-font-display: var(--lt-font-sans);
 
-  --lt-warning-fg: oklch(0.28 0.06 70);
-
   --lt-shadow-inner: inset 0 1px 2px 0 oklch(0.2 0.02 225 / 0.06);
 
   --lt-chart-1: oklch(0.55 0.12 195);
@@ -85,7 +89,6 @@
   --lt-icon-2xl: 2rem;
   --lt-icon-3xl: 2.5rem;
   --lt-icon-4xl: 3rem;
-  --lt-icon-stroke: 1.5;
 
   /* Control heights — density lever */
   --lt-control-h-sm: 2rem;
@@ -159,32 +162,34 @@
   --lt-secondary-fg: oklch(0.955 0.005 210);
   --lt-muted: oklch(0.26 0.01 225);
   --lt-muted-fg: oklch(0.72 0.012 220);
-  --lt-accent: oklch(0.29 0.03 195);
-  --lt-accent-fg: oklch(0.97 0.005 210);
+  --lt-accent: oklch(from var(--lt-primary) 0.29 0.03 h);
+  --lt-accent-fg: oklch(from var(--lt-primary) 0.97 0.005 h);
   --lt-danger: oklch(0.55 0.18 25);
   --lt-danger-fg: oklch(0.985 0 0);
   --lt-border: oklch(0.285 0.012 225);
   --lt-input: oklch(0.33 0.014 225);
-  --lt-ring: oklch(0.6 0.1 192);
+  --lt-ring: oklch(from var(--lt-primary) 0.6 0.1 h);
   --lt-overlay: oklch(0.08 0.01 225 / 0.65);
   --lt-warning: oklch(0.75 0.14 82);
+  --lt-warning-fg: oklch(0.28 0.06 70);
   --lt-success: oklch(0.72 0.14 160);
   --lt-success-fg: oklch(0.2 0.04 160);
   --lt-info: oklch(0.72 0.13 242);
   --lt-info-fg: oklch(0.2 0.04 242);
 
-  --lt-primary-hover: oklch(0.79 0.115 190);
-  --lt-primary-active: oklch(0.83 0.11 190);
-  --lt-danger-hover: oklch(0.6 0.18 25);
-  --lt-danger-active: oklch(0.65 0.17 25);
-  --lt-success-hover: oklch(0.76 0.14 160);
-  --lt-success-active: oklch(0.8 0.13 160);
-  --lt-info-hover: oklch(0.76 0.13 242);
-  --lt-info-active: oklch(0.8 0.12 242);
-  --lt-warning-hover: oklch(0.79 0.14 82);
-  --lt-warning-active: oklch(0.83 0.13 82);
-  --lt-secondary-hover: oklch(0.31 0.013 225);
-  --lt-secondary-active: oklch(0.35 0.014 225);
+  /* Dark surfaces lighten on interaction. */
+  --lt-primary-hover: oklch(from var(--lt-primary) calc(l + 0.04) c h);
+  --lt-primary-active: oklch(from var(--lt-primary) calc(l + 0.08) c h);
+  --lt-danger-hover: oklch(from var(--lt-danger) calc(l + 0.04) c h);
+  --lt-danger-active: oklch(from var(--lt-danger) calc(l + 0.08) c h);
+  --lt-success-hover: oklch(from var(--lt-success) calc(l + 0.04) c h);
+  --lt-success-active: oklch(from var(--lt-success) calc(l + 0.08) c h);
+  --lt-info-hover: oklch(from var(--lt-info) calc(l + 0.04) c h);
+  --lt-info-active: oklch(from var(--lt-info) calc(l + 0.08) c h);
+  --lt-warning-hover: oklch(from var(--lt-warning) calc(l + 0.04) c h);
+  --lt-warning-active: oklch(from var(--lt-warning) calc(l + 0.08) c h);
+  --lt-secondary-hover: oklch(from var(--lt-secondary) calc(l + 0.04) c h);
+  --lt-secondary-active: oklch(from var(--lt-secondary) calc(l + 0.08) c h);
   --lt-disabled: oklch(0.28 0.01 225);
   --lt-disabled-fg: oklch(0.56 0.012 225);
 

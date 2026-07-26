@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Support\Frontend\StandaloneAssets;
-use Lattice\Lattice\Support\Theme\Theme;
-use Lattice\Lattice\Support\Theme\ThemeRenderer;
+use Lattice\Lattice\Theme\Theme;
+use Lattice\Lattice\Theme\ThemeRenderer;
 
 beforeEach(function (): void {
     $this->publicPath = sys_get_temp_dir().'/lattice-directives-public-'.uniqid();
@@ -41,7 +41,7 @@ it('embeds the boot config with the versioned sprite url', function (): void {
 });
 
 it('renders a registered theme as a managed style tag', function (): void {
-    Lattice::theme(Theme::make()->colors(primary: '#6366f1'));
+    Lattice::theme(Theme::make()->primary('#6366f1'));
 
     expect(Blade::render('@latticeHead'))
         ->toContain('<style id="lattice-theme">')
@@ -49,6 +49,9 @@ it('renders a registered theme as a managed style tag', function (): void {
 });
 
 it('renders no style tag when no theme is registered', function (): void {
+    // The workbench provider registers a demo theme; clear it to test the bare directive.
+    app(ThemeRenderer::class)->register(fn (): ?Theme => null);
+
     expect(Blade::render('@latticeHead'))->not->toContain('lattice-theme');
 });
 
