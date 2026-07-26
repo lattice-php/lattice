@@ -1,12 +1,8 @@
 <?php
 declare(strict_types=1);
 
-// The form redirects back to the same URL on success, which leaves no
-// client-observable state change (form values live in the client store and
-// survive same-page visits). The server-side round-trip is asserted in
-// NestedFieldFormSubmitTest; these tests cover the client interactions.
 it('adds heterogeneous blocks and submits a typed payload', function (): void {
-    $this->visitAsWorkbenchUser('/form/fields/builder')
+    $page = $this->visitAsWorkbenchUser('/form/fields/builder')
         ->assertSee('Builder')
         ->assertSee('Line items')
         ->click('[id="stack-panel"] [data-test="builder-add"]')
@@ -17,8 +13,15 @@ it('adds heterogeneous blocks and submits a typed payload', function (): void {
         ->fill('input[name="items[1][product]"]', 'SKU-1')
         ->fill('input[name="items[1][qty]"]', '3')
         ->fill('input[name="items[1][price]"]', '9.50')
-        ->click('@form-submit')
-        ->assertNoSmoke();
+        ->click('@form-submit');
+
+    // The form declares resetOnSuccess, so the emptied builder is the success
+    // signal — a validation failure would keep the filled blocks mounted.
+    retryUntil(function () use ($page): void {
+        $page->assertMissing('textarea[name="items[0][content]"]');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('surfaces a per-row required error for the active block', function (): void {
@@ -46,8 +49,13 @@ it('renders the table layout with a shared header and round-trips a typed payloa
         ->fill('textarea[name="rows[1][content]"]', 'Note row')
         ->assertNoJavaScriptErrors();
 
-    $page->click('@form-submit')
-        ->assertNoSmoke();
+    $page->click('@form-submit');
+
+    retryUntil(function () use ($page): void {
+        $page->assertMissing('input[name="rows[0][product]"]');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('reveals a reset control for custom row-table column widths and clears them on click', function (): void {

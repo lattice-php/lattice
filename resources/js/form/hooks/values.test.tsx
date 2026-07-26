@@ -6,6 +6,7 @@ import {
   useFormValue,
   useFormValues,
   useFormValuesFor,
+  useResetFormValues,
   useSetFormValue,
 } from "./values";
 
@@ -45,6 +46,46 @@ describe("FormValues", () => {
 
     expect(result.current.value).toBe("B");
     expect(result.current.values).toEqual({ items: [{ children: [{ name: "B" }] }] });
+  });
+
+  it("resets every value back to the initial snapshot", () => {
+    const { result } = renderHook(
+      () => ({
+        values: useFormValues(),
+        setValue: useSetFormValue(),
+        reset: useResetFormValues(),
+      }),
+      { wrapper: wrapper({ name: "", items: [{ qty: 1 }] }) },
+    );
+
+    act(() => {
+      result.current.setValue("name", "Widget");
+      result.current.setValue("items.0.qty", 5);
+    });
+
+    act(() => result.current.reset());
+
+    expect(result.current.values).toEqual({ name: "", items: [{ qty: 1 }] });
+  });
+
+  it("resets only the given fields and keeps the rest", () => {
+    const { result } = renderHook(
+      () => ({
+        values: useFormValues(),
+        setValue: useSetFormValue(),
+        reset: useResetFormValues(),
+      }),
+      { wrapper: wrapper({ name: "", email: "" }) },
+    );
+
+    act(() => {
+      result.current.setValue("name", "Widget");
+      result.current.setValue("email", "a@example.com");
+    });
+
+    act(() => result.current.reset(["name"]));
+
+    expect(result.current.values).toEqual({ name: "", email: "a@example.com" });
   });
 
   it("rerenders only the field whose selected value changed", () => {
