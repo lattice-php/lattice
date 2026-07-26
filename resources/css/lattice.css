@@ -18,13 +18,15 @@
   --lt-secondary-fg: oklch(0.25 0.012 220);
   --lt-muted: oklch(0.955 0.004 210);
   --lt-muted-fg: oklch(0.52 0.015 220);
-  --lt-accent: oklch(0.95 0.024 195);
-  --lt-accent-fg: oklch(0.36 0.085 195);
+  /* Accent tint and focus ring take their hue from the primary, so a themed
+     primary keeps them coherent; an explicit override still wins. */
+  --lt-accent: oklch(from var(--lt-primary) 0.95 0.024 h);
+  --lt-accent-fg: oklch(from var(--lt-primary) 0.36 0.085 h);
   --lt-danger: oklch(0.55 0.2 26);
   --lt-danger-fg: oklch(0.985 0 0);
   --lt-border: oklch(0.915 0.005 210);
   --lt-input: oklch(0.88 0.007 210);
-  --lt-ring: oklch(0.7 0.1 195);
+  --lt-ring: oklch(from var(--lt-primary) 0.7 0.1 h);
   --lt-overlay: oklch(0.15 0.02 225 / 0.5);
   --lt-warning: oklch(0.83 0.15 85);
   --lt-warning-fg: oklch(0.28 0.06 70);
@@ -160,13 +162,13 @@
   --lt-secondary-fg: oklch(0.955 0.005 210);
   --lt-muted: oklch(0.26 0.01 225);
   --lt-muted-fg: oklch(0.72 0.012 220);
-  --lt-accent: oklch(0.29 0.03 195);
-  --lt-accent-fg: oklch(0.97 0.005 210);
+  --lt-accent: oklch(from var(--lt-primary) 0.29 0.03 h);
+  --lt-accent-fg: oklch(from var(--lt-primary) 0.97 0.005 h);
   --lt-danger: oklch(0.55 0.18 25);
   --lt-danger-fg: oklch(0.985 0 0);
   --lt-border: oklch(0.285 0.012 225);
   --lt-input: oklch(0.33 0.014 225);
-  --lt-ring: oklch(0.6 0.1 192);
+  --lt-ring: oklch(from var(--lt-primary) 0.6 0.1 h);
   --lt-overlay: oklch(0.08 0.01 225 / 0.65);
   --lt-warning: oklch(0.75 0.14 82);
   --lt-warning-fg: oklch(0.28 0.06 70);

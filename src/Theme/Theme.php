@@ -50,7 +50,7 @@ final class Theme
     }
 
     public function primary(
-        Color|Swatch|string $color,
+        ColorGroup|Color|Swatch|string $color,
         Color|string|null $foreground = null,
         Color|string|null $hover = null,
         Color|string|null $active = null,
@@ -59,7 +59,7 @@ final class Theme
     }
 
     public function secondary(
-        Color|Swatch|string $color,
+        ColorGroup|Color|Swatch|string $color,
         Color|string|null $foreground = null,
         Color|string|null $hover = null,
         Color|string|null $active = null,
@@ -68,7 +68,7 @@ final class Theme
     }
 
     public function danger(
-        Color|Swatch|string $color,
+        ColorGroup|Color|Swatch|string $color,
         Color|string|null $foreground = null,
         Color|string|null $hover = null,
         Color|string|null $active = null,
@@ -77,7 +77,7 @@ final class Theme
     }
 
     public function success(
-        Color|Swatch|string $color,
+        ColorGroup|Color|Swatch|string $color,
         Color|string|null $foreground = null,
         Color|string|null $hover = null,
         Color|string|null $active = null,
@@ -86,7 +86,7 @@ final class Theme
     }
 
     public function warning(
-        Color|Swatch|string $color,
+        ColorGroup|Color|Swatch|string $color,
         Color|string|null $foreground = null,
         Color|string|null $hover = null,
         Color|string|null $active = null,
@@ -95,7 +95,7 @@ final class Theme
     }
 
     public function info(
-        Color|Swatch|string $color,
+        ColorGroup|Color|Swatch|string $color,
         Color|string|null $foreground = null,
         Color|string|null $hover = null,
         Color|string|null $active = null,
@@ -234,21 +234,22 @@ final class Theme
 
     private function interactive(
         string $group,
-        Color|Swatch|string $color,
+        ColorGroup|Color|Swatch|string $color,
         Color|string|null $foreground,
         Color|string|null $hover,
         Color|string|null $active,
     ): self {
-        if ($color instanceof Swatch) {
-            $foreground ??= $color->foreground();
-            $color = $color->color();
-        }
+        $resolved = match (true) {
+            $color instanceof Swatch => $color->group(),
+            $color instanceof ColorGroup => $color,
+            default => ColorGroup::make($color),
+        };
 
         return $this->assign([
-            "--lt-{$group}" => $color,
-            "--lt-{$group}-fg" => $foreground,
-            "--lt-{$group}-hover" => $hover,
-            "--lt-{$group}-active" => $active,
+            "--lt-{$group}" => $resolved->color,
+            "--lt-{$group}-fg" => $foreground ?? $resolved->foreground,
+            "--lt-{$group}-hover" => $hover ?? $resolved->hover,
+            "--lt-{$group}-active" => $active ?? $resolved->active,
         ]);
     }
 

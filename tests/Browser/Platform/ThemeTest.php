@@ -18,16 +18,19 @@ it('applies the registered workbench theme with derived interaction states', fun
             return {
                 primary: resolve('var(--lt-primary)'),
                 hover: resolve('var(--lt-primary-hover)'),
-                derivedFromThemedPrimary: resolve('oklch(from #4f46e5 calc(l - 0.05) c h)'),
+                ring: resolve('var(--lt-ring)'),
+                derivedHover: resolve('oklch(from #4f46e5 calc(l - 0.05) c h)'),
+                derivedRing: resolve('oklch(from #4f46e5 0.7 0.1 h)'),
             };
         }
     JS);
 
-    // Swatch::Indigo (#4f46e5) from the workbench provider, and a hover the
-    // stylesheet derived from that themed base rather than the default teal.
+    // Swatch::Indigo (#4f46e5) from the workbench provider; the hover and the
+    // focus ring both derive from that themed base rather than the default teal.
     expect($resolved['primary'])->toBe('rgb(79, 70, 229)')
-        ->and($resolved['hover'])->toBe($resolved['derivedFromThemedPrimary'])
-        ->and($resolved['hover'])->not->toBe($resolved['primary']);
+        ->and($resolved['hover'])->toBe($resolved['derivedHover'])
+        ->and($resolved['hover'])->not->toBe($resolved['primary'])
+        ->and($resolved['ring'])->toBe($resolved['derivedRing']);
 
     $page->assertNoSmoke();
 });

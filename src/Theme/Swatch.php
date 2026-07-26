@@ -23,17 +23,15 @@ enum Swatch
     case Orange;
     case Amber;
 
-    public function color(): Color
+    public function group(): ColorGroup
     {
-        return Color::hex($this->base())->dark($this->darkBase());
-    }
-
-    public function foreground(): Color
-    {
-        return match ($this) {
+        $foreground = match ($this) {
             self::Amber => Color::hex('#451a03'),
             default => Color::hex('#ffffff')->dark($this->darkForeground()),
         };
+
+        return ColorGroup::make(Color::hex($this->base())->dark($this->darkBase()))
+            ->foreground($foreground);
     }
 
     private function base(): string

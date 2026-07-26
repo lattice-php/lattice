@@ -36,7 +36,8 @@ Lattice::theme(
 Every colour has its own method. The interactive groups — `primary()`, `secondary()`, `danger()`,
 `success()`, `warning()`, `info()` — take the base colour plus optional `foreground`, `hover`, and
 `active` arguments. Hover and active left unset are **derived from the base by the stylesheet**
-(darker in light mode, lighter in dark mode), so one call restyles the whole state family:
+(darker in light mode, lighter in dark mode), and the focus ring and accent tint take their hue
+from the primary — so one `primary()` call restyles the whole interactive family coherently:
 
 ```php
 Theme::make()
@@ -76,6 +77,29 @@ Theme::make()->primary(Swatch::Indigo);
 
 Available: `Teal`, `Emerald`, `Green`, `Blue`, `Indigo`, `Violet`, `Rose`, `Red`, `Orange`,
 `Amber`.
+
+### Colour groups
+
+A `ColorGroup` carries a base colour and its companions as one portable value — define your brand
+once and reuse it, or store it per tenant and rebuild it from an array:
+
+```php
+use Lattice\Lattice\Theme\ColorGroup;
+
+$brand = ColorGroup::make(Color::hex('#4f46e5')->dark('#818cf8'))
+    ->foreground('#ffffff')
+    ->hover('#4338ca');
+
+Theme::make()->primary($brand);
+
+// per-tenant branding from storage
+Lattice::theme(fn (): Theme => Theme::make()->primary(
+    ColorGroup::fromArray(tenant()->brand),
+));
+```
+
+A `Swatch` is simply a preset `ColorGroup` (`Swatch::Indigo->group()`), and explicit method
+arguments win over the group's slots.
 
 Pass a closure instead of a `Theme` to `Lattice::theme()` to resolve it per request — for example
 per-tenant branding:
