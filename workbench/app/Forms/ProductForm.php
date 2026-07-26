@@ -143,9 +143,6 @@ class ProductForm extends FormDefinition
     }
 
     /**
-     * Validates the single-default invariant and replaces the product's sales prices.
-     * Throws a ValidationException when more than one row has an empty/null group_id.
-     *
      * @param  array<int, array{group_id?: string|null, amount: string}>  $priceRows
      *
      * @throws ValidationException
