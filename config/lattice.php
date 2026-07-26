@@ -36,6 +36,13 @@ return [
         'echo' => null,
     ],
 
+    // Pages ship unauthenticated by default; authorization is opt-in via
+    // attribute middleware or Page::authorize(). `#[AsPage(middleware: [])]`
+    // opts a page out of this default entirely.
+    'pages' => [
+        'middleware' => ['web'],
+    ],
+
     'forms' => [
         'endpoint' => 'lattice/forms/{form}',
         'middleware' => ['web', 'auth'],

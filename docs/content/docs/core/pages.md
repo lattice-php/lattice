@@ -132,7 +132,7 @@ too.
 | `name`       | The route name. Defaults to the route segments joined by dots (`products.edit`), falling back to the class name without its `Page` suffix.                           |
 | `layout`     | The [layout](/core/layouts/) the page renders into — a [`PageLayout`](/advanced/enums/#pages) or a registered layout key. Defaults to `PageLayout::None` (no shell). |
 | `container`  | How the content is framed — a [`PageContainer`](/advanced/enums/#pages) (`Default` or `Centered`). Defaults to `PageContainer::Centered`.                            |
-| `middleware` | Middleware for the page's route — a string or an array.                                                                                                              |
+| `middleware` | Middleware for the page's route — a string or an array. Defaults to the `lattice.pages.middleware` config (`['web']`); pass `[]` to register the route with none.    |
 
 ```php
 use Lattice\Lattice\Ui\Enums\PageContainer;
@@ -146,6 +146,12 @@ use Lattice\Lattice\Ui\Enums\PageLayout;
     middleware: ['web', 'auth'],
 )]
 ```
+
+:::caution
+Pages are **not authenticated by default** — the default stack is `['web']` only. Add `auth` via the
+attribute (or a shared base page), or gate access with [`authorize()`](#authorization), for any page
+that must not be public.
+:::
 
 ## Shared base pages
 

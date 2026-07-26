@@ -14,8 +14,12 @@ use Spatie\Attributes\Attributes;
 final readonly class PageMetadata
 {
     /**
+     * `$middleware` is null when no attribute in the class hierarchy declares
+     * one — the route falls back to `lattice.pages.middleware` at registration
+     * time. An explicit `middleware: []` opts the route out of any middleware.
+     *
      * @param  class-string  $class
-     * @param  array<int, string>  $middleware
+     * @param  array<int, string>|null  $middleware
      */
     private function __construct(
         public string $class,
@@ -23,7 +27,7 @@ final readonly class PageMetadata
         public string $name,
         public PageLayout|string $layout,
         public PageContainer|string $container,
-        public array $middleware,
+        public ?array $middleware,
     ) {}
 
     public static function for(PageContract|string $page): self
@@ -43,12 +47,22 @@ final readonly class PageMetadata
             name: self::resolveName($class, $own),
             layout: self::inherited($class, fn (AsPage $a): PageLayout|string|null => $a->layout) ?? PageLayout::None,
             container: self::inherited($class, fn (AsPage $a): PageContainer|string|null => $a->container) ?? PageContainer::Centered,
-            middleware: (array) (self::inherited($class, fn (AsPage $a): string|array|null => $a->middleware) ?? []),
+            middleware: self::inheritedMiddleware($class),
         );
     }
 
     /**
-     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>, layout: string, container: string}
+     * @return array<int, string>|null
+     */
+    private static function inheritedMiddleware(string $class): ?array
+    {
+        $middleware = self::inherited($class, fn (AsPage $a): string|array|null => $a->middleware);
+
+        return $middleware === null ? null : (array) $middleware;
+    }
+
+    /**
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string}
      */
     public function toArray(): array
     {
@@ -63,7 +77,7 @@ final readonly class PageMetadata
     }
 
     /**
-     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>, layout: string, container: string}  $descriptor
+     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string}  $descriptor
      */
     public static function fromArray(array $descriptor): self
     {
