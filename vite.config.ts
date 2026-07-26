@@ -330,6 +330,7 @@ export default defineConfig(({ mode }) => {
                   /^node:/,
                   /^react($|\/)/,
                   /^react-dom($|\/)/,
+                  /^@atlaskit\//,
                   /^@inertiajs\//,
                   /^@internationalized\/date($|\/)/,
                   /^@lattice-php\/vite-svg-sprite($|\/)/,
