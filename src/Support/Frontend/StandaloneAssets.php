@@ -46,6 +46,7 @@ final class StandaloneAssets
     {
         $config = array_filter([
             'spriteUrl' => $this->versionedUrl('sprite.svg'),
+            'refreshRefUrl' => route('lattice.refs.refresh', absolute: false),
             'echo' => $frontend['echo'] ?? null,
         ], static fn (mixed $value): bool => $value !== null);
 

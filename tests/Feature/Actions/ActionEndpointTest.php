@@ -15,8 +15,6 @@ use Workbench\App\Models\User;
 use function Pest\Laravel\postJson;
 
 test('registered actions serialize their configured endpoint method and label', function (): void {
-    config(['lattice.actions.endpoint' => 'custom/actions/{action}']);
-
     Lattice::actions([WorkbenchPingAction::class]);
 
     $action = wire(ActionComponent::use(WorkbenchPingAction::class));
@@ -26,7 +24,7 @@ test('registered actions serialize their configured endpoint method and label', 
             'type' => 'action',
             'id' => 'workbench.ping',
             'props' => [
-                'endpoint' => '/custom/actions/workbench.ping',
+                'endpoint' => '/lattice/actions/workbench.ping',
                 'label' => 'Ping',
                 'method' => 'post',
                 'ref' => $this->latticeRef($action),

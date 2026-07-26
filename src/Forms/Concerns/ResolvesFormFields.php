@@ -13,6 +13,7 @@ use Lattice\Lattice\Forms\Components\SignedUpload;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormSchemaWalker;
 use Lattice\Lattice\Forms\ResolveResponse;
+use Lattice\Lattice\Http\SubRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -35,25 +36,23 @@ trait ResolvesFormFields
      *
      * @return array{options: list<Option>}
      */
-    public function searchOptions(Request $request): array
+    public function searchOptions(Request $request, SubRequest $sub): array
     {
-        $name = $request->string('_search')->toString();
-        $query = $request->string('q')->toString();
         $data = FormData::fromRequest($request);
         $fields = $this->formFields($request);
 
-        $instance = app(FormSchemaWalker::class)->find($fields, $name, $data);
+        $instance = app(FormSchemaWalker::class)->find($fields, $sub->target, $data);
         $field = $instance?->field;
 
         abort_if($field === null, Response::HTTP_NOT_FOUND);
         abort_unless($field instanceof Select && $field->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        return ['options' => $field->resolveSearch($query, $instance->scope, $request)];
+        return ['options' => $field->resolveSearch($sub->query, $instance->scope, $request)];
     }
 
-    public function signUpload(Request $request): SignedUpload
+    public function signUpload(Request $request, SubRequest $sub): SignedUpload
     {
-        $name = $request->string('_upload')->toString();
+        $name = $sub->target;
         $data = FormData::fromRequest($request);
         $fields = $this->formFields($request);
 

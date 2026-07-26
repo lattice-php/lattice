@@ -137,7 +137,7 @@ describe("column select filter", () => {
 
   it("supports a searchable column select that emits an eq clause", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>(async (input) => {
-      if (String(input).includes("_search")) {
+      if (String(input).includes("_sub=search")) {
         return Response.json({ options: [{ label: "Active", value: "active" }] });
       }
 

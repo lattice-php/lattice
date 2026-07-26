@@ -306,7 +306,8 @@ describe("FileUploadComponent image previews", () => {
         sku: "LMP-001",
         images: [],
         images__removed: [],
-        _upload: "images",
+        _sub: "upload",
+        _target: "images",
         filename: "lamp.jpg",
         contentType: "image/jpeg",
       }),
@@ -434,7 +435,7 @@ describe("FileUploadComponent image previews", () => {
     expect(apiFetch).toHaveBeenCalledWith(
       "/forms/products",
       expect.objectContaining({
-        body: expect.stringContaining('"_upload":"items.0.images"'),
+        body: expect.stringContaining('"_target":"items.0.images"'),
       }),
     );
   });

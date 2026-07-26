@@ -20,18 +20,14 @@ final class BulkActionRegistry extends DefinitionRegistry
      */
     public function component(string $bulkAction, array $context = []): ActionComponent
     {
-        $key = $this->registeredKeyFor($bulkAction);
-        $definition = $this->make($bulkAction)->withContext($context);
-
-        if (! $this->authorizedToRender($definition)) {
-            return BulkActionComponent::make($key)->hidden();
-        }
-
-        return $definition
-            ->definition(BulkActionComponent::make($key))
-            ->signedAs($key)
-            ->context($context)
-            ->endpoint($this->endpointFor($key));
+        return $this->gatedComponent(
+            $bulkAction,
+            fn (string $key): ActionComponent => BulkActionComponent::make($key),
+            fn (BulkActionDefinition $definition, ActionComponent $component, string $key): ActionComponent => $definition
+                ->definition($component)
+                ->endpoint($this->endpointFor($key)),
+            $context,
+        );
     }
 
     /**
@@ -53,6 +49,12 @@ final class BulkActionRegistry extends DefinitionRegistry
     protected function name(): string
     {
         return 'bulkAction';
+    }
+
+    #[\Override]
+    protected function routeName(): string
+    {
+        return 'lattice.bulk-actions.handle';
     }
 
     public function group(): string

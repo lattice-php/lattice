@@ -24,8 +24,6 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
      */
     protected array $definitions = [];
 
-    private ?string $endpointTemplate = null;
-
     public function __construct(
         protected readonly Container $container,
         protected readonly DiscoveryManifest $manifest,
@@ -34,6 +32,34 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
     protected function authorizedToRender(Definition $definition): bool
     {
         return $definition->authorize($this->container->make(Request::class));
+    }
+
+    /**
+     * The gate every wire component build passes through: an unauthorized
+     * definition yields a bare hidden component; an authorized one is
+     * configured and then sealed. Registries supply only the construction
+     * closures so this sequence cannot drift between them.
+     *
+     * @template TComponent of \Lattice\Lattice\Ui\Components\Component&Contracts\InteractiveComponent
+     *
+     * @param  class-string<TDefinition>  $definitionClass
+     * @param  callable(string): TComponent  $component
+     * @param  callable(TDefinition, TComponent, string): TComponent  $configure
+     * @param  array<string, mixed>  $context
+     * @return TComponent
+     */
+    protected function gatedComponent(string $definitionClass, callable $component, callable $configure, array $context = [])
+    {
+        $key = $this->registeredKeyFor($definitionClass);
+        $definition = $this->make($definitionClass)->withContext($context);
+
+        if (! $this->authorizedToRender($definition)) {
+            return $component($key)->hidden();
+        }
+
+        return $configure($definition, $component($key), $key)
+            ->signedAs($key)
+            ->context($context);
     }
 
     /**
@@ -76,15 +102,19 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
         return $this->make($definitions[$key]);
     }
 
+    /**
+     * Minted from the named route so the path honours the app's base path —
+     * subdirectory installs included. Apps needing a different path
+     * re-register the route under the same name.
+     */
     public function endpointFor(string $key): string
     {
-        $this->endpointTemplate ??= (string) config(
-            "lattice.{$this->group()}.endpoint",
-            "lattice/{$this->group()}/{{$this->name()}}",
-        );
-        $path = str_replace('{'.$this->name().'}', rawurlencode($key), ltrim($this->endpointTemplate, '/'));
+        return route($this->routeName(), [$this->name() => $key], absolute: false);
+    }
 
-        return '/'.$path;
+    protected function routeName(): string
+    {
+        return "lattice.{$this->group()}.show";
     }
 
     /**

@@ -19,24 +19,20 @@ final class ActionRegistry extends DefinitionRegistry
      */
     public function component(string $action, array $context = []): ActionComponent
     {
-        $key = $this->registeredKeyFor($action);
+        return $this->gatedComponent(
+            $action,
+            fn (string $key): ActionComponent => ActionComponent::make($key),
+            function (ActionDefinition $definition, ActionComponent $component, string $key): ActionComponent {
+                $component = $definition->definition($component)->endpoint($this->endpointFor($key));
 
-        $definition = $this->make($action)->withContext($context);
+                if ($definition instanceof FormActionDefinition) {
+                    $component->lazyForm();
+                }
 
-        if (! $this->authorizedToRender($definition)) {
-            return ActionComponent::make($key)->hidden();
-        }
-
-        $component = $definition->definition(ActionComponent::make($key))
-            ->signedAs($key)
-            ->context($context)
-            ->endpoint($this->endpointFor($key));
-
-        if ($definition instanceof FormActionDefinition) {
-            $component->lazyForm();
-        }
-
-        return $component;
+                return $component;
+            },
+            $context,
+        );
     }
 
     /**
@@ -58,6 +54,12 @@ final class ActionRegistry extends DefinitionRegistry
     protected function name(): string
     {
         return 'action';
+    }
+
+    #[\Override]
+    protected function routeName(): string
+    {
+        return 'lattice.actions.handle';
     }
 
     public function group(): string

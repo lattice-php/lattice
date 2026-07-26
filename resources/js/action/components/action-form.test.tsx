@@ -304,7 +304,7 @@ describe("action form modal", () => {
     };
     const fetchMock = vi.fn<FetchMock>().mockImplementation((_url, init) => {
       const body = JSON.parse(String(init.body)) as Record<string, unknown>;
-      const payload = body._form ? formNode : { effects: [], ok: true };
+      const payload = body._sub === "schema" ? formNode : { effects: [], ok: true };
 
       return Promise.resolve({
         json: async () => payload,
@@ -321,7 +321,7 @@ describe("action form modal", () => {
     expect(await screen.findByRole("textbox", { name: "Title" })).toBeVisible();
     const [, init] = fetchMock.mock.calls.find(
       ([, requestInit]) =>
-        (JSON.parse(String((requestInit as RequestInit).body)) as { _form?: boolean })._form,
+        (JSON.parse(String((requestInit as RequestInit).body)) as { _sub?: string })._sub,
     ) as [string, RequestInit];
 
     expect(init.method).toBe("POST");

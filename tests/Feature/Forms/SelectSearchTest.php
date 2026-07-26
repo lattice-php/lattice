@@ -113,8 +113,8 @@ function nestedRowSearchDefinition(): FormDefinition
 }
 
 it('resolves options for a searchable field', function (): void {
-    $result = searchableDefinition()->searchOptions(
-        Request::create('/', 'POST', ['_search' => 'author_id', 'q' => 'jane']),
+    $result = searchableDefinition()->searchOptions(...subRequest(
+        Request::create('/', 'POST', ['_sub' => 'search', '_target' => 'author_id', '_q' => 'jane'])),
     );
 
     expect($result)->toEqual([
@@ -126,27 +126,27 @@ it('resolves options for a searchable field', function (): void {
 });
 
 it('aborts with 404 when the searched field does not exist', function (): void {
-    searchableDefinition()->searchOptions(
-        Request::create('/', 'POST', ['_search' => 'missing', 'q' => 'x']),
+    searchableDefinition()->searchOptions(...subRequest(
+        Request::create('/', 'POST', ['_sub' => 'search', '_target' => 'missing', '_q' => 'x'])),
     );
 })->throws(NotFoundHttpException::class);
 
 it('aborts with 422 when the field is not searchable', function (): void {
-    searchableDefinition()->searchOptions(
-        Request::create('/', 'POST', ['_search' => 'plan', 'q' => 'x']),
+    searchableDefinition()->searchOptions(...subRequest(
+        Request::create('/', 'POST', ['_sub' => 'search', '_target' => 'plan', '_q' => 'x'])),
     );
 })->throws(HttpException::class);
 
 it('resolves options for a searchable select inside a repeater row', function (): void {
-    $result = rowSearchDefinition()->searchOptions(
+    $result = rowSearchDefinition()->searchOptions(...subRequest(
         Request::create('/', 'POST', [
-            '_search' => 'items.0.product',
-            'q' => 'desk',
+            '_sub' => 'search', '_target' => 'items.0.product',
+            '_q' => 'desk',
             'customer' => 'acme',
             'items' => [
                 ['category' => 'chairs'],
             ],
-        ]),
+        ])),
     );
 
     expect($result)->toEqual([
@@ -157,15 +157,15 @@ it('resolves options for a searchable select inside a repeater row', function ()
 });
 
 it('resolves options for a searchable select inside a builder row', function (): void {
-    $result = rowSearchDefinition()->searchOptions(
+    $result = rowSearchDefinition()->searchOptions(...subRequest(
         Request::create('/', 'POST', [
-            '_search' => 'blocks.0.product',
-            'q' => 'lamp',
+            '_sub' => 'search', '_target' => 'blocks.0.product',
+            '_q' => 'lamp',
             'customer' => 'initech',
             'blocks' => [
                 ['type' => 'product', 'category' => 'lighting'],
             ],
-        ]),
+        ])),
     );
 
     expect($result)->toEqual([
@@ -176,10 +176,10 @@ it('resolves options for a searchable select inside a builder row', function ():
 });
 
 it('resolves options for a searchable select inside nested repeater rows', function (): void {
-    $result = nestedRowSearchDefinition()->searchOptions(
+    $result = nestedRowSearchDefinition()->searchOptions(...subRequest(
         Request::create('/', 'POST', [
-            '_search' => 'sections.0.items.0.product',
-            'q' => 'desk',
+            '_sub' => 'search', '_target' => 'sections.0.items.0.product',
+            '_q' => 'desk',
             'customer' => 'acme',
             'sections' => [[
                 'section' => 'office',
@@ -187,7 +187,7 @@ it('resolves options for a searchable select inside nested repeater rows', funct
                     ['category' => 'chairs'],
                 ],
             ]],
-        ]),
+        ])),
     );
 
     expect($result)->toEqual([
@@ -201,14 +201,14 @@ it('aborts with 422 when a row select is not searchable', function (): void {
     $status = null;
 
     try {
-        rowSearchDefinition()->searchOptions(
+        rowSearchDefinition()->searchOptions(...subRequest(
             Request::create('/', 'POST', [
-                '_search' => 'items.0.plan',
-                'q' => 'free',
+                '_sub' => 'search', '_target' => 'items.0.plan',
+                '_q' => 'free',
                 'items' => [
                     ['category' => 'chairs'],
                 ],
-            ]),
+            ])),
         );
     } catch (HttpException $exception) {
         $status = $exception->getStatusCode();
@@ -226,8 +226,8 @@ it('searches options through the form endpoint with a signed reference', functio
     $ref = wire(Form::use(SelectFieldForm::class))['props']['ref'];
 
     post('/lattice/forms/workbench.fields.select.form', [
-        '_search' => 'related_products',
-        'q' => 'walnut',
+        '_sub' => 'search', '_target' => 'related_products',
+        '_q' => 'walnut',
     ], $this->latticeHeaders($ref))
         ->assertOk()
         ->assertExactJson([

@@ -151,7 +151,8 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
       ref: componentRef,
       body: JSON.stringify({
         ...values,
-        _upload: uploadKey,
+        _sub: "upload",
+        _target: uploadKey,
         filename: file.name,
         contentType: file.type,
       }),

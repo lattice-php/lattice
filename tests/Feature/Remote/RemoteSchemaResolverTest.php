@@ -277,9 +277,7 @@ test('source schema rejects invalid local json files', function (): void {
     )->toThrow(InvalidRemoteSchema::class, 'valid JSON');
 });
 
-test('remote schema refs use configured token endpoints', function (): void {
-    config()->set('lattice.remote-sources.endpoint', 'custom/remotes/{source}/browser-token');
-
+test('remote schema refs use the route-minted token endpoint', function (): void {
     Http::preventStrayRequests();
     Http::fake([
         'https://crm.example.test/schema.json' => Http::response([
@@ -307,7 +305,7 @@ test('remote schema refs use configured token endpoints', function (): void {
         ->resolve('fixtures.remote-crm')
         ->schema(request()));
 
-    expect($wire[0]['props']['remote']['tokenEndpoint'])->toBe('/custom/remotes/fixtures.remote-crm/browser-token');
+    expect($wire[0]['props']['remote']['tokenEndpoint'])->toBe('/lattice/remote-sources/fixtures.remote-crm/token');
 });
 
 test('source schema rejects invalid manifest payloads', function (array|string $payload, string $message): void {

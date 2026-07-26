@@ -1,4 +1,5 @@
 import "./standalone.css";
+import { setRefRefreshEndpoint } from "@lattice-php/lattice/core/api";
 import { createLatticeApp } from "@lattice-php/lattice/create-app";
 import { withVisitHeaders } from "@lattice-php/lattice/inertia";
 import { readStandaloneConfig } from "./config";
@@ -6,6 +7,10 @@ import { readStandaloneConfig } from "./config";
 const config = readStandaloneConfig(document);
 
 async function boot(): Promise<void> {
+  if (config.refreshRefUrl) {
+    setRefRefreshEndpoint(config.refreshRefUrl);
+  }
+
   if (config.echo) {
     try {
       const { configureEcho } = await import("@laravel/echo-react");

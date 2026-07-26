@@ -160,6 +160,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
             }
         });
 
+        $this->callAfterResolving(ResponseFactory::class, function (ResponseFactory $inertia): void {
+            $inertia->share('lattice.urls', fn (): array => [
+                'refreshRef' => route('lattice.refs.refresh', absolute: false),
+            ]);
+        });
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../stubs/registry.ts' => resource_path('js/registry.ts'),

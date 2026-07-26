@@ -12,6 +12,7 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormSchemaWalker;
+use Lattice\Lattice\Http\SubRequest;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Components\Table as TableComponent;
 use Lattice\Lattice\Tables\Contracts\Filterable;
@@ -64,36 +65,32 @@ final class TableRegistry extends DefinitionRegistry
      */
     private function buildComponent(string $table, callable $result, array $context = [], bool $lazy = false): TableComponent
     {
-        $key = $this->registeredKeyFor($table);
-        $definition = $this->make($table)->withContext($context);
+        return $this->gatedComponent(
+            $table,
+            fn (string $key): TableComponent => TableComponent::make($key),
+            function (TableDefinition $definition, TableComponent $component, string $key) use ($result, $context, $lazy): TableComponent {
+                $columns = $definition->columns();
+                $query = TableQuery::empty($definition->perPage());
 
-        if (! $this->authorizedToRender($definition)) {
-            return TableComponent::make($key)->hidden();
-        }
+                $component
+                    ->endpoint($this->endpointFor($key))
+                    ->columns($columns)
+                    ->filters($definition->filters())
+                    ->searchable($this->hasSearchableColumns($columns))
+                    ->layout($definition->layout())
+                    ->striped($definition->striped())
+                    ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
+                    ->actionsLabel($definition->actionsLabel())
+                    ->emptyLabel($definition->emptyLabel())
+                    ->bulkActions($this->bulkActions($definition, $key, $context))
+                    ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
 
-        $columns = $definition->columns();
-        $query = TableQuery::empty($definition->perPage());
+                $component->lazy = $lazy;
 
-        $component = TableComponent::make($key)
-            ->signedAs($key)
-            ->context($context)
-            ->endpoint($this->endpointFor($key))
-            ->columns($columns)
-            ->filters($definition->filters())
-            ->searchable($this->hasSearchableColumns($columns))
-            ->layout($definition->layout())
-            ->striped($definition->striped())
-            ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
-            ->actionsLabel($definition->actionsLabel())
-            ->emptyLabel($definition->emptyLabel())
-            ->bulkActions($this->bulkActions($definition, $key, $context))
-            ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
-
-        if ($lazy) {
-            $component->lazy = true;
-        }
-
-        return $component;
+                return $component;
+            },
+            $context,
+        );
     }
 
     public function response(string $key, Request $request, ?TableDefinition $definition = null): TableResult
@@ -106,25 +103,23 @@ final class TableRegistry extends DefinitionRegistry
     }
 
     /**
-     * Resolve options for a searchable filter from the user's query (the `_search`
-     * sub-action of the table endpoint). Targets are namespaced — `filter:<key>.<field>`
+     * Resolve options for a searchable filter from the user's query (the search
+     * sub-request of the table endpoint). Targets are namespaced — `filter:<key>.<field>`
      * addresses a dedicated filter's schema field, `column:<key>` a column filter — so
      * a filter key can never shadow a dot-keyed relation column.
      *
      * @return array{options: list<Option>}
      */
-    public function searchFilterOptions(string $key, Request $request, ?TableDefinition $definition = null): array
+    public function searchFilterOptions(string $key, Request $request, SubRequest $sub, ?TableDefinition $definition = null): array
     {
         $definition ??= $this->resolve($key);
-        $searchKey = $request->string('_search')->toString();
-        $query = $request->string('_q')->toString();
 
-        if (str_starts_with($searchKey, 'filter:')) {
-            return ['options' => $this->searchFilterFieldOptions($definition, substr($searchKey, strlen('filter:')), $query, $request)];
+        if (str_starts_with($sub->target, 'filter:')) {
+            return ['options' => $this->searchFilterFieldOptions($definition, substr($sub->target, strlen('filter:')), $sub->query, $request)];
         }
 
-        if (str_starts_with($searchKey, 'column:')) {
-            return ['options' => $this->searchColumnFilterOptions($definition, substr($searchKey, strlen('column:')), $query)];
+        if (str_starts_with($sub->target, 'column:')) {
+            return ['options' => $this->searchColumnFilterOptions($definition, substr($sub->target, strlen('column:')), $sub->query)];
         }
 
         abort(Response::HTTP_NOT_FOUND);

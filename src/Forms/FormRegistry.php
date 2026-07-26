@@ -20,20 +20,15 @@ final class FormRegistry extends DefinitionRegistry
      */
     public function component(string $form, array $context = []): FormComponent
     {
-        $key = $this->registeredKeyFor($form);
-        $definition = $this->make($form)->withContext($context);
-        $request = $this->container->make(Request::class);
-
-        if (! $this->authorizedToRender($definition)) {
-            return FormComponent::make($key)->hidden();
-        }
-
-        $component = FormComponent::make($key)->signedAs($key)->context($context);
-
-        return $definition
-            ->definition($component, $request)
-            ->action($this->endpointFor($key))
-            ->errorBag($this->errorBagFor($key));
+        return $this->gatedComponent(
+            $form,
+            fn (string $key): FormComponent => FormComponent::make($key),
+            fn (FormDefinition $definition, FormComponent $component, string $key): FormComponent => $definition
+                ->definition($component, $this->container->make(Request::class))
+                ->action($this->endpointFor($key))
+                ->errorBag($this->errorBagFor($key)),
+            $context,
+        );
     }
 
     public function errorBagFor(string $id): string
@@ -60,6 +55,12 @@ final class FormRegistry extends DefinitionRegistry
     protected function name(): string
     {
         return 'form';
+    }
+
+    #[\Override]
+    protected function routeName(): string
+    {
+        return 'lattice.forms.handle';
     }
 
     public function group(): string

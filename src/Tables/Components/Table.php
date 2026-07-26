@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tables\Components;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\TableDefinition;
@@ -17,7 +18,7 @@ use Lattice\Lattice\Ui\Components\IsInteractive;
 use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 #[AsComponent('table')]
-class Table extends Component
+class Table extends Component implements InteractiveComponent
 {
     use FiltersRenderableComponents;
     use IsInteractive;

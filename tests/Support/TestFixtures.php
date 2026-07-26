@@ -2,10 +2,29 @@
 
 declare(strict_types=1);
 
+use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Contracts\OptionSource;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\RowsField;
+use Lattice\Lattice\Http\SubRequest;
+
+/**
+ * Spreadable request-plus-envelope pair for calling sub-request methods
+ * directly: `->searchOptions(...subRequest(Request::create(...)))`.
+ *
+ * @return array{0: Request, 1: SubRequest}
+ */
+function subRequest(Request $request): array
+{
+    $sub = SubRequest::from($request);
+
+    if (! $sub instanceof SubRequest) {
+        throw new RuntimeException('The request does not carry a sub-request envelope.');
+    }
+
+    return [$request, $sub];
+}
 
 function discoverFixtures(): void
 {

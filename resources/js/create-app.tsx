@@ -2,6 +2,8 @@ import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
 import { createInertiaApp } from "@inertiajs/react";
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { initializeAppearance } from "./appearance";
+import { setRefRefreshEndpoint } from "./core/api";
+import { isRecord } from "./core/materialize";
 import { extendRegistry, type Plugin, type PluginI18n, type Registry } from "./core/registry";
 import { setDefaultRegistry } from "./core/registry-context";
 import type { SpriteValue } from "./icons/sprite";
@@ -154,6 +156,16 @@ export function createLatticeApp({
       const pending: Promise<unknown>[] = [];
 
       if (!ssr) {
+        const shared = page.props.lattice;
+
+        if (
+          isRecord(shared) &&
+          isRecord(shared.urls) &&
+          typeof shared.urls.refreshRef === "string"
+        ) {
+          setRefRefreshEndpoint(shared.urls.refreshRef);
+        }
+
         // Loaded on demand so apps without the shared i18n prop never ship the
         // i18next backend; the disabled-config call still stores the timezone.
         if (i18nEnabled && i18nConfigFromPageProps(page.props) !== undefined) {

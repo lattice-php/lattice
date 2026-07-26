@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
@@ -16,9 +17,17 @@ use function Pest\Laravel\getJson;
 use function Pest\Laravel\patch;
 use function Pest\Laravel\patchJson;
 
-test('registered forms serialize their configured endpoint and isolated error bag', function (): void {
-    config(['lattice.forms.endpoint' => 'custom/forms/{form}']);
+test('endpoints honour the app base path for subdirectory installs', function (): void {
+    URL::forceRootUrl('http://localhost/subdir');
 
+    Lattice::forms([WorkbenchProfileForm::class]);
+
+    $form = wire(Form::use(WorkbenchProfileForm::class));
+
+    expect($form['props']['action'])->toBe('/subdir/lattice/forms/settings.profile');
+});
+
+test('registered forms serialize their configured endpoint and isolated error bag', function (): void {
     Lattice::forms([WorkbenchProfileForm::class]);
 
     $form = wire(Form::use(WorkbenchProfileForm::class));
@@ -28,7 +37,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
             'type' => 'form',
             'id' => 'settings.profile',
             'props' => [
-                'action' => '/custom/forms/settings.profile',
+                'action' => '/lattice/forms/settings.profile',
                 'errorBag' => 'settings_profile',
                 'method' => 'patch',
                 'ref' => $this->latticeRef($form),

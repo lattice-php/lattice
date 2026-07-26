@@ -67,7 +67,7 @@ const node: TableNode = {
 
 function stubFetch() {
   const fetch = vi.fn<typeof globalThis.fetch>(async (input) => {
-    if (String(input).includes("_search")) {
+    if (String(input).includes("_sub=search")) {
       return Response.json({
         options: [
           { label: "Ada", value: "1" },
@@ -149,7 +149,7 @@ describe("searchable select filter", () => {
     });
   });
 
-  it("issues a _search request as the user types", async () => {
+  it("issues a search sub-request as the user types", async () => {
     const fetch = stubFetch();
 
     renderWithRegistry(<TableComponent node={node} />, registry);
@@ -161,7 +161,7 @@ describe("searchable select filter", () => {
     await waitFor(() => {
       expect(
         fetch.mock.calls.some((call) =>
-          String(call[0]).includes("_search=filter%3Aauthor.value&_q=ad"),
+          String(call[0]).includes("_sub=search&_target=filter%3Aauthor.value&_q=ad"),
         ),
       ).toBe(true);
     });

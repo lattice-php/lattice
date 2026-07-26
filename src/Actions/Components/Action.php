@@ -8,6 +8,7 @@ use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\Confirmation;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
+use Lattice\Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Ui\Components\Component;
@@ -21,7 +22,7 @@ use Lattice\Lattice\Ui\Enums\ModalWidth;
 use Lattice\Lattice\Ui\Enums\Side;
 
 #[AsComponent('action')]
-class Action extends Component
+class Action extends Component implements InteractiveComponent
 {
     use HasHttpMethod;
     use HasIcon;

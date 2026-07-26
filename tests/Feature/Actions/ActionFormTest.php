@@ -34,7 +34,7 @@ it('marks a form-action component as lazy without inlining the schema', function
 it('returns a prefilled schema for a lazy form action', function (): void {
     Lattice::actions([EditActionFixture::class]);
 
-    $this->callAction(EditActionFixture::class, ['_form' => true], ['current_title' => 'Existing'])
+    $this->callAction(EditActionFixture::class, ['_sub' => 'schema'], ['current_title' => 'Existing'])
         ->assertOk()
         ->assertJsonPath('type', 'form')
         ->assertJsonPath('props.state.title', 'Existing');
@@ -120,7 +120,7 @@ it('validates the embedded form precognitively without running handle', function
 it('suppresses the submit row of a wizard form action so only the wizard controls submit', function (): void {
     Lattice::actions([WizardActionFixture::class]);
 
-    $this->callAction(WizardActionFixture::class, ['_form' => true])
+    $this->callAction(WizardActionFixture::class, ['_sub' => 'schema'])
         ->assertOk()
         ->assertJsonPath('type', 'form')
         ->assertJsonPath('props.submitButton', false)
@@ -168,7 +168,7 @@ class WizardActionFixture extends FormActionDefinition
 it('resolves searchable options for an embedded select', function (): void {
     Lattice::actions([AssignActionFixture::class]);
 
-    $this->callAction(AssignActionFixture::class, ['_search' => 'owner', 'q' => 'taylor'])
+    $this->callAction(AssignActionFixture::class, ['_sub' => 'search', '_target' => 'owner', '_q' => 'taylor'])
         ->assertOk()
         ->assertJsonPath('options.0.label', 'Match: taylor')
         ->assertJsonPath('options.0.value', '7');
@@ -177,7 +177,7 @@ it('resolves searchable options for an embedded select', function (): void {
 it('resolves computed fields for an embedded form', function (): void {
     Lattice::actions([AssignActionFixture::class]);
 
-    $this->callAction(AssignActionFixture::class, ['_resolve' => true, 'qty' => '5'])
+    $this->callAction(AssignActionFixture::class, ['_sub' => 'resolve', 'qty' => '5'])
         ->assertOk()
         ->assertJsonPath('values.total', 7.5);
 });

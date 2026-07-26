@@ -155,7 +155,8 @@ export function useTable(node: TableNode) {
       }
 
       const url = new URL(endpoint, window.location.origin);
-      url.searchParams.set("_search", searchKey);
+      url.searchParams.set("_sub", "search");
+      url.searchParams.set("_target", searchKey);
       url.searchParams.set("_q", search);
 
       const response = await apiFetch(`${url.pathname}${url.search}`, {

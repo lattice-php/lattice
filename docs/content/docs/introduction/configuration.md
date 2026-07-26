@@ -34,26 +34,30 @@ The same method exists for `fragments`, `actions`, `bulkActions`, `layouts`, `pa
 
 ## Endpoints and middleware
 
-Each definition type is served by a dedicated endpoint with its own middleware stack. The defaults all run behind `web` and `auth`:
+Each definition type is served by a dedicated named route with its own middleware stack. The
+defaults all run behind `web` and `auth`:
 
-| Type           | Endpoint                                | Middleware        |
-| -------------- | --------------------------------------- | ----------------- |
-| Forms          | `lattice/forms/{form}`                  | `['web', 'auth']` |
-| Tables         | `lattice/tables/{table}`                | `['web', 'auth']` |
-| Fragments      | `lattice/fragments/{fragment}`          | `['web', 'auth']` |
-| Actions        | `lattice/actions/{action}`              | `['web', 'auth']` |
-| Bulk actions   | `lattice/bulk-actions/{bulkAction}`     | `['web', 'auth']` |
-| Remote sources | `lattice/remote-sources/{source}/token` | `['web', 'auth']` |
-| Notifications  | `lattice/notifications`                 | `['web', 'auth']` |
+| Type           | Route name                     | Path                                    | Middleware        |
+| -------------- | ------------------------------ | --------------------------------------- | ----------------- |
+| Forms          | `lattice.forms.handle`         | `lattice/forms/{form}`                  | `['web', 'auth']` |
+| Tables         | `lattice.tables.show`          | `lattice/tables/{table}`                | `['web', 'auth']` |
+| Fragments      | `lattice.fragments.show`       | `lattice/fragments/{fragment}`          | `['web', 'auth']` |
+| Actions        | `lattice.actions.handle`       | `lattice/actions/{action}`              | `['web', 'auth']` |
+| Bulk actions   | `lattice.bulk-actions.handle`  | `lattice/bulk-actions/{bulkAction}`     | `['web', 'auth']` |
+| Remote sources | `lattice.remote-sources.token` | `lattice/remote-sources/{source}/token` | `['web', 'auth']` |
+| Notifications  | `lattice.notifications.*`      | `lattice/notifications`                 | `['web', 'auth']` |
 
-Change the endpoint or middleware stack per type:
+Change the middleware stack per type:
 
 ```php
 'forms' => [
-    'endpoint' => 'lattice/forms/{form}',
     'middleware' => ['web', 'auth'],
 ],
 ```
+
+Endpoint URLs are minted from the named routes, so they honour your app's base path —
+subdirectory installs included. To serve a type from a different path, register your own route
+under the same name after Lattice's routes load; the components pick it up automatically.
 
 The `notifications` block also takes `per_page`, `polling_interval`, and `prune_after_days` — see
 [Notifications](/components/notifications/#configuration).

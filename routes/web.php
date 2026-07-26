@@ -11,18 +11,18 @@ use Lattice\Lattice\Http\Controllers\RefRefreshController;
 use Lattice\Lattice\Http\Controllers\RemoteSourceTokenController;
 use Lattice\Lattice\Http\Controllers\TableController;
 
-Route::middleware(config('lattice.forms.middleware', ['web', 'auth']))
-    ->match(['post', 'put', 'patch', 'delete'], config('lattice.forms.endpoint', 'lattice/forms/{form}'), FormController::class)
+Route::middleware(config('lattice.forms.middleware'))
+    ->match(['post', 'put', 'patch', 'delete'], 'lattice/forms/{form}', FormController::class)
     ->where('form', '.*')
     ->name('lattice.forms.handle');
 
-Route::middleware(config('lattice.tables.middleware', ['web', 'auth']))
-    ->get(config('lattice.tables.endpoint', 'lattice/tables/{table}'), TableController::class)
+Route::middleware(config('lattice.tables.middleware'))
+    ->get('lattice/tables/{table}', TableController::class)
     ->where('table', '.*')
     ->name('lattice.tables.show');
 
-Route::middleware(config('lattice.fragments.middleware', ['web', 'auth']))
-    ->get(config('lattice.fragments.endpoint', 'lattice/fragments/{fragment}'), FragmentController::class)
+Route::middleware(config('lattice.fragments.middleware'))
+    ->get('lattice/fragments/{fragment}', FragmentController::class)
     ->where('fragment', '.*')
     ->name('lattice.fragments.show');
 
@@ -33,18 +33,18 @@ Route::middleware(config('lattice.refs.middleware', ['web']))
     ->post('lattice/refs/refresh', RefRefreshController::class)
     ->name('lattice.refs.refresh');
 
-Route::middleware(config('lattice.remote-sources.middleware', ['web', 'auth']))
-    ->post(config('lattice.remote-sources.endpoint', 'lattice/remote-sources/{source}/token'), RemoteSourceTokenController::class)
+Route::middleware(config('lattice.remote-sources.middleware'))
+    ->post('lattice/remote-sources/{source}/token', RemoteSourceTokenController::class)
     ->where('source', '.*')
     ->name('lattice.remote-sources.token');
 
-Route::middleware(config('lattice.actions.middleware', ['web', 'auth']))
-    ->match(['post', 'put', 'patch', 'delete'], config('lattice.actions.endpoint', 'lattice/actions/{action}'), ActionController::class)
+Route::middleware(config('lattice.actions.middleware'))
+    ->match(['post', 'put', 'patch', 'delete'], 'lattice/actions/{action}', ActionController::class)
     ->where('action', '.*')
     ->name('lattice.actions.handle');
 
-Route::middleware(config('lattice.bulk-actions.middleware', ['web', 'auth']))
-    ->match(['post', 'put', 'patch', 'delete'], config('lattice.bulk-actions.endpoint', 'lattice/bulk-actions/{bulkAction}'), BulkActionController::class)
+Route::middleware(config('lattice.bulk-actions.middleware'))
+    ->match(['post', 'put', 'patch', 'delete'], 'lattice/bulk-actions/{bulkAction}', BulkActionController::class)
     ->where('bulkAction', '.*')
     ->name('lattice.bulk-actions.handle');
 
