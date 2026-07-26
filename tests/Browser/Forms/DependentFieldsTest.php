@@ -2,14 +2,20 @@
 declare(strict_types=1);
 
 it('toggles the company field instantly based on type', function (): void {
-    $this->visitAsWorkbenchUser('/form/dependent')
+    $page = $this->visitAsWorkbenchUser('/form/dependent')
         ->assertSee('Dependent & computed')
         ->assertMissing('input[name="company"]')
-        ->click('@type-business')
-        ->assertPresent('input[name="company"]')
-        ->click('@type-personal')
-        ->assertMissing('input[name="company"]')
-        ->assertNoSmoke();
+        ->click('@type-business');
+
+    assertPresentEventually($page, 'input[name="company"]');
+
+    $page->click('@type-personal');
+
+    retryUntil(function () use ($page): void {
+        $page->assertMissing('input[name="company"]');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('requires the company field for business on submit', function (): void {

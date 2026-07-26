@@ -56,6 +56,18 @@ function assertPresentEventually(AwaitableWebpage|PendingAwaitablePage|Webpage $
     });
 }
 
+/**
+ * The infinite tab's IntersectionObserver auto-fires loadMore() when the
+ * sentinel enters its 240px root margin — which can happen before the first
+ * page paints under CI load, unmounting the "Load more" button mid-test.
+ * use-table bails when the API is undefined, pinning these tests to the
+ * manual load path.
+ */
+function disableInfiniteScrollAutoLoad(PendingAwaitablePage $page): void
+{
+    $page->script('window.IntersectionObserver = undefined');
+}
+
 function rustfsIsReachable(): bool
 {
     $key = 'lattice-test-probes/'.Str::uuid().'.txt';

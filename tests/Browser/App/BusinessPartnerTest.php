@@ -12,18 +12,22 @@ it('renders the business partners index page', function (): void {
 });
 
 it('creates a business partner via the form', function (): void {
-    $this->visitAsWorkbenchUser('/business-partners/create')
+    $page = $this->visitAsWorkbenchUser('/business-partners/create')
         ->assertSee('Create business partner')
         ->fill('input[name="name"]', 'Test Partner')
         ->fill('input[name="email"]', 'partner@example.com')
         ->click('[data-test="repeater-addresses-row-0"] [data-test="row-action-remove"]')
-        ->click('@form-submit')
-        ->assertSee('Business partners')
-        ->assertNoSmoke();
+        ->click('@form-submit');
+
+    retryUntil(function (): void {
+        expect(BusinessPartner::query()->where('email', 'partner@example.com')->exists())->toBeTrue();
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('adds an address row in the repeater and submits', function (): void {
-    $this->visitAsWorkbenchUser('/business-partners/create')
+    $page = $this->visitAsWorkbenchUser('/business-partners/create')
         ->assertSee('Create business partner')
         ->assertPresent('[data-test="repeater-addresses-row-0"]')
         ->fill('input[name="name"]', 'Repeater Partner')
@@ -33,9 +37,13 @@ it('adds an address row in the repeater and submits', function (): void {
         ->fill('input[name="addresses[0][city]"]', 'Berlin')
         ->fill('input[name="addresses[0][postal_code]"]', '10115')
         ->fill('input[name="addresses[0][country]"]', 'DE')
-        ->click('@form-submit')
-        ->assertSee('Business partners')
-        ->assertNoSmoke();
+        ->click('@form-submit');
+
+    retryUntil(function (): void {
+        expect(Address::query()->where('label', 'HQ')->where('city', 'Berlin')->exists())->toBeTrue();
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('renders the edit page for an existing partner', function (): void {

@@ -48,12 +48,20 @@ it('auto-resolves, re-resolves on partner change, and persists a manual override
 
     $page->fill('input[name="lines[0][quantity]"]', '2')
         ->fill('input[name="lines[0][unit_price]"]', '73.50')
-        ->click('@form-submit')
-        ->assertSee('Sales orders')
-        ->assertNoSmoke();
+        ->click('@form-submit');
 
-    $line = $vipPartner->salesOrders()->firstOrFail()->lines()->firstOrFail();
+    // The index page also renders a "Create sales order" button, so absence of
+    // the form's inputs is the navigation signal — not the heading text.
+    retryUntil(function () use ($page): void {
+        $page->assertMissing('input[name="lines[0][unit_price]"]');
+    });
 
-    expect($line->unit_price)->toBe('73.50')
-        ->and($line->quantity)->toBe(2);
+    retryUntil(function () use ($vipPartner): void {
+        $line = $vipPartner->salesOrders()->firstOrFail()->lines()->firstOrFail();
+
+        expect($line->unit_price)->toBe('73.50')
+            ->and($line->quantity)->toBe(2);
+    });
+
+    $page->assertNoSmoke();
 });

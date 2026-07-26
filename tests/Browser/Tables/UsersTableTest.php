@@ -8,8 +8,10 @@ it('lists users with their columns', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
 
-    visit('/')
-        ->assertSee('Workbench users')
+    $page = visit('/');
+    disableInfiniteScrollAutoLoad($page);
+
+    $page->assertSee('Workbench users')
         ->assertSee('Maya Chen')
         ->assertSee('Ada Lovelace')
         ->assertSee('Created at')
@@ -23,8 +25,10 @@ it('copies a cell value to the clipboard', function (): void {
     User::query()->delete();
     UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
 
-    visit('/')
-        ->click('@copy-email')
-        ->assertSee('Copied')
-        ->assertNoSmoke();
+    $page = visit('/')
+        ->click('@copy-email');
+
+    assertSeeEventually($page, 'Copied');
+
+    $page->assertNoSmoke();
 });

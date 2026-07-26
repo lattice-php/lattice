@@ -25,11 +25,13 @@ it('disables the submit button while precognition errors are active', function (
 });
 
 it('surfaces server validation errors after submitting an empty form', function (): void {
-    $this->visitAsWorkbenchUser('/products/create')
+    $page = $this->visitAsWorkbenchUser('/products/create')
         ->assertSee('Create Product')
-        ->click('@form-submit')
-        ->assertSee('The Name field is required.')
-        ->assertDisabled('@form-submit');
+        ->click('@form-submit');
+
+    assertSeeEventually($page, 'The Name field is required.');
+
+    $page->assertDisabled('@form-submit');
 
     expect(Product::query()->count())->toBe(0);
 });
@@ -56,7 +58,7 @@ it('attaches related products via search when creating', function (): void {
     $this->actingAs(workbenchTestUser());
     $related = Product::factory()->create(['name' => 'Walnut Desk']);
 
-    visit('/products/create')
+    $page = visit('/products/create')
         ->assertSee('Create Product')
         ->fill('@name', 'Gadget')
         ->fill('@sku', 'GAD-100')
@@ -67,9 +69,13 @@ it('attaches related products via search when creating', function (): void {
         ->assertSee('Walnut Desk')
         ->click("@select-related_products-option-{$related->getKey()}")
         ->assertPresent("[data-test=\"select-related_products-remove-{$related->getKey()}\"]")
-        ->click('@form-submit')
-        ->assertSee('Products')
-        ->assertNoSmoke();
+        ->click('@form-submit');
+
+    retryUntil(function (): void {
+        expect(Product::query()->where('sku', 'GAD-100')->exists())->toBeTrue();
+    });
+
+    $page->assertNoSmoke();
 
     $product = Product::query()->where('sku', 'GAD-100')->firstOrFail();
 
@@ -78,7 +84,7 @@ it('attaches related products via search when creating', function (): void {
 });
 
 it('creates and edits a product through the form flow', function (): void {
-    $this->visitAsWorkbenchUser('/products')
+    $page = $this->visitAsWorkbenchUser('/products')
         ->assertSee('Products')
         ->click('@create-product')
         ->assertSee('Create Product')
@@ -86,20 +92,28 @@ it('creates and edits a product through the form flow', function (): void {
         ->fill('@sku', 'LAMP-001')
         ->fill('input[name="sales_prices[0][amount]"]', '49.99')
         ->click('@status-active')
-        ->click('@form-submit')
-        ->assertSee('Products')
-        ->assertSee('Desk Lamp')
-        ->click('@product-actions')
+        ->click('@form-submit');
+
+    // Typed input values are not text nodes, so the table cell is the only
+    // "Desk Lamp" the text assertion can match — a real post-submit signal.
+    retryUntil(function () use ($page): void {
+        $page->assertSee('Desk Lamp');
+    });
+
+    $page->click('@product-actions')
         ->click('@product-edit')
         ->assertSee('Edit Product')
         ->assertValue('Name', 'Desk Lamp')
         ->fill('@name', 'Updated Lamp')
         ->assertValue('Name', 'Updated Lamp')
         ->assertEnabled('@form-submit')
-        ->click('@form-submit')
-        ->assertSee('Products')
-        ->assertSee('Updated Lamp')
-        ->assertNoSmoke();
+        ->click('@form-submit');
+
+    retryUntil(function () use ($page): void {
+        $page->assertSee('Updated Lamp');
+    });
+
+    $page->assertNoSmoke();
 
     expect(Product::query()->where('sku', 'LAMP-001')->value('name'))->toBe('Updated Lamp');
 });

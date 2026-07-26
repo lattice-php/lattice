@@ -17,8 +17,12 @@ it('reveals the docked chat panel when the chat layout is toggled', function ():
     $page
         ->assertMissing('@assistant-chat-trigger')
         ->assertSee('Dock chat back to floating')
-        ->click('@chat-layout-toggle')
-        ->assertVisible('@assistant-chat-trigger')
-        ->assertMissing('@chat-box')
+        ->click('@chat-layout-toggle');
+
+    retryUntil(function () use ($page): void {
+        $page->assertVisible('@assistant-chat-trigger');
+    });
+
+    $page->assertMissing('@chat-box')
         ->assertNoSmoke();
 });
