@@ -48,6 +48,7 @@ final class RemoteSourceRegistry extends DefinitionRegistry
         return 'source';
     }
 
+    #[\Override]
     protected function routeName(): string
     {
         return 'lattice.remote-sources.token';

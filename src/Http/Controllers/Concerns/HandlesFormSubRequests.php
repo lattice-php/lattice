@@ -7,33 +7,32 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
 use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Lattice\Http\SubRequest;
+use Lattice\Lattice\Http\SubRequestType;
 use Symfony\Component\HttpFoundation\Response;
 
 trait HandlesFormSubRequests
 {
     /**
-     * Dispatch the form sub-requests made against a form or action endpoint —
+     * Dispatch the sub-requests made against a form or action endpoint —
      * lazy schema fetch (actions only), signed uploads, option search, field
      * resolution — returning null when the request is the submission itself.
      */
     protected function formSubRequest(Request $request, FormDefinition|InteractsWithForm $definition): ?Response
     {
-        if ($definition instanceof InteractsWithForm && $request->boolean('_form')) {
-            return new JsonResponse($definition->resolveFormSchema($request));
+        $sub = SubRequest::from($request);
+
+        if (! $sub instanceof SubRequest) {
+            return null;
         }
 
-        if ($request->filled('_upload')) {
-            return new JsonResponse($definition->signUpload($request));
-        }
-
-        if ($request->filled('_search')) {
-            return new JsonResponse($definition->searchOptions($request));
-        }
-
-        if ($request->boolean('_resolve')) {
-            return new JsonResponse($definition->resolveFields($request));
-        }
-
-        return null;
+        return match ($sub->type) {
+            SubRequestType::Schema => $definition instanceof InteractsWithForm
+                ? new JsonResponse($definition->resolveFormSchema($request))
+                : null,
+            SubRequestType::Upload => new JsonResponse($definition->signUpload($request, $sub)),
+            SubRequestType::Search => new JsonResponse($definition->searchOptions($request, $sub)),
+            SubRequestType::Resolve => new JsonResponse($definition->resolveFields($request)),
+        };
     }
 }

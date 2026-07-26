@@ -174,7 +174,7 @@ chips with a single **Reset all** that clears them both.
 
 A `SelectFilter`'s options can come from an `OptionSource` instead of a fixed list, and
 `->searchable()` fetches them as the user types rather than shipping the whole list up front. The
-lookup is a `_search` round-trip to the table endpoint with a namespaced target —
+lookup is a search sub-request to the table endpoint with a namespaced `_target` —
 `filter:<key>.<field>` for a dedicated filter's field, `column:<key>` for a searchable column
 filter — so filter keys and dot-keyed relation columns can never collide:
 

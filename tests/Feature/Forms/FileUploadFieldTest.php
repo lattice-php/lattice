@@ -23,7 +23,7 @@ it('signs an upload through the form endpoint', function (): void {
 
     Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(FileUploadFieldForm::class, ['_upload' => 'document', 'filename' => 'invoice.pdf'])
+    $this->submitForm(FileUploadFieldForm::class, ['_sub' => 'upload', '_target' => 'document', 'filename' => 'invoice.pdf'])
         ->assertOk()
         ->assertJsonStructure(['key', 'url', 'headers', 'method']);
 });
@@ -37,7 +37,8 @@ it('signs an upload for a file field inside a repeater row', function (): void {
     Lattice::forms([FileUploadFieldForm::class]);
 
     $this->submitForm(FileUploadFieldForm::class, [
-        '_upload' => 'documents.0.file',
+        '_sub' => 'upload',
+        '_target' => 'documents.0.file',
         'filename' => 'invoice.pdf',
         'documents' => [
             ['file' => null],
@@ -72,15 +73,16 @@ it('signs an upload for a file field inside nested repeater rows', function (): 
         }
     };
 
-    $result = $definition->signUpload(Request::create('/', 'POST', [
-        '_upload' => 'sections.0.documents.0.file',
+    $result = $definition->signUpload(...subRequest(Request::create('/', 'POST', [
+        '_sub' => 'upload',
+        '_target' => 'sections.0.documents.0.file',
         'filename' => 'invoice.pdf',
         'sections' => [[
             'documents' => [
                 ['file' => null],
             ],
         ]],
-    ]));
+    ])));
 
     expect((array) $result)->toHaveKeys(['key', 'url', 'headers', 'method']);
 });
@@ -90,7 +92,7 @@ it('returns 422 when the field does not use signed uploads', function (): void {
 
     Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(FileUploadFieldForm::class, ['_upload' => 'avatar', 'filename' => 'photo.jpg'])
+    $this->submitForm(FileUploadFieldForm::class, ['_sub' => 'upload', '_target' => 'avatar', 'filename' => 'photo.jpg'])
         ->assertUnprocessable();
 });
 
@@ -99,7 +101,7 @@ it('returns 404 when the upload field does not exist', function (): void {
 
     Lattice::forms([FileUploadFieldForm::class]);
 
-    $this->submitForm(FileUploadFieldForm::class, ['_upload' => 'nonexistent', 'filename' => 'file.pdf'])
+    $this->submitForm(FileUploadFieldForm::class, ['_sub' => 'upload', '_target' => 'nonexistent', 'filename' => 'file.pdf'])
         ->assertNotFound();
 });
 

@@ -112,7 +112,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
       void postFormAction<{ options?: Option[] }>(
         action,
         componentRef,
-        { ...valuesRef.current, _search: searchKey, q: query },
+        { ...valuesRef.current, _sub: "search", _target: searchKey, _q: query },
         controller.signal,
       )
         .then((response) => {

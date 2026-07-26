@@ -71,7 +71,7 @@ export function useLazyActionForm(
     const controller = new AbortController();
 
     void apiFetch(endpoint, {
-      body: JSON.stringify({ _form: true }),
+      body: JSON.stringify({ _sub: "schema" }),
       ref: componentRef,
       method: "POST",
       signal: controller.signal,

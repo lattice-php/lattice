@@ -57,6 +57,7 @@ final class FormRegistry extends DefinitionRegistry
         return 'form';
     }
 
+    #[\Override]
     protected function routeName(): string
     {
         return 'lattice.forms.handle';

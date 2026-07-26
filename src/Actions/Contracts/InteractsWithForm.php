@@ -8,6 +8,7 @@ use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\SignedUpload;
 use Lattice\Lattice\Forms\ResolveResponse;
+use Lattice\Lattice\Http\SubRequest;
 
 /**
  * An action definition that drives an embedded form: it validates the submission
@@ -26,9 +27,9 @@ interface InteractsWithForm
     /**
      * @return array{options: list<Option>}
      */
-    public function searchOptions(Request $request): array;
+    public function searchOptions(Request $request, SubRequest $sub): array;
 
     public function resolveFields(Request $request): ResolveResponse;
 
-    public function signUpload(Request $request): SignedUpload;
+    public function signUpload(Request $request, SubRequest $sub): SignedUpload;
 }

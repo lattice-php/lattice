@@ -93,7 +93,7 @@ describe("SelectComponent search", () => {
     expect(postFormAction).toHaveBeenCalledWith(
       "/forms/products",
       "ref-1",
-      { _search: "items.0.product", q: "desk", ...initial },
+      { _sub: "search", _target: "items.0.product", _q: "desk", ...initial },
       expect.any(AbortSignal),
     );
   });

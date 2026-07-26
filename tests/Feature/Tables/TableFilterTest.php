@@ -70,7 +70,7 @@ test('a table rejects a filter key that is not declared', function (): void {
 test('a table searches declared searchable targets through the endpoint', function (string $target): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => $target, '_q' => 'ad'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_sub' => 'search', '_target' => $target, '_q' => 'ad'])
         ->assertOk()
         ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1', 'data' => null]]]);
 })->with([
@@ -82,7 +82,7 @@ test('a table searches declared searchable targets through the endpoint', functi
 test('a table 404s invalid search targets', function (string $target): void {
     Lattice::tables([WorkbenchSearchableFilterTable::class]);
 
-    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_search' => $target, '_q' => 'a'])
+    $this->loadTable(WorkbenchSearchableFilterTable::class, ['_sub' => 'search', '_target' => $target, '_q' => 'a'])
         ->assertNotFound();
 })->with([
     'unknown filter' => 'filter:nope',
@@ -92,7 +92,7 @@ test('a table 404s invalid search targets', function (string $target): void {
 test('a table rejects searching a filter that is not searchable', function (): void {
     Lattice::tables([WorkbenchFilteredProductsTable::class]);
 
-    $this->loadTable(WorkbenchFilteredProductsTable::class, ['_search' => 'filter:status', '_q' => 'a'])
+    $this->loadTable(WorkbenchFilteredProductsTable::class, ['_sub' => 'search', '_target' => 'filter:status', '_q' => 'a'])
         ->assertUnprocessable();
 });
 

@@ -128,7 +128,7 @@ export function useFormResolver(
       void postFormAction<ResolveResponse>(
         action,
         componentRef,
-        { _resolve: true, ...values },
+        { _sub: "resolve", ...values },
         controller.signal,
       )
         .then((response) => {

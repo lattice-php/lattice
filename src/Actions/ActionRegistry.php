@@ -56,6 +56,7 @@ final class ActionRegistry extends DefinitionRegistry
         return 'action';
     }
 
+    #[\Override]
     protected function routeName(): string
     {
         return 'lattice.actions.handle';

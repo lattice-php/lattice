@@ -89,9 +89,9 @@ form only accepts submissions for the schema it actually rendered. `FormControll
     U->>B: Interact (type, search, change a dependent field)
     B->>L: POST form endpoint with signed ref
     Note over L: one endpoint, routed by request kind
-    alt searchable Select (_search)
+    alt searchable Select (_sub=search)
         L-->>B: matching options
-    else dependent field (_resolve)
+    else dependent field (_sub=resolve)
         L-->>B: recomputed field nodes + values
     else live validation (Precognition)
         L-->>B: 204 valid / 422 messages
