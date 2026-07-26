@@ -31,6 +31,7 @@
       "import": "./dist/index.js"
     },
     "./css": "./dist/lattice.css",
+    "./schema/lattice.schema.json": "./resources/schema/lattice.schema.json",
     "./action": {
       "types": "./dist/action/index.d.ts",
       "import": "./dist/action/index.js"
@@ -133,7 +134,8 @@
   "files": [
     "dist",
     "dist-standalone",
-    "resources/icons"
+    "resources/icons",
+    "resources/schema"
   ],
   "publishConfig": {
     "access": "public"

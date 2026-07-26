@@ -1,0 +1,68 @@
+---
+title: Wire protocol schema
+description: The JSON Schema document that formally specifies every wire shape Lattice serializes.
+---
+
+import Info from "@components/Info.astro";
+
+Everything Lattice sends to the client — component nodes, columns, filters, effects, the page
+payload, remote manifests — is specified by a single JSON Schema (draft 2020-12) document. The
+schema is generated from the PHP classes and is the canonical contract: the package's TypeScript
+types are derived from it, so a shape that isn't in the schema doesn't exist on the wire.
+
+The document ships with both halves of the package:
+
+- Composer: `vendor/lattice-php/lattice/resources/schema/lattice.schema.json`
+- npm: `import schema from "@lattice-php/lattice/schema/lattice.schema.json"`
+
+Its identifier is `https://lattice-php.dev/schema/v1.json`, and the document carries an
+`x-lattice.protocolVersion` (currently `1`) that only changes on breaking wire-shape changes —
+it is independent of the package version.
+
+## Entry points
+
+The document is a definitions library; validate against the `$defs` pointer that matches your
+payload:
+
+| Pointer                                                 | Validates                                                    |
+| ------------------------------------------------------- | ------------------------------------------------------------ |
+| `#/$defs/PagePayload`                                   | The `lattice` prop of a rendered page                        |
+| `#/$defs/Node`                                          | Any component node (loose — unknown types allowed)           |
+| `#/$defs/ComponentNode`                                 | Any component node (strict — closed over the built-in types) |
+| `#/$defs/node:button`, `#/$defs/column:column.badge`, … | One concrete node type                                       |
+| `#/$defs/RemoteManifest`                                | A [remote schema manifest](/advanced/remote/)                |
+
+Every component also has a props def under its TypeScript name (`#/$defs/Button`), and enums and
+value objects appear under theirs (`#/$defs/ButtonType`, `#/$defs/Affix`).
+
+## The `x-lattice` vocabulary
+
+Standard validators ignore the `x-lattice` extension key; it carries Lattice's own metadata. At the
+root, `families` catalogs every wire family (components, columns, filters, effects, editor
+extensions) with a `types` map from wire `type` string to node and props refs, and `domains` lists
+the per-domain type-string catalogs (`UiNodeType`, `FormFieldNodeType`, …). Per def, `kind`, `family`,
+`wireType`, and `php` record what the def is and which class produced it. The TypeScript generator
+consumes exactly this metadata — nothing outside the document.
+
+## Structured output for AI
+
+Because every node type is a closed schema with a `const` discriminator, the document works directly
+as a structured-output contract. Handing an LLM `#/$defs/ComponentNode` (or a single
+`#/$defs/node:…` def for a narrower task) constrains it to emit valid Lattice nodes, which a
+[remote source](/advanced/remote/) can then serve as a manifest.
+
+## Exporting your app's schema
+
+```bash
+php artisan lattice:schema
+```
+
+writes the merged document — built-ins plus every wire type discovered in your app and installed
+[component packages](/extending/component-packages/) — to `lattice.schema.json` in your project root
+(configurable via `lattice.schema.output`). App-defined defs are marked `x-lattice.origin: "app"`,
+so third parties consuming your export can tell your types from the built-ins.
+
+<Info>
+  `php artisan lattice:typescript` derives its module augmentation from the same document, so the
+  exported schema and your generated TypeScript can never disagree.
+</Info>

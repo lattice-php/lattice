@@ -3,70 +3,13 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Spatie\TypeScriptTransformer\Actions\ResolveImportsAndResolvedReferenceMapAction;
-use Spatie\TypeScriptTransformer\Collections\TransformedCollection;
-use Spatie\TypeScriptTransformer\Data\ModuleImportResolvedReference;
-use Spatie\TypeScriptTransformer\Data\WriteableFile;
-use Spatie\TypeScriptTransformer\Data\WritingContext;
-use Spatie\TypeScriptTransformer\References\PhpClassReference;
-use Spatie\TypeScriptTransformer\Transformed\Transformed;
-use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptAlias;
-use Spatie\TypeScriptTransformer\Writers\Writer;
-
 /**
- * Writes the discovered classes as a TypeScript module augmentation of the app's
- * `@lattice-php/lattice` module, keying each transformed prop body by wire type
- * under the augmentable interface for its category ({@see WireFamily}).
+ * Renders a TypeScript module augmentation of the app's `@lattice-php/lattice`
+ * module, keying each prop body by wire type under the augmentable interface
+ * for its category ({@see WireFamily}).
  */
-final readonly class AugmentationWriter implements Writer
+final readonly class AugmentationWriter
 {
-    /**
-     * @param  array<class-string, array{0: string, 1: string}>  $components  FQCN => [wire type, family category]
-     */
-    public function __construct(
-        private array $components,
-        private string $module,
-        private string $path,
-    ) {}
-
-    public function output(array $transformed, TransformedCollection $transformedCollection): array
-    {
-        [, $resolvedReferenceMap] = (new ResolveImportsAndResolvedReferenceMapAction)->execute(
-            $this->path,
-            $transformed,
-            $transformedCollection,
-        );
-
-        $context = new WritingContext($resolvedReferenceMap);
-
-        $entriesByCategory = [];
-
-        foreach ($transformed as $item) {
-            $reference = $item->getReference();
-            $node = $item->getNode();
-
-            if (! $reference instanceof PhpClassReference || ! $node instanceof TypeScriptAlias) {
-                continue;
-            }
-
-            $class = $reference->phpClassNode->getName();
-
-            if (! isset($this->components[$class])) {
-                continue;
-            }
-
-            [$type, $category] = $this->components[$class];
-            $entriesByCategory[$category][$type] = sprintf('    "%s": %s;', $type, $node->type->write($context));
-        }
-
-        return [new WriteableFile($this->path, self::render($this->module, $entriesByCategory))];
-    }
-
-    public function resolveReference(Transformed $transformed): ModuleImportResolvedReference
-    {
-        return new ModuleImportResolvedReference($transformed->getName(), $this->path);
-    }
-
     /**
      * @param  array<string, array<string, string>>  $entriesByCategory  category => (wire type => `"type": <body>;` line)
      */

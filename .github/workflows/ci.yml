@@ -264,11 +264,11 @@ jobs:
 
       - run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Generated TypeScript types are up to date
+      - name: Generated schema and TypeScript types are up to date
         run: |
           composer types
-          git add --intent-to-add resources/js/types/generated.ts
-          git diff --exit-code resources/js/types/generated.ts
+          git add --intent-to-add resources/schema/lattice.schema.json resources/js/types/generated.ts
+          git diff --exit-code resources/schema/lattice.schema.json resources/js/types/generated.ts
 
   php-tests:
     name: PHP Tests (${{ matrix.php-version }}, ${{ matrix.coverage }})
