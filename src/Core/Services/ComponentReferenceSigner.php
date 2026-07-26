@@ -53,6 +53,21 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
         return $context;
     }
 
+    public function refresh(string $token): ?string
+    {
+        $payload = $this->identityBoundPayload($token);
+
+        if ($payload === null || ! is_string($payload['type'] ?? null) || ! is_string($payload['key'] ?? null)) {
+            return null;
+        }
+
+        return $this->seal(
+            $payload['type'],
+            $payload['key'],
+            is_array($payload['context'] ?? null) ? $payload['context'] : [],
+        );
+    }
+
     /**
      * Decrypt and fully validate a sealed token: structure, type/key, expiry, and
      * the identity it was bound to. Returns the trusted context on success (an
@@ -62,6 +77,31 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
      * @return array<string, mixed>|null
      */
     private function verify(string $token, string $type, string $key): ?array
+    {
+        $payload = $this->identityBoundPayload($token);
+
+        if ($payload === null) {
+            return null;
+        }
+
+        if (($payload['type'] ?? null) !== $type || ($payload['key'] ?? null) !== $key) {
+            return null;
+        }
+
+        if (! is_int($payload['expires_at'] ?? null) || $payload['expires_at'] < now()->timestamp) {
+            return null;
+        }
+
+        return is_array($payload['context'] ?? null) ? $payload['context'] : [];
+    }
+
+    /**
+     * Decrypt a token and verify everything that does not depend on the caller's
+     * expectations or the clock: payload structure and the user/session binding.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function identityBoundPayload(string $token): ?array
     {
         if ($token === '') {
             return null;
@@ -77,14 +117,6 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
             return null;
         }
 
-        if (($payload['type'] ?? null) !== $type || ($payload['key'] ?? null) !== $key) {
-            return null;
-        }
-
-        if (! is_int($payload['expires_at'] ?? null) || $payload['expires_at'] < now()->timestamp) {
-            return null;
-        }
-
         $identity = $this->identity->current();
 
         if (! $this->userMatches($identity, $payload['user_id'] ?? null)) {
@@ -95,7 +127,7 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
             return null;
         }
 
-        return is_array($payload['context'] ?? null) ? $payload['context'] : [];
+        return $payload;
     }
 
     private function token(Request $request): string

@@ -15,6 +15,10 @@ return [
         'ref_lifetime' => 30,
     ],
 
+    'refs' => [
+        'middleware' => ['web'],
+    ],
+
     'files' => [
         'disk' => env('LATTICE_FILES_DISK', 'public'),
         'temp_prefix' => 'tmp',

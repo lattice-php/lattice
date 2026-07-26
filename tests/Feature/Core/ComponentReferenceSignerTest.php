@@ -65,6 +65,54 @@ it('returns null for a token sealed for a different user', function (): void {
     expect(signer()->unseal($token, 'file', 'avatar'))->toBeNull();
 });
 
+it('refreshes an expired token into one that unseals with the original context', function (): void {
+    $token = signer()->seal('file', 'avatar', ['disk' => 's3', 'path' => 'uploads/a.jpg']);
+
+    $this->travel(config('lattice.security.ref_lifetime', 30) + 1)->minutes();
+
+    expect(signer()->unseal($token, 'file', 'avatar'))->toBeNull();
+
+    $refreshed = signer()->refresh($token);
+
+    expect($refreshed)->not->toBeNull()
+        ->and(signer()->unseal((string) $refreshed, 'file', 'avatar'))
+        ->toBe(['disk' => 's3', 'path' => 'uploads/a.jpg']);
+});
+
+it('refreshes a still-valid token', function (): void {
+    $token = signer()->seal('file', 'avatar', ['path' => 'x']);
+
+    $refreshed = signer()->refresh($token);
+
+    expect($refreshed)->not->toBeNull()
+        ->and(signer()->unseal((string) $refreshed, 'file', 'avatar'))->toBe(['path' => 'x']);
+});
+
+it('refuses to refresh a forged or empty token', function (): void {
+    expect(signer()->refresh('not-a-real-token'))->toBeNull()
+        ->and(signer()->refresh(''))->toBeNull();
+});
+
+it('refuses to refresh a token sealed for a different user', function (): void {
+    $identity = fakeIdentity();
+    $identity->identity = new ReferenceIdentity('7', null);
+    $token = signer()->seal('file', 'avatar', ['path' => 'x']);
+
+    $identity->identity = new ReferenceIdentity('8', null);
+
+    expect(signer()->refresh($token))->toBeNull();
+});
+
+it('refuses to refresh a token once the sealed session no longer matches', function (): void {
+    $identity = fakeIdentity();
+    $identity->identity = new ReferenceIdentity(null, 'session-hash-a');
+    $token = signer()->seal('file', 'avatar', ['path' => 'x']);
+
+    $identity->identity = new ReferenceIdentity(null, 'session-hash-b');
+
+    expect(signer()->refresh($token))->toBeNull();
+});
+
 it('unseals a token while its sealed session still matches', function (): void {
     $identity = fakeIdentity();
     $identity->identity = new ReferenceIdentity(null, 'session-hash-a');
