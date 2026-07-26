@@ -40,6 +40,7 @@
         "spatie/php-attribute-reader": "^1.1",
         "spatie/php-structure-discoverer": "^2.4",
         "symfony/html-sanitizer": "^8.1",
+        "symfony/type-info": "^8.1",
         "ueberdosis/tiptap-php": "^2.1"
     },
     "require-dev": {
@@ -48,12 +49,13 @@
         "barryvdh/laravel-ide-helper": "^3.7",
         "fruitcake/laravel-debugbar": "^4.3",
         "larastan/larastan": "^3.0",
-        "lattice-php/signature-example": "@dev",
         "laravel/boost": "^2.4",
         "laravel/pint": "^1.16",
         "laravel/reverb": "^1.10",
+        "lattice-php/signature-example": "@dev",
         "league/flysystem-aws-s3-v3": "^3.34",
         "mrpunyapal/peststan": "^0.2.10",
+        "opis/json-schema": "^2.6",
         "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-browser": "^4.3",
@@ -90,7 +92,10 @@
         "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
-        "types": "@php vendor/bin/testbench lattice:typescript",
+        "types": [
+            "@php vendor/bin/testbench lattice:schema",
+            "@php vendor/bin/testbench lattice:typescript"
+        ],
         "fix": [
             "@rector",
             "@lint:fix",

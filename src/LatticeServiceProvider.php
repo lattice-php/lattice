@@ -36,6 +36,7 @@ use Lattice\Lattice\Console\Commands\MakeRemoteSourceCommand;
 use Lattice\Lattice\Console\Commands\MakeTableCommand;
 use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
+use Lattice\Lattice\Console\Commands\SchemaCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
@@ -60,6 +61,8 @@ use Lattice\Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Lattice\Support\Theme\ThemeRenderer;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Lattice\Support\WireSchema\ExportSchemaProfile;
+use Lattice\Lattice\Support\WireSchema\WireSchemaProfile;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\SlotRegistry;
@@ -78,6 +81,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->hasRoute('web')
             ->hasConsoleCommands([
                 TypeScriptCommand::class,
+                SchemaCommand::class,
                 MakeComponentCommand::class,
                 MakeFieldCommand::class,
                 MakeColumnCommand::class,
@@ -129,8 +133,9 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
         $this->app->singleton(EditorExtensionRegistry::class, fn (): EditorExtensionRegistry => EditorExtensionRegistry::withBuiltins());
 
-        // Default role; the workbench rebinds this to BaseProfile.
+        // Default roles; the workbench rebinds these to the base profiles.
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
+        $this->app->bind(WireSchemaProfile::class, ExportSchemaProfile::class);
 
         if (! ResponseFactory::hasMacro('toRoute')) {
             ResponseFactory::macro(
