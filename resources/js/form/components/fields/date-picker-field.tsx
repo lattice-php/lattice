@@ -147,7 +147,7 @@ export function DatePickerField({
           disabled={disabled || readOnly}
           size="icon"
           type="button"
-          color="secondary"
+          variant="secondary"
         >
           <Icon name="calendar" className="size-lt-icon-md" aria-hidden="true" />
         </Button>
