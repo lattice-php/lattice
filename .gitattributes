@@ -9,7 +9,9 @@
 # Keep the Composer distribution lean
 /.agents export-ignore
 /.ai export-ignore
+/.githooks export-ignore
 /.github export-ignore
+/packages export-ignore
 /.idea export-ignore
 /docs export-ignore
 /tests export-ignore
