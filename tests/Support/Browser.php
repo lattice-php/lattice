@@ -87,9 +87,22 @@ function rustfsIsReachable(): bool
     }
 }
 
+function deleteWorkbenchUsersExceptAuthenticated(): void
+{
+    $query = User::query();
+
+    if (($authenticatedId = auth()->id()) !== null) {
+        $query->whereKeyNot($authenticatedId);
+    }
+
+    $query->delete();
+}
+
 function seedNamedWorkbenchUsers(): void
 {
-    User::query()->delete();
+    // Deleting the actingAs() user would only keep working through
+    // SessionGuard's in-memory cache — preserve it instead.
+    deleteWorkbenchUsersExceptAuthenticated();
 
     foreach (['Maya Chen', 'Ada Lovelace', 'Grace Hopper', 'Katherine Johnson'] as $name) {
         UserFactory::new()->create([

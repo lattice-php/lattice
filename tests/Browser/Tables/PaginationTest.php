@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+use Workbench\App\Models\User;
+
 it('shows pagination modes in lazily loaded tabs', function (): void {
     $this->actingAs(workbenchTestUser());
     seedWorkbenchUsers();
@@ -19,7 +21,7 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
         ->click('@tab-table')
         ->assertSee('Table pagination');
 
-    assertSeeEventually($page, 'Showing 1-25 of 30');
+    assertSeeEventually($page, 'Showing 1-25 of '.User::query()->count());
 
     $page->click('@tab-infinite')
         ->assertSee('Infinite pagination');
@@ -35,14 +37,16 @@ it('navigates between pages in table pagination mode', function (): void {
 
     $page = visit('/tables/pagination');
 
+    $total = User::query()->count();
+
     $page->click('@tab-table');
-    assertSeeEventually($page, 'Showing 1-25 of 30');
+    assertSeeEventually($page, "Showing 1-25 of {$total}");
 
     $page->click('@pagination-next');
-    assertSeeEventually($page, 'Showing 26-30 of 30');
+    assertSeeEventually($page, "Showing 26-{$total} of {$total}");
 
     $page->click('@pagination-page-1');
-    assertSeeEventually($page, 'Showing 1-25 of 30');
+    assertSeeEventually($page, "Showing 1-25 of {$total}");
 
     $page->assertNoSmoke();
 });

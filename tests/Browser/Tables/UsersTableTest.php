@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Foundation\Auth\User;
 use Orchestra\Testbench\Factories\UserFactory;
 
 it('lists users with their columns', function (): void {
@@ -22,7 +21,7 @@ it('lists users with their columns', function (): void {
 
 it('copies a cell value to the clipboard', function (): void {
     $this->actingAs(workbenchTestUser());
-    User::query()->delete();
+    deleteWorkbenchUsersExceptAuthenticated();
     UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
 
     $page = visit('/')
