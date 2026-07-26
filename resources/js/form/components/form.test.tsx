@@ -1,6 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { clearRefreshedRefs } from "@lattice-php/lattice/core/component-ref";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import ButtonComponent from "@lattice-php/lattice/ui/button";
 import { fakeNode } from "@lattice-php/lattice/test-support";
@@ -21,6 +22,15 @@ const formSlotState = vi.hoisted(() => ({
   validate: vi.fn<(field: string) => void>(),
 }));
 
+const formCallbacks = vi.hoisted(
+  (): {
+    onError?: () => void;
+    onHttpException?: (response: { status: number }) => boolean | undefined;
+    onStart?: () => void;
+    onSuccess?: () => void;
+  } => ({}),
+);
+
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
     Form: ({
@@ -30,6 +40,11 @@ vi.mock("@inertiajs/react", async () =>
       resetOnSuccess: _resetOnSuccess,
       headers,
       validationTimeout,
+      onError,
+      onHttpException,
+      onStart,
+      onSuccess,
+      ref: _ref,
       ...props
     }: {
       children: (state: {
@@ -48,25 +63,37 @@ vi.mock("@inertiajs/react", async () =>
       resetOnSuccess?: boolean | string[];
       headers?: Record<string, string>;
       validationTimeout?: number;
-    }) => (
-      <form
-        {...props}
-        data-headers={JSON.stringify(headers ?? null)}
-        data-validation-timeout={validationTimeout}
-      >
-        {children({
-          clearErrors: formSlotState.clearErrors,
-          errors: {},
-          invalid: () => false,
-          processing: false,
-          reset: formSlotState.reset,
-          touch: formSlotState.touch,
-          validate: formSlotState.validate,
-          validating: false,
-          valid: () => false,
-        })}
-      </form>
-    ),
+      onError?: () => void;
+      onHttpException?: (response: { status: number }) => boolean | undefined;
+      onStart?: () => void;
+      onSuccess?: () => void;
+      ref?: unknown;
+    }) => {
+      formCallbacks.onError = onError;
+      formCallbacks.onHttpException = onHttpException;
+      formCallbacks.onStart = onStart;
+      formCallbacks.onSuccess = onSuccess;
+
+      return (
+        <form
+          {...props}
+          data-headers={JSON.stringify(headers ?? null)}
+          data-validation-timeout={validationTimeout}
+        >
+          {children({
+            clearErrors: formSlotState.clearErrors,
+            errors: {},
+            invalid: () => false,
+            processing: false,
+            reset: formSlotState.reset,
+            touch: formSlotState.touch,
+            validate: formSlotState.validate,
+            validating: false,
+            valid: () => false,
+          })}
+        </form>
+      );
+    },
     Link: ({ children, ...props }: { children: ReactNode; href: string }) => (
       <a {...props}>{children}</a>
     ),
@@ -79,6 +106,11 @@ describe("Lattice form schema components", () => {
     formSlotState.reset.mockClear();
     formSlotState.touch.mockClear();
     formSlotState.validate.mockClear();
+  });
+
+  afterEach(() => {
+    clearRefreshedRefs();
+    vi.unstubAllGlobals();
   });
 
   it("sends the sealed component reference as a header", () => {
@@ -382,6 +414,146 @@ describe("Lattice form schema components", () => {
       new CustomEvent("lattice:reset-form", { detail: { form: "teams.create" } }),
     );
     expect(formSlotState.reset).toHaveBeenCalledOnce();
+  });
+
+  it("resets the value store on submit success when resetOnSuccess is set", () => {
+    const nameNode = fakeNode({
+      props: { label: "Name", name: "name", value: "" },
+      type: "field.text-input",
+    });
+    const formNode = fakeNode({
+      id: "resetting-form",
+      props: { action: "/items", resetOnSuccess: true, submitButton: false },
+      schema: [nameNode],
+      type: "form",
+    });
+
+    render(
+      <FormComponent node={formNode}>
+        <TextInputComponent node={nameNode}>{null}</TextInputComponent>
+      </FormComponent>,
+    );
+
+    const input = screen.getByRole("textbox", { name: "Name" });
+    fireEvent.change(input, { target: { value: "Widget" } });
+    expect(input).toHaveValue("Widget");
+
+    act(() => formCallbacks.onSuccess?.());
+
+    expect(input).toHaveValue("");
+  });
+
+  it("resets only the configured fields and keeps values without configuration", () => {
+    const nameNode = fakeNode({
+      props: { label: "Name", name: "name", value: "" },
+      type: "field.text-input",
+    });
+    const emailNode = fakeNode({
+      props: { label: "Email", name: "email", value: "" },
+      type: "field.text-input",
+    });
+    const formNode = fakeNode({
+      id: "partial-reset-form",
+      props: { action: "/items", resetOnSuccess: ["name"], submitButton: false },
+      schema: [nameNode, emailNode],
+      type: "form",
+    });
+
+    render(
+      <FormComponent node={formNode}>
+        <TextInputComponent node={nameNode}>{null}</TextInputComponent>
+        <TextInputComponent node={emailNode}>{null}</TextInputComponent>
+      </FormComponent>,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Widget" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Email" }), {
+      target: { value: "a@example.com" },
+    });
+
+    act(() => formCallbacks.onSuccess?.());
+
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("");
+    expect(screen.getByRole("textbox", { name: "Email" })).toHaveValue("a@example.com");
+  });
+
+  it("clears controlled values through the reset-form event", () => {
+    const nameNode = fakeNode({
+      props: { label: "Name", name: "name", value: "" },
+      type: "field.text-input",
+    });
+    const formNode = fakeNode({
+      id: "event-reset-form",
+      props: { action: "/items", submitButton: false },
+      schema: [nameNode],
+      type: "form",
+    });
+
+    render(
+      <FormComponent node={formNode}>
+        <TextInputComponent node={nameNode}>{null}</TextInputComponent>
+      </FormComponent>,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Widget" },
+    });
+
+    act(() => {
+      window.dispatchEvent(new CustomEvent("lattice:reset-form", { detail: { form: null } }));
+    });
+
+    expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("");
+  });
+
+  it("suppresses a sealed form's first 403, renews the ref, and lets the second surface", async () => {
+    const fetchMock = vi.fn<typeof fetch>(
+      async () =>
+        ({
+          ok: true,
+          status: 200,
+          json: async () => ({ ref: "renewed-ref" }),
+        }) as unknown as Response,
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const formNode = fakeNode({
+      id: "sealed-form",
+      props: { action: "/items", ref: "sealed-form-ref", submitButton: false },
+      type: "form",
+    });
+
+    render(<FormComponent node={formNode}>{null}</FormComponent>);
+
+    let firstResult: boolean | undefined;
+    await act(async () => {
+      firstResult = formCallbacks.onHttpException?.({ status: 403 });
+    });
+
+    expect(firstResult).toBe(false);
+    expect(fetchMock).toHaveBeenCalledWith("/lattice/refs/refresh", expect.anything());
+
+    act(() => formCallbacks.onStart?.());
+
+    expect(formCallbacks.onHttpException?.({ status: 403 })).toBeUndefined();
+  });
+
+  it("does not intercept a 403 on a form without a ref", async () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const formNode = fakeNode({
+      id: "unsealed-form",
+      props: { action: "/items", submitButton: false },
+      type: "form",
+    });
+
+    render(<FormComponent node={formNode}>{null}</FormComponent>);
+
+    expect(formCallbacks.onHttpException?.({ status: 403 })).toBeUndefined();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("renders custom submit buttons, substituting the managed submit button", () => {

@@ -21,6 +21,7 @@ class RepeaterFieldForm extends FormDefinition
     {
         return $form
             ->precognitive(300)
+            ->resetOnSuccess()
             ->schema([
                 Tabs::make('repeater-variants')
                     ->queryKey('type')

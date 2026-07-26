@@ -14,11 +14,14 @@ export type SetFormValue = (
   value: unknown | ((previous: unknown) => unknown),
 ) => void;
 
+export type ResetFormValues = (fields?: string[]) => void;
+
 type FormValuesStore = {
   getPathSnapshot: (path: string) => unknown;
   getPathsSnapshot: (paths: string[]) => Record<string, unknown>;
   getSnapshot: () => Record<string, unknown>;
   replaceInitial: (initial: Record<string, unknown>) => void;
+  reset: ResetFormValues;
   setValue: SetFormValue;
   subscribe: (listener: () => void) => () => void;
   subscribePath: (path: string, listener: () => void) => () => void;
@@ -163,6 +166,20 @@ function createFormValuesStore(initial: Record<string, unknown>): FormValuesStor
       initialValues = nextInitial;
       updateValues(nextInitial, "");
     },
+    reset: (fields?: string[]): void => {
+      if (fields === undefined) {
+        updateValues(initialValues, "");
+
+        return;
+      }
+
+      const next = fields.reduce(
+        (accumulated, field) => setPath(accumulated, field, getPath(initialValues, field)),
+        values,
+      );
+
+      updateValues(next, "");
+    },
     setValue: (name: string, value: unknown | ((previous: unknown) => unknown)): void => {
       const previous = getPath(values, name);
       const next = typeof value === "function" ? value(previous) : value;
@@ -260,4 +277,16 @@ export function useFormValuesFor(paths: string[]): Record<string, unknown> {
 
 export function useSetFormValue(): SetFormValue {
   return useContext(SetFormValueContext);
+}
+
+/**
+ * Reset values to the store's initial snapshot — all of them, or just the
+ * given field paths. This is the reset that actually clears controlled
+ * fields; Inertia's own form reset only touches its internal data and the
+ * DOM, which store-driven inputs ignore.
+ */
+export function useResetFormValues(): ResetFormValues {
+  const store = useFormValuesStore();
+
+  return useCallback((fields?: string[]) => store.reset(fields), [store]);
 }

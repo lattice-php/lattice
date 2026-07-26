@@ -11,12 +11,8 @@ it('renders the repeater with one default row', function (): void {
         ->assertNoSmoke();
 });
 
-// The form redirects back to the same URL on success, which leaves no
-// client-observable state change (form values live in the client store and
-// survive same-page visits). The server-side round-trip is asserted in
-// NestedFieldFormSubmitTest; these tests cover the client interactions.
-it('round-trips a repeater payload through submit', function (): void {
-    $this->visitAsWorkbenchUser('/form/fields/repeater')
+it('round-trips a repeater payload through submit and resets on success', function (): void {
+    $page = $this->visitAsWorkbenchUser('/form/fields/repeater')
         ->assertSee('Line items')
         ->fill('input[name="items[0][name]"]', 'Widget')
         ->fill('input[name="items[0][qty]"]', '2')
@@ -24,8 +20,15 @@ it('round-trips a repeater payload through submit', function (): void {
         ->assertPresent('[data-test="repeater-items-row-1"]')
         ->fill('input[name="items[1][name]"]', 'Gadget')
         ->fill('input[name="items[1][qty]"]', '5')
-        ->click('@form-submit')
-        ->assertNoSmoke();
+        ->click('@form-submit');
+
+    // The form declares resetOnSuccess, so cleared values are the success
+    // signal — a validation failure would keep the filled values in place.
+    retryUntil(function () use ($page): void {
+        $page->assertValue('input[name="items[0][name]"]', '');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('reorders rows and submits successfully', function (): void {
@@ -43,8 +46,13 @@ it('reorders rows and submits successfully', function (): void {
         $page->assertValue('input[name="items[0][name]"]', 'Second');
     });
 
-    $page->click('@form-submit')
-        ->assertNoSmoke();
+    $page->click('@form-submit');
+
+    retryUntil(function () use ($page): void {
+        $page->assertValue('input[name="items[0][name]"]', '');
+    });
+
+    $page->assertNoSmoke();
 });
 
 it('surfaces the per-row required validation error on submit', function (): void {

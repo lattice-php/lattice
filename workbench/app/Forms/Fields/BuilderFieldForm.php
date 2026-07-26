@@ -22,7 +22,7 @@ class BuilderFieldForm extends FormDefinition
 {
     public function definition(FormComponent $form, Request $request): FormComponent
     {
-        return $form->schema([
+        return $form->resetOnSuccess()->schema([
             Tabs::make('builder-variants')
                 ->queryKey('type')
                 ->orientation(Orientation::Vertical)

@@ -1,4 +1,6 @@
+import type { FormComponentRef, HttpExceptionResponse } from "@inertiajs/core";
 import { Form as InertiaForm } from "@inertiajs/react";
+import { refreshRef } from "@lattice-php/lattice/core/api";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
@@ -7,14 +9,14 @@ import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { Emphasis, Justify, Variant } from "@lattice-php/lattice/types/generated";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { collectFields } from "@lattice-php/lattice/form/lib/collect-fields";
 import { PrefillProvider } from "@lattice-php/lattice/form/hooks/prefill-context";
 import { ResolvedNodesProvider } from "@lattice-php/lattice/form/hooks/resolved-nodes";
 import { useFormResolver } from "@lattice-php/lattice/form/hooks/use-form-resolver";
-import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
+import { FormValuesProvider, useResetFormValues } from "@lattice-php/lattice/form/hooks/values";
 
 const JUSTIFY_CLASS: Record<Justify, string> = {
   start: "justify-start",
@@ -32,11 +34,14 @@ function FormResetListener({
   componentId?: string;
   reset: (...fields: string[]) => void;
 }) {
+  const resetValues = useResetFormValues();
+
   useWindowEvent(LATTICE_EVENT.resetForm, (event) => {
     const detail = (event as CustomEvent<{ form: string | null }>).detail;
 
     if (!detail?.form || detail.form === componentId) {
       reset();
+      resetValues();
     }
   });
 
@@ -109,7 +114,30 @@ function FormBody({
   );
 }
 
+function configuredResetFields(
+  configured: string[] | boolean | null | undefined,
+): string[] | undefined | false {
+  if (!configured || (Array.isArray(configured) && configured.length === 0)) {
+    return false;
+  }
+
+  return Array.isArray(configured) ? configured : undefined;
+}
+
 export const FormComponent: RendererComponent<"form"> = ({ children, node }) => {
+  const initialValues = useMemo(
+    () => ({ ...collectFields(node.schema).values, ...node.props.state }),
+    [node.schema, node.props.state],
+  );
+
+  return (
+    <FormValuesProvider initial={initialValues}>
+      <FormShell node={node}>{children}</FormShell>
+    </FormValuesProvider>
+  );
+};
+
+function FormShell({ children, node }: { children: React.ReactNode; node: Node<"form"> }) {
   const { t } = useT("lattice");
   const props = node.props;
   const action = props.action ?? "#";
@@ -119,12 +147,7 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const precognitive = props.precognitive;
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
-  const state = props.state;
-  const { labels: fieldLabels, values: fieldValues } = useMemo(
-    () => collectFields(node.schema),
-    [node.schema],
-  );
-  const initialValues = useMemo(() => ({ ...fieldValues, ...state }), [fieldValues, state]);
+  const fieldLabels = useMemo(() => collectFields(node.schema).labels, [node.schema]);
   const shouldRenderSubmitButton = props.submitButton;
   const submitButtons = props.submitButtons ?? undefined;
   const submitJustify = props.submitJustify ?? undefined;
@@ -134,8 +157,33 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
   const summaryLabel = props.validationSummaryLabel;
   const validationTimeout = props.validationTimeout ?? undefined;
 
+  const resetValues = useResetFormValues();
+  const resetConfigured = (configured: string[] | boolean | null | undefined): void => {
+    const fields = configuredResetFields(configured);
+
+    if (fields !== false) {
+      resetValues(fields);
+    }
+  };
+
+  const formRef = useRef<FormComponentRef | null>(null);
+  // One renewal attempt per user-initiated submit: 'renewing' marks the window
+  // between the 403 and our programmatic retry, 'retried' lets the second
+  // failure surface normally.
+  const retryPhase = useRef<"idle" | "renewing" | "retried">("idle");
+  const [renewedSubmitTick, setRenewedSubmitTick] = useState(0);
+
+  useEffect(() => {
+    // The state bump forces this render first, so the headers prop below has
+    // re-resolved the renewed token before the retry goes out.
+    if (renewedSubmitTick > 0 && retryPhase.current === "renewing") {
+      formRef.current?.submit();
+    }
+  }, [renewedSubmitTick]);
+
   return (
     <InertiaForm
+      ref={formRef}
       action={action}
       data-slot="form"
       data-lattice-component={node.id}
@@ -146,6 +194,23 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
       validationTimeout={precognitive ? validationTimeout : undefined}
       headers={withHeaders(componentRef)}
       className="mx-auto flex w-full max-w-2xl flex-col gap-6"
+      onStart={() => {
+        retryPhase.current = retryPhase.current === "renewing" ? "retried" : "idle";
+      }}
+      onSuccess={() => resetConfigured(resetOnSuccess)}
+      onError={() => resetConfigured(resetOnError)}
+      onHttpException={(response: HttpExceptionResponse) => {
+        if (response.status !== 403 || componentRef === "" || retryPhase.current === "retried") {
+          return undefined;
+        }
+
+        retryPhase.current = "renewing";
+        // Retry even when the renewal failed: a genuine 403 then surfaces
+        // through the second attempt instead of being swallowed here.
+        void refreshRef(componentRef).finally(() => setRenewedSubmitTick((tick) => tick + 1));
+
+        return false;
+      }}
     >
       {({ clearErrors, errors, processing, reset, touch, validate, validating }) => (
         <FormProvider
@@ -170,24 +235,22 @@ export const FormComponent: RendererComponent<"form"> = ({ children, node }) => 
             <div className="text-center text-sm font-medium text-lt-success">{props.status}</div>
           )}
 
-          <FormValuesProvider initial={initialValues}>
-            <FormBody
-              action={action}
-              componentRef={componentRef}
-              nodes={node.schema}
-              shouldRenderSubmitButton={shouldRenderSubmitButton}
-              submitButtons={submitButtons}
-              submitEmphasis={submitEmphasis}
-              submitJustify={submitJustify}
-              submitLabel={submitLabel}
-              submitVariant={submitVariant}
-              summaryLabel={summaryLabel}
-            >
-              {children}
-            </FormBody>
-          </FormValuesProvider>
+          <FormBody
+            action={action}
+            componentRef={componentRef}
+            nodes={node.schema}
+            shouldRenderSubmitButton={shouldRenderSubmitButton}
+            submitButtons={submitButtons}
+            submitEmphasis={submitEmphasis}
+            submitJustify={submitJustify}
+            submitLabel={submitLabel}
+            submitVariant={submitVariant}
+            summaryLabel={summaryLabel}
+          >
+            {children}
+          </FormBody>
         </FormProvider>
       )}
     </InertiaForm>
   );
-};
+}
