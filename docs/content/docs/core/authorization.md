@@ -40,18 +40,43 @@ defense in depth, not a replacement for it. A forged or stale reference is still
 ## Reading trusted context
 
 A definition often needs the record it acts on. Pass it as [context](/actions/overview/#placing-an-action)
-when placing the component, and read it back with `context()`:
+when placing the component, and read it back with a typed accessor:
 
 ```php
 Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
+```
 
-// inside the action:
-protected function product(): Product
+```php
+use Lattice\Lattice\Actions\ActionDefinition;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
+
+class ArchiveProductAction extends ActionDefinition
 {
-    return Product::query()->findOrFail($this->context('product_id'));
+    use ResolvesContextModels;
+
+    protected function product(): Product
+    {
+        return $this->contextModel('product_id', Product::class);
+    }
 }
 ```
+
+`contextModel()` resolves the context value through the model's own `resolveRouteBinding()` — the
+same column a route parameter would bind against — and aborts with a 404 when the key is missing or
+no record matches. It lives on the opt-in `ResolvesContextModels` trait rather than on `Definition`
+itself, because the package does not depend on `illuminate/database`. `Definition::context()` and its
+typed scalar siblings — `contextString()`/`contextStringOrNull()`, `contextInt()`/`contextIntOrNull()`
+— are available on every definition without the trait; the strict variants abort with a 404 on a
+missing or wrongly-typed value instead of coercing it.
 
 The context is sealed into the component's signed reference, so the value `authorize()` and `handle()`
 read is the value the server issued — not something a client can change. See
 [Security](/advanced/security/) for how that sealing works.
+
+:::caution
+Inside `authorize()` on a component that renders as part of a page, use the `OrNull` accessors
+(`contextModelOrNull()`, `contextStringOrNull()`, `contextIntOrNull()`) instead of their strict
+counterparts. At the endpoint, a `false` from `authorize()` is a 403 — but at render time an
+unauthorized component is simply hidden, and a strict accessor's `abort(404)` would take the whole
+page down with it instead.
+:::
