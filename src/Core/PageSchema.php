@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core;
 
+use Lattice\Lattice\Http\Breadcrumb;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Lattice\Lattice\Ui\Concerns\ResolvesSchemaEntries;
@@ -17,6 +18,13 @@ final class PageSchema
      * @var array<int, SchemaEntry>
      */
     private array $components = [];
+
+    private ?string $title = null;
+
+    /**
+     * @var array<int, Breadcrumb>|null
+     */
+    private ?array $breadcrumbs = null;
 
     public static function make(): self
     {
@@ -38,6 +46,39 @@ final class PageSchema
         $this->components[] = $component;
 
         return $this;
+    }
+
+    public function title(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<int, Breadcrumb>  $breadcrumbs
+     */
+    public function breadcrumbs(array $breadcrumbs): static
+    {
+        $this->breadcrumbs = $breadcrumbs;
+
+        return $this;
+    }
+
+    public function resolvedTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    /**
+     * Null when render() set nothing, so the page's own breadcrumbs() applies;
+     * an empty array is a deliberate override that clears them.
+     *
+     * @return array<int, Breadcrumb>|null
+     */
+    public function resolvedBreadcrumbs(): ?array
+    {
+        return $this->breadcrumbs;
     }
 
     /**

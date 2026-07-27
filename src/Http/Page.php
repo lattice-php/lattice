@@ -28,7 +28,7 @@ abstract class Page implements PageContract, Responsable
     }
 
     /**
-     * @return array<int, array{title: string, href: string}>
+     * @return array<int, Breadcrumb>
      */
     public function breadcrumbs(): array
     {
@@ -141,13 +141,10 @@ abstract class Page implements PageContract, Responsable
         $container = $this->container() ?? $metadata->container;
 
         $payload = new PagePayload(
-            title: $this->title(),
+            title: $schema->resolvedTitle() ?? $this->title(),
             layout: $this->resolveLayout($layout, $request),
             container: $this->serializePageMetadata($container),
-            breadcrumbs: array_map(
-                static fn (array $breadcrumb): Breadcrumb => new Breadcrumb($breadcrumb['title'], $breadcrumb['href']),
-                $this->breadcrumbs(),
-            ),
+            breadcrumbs: $schema->resolvedBreadcrumbs() ?? $this->breadcrumbs(),
             schema: $schema->renderable(),
             listeners: $this->resolveListeners(),
         );
