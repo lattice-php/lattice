@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Lattice\Lattice\Console\Commands\Concerns\GeneratesComponentPair;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 
@@ -18,29 +17,28 @@ final class MakeColumnCommand extends Command
 
     public function handle(): int
     {
-        $name = $this->argument('name');
-        $type = $this->option('type') ?: $this->typeFromName($name, '');
+        $name = (string) $this->argument('name');
+        $target = $this->scaffoldTarget($name, 'Tables/Columns', 'columns');
+        $class = $target['class'];
+        $type = $this->option('type') ?: $this->typeFromName($class, '');
         $attributeType = ColumnType::localType($type);
         $wireType = ColumnType::wireType($type);
-        $kebab = Str::kebab($name);
         $force = (bool) $this->option('force');
-
-        $target = $this->scaffoldTarget($name, $kebab, 'Tables/Columns', 'columns', 'App\\Tables\\Columns');
 
         $this->writeStub(
             'column.php.stub',
             $target['php'],
-            ['namespace' => $target['namespace'], 'class' => $name, 'type' => $attributeType], force: $force);
+            ['namespace' => $target['namespace'], 'class' => $class, 'type' => $attributeType], force: $force);
 
         $this->writeStub(
             'column.tsx.stub',
             $target['tsx'],
-            ['class' => $name, 'type' => $type], force: $force);
+            ['class' => $class, 'type' => $type], force: $force);
 
         $this->registerInPlugin(
             $target['plugin'],
             $wireType,
-            $name.'Cell',
+            $class.'Cell',
             $target['import'],
             blockKey: 'columns',
             entryWrapper: null,
@@ -50,7 +48,7 @@ final class MakeColumnCommand extends Command
             $this->refreshTypes();
         }
 
-        $this->components->info("Column [$name] created with type [$wireType].");
+        $this->components->info("Column [$class] created with type [$wireType].");
 
         return self::SUCCESS;
     }

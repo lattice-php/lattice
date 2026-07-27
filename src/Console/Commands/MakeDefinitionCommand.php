@@ -6,15 +6,21 @@ namespace Lattice\Lattice\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Lattice\Lattice\Console\Commands\Concerns\ResolvesScaffoldTarget;
 
 /**
  * Base for the PHP-only definition generators (page, form, table, action, …).
- * Each subclass sets {@see $type}, {@see $directory}, and {@see $stub}; the
- * class is written to app/{directory}/{Name}.php, supporting nested names
- * (e.g. `Teams/CreateTeam`) and an opt-in `--force` overwrite.
+ * Each subclass sets {@see $type}, {@see $directory}, and {@see $stub}.
+ *
+ * A bare name is written to app/Ui/{directory}/{Name}.php (the default UI
+ * layer); a name with a path separator is placed verbatim under App, so
+ * feature-first apps pass e.g. `Projects/Ui/Forms/RoleForm`. See
+ * {@see ResolvesScaffoldTarget}. `--force` overwrites an existing file.
  */
 abstract class MakeDefinitionCommand extends Command
 {
+    use ResolvesScaffoldTarget;
+
     protected string $type;
 
     protected string $directory;
@@ -23,29 +29,24 @@ abstract class MakeDefinitionCommand extends Command
 
     public function handle(): int
     {
-        $name = ltrim(str_replace('/', '\\', (string) $this->argument('name')), '\\');
-        $class = class_basename($name);
-        $subNamespace = trim(Str::beforeLast($name, $class), '\\');
+        $target = $this->resolveAppTarget((string) $this->argument('name'), $this->directory);
 
-        $namespace = 'App\\'.$this->directory.($subNamespace !== '' ? '\\'.$subNamespace : '');
-        $target = app_path($this->directory.'/'.str_replace('\\', '/', $name).'.php');
-
-        if (File::exists($target) && ! $this->option('force')) {
-            $this->components->warn($this->type.' already exists: '.$target.' (use --force to overwrite)');
+        if (File::exists($target['path']) && ! $this->option('force')) {
+            $this->components->warn($this->type.' already exists: '.$target['path'].' (use --force to overwrite)');
 
             return self::FAILURE;
         }
 
         $contents = strtr(File::get(__DIR__.'/../stubs/'.$this->stub), [
-            '{{ namespace }}' => $namespace,
-            '{{ class }}' => $class,
-            '{{ key }}' => Str::kebab($class),
+            '{{ namespace }}' => $target['namespace'],
+            '{{ class }}' => $target['class'],
+            '{{ key }}' => Str::kebab($target['class']),
         ]);
 
-        File::ensureDirectoryExists(dirname($target));
-        File::put($target, $contents);
+        File::ensureDirectoryExists(dirname($target['path']));
+        File::put($target['path'], $contents);
 
-        $this->components->info($this->type.' ['.$namespace.'\\'.$class.'] created.');
+        $this->components->info($this->type.' ['.$target['namespace'].'\\'.$target['class'].'] created.');
 
         return self::SUCCESS;
     }

@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 
 trait GeneratesComponentPair
 {
+    use ResolvesScaffoldTarget;
+
     protected function typeFromName(string $name, string $prefix): string
     {
         return $prefix.Str::kebab($name);
@@ -15,26 +17,32 @@ trait GeneratesComponentPair
 
     /**
      * Resolve where to scaffold the pair — the app by default, or a Composer
-     * package when `--package=<dir>` is passed. In package mode the PHP
-     * namespace comes from the package's composer.json psr-4 map, files land in
-     * the package's own `src/` and `resources/js/`, and registration targets its
-     * `plugin.ts` (created if absent) instead of the app's `registry.ts`.
+     * package when `--package=<dir>` is passed. In app mode the PHP class
+     * follows the same App\Ui default (and separator escape hatch) as the
+     * definition generators; the React file and registry entry are keyed by the
+     * resolved class name. In package mode the PHP namespace comes from the
+     * package's composer.json psr-4 map, files land in the package's own `src/`
+     * and `resources/js/`, and registration targets its `plugin.ts` (created if
+     * absent) instead of the app's `registry.ts`.
      *
-     * @return array{php: string, namespace: string, tsx: string, plugin: string, import: string, refresh: bool}
+     * @return array{class: string, kebab: string, php: string, namespace: string, tsx: string, plugin: string, import: string, refresh: bool}
      */
     protected function scaffoldTarget(
         string $name,
-        string $kebab,
         string $phpSubdir,
         string $tsxSubdir,
-        string $appNamespace,
     ): array {
         $package = $this->option('package');
 
         if (! is_string($package) || trim($package) === '') {
+            $app = $this->resolveAppTarget($name, $phpSubdir);
+            $kebab = Str::kebab($app['class']);
+
             return [
-                'php' => app_path($phpSubdir.'/'.$name.'.php'),
-                'namespace' => $appNamespace,
+                'class' => $app['class'],
+                'kebab' => $kebab,
+                'php' => $app['path'],
+                'namespace' => $app['namespace'],
                 'tsx' => resource_path('js/'.$tsxSubdir.'/'.$kebab.'.tsx'),
                 'plugin' => resource_path('js/registry.ts'),
                 'import' => './'.$tsxSubdir.'/'.$kebab,
@@ -42,12 +50,15 @@ trait GeneratesComponentPair
             ];
         }
 
+        $kebab = Str::kebab($name);
         $dir = rtrim(trim($package), '/');
         $this->ensurePackageComposer($dir);
         $plugin = $dir.'/resources/js/plugin.ts';
         $this->ensurePluginFile($plugin, $dir);
 
         return [
+            'class' => $name,
+            'kebab' => $kebab,
             'php' => $dir.'/src/'.$phpSubdir.'/'.$name.'.php',
             'namespace' => $this->packageNamespace($dir).'\\'.str_replace('/', '\\', $phpSubdir),
             'tsx' => $dir.'/resources/js/'.$kebab.'.tsx',

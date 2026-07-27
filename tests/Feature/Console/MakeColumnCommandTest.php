@@ -9,15 +9,15 @@ it('scaffolds a column class, a cell tsx and registers it in registry.ts', funct
     withRegistryScaffold(function (): void {
         artisan('lattice:column', ['name' => 'StatusBadge'])->assertSuccessful();
 
-        $columnFile = app_path('Tables/Columns/StatusBadge.php');
+        $columnFile = app_path('Ui/Tables/Columns/StatusBadge.php');
         expect(File::get($columnFile))
-            ->toContain('namespace App\\Tables\\Columns;')
+            ->toContain('namespace App\\Ui\\Tables\\Columns;')
             ->toContain("#[AsColumn(type: 'status-badge')]")
             ->toContain('class StatusBadge extends Column')
             ->not->toContain('toData')
             ->not->toContain('Props');
 
-        expect(File::exists(app_path('Tables/Columns/StatusBadgeProps.php')))->toBeFalse();
+        expect(File::exists(app_path('Ui/Tables/Columns/StatusBadgeProps.php')))->toBeFalse();
 
         expect(File::get(resource_path('js/columns/status-badge.tsx')))
             ->toContain('ColumnCellComponent')
@@ -37,7 +37,7 @@ it('is idempotent and honors --type', function (): void {
         expect(substr_count(File::get(resource_path('js/registry.ts')), '"column.status-badge": StatusBadgeCell'))->toBe(1);
 
         artisan('lattice:column', ['name' => 'Priority', '--type' => 'prio'])->assertSuccessful();
-        expect(File::get(app_path('Tables/Columns/Priority.php')))->toContain("#[AsColumn(type: 'prio')]");
+        expect(File::get(app_path('Ui/Tables/Columns/Priority.php')))->toContain("#[AsColumn(type: 'prio')]");
         expect(File::get(resource_path('js/registry.ts')))->toContain('"column.prio": PriorityCell');
     });
 });

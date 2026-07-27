@@ -15,36 +15,50 @@ php artisan list lattice
 These commands create PHP-only definition classes under `app/`. Each accepts a required `name`
 argument and `--force` to overwrite an existing file.
 
-| Command                                    | Writes to       | Base class                |
-| ------------------------------------------ | --------------- | ------------------------- |
-| `php artisan lattice:page Home`            | `app/Pages`     | `Page`                    |
-| `php artisan lattice:form Contact`         | `app/Forms`     | `FormDefinition`          |
-| `php artisan lattice:table Users`          | `app/Tables`    | `EloquentTableDefinition` |
-| `php artisan lattice:action Save`          | `app/Actions`   | `ActionDefinition`        |
-| `php artisan lattice:bulk-action Export`   | `app/Actions`   | `BulkActionDefinition`    |
-| `php artisan lattice:fragment Stats`       | `app/Fragments` | `FragmentDefinition`      |
-| `php artisan lattice:layout App`           | `app/Layouts`   | `LayoutDefinition`        |
-| `php artisan lattice:remote-source Search` | `app/Remote`    | `RemoteSourceDefinition`  |
+| Command                                    | Writes to          | Base class                |
+| ------------------------------------------ | ------------------ | ------------------------- |
+| `php artisan lattice:page Home`            | `app/Ui/Pages`     | `Page`                    |
+| `php artisan lattice:form Contact`         | `app/Ui/Forms`     | `FormDefinition`          |
+| `php artisan lattice:table Users`          | `app/Ui/Tables`    | `EloquentTableDefinition` |
+| `php artisan lattice:action Save`          | `app/Ui/Actions`   | `ActionDefinition`        |
+| `php artisan lattice:bulk-action Export`   | `app/Ui/Actions`   | `BulkActionDefinition`    |
+| `php artisan lattice:fragment Stats`       | `app/Ui/Fragments` | `FragmentDefinition`      |
+| `php artisan lattice:layout App`           | `app/Ui/Layouts`   | `LayoutDefinition`        |
+| `php artisan lattice:remote-source Search` | `app/Ui/Remote`    | `RemoteSourceDefinition`  |
 
-Nested names create nested namespaces and directories:
+A bare name lands under `App\Ui\{Type}` — a single UI (adapter) layer that keeps
+your generated Lattice classes separate from your domain code.
+
+### Placing a class explicitly
+
+Give the name a path separator and it is written verbatim under `App\` — the
+type folder is _not_ inserted, so you own the whole location. This is the escape
+hatch for feature-first apps that group by feature rather than by type:
 
 ```bash
-php artisan lattice:form Settings/ProfileForm
+php artisan lattice:form Projects/Ui/Forms/ProfileForm
 ```
 
-That writes `app/Forms/Settings/ProfileForm.php` with the namespace
-`App\Forms\Settings`.
+That writes `app/Projects/Ui/Forms/ProfileForm.php` with the namespace
+`App\Projects\Ui\Forms`. `/` and `\` are interchangeable, so you never need to
+escape backslashes in your shell. Discovery scans `app/` recursively, so classes
+found under either layout are registered the same way — no config change needed.
 
 ## Component-pair generators
 
 These commands create both the PHP class and the React renderer, then append the registration to
 `resources/js/registry.ts`.
 
-| Command                                  | PHP file             | React file                              | Registry block |
-| ---------------------------------------- | -------------------- | --------------------------------------- | -------------- |
-| `php artisan lattice:field ColorPicker`  | `app/Forms/Fields`   | `resources/js/fields/color-picker.tsx`  | `components`   |
-| `php artisan lattice:component Rating`   | `app/Components`     | `resources/js/components/rating.tsx`    | `components`   |
-| `php artisan lattice:column StatusBadge` | `app/Tables/Columns` | `resources/js/columns/status-badge.tsx` | `columns`      |
+| Command                                  | PHP file                | React file                              | Registry block |
+| ---------------------------------------- | ----------------------- | --------------------------------------- | -------------- |
+| `php artisan lattice:field ColorPicker`  | `app/Ui/Forms/Fields`   | `resources/js/fields/color-picker.tsx`  | `components`   |
+| `php artisan lattice:component Rating`   | `app/Ui/Components`     | `resources/js/components/rating.tsx`    | `components`   |
+| `php artisan lattice:column StatusBadge` | `app/Ui/Tables/Columns` | `resources/js/columns/status-badge.tsx` | `columns`      |
+
+The PHP class follows the same `App\Ui` default and separator escape hatch as
+the definition generators; the React file and registry entry are keyed by the
+resolved class name. Package mode (`--package`) is unaffected — it uses the
+package's own PSR-4 namespace.
 
 Publish the registry scaffold before running them:
 
@@ -114,7 +128,7 @@ php artisan vendor:publish --tag=lattice-config
 php artisan vendor:publish --tag=lattice-js
 
 php artisan lattice:page Dashboard
-php artisan lattice:form Settings/ProfileForm
+php artisan lattice:form ProfileForm
 php artisan lattice:field ColorPicker --type=color-picker
 
 php artisan lattice:typescript
