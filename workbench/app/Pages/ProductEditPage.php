@@ -25,7 +25,7 @@ class ProductEditPage extends WorkbenchPage
             ->title($product->name)
             ->breadcrumbs([
                 Breadcrumb::toPage(ProductsPage::class)->title(__('workbench.pages.products.title')),
-                Breadcrumb::make($product->name, "/products/{$product->getKey()}/edit"),
+                Breadcrumb::toPage(self::class, ['product' => $product->getKey()])->title($product->name),
             ])
             ->schema([
                 Stack::make('product-edit-page')

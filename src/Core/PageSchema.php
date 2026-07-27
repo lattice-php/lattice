@@ -47,6 +47,10 @@ final class PageSchema
         return $this;
     }
 
+    /**
+     * Read only by `Http\Page::toArray()` via {@see self::resolvedTitle()};
+     * ignored when this schema builds a fragment or layout.
+     */
     public function title(string $title): static
     {
         $this->title = $title;
@@ -55,6 +59,9 @@ final class PageSchema
     }
 
     /**
+     * Read only by `Http\Page::toArray()` via {@see self::resolvedBreadcrumbs()};
+     * ignored when this schema builds a fragment or layout.
+     *
      * @param  array<int, Breadcrumb>  $breadcrumbs
      */
     public function breadcrumbs(array $breadcrumbs): static

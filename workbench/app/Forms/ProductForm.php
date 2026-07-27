@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Choice;
@@ -29,6 +30,8 @@ use Workbench\App\Models\SalesPrice;
 #[AsForm('workbench.products.form')]
 class ProductForm extends FormDefinition
 {
+    use ResolvesContextModels;
+
     public function definition(FormComponent $form, Request $request): FormComponent
     {
         $product = $this->product();
@@ -277,8 +280,8 @@ class ProductForm extends FormDefinition
 
     private function product(): ?Product
     {
-        $id = $this->contextIntOrNull('product_id');
+        $id = $this->context('product_id');
 
-        return $id === null ? null : Product::query()->findOrFail($id);
+        return $id === null || $id === '' ? null : $this->contextModel('product_id', Product::class);
     }
 }

@@ -41,6 +41,11 @@ abstract class Definition implements Authorizable
      * when the key is absent or holds the wrong type — inside a render-time
      * authorize() use the OrNull variants instead, or a missing key takes the
      * whole page down rather than hiding the component.
+     *
+     * The type policy differs per accessor: `contextString`/`contextStringOrNull`
+     * require a non-empty `string` and never coerce (an `int` is rejected), while
+     * `contextInt`/`contextIntOrNull` accept any `is_numeric` value — including
+     * numeric strings — and cast it to `int`.
      */
     protected function contextString(string $key): string
     {

@@ -36,8 +36,12 @@ trait ResolvesContextModels
 
     /**
      * Absent and not-found both yield null. A definition that must tell them
-     * apart — an edit form where no id means "create" — reads the scalar and
-     * runs its own lookup.
+     * apart — an edit form where no id means "create" — tests
+     * `$this->context($key)` for presence (`null`/`''`) itself, then calls
+     * the strict {@see self::contextModel()} for the lookup. Do not swap in
+     * `contextIntOrNull()` for the presence check: it silently folds
+     * "present but non-numeric" (e.g. a UUID/ULID key) into "absent", turning
+     * an edit into a create.
      *
      * @template TModel of Model
      *

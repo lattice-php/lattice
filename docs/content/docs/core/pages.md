@@ -287,7 +287,7 @@ public function render(PageSchema $schema, Product $product): PageSchema
         ->title($product->name)
         ->breadcrumbs([
             Breadcrumb::toPage(ProductsPage::class),
-            Breadcrumb::make($product->name, "/products/{$product->getKey()}/edit"),
+            Breadcrumb::toPage(self::class, ['product' => $product->getKey()])->title($product->name),
         ])
         ->schema([
             // …

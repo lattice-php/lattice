@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Choice;
@@ -29,6 +30,8 @@ use Workbench\App\Pricing\PriceResolver;
 #[AsForm('workbench.sales-orders.form')]
 class SalesOrderForm extends FormDefinition
 {
+    use ResolvesContextModels;
+
     public function __construct(private readonly PriceResolver $priceResolver) {}
 
     public function definition(FormComponent $form, Request $request): FormComponent
@@ -205,8 +208,8 @@ class SalesOrderForm extends FormDefinition
 
     private function order(): ?SalesOrder
     {
-        $id = $this->contextIntOrNull('sales_order_id');
+        $id = $this->context('sales_order_id');
 
-        return $id === null ? null : SalesOrder::query()->findOrFail($id);
+        return $id === null || $id === '' ? null : $this->contextModel('sales_order_id', SalesOrder::class);
     }
 }

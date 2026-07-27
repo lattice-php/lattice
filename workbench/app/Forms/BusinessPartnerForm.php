@@ -5,6 +5,7 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Lattice\Core\EloquentOptions;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
@@ -24,6 +25,8 @@ use Workbench\App\Pricing\PriceResolver;
 #[AsForm('workbench.business-partners.form')]
 class BusinessPartnerForm extends FormDefinition
 {
+    use ResolvesContextModels;
+
     public function definition(FormComponent $form, Request $request): FormComponent
     {
         $partner = $this->partner();
@@ -166,8 +169,8 @@ class BusinessPartnerForm extends FormDefinition
 
     private function partner(): ?BusinessPartner
     {
-        $id = $this->contextIntOrNull('business_partner_id');
+        $id = $this->context('business_partner_id');
 
-        return $id === null ? null : BusinessPartner::query()->findOrFail($id);
+        return $id === null || $id === '' ? null : $this->contextModel('business_partner_id', BusinessPartner::class);
     }
 }
