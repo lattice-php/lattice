@@ -95,9 +95,9 @@ Action::use(ArchiveProductAction::class)
     ->context(['product_id' => $row['id']]);
 ```
 
-`context()` carries data from the page to the action; `handle()` reads it back with
-`$this->context('product_id')`. The context is signed into the action's reference, so it
-can't be tampered with on the way back.
+`->context()` carries data from the page to the action; `handle()` reads it back server-side, typically
+through a typed accessor like `contextModel()` (see [Defining an action](#defining-an-action)). The
+context is signed into the action's reference, so it can't be tampered with on the way back.
 
 Group related actions behind a single trigger with `ActionGroup`:
 
