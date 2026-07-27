@@ -166,12 +166,8 @@ class BusinessPartnerForm extends FormDefinition
 
     private function partner(): ?BusinessPartner
     {
-        $id = $this->context('business_partner_id');
+        $id = $this->contextIntOrNull('business_partner_id');
 
-        if ($id === null || $id === '') {
-            return null;
-        }
-
-        return BusinessPartner::query()->findOrFail($id);
+        return $id === null ? null : BusinessPartner::query()->findOrFail($id);
     }
 }

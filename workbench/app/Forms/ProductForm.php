@@ -277,12 +277,8 @@ class ProductForm extends FormDefinition
 
     private function product(): ?Product
     {
-        $id = $this->context('product_id');
+        $id = $this->contextIntOrNull('product_id');
 
-        if ($id === null || $id === '') {
-            return null;
-        }
-
-        return Product::query()->findOrFail($id);
+        return $id === null ? null : Product::query()->findOrFail($id);
     }
 }

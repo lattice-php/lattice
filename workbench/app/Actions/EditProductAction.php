@@ -9,6 +9,7 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Actions\FormActionDefinition;
 use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Forms\Components\FileUpload;
 use Lattice\Lattice\Forms\Components\Form;
@@ -20,6 +21,8 @@ use Workbench\App\Models\Product;
 #[AsAction('workbench.products.edit-modal')]
 class EditProductAction extends FormActionDefinition
 {
+    use ResolvesContextModels;
+
     public function definition(Action $action): Action
     {
         return $action
@@ -79,6 +82,6 @@ class EditProductAction extends FormActionDefinition
 
     private function product(): Product
     {
-        return Product::query()->findOrFail($this->context('product_id'));
+        return $this->contextModel('product_id', Product::class);
     }
 }

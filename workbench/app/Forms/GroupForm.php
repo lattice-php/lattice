@@ -41,12 +41,8 @@ class GroupForm extends FormDefinition
 
     private function group(): ?Group
     {
-        $id = $this->context('group_id');
+        $id = $this->contextIntOrNull('group_id');
 
-        if ($id === null || $id === '') {
-            return null;
-        }
-
-        return Group::query()->findOrFail($id);
+        return $id === null ? null : Group::query()->findOrFail($id);
     }
 }
