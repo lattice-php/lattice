@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Lattice\Core;
 
 use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\PageRoute;
 
 #[TypeScript]
 final readonly class Breadcrumb

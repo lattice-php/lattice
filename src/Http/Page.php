@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lattice\Lattice\Core\Breadcrumb;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;

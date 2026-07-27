@@ -256,7 +256,7 @@ for a link to another page, `Breadcrumb::toPage()`, which resolves the label and
 page class so the trail can't drift out of sync with a renamed route:
 
 ```php
-use Lattice\Lattice\Http\Breadcrumb;
+use Lattice\Lattice\Core\Breadcrumb;
 
 public function breadcrumbs(): array
 {

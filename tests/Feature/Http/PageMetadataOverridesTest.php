@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Breadcrumb;
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Http\Breadcrumb;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Ui\Components\Text;
 
