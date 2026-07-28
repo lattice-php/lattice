@@ -34,7 +34,12 @@ use function Pest\Laravel\withoutVite;
 beforeEach(function (): void {
     DeclaredAbilityAction::$authorized = true;
 
-    Lattice::actions([DeclaredAbilityAction::class, DeclaredAbilityMultiAction::class, UndeclaredAbilityAction::class]);
+    Lattice::actions([
+        DeclaredAbilityAction::class,
+        DeclaredAbilityMultiAction::class,
+        UndeclaredAbilityAction::class,
+        MalformedAbilityAction::class,
+    ]);
     Lattice::tables([DeclaredAbilityTable::class]);
     Lattice::bulkActions([DeclaredAbilityBulkAction::class]);
 
@@ -111,6 +116,13 @@ test('a definition declaring nothing stays open', function (): void {
 
     postJson('/lattice/actions/undeclared.action', [], ['X-Lattice-Ref' => sealedRef('action', 'undeclared.action')])
         ->assertOk();
+});
+
+test('a malformed declaration fails closed', function (): void {
+    allowAbilities('manage-widgets');
+
+    postJson('/lattice/actions/malformed.action', [], ['X-Lattice-Ref' => sealedRef('action', 'malformed.action')])
+        ->assertForbidden();
 });
 
 test('an authorize() override cannot widen a declared ability', function (): void {
@@ -192,6 +204,20 @@ final class UndeclaredAbilityAction extends ActionDefinition
     public function definition(ActionComponent $action): ActionComponent
     {
         return $action->label('Undeclared action');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success();
+    }
+}
+
+#[AsAction('malformed.action', can: '')]
+final class MalformedAbilityAction extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Malformed action');
     }
 
     public function handle(Request $request): ActionResult

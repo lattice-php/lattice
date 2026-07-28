@@ -28,9 +28,6 @@ abstract class DefinitionAttribute
      */
     public function __construct(public readonly string $key, string|array $can = [])
     {
-        $this->can = array_values(array_filter(
-            (array) $can,
-            static fn (string $ability): bool => $ability !== '',
-        ));
+        $this->can = (array) $can;
     }
 }

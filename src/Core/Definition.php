@@ -54,9 +54,7 @@ abstract class Definition implements Authorizable
             return true;
         }
 
-        $gate = Gate::forUser($request->user());
-
-        return array_all($declared, static fn (string $ability): bool => $gate->allows($ability));
+        return Gate::forUser($request->user())->check($declared);
     }
 
     protected function context(string $key, mixed $default = null): mixed
