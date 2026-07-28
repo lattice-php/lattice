@@ -5,6 +5,7 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\TextInput;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -15,6 +16,8 @@ use Workbench\App\Models\Group;
 #[AsForm('workbench.groups.form')]
 class GroupForm extends FormDefinition
 {
+    use ResolvesContextModels;
+
     public function definition(FormComponent $form, Request $request): FormComponent
     {
         return $form->schema([
@@ -43,10 +46,6 @@ class GroupForm extends FormDefinition
     {
         $id = $this->context('group_id');
 
-        if ($id === null || $id === '') {
-            return null;
-        }
-
-        return Group::query()->findOrFail($id);
+        return $id === null || $id === '' ? null : $this->contextModel('group_id', Group::class);
     }
 }

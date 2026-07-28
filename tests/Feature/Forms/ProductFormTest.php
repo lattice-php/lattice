@@ -147,7 +147,7 @@ test('the product edit page binds existing product state', function (): void {
 
     $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->component('lattice/page', false)
-        ->where('lattice.title', 'Edit Product'));
+        ->where('lattice.title', 'Desk Lamp'));
 
     $this->assertLatticePage($response)
         ->component('form', 'workbench.products.form', fn ($form) => $form->assertProps([

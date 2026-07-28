@@ -249,16 +249,49 @@ page registry, but only entries with a `route` reach `Route::get()`.
 
 ## Title and breadcrumbs
 
-`title()` sets the document title. `breadcrumbs()` returns the page's trail; a layout's
-[`Breadcrumbs`](/core/navigation/#breadcrumbs) component renders whatever the active page provides:
+`title()` sets the document title and `breadcrumbs()` the page's trail; a layout's
+[`Breadcrumbs`](/core/navigation/#breadcrumbs) component renders whatever the active page provides.
+`breadcrumbs()` returns `Breadcrumb` instances — build one directly with `Breadcrumb::make()`, or,
+for a link to another page, `Breadcrumb::toPage()`, which resolves the label and href from the target
+page class so the trail can't drift out of sync with a renamed route:
 
 ```php
+use Lattice\Lattice\Core\Breadcrumb;
+
 public function breadcrumbs(): array
 {
     return [
-        ['title' => 'Products', 'href' => '/products'],
-        ['title' => 'Edit', 'href' => ''],
+        Breadcrumb::toPage(ProductsPage::class),
+        Breadcrumb::make('Edit', ''),
     ];
+}
+```
+
+Chain `->title()` onto a `Breadcrumb` to override the label `toPage()` derived:
+
+```php
+Breadcrumb::toPage(ProductsPage::class)->title(__('Products'));
+```
+
+`title()` and `breadcrumbs()` take no parameters, so they can't read the route or an injected model.
+When a value depends on the request — a record's name, say — set it on the `PageSchema` from
+`render()` instead, which is dispatched with the same route parameters as any other controller
+method. A value set on the schema wins over the corresponding `Page` method; leaving it unset falls
+through to the method, and passing `->breadcrumbs([])` deliberately clears the trail rather than
+falling through to it:
+
+```php
+public function render(PageSchema $schema, Product $product): PageSchema
+{
+    return $schema
+        ->title($product->name)
+        ->breadcrumbs([
+            Breadcrumb::toPage(ProductsPage::class),
+            Breadcrumb::toPage(self::class, ['product' => $product->getKey()])->title($product->name),
+        ])
+        ->schema([
+            // …
+        ]);
 }
 ```
 
