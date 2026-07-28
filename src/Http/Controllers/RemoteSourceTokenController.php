@@ -35,7 +35,7 @@ final readonly class RemoteSourceTokenController
 
         $definition = $this->remoteSources->resolve($source);
 
-        abort_unless($definition->authorize($request), 403);
+        abort_unless($definition->authorized($request), 403);
 
         return response()->json($definition->issueBrowserToken($request));
     }

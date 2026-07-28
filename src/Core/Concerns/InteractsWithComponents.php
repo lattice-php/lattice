@@ -32,7 +32,7 @@ trait InteractsWithComponents
             abort(404);
         }
 
-        abort_unless($definition->authorize($request), 403);
+        abort_unless($definition->authorized($request), 403);
 
         return [$request, $definition, $context];
     }

@@ -15,6 +15,38 @@ public function authorize(Request $request): bool
 }
 ```
 
+## Declaring abilities on the attribute
+
+When the check is a plain, subject-less ability, declare it with `can` on the definition attribute
+instead of writing a method:
+
+```php
+#[AsTable('admin.users', can: 'admin.users.manage')]
+class AdminUsersTable extends EloquentTableDefinition { /* … */ }
+```
+
+Pass an array when several must hold — every one has to pass:
+
+```php
+#[AsTable('admin.users', can: ['admin.access', 'admin.users.manage'])]
+```
+
+Declared abilities are checked against `Gate::forUser($request->user())` **in addition to**
+`authorize()`, at both seams — render and endpoint. An `authorize()` override can narrow what the
+attribute declared, never widen it, so a `can` declaration holds wherever the definition is reached
+from. That includes a bulk action, which is gated by its own declaration _and_ its table's.
+
+Abilities that need a subject — `can('view', $project)` — stay in `authorize()`, where the sealed
+context is available to resolve the record.
+
+:::caution
+A page's `middleware` does **not** protect the definitions rendered on it. Every definition is
+reached through its own endpoint (`lattice/tables/{table}`, `lattice/actions/{action}`, …), which
+runs the middleware in `config('lattice.<group>.middleware')` — `['web', 'auth']` by default — and
+then the definition's own authorization. Putting `can:admin.users.manage` on a page gates who can
+_load_ the page; it does not gate the table on it. Declare the ability on the definition too.
+:::
+
 The check runs on the definition's own endpoint before any work happens:
 
 - An **action** or **bulk action** that fails `authorize()` never reaches `handle()`.

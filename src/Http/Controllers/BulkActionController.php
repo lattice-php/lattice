@@ -45,7 +45,7 @@ final readonly class BulkActionController
         $tableKey = $this->trustedTableKey($context);
         $table = $this->resolveTable($tableKey)->withContext($context);
 
-        abort_unless($table->authorize($request), 403);
+        abort_unless($table->authorized($request), 403);
 
         $records = $this->resolveRecords($request, $table, $tableKey);
 
