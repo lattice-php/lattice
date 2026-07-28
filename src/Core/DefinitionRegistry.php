@@ -7,17 +7,14 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Spatie\Attributes\Attributes;
 
 /**
  * @template TDefinition of Definition
- *
- * @implements DefinitionRegistryContract<TDefinition>
  */
-abstract class DefinitionRegistry implements DefinitionRegistryContract
+abstract class DefinitionRegistry
 {
     /**
      * @var array<string, class-string<TDefinition>>
