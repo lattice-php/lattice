@@ -3,7 +3,7 @@ title: Authorization
 description: Gate any definition — form, table, action, fragment, or layout — with an authorize() check.
 ---
 
-Every Lattice definition is `Authorizable`. Override `authorize()` to decide whether the current
+Every Lattice definition carries an `authorize()` check. Override it to decide whether the current
 request may use it; it returns `true` by default, so a definition is open until you say otherwise.
 
 ```php

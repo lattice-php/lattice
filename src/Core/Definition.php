@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Contracts\Authorizable;
 
-abstract class Definition implements Authorizable
+abstract class Definition
 {
     /**
      * The instance context, set identically on render (by the registry) and on
