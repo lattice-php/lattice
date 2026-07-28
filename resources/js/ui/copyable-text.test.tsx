@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { CopyableText } from "./copyable-text";
+import { CopyableText, copyToClipboard } from "./copyable-text";
 
 function stubClipboard(writeText: (text: string) => Promise<void>) {
   Object.defineProperty(navigator, "clipboard", {
@@ -42,5 +42,27 @@ describe("CopyableText", () => {
     render(<CopyableText value="tok_secret" label="API token" />);
 
     expect(screen.getByText("tok_secret")).toBeInTheDocument();
+  });
+});
+
+describe("copyToClipboard", () => {
+  it("writes the text and reports success", async () => {
+    const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
+    stubClipboard(writeText);
+
+    await expect(copyToClipboard("hello")).resolves.toBe(true);
+    expect(writeText).toHaveBeenCalledWith("hello");
+  });
+
+  it("returns false when the clipboard API is unavailable", async () => {
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+
+    await expect(copyToClipboard("hello")).resolves.toBe(false);
+  });
+
+  it("returns false when writing rejects", async () => {
+    stubClipboard(vi.fn<(text: string) => Promise<void>>().mockRejectedValue(new Error("denied")));
+
+    await expect(copyToClipboard("hello")).resolves.toBe(false);
   });
 });

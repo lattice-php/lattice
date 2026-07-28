@@ -43,10 +43,6 @@
       "types": "./dist/chat/index.d.ts",
       "import": "./dist/chat/index.js"
     },
-    "./clipboard": {
-      "types": "./dist/clipboard/index.d.ts",
-      "import": "./dist/clipboard/index.js"
-    },
     "./core": {
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
