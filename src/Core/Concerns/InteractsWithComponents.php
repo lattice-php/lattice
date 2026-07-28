@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core\Concerns;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Authorization;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Core\DefinitionRegistry;
@@ -32,7 +33,7 @@ trait InteractsWithComponents
             abort(404);
         }
 
-        abort_unless($definition->authorized($request), 403);
+        Authorization::ensure($definition, $request);
 
         return [$request, $definition, $context];
     }

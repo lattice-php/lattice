@@ -26,11 +26,6 @@ abstract class DefinitionRegistry
         protected readonly DiscoveryManifest $manifest,
     ) {}
 
-    protected function authorizedToRender(Definition $definition): bool
-    {
-        return $definition->authorized($this->container->make(Request::class));
-    }
-
     /**
      * The gate every wire component build passes through: an unauthorized
      * definition yields a bare hidden component; an authorized one is
@@ -50,7 +45,7 @@ abstract class DefinitionRegistry
         $key = $this->registeredKeyFor($definitionClass);
         $definition = $this->make($definitionClass)->withContext($context);
 
-        if (! $this->authorizedToRender($definition)) {
+        if (! Authorization::passes($definition, $this->container->make(Request::class))) {
             return $component($key)->hidden();
         }
 

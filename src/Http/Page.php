@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lattice\Lattice\Core\Authorization;
 use Lattice\Lattice\Core\Breadcrumb;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\PageMetadata;
@@ -84,7 +85,7 @@ abstract class Page implements PageContract, Responsable
             ));
         }
 
-        abort_unless($this->authorize(app(Request::class)), 403);
+        Authorization::ensure($this, app(Request::class));
 
         return $this->pageResponse($method, $this->{$method}(...array_values($parameters)));
     }
@@ -94,7 +95,7 @@ abstract class Page implements PageContract, Responsable
      */
     public function toResponse($request): HttpResponse
     {
-        abort_unless($this->authorize($request), 403);
+        Authorization::ensure($this, $request);
 
         // schema is passed so the container resolves render()'s other
         // dependencies but does not rebuild PageSchema itself; the route's

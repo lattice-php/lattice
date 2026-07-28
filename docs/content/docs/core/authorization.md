@@ -1,24 +1,21 @@
 ---
 title: Authorization
-description: Gate any definition — form, table, action, fragment, or layout — with an authorize() check.
+description: Gate a definition, page, or component with can and authorize().
 ---
 
-Every Lattice definition is `Authorizable`. Override `authorize()` to decide whether the current
-request may use it; it returns `true` by default, so a definition is open until you say otherwise.
+Lattice gates everything with the same two tools. **`can`** declares subject-less abilities — the
+same word as Laravel's `can:` middleware and `$user->can()`. **`authorize()`** holds the logic that
+needs the request or the record it acts on.
 
-```php
-use Illuminate\Http\Request;
+|                                                                 | declare an ability     | custom logic                 |
+| --------------------------------------------------------------- | ---------------------- | ---------------------------- |
+| Definition — form, table, action, bulk action, fragment, layout | `#[AsTable(can: 'x')]` | `authorize()`                |
+| Page                                                            | `#[AsPage(can: 'x')]`  | `authorize()`                |
+| Component, column, filter, row action                           | `->can('x')`           | `->visible()` / `->hidden()` |
 
-public function authorize(Request $request): bool
-{
-    return $request->user()?->can('update', $this->product()) ?? false;
-}
-```
+## Declaring `can`
 
-## Declaring abilities on the attribute
-
-When the check is a plain, subject-less ability, declare it with `can` on the definition attribute
-instead of writing a method:
+Put the ability on the attribute — no method needed:
 
 ```php
 #[AsTable('admin.users', can: 'admin.users.manage')]
@@ -31,25 +28,54 @@ Pass an array when several must hold — every one has to pass:
 #[AsTable('admin.users', can: ['admin.access', 'admin.users.manage'])]
 ```
 
-Declared abilities are checked against `Gate::forUser($request->user())` **in addition to**
-`authorize()`, at both seams — render and endpoint. An `authorize()` override can narrow what the
-attribute declared, never widen it, so a `can` declaration holds wherever the definition is reached
-from. That includes a bulk action, which is gated by its own declaration _and_ its table's.
+Pages take the same argument:
 
-Abilities that need a subject — `can('view', $project)` — stay in `authorize()`, where the sealed
-context is available to resolve the record.
+```php
+#[AsPage(route: '/admin/users', can: 'admin.access')]
+class AdminUsersPage extends Page { /* … */ }
+```
+
+And any component, column, filter, or row action takes it as a method:
+
+```php
+TextColumn::make('cost')->can('finance.costs');
+Heading::make('Internal notes')->can(['support.access', 'support.notes']);
+```
+
+A `can` declaration is checked against `Gate::forUser($request->user())` and is **never widened** by
+the custom logic beside it — an `authorize()` override can only narrow it further, and `->visible(true)`
+cannot bring back a component whose `can` failed. That holds wherever the thing is reached from, which
+includes a bulk action, gated by its own declaration _and_ its table's.
 
 :::caution
-A page's `middleware` does **not** protect the definitions rendered on it. Every definition is
-reached through its own endpoint (`lattice/tables/{table}`, `lattice/actions/{action}`, …), which
+A page's `can` (or `middleware`) does **not** protect the definitions rendered on it. Every definition
+is reached through its own endpoint (`lattice/tables/{table}`, `lattice/actions/{action}`, …), which
 runs the middleware in `config('lattice.<group>.middleware')` — `['web', 'auth']` by default — and
-then the definition's own authorization. Putting `can:admin.users.manage` on a page gates who can
-_load_ the page; it does not gate the table on it. Declare the ability on the definition too.
+then the definition's own gate. Putting `can: 'admin.users.manage'` on a page gates who can _load_ the
+page; it does not gate the table on it. Declare the ability on the definition too.
 :::
 
-The check runs on the definition's own endpoint before any work happens:
+## Writing `authorize()`
 
-- An **action** or **bulk action** that fails `authorize()` never reaches `handle()`.
+Abilities that need a subject — `can('view', $project)` — go in `authorize()`, where the sealed
+context is available to resolve the record. It returns `true` by default, so a definition or page is
+open until you say otherwise.
+
+```php
+use Illuminate\Http\Request;
+
+public function authorize(Request $request): bool
+{
+    return $request->user()?->can('update', $this->product()) ?? false;
+}
+```
+
+`authorize()` is the only method you override. The framework never calls it directly — it composes
+it with whatever `can` declared, so the two can't drift apart.
+
+The gate runs on the definition's own endpoint before any work happens:
+
+- An **action** or **bulk action** that fails never reaches `handle()`.
 - A **form** is validated and handled only when authorized.
 - A **table** or **fragment** that fails resolves to nothing rather than leaking data.
 
@@ -58,15 +84,16 @@ the authorization lives in one place and can't be bypassed by calling the endpoi
 
 ## Hidden at render time, not just at the endpoint
 
-An unauthorized definition-backed component doesn't just 403 if you call its endpoint — it's hidden
-from the page in the first place. Registries resolve a failed `authorize()` check to an unsealed,
-hidden component, and every place that embeds definition-backed components (page schemas, table row
-actions, notification actions, a form nested under an action) filters them out before serializing.
-The client never sees a trace of it: no id, no endpoint, no signed reference.
+A component that fails its gate doesn't just 403 if you call its endpoint — it's hidden from the page
+in the first place. Registries resolve a failed check to an unsealed, hidden component, and every
+place that embeds definition-backed components (page schemas, table row actions, notification actions,
+a form nested under an action) filters them out before serializing. The client never sees a trace of
+it: no id, no endpoint, no signed reference. A plain component's `->can()` drops it the same way.
 
 :::note
-The endpoint's own `authorize()` check still runs on every request — hiding at render time is
-defense in depth, not a replacement for it. A forged or stale reference is still rejected.
+The endpoint's own gate still runs on every request — hiding at render time is defense in depth, not
+a replacement for it. A forged or stale reference is still rejected. A plain component has no endpoint
+of its own, so `->can()` is a render gate only; anything that loads data must be a definition.
 :::
 
 ## Reading trusted context

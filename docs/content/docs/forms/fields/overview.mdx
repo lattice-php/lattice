@@ -116,5 +116,16 @@ This is a one-time server decision, not a reactive one — for a field that shou
 user fills in the rest of the form, use [`->visibleWhen()`](/forms/conditional-fields/#visible-when)
 instead.
 
+When the reason is permission rather than state, reach for `->can()` instead of a `->visible()`
+closure. It takes the same abilities as a definition's `can` attribute argument, and `->visible()`
+cannot widen it:
+
+```php
+TextInput::make('salary', 'Salary')->can('payroll.view');
+```
+
+See [Authorization](/core/authorization/) for how `can` behaves across pages, definitions, and
+components.
+
 To show or hide a field based on another field's value, see
 [Conditional fields](/forms/conditional-fields/).

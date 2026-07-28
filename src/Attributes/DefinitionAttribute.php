@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Attributes;
 
+use Lattice\Lattice\Core\Contracts\DeclaresGate;
 use Lattice\Lattice\Core\Definition;
 
 /**
@@ -16,12 +17,12 @@ use Lattice\Lattice\Core\Definition;
  * widen what the attribute declared. Abilities needing a subject stay in
  * `authorize()`, where the sealed context is available to resolve one.
  */
-abstract class DefinitionAttribute
+abstract class DefinitionAttribute implements DeclaresGate
 {
     /**
      * @var array<int, string>
      */
-    public readonly array $can;
+    private readonly array $can;
 
     /**
      * @param  string|array<int, string>  $can
@@ -29,5 +30,10 @@ abstract class DefinitionAttribute
     public function __construct(public readonly string $key, string|array $can = [])
     {
         $this->can = (array) $can;
+    }
+
+    public function can(): array
+    {
+        return $this->can;
     }
 }
