@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsPage;
+use Lattice\Lattice\Core\Breadcrumb;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Ui\Components\Text;
@@ -82,12 +83,7 @@ test('pages serialize breadcrumb metadata', function (): void {
     {
         public function breadcrumbs(): array
         {
-            return [
-                [
-                    'title' => 'Dashboard',
-                    'href' => '/demo/dashboard',
-                ],
-            ];
+            return [Breadcrumb::make('Dashboard', '/demo/dashboard')];
         }
 
         public function render(PageSchema $schema): PageSchema

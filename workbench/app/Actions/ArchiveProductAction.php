@@ -8,6 +8,7 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Ui\Components\Link;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
@@ -17,6 +18,8 @@ use Workbench\App\Models\Product;
 #[AsAction('workbench.products.archive')]
 class ArchiveProductAction extends ActionDefinition
 {
+    use ResolvesContextModels;
+
     public function definition(ActionComponent $action): ActionComponent
     {
         return $action
@@ -48,6 +51,6 @@ class ArchiveProductAction extends ActionDefinition
 
     private function product(): Product
     {
-        return Product::query()->findOrFail($this->context('product_id'));
+        return $this->contextModel('product_id', Product::class);
     }
 }

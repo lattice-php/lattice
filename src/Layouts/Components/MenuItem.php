@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Layouts\Components;
 
-use Illuminate\Routing\Route;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Contracts\PageContract;
+use Lattice\Lattice\Core\PageRoute;
 use Lattice\Lattice\Ui\Components\ContainerComponent;
 use Lattice\Lattice\Ui\Concerns\HasAffixes;
 use Lattice\Lattice\Ui\Concerns\HasIcon;
@@ -46,27 +44,8 @@ class MenuItem extends ContainerComponent
      */
     public static function fromPage(string $page, array $parameters = []): static
     {
-        if (! is_a($page, PageContract::class, true)) {
-            throw new InvalidArgumentException(sprintf(
-                'Menu item page [%s] must implement [%s].',
-                $page,
-                PageContract::class,
-            ));
-        }
-
-        $route = collect(app('router')->getRoutes()->getRoutes())->first(
-            static fn (Route $route): bool => $route->getActionName() === $page.'@render',
-        );
-
-        if (! $route instanceof Route) {
-            throw new InvalidArgumentException(sprintf(
-                'No Lattice page route is registered for [%s].',
-                $page,
-            ));
-        }
-
-        return static::make(self::defaultLabel($page))
-            ->href(app('url')->toRoute($route, $parameters, false));
+        return static::make(PageRoute::label($page))
+            ->href(PageRoute::href($page, $parameters));
     }
 
     /**
@@ -92,13 +71,5 @@ class MenuItem extends ContainerComponent
         }
 
         return $this->schema($children);
-    }
-
-    /**
-     * @param  class-string  $page
-     */
-    private static function defaultLabel(string $page): string
-    {
-        return Str::headline(Str::beforeLast(class_basename($page), 'Page'));
     }
 }

@@ -19,13 +19,7 @@ it('resolves the wire type from the AsComponent attribute', function (): void {
 });
 
 it('throws a clear error when the attribute is missing', function (): void {
-    $component = new class extends Component
-    {
-        protected function type(): string
-        {
-            return parent::type();
-        }
-    };
+    $component = new class extends Component {};
 
     expect(fn (): array => $component->jsonSerialize())
         ->toThrow(LogicException::class, 'missing the #[AsComponent] attribute');

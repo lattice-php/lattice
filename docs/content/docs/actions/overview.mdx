@@ -51,12 +51,15 @@ use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 #[AsAction('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
 {
+    use ResolvesContextModels;
+
     public function definition(Action $action): Action
     {
         return $action
@@ -67,7 +70,7 @@ class ArchiveProductAction extends ActionDefinition
 
     public function handle(Request $request): ActionResult
     {
-        $product = Product::findOrFail($this->context('product_id'));
+        $product = $this->contextModel('product_id', Product::class);
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
@@ -76,6 +79,11 @@ class ArchiveProductAction extends ActionDefinition
     }
 }
 ```
+
+`contextModel()` reads the sealed context and resolves it into the model through its own
+[route binding](/core/authorization/#reading-trusted-context) — it aborts with a 404 when the key is
+missing or nothing matches. It comes from the opt-in `ResolvesContextModels` trait rather than
+`context()` itself, which stays untyped on every definition.
 
 ## Placing an action
 
@@ -87,9 +95,9 @@ Action::use(ArchiveProductAction::class)
     ->context(['product_id' => $row['id']]);
 ```
 
-`context()` carries data from the page to the action; `handle()` reads it back with
-`$this->context('product_id')`. The context is signed into the action's reference, so it
-can't be tampered with on the way back.
+`->context()` carries data from the page to the action; `handle()` reads it back server-side, typically
+through a typed accessor like `contextModel()` (see [Defining an action](#defining-an-action)). The
+context is signed into the action's reference, so it can't be tampered with on the way back.
 
 Group related actions behind a single trigger with `ActionGroup`:
 
@@ -135,9 +143,14 @@ through `$this->context()` — and returns a boolean; a denied action never reac
 ```php
 public function authorize(Request $request): bool
 {
-    return Product::findOrFail($this->context('product_id'))->status !== 'archived';
+    return $this->contextModel('product_id', Product::class)->status !== 'archived';
 }
 ```
+
+An action's `authorize()` also runs at render time — when it's hidden from the page rather than
+rejected outright, a strict accessor's 404 takes the whole page down with it. See
+[Authorization](/core/authorization/#reading-trusted-context) for the `OrNull` variants to reach for
+there instead.
 
 ## Next steps
 
