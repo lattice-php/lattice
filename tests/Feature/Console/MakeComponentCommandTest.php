@@ -10,9 +10,9 @@ it('scaffolds a component class with the AsComponent attribute and registers it'
     withRegistryScaffold(function (): void {
         artisan('lattice:component', ['name' => 'Rating'])->assertSuccessful();
 
-        $php = File::get(app_path('Components/Rating.php'));
+        $php = File::get(app_path('Ui/Components/Rating.php'));
         expect($php)
-            ->toContain('namespace App\\Components;')
+            ->toContain('namespace App\\Ui\\Components;')
             ->toContain('use Lattice\\Lattice\\Attributes\\AsComponent;')
             ->toContain("#[AsComponent('rating')]")
             ->toContain('class Rating extends Component');
@@ -79,6 +79,21 @@ it('honors a --type override', function (): void {
     withRegistryScaffold(function (): void {
         artisan('lattice:component', ['name' => 'Stars', '--type' => 'rating.stars'])->assertSuccessful();
 
-        expect(File::get(app_path('Components/Stars.php')))->toContain("#[AsComponent('rating.stars')]");
+        expect(File::get(app_path('Ui/Components/Stars.php')))->toContain("#[AsComponent('rating.stars')]");
+    });
+});
+
+it('places the PHP class at an explicit path when the name has a separator', function (): void {
+    withRegistryScaffold(function (): void {
+        artisan('lattice:component', ['name' => 'Billing/Ui/Components/Rating'])->assertSuccessful();
+
+        expect(File::get(app_path('Billing/Ui/Components/Rating.php')))
+            ->toContain('namespace App\\Billing\\Ui\\Components;')
+            ->toContain('class Rating extends Component');
+
+        expect(File::exists(resource_path('js/components/rating.tsx')))->toBeTrue();
+        expect(File::get(resource_path('js/registry.ts')))
+            ->toContain('import { RatingComponent } from "./components/rating";')
+            ->toContain('"rating": eagerComponent(RatingComponent)');
     });
 });

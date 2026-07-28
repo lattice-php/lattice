@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use Lattice\Lattice\Console\Commands\Concerns\GeneratesComponentPair;
 
 final class MakeComponentCommand extends Command
@@ -17,30 +16,29 @@ final class MakeComponentCommand extends Command
 
     public function handle(): int
     {
-        $name = $this->argument('name');
-        $type = $this->option('type') ?: $this->typeFromName($name, '');
-        $kebab = Str::kebab($name);
+        $name = (string) $this->argument('name');
+        $target = $this->scaffoldTarget($name, 'Components', 'components');
+        $class = $target['class'];
+        $type = $this->option('type') ?: $this->typeFromName($class, '');
         $force = (bool) $this->option('force');
-
-        $target = $this->scaffoldTarget($name, $kebab, 'Components', 'components', 'App\\Components');
 
         $this->writeStub(
             'component.php.stub',
             $target['php'],
-            ['namespace' => $target['namespace'], 'class' => $name, 'type' => $type], force: $force);
+            ['namespace' => $target['namespace'], 'class' => $class, 'type' => $type], force: $force);
 
         $this->writeStub(
             'component.tsx.stub',
             $target['tsx'],
-            ['class' => $name, 'type' => $type], force: $force);
+            ['class' => $class, 'type' => $type], force: $force);
 
-        $this->registerInPlugin($target['plugin'], $type, $name.'Component', $target['import']);
+        $this->registerInPlugin($target['plugin'], $type, $class.'Component', $target['import']);
 
         if ($target['refresh']) {
             $this->refreshTypes();
         }
 
-        $this->components->info("Component [$name] created with type [$type].");
+        $this->components->info("Component [$class] created with type [$type].");
 
         return self::SUCCESS;
     }
