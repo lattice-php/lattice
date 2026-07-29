@@ -28,7 +28,7 @@ abstract class DefinitionRegistry
 
     protected function authorizedToRender(Definition $definition): bool
     {
-        return $definition->authorize($this->container->make(Request::class));
+        return $definition->authorized($this->container->make(Request::class));
     }
 
     /**

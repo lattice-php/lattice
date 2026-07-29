@@ -4,7 +4,10 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Core;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\Contracts\Authorizable;
+use Spatie\Attributes\Attributes;
 
 abstract class Definition implements Authorizable
 {
@@ -26,9 +29,32 @@ abstract class Definition implements Authorizable
         return $this;
     }
 
+    /**
+     * The gate both seams call — render (registry) and endpoint (controller).
+     * Abilities declared on the definition attribute are checked first and
+     * cannot be widened by an override, so a `can` declaration holds wherever
+     * the definition is reached from.
+     */
+    final public function authorized(Request $request): bool
+    {
+        return $this->passesDeclaredAbilities($request) && $this->authorize($request);
+    }
+
     public function authorize(Request $request): bool
     {
         return true;
+    }
+
+    private function passesDeclaredAbilities(Request $request): bool
+    {
+        $attribute = Attributes::get(static::class, DefinitionAttribute::class);
+        $declared = $attribute instanceof DefinitionAttribute ? $attribute->can : [];
+
+        if ($declared === []) {
+            return true;
+        }
+
+        return Gate::forUser($request->user())->check($declared);
     }
 
     protected function context(string $key, mixed $default = null): mixed
