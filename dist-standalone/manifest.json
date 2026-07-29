@@ -1,7 +1,7 @@
 {
-  "version": "0.27.0",
+  "version": "0.28.0",
   "files": {
-    "lattice.js": "4e86f70de16e",
+    "lattice.js": "ccda1052f428",
     "chunks/chart-view-CpYsLvzR.js": "0559db48b797",
     "chunks/date-picker-field-lX8N40Ii.js": "6506021755df",
     "chunks/dist-PaT1gYi_.js": "4da471d00496",
@@ -11,9 +11,9 @@
     "chunks/page-props-ClpVjpOc.js": "21b2c0f905aa",
     "chunks/react-B8IZ02wI.js": "20382cff872b",
     "chunks/rich-editor-field-C71csVJv.js": "e594f5361d1e",
-    "chunks/subscriptions-Bt2s3IF3.js": "6f9e315f16f1",
+    "chunks/subscriptions-B1STcwPE.js": "0e6afc40f14f",
     "chunks/test-id-Dh3L6Gfh.js": "7958de4f0270",
-    "chunks/use-effect-dispatcher-DGFXSzA6.js": "5340439582b3",
+    "chunks/use-effect-dispatcher-I8So0l_I.js": "111b2aaad109",
     "chunks/with-selector-BwDoCrJJ.js": "6ccd3ad62b42",
     "sprite.svg": "f30900fb9d54"
   }
