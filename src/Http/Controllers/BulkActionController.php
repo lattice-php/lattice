@@ -40,7 +40,7 @@ final readonly class BulkActionController
         }
 
         if ($request->isPrecognitive()) {
-            return $this->validatePrecognitive($request, fn () => $definition->validate($request));
+            return $this->validatePrecognitive($request, fn (): array => $definition->validate($request));
         }
 
         $tableKey = $this->trustedTableKey($context);

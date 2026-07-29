@@ -34,7 +34,7 @@ final readonly class FormController
         }
 
         if ($request->isPrecognitive()) {
-            return $this->validatePrecognitive($request, fn () => $definition->validate($request));
+            return $this->validatePrecognitive($request, fn (): array => $definition->validate($request));
         }
 
         $definition->validate($request);
