@@ -10,8 +10,16 @@ use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Api\Webpage;
 use Workbench\App\Models\User;
 
+use function Amp\delay;
+
 /**
  * Retries browser assertions while asynchronous UI work settles.
+ *
+ * The test server is an amphp server sharing this PHP process, so it only
+ * serves requests while the event loop runs. Sleeping with usleep() would block
+ * it: a retry that asserts on the database alone (never touching the page)
+ * would starve the very request it waits for. Amp\delay() suspends
+ * cooperatively instead, letting the pending request through.
  *
  * @param  Closure(): void  $assert
  * @param  (Closure(): void)|null  $between
@@ -30,7 +38,7 @@ function retryUntil(Closure $assert, int $attempts = 20, int $sleepMicroseconds 
 
             $between?->__invoke();
 
-            usleep($sleepMicroseconds);
+            delay($sleepMicroseconds / 1_000_000);
         }
     }
 }
