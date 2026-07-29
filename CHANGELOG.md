@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.28.0](https://github.com/lattice-php/lattice/compare/0.27.0...0.28.0) (2026-07-29)
+
+
+### Features
+
+* declare definition abilities on the attribute ([310bfd5](https://github.com/lattice-php/lattice/commit/310bfd5b3cbf092ee0835d81b2d2772e352c293c))
+
+
+### Bug Fixes
+
+* **tests:** stop retryUntil from starving the browser test server ([5c87ef8](https://github.com/lattice-php/lattice/commit/5c87ef8297dd0bcfa8336133c6250a4c2e9029fd))
+
+
+### Refactoring
+
+* align authorization on can and authorize() ([01b524d](https://github.com/lattice-php/lattice/commit/01b524dab082bd8194f556baaa91c4296b440684))
+* align authorization on can and authorize() ([3f482c5](https://github.com/lattice-php/lattice/commit/3f482c5b06da168c7dfa3150ce8228df08d393ff))
+* check declared abilities through Gate::check and fail closed on a malformed declaration ([40ee144](https://github.com/lattice-php/lattice/commit/40ee144e925dc0a1a9db974a96eb9c7f90f6c2e9))
+
 ## [0.27.0](https://github.com/lattice-php/lattice/compare/0.26.0...0.27.0) (2026-07-28)
 
 
