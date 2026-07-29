@@ -133,6 +133,7 @@ too.
 | `layout`     | The [layout](/core/layouts/) the page renders into — a [`PageLayout`](/advanced/enums/#pages) or a registered layout key. Defaults to `PageLayout::None` (no shell). |
 | `container`  | How the content is framed — a [`PageContainer`](/advanced/enums/#pages) (`Default` or `Centered`). Defaults to `PageContainer::Centered`.                            |
 | `middleware` | Middleware for the page's route — a string or an array. Defaults to the `lattice.pages.middleware` config (`['web']`); pass `[]` to register the route with none.    |
+| `can`        | Abilities the current user must pass before the page renders — a string or an array. See [Authorization](/core/authorization/).                                      |
 
 ```php
 use Lattice\Lattice\Ui\Enums\PageContainer;
@@ -297,8 +298,14 @@ public function render(PageSchema $schema, Product $product): PageSchema
 
 ## Authorization
 
-Override `authorize()` to gate the whole page; it returns `true` by default. A request that fails the
-check is rejected before `render()` runs:
+Declare a subject-less ability with `can` on the attribute:
+
+```php
+#[AsPage(route: '/products', can: 'products.view')]
+```
+
+For anything that needs the request or a record, override `authorize()`; it returns `true` by default.
+A request that fails either check is rejected before `render()` runs:
 
 ```php
 use Illuminate\Http\Request;
@@ -309,5 +316,5 @@ public function authorize(Request $request): bool
 }
 ```
 
-This is the same `authorize()` every Lattice definition carries — see
-[Authorization](/core/authorization/) for how it behaves across forms, tables, and actions.
+These are the same two tools every Lattice definition carries — see
+[Authorization](/core/authorization/) for how they behave across forms, tables, and actions.

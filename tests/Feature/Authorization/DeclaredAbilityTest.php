@@ -11,6 +11,7 @@ use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\AsBulkAction;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
@@ -23,6 +24,7 @@ use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
+use Lattice\Lattice\Ui\Components\Heading;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
@@ -46,6 +48,10 @@ beforeEach(function (): void {
     Route::get('declared-ability-test', [DeclaredAbilityPage::class, 'render'])
         ->middleware('web')
         ->name('declared-ability-test.show');
+
+    Route::get('declared-ability-page-test', [DeclaredAbilityAttributePage::class, 'render'])
+        ->middleware('web')
+        ->name('declared-ability-page-test.show');
 
     withoutVite();
 });
@@ -162,6 +168,61 @@ test('a bulk action inherits its table\'s declared ability', function (): void {
     )->assertForbidden();
 });
 
+test('a declared ability on the page attribute gates the page', function (array $allowed, bool $expected): void {
+    allowAbilities(...$allowed);
+
+    $response = get('/declared-ability-page-test');
+
+    $expected ? $response->assertOk() : $response->assertForbidden();
+})->with([
+    'denied' => [[], false],
+    'allowed' => [['manage-widgets'], true],
+]);
+
+test('an authorize() override cannot widen a page\'s declared ability', function (): void {
+    allowAbilities();
+
+    get('/declared-ability-page-test')->assertForbidden();
+});
+
+test('a declared ability on a component drops it from the payload', function (): void {
+    allowAbilities();
+
+    $this->assertLatticePage(get('/declared-ability-test')->assertOk())
+        ->assertNotRendered('heading:gated-heading');
+
+    allowAbilities('inspect-widgets');
+
+    $this->assertLatticePage(get('/declared-ability-test')->assertOk())
+        ->assertRendered('heading:gated-heading');
+});
+
+test('visible() cannot widen a component\'s declared ability', function (): void {
+    allowAbilities();
+
+    expect(Heading::make('x')->can('manage-widgets')->visible(true)->shouldRender())->toBeFalse();
+});
+
+#[AsPage(can: 'manage-widgets')]
+final class DeclaredAbilityAttributePage extends Page
+{
+    public function title(): string
+    {
+        return 'Declared ability page';
+    }
+
+    #[Override]
+    public function authorize(Request $request): bool
+    {
+        return true;
+    }
+
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->schema([]);
+    }
+}
+
 #[AsAction('declared.action', can: 'manage-widgets')]
 final class DeclaredAbilityAction extends ActionDefinition
 {
@@ -271,6 +332,7 @@ final class DeclaredAbilityPage extends Page
         return $schema->schema([
             ActionComponent::use(DeclaredAbilityAction::class),
             TableComponent::use(DeclaredAbilityTable::class),
+            Heading::make('Gated heading')->key('gated-heading')->can('inspect-widgets'),
         ]);
     }
 }

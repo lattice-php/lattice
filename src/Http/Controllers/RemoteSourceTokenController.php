@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Authorization;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
 
@@ -35,7 +36,7 @@ final readonly class RemoteSourceTokenController
 
         $definition = $this->remoteSources->resolve($source);
 
-        abort_unless($definition->authorized($request), 403);
+        Authorization::ensure($definition, $request);
 
         return response()->json($definition->issueBrowserToken($request));
     }
