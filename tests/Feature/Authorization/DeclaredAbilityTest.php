@@ -223,6 +223,19 @@ final class DeclaredAbilityAttributePage extends Page
     }
 }
 
+test('the test helpers reach a can-gated definition', function (): void {
+    allowAbilities('manage-widgets');
+
+    $this->loadTable(DeclaredAbilityTable::class)->assertOk();
+    $this->callAction(DeclaredAbilityAction::class)->assertOk();
+});
+
+test('the test helpers still refuse a denied can-gated definition', function (): void {
+    allowAbilities();
+
+    $this->loadDeniedTable(DeclaredAbilityTable::class)->assertForbidden();
+});
+
 #[AsAction('declared.action', can: 'manage-widgets')]
 final class DeclaredAbilityAction extends ActionDefinition
 {

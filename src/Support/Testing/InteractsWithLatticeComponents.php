@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\Testing;
 
+use Closure;
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Http\Request;
 use Illuminate\Testing\TestResponse;
@@ -53,7 +54,7 @@ trait InteractsWithLatticeComponents
      */
     public function submitForm(string $form, array $data = [], array $context = []): LatticeTestResponse
     {
-        $component = $this->sealLatticeComponent(Form::use($form, $context));
+        $component = $this->sealLatticeComponent(fn (): Form => Form::use($form, $context));
 
         return $this->latticeRequest(
             $component['props']['method'] ?? 'post',
@@ -71,7 +72,7 @@ trait InteractsWithLatticeComponents
      */
     public function callAction(string $action, array $data = [], array $context = []): LatticeTestResponse
     {
-        $component = $this->sealLatticeComponent(Action::use($action, $context));
+        $component = $this->sealLatticeComponent(fn (): Action => Action::use($action, $context));
 
         return $this->latticeRequest(
             $component['props']['method'] ?? 'post',
@@ -92,7 +93,7 @@ trait InteractsWithLatticeComponents
      */
     public function callBulkAction(string $bulkAction, array $data = [], array $context = []): LatticeTestResponse
     {
-        $component = $this->sealLatticeComponent(BulkAction::use($bulkAction, $context));
+        $component = $this->sealLatticeComponent(fn (): BulkAction => BulkAction::use($bulkAction, $context));
 
         return $this->latticeRequest(
             $component['props']['method'] ?? 'post',
@@ -110,7 +111,7 @@ trait InteractsWithLatticeComponents
      */
     public function loadTable(string $table, array $query = [], array $context = []): LatticeTestResponse
     {
-        $component = $this->sealLatticeComponent(Table::use($table, $context));
+        $component = $this->sealLatticeComponent(fn (): Table => Table::use($table, $context));
         $url = $component['props']['endpoint'];
 
         if ($query !== []) {
@@ -129,7 +130,7 @@ trait InteractsWithLatticeComponents
      */
     public function loadFragment(string $fragment, array $context = []): LatticeTestResponse
     {
-        $component = $this->sealLatticeComponent(Fragment::lazy($fragment, $context));
+        $component = $this->sealLatticeComponent(fn (): Fragment => Fragment::lazy($fragment, $context));
 
         return $this->latticeTestResponse(
             $this->getJson(
@@ -253,13 +254,20 @@ trait InteractsWithLatticeComponents
     }
 
     /**
+     * Builds the component only after the request identity is refreshed. The
+     * component must not be built by the caller: a `can` declared on its
+     * attribute is resolved against the container's request at build time, and
+     * the stale request a previous dispatch left bound carries no user — the
+     * gate would deny and the component would come back hidden.
+     *
+     * @param  Closure(): mixed  $build
      * @return array<string, mixed>
      */
-    private function sealLatticeComponent(mixed $component): array
+    private function sealLatticeComponent(Closure $build): array
     {
         $this->refreshLatticeRequestIdentity();
 
-        return Wire::toArray($component);
+        return Wire::toArray($build());
     }
 
     /**
