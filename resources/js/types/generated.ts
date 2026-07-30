@@ -281,6 +281,7 @@ export type Callout = {
   dismissible: boolean;
   message: Translatable | string;
   title: Translatable | string | null;
+  unique: string | null;
   variant: Variant;
 };
 export type Callouts = Record<string, never>;

@@ -65,9 +65,9 @@ defaulting to success: `->toast('Saved.')`, `->toast('Could not save.', Variant:
 
 A callout is a persistent in-flow banner — appropriate for warnings, trials, subscription notices, or
 any message that should stay visible until the user acts. Unlike a toast, a callout is not transient:
-it appears in the layout where the `Callouts` slot is placed and stays until the user dismisses it.
-There is no duration or auto-dismiss, and navigating between pages within the same layout does not
-clear it.
+it appears in the layout where the `Callouts` slot is placed. There is no duration or auto-dismiss.
+An unkeyed callout stays until the user dismisses it, and navigating between pages within the same
+layout does not clear it; a keyed callout follows the lifetime described below instead.
 
 Build a `Callout` value object and pass it to `->callout()`:
 
@@ -85,12 +85,45 @@ return ActionResult::success()
 
 The `Callout` builder options:
 
-| Method                            | Effect                                                                  |
-| --------------------------------- | ----------------------------------------------------------------------- |
-| `->title($string)`                | Optional heading above the message.                                     |
-| `->dismissible(bool)`             | Show or hide the close button (default: dismissible).                   |
-| `->link($label, $href, $method?)` | Render a link in the callout (`$method` defaults to `HttpMethod::Get`). |
-| `->action($component)`            | Render an action instead of a link.                                     |
+| Method                            | Effect                                                                               |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| `->title($string)`                | Optional heading above the message.                                                  |
+| `->dismissible(bool)`             | Show or hide the close button (default: dismissible).                                |
+| `->link($label, $href, $method?)` | Render a link in the callout (`$method` defaults to `HttpMethod::Get`).              |
+| `->action($component)`            | Render an action instead of a link.                                                  |
+| `->unique($key)`                  | Treat the callout as a projection of server state under `$key` rather than an event. |
+
+**Callout lifetimes**
+
+Without a key, a callout is an **event**: emitted once, it stays until the user dismisses it.
+
+With a key it is a **projection of state**. The client replaces any callout sharing the key, and
+drops it on navigation unless the server asserts it again — so a keyed callout must be re-emitted on
+every request for which it still holds, typically from middleware.
+
+Retraction only happens on a navigation that **changes the URL**. A same-URL `router.reload()`, a
+`redirect()->back()` to the same URL, polling, and partial reloads do not clear a keyed callout — the
+server must overwrite it explicitly if the condition no longer holds. Browser back/forward is its own
+case: Inertia restores those pages from a history snapshot that carries no flash data, so a keyed
+callout disappears on back/forward regardless of whether the condition still holds, until the next
+request re-asserts it.
+
+```php
+Callout::make(__('billing.past-due'), Variant::Danger)
+    ->unique('billing.state')
+    ->dismissible(false);
+```
+
+The example above disables dismissal: dismissing is a client-only action, and the next re-assertion of
+the same key brings the callout straight back, so letting the user dismiss a standing condition would
+just be undone on the next matching request.
+
+This is what makes a standing condition — a failing payment, a maintenance window, a read-only mode —
+expressible. Flashing an unkeyed callout on every request instead would stack a fresh copy per
+navigation, because the layout that hosts the slot persists across visits.
+
+Callouts hold no server-side state. A message that needs identity, a recipient, and read/unread
+tracking is a [notification](/components/notifications/), not a callout.
 
 **Placing the slot in your layout**
 

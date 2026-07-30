@@ -118,6 +118,20 @@ test('action results expose the callout effect', function (): void {
         ->and(wire($result)['effects'][0]['props']['variant'])->toBe('info');
 });
 
+test('a callout carries its unique key on the wire', function (): void {
+    $wire = wire(
+        Callout::make('Your payment failed.', Variant::Danger)->unique('billing.state'),
+    );
+
+    expect($wire['props']['unique'])->toBe('billing.state');
+});
+
+test('a callout without a unique key serializes it as null', function (): void {
+    $wire = wire(Callout::make('Saved as draft.', Variant::Info));
+
+    expect($wire['props']['unique'])->toBeNull();
+});
+
 test('action groups serialize grouped child actions', function (): void {
     $group = wire(ActionGroup::make('workbench.user-actions')
         ->label('Manage user')

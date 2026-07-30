@@ -107,6 +107,7 @@ describe("builtinEffectHandlers", () => {
         dismissible: true,
         message: "Hi",
         title: null,
+        unique: null,
         variant: "info",
       }),
     );

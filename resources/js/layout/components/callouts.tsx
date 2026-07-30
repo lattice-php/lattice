@@ -1,4 +1,5 @@
 import { Icon } from "@lattice-php/lattice/icons";
+import { router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { Callout } from "@lattice-php/lattice/types/generated";
@@ -13,6 +14,17 @@ type CalloutItem = Callout & { id: number };
 
 let nextId = 0;
 
+/**
+ * Renders callouts emitted on the bus. A keyed callout is a projection of
+ * server state: it replaces any callout sharing its key, and is dropped when
+ * `navigate` fires. Inertia only fires `navigate` for a URL-changing visit
+ * (initial load included); a same-URL visit — `router.reload()`,
+ * `redirect()->back()` to the same URL, polling, partial reloads — sets
+ * `replace` instead and never fires it, so the callout survives until the
+ * server overwrites or drops it. On these URL-changing visits, `navigate`
+ * fires before `flash`, so re-assertion always wins over the clear and no
+ * ordering guard is needed.
+ */
 const Callouts: RendererComponent<"callouts"> = () => {
   const { t } = useT("lattice");
   const [callouts, setCallouts] = useState<CalloutItem[]>([]);
@@ -20,7 +32,21 @@ const Callouts: RendererComponent<"callouts"> = () => {
   useEffect(
     () =>
       onCallout((callout) => {
-        setCallouts((current) => [...current, { ...callout, id: nextId++ }]);
+        setCallouts((current) => {
+          const kept = callout.unique
+            ? current.filter((existing) => existing.unique !== callout.unique)
+            : current;
+
+          return [...kept, { ...callout, id: nextId++ }];
+        });
+      }),
+    [],
+  );
+
+  useEffect(
+    () =>
+      router.on("navigate", () => {
+        setCallouts((current) => current.filter((callout) => !callout.unique));
       }),
     [],
   );
