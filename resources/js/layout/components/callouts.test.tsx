@@ -6,13 +6,37 @@ import { Provider } from "@lattice-php/lattice/provider";
 import { Renderer } from "@lattice-php/lattice/core/renderer";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
-);
+const navigateListeners: Array<() => void> = [];
+
+vi.mock("@inertiajs/react", async () => {
+  const { inertiaMock } = await import("@lattice-php/lattice/test/inertia-mock");
+
+  return inertiaMock({
+    router: {
+      on: (event: string, listener: () => void) => {
+        if (event === "navigate") {
+          navigateListeners.push(listener);
+        }
+
+        return () => undefined;
+      },
+      reload: vi.fn(),
+      visit: vi.fn(),
+    },
+  });
+});
+
+function navigate(): void {
+  act(() => {
+    for (const listener of navigateListeners) {
+      listener();
+    }
+  });
+}
 
 function emitCallout(
   message: string,
-  options: { dismissible?: boolean; action?: unknown } = {},
+  options: { dismissible?: boolean; action?: unknown; unique?: string } = {},
 ): void {
   act(() => {
     window.dispatchEvent(
@@ -23,6 +47,7 @@ function emitCallout(
           message,
           dismissible: options.dismissible ?? true,
           action: options.action ?? null,
+          unique: options.unique ?? null,
         },
       }),
     );
@@ -92,5 +117,48 @@ describe("Callouts slot", () => {
     });
 
     expect(screen.getByRole("link", { name: "Undo" })).toHaveAttribute("href", "/undo");
+  });
+
+  it("replaces a keyed callout instead of stacking it", () => {
+    render(
+      <Provider toaster={false}>
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+      </Provider>,
+    );
+
+    emitCallout("Payment failed", { unique: "billing.state" });
+    emitCallout("Payment failed", { unique: "billing.state" });
+    emitCallout("Payment failed", { unique: "billing.state" });
+
+    expect(screen.getAllByText("Payment failed")).toHaveLength(1);
+  });
+
+  it("keeps unkeyed callouts stacking", () => {
+    render(
+      <Provider toaster={false}>
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+      </Provider>,
+    );
+
+    emitCallout("Archived.");
+    emitCallout("Archived.");
+
+    expect(screen.getAllByText("Archived.")).toHaveLength(2);
+  });
+
+  it("drops keyed callouts on navigation and keeps unkeyed ones", () => {
+    render(
+      <Provider toaster={false}>
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+      </Provider>,
+    );
+
+    emitCallout("Payment failed", { unique: "billing.state" });
+    emitCallout("Archived.");
+
+    navigate();
+
+    expect(screen.queryByText("Payment failed")).not.toBeInTheDocument();
+    expect(screen.getByText("Archived.")).toBeInTheDocument();
   });
 });
