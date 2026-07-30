@@ -63,6 +63,10 @@
       "types": "./dist/core/types.d.ts",
       "import": "./dist/core/types.js"
     },
+    "./core/upload": {
+      "types": "./dist/core/upload.d.ts",
+      "import": "./dist/core/upload.js"
+    },
     "./dnd": {
       "types": "./dist/dnd/index.d.ts",
       "import": "./dist/dnd/index.js"

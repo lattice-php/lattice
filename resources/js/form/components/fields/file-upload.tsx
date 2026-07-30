@@ -1,5 +1,5 @@
-import { apiFetch } from "@lattice-php/lattice/core/api";
 import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import { requestSignedUpload, xhrTransfer } from "@lattice-php/lattice/core/upload";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { SignedUpload } from "@lattice-php/lattice/types/generated";
 import { IconButton } from "@lattice-php/lattice/ui/icon-button";
@@ -146,66 +146,55 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
   }
 
   async function signAndUpload(item: Item, file: File): Promise<void> {
-    const response = await apiFetch(action, {
-      method: "POST",
-      ref: componentRef,
-      body: JSON.stringify({
-        ...values,
-        _sub: "upload",
-        _target: uploadKey,
-        filename: file.name,
-        contentType: file.type,
-      }),
-      throwOnError: false,
-    });
-
-    if (!response.ok) {
+    const markFailed = (): void => {
       setItems((prev) =>
         prev.map((entry) => (entry.id === item.id ? { ...entry, status: "error" } : entry)),
       );
+    };
+
+    const response = await requestSignedUpload(action, {
+      ref: componentRef,
+      target: uploadKey,
+      filename: file.name,
+      contentType: file.type,
+      values,
+    });
+
+    if (!response.ok) {
+      markFailed();
 
       return;
     }
 
     const sign = (await response.json()) as SignedUpload;
 
-    await new Promise<void>((resolve) => {
-      const request = new XMLHttpRequest();
-      request.open(sign.method.toUpperCase(), sign.url, true);
-      Object.entries(sign.headers).forEach(([key, value]) =>
-        request.setRequestHeader(key, String(value)),
-      );
-      request.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const progress = Math.round((event.loaded / event.total) * 100);
+    try {
+      const put = await xhrTransfer({
+        url: sign.url,
+        method: sign.method.toUpperCase(),
+        body: file,
+        headers: sign.headers,
+        onProgress: (progress) =>
           setItems((prev) =>
             prev.map((entry) => (entry.id === item.id ? { ...entry, progress } : entry)),
-          );
-        }
-      };
-      request.onload = () => {
-        setItems((prev) =>
-          prev.map((entry) =>
-            entry.id === item.id
-              ? {
-                  ...entry,
-                  status: request.status < 300 ? "ready" : "error",
-                  key: sign.key,
-                  progress: 100,
-                }
-              : entry,
           ),
-        );
-        resolve();
-      };
-      request.onerror = () => {
-        setItems((prev) =>
-          prev.map((entry) => (entry.id === item.id ? { ...entry, status: "error" } : entry)),
-        );
-        resolve();
-      };
-      request.send(file);
-    });
+      });
+
+      setItems((prev) =>
+        prev.map((entry) =>
+          entry.id === item.id
+            ? {
+                ...entry,
+                status: put.ok ? "ready" : "error",
+                key: sign.key,
+                progress: 100,
+              }
+            : entry,
+        ),
+      );
+    } catch {
+      markFailed();
+    }
   }
 
   function addFiles(fileList: FileList | null): void {
