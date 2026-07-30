@@ -16,6 +16,7 @@ describe("normalizeCallout", () => {
       message: "Ends soon",
       dismissible: false,
       action: null,
+      unique: null,
     });
   });
 
@@ -37,5 +38,13 @@ describe("normalizeCallout", () => {
     const callout = normalizeCallout({ message: "Hi" });
     expect(callout?.variant).toBe("info");
     expect(callout?.dismissible).toBe(true);
+  });
+
+  it("normalizes the unique key and defaults it to null", () => {
+    expect(normalizeCallout({ message: "Hi", unique: "billing.state" })?.unique).toBe(
+      "billing.state",
+    );
+    expect(normalizeCallout({ message: "Hi" })?.unique).toBeNull();
+    expect(normalizeCallout({ message: "Hi", unique: 42 })?.unique).toBeNull();
   });
 });

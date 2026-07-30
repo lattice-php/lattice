@@ -15,6 +15,12 @@ use Lattice\Lattice\Ui\Enums\Variant;
  * A callout: a prominent, persistent banner rendered in a layout's Callouts
  * slot. A heading plus body and variant, with an optional dismiss button and
  * an action (a link or a full Action).
+ *
+ * Without a unique key a callout is an event: emitted once, it stays until the
+ * user dismisses it. With one it is a projection of server state — the client
+ * replaces any callout sharing the key and drops it on navigation unless the
+ * server asserts it again, so a keyed callout must be re-emitted on every
+ * request for which it still holds.
  */
 #[AsEffect('callout')]
 final class Callout extends Effect
@@ -25,6 +31,7 @@ final class Callout extends Effect
         public string|Translatable|null $title = null,
         public bool $dismissible = true,
         public ?Component $action = null,
+        public ?string $unique = null,
     ) {}
 
     public static function make(string|Translatable $message, Variant $variant = Variant::Info): self
@@ -42,6 +49,13 @@ final class Callout extends Effect
     public function dismissible(bool $dismissible = true): self
     {
         $this->dismissible = $dismissible;
+
+        return $this;
+    }
+
+    public function unique(string $key): self
+    {
+        $this->unique = $key;
 
         return $this;
     }

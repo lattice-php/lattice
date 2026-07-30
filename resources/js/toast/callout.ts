@@ -26,6 +26,7 @@ export function normalizeCallout(detail: unknown): Callout | null {
     message,
     title:
       typeof callout.title === "string" || isTranslatable(callout.title) ? callout.title : null,
+    unique: typeof callout.unique === "string" ? callout.unique : null,
     variant: isVariant(callout.variant) ? callout.variant : "info",
   };
 }
