@@ -85,12 +85,34 @@ return ActionResult::success()
 
 The `Callout` builder options:
 
-| Method                            | Effect                                                                  |
-| --------------------------------- | ----------------------------------------------------------------------- |
-| `->title($string)`                | Optional heading above the message.                                     |
-| `->dismissible(bool)`             | Show or hide the close button (default: dismissible).                   |
-| `->link($label, $href, $method?)` | Render a link in the callout (`$method` defaults to `HttpMethod::Get`). |
-| `->action($component)`            | Render an action instead of a link.                                     |
+| Method                            | Effect                                                                               |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| `->title($string)`                | Optional heading above the message.                                                  |
+| `->dismissible(bool)`             | Show or hide the close button (default: dismissible).                                |
+| `->link($label, $href, $method?)` | Render a link in the callout (`$method` defaults to `HttpMethod::Get`).              |
+| `->action($component)`            | Render an action instead of a link.                                                  |
+| `->unique($key)`                  | Treat the callout as a projection of server state under `$key` rather than an event. |
+
+**Callout lifetimes**
+
+Without a key, a callout is an **event**: emitted once, it stays until the user dismisses it.
+
+With a key it is a **projection of state**. The client replaces any callout sharing the key, and
+drops it on navigation unless the server asserts it again — so a keyed callout must be re-emitted on
+every request for which it still holds, typically from middleware:
+
+```php
+Callout::make(__('billing.past-due'), Variant::Danger)
+    ->unique('billing.state')
+    ->dismissible(false);
+```
+
+This is what makes a standing condition — a failing payment, a maintenance window, a read-only mode —
+expressible. Flashing an unkeyed callout on every request instead would stack a fresh copy per
+navigation, because the layout that hosts the slot persists across visits.
+
+Callouts hold no server-side state. A message that needs identity, a recipient, and read/unread
+tracking is a [notification](/components/notifications/), not a callout.
 
 **Placing the slot in your layout**
 
