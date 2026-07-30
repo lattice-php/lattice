@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { Provider } from "@lattice-php/lattice/provider";
@@ -55,6 +55,10 @@ function emitCallout(
 }
 
 describe("Callouts slot", () => {
+  beforeEach(() => {
+    navigateListeners.length = 0;
+  });
+
   it("renders callouts emitted on the bus and dismisses them", () => {
     render(
       <Provider toaster={false}>

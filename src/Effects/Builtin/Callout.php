@@ -18,9 +18,10 @@ use Lattice\Lattice\Ui\Enums\Variant;
  *
  * Without a unique key a callout is an event: emitted once, it stays until the
  * user dismisses it. With one it is a projection of server state — the client
- * replaces any callout sharing the key and drops it on navigation unless the
- * server asserts it again, so a keyed callout must be re-emitted on every
- * request for which it still holds.
+ * replaces any callout sharing the key and drops it on a URL-changing
+ * navigation unless the server asserts it again (a same-URL reload, back(),
+ * or poll does not retract it; browser back/forward always drops it), so a
+ * keyed callout must be re-emitted on every request for which it still holds.
  */
 #[AsEffect('callout')]
 final class Callout extends Effect
