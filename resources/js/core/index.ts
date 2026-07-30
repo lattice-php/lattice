@@ -7,6 +7,7 @@ export {
   remoteFetch,
   remoteJson,
   remoteToken,
+  xsrfToken,
 } from "./api";
 export type { ApiInit, BrowserToken, RemoteAccess, RemoteInit } from "./api";
 export { CollapsedContext, useCollapsed } from "./collapsed-context";
