@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Lattice\Actions\BulkActionRegistry;
+use Lattice\Lattice\Core\Authorization;
 use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
@@ -45,7 +46,7 @@ final readonly class BulkActionController
         $tableKey = $this->trustedTableKey($context);
         $table = $this->resolveTable($tableKey)->withContext($context);
 
-        abort_unless($table->authorize($request), 403);
+        Authorization::ensure($table, $request);
 
         $records = $this->resolveRecords($request, $table, $tableKey);
 

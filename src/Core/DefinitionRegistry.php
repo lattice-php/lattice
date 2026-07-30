@@ -7,17 +7,14 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\Contracts\DefinitionRegistry as DefinitionRegistryContract;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
 use Spatie\Attributes\Attributes;
 
 /**
  * @template TDefinition of Definition
- *
- * @implements DefinitionRegistryContract<TDefinition>
  */
-abstract class DefinitionRegistry implements DefinitionRegistryContract
+abstract class DefinitionRegistry
 {
     /**
      * @var array<string, class-string<TDefinition>>
@@ -28,11 +25,6 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
         protected readonly Container $container,
         protected readonly DiscoveryManifest $manifest,
     ) {}
-
-    protected function authorizedToRender(Definition $definition): bool
-    {
-        return $definition->authorize($this->container->make(Request::class));
-    }
 
     /**
      * The gate every wire component build passes through: an unauthorized
@@ -53,7 +45,7 @@ abstract class DefinitionRegistry implements DefinitionRegistryContract
         $key = $this->registeredKeyFor($definitionClass);
         $definition = $this->make($definitionClass)->withContext($context);
 
-        if (! $this->authorizedToRender($definition)) {
+        if (! Authorization::passes($definition, $this->container->make(Request::class))) {
             return $component($key)->hidden();
         }
 

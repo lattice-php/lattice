@@ -22,6 +22,16 @@ On the way back, the endpoint decrypts the reference and rejects the request (`4
 key doesn't match, the token has expired, or the user or session no longer matches the one it was
 issued to. Only then does it run.
 
+:::caution
+A reference proves **authenticity, not entitlement**. It says the server issued this component to
+this user, in this session, recently — not that the user is still allowed to use it. Permissions are
+re-checked only by the definition's own [authorization](/core/authorization/). A definition with no
+`can` declaration and no `authorize()` override is therefore reachable for as long as its reference
+lives, even if the user's access was revoked in the meantime: revoke someone's admin role while they
+have the page open and their existing references keep working until they expire. Declare the ability
+on any definition whose data must reflect a permission change immediately.
+:::
+
 ## Why context is trustworthy
 
 Because the context travels inside the encrypted reference — not as ordinary request input — a client

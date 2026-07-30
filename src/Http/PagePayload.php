@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Http;
 
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Core\Breadcrumb;
 use Lattice\Lattice\Realtime\Listen;
 use Lattice\Lattice\Ui\Components\Component;
 

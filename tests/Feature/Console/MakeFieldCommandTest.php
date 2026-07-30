@@ -9,9 +9,9 @@ it('scaffolds a field PHP class, a tsx renderer, registers it and derives the ty
     withRegistryScaffold(function (): void {
         artisan('lattice:field', ['name' => 'ColorPicker'])->assertSuccessful();
 
-        $php = File::get(app_path('Forms/Fields/ColorPicker.php'));
+        $php = File::get(app_path('Ui/Forms/Fields/ColorPicker.php'));
         expect($php)
-            ->toContain('namespace App\\Forms\\Fields;')
+            ->toContain('namespace App\\Ui\\Forms\\Fields;')
             ->toContain('use Lattice\\Lattice\\Forms\\Attributes\\AsField;')
             ->toContain("#[AsField(type: 'color-picker')]")
             ->toContain('class ColorPicker extends Field');
@@ -42,7 +42,7 @@ it('honors a --type override', function (): void {
     withRegistryScaffold(function (): void {
         artisan('lattice:field', ['name' => 'Swatch', '--type' => 'color'])->assertSuccessful();
 
-        expect(File::get(app_path('Forms/Fields/Swatch.php')))
+        expect(File::get(app_path('Ui/Forms/Fields/Swatch.php')))
             ->toContain("#[AsField(type: 'color')]");
 
         expect(File::get(resource_path('js/fields/swatch.tsx')))

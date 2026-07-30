@@ -1,5 +1,82 @@
 # Changelog
 
+## [0.28.0](https://github.com/lattice-php/lattice/compare/0.27.0...0.28.0) (2026-07-29)
+
+
+### Features
+
+* declare definition abilities on the attribute ([310bfd5](https://github.com/lattice-php/lattice/commit/310bfd5b3cbf092ee0835d81b2d2772e352c293c))
+
+
+### Bug Fixes
+
+* **tests:** stop retryUntil from starving the browser test server ([5c87ef8](https://github.com/lattice-php/lattice/commit/5c87ef8297dd0bcfa8336133c6250a4c2e9029fd))
+
+
+### Refactoring
+
+* align authorization on can and authorize() ([01b524d](https://github.com/lattice-php/lattice/commit/01b524dab082bd8194f556baaa91c4296b440684))
+* align authorization on can and authorize() ([3f482c5](https://github.com/lattice-php/lattice/commit/3f482c5b06da168c7dfa3150ce8228df08d393ff))
+* check declared abilities through Gate::check and fail closed on a malformed declaration ([40ee144](https://github.com/lattice-php/lattice/commit/40ee144e925dc0a1a9db974a96eb9c7f90f6c2e9))
+
+## [0.27.0](https://github.com/lattice-php/lattice/compare/0.26.0...0.27.0) (2026-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Page::breadcrumbs() now returns array<int, Breadcrumb> instead of the array{title: string, href: string} shape, and Breadcrumb moved from Lattice\Lattice\Http to Lattice\Lattice\Core. Existing array-shaped breadcrumbs still serialize identically on the wire, so the failure is static-analysis-only — update the return type and the import.
+* type page breadcrumbs and set title and breadcrumbs from the schema
+* bare-name generation moves from App\{Type} to App\Ui\{Type} (app/Forms/Contact.php -> app/Ui/Forms/Contact.php). Existing files are unaffected — discovery scans app/ recursively — only new make output relocates. A separated name no longer nests under the type directory; pass the full path (Settings/ProfileForm -> App\Settings\ProfileForm, was App\Forms\Settings).
+* unify component sub-requests under one envelope
+* mint component endpoints from named routes
+* rebuild the theme builder around per-colour group methods
+* register page routes with a configurable web middleware default
+
+### Features
+
+* build breadcrumbs from a page class ([b54374a](https://github.com/lattice-php/lattice/commit/b54374a2ad0832628e97911b0a95eee31edb541e))
+* carry brand colours as a ColorGroup and align ring and accent hues ([b38a2f3](https://github.com/lattice-php/lattice/commit/b38a2f3bdfbdda39ef270d896a938eb5590f1b2b))
+* derive hover and active states from the base colours in the stylesheet ([429fbb4](https://github.com/lattice-php/lattice/commit/429fbb4fc0fed4b568ae990e3e69d692125cfe9b))
+* **js:** add the dnd export seam for component packages ([7ed6396](https://github.com/lattice-php/lattice/commit/7ed6396a8c9937259df401b7a0f43ebf2336a38c))
+* **js:** dnd export seam for component packages ([ba3ece0](https://github.com/lattice-php/lattice/commit/ba3ece05c870043eb65547836b2bb50c399d651c))
+* mint component endpoints from named routes ([55bebe3](https://github.com/lattice-php/lattice/commit/55bebe367e714ffe77badd0dc1340464eef8d682))
+* rebuild the theme builder around per-colour group methods ([37d71c7](https://github.com/lattice-php/lattice/commit/37d71c739c05e98ebdaad5f1900f73cc627596e8))
+* refresh expired component refs instead of hard-failing after 30 minutes ([adf225b](https://github.com/lattice-php/lattice/commit/adf225bf3d53654d206a1bab36facaa3ac2fe866))
+* register page routes with a configurable web middleware default ([305b523](https://github.com/lattice-php/lattice/commit/305b523ca6aa4c93512f21d436553c064bd9915b))
+* renew component refs on Inertia requests ([1a0034e](https://github.com/lattice-php/lattice/commit/1a0034ee425563a5dcf12d7c52541e98c04e21a4))
+* resolve models from definition context ([422a90c](https://github.com/lattice-php/lattice/commit/422a90c5e9933afa9193d25948a5b5a077c79e58))
+* scaffold generators default to the App\Ui layer ([426b3fb](https://github.com/lattice-php/lattice/commit/426b3fb8edcb1ea5b3c3d726a07012c074917ba8))
+* type page breadcrumbs and set title and breadcrumbs from the schema ([8a4940e](https://github.com/lattice-php/lattice/commit/8a4940e34dcd04e17b5e432abc0e9c1909fdcb04))
+* typed scalar context accessors on definitions ([54c3d05](https://github.com/lattice-php/lattice/commit/54c3d05d9ca0e37c460dd64204f2993fd9d3e687))
+* unify component sub-requests under one envelope ([039ca3a](https://github.com/lattice-php/lattice/commit/039ca3a3cdeb3e64c9794aad88a2f5497cdbac2b))
+* wire form reset and ref renewal into the Lattice form ([f2412c7](https://github.com/lattice-php/lattice/commit/f2412c753a47f6a2908f5f63ed450fa30b9f569f))
+* working form reset and ref renewal for Inertia submits ([ddf80e0](https://github.com/lattice-php/lattice/commit/ddf80e07d6a2b891e6c4f1d512ab782bb5028387))
+
+
+### Bug Fixes
+
+* **ci:** quote the standalone-assets guard so the workflow parses again ([6a5ead1](https://github.com/lattice-php/lattice/commit/6a5ead1a237f916086fdc7812d20926496033d10))
+* **ci:** quote the standalone-assets guard so the workflow parses again ([c2e908c](https://github.com/lattice-php/lattice/commit/c2e908c94827097e4a49d23de9e36b87d8ab5014))
+* **js:** qualify tree-item hitbox exports and round out the dnd seam ([f2fd5ee](https://github.com/lattice-php/lattice/commit/f2fd5eedcca6ed4b9d1e4e958d3c73b1f78e206f))
+* memoize PrefillProvider value so field memoization survives keystrokes ([a545bb5](https://github.com/lattice-php/lattice/commit/a545bb5c87269cfd97c77424e8e5512184abc2dd))
+* pass variant instead of unsupported color prop to date-picker trigger ([5436da5](https://github.com/lattice-php/lattice/commit/5436da53792262382c1606489638725dd2d3430a))
+* **workbench:** resolve context models strictly in edit forms ([378ec22](https://github.com/lattice-php/lattice/commit/378ec22409af38868bb8c94cfda9a2b711569ca1))
+
+
+### Refactoring
+
+* centralize the authorize-gate component build in the registry base ([8f50f35](https://github.com/lattice-php/lattice/commit/8f50f35093c5d38d8da0ec9c125cdb7ca1b0b32a))
+* move Breadcrumb into the Core namespace ([757851f](https://github.com/lattice-php/lattice/commit/757851f49fdb903e03452c6a639d8efa02bff371))
+* resolve page routes through PageRoute ([ed68aa5](https://github.com/lattice-php/lattice/commit/ed68aa599eb8cb99bf566471b40b729187c07572))
+* **workbench:** adopt the typed context accessors ([0b0a0ac](https://github.com/lattice-php/lattice/commit/0b0a0ac35a2434776ef271da3af4eeba001a212d))
+
+
+### Documentation
+
+* document typed context and render-time page metadata ([f02d7f3](https://github.com/lattice-php/lattice/commit/f02d7f3c8bc5e2d9b95a41aa6d88254bc436ef68))
+* fix stale untyped-context prose in actions overview ([1d9eded](https://github.com/lattice-php/lattice/commit/1d9eded322d3dfd61f46335972e280e25d49e716))
+* point component packages at the dnd seam ([b6db60c](https://github.com/lattice-php/lattice/commit/b6db60ccb42040e77330ab146e753bdb1d7c5697))
+
 ## [0.26.0](https://github.com/lattice-php/lattice/compare/0.25.0...0.26.0) (2026-07-24)
 
 

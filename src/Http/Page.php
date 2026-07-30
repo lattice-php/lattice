@@ -9,6 +9,8 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Lattice\Lattice\Core\Authorization;
+use Lattice\Lattice\Core\Breadcrumb;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Core\PageMetadata;
 use Lattice\Lattice\Core\PageSchema;
@@ -28,7 +30,7 @@ abstract class Page implements PageContract, Responsable
     }
 
     /**
-     * @return array<int, array{title: string, href: string}>
+     * @return array<int, Breadcrumb>
      */
     public function breadcrumbs(): array
     {
@@ -83,7 +85,7 @@ abstract class Page implements PageContract, Responsable
             ));
         }
 
-        abort_unless($this->authorize(app(Request::class)), 403);
+        Authorization::ensure($this, app(Request::class));
 
         return $this->pageResponse($method, $this->{$method}(...array_values($parameters)));
     }
@@ -93,7 +95,7 @@ abstract class Page implements PageContract, Responsable
      */
     public function toResponse($request): HttpResponse
     {
-        abort_unless($this->authorize($request), 403);
+        Authorization::ensure($this, $request);
 
         // schema is passed so the container resolves render()'s other
         // dependencies but does not rebuild PageSchema itself; the route's
@@ -141,13 +143,10 @@ abstract class Page implements PageContract, Responsable
         $container = $this->container() ?? $metadata->container;
 
         $payload = new PagePayload(
-            title: $this->title(),
+            title: $schema->resolvedTitle() ?? $this->title(),
             layout: $this->resolveLayout($layout, $request),
             container: $this->serializePageMetadata($container),
-            breadcrumbs: array_map(
-                static fn (array $breadcrumb): Breadcrumb => new Breadcrumb($breadcrumb['title'], $breadcrumb['href']),
-                $this->breadcrumbs(),
-            ),
+            breadcrumbs: $schema->resolvedBreadcrumbs() ?? $this->breadcrumbs(),
             schema: $schema->renderable(),
             listeners: $this->resolveListeners(),
         );

@@ -21,7 +21,9 @@ final class SalesOrderLinesFragment extends FragmentDefinition
 {
     public function schema(PageSchema $schema): PageSchema
     {
-        $order = SalesOrder::query()->with('lines.product')->find((int) $this->context('orderId'));
+        $order = SalesOrder::query()
+            ->with('lines.product')
+            ->find($this->contextIntOrNull('orderId'));
 
         if ($order === null) {
             return $schema->component(Text::make(__('workbench.commerce.sales-orders.detail.missing')));
