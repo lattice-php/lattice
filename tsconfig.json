@@ -23,6 +23,9 @@
     "resources/js/**/*.tsx",
     "workbench/resources/js/**/*.ts",
     "workbench/resources/js/**/*.tsx",
+    "packages/*/resources/js/**/*.ts",
+    "packages/*/resources/js/**/*.tsx",
+    "packages/*/resources/js/**/*.d.ts",
     "vite.config.ts"
   ]
 }

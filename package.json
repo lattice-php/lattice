@@ -35,6 +35,10 @@
       "types": "./dist/action/index.d.ts",
       "import": "./dist/action/index.js"
     },
+    "./action/lib/run-action": {
+      "types": "./dist/action/lib/run-action.d.ts",
+      "import": "./dist/action/lib/run-action.js"
+    },
     "./appearance": {
       "types": "./dist/appearance/index.d.ts",
       "import": "./dist/appearance/index.js"
@@ -47,9 +51,25 @@
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
     },
+    "./core/api": {
+      "types": "./dist/core/api.d.ts",
+      "import": "./dist/core/api.js"
+    },
+    "./core/headers": {
+      "types": "./dist/core/headers.d.ts",
+      "import": "./dist/core/headers.js"
+    },
+    "./core/types": {
+      "types": "./dist/core/types.d.ts",
+      "import": "./dist/core/types.js"
+    },
     "./dnd": {
       "types": "./dist/dnd/index.d.ts",
       "import": "./dist/dnd/index.js"
+    },
+    "./effects/use-effect-dispatcher": {
+      "types": "./dist/effects/use-effect-dispatcher.d.ts",
+      "import": "./dist/effects/use-effect-dispatcher.js"
     },
     "./form": {
       "types": "./dist/form/index.d.ts",
@@ -67,6 +87,26 @@
       "types": "./dist/form/rich-editor/index.d.ts",
       "import": "./dist/form/rich-editor/index.js"
     },
+    "./form/components/fields/simple-field": {
+      "types": "./dist/form/components/fields/simple-field.d.ts",
+      "import": "./dist/form/components/fields/simple-field.js"
+    },
+    "./form/hooks/context": {
+      "types": "./dist/form/hooks/context.d.ts",
+      "import": "./dist/form/hooks/context.js"
+    },
+    "./form/hooks/values": {
+      "types": "./dist/form/hooks/values.d.ts",
+      "import": "./dist/form/hooks/values.js"
+    },
+    "./format/date-time": {
+      "types": "./dist/format/date-time.d.ts",
+      "import": "./dist/format/date-time.js"
+    },
+    "./format/format-context": {
+      "types": "./dist/format/format-context.d.ts",
+      "import": "./dist/format/format-context.js"
+    },
     "./i18n": {
       "types": "./dist/i18n/index.d.ts",
       "import": "./dist/i18n/index.js"
@@ -82,6 +122,14 @@
     "./layout": {
       "types": "./dist/layout/index.d.ts",
       "import": "./dist/layout/index.js"
+    },
+    "./lib/use-debounced-callback": {
+      "types": "./dist/lib/use-debounced-callback.d.ts",
+      "import": "./dist/lib/use-debounced-callback.js"
+    },
+    "./lib/utils": {
+      "types": "./dist/lib/utils.d.ts",
+      "import": "./dist/lib/utils.js"
     },
     "./notifications": {
       "types": "./dist/notifications/index.d.ts",
@@ -107,6 +155,22 @@
       "types": "./dist/table/index.d.ts",
       "import": "./dist/table/index.js"
     },
+    "./table/hooks/use-table": {
+      "types": "./dist/table/hooks/use-table.d.ts",
+      "import": "./dist/table/hooks/use-table.js"
+    },
+    "./table/hooks/use-table-selection": {
+      "types": "./dist/table/hooks/use-table-selection.d.ts",
+      "import": "./dist/table/hooks/use-table-selection.js"
+    },
+    "./table/lib/bulk": {
+      "types": "./dist/table/lib/bulk.d.ts",
+      "import": "./dist/table/lib/bulk.js"
+    },
+    "./table/types": {
+      "types": "./dist/table/types.d.ts",
+      "import": "./dist/table/types.js"
+    },
     "./toast": {
       "types": "./dist/toast/index.d.ts",
       "import": "./dist/toast/index.js"
@@ -114,9 +178,48 @@
     "./types": {
       "types": "./dist/types/index.d.ts"
     },
+    "./types/generated": {
+      "types": "./dist/types/generated.d.ts"
+    },
     "./ui": {
       "types": "./dist/ui/index.d.ts",
       "import": "./dist/ui/index.js"
+    },
+    "./ui/button": {
+      "types": "./dist/ui/button.d.ts",
+      "import": "./dist/ui/button.js"
+    },
+    "./ui/checkbox": {
+      "types": "./dist/ui/checkbox.d.ts",
+      "import": "./dist/ui/checkbox.js"
+    },
+    "./ui/confirm-dialog": {
+      "types": "./dist/ui/confirm-dialog.d.ts",
+      "import": "./dist/ui/confirm-dialog.js"
+    },
+    "./ui/dialog": {
+      "types": "./dist/ui/dialog.d.ts",
+      "import": "./dist/ui/dialog.js"
+    },
+    "./ui/icon-button": {
+      "types": "./dist/ui/icon-button.d.ts",
+      "import": "./dist/ui/icon-button.js"
+    },
+    "./ui/image-preview": {
+      "types": "./dist/ui/image-preview.d.ts",
+      "import": "./dist/ui/image-preview.js"
+    },
+    "./ui/input": {
+      "types": "./dist/ui/input.d.ts",
+      "import": "./dist/ui/input.js"
+    },
+    "./ui/label": {
+      "types": "./dist/ui/label.d.ts",
+      "import": "./dist/ui/label.js"
+    },
+    "./ui/native-select": {
+      "types": "./dist/ui/native-select.d.ts",
+      "import": "./dist/ui/native-select.js"
     },
     "./svg-sprite-client": {
       "types": "./dist/svg-sprite-client.d.ts"
@@ -158,11 +261,11 @@
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "tsc --noEmit -p docs/tsconfig.json",
     "docs:test": "vitest run --project jsdom docs",
-    "lint": "oxlint resources/js workbench/resources/js",
-    "lint:fix": "oxlint resources/js workbench/resources/js --fix",
-    "lint:github": "oxlint resources/js workbench/resources/js --format=github",
-    "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
-    "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
+    "lint": "oxlint resources/js workbench/resources/js packages/*/resources/js",
+    "lint:fix": "oxlint resources/js workbench/resources/js packages/*/resources/js --fix",
+    "lint:github": "oxlint resources/js workbench/resources/js packages/*/resources/js --format=github",
+    "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
+    "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "analyze": "SONDA=1 vite build && mkdir -p docs/public && cp docs/generated/bundle-report.html docs/public/bundle-report.html",
     "docs:dev": "npm run analyze && astro dev",
     "docs:build": "npm run analyze && astro build",

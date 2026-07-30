@@ -20,7 +20,11 @@ export class ApiError extends Error {
   }
 }
 
-function xsrfToken(): string {
+/**
+ * Exported so the few transports that cannot go through apiFetch — an XHR that
+ * reports upload progress, for instance — still send the same CSRF header.
+ */
+export function xsrfToken(): string {
   const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
 
   return match ? decodeURIComponent(match[1]) : "";

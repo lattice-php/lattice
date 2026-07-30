@@ -367,7 +367,11 @@ export default defineConfig(({ mode }) => {
           test: {
             name: "jsdom",
             environment: "jsdom",
-            include: ["resources/js/**/*.test.{ts,tsx}", "docs/**/*.test.{ts,tsx}"],
+            include: [
+              "resources/js/**/*.test.{ts,tsx}",
+              "docs/**/*.test.{ts,tsx}",
+              "packages/*/resources/js/**/*.test.{ts,tsx}",
+            ],
             exclude: ["resources/js/**/*.browser.test.{ts,tsx}"],
             setupFiles: ["resources/js/test/setup.ts"],
           },
