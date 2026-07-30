@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.29.0](https://github.com/lattice-php/lattice/compare/0.28.0...0.29.0) (2026-07-30)
+
+
+### Features
+
+* **js:** export xsrfToken and widen the package export map ([795b1ae](https://github.com/lattice-php/lattice/commit/795b1ae612e9e6dd9ff4b5cb2ff44b26dc9c02a4))
+* **js:** shared upload transport for signed and multipart flows ([598db12](https://github.com/lattice-php/lattice/commit/598db12890b6bf63d618c8b01d39f5b48221f2c2))
+* **js:** shared upload transport for signed and multipart flows ([ebf4316](https://github.com/lattice-php/lattice/commit/ebf4316b99a0ee40880271c26699b0a6a0b010e0))
+* widen the js export map and package tooling scopes ([be8f427](https://github.com/lattice-php/lattice/commit/be8f4275f2ff48e1dd0cc47d1acaf10a18e50cab))
+
+
+### Bug Fixes
+
+* **testing:** build components after refreshing the request identity ([2cfd4c9](https://github.com/lattice-php/lattice/commit/2cfd4c9b19ee26f356f07e4211f666ff7bc7e791))
+
 ## [0.28.0](https://github.com/lattice-php/lattice/compare/0.27.0...0.28.0) (2026-07-29)
 
 
