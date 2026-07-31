@@ -76,6 +76,7 @@ final class TableRegistry extends DefinitionRegistry
                     ->endpoint($this->endpointFor($key))
                     ->columns($columns)
                     ->filters($definition->filters())
+                    ->perPageOptions($definition->perPageOptions())
                     ->searchable($this->hasSearchableColumns($columns))
                     ->layout($definition->layout())
                     ->striped($definition->striped())
@@ -97,7 +98,7 @@ final class TableRegistry extends DefinitionRegistry
     {
         $definition ??= $this->resolve($key);
         $columns = $definition->columns();
-        $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage(), $definition->filters());
+        $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage(), $definition->filters(), $definition->perPageOptions());
 
         return $this->decorateResult($definition, $definition->source()->query($query), $columns)->forQuery($query);
     }

@@ -120,6 +120,40 @@ test('eloquent tables can disable pagination for small datasets', function (): v
         ->assertJsonPath('pagination.hasMore', false);
 });
 
+test('declared per-page options validate the requested page size', function (): void {
+    User::query()->delete();
+
+    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => str($name)->slug()->append('@example.com')->toString(),
+        ]);
+    }
+
+    Lattice::tables([WorkbenchPerPageUsersTable::class]);
+
+    $this->loadTable(WorkbenchPerPageUsersTable::class, ['per_page' => 1])
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('query.perPage', 1);
+
+    $this->loadTable(WorkbenchPerPageUsersTable::class, ['per_page' => 7])
+        ->assertOk()
+        ->assertJsonPath('query.perPage', 2);
+
+    $this->loadTable(WorkbenchPerPageUsersTable::class, ['per_page' => 200])
+        ->assertOk()
+        ->assertJsonPath('query.perPage', 200);
+});
+
+test('per-page options serialize into the table component props', function (): void {
+    Lattice::tables([WorkbenchPerPageUsersTable::class]);
+
+    $table = wire(Table::use(WorkbenchPerPageUsersTable::class));
+
+    expect($table['props']['perPageOptions'])->toBe([1, 2, 200, 'infinite']);
+});
+
 /**
  * @extends EloquentTableDefinition<User>
  */
@@ -227,6 +261,43 @@ class WorkbenchSmallUsersTable extends EloquentTableDefinition
     public function pagination(): PaginationType
     {
         return PaginationType::None;
+    }
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable(),
+        ];
+    }
+
+    /**
+     * @return Builder<User>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return User::query()->select(['id', 'name'])->orderBy('id');
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<User>
+ */
+#[AsTable('workbench.per-page-users')]
+class WorkbenchPerPageUsersTable extends EloquentTableDefinition
+{
+    #[Override]
+    public function perPage(): int
+    {
+        return 2;
+    }
+
+    /**
+     * @return array<int, int|string>
+     */
+    #[Override]
+    public function perPageOptions(): array
+    {
+        return [1, 2, 200, 'infinite'];
     }
 
     public function columns(): array

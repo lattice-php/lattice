@@ -69,6 +69,7 @@ final readonly class BulkActionController
                     $tableKey,
                     $table->perPage(),
                     $table->filters(),
+                    $table->perPageOptions(),
                 ),
             );
         }

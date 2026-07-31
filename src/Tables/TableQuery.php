@@ -45,8 +45,9 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @param  array<int, Column>  $columns
      * @param  array<int, Filter>  $filters
+     * @param  array<int, int|string>  $perPageOptions
      */
-    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = []): self
+    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = [], array $perPageOptions = []): self
     {
         $clauses = self::parseFilters($request->input('filter'), $table);
         $sorts = self::parseSorts($request->input('sort'));
@@ -61,7 +62,7 @@ final readonly class TableQuery implements JsonSerializable
             $clauses,
             $sorts,
             max(1, $request->integer('page', 1)),
-            self::clampPerPage($request->integer('per_page', $defaultPerPage)),
+            self::resolvePerPage($request->integer('per_page', $defaultPerPage), $defaultPerPage, $perPageOptions),
             $tableFilters,
             $tableFilterIndicators,
             $request->string('q')->trim()->toString(),
@@ -71,6 +72,23 @@ final readonly class TableQuery implements JsonSerializable
     private static function clampPerPage(int $perPage): int
     {
         return max(1, min(100, $perPage));
+    }
+
+    /**
+     * Declared options are trusted verbatim; without options the request value
+     * is clamped as before.
+     *
+     * @param  array<int, int|string>  $options
+     */
+    private static function resolvePerPage(int $perPage, int $default, array $options): int
+    {
+        $numeric = array_filter($options, is_int(...));
+
+        if ($numeric === []) {
+            return self::clampPerPage($perPage);
+        }
+
+        return in_array($perPage, $numeric, true) ? $perPage : self::clampPerPage($default);
     }
 
     /**

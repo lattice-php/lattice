@@ -35,6 +35,11 @@ class Table extends Component implements InteractiveComponent
      */
     public array $filters = [];
 
+    /**
+     * @var array<int, int|string>
+     */
+    public array $perPageOptions = [];
+
     public ?string $layout = null;
 
     /**
@@ -117,6 +122,16 @@ class Table extends Component implements InteractiveComponent
     public function filters(array $filters): static
     {
         $this->filters = array_values($this->renderableComponents($filters));
+
+        return $this;
+    }
+
+    /**
+     * @param  array<int, int|string>  $options
+     */
+    public function perPageOptions(array $options): static
+    {
+        $this->perPageOptions = array_values($options);
 
         return $this;
     }
