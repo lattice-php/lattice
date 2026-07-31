@@ -233,7 +233,7 @@ export default defineConfig(({ mode }) => {
               buildDirectory: "build",
               refresh: ["workbench/resources/**", "workbench/routes/**", "resources/js/**"],
             }),
-            inertia(),
+            inertia({ ssr: "workbench/resources/js/ssr.tsx" }),
             // The workbench acts as a Lattice consumer: auto-discover component
             // packages installed via Composer and expose them as
             // `virtual:lattice/plugins` (external apps get this from `lattice()`).

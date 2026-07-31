@@ -21,7 +21,7 @@ if (!globalThis.ResizeObserver) {
 // scrolls the selection throws asynchronously — tests still pass, but Vitest
 // exits non-zero on the unhandled error. An empty list is enough: ProseMirror
 // falls back to getBoundingClientRect when there are no rects.
-if (!Range.prototype.getClientRects) {
+if (typeof Range !== "undefined" && !Range.prototype.getClientRects) {
   Range.prototype.getClientRects = (): DOMRectList =>
     Object.assign([], { item: () => null }) as unknown as DOMRectList;
   Range.prototype.getBoundingClientRect = (): DOMRect => new DOMRect();
