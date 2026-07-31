@@ -1,4 +1,4 @@
-import type { Callout } from "@lattice-php/lattice/types/generated";
+import type { Callout, RetractCallout } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
 import { isVariant } from "./toast";
@@ -43,4 +43,18 @@ export function onCallout(callback: (callout: Callout) => void): () => void {
   window.addEventListener(LATTICE_EVENT.callout, listener);
 
   return () => window.removeEventListener(LATTICE_EVENT.callout, listener);
+}
+
+export function onRetractCallout(callback: (unique: string) => void): () => void {
+  const listener = (event: Event): void => {
+    const unique = (event as CustomEvent<RetractCallout>).detail?.unique;
+
+    if (typeof unique === "string") {
+      callback(unique);
+    }
+  };
+
+  window.addEventListener(LATTICE_EVENT.retractCallout, listener);
+
+  return () => window.removeEventListener(LATTICE_EVENT.retractCallout, listener);
 }

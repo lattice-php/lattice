@@ -13,6 +13,7 @@ use Lattice\Lattice\Effects\Builtin\Redirect;
 use Lattice\Lattice\Effects\Builtin\ReloadComponent;
 use Lattice\Lattice\Effects\Builtin\ReloadPage;
 use Lattice\Lattice\Effects\Builtin\ResetForm;
+use Lattice\Lattice\Effects\Builtin\RetractCallout;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\Effects\Builtin\ToggleSidebar;
 use Lattice\Lattice\Support\WireTypeRegistry;
@@ -37,6 +38,7 @@ final class EffectRegistry extends WireTypeRegistry
         ReloadComponent::class,
         ReloadPage::class,
         ResetForm::class,
+        RetractCallout::class,
         Toast::class,
         ToggleSidebar::class,
     ];

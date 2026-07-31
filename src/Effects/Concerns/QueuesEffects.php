@@ -24,6 +24,11 @@ trait QueuesEffects
         return $this->effect($callout);
     }
 
+    public function retractCallout(string $key): static
+    {
+        return $this->effect(Callout::retract($key));
+    }
+
     public function reloadComponent(string $component): static
     {
         return $this->effect(Effects::reloadComponent($component));

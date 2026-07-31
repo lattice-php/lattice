@@ -132,6 +132,22 @@ test('a callout without a unique key serializes it as null', function (): void {
     expect($wire['props']['unique'])->toBeNull();
 });
 
+test('a retract-callout effect serializes its key', function (): void {
+    $wire = wire(Callout::retract('billing.state'));
+
+    expect($wire['type'])->toBe('retract-callout')
+        ->and($wire['props'])->toBe(['unique' => 'billing.state']);
+});
+
+test('action results expose the retract callout effect', function (): void {
+    $result = ActionResult::success()->retractCallout('billing.state');
+
+    expect(wire($result)['effects'][0])->toBe([
+        'type' => 'retract-callout',
+        'props' => ['unique' => 'billing.state'],
+    ]);
+});
+
 test('action groups serialize grouped child actions', function (): void {
     $group = wire(ActionGroup::make('workbench.user-actions')
         ->label('Manage user')

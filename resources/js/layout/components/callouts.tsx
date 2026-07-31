@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { RenderNode } from "@lattice-php/lattice/core/renderer";
 import type { Callout } from "@lattice-php/lattice/types/generated";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { onCallout } from "@lattice-php/lattice/toast";
+import { onCallout, onRetractCallout } from "@lattice-php/lattice/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import { resolveText } from "@lattice-php/lattice/i18n/translatable";
@@ -23,7 +23,8 @@ let nextId = 0;
  * `replace` instead and never fires it, so the callout survives until the
  * server overwrites or drops it. On these URL-changing visits, `navigate`
  * fires before `flash`, so re-assertion always wins over the clear and no
- * ordering guard is needed.
+ * ordering guard is needed. A `retract-callout` effect clears one on a
+ * same-URL response too.
  */
 const Callouts: RendererComponent<"callouts"> = () => {
   const { t } = useT("lattice");
@@ -47,6 +48,14 @@ const Callouts: RendererComponent<"callouts"> = () => {
     () =>
       router.on("navigate", () => {
         setCallouts((current) => current.filter((callout) => !callout.unique));
+      }),
+    [],
+  );
+
+  useEffect(
+    () =>
+      onRetractCallout((unique) => {
+        setCallouts((current) => current.filter((callout) => callout.unique !== unique));
       }),
     [],
   );

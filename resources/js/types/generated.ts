@@ -679,6 +679,7 @@ export type EffectPropsMap = {
   "reload-component": ReloadComponent;
   "reload-page": ReloadPage;
   "reset-form": ResetForm;
+  "retract-callout": RetractCallout;
   toast: Toast;
   "toggle-sidebar": ToggleSidebar;
 };
@@ -1277,6 +1278,9 @@ export type ResolveResponse = {
   readonly fields: Record<string, Node>;
   readonly prefill: Record<string, unknown>;
   readonly values: Record<string, unknown>;
+};
+export type RetractCallout = {
+  readonly unique: string;
 };
 export type RichEditor = {
   columnWidth: ColumnWidth;

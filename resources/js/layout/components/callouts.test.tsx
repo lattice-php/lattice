@@ -54,6 +54,16 @@ function emitCallout(
   });
 }
 
+function retractCallout(unique: string): void {
+  act(() => {
+    window.dispatchEvent(
+      new CustomEvent(LATTICE_EVENT.retractCallout, {
+        detail: { unique },
+      }),
+    );
+  });
+}
+
 describe("Callouts slot", () => {
   beforeEach(() => {
     navigateListeners.length = 0;
@@ -163,6 +173,50 @@ describe("Callouts slot", () => {
     navigate();
 
     expect(screen.queryByText("Payment failed")).not.toBeInTheDocument();
+    expect(screen.getByText("Archived.")).toBeInTheDocument();
+  });
+
+  it("drops a keyed callout when its key is retracted", () => {
+    render(
+      <Provider toaster={false}>
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+      </Provider>,
+    );
+
+    emitCallout("Payment failed", { unique: "billing.state" });
+
+    retractCallout("billing.state");
+
+    expect(screen.queryByText("Payment failed")).not.toBeInTheDocument();
+  });
+
+  it("leaves a different key alone when retracting", () => {
+    render(
+      <Provider toaster={false}>
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+      </Provider>,
+    );
+
+    emitCallout("Payment failed", { unique: "billing.state" });
+    emitCallout("Read-only mode", { unique: "maintenance.mode" });
+
+    retractCallout("billing.state");
+
+    expect(screen.queryByText("Payment failed")).not.toBeInTheDocument();
+    expect(screen.getByText("Read-only mode")).toBeInTheDocument();
+  });
+
+  it("leaves an unkeyed callout alone when retracting", () => {
+    render(
+      <Provider toaster={false}>
+        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+      </Provider>,
+    );
+
+    emitCallout("Archived.");
+
+    retractCallout("billing.state");
+
     expect(screen.getByText("Archived.")).toBeInTheDocument();
   });
 });

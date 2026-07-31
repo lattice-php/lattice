@@ -117,6 +117,19 @@ describe("builtinEffectHandlers", () => {
     expect(received[0]).toMatchObject({ message: "Hi" });
   });
 
+  it("retract-callout bridges to the lattice:retract-callout DOM event with the props as detail", () => {
+    const received: unknown[] = [];
+    const listener = (event: Event) => received.push((event as CustomEvent).detail);
+    window.addEventListener(LATTICE_EVENT.retractCallout, listener);
+
+    builtinEffectHandlers["retract-callout"](
+      effect("retract-callout", { unique: "billing.state" }),
+    );
+
+    window.removeEventListener(LATTICE_EVENT.retractCallout, listener);
+    expect(received).toEqual([{ unique: "billing.state" }]);
+  });
+
   it("reloadComponent bridges to the lattice:reload-component DOM event", () => {
     const listener = vi.fn<(event: Event) => void>();
     window.addEventListener(LATTICE_EVENT.reloadComponent, listener);

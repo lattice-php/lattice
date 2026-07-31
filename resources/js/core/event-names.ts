@@ -5,6 +5,7 @@
  */
 export const LATTICE_EVENT = {
   callout: "lattice:callout",
+  retractCallout: "lattice:retract-callout",
   toast: "lattice:toast",
   reloadComponent: "lattice:reload-component",
   openModal: "lattice:open-modal",

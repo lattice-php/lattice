@@ -31,6 +31,7 @@ return ActionResult::success()
 | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | `->toast($message, $variant)`                           | Shows a toast. Variant defaults to success.                                  |
 | `->callout($callout)`                                   | Shows a persistent in-flow banner in the layout's callout slot.              |
+| `->retractCallout($key)`                                | Drops a keyed callout, even on a same-URL visit.                             |
 | `->reloadComponent($id)`                                | Re-fetches a single component (e.g. the table the action changed).           |
 | `->reloadPage()`                                        | Reloads the current page's props.                                            |
 | `->to($url)` / `->toRoute($name, $params)` / `->back()` | Navigates to a URL, a named route, or the previous page.                     |
@@ -121,6 +122,25 @@ just be undone on the next matching request.
 This is what makes a standing condition — a failing payment, a maintenance window, a read-only mode —
 expressible. Flashing an unkeyed callout on every request instead would stack a fresh copy per
 navigation, because the layout that hosts the slot persists across visits.
+
+**Retracting a keyed callout**
+
+The same-URL cases described above — `router.reload()`, `redirect()->back()` to the same URL,
+polling, and partial reloads — have no way to clear a keyed callout just by omitting it.
+`Callout::retract($key)` states explicitly that the key no longer applies; the client drops any
+callout carrying it regardless of visit type.
+
+The natural place to assert or retract a keyed callout is middleware that runs on every request, so
+the callout always reflects current state:
+
+```php
+Effects::flash($callout ?? Callout::retract('billing.state'));
+```
+
+Here `$callout` is `null` when the condition (a failing payment, say) no longer holds, so the
+middleware falls back to retracting the key instead of asserting a `Callout`. `ActionResult` and
+`LatticeResponse` expose the same behavior as `->retractCallout($key)`, for when the clearing
+condition is detected inside an action rather than middleware.
 
 Callouts hold no server-side state. A message that needs identity, a recipient, and read/unread
 tracking is a [notification](/components/notifications/), not a callout.

@@ -56,6 +56,7 @@ const typedBuiltinHandlers: { [K in keyof EffectPropsMap]: EffectHandler<K> } = 
   "locale-change": (effect) => setLocale(effect.props.locale),
   toast: bridge<"toast">(LATTICE_EVENT.toast),
   callout: bridge<"callout">(LATTICE_EVENT.callout),
+  "retract-callout": bridge<"retract-callout">(LATTICE_EVENT.retractCallout),
   "reload-component": bridge<"reload-component">(LATTICE_EVENT.reloadComponent),
   "open-modal": bridge<"open-modal">(LATTICE_EVENT.openModal),
   "close-modal": bridge<"close-modal">(LATTICE_EVENT.closeModal),
