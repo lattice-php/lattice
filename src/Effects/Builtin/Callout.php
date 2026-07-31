@@ -72,4 +72,13 @@ final class Callout extends Effect
 
         return $this;
     }
+
+    /**
+     * States that the keyed callout `$key` no longer applies. Pair it with
+     * the asserting `Callout`: `Effects::flash($callout ?? Callout::retract('billing.state'))`.
+     */
+    public static function retract(string $key): RetractCallout
+    {
+        return new RetractCallout($key);
+    }
 }

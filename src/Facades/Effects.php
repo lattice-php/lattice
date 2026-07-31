@@ -36,9 +36,9 @@ final class Effects extends Facade
         return new ReloadComponent($component);
     }
 
-    public static function reloadPage(): ReloadPage
+    public static function reloadPage(bool $full = false): ReloadPage
     {
-        return new ReloadPage;
+        return new ReloadPage($full);
     }
 
     public static function redirect(string $url): Redirect

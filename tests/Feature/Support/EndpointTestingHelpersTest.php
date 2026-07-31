@@ -75,6 +75,32 @@ test('typed effect assertions match action response effects regardless of order'
         ->assertReloadsPage();
 });
 
+test('assertReloadsPage(true) matches a full-page reload effect', function (): void {
+    Lattice::actions([HelperFullReloadEffectsAction::class]);
+
+    $response = $this->callAction(HelperFullReloadEffectsAction::class);
+
+    $response->assertOk()->assertReloadsPage(full: true);
+});
+
+test('assertReloadsPage discriminates between a default and a full reload in both directions', function (): void {
+    Route::get('/helper/projects/{project}', fn (string $project): string => $project)
+        ->name('helper.projects.show');
+    Lattice::actions([HelperEffectsAction::class, HelperFullReloadEffectsAction::class]);
+
+    expect(fn () => $this->callAction(HelperEffectsAction::class)->assertReloadsPage(full: true))
+        ->toThrow(
+            AssertionFailedError::class,
+            'Expected Lattice effect [reload-page] with props {"full":true}. Received effects:',
+        );
+
+    expect(fn () => $this->callAction(HelperFullReloadEffectsAction::class)->assertReloadsPage())
+        ->toThrow(
+            AssertionFailedError::class,
+            'Expected Lattice effect [reload-page] with props {"full":false}. Received effects:',
+        );
+});
+
 test('typed effect assertion failures identify the expected and received effects', function (): void {
     Route::get('/helper/projects/{project}', fn (string $project): string => $project)
         ->name('helper.projects.show');
@@ -260,5 +286,19 @@ final class HelperEffectsAction extends ActionDefinition
             ->reloadPage()
             ->toRoute('helper.projects.show', 'lattice')
             ->reloadComponent('profile.passkeys');
+    }
+}
+
+#[AsAction('helper.full-reload')]
+final class HelperFullReloadEffectsAction extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Full reload');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success()->reloadPage(true);
     }
 }

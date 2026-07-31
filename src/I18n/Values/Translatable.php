@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\I18n\Values;
 
+use DateTimeInterface;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Support\Wire;
@@ -20,7 +21,12 @@ final class Translatable implements JsonSerializable
     /** @var array<string, string> */
     public array $payload = [];
 
-    /** @var array<string, string|int|float|bool> */
+    /**
+     * Only guaranteed scalar (no `DateTimeInterface`) when built through
+     * {@see with()} — direct assignment or {@see fromWire()} bypasses that.
+     *
+     * @var array<string, string|int|float|bool>
+     */
     public array $replacements = [];
 
     private function __construct(public string $key) {}
@@ -70,11 +76,22 @@ final class Translatable implements JsonSerializable
     }
 
     /**
-     * @param  array<string, string|int|float|bool>  $replacements
+     * Wire stays flat scalars so a date is formatted client-side, in the
+     * reader's locale, instead of being fixed into English prose here.
+     *
+     * @param  array<string, string|int|float|bool|DateTimeInterface>  $replacements
      */
     public function with(array $replacements): self
     {
-        $this->replacements = [...$this->replacements, ...$replacements];
+        $this->replacements = [
+            ...$this->replacements,
+            ...array_map(
+                static fn (mixed $value): mixed => $value instanceof DateTimeInterface
+                    ? $value->format(DateTimeInterface::ATOM)
+                    : $value,
+                $replacements,
+            ),
+        ];
 
         return $this;
     }

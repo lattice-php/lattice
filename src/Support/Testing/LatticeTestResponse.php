@@ -60,9 +60,9 @@ final class LatticeTestResponse extends TestResponse
         return $this->assertEffect(new OpenModal($modal));
     }
 
-    public function assertReloadsPage(): static
+    public function assertReloadsPage(bool $full = false): static
     {
-        return $this->assertEffect(new ReloadPage);
+        return $this->assertEffect(new ReloadPage($full));
     }
 
     public function assertNoEffects(): static

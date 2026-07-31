@@ -24,14 +24,19 @@ trait QueuesEffects
         return $this->effect($callout);
     }
 
+    public function retractCallout(string $key): static
+    {
+        return $this->effect(Callout::retract($key));
+    }
+
     public function reloadComponent(string $component): static
     {
         return $this->effect(Effects::reloadComponent($component));
     }
 
-    public function reloadPage(): static
+    public function reloadPage(bool $full = false): static
     {
-        return $this->effect(Effects::reloadPage());
+        return $this->effect(Effects::reloadPage($full));
     }
 
     public function openModal(string $modal): static

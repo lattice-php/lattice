@@ -679,6 +679,7 @@ export type EffectPropsMap = {
   "reload-component": ReloadComponent;
   "reload-page": ReloadPage;
   "reset-form": ResetForm;
+  "retract-callout": RetractCallout;
   toast: Toast;
   "toggle-sidebar": ToggleSidebar;
 };
@@ -1232,7 +1233,9 @@ export type Redirect = {
 export type ReloadComponent = {
   readonly component: string;
 };
-export type ReloadPage = Record<string, never>;
+export type ReloadPage = {
+  readonly full: boolean;
+};
 export type RemoteAccess = {
   readonly audience: string;
   readonly nodeId: string;
@@ -1277,6 +1280,9 @@ export type ResolveResponse = {
   readonly fields: Record<string, Node>;
   readonly prefill: Record<string, unknown>;
   readonly values: Record<string, unknown>;
+};
+export type RetractCallout = {
+  readonly unique: string;
 };
 export type RichEditor = {
   columnWidth: ColumnWidth;

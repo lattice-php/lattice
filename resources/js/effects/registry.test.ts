@@ -20,12 +20,23 @@ afterEach(() => {
   router.visit.mockReset();
   setLocale.mockReset();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("builtinEffectHandlers", () => {
-  it("reloadPage calls router.reload()", () => {
-    builtinEffectHandlers["reload-page"](effect("reload-page", {}));
+  it("reloadPage calls router.reload() by default", () => {
+    builtinEffectHandlers["reload-page"](effect("reload-page", { full: false }));
     expect(router.reload).toHaveBeenCalledOnce();
+  });
+
+  it("reloadPage calls window.location.reload() when full is set", () => {
+    const reload = vi.fn();
+    vi.stubGlobal("location", { ...window.location, reload });
+
+    builtinEffectHandlers["reload-page"](effect("reload-page", { full: true }));
+
+    expect(reload).toHaveBeenCalledOnce();
+    expect(router.reload).not.toHaveBeenCalled();
   });
 
   it("redirect visits the url", () => {
@@ -64,7 +75,7 @@ describe("builtinEffectHandlers", () => {
     window.addEventListener("lattice:download", listener);
     window.addEventListener(LATTICE_EVENT.localeChange, listener);
 
-    builtinEffectHandlers["reload-page"](effect("reload-page", {}));
+    builtinEffectHandlers["reload-page"](effect("reload-page", { full: false }));
     builtinEffectHandlers.redirect(effect("redirect", { url: "/x" }));
     builtinEffectHandlers.download(effect("download", { url: "/f.csv" }));
     builtinEffectHandlers["locale-change"](effect("locale-change", { locale: "fr" }));
@@ -115,6 +126,19 @@ describe("builtinEffectHandlers", () => {
     window.removeEventListener(LATTICE_EVENT.callout, listener);
     expect(received).toHaveLength(1);
     expect(received[0]).toMatchObject({ message: "Hi" });
+  });
+
+  it("retract-callout bridges to the lattice:retract-callout DOM event with the props as detail", () => {
+    const received: unknown[] = [];
+    const listener = (event: Event) => received.push((event as CustomEvent).detail);
+    window.addEventListener(LATTICE_EVENT.retractCallout, listener);
+
+    builtinEffectHandlers["retract-callout"](
+      effect("retract-callout", { unique: "billing.state" }),
+    );
+
+    window.removeEventListener(LATTICE_EVENT.retractCallout, listener);
+    expect(received).toEqual([{ unique: "billing.state" }]);
   });
 
   it("reloadComponent bridges to the lattice:reload-component DOM event", () => {

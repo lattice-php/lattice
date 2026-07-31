@@ -50,12 +50,13 @@ function bridge<TType extends keyof EffectPropsMap & string>(event: string): Eff
  * effectHandler performs.
  */
 const typedBuiltinHandlers: { [K in keyof EffectPropsMap]: EffectHandler<K> } = {
-  "reload-page": () => router.reload(),
+  "reload-page": (effect) => (effect.props.full ? window.location.reload() : router.reload()),
   redirect: (effect) => router.visit(effect.props.url),
   download: (effect) => triggerDownload(effect.props.url),
   "locale-change": (effect) => setLocale(effect.props.locale),
   toast: bridge<"toast">(LATTICE_EVENT.toast),
   callout: bridge<"callout">(LATTICE_EVENT.callout),
+  "retract-callout": bridge<"retract-callout">(LATTICE_EVENT.retractCallout),
   "reload-component": bridge<"reload-component">(LATTICE_EVENT.reloadComponent),
   "open-modal": bridge<"open-modal">(LATTICE_EVENT.openModal),
   "close-modal": bridge<"close-modal">(LATTICE_EVENT.closeModal),
