@@ -984,3 +984,154 @@ describe("Lattice table component", () => {
     );
   });
 });
+
+describe("per-page options", () => {
+  function perPageNode(overrides: Partial<TableNode["props"]> = {}): TableNode {
+    return {
+      id: "workbench.users",
+      props: {
+        columns: [col({ key: "name", label: "Name", sortable: true })],
+        data: [{ id: 1, name: "Taylor" }],
+        endpoint: "/lattice/tables/workbench.users",
+        perPageOptions: [25, 50, "infinite"],
+        pagination: pagination({
+          mode: "table",
+          currentPage: 1,
+          lastPage: 1,
+          perPage: 25,
+          total: 1,
+        }),
+        query: tableQuery(),
+        ...overrides,
+      },
+      type: "table",
+    } satisfies TableNode;
+  }
+
+  it("hides the select when no options are declared", () => {
+    render(<TableComponent node={perPageNode({ perPageOptions: [] })}>{null}</TableComponent>);
+
+    expect(screen.queryByLabelText("Rows per page")).not.toBeInTheDocument();
+  });
+
+  it("changes the page size through the per-page select", async () => {
+    const fetch = tableFetch({
+      data: [{ id: 2, name: "Ada" }],
+      pagination: pagination({ mode: "table", currentPage: 1, lastPage: 1, perPage: 50, total: 1 }),
+      query: tableQuery({ perPage: 50 }),
+    });
+
+    render(<TableComponent node={perPageNode()}>{null}</TableComponent>);
+
+    fireEvent.change(screen.getByLabelText("Rows per page"), { target: { value: "50" } });
+
+    await screen.findByRole("cell", { name: "Ada" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      "/lattice/tables/workbench.users?page=1&per_page=50",
+      requestOptions(),
+    );
+  });
+
+  it("switches to infinite pagination, keeps it across reloads, and switches back", async () => {
+    const fetch = tableFetch(
+      {
+        data: [{ id: 2, name: "Ada" }],
+        pagination: pagination({
+          mode: "infinite",
+          currentPage: 1,
+          perPage: 25,
+          hasMore: true,
+          nextPage: 2,
+        }),
+        query: tableQuery({ mode: "infinite" }),
+      },
+      {
+        data: [{ id: 3, name: "Grace" }],
+        pagination: pagination({
+          mode: "infinite",
+          currentPage: 1,
+          perPage: 25,
+          hasMore: true,
+          nextPage: 2,
+        }),
+        query: tableQuery({ mode: "infinite", sorts: [{ key: "name", direction: "asc" }] }),
+      },
+      {
+        data: [{ id: 4, name: "Maya" }],
+        pagination: pagination({
+          mode: "table",
+          currentPage: 1,
+          lastPage: 1,
+          perPage: 25,
+          total: 1,
+        }),
+        query: tableQuery(),
+      },
+    );
+
+    render(<TableComponent node={perPageNode()}>{null}</TableComponent>);
+
+    fireEvent.change(screen.getByLabelText("Rows per page"), { target: { value: "infinite" } });
+
+    await screen.findByRole("cell", { name: "Ada" });
+
+    expect(screen.queryByRole("cell", { name: "Taylor" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Load more" })).toBeVisible();
+    expect(fetch).toHaveBeenNthCalledWith(
+      1,
+      "/lattice/tables/workbench.users?page=1&per_page=25&mode=infinite",
+      requestOptions(),
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort Name" }));
+
+    await screen.findByRole("cell", { name: "Grace" });
+
+    expect(fetch).toHaveBeenNthCalledWith(
+      2,
+      "/lattice/tables/workbench.users?sort=name&page=1&per_page=25&mode=infinite",
+      requestOptions(),
+    );
+
+    fireEvent.change(screen.getByLabelText("Rows per page"), { target: { value: "25" } });
+
+    await screen.findByRole("cell", { name: "Maya" });
+
+    expect(fetch).toHaveBeenNthCalledWith(
+      3,
+      "/lattice/tables/workbench.users?sort=name&page=1&per_page=25",
+      requestOptions(),
+    );
+  });
+
+  it("requests numbered pagination when a size is picked on an infinite table", async () => {
+    const fetch = tableFetch({
+      data: [{ id: 2, name: "Ada" }],
+      pagination: pagination({ mode: "table", currentPage: 1, lastPage: 1, perPage: 25, total: 1 }),
+      query: tableQuery(),
+    });
+
+    const node = perPageNode({
+      pagination: pagination({
+        mode: "infinite",
+        currentPage: 1,
+        perPage: 25,
+        hasMore: false,
+      }),
+    });
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getByLabelText("Rows per page")).toHaveValue("infinite");
+
+    fireEvent.change(screen.getByLabelText("Rows per page"), { target: { value: "25" } });
+
+    await screen.findByRole("cell", { name: "Ada" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      "/lattice/tables/workbench.users?page=1&per_page=25&mode=table",
+      requestOptions(),
+    );
+  });
+});

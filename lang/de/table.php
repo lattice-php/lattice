@@ -17,6 +17,8 @@ return [
         'loading' => 'Lädt...',
         'previous' => 'Zurück',
         'next' => 'Weiter',
+        'per-page' => 'Zeilen pro Seite',
+        'infinite' => 'Unendlich',
     ],
     'bulk' => [
         'selected' => ':count ausgewählt',

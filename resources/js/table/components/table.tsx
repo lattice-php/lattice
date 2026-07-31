@@ -11,7 +11,12 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { alignJustifyItems, alignText } from "@lattice-php/lattice/table/lib/align";
 import type { TableNode } from "@lattice-php/lattice/table/types";
 import { getBulkActions } from "@lattice-php/lattice/table/lib/bulk";
-import { getRowActions, getRowDetail, getRowKey } from "@lattice-php/lattice/table/lib/payload";
+import {
+  getPerPageOptions,
+  getRowActions,
+  getRowDetail,
+  getRowKey,
+} from "@lattice-php/lattice/table/lib/payload";
 import {
   getQueryParams,
   getTableSizingColumns,
@@ -54,6 +59,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     sort,
     clearSort,
     goToPage,
+    setPerPage,
     loadMore,
   } = useTable(node);
 
@@ -98,6 +104,10 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const currentPage = pagination.currentPage ?? query.page;
   const lastPage = pagination.lastPage ?? currentPage;
   const mode = pagination.mode ?? "table";
+  const perPageOptions = useMemo(
+    () => getPerPageOptions(node.props?.perPageOptions),
+    [node.props?.perPageOptions],
+  );
   const visiblePages = getVisiblePages(currentPage, lastPage);
   const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
   const hasActions = rowEntries.some((entry) => entry.actions.length > 0);
@@ -416,6 +426,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             hasNextPage={hasNextPage}
             visiblePages={visiblePages}
             infiniteLoaderRef={infiniteLoaderRef}
+            perPageOptions={perPageOptions}
+            perPageValue={mode === "infinite" ? "infinite" : query.perPage}
+            onPerPage={setPerPage}
             onPage={goToPage}
             onLoadMore={loadMore}
           />
