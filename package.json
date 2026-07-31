@@ -266,7 +266,7 @@
     "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib && npm run check:package",
     "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css",
     "fix": "npm run lint:fix && npm run format",
-    "docs:typecheck": "tsc --noEmit -p docs/tsconfig.json",
+    "docs:typecheck": "npm run build:lib && tsc --noEmit -p docs/tsconfig.json",
     "docs:test": "vitest run --project jsdom docs",
     "lint": "oxlint resources/js workbench/resources/js packages/*/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js packages/*/resources/js --fix",
@@ -274,8 +274,8 @@
     "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "analyze": "SONDA=1 vite build && mkdir -p docs/public && cp docs/generated/bundle-report.html docs/public/bundle-report.html",
-    "docs:dev": "npm run dev -w docs",
-    "docs:build": "npm run analyze && npm run build -w docs",
+    "docs:dev": "npm run build:lib && npm run dev -w docs",
+    "docs:build": "npm run build:lib && npm run analyze && npm run build -w docs",
     "docs:preview": "npm run preview -w docs"
   },
   "dependencies": {

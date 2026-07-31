@@ -230,8 +230,6 @@ export default defineConfig({
     ],
     resolve: {
       alias: {
-        "@lattice-php/lattice/css": path.join(repoRoot, "resources/css/lattice.css"),
-        "@lattice-php/lattice": path.join(repoRoot, "resources/js"),
         "@components": path.join(docsDir, "components"),
         "@lib": path.join(docsDir, "lib"),
       },
