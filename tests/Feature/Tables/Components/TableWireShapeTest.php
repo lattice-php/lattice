@@ -6,6 +6,7 @@ use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Tables\Columns\NumberColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
 use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableRegistry;
 use Lattice\Lattice\Tables\TableResult;
@@ -50,9 +51,22 @@ it('serializes the table component wire shape', function (): void {
         'tableFilters' => [],
         'tableFilterIndicators' => [],
         'search' => '',
+        'mode' => null,
     ]);
     expect($payload['props']['bulkActions'])->toBe([]);
     expect($payload['props']['filters'])->toBe([]);
+    expect($payload['props']['perPageOptions'])->toBe([]);
+});
+
+it('serializes per-page options with the infinite marker as its wire value', function (): void {
+    $payload = wire(Table::make('demo')->perPageOptions([10, 25, PaginationType::Infinite]));
+
+    expect($payload['props']['perPageOptions'])->toBe([10, 25, 'infinite']);
+});
+
+it('rejects per-page options besides sizes and the infinite marker', function (): void {
+    expect(fn (): Table => Table::make('demo')->perPageOptions([10, PaginationType::Simple]))
+        ->toThrow(InvalidArgumentException::class, 'Only PaginationType::Infinite may appear in perPageOptions');
 });
 
 it('serializes visible resize indicators on table components', function (): void {

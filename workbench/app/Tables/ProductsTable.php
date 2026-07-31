@@ -13,6 +13,7 @@ use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Columns\ImageColumn;
 use Lattice\Lattice\Tables\Columns\MoneyColumn;
 use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Filters\DateRangeFilter;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\TernaryFilter;
@@ -37,6 +38,15 @@ use Workbench\App\Tables\Columns\StatusBadgeColumn;
 #[AsTable('workbench.products')]
 class ProductsTable extends EloquentTableDefinition
 {
+    /**
+     * @return array<int, int|PaginationType::Infinite>
+     */
+    #[\Override]
+    public function perPageOptions(): array
+    {
+        return [10, 25, 50, 100, PaginationType::Infinite];
+    }
+
     /**
      * @return array<int, Column>
      */

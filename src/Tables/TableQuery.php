@@ -13,6 +13,7 @@ use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Sortable;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\FilterIndicator;
 use Lattice\Lattice\Tables\Filters\FilterValueValidator;
@@ -35,6 +36,7 @@ final readonly class TableQuery implements JsonSerializable
         public array $tableFilters = [],
         public array $tableFilterIndicators = [],
         public string $search = '',
+        public ?PaginationType $mode = null,
     ) {}
 
     public static function empty(int $defaultPerPage = 25): self
@@ -45,8 +47,9 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @param  array<int, Column>  $columns
      * @param  array<int, Filter>  $filters
+     * @param  array<int, int|PaginationType::Infinite>  $perPageOptions
      */
-    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = []): self
+    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = [], array $perPageOptions = []): self
     {
         $clauses = self::parseFilters($request->input('filter'), $table);
         $sorts = self::parseSorts($request->input('sort'));
@@ -61,10 +64,11 @@ final readonly class TableQuery implements JsonSerializable
             $clauses,
             $sorts,
             max(1, $request->integer('page', 1)),
-            self::clampPerPage($request->integer('per_page', $defaultPerPage)),
+            self::resolvePerPage($request->integer('per_page', $defaultPerPage), $defaultPerPage, $perPageOptions),
             $tableFilters,
             $tableFilterIndicators,
             $request->string('q')->trim()->toString(),
+            self::resolveMode($request->input('mode'), $perPageOptions),
         );
     }
 
@@ -74,7 +78,39 @@ final readonly class TableQuery implements JsonSerializable
     }
 
     /**
-     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass, tableFilterIndicators: list<FilterIndicator>, search: string}
+     * Declared options are trusted verbatim; without options the request value
+     * is clamped as before.
+     *
+     * @param  array<int, int|PaginationType::Infinite>  $options
+     */
+    private static function resolvePerPage(int $perPage, int $default, array $options): int
+    {
+        $numeric = array_filter($options, is_int(...));
+
+        if ($numeric === []) {
+            return self::clampPerPage($perPage);
+        }
+
+        return in_array($perPage, $numeric, true) ? $perPage : self::clampPerPage($default);
+    }
+
+    /**
+     * A mode override is only honored when the declared options offer it:
+     * 'infinite' requires the infinite option, 'table' any options at all.
+     *
+     * @param  array<int, int|PaginationType::Infinite>  $options
+     */
+    private static function resolveMode(mixed $mode, array $options): ?PaginationType
+    {
+        return match (true) {
+            $mode === 'infinite' && in_array(PaginationType::Infinite, $options, true) => PaginationType::Infinite,
+            $mode === 'table' && $options !== [] => PaginationType::Table,
+            default => null,
+        };
+    }
+
+    /**
+     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass, tableFilterIndicators: list<FilterIndicator>, search: string, mode: PaginationType|null}
      */
     public function jsonSerialize(): array
     {
@@ -86,6 +122,7 @@ final readonly class TableQuery implements JsonSerializable
             'tableFilters' => Wire::map($this->tableFilters),
             'tableFilterIndicators' => $this->tableFilterIndicators,
             'search' => $this->search,
+            'mode' => $this->mode,
         ];
     }
 

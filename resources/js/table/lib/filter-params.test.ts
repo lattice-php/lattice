@@ -11,6 +11,7 @@ function query(overrides: Partial<TableQuery>): TableQuery {
     tableFilters: {},
     tableFilterIndicators: [],
     search: "",
+    mode: null,
     ...overrides,
   };
 }

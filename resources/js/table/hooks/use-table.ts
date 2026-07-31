@@ -9,6 +9,7 @@ import {
   getPagination,
   getRows,
   getQuery,
+  type PerPageOption,
 } from "@lattice-php/lattice/table/lib/payload";
 import { buildEndpoint, nextSort } from "@lattice-php/lattice/table/lib/query";
 import type {
@@ -183,6 +184,24 @@ export function useTable(node: TableNode) {
     });
   }
 
+  function setPerPage(option: PerPageOption): void {
+    const definitionMode = initialPagination.mode ?? "table";
+    const nextQuery = {
+      ...query,
+      perPage: option === "infinite" ? query.perPage : option,
+      mode:
+        option === "infinite"
+          ? ("infinite" as const)
+          : definitionMode === "infinite"
+            ? ("table" as const)
+            : null,
+      page: 1,
+    };
+
+    setQuery(nextQuery);
+    void load(nextQuery);
+  }
+
   const loadMore = useCallback((): void => {
     if (processing || !pagination.hasMore) {
       return;
@@ -270,6 +289,7 @@ export function useTable(node: TableNode) {
     sort,
     clearSort,
     goToPage,
+    setPerPage,
     loadMore,
   };
 }

@@ -42,6 +42,10 @@ export function buildEndpoint(endpoint: string, query: TableQuery): string {
   url.searchParams.set("page", String(query.page));
   url.searchParams.set("per_page", String(query.perPage));
 
+  if (query.mode != null) {
+    url.searchParams.set("mode", query.mode);
+  }
+
   return `${url.pathname}${url.search}`;
 }
 

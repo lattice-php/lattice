@@ -56,13 +56,15 @@ final readonly class EloquentTableSource implements TableSource
 
         $project = $this->rowProjector($relations);
 
-        return match ($this->pagination) {
+        $mode = $query->mode ?? $this->pagination;
+
+        return match ($mode) {
             PaginationType::None => TableResult::fromItems(
                 $builder->get()->map($project),
             ),
             PaginationType::Infinite, PaginationType::Simple => TableResult::fromSimplePaginator(
                 $builder->simplePaginate(perPage: $query->perPage, page: $query->page)->through($project),
-                $this->pagination,
+                $mode,
             ),
             PaginationType::Table => TableResult::fromPaginator(
                 $builder->paginate(perPage: $query->perPage, page: $query->page)->through($project),

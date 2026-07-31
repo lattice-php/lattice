@@ -1,7 +1,9 @@
 import type { RefObject } from "react";
 import { Button } from "@lattice-php/lattice/ui/button";
+import { NativeSelect } from "@lattice-php/lattice/ui/native-select";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { PaginationType } from "@lattice-php/lattice/types/generated";
+import type { PerPageOption } from "@lattice-php/lattice/table/lib/payload";
 import type { TablePagination as TablePaginationData } from "@lattice-php/lattice/table/types";
 
 export function TablePagination({
@@ -12,6 +14,9 @@ export function TablePagination({
   hasNextPage,
   visiblePages,
   infiniteLoaderRef,
+  perPageOptions,
+  perPageValue,
+  onPerPage,
   onPage,
   onLoadMore,
 }: {
@@ -22,6 +27,9 @@ export function TablePagination({
   hasNextPage: boolean;
   visiblePages: number[];
   infiniteLoaderRef: RefObject<HTMLDivElement | null>;
+  perPageOptions: PerPageOption[];
+  perPageValue: PerPageOption;
+  onPerPage: (option: PerPageOption) => void;
   onPage: (page: number) => void;
   onLoadMore: () => void;
 }) {
@@ -32,15 +40,40 @@ export function TablePagination({
       data-slot="table-pagination"
       className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm"
     >
-      <span>
-        {pagination.total == null
-          ? t("table.pagination.page", "Page {{page}}", { page: currentPage })
-          : t("table.pagination.showing", "Showing {{from}}-{{to}} of {{total}}", {
-              from: pagination.from ?? 0,
-              to: pagination.to ?? 0,
-              total: pagination.total,
-            })}
-      </span>
+      <div className="flex items-center gap-4">
+        <span>
+          {pagination.total == null
+            ? t("table.pagination.page", "Page {{page}}", { page: currentPage })
+            : t("table.pagination.showing", "Showing {{from}}-{{to}} of {{total}}", {
+                from: pagination.from ?? 0,
+                to: pagination.to ?? 0,
+                total: pagination.total,
+              })}
+        </span>
+        {perPageOptions.length > 0 && mode !== "none" && (
+          <label className="flex items-center gap-2">
+            <span className="text-lt-muted-fg">
+              {t("table.pagination.per-page", "Rows per page")}
+            </span>
+            <NativeSelect
+              data-test="pagination-per-page"
+              disabled={processing}
+              value={String(perPageValue)}
+              onChange={(event) =>
+                onPerPage(
+                  event.target.value === "infinite" ? "infinite" : Number(event.target.value),
+                )
+              }
+            >
+              {perPageOptions.map((option) => (
+                <option key={String(option)} value={String(option)}>
+                  {option === "infinite" ? t("table.pagination.infinite", "Infinite") : option}
+                </option>
+              ))}
+            </NativeSelect>
+          </label>
+        )}
+      </div>
       {mode === "infinite" ? (
         <div ref={infiniteLoaderRef} className="flex items-center gap-2">
           {pagination.hasMore ? (

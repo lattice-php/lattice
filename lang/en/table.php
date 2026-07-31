@@ -17,6 +17,8 @@ return [
         'loading' => 'Loading...',
         'previous' => 'Previous',
         'next' => 'Next',
+        'per-page' => 'Rows per page',
+        'infinite' => 'Infinite',
     ],
     'bulk' => [
         'selected' => ':count selected',
