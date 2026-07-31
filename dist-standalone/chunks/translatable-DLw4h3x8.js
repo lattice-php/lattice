@@ -1,0 +1,1 @@
+function e(e){return typeof e==`object`&&!!e&&typeof e.key==`string`}function t(e,t){return t.split(`.`).reduce((e,t)=>{if(typeof e==`object`&&e)return e[t]},e)}function n(t,n){return e(t)?r(t,{},n):t}function r(e,n,r){let i={};for(let[r,a]of Object.entries(e.payload)){let e=t(n,a);i[r]=e===void 0?``:e}return r(e.key,e.key,{...e.replacements,...i})}export{n,r,e as t};
