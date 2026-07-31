@@ -33,7 +33,7 @@ return ActionResult::success()
 | `->callout($callout)`                                   | Shows a persistent in-flow banner in the layout's callout slot.              |
 | `->retractCallout($key)`                                | Drops a keyed callout, even on a same-URL visit.                             |
 | `->reloadComponent($id)`                                | Re-fetches a single component (e.g. the table the action changed).           |
-| `->reloadPage()`                                        | Reloads the current page's props.                                            |
+| `->reloadPage($full = false)`                           | Reloads the current page. `full` does a real browser reload.                 |
 | `->to($url)` / `->toRoute($name, $params)` / `->back()` | Navigates to a URL, a named route, or the previous page.                     |
 | `->download($url)`                                      | Triggers a file download.                                                    |
 | `->openModal($id)` / `->closeModal($id)`                | Opens or closes a modal by id (`closeModal()` closes the current modal).     |
@@ -189,6 +189,19 @@ component re-fetches:
 
 ```php
 return ActionResult::success()->reloadComponent('app.products');
+```
+
+`->reloadPage()` re-fetches the current page's props with an Inertia visit — the layout and its
+client state (open menus, form drafts, scroll position) stay mounted. That is the right default for
+almost every server-side change, including a stale callout that should just disappear: use
+`Callout::retract()` for that, not a page reload.
+
+Pass `true` for a full browser reload (`window.location.reload()`) when the change invalidates the
+whole shell and an Inertia revisit is not enough — starting or stopping impersonation, a role change
+that reshapes navigation, or an asset/version bump:
+
+```php
+return ActionResult::success()->reloadPage(full: true);
 ```
 
 ## Flashing effects without an action

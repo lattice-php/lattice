@@ -1233,7 +1233,9 @@ export type Redirect = {
 export type ReloadComponent = {
   readonly component: string;
 };
-export type ReloadPage = Record<string, never>;
+export type ReloadPage = {
+  readonly full: boolean;
+};
 export type RemoteAccess = {
   readonly audience: string;
   readonly nodeId: string;

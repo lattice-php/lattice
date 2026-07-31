@@ -20,12 +20,23 @@ afterEach(() => {
   router.visit.mockReset();
   setLocale.mockReset();
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("builtinEffectHandlers", () => {
-  it("reloadPage calls router.reload()", () => {
-    builtinEffectHandlers["reload-page"](effect("reload-page", {}));
+  it("reloadPage calls router.reload() by default", () => {
+    builtinEffectHandlers["reload-page"](effect("reload-page", { full: false }));
     expect(router.reload).toHaveBeenCalledOnce();
+  });
+
+  it("reloadPage calls window.location.reload() when full is set", () => {
+    const reload = vi.fn();
+    vi.stubGlobal("location", { ...window.location, reload });
+
+    builtinEffectHandlers["reload-page"](effect("reload-page", { full: true }));
+
+    expect(reload).toHaveBeenCalledOnce();
+    expect(router.reload).not.toHaveBeenCalled();
   });
 
   it("redirect visits the url", () => {
@@ -64,7 +75,7 @@ describe("builtinEffectHandlers", () => {
     window.addEventListener("lattice:download", listener);
     window.addEventListener(LATTICE_EVENT.localeChange, listener);
 
-    builtinEffectHandlers["reload-page"](effect("reload-page", {}));
+    builtinEffectHandlers["reload-page"](effect("reload-page", { full: false }));
     builtinEffectHandlers.redirect(effect("redirect", { url: "/x" }));
     builtinEffectHandlers.download(effect("download", { url: "/f.csv" }));
     builtinEffectHandlers["locale-change"](effect("locale-change", { locale: "fr" }));

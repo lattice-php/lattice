@@ -52,14 +52,23 @@ test('action results expose the full effect vocabulary', function (): void {
         ->localeChange('de');
 
     expect(wire($result)['effects'])->toBe([
-        ['type' => 'reload-page', 'props' => []],
+        ['type' => 'reload-page', 'props' => ['full' => false]],
         ['type' => 'redirect', 'props' => ['url' => '/dashboard']],
         ['type' => 'download', 'props' => ['url' => '/exports/report.csv']],
         ['type' => 'reset-form', 'props' => ['form' => 'teams.create']],
         ['type' => 'locale-change', 'props' => ['locale' => 'de']],
     ])
         ->and(wire(Effects::resetForm()))->toBe(['type' => 'reset-form', 'props' => ['form' => null]])
-        ->and(wire(Effects::reloadPage()))->toBe(['type' => 'reload-page', 'props' => []]);
+        ->and(wire(Effects::reloadPage()))->toBe(['type' => 'reload-page', 'props' => ['full' => false]]);
+});
+
+test('reloadPage serializes full both ways, and the facade and ActionResult helper pass it through', function (): void {
+    expect(wire(Effects::reloadPage(true)))->toBe(['type' => 'reload-page', 'props' => ['full' => true]])
+        ->and(wire(Effects::reloadPage(false)))->toBe(['type' => 'reload-page', 'props' => ['full' => false]])
+        ->and(wire(ActionResult::success()->reloadPage(true))['effects'][0])->toBe([
+            'type' => 'reload-page',
+            'props' => ['full' => true],
+        ]);
 });
 
 test('action result navigation verbs emit a redirect effect', function (): void {
