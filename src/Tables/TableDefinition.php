@@ -36,9 +36,9 @@ abstract class TableDefinition extends Definition
 
     /**
      * Page-size choices offered in the pagination bar; empty hides the control.
-     * The string 'infinite' offers switching to infinite pagination.
+     * `PaginationType::Infinite` offers switching to infinite pagination.
      *
-     * @return array<int, int|string>
+     * @return array<int, int|PaginationType::Infinite>
      */
     public function perPageOptions(): array
     {

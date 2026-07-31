@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Components;
 
+use InvalidArgumentException;
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
@@ -127,11 +129,20 @@ class Table extends Component implements InteractiveComponent
     }
 
     /**
-     * @param  array<int, int|string>  $options
+     * @param  array<int, int|PaginationType>  $options
      */
     public function perPageOptions(array $options): static
     {
-        $this->perPageOptions = array_values($options);
+        $this->perPageOptions = array_map(
+            static fn (int|PaginationType $option): int|string => match (true) {
+                is_int($option) => $option,
+                $option === PaginationType::Infinite => $option->value,
+                default => throw new InvalidArgumentException(
+                    "Only PaginationType::Infinite may appear in perPageOptions, {$option->value} given.",
+                ),
+            },
+            array_values($options),
+        );
 
         return $this;
     }

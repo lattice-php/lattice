@@ -47,7 +47,7 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @param  array<int, Column>  $columns
      * @param  array<int, Filter>  $filters
-     * @param  array<int, int|string>  $perPageOptions
+     * @param  array<int, int|PaginationType::Infinite>  $perPageOptions
      */
     public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = [], array $perPageOptions = []): self
     {
@@ -81,7 +81,7 @@ final readonly class TableQuery implements JsonSerializable
      * Declared options are trusted verbatim; without options the request value
      * is clamped as before.
      *
-     * @param  array<int, int|string>  $options
+     * @param  array<int, int|PaginationType::Infinite>  $options
      */
     private static function resolvePerPage(int $perPage, int $default, array $options): int
     {
@@ -96,14 +96,14 @@ final readonly class TableQuery implements JsonSerializable
 
     /**
      * A mode override is only honored when the declared options offer it:
-     * 'infinite' requires the 'infinite' option, 'table' any options at all.
+     * 'infinite' requires the infinite option, 'table' any options at all.
      *
-     * @param  array<int, int|string>  $options
+     * @param  array<int, int|PaginationType::Infinite>  $options
      */
     private static function resolveMode(mixed $mode, array $options): ?PaginationType
     {
         return match (true) {
-            $mode === 'infinite' && in_array('infinite', $options, true) => PaginationType::Infinite,
+            $mode === 'infinite' && in_array(PaginationType::Infinite, $options, true) => PaginationType::Infinite,
             $mode === 'table' && $options !== [] => PaginationType::Table,
             default => null,
         };

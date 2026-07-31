@@ -357,12 +357,12 @@ class WorkbenchPerPageUsersTable extends EloquentTableDefinition
     }
 
     /**
-     * @return array<int, int|string>
+     * @return array<int, int|PaginationType::Infinite>
      */
     #[Override]
     public function perPageOptions(): array
     {
-        return [1, 2, 200, 'infinite'];
+        return [1, 2, 200, PaginationType::Infinite];
     }
 
     public function columns(): array
@@ -400,12 +400,12 @@ class WorkbenchInfiniteSwitchUsersTable extends EloquentTableDefinition
     }
 
     /**
-     * @return array<int, int|string>
+     * @return array<int, int|PaginationType::Infinite>
      */
     #[Override]
     public function perPageOptions(): array
     {
-        return [2, 'infinite'];
+        return [2, PaginationType::Infinite];
     }
 
     public function columns(): array
@@ -431,7 +431,7 @@ class WorkbenchInfiniteSwitchUsersTable extends EloquentTableDefinition
 class WorkbenchNumericPerPageUsersTable extends EloquentTableDefinition
 {
     /**
-     * @return array<int, int|string>
+     * @return array<int, int|PaginationType::Infinite>
      */
     #[Override]
     public function perPageOptions(): array

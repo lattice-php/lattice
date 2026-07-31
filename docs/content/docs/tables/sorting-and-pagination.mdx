@@ -65,13 +65,15 @@ A [custom data source](/tables/data-sources/) chooses its own `TableResult` buil
 ### Page size options
 
 Declare `perPageOptions()` to render a page-size select in the pagination bar. Numeric entries offer
-fixed page sizes; the string `'infinite'` lets the user switch the table to infinite pagination on
+fixed page sizes; `PaginationType::Infinite` lets the user switch the table to infinite pagination on
 the fly — and back to numbered pages.
 
 ```php
+use Lattice\Lattice\Tables\Enums\PaginationType;
+
 public function perPageOptions(): array
 {
-    return [10, 25, 50, 100, 'infinite'];
+    return [10, 25, 50, 100, PaginationType::Infinite];
 }
 ```
 
