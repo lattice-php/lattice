@@ -1,6 +1,8 @@
 import { getCollection } from "astro:content";
 import { OGImageRoute } from "astro-og-canvas";
 
+// astro-og-canvas reads these off disk relative to process.cwd(). Every entry
+// point runs astro through `-w docs`, so that is always this directory.
 const entries = await getCollection("docs");
 
 const pages = Object.fromEntries(
@@ -13,7 +15,7 @@ export const { getStaticPaths, GET } = await OGImageRoute({
     title: page.data.title,
     description: page.data.description,
     logo: {
-      path: "./docs/assets/og-logo.png",
+      path: "./assets/og-logo.png",
       size: [340],
     },
     bgGradient: [[13, 17, 23]],
@@ -36,8 +38,8 @@ export const { getStaticPaths, GET } = await OGImageRoute({
       },
     },
     fonts: [
-      "./docs/assets/fonts/inter-latin-400-normal.ttf",
-      "./docs/assets/fonts/inter-latin-700-normal.ttf",
+      "./assets/fonts/inter-latin-400-normal.ttf",
+      "./assets/fonts/inter-latin-700-normal.ttf",
     ],
   }),
 });
