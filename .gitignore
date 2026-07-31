@@ -15,7 +15,7 @@ node_modules
 /dist
 /dist-docs
 /myreport
-/.astro
+.astro/
 /.sonda
 /docs/generated
 /docs/public/bundle-report.html
