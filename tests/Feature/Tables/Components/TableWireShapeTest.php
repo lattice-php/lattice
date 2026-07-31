@@ -50,9 +50,11 @@ it('serializes the table component wire shape', function (): void {
         'tableFilters' => [],
         'tableFilterIndicators' => [],
         'search' => '',
+        'mode' => null,
     ]);
     expect($payload['props']['bulkActions'])->toBe([]);
     expect($payload['props']['filters'])->toBe([]);
+    expect($payload['props']['perPageOptions'])->toBe([]);
 });
 
 it('serializes visible resize indicators on table components', function (): void {

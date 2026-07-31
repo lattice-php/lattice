@@ -86,8 +86,10 @@
                 "to": 2,
                 "total": 2
             },
+            "perPageOptions": [],
             "query": {
                 "filters": [],
+                "mode": null,
                 "page": 1,
                 "perPage": 25,
                 "search": "",
