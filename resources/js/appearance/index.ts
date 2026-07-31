@@ -18,9 +18,8 @@ let serverAppearance: Appearance = "system";
 
 /**
  * Seed the SSR/hydration snapshot from the backend-shared `lattice.appearance`
- * prop (the `appearance` cookie). Both the server render and the client's
- * hydration pass read this snapshot, so components branching on the appearance
- * hydrate against the same value the server rendered instead of "system".
+ * prop. The server render and the client's hydration pass must read the same
+ * value, or components branching on the appearance mismatch on hydration.
  */
 export function seedAppearance(value: unknown): void {
   if (isAppearance(value)) {

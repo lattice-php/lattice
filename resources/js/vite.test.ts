@@ -61,9 +61,6 @@ describe("lattice Vite helper", () => {
     const appRoot = path.resolve("/tmp/lattice-app");
     const config = latticeConfig({ appRoot });
 
-    // No react alias: an absolute-path alias would defeat SSR externalization
-    // and inline react's CJS into the SSR module runner. dedupe covers the
-    // single-React-copy concern.
     expect(config.resolve).not.toHaveProperty("alias");
     expect(config).toMatchObject({
       resolve: {

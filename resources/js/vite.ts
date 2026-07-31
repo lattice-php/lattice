@@ -190,11 +190,9 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
 
   return {
     resolve: {
-      // No react alias here: aliasing react to an absolute path defeats Vite's
-      // SSR externalization (it only recognizes bare specifiers), inlining
-      // react's CJS into the SSR module runner — `module is not defined` on
-      // any ssrLoadModule of an entry importing Lattice. `dedupe` alone keeps
-      // the app on a single React copy, symlinked package installs included.
+      // A react alias would break SSR: Vite only externalizes bare specifiers,
+      // so an absolute path inlines react's CJS into the SSR module runner.
+      // `dedupe` alone keeps the app on a single React copy, symlinks included.
       ...(options.source
         ? {
             alias: {

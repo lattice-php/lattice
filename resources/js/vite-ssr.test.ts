@@ -6,8 +6,7 @@ import type { ViteDevServer } from "vite";
 import { describe, expect, it } from "vitest";
 import { lattice } from "./vite";
 
-// Node environment on purpose: jsdom would provide the browser globals whose
-// absence these tests are meant to prove Lattice can live without.
+// jsdom would supply the browser globals these tests prove Lattice can live without.
 
 function ssrServer(): Promise<ViteDevServer> {
   const appRoot = process.cwd();
@@ -24,10 +23,6 @@ function ssrServer(): Promise<ViteDevServer> {
 }
 
 describe("lattice Vite helper under SSR", () => {
-  // Regression: aliasing react to an absolute path defeated Vite's SSR
-  // externalization (only bare specifiers externalize), inlining react's CJS
-  // into the module runner — `module is not defined` the moment anything
-  // SSR-loaded an entry importing Lattice (e.g. @inertiajs/vite's warm-up).
   it("ssr-loads an entry importing @lattice-php/lattice", async () => {
     const server = await ssrServer();
 

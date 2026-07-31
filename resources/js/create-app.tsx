@@ -50,10 +50,10 @@ export type CreateLatticeAppOptions = Omit<
   /**
    * Lattice's i18n bootstrap, on by default: when the backend shares the
    * `lattice.i18n` prop, the first render waits for the translation setup (no
-   * flash of untranslated fallbacks — except when hydrating a server-rendered
-   * page, which renders immediately to match the SSR'd HTML and swaps
-   * client-only strings in once ready), `LocaleReload` re-fetches the page after
-   * a locale switch, and every visit carries the locale/timezone headers. The
+   * flash of untranslated fallbacks; a server-rendered page instead hydrates
+   * immediately and swaps strings in once ready), `LocaleReload` re-fetches the
+   * page after a locale switch, and every visit carries the locale/timezone
+   * headers. The
    * i18next chunk only loads when the backend actually shares the prop. Pass
    * `false` to opt out entirely.
    */
@@ -217,10 +217,8 @@ export function createLatticeApp({
       }
 
       // A hydration pass must render what the server rendered — gating on the
-      // bootstrap would hydrate null against the SSR'd markup and force a full
-      // client re-render. The hold still lets the i18n backend win the init
-      // race; translated strings swap in once the bootstrap resolves (the
-      // server-driven ones are already translated in PHP).
+      // bootstrap would hydrate null against the SSR'd markup. The hold still
+      // lets the i18n backend win the init race; strings swap in once it resolves.
       if (hydrating) {
         holdI18nInit(Promise.all(pending));
 

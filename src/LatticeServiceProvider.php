@@ -169,9 +169,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
                 'lattice.urls' => fn (): array => [
                     'refreshRef' => route('lattice.refs.refresh', absolute: false),
                 ],
-                // The client stores the theme in this plain cookie; sharing it
-                // back lets the SSR render (and the hydration pass) start from
-                // the user's appearance instead of "system".
+                // Lets the SSR render start from the user's theme instead of "system".
                 'lattice.appearance' => function (): ?string {
                     $appearance = request()->cookies->get('appearance');
 

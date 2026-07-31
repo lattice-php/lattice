@@ -3,7 +3,6 @@ import { useEffect, useLayoutEffect as reactUseLayoutEffect } from "react";
 
 /**
  * Drop-in for React's `useLayoutEffect`, which warns under `renderToString`;
- * effects never run there, so the server-side substitution is free. Lint bans
- * the React import — always import the hook from here.
+ * effects never run there, so the server-side substitution is free.
  */
 export const useLayoutEffect = typeof window === "undefined" ? useEffect : reactUseLayoutEffect;
