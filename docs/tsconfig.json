@@ -4,8 +4,6 @@
     "allowImportingTsExtensions": true,
     "types": ["vite/client", "node"],
     "paths": {
-      "@lattice-php/lattice": ["../resources/js/index.ts"],
-      "@lattice-php/lattice/*": ["../resources/js/*"],
       "@components/*": ["./components/*"],
       "@lib/*": ["./lib/*"]
     }

@@ -9,8 +9,6 @@ import { svgSprite } from "@lattice-php/vite-svg-sprite";
 const site = process.env.SITE_URL || "https://latticephp.com";
 const viteCacheSuffix = process.argv.includes("build") ? "build" : "dev";
 
-// Resolve against this file, not process.cwd(): the docs build runs from the
-// repo root (npm run docs:build) and from docs/ (npm run build -w docs).
 const docsDir = import.meta.dirname;
 const repoRoot = path.resolve(docsDir, "..");
 
@@ -231,12 +229,7 @@ export default defineConfig({
       svgSprite({ iconDirs: [path.join(repoRoot, "resources/icons")] }),
     ],
     resolve: {
-      // Docs render the library from source, so editing resources/js hot-reloads
-      // the live previews. Point these at the built package instead and that
-      // feedback loop needs build:lib:watch running alongside.
       alias: {
-        "@lattice-php/lattice/css": path.join(repoRoot, "resources/css/lattice.css"),
-        "@lattice-php/lattice": path.join(repoRoot, "resources/js"),
         "@components": path.join(docsDir, "components"),
         "@lib": path.join(docsDir, "lib"),
       },

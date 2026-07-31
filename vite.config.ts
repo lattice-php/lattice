@@ -372,7 +372,10 @@ export default defineConfig(({ mode }) => {
               "docs/**/*.test.{ts,tsx}",
               "packages/*/resources/js/**/*.test.{ts,tsx}",
             ],
-            exclude: ["resources/js/**/*.browser.test.{ts,tsx}"],
+            // exclude replaces Vitest's defaults instead of extending them, and
+            // docs/ links the repo root through file:.., so the docs glob walks
+            // back into the whole tree unless node_modules is restored here.
+            exclude: ["**/node_modules/**", "resources/js/**/*.browser.test.{ts,tsx}"],
             setupFiles: ["resources/js/test/setup.ts"],
           },
         },
