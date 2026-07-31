@@ -3,6 +3,7 @@ import {
   type FormatOptions,
   formatDateValue,
   preciseDateTime,
+  toDate,
 } from "@lattice-php/lattice/format/date-time";
 import type { DateTimeStyle } from "@lattice-php/lattice/types/generated";
 import { useLocale } from "./locale";
@@ -39,7 +40,5 @@ export function DateTime({
 }
 
 function isoOrNull(value: unknown): string | null {
-  const date = new Date(String(value));
-
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+  return toDate(value)?.toISOString() ?? null;
 }

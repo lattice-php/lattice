@@ -54,8 +54,31 @@ describe("preciseDateTime", () => {
     expect(text).toContain("Europe/Berlin");
   });
 
+  it("formats a Date instance the same as its equivalent ISO string", () => {
+    const options = { locale: "en-GB", timeZone: "UTC" };
+
+    expect(preciseDateTime(new Date("2026-06-18T00:30:00Z"), options)).toBe(
+      preciseDateTime("2026-06-18T00:30:00Z", options),
+    );
+  });
+
   it("returns an empty string for an invalid value", () => {
     expect(preciseDateTime("not-a-date", { timeZone: "UTC" })).toBe("");
+  });
+
+  it("returns an empty string for an invalid Date instance", () => {
+    expect(preciseDateTime(new Date("not-a-date"), { timeZone: "UTC" })).toBe("");
+  });
+
+  it("returns an empty string for null, undefined, and an empty string", () => {
+    expect(preciseDateTime(null, { timeZone: "UTC" })).toBe("");
+    expect(preciseDateTime(undefined, { timeZone: "UTC" })).toBe("");
+    expect(preciseDateTime("", { timeZone: "UTC" })).toBe("");
+  });
+
+  it("returns an empty string for an object or a boolean", () => {
+    expect(preciseDateTime({}, { timeZone: "UTC" })).toBe("");
+    expect(preciseDateTime(true, { timeZone: "UTC" })).toBe("");
   });
 });
 
@@ -86,5 +109,57 @@ describe("formatDateValue", () => {
 
     expect(dateOnly).toContain("2026");
     expect(timeOnly).toContain("00:30");
+  });
+
+  it("formats a Date instance the same as its equivalent ISO string", () => {
+    const config = { dateStyle: "medium" as const, timeStyle: "short" as const };
+    const options = { locale: "en-GB", timeZone: "UTC" };
+
+    expect(formatDateValue(new Date("2026-06-18T00:30:00Z"), config, options)).toBe(
+      formatDateValue("2026-06-18T00:30:00Z", config, options),
+    );
+  });
+
+  it("formats a numeric timestamp instead of degrading to its stringified digits", () => {
+    const timestamp = new Date("2026-06-18T00:30:00Z").getTime();
+
+    const formatted = formatDateValue(
+      timestamp,
+      { dateStyle: "medium", timeStyle: null },
+      { locale: "en-GB", timeZone: "UTC" },
+    );
+
+    expect(formatted).toBe(
+      formatDateValue(
+        "2026-06-18T00:30:00Z",
+        { dateStyle: "medium", timeStyle: null },
+        { locale: "en-GB", timeZone: "UTC" },
+      ),
+    );
+    expect(formatted).not.toBe(String(timestamp));
+  });
+
+  it("returns the raw value for an invalid Date instance", () => {
+    const invalid = new Date("not-a-date");
+
+    expect(formatDateValue(invalid, { dateStyle: "medium", timeStyle: null })).toBe(
+      String(invalid),
+    );
+  });
+
+  it("degrades to an empty string for null, undefined, and an empty string", () => {
+    const config = { dateStyle: "medium" as const, timeStyle: null };
+
+    expect(formatDateValue(null, config)).toBe("");
+    expect(formatDateValue(undefined, config)).toBe("");
+    expect(formatDateValue("", config)).toBe("");
+  });
+
+  it("degrades to String(value) for an object or a boolean", () => {
+    const config = { dateStyle: "medium" as const, timeStyle: null };
+
+    expect(formatDateValue({}, config)).toBe("[object Object]");
+    expect(formatDateValue(true, config)).toBe("true");
+    expect(formatDateValue(false, config)).toBe("false");
   });
 });

@@ -27,4 +27,4 @@ async function boot(): Promise<void> {
   });
 }
 
-void boot();
+export const booted = boot();

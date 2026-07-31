@@ -13,9 +13,9 @@ export type DateConfig = {
 };
 
 export function formatDateValue(value: unknown, date: DateConfig, options?: FormatOptions): string {
-  const parsed = new Date(String(value));
+  const parsed = toDate(value);
 
-  if (Number.isNaN(parsed.getTime())) {
+  if (!parsed) {
     return String(value ?? "");
   }
 
@@ -52,9 +52,9 @@ export function toDate(value: unknown): Date | null {
 }
 
 export function preciseDateTime(value: unknown, options?: FormatOptions): string {
-  const date = new Date(String(value));
+  const date = toDate(value);
 
-  if (Number.isNaN(date.getTime())) {
+  if (!date) {
     return "";
   }
 
