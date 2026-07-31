@@ -59,13 +59,14 @@ function typescriptPlugin(options: Parameters<typeof lattice>[0] = {}): Plugin {
 describe("lattice Vite helper", () => {
   it("configures package-link mode without reading an environment variable", () => {
     const appRoot = path.resolve("/tmp/lattice-app");
+    const config = latticeConfig({ appRoot });
 
-    expect(latticeConfig({ appRoot })).toMatchObject({
+    // No react alias: an absolute-path alias would defeat SSR externalization
+    // and inline react's CJS into the SSR module runner. dedupe covers the
+    // single-React-copy concern.
+    expect(config.resolve).not.toHaveProperty("alias");
+    expect(config).toMatchObject({
       resolve: {
-        alias: {
-          react: path.resolve(appRoot, "node_modules/react"),
-          "react-dom": path.resolve(appRoot, "node_modules/react-dom"),
-        },
         dedupe: ["@inertiajs/react", "react", "react-dom"],
       },
       test: {

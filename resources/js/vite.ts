@@ -190,15 +190,19 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
 
   return {
     resolve: {
-      alias: options.source
+      // No react alias here: aliasing react to an absolute path defeats Vite's
+      // SSR externalization (it only recognizes bare specifiers), inlining
+      // react's CJS into the SSR module runner — `module is not defined` on
+      // any ssrLoadModule of an entry importing Lattice. `dedupe` alone keeps
+      // the app on a single React copy, symlinked package installs included.
+      ...(options.source
         ? {
-            "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
-            "@lattice-php/lattice": path.resolve(root, "resources/js"),
+            alias: {
+              "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
+              "@lattice-php/lattice": path.resolve(root, "resources/js"),
+            },
           }
-        : {
-            react: path.resolve(appRoot, "node_modules/react"),
-            "react-dom": path.resolve(appRoot, "node_modules/react-dom"),
-          },
+        : {}),
       dedupe: ["@inertiajs/react", "react", "react-dom"],
     },
     server: options.source
