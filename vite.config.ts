@@ -254,7 +254,7 @@ export default defineConfig(({ mode }) => {
                 "resources/js/standalone/**",
               ],
               compilerOptions: { rootDir: sourceRoot },
-              outDir: "dist",
+              outDirs: "dist",
               beforeWriteFile: (filePath, content) => ({
                 filePath,
                 content: withExplicitExtensions(filePath, content),
