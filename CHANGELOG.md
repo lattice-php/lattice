@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.31.0](https://github.com/lattice-php/lattice/compare/0.30.0...0.31.0) (2026-07-31)
+
+
+### Features
+
+* add a full-page variant to the ReloadPage effect ([cd4c319](https://github.com/lattice-php/lattice/commit/cd4c319b5f318f2e847b23460b8e542ef1d29c7a))
+* add Callout::retract() to clear keyed callouts on same-URL responses ([3d6ab54](https://github.com/lattice-php/lattice/commit/3d6ab543e7b289c2d16c546f96b855db491ca918))
+* callout retraction, full-page reload, and client-side date formatting ([3f73a89](https://github.com/lattice-php/lattice/commit/3f73a89d55af26904537048e7d22197a1b6daf02))
+* format Translatable dates client-side, in the reader's locale ([5e2b407](https://github.com/lattice-php/lattice/commit/5e2b407293b3f5ecdb9a40d0a9d05f73df0cf3d6))
+* **tables:** add per-page select to the pagination bar ([4725e50](https://github.com/lattice-php/lattice/commit/4725e50d221067b2b5babb0a785a9454215f480a))
+* **tables:** allow switching pagination mode per request ([ae09b76](https://github.com/lattice-php/lattice/commit/ae09b762e2ed1c12d11e992f53ed99424a073e89))
+* **tables:** declare per-page options and validate requested page size ([68ea3b7](https://github.com/lattice-php/lattice/commit/68ea3b753fea2b32f0602a3fb13479b369a5907d))
+* **tables:** per-page select with dynamic infinite pagination ([b597dad](https://github.com/lattice-php/lattice/commit/b597dad3249a5f2b8a7b205b8a7385fd52845052))
+* **tables:** send pagination mode and page size from the client ([81ac766](https://github.com/lattice-php/lattice/commit/81ac766db434c5b63047c48f0927087687fcdde4))
+
+
+### Bug Fixes
+
+* **test:** stub Range rect methods for ProseMirror under jsdom ([9bef705](https://github.com/lattice-php/lattice/commit/9bef705b10f88c497d1b1fa73b2a3590c9fb4a1a))
+
+
+### Refactoring
+
+* **tables:** type per-page options with PaginationType::Infinite ([65d446e](https://github.com/lattice-php/lattice/commit/65d446e21b781cbed92c7abb5c8602716fd770b5))
+
+
+### Documentation
+
+* **tables:** document per-page options and demo them in the workbench ([53402cf](https://github.com/lattice-php/lattice/commit/53402cf8de2d04321c88b73c80e7264faac201ad))
+
 ## [0.30.0](https://github.com/lattice-php/lattice/compare/0.29.0...0.30.0) (2026-07-30)
 
 
