@@ -24,9 +24,10 @@ it("boots with no config script", async () => {
   vi.resetModules();
 
   const { withVisitHeaders } = await import("@lattice-php/lattice/inertia");
-  await import("./main");
-  await vi.waitFor(() => expect(createLatticeApp).toHaveBeenCalledOnce());
+  const { booted } = await import("./main");
+  await booted;
 
+  expect(createLatticeApp).toHaveBeenCalledOnce();
   const options = createLatticeApp.mock.calls[0]?.[0];
   expect(options).not.toHaveProperty("sprite");
   expect(options?.defaults?.visitOptions).toBe(withVisitHeaders);
@@ -36,9 +37,10 @@ it("passes the sprite href when the config has a spriteUrl", async () => {
   setConfigScript(JSON.stringify({ spriteUrl: "/vendor/lattice/sprite.svg?v=abc" }));
   vi.resetModules();
 
-  await import("./main");
-  await vi.waitFor(() => expect(createLatticeApp).toHaveBeenCalledOnce());
+  const { booted } = await import("./main");
+  await booted;
 
+  expect(createLatticeApp).toHaveBeenCalledOnce();
   const options = createLatticeApp.mock.calls[0]?.[0];
   expect(options?.sprite).toEqual({ href: "/vendor/lattice/sprite.svg?v=abc" });
 });
@@ -47,9 +49,10 @@ it("configures echo before booting the app", async () => {
   setConfigScript(JSON.stringify({ echo: { broadcaster: "reverb" } }));
   vi.resetModules();
 
-  await import("./main");
-  await vi.waitFor(() => expect(createLatticeApp).toHaveBeenCalledOnce());
+  const { booted } = await import("./main");
+  await booted;
 
+  expect(createLatticeApp).toHaveBeenCalledOnce();
   expect(configureEcho).toHaveBeenCalledExactlyOnceWith({ broadcaster: "reverb" });
   expect(configureEcho.mock.invocationCallOrder[0]).toBeLessThan(
     createLatticeApp.mock.invocationCallOrder[0]!,
@@ -64,9 +67,10 @@ it("warns and still boots the app when configuring echo fails", async () => {
   setConfigScript(JSON.stringify({ echo: { broadcaster: "reverb" } }));
   vi.resetModules();
 
-  await import("./main");
-  await vi.waitFor(() => expect(createLatticeApp).toHaveBeenCalledOnce());
+  const { booted } = await import("./main");
+  await booted;
 
+  expect(createLatticeApp).toHaveBeenCalledOnce();
   expect(warn).toHaveBeenCalledOnce();
 
   warn.mockRestore();
