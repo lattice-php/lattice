@@ -1,5 +1,5 @@
 import { act, render, screen } from "@testing-library/react";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect } from "@lattice-php/lattice/lib/use-layout-effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";

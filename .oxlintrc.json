@@ -12,6 +12,29 @@
           }
         ]
       }
+    },
+    {
+      "files": ["resources/js/**/*.{ts,tsx}"],
+      "excludeFiles": [
+        "resources/js/test/browser-setup.ts",
+        "resources/js/ui/**",
+        "resources/js/form/rich-editor/toolbar-button.tsx"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": ["../**"],
+            "paths": [
+              {
+                "name": "react",
+                "importNames": ["useLayoutEffect"],
+                "message": "Import the SSR-safe useLayoutEffect from @lattice-php/lattice/lib/use-layout-effect instead."
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
