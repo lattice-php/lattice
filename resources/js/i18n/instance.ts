@@ -1,6 +1,7 @@
 import i18next, { type i18n as I18nInstance, type InitOptions } from "i18next";
 import { useCallback, useSyncExternalStore } from "react";
 import { useConfig } from "./config";
+import { registerDateTimeFormatter } from "./date-time-formatter";
 import { currentLocale, subscribeLocale, useLocale } from "./locale";
 
 export const DEFAULT_NAMESPACE = "lattice";
@@ -66,6 +67,8 @@ export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise
     };
 
     initialization = i18n.init(extend ? extend(base) : base);
+    // `services.formatter` only exists once `init()` has run, so this must follow it.
+    registerDateTimeFormatter(i18n);
   }
 
   return initialization;

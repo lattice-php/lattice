@@ -251,6 +251,10 @@ Effects::flash(
 );
 ```
 
+`->with()` also accepts `DateTimeInterface` values, formatted client-side in the reader's own
+locale — see [`Translatable` and `rt()`](/core/i18n/#translatable-and-rt) for how dates travel over
+the wire and render.
+
 Effects built inside a normal request already run in the user's locale, so plain `__()` strings
 remain the default there.
 

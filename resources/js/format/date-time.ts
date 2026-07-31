@@ -40,6 +40,17 @@ export function formatDateValue(value: unknown, date: DateConfig, options?: Form
   return new Intl.DateTimeFormat(options?.locale, intl).format(parsed);
 }
 
+export function toDate(value: unknown): Date | null {
+  const date =
+    value instanceof Date
+      ? value
+      : typeof value === "string" || typeof value === "number"
+        ? new Date(value)
+        : null;
+
+  return date && !Number.isNaN(date.getTime()) ? date : null;
+}
+
 export function preciseDateTime(value: unknown, options?: FormatOptions): string {
   const date = new Date(String(value));
 

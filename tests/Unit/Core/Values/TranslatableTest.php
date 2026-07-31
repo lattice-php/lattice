@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Carbon\CarbonImmutable;
 use Lattice\Lattice\I18n\Values\Translatable;
 
 test('it serializes key, payload paths, and static replacements', function (): void {
@@ -41,4 +42,38 @@ test('it rehydrates from its wire shape', function (): void {
     ];
 
     expect(Translatable::fromWire($wire)->jsonSerialize())->toBe($wire);
+});
+
+test('a DateTimeInterface replacement serializes to an ISO 8601 string, scalars unchanged', function (): void {
+    $date = CarbonImmutable::parse('2026-03-06T00:00:00+00:00');
+
+    $translatable = Translatable::make('billing.subscription-ends')
+        ->with(['date' => $date, 'plan' => 'Pro', 'seats' => 5]);
+
+    expect($translatable->jsonSerialize())->toEqual([
+        'key' => 'billing.subscription-ends',
+        'payload' => (object) [],
+        'replacements' => [
+            'date' => '2026-03-06T00:00:00+00:00',
+            'plan' => 'Pro',
+            'seats' => 5,
+        ],
+    ]);
+});
+
+test('a serialized date round-trips through fromWire as a plain string', function (): void {
+    $wire = Translatable::make('billing.subscription-ends')
+        ->with(['date' => CarbonImmutable::parse('2026-03-06T00:00:00+00:00')])
+        ->jsonSerialize();
+
+    expect(Translatable::fromWire($wire)->jsonSerialize())->toEqual($wire);
+});
+
+test('with() still merges a non-scalar, non-DateTimeInterface value without throwing', function (): void {
+    /** @var array<string, mixed> $replacement */
+    $replacement = ['x' => null];
+
+    $translatable = Translatable::make('k')->with($replacement);
+
+    expect($translatable->jsonSerialize()['replacements'])->toBe(['x' => null]);
 });
