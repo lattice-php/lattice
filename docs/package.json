@@ -1,0 +1,24 @@
+{
+  "name": "@lattice-php/docs",
+  "version": "0.0.0",
+  "description": "The Lattice documentation site.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.2",
+    "@astrojs/starlight": "^0.41.5",
+    "@astrojs/starlight-tailwind": "^5.0.0",
+    "@lattice-php/vite-svg-sprite": "^0.3.0",
+    "@tailwindcss/vite": "^4.1.11",
+    "astro": "^7.1.6",
+    "astro-og-canvas": "^0.13.0",
+    "mermaid": "^11.16.0",
+    "starlight-llms-txt": "^0.11.0"
+  }
+}
