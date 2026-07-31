@@ -1,4 +1,5 @@
 import type { Node } from "@lattice-php/lattice/core/types";
+import type { PaginationType } from "@lattice-php/lattice/types/generated";
 import type {
   FilterClause,
   FilterIndicator,
@@ -81,6 +82,7 @@ export function getQuery(value: unknown): TableQuery {
       tableFilters: {},
       tableFilterIndicators: [],
       search: "",
+      mode: null,
     };
   }
 
@@ -94,7 +96,28 @@ export function getQuery(value: unknown): TableQuery {
     tableFilters: getTableFilters(query.tableFilters),
     tableFilterIndicators: getTableFilterIndicators(query.tableFilterIndicators),
     search: typeof query.search === "string" ? query.search : "",
+    mode: getPaginationMode(query.mode),
   };
+}
+
+const PAGINATION_MODES = new Set(["none", "simple", "table", "infinite"]);
+
+function getPaginationMode(value: unknown): PaginationType | null {
+  return typeof value === "string" && PAGINATION_MODES.has(value)
+    ? (value as PaginationType)
+    : null;
+}
+
+export type PerPageOption = number | "infinite";
+
+export function getPerPageOptions(value: unknown): PerPageOption[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(
+    (option): option is PerPageOption => typeof option === "number" || option === "infinite",
+  );
 }
 
 /**

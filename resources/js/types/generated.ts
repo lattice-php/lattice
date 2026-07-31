@@ -1407,6 +1407,7 @@ export type Table = {
   filters: FilterNode[];
   layout: string | null;
   lazy: boolean;
+  perPageOptions: (number | string)[];
   ref: string | null;
   resizableColumns: boolean;
   resizeIndicator: boolean;
@@ -1427,6 +1428,7 @@ export type TablePagination = {
 };
 export type TableQuery = {
   readonly filters: FilterClause[];
+  readonly mode: PaginationType | null;
   readonly page: number;
   readonly perPage: number;
   readonly search: string;
