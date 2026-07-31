@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.32.0](https://github.com/lattice-php/lattice/compare/0.31.1...0.32.0) (2026-07-31)
+
+
+### Features
+
+* **js:** export the form field-scope hook ([5cc570a](https://github.com/lattice-php/lattice/commit/5cc570a7a8ff863d349f57911bf4512385ef6141))
+* **js:** export the form field-scope hook ([50eca87](https://github.com/lattice-php/lattice/commit/50eca87487b25241b05bc93434704c47cbf51117))
+
 ## [0.31.1](https://github.com/lattice-php/lattice/compare/0.31.0...0.31.1) (2026-07-31)
 
 
