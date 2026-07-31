@@ -13,6 +13,7 @@ use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Sortable;
+use Lattice\Lattice\Tables\Enums\PaginationType;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Filters\FilterIndicator;
 use Lattice\Lattice\Tables\Filters\FilterValueValidator;
@@ -35,6 +36,7 @@ final readonly class TableQuery implements JsonSerializable
         public array $tableFilters = [],
         public array $tableFilterIndicators = [],
         public string $search = '',
+        public ?PaginationType $mode = null,
     ) {}
 
     public static function empty(int $defaultPerPage = 25): self
@@ -66,6 +68,7 @@ final readonly class TableQuery implements JsonSerializable
             $tableFilters,
             $tableFilterIndicators,
             $request->string('q')->trim()->toString(),
+            self::resolveMode($request->input('mode'), $perPageOptions),
         );
     }
 
@@ -92,7 +95,22 @@ final readonly class TableQuery implements JsonSerializable
     }
 
     /**
-     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass, tableFilterIndicators: list<FilterIndicator>, search: string}
+     * A mode override is only honored when the declared options offer it:
+     * 'infinite' requires the 'infinite' option, 'table' any options at all.
+     *
+     * @param  array<int, int|string>  $options
+     */
+    private static function resolveMode(mixed $mode, array $options): ?PaginationType
+    {
+        return match (true) {
+            $mode === 'infinite' && in_array('infinite', $options, true) => PaginationType::Infinite,
+            $mode === 'table' && $options !== [] => PaginationType::Table,
+            default => null,
+        };
+    }
+
+    /**
+     * @return array{filters: array<int, FilterClause>, sorts: array<int, TableSort>, page: int, perPage: int, tableFilters: array<string, mixed>|stdClass, tableFilterIndicators: list<FilterIndicator>, search: string, mode: PaginationType|null}
      */
     public function jsonSerialize(): array
     {
@@ -104,6 +122,7 @@ final readonly class TableQuery implements JsonSerializable
             'tableFilters' => Wire::map($this->tableFilters),
             'tableFilterIndicators' => $this->tableFilterIndicators,
             'search' => $this->search,
+            'mode' => $this->mode,
         ];
     }
 

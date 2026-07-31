@@ -154,6 +154,71 @@ test('per-page options serialize into the table component props', function (): v
     expect($table['props']['perPageOptions'])->toBe([1, 2, 200, 'infinite']);
 });
 
+test('mode=infinite switches a table-mode table to infinite pagination', function (): void {
+    User::query()->delete();
+
+    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => str($name)->slug()->append('@example.com')->toString(),
+        ]);
+    }
+
+    Lattice::tables([WorkbenchPerPageUsersTable::class]);
+
+    $this->loadTable(WorkbenchPerPageUsersTable::class, ['per_page' => 2, 'mode' => 'infinite'])
+        ->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonPath('pagination.mode', 'infinite')
+        ->assertJsonPath('pagination.total', null)
+        ->assertJsonPath('pagination.hasMore', true)
+        ->assertJsonPath('query.mode', 'infinite');
+});
+
+test('mode=table switches an infinite-mode table to numbered pagination', function (): void {
+    User::query()->delete();
+
+    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
+        UserFactory::new()->create([
+            'name' => $name,
+            'email' => str($name)->slug()->append('@example.com')->toString(),
+        ]);
+    }
+
+    Lattice::tables([WorkbenchInfiniteSwitchUsersTable::class]);
+
+    $this->loadTable(WorkbenchInfiniteSwitchUsersTable::class, ['per_page' => 2, 'mode' => 'table'])
+        ->assertOk()
+        ->assertJsonPath('pagination.mode', 'table')
+        ->assertJsonPath('pagination.total', 3)
+        ->assertJsonPath('pagination.lastPage', 2)
+        ->assertJsonPath('query.mode', 'table');
+});
+
+test('mode=infinite is ignored when infinite is not declared', function (): void {
+    User::query()->delete();
+    UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
+
+    Lattice::tables([WorkbenchNumericPerPageUsersTable::class]);
+
+    $this->loadTable(WorkbenchNumericPerPageUsersTable::class, ['mode' => 'infinite'])
+        ->assertOk()
+        ->assertJsonPath('pagination.mode', 'table')
+        ->assertJsonPath('query.mode', null);
+});
+
+test('mode overrides are ignored when no options are declared', function (): void {
+    User::query()->delete();
+    UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
+
+    Lattice::tables([WorkbenchDefaultUsersTable::class]);
+
+    $this->loadTable(WorkbenchDefaultUsersTable::class, ['mode' => 'infinite'])
+        ->assertOk()
+        ->assertJsonPath('pagination.mode', 'table')
+        ->assertJsonPath('query.mode', null);
+});
+
 /**
  * @extends EloquentTableDefinition<User>
  */
@@ -298,6 +363,80 @@ class WorkbenchPerPageUsersTable extends EloquentTableDefinition
     public function perPageOptions(): array
     {
         return [1, 2, 200, 'infinite'];
+    }
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable(),
+        ];
+    }
+
+    /**
+     * @return Builder<User>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return User::query()->select(['id', 'name'])->orderBy('id');
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<User>
+ */
+#[AsTable('workbench.infinite-switch-users')]
+class WorkbenchInfiniteSwitchUsersTable extends EloquentTableDefinition
+{
+    #[Override]
+    public function pagination(): PaginationType
+    {
+        return PaginationType::Infinite;
+    }
+
+    #[Override]
+    public function perPage(): int
+    {
+        return 2;
+    }
+
+    /**
+     * @return array<int, int|string>
+     */
+    #[Override]
+    public function perPageOptions(): array
+    {
+        return [2, 'infinite'];
+    }
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->label('Name')->sortable(),
+        ];
+    }
+
+    /**
+     * @return Builder<User>
+     */
+    public function builder(TableQuery $query): Builder
+    {
+        return User::query()->select(['id', 'name'])->orderBy('id');
+    }
+}
+
+/**
+ * @extends EloquentTableDefinition<User>
+ */
+#[AsTable('workbench.numeric-per-page-users')]
+class WorkbenchNumericPerPageUsersTable extends EloquentTableDefinition
+{
+    /**
+     * @return array<int, int|string>
+     */
+    #[Override]
+    public function perPageOptions(): array
+    {
+        return [1, 2];
     }
 
     public function columns(): array
