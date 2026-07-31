@@ -1,6 +1,8 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
+import { hydrateRoot, type Root } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const createInertiaApp = vi.hoisted(() => vi.fn<(options?: unknown) => void>());
@@ -19,6 +21,7 @@ vi.mock("@inertiajs/react", async () =>
 );
 vi.mock("./i18n/page-props", () => ({ configureI18nFromPageProps }));
 
+import { useAppearance } from "./appearance";
 import { createLatticeApp } from "./create-app";
 import { pageComponentName } from "./inertia";
 import Page from "./page";
@@ -71,6 +74,7 @@ afterEach(() => {
   createInertiaApp.mockReset();
   configureI18nFromPageProps.mockClear();
   localStorage.clear();
+  document.getElementById("app")?.remove();
 });
 
 describe("createLatticeApp", () => {
@@ -281,6 +285,70 @@ describe("createLatticeApp", () => {
 
     resolveBoot();
     await waitFor(() => expect(screen.getByTestId("app")).toBeInTheDocument());
+  });
+
+  it("hydrates server-rendered markup immediately without a mismatch", async () => {
+    let resolveConfigure = (): void => {};
+    configureI18nFromPageProps.mockReturnValueOnce(
+      new Promise<void>((resolve) => {
+        resolveConfigure = resolve;
+      }),
+    );
+
+    const page = fakePage(i18nProps);
+
+    createLatticeApp();
+
+    const options = captureOptions();
+    const html = renderToString(
+      options.withApp(<div data-test="app">hello</div>, { ssr: true, page }),
+    );
+
+    const el = document.createElement("div");
+    el.id = "app";
+    el.setAttribute("data-server-rendered", "true");
+    el.innerHTML = html;
+    document.body.append(el);
+
+    const onRecoverableError = vi.fn();
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    let root: Root | undefined;
+
+    await act(async () => {
+      root = hydrateRoot(
+        el,
+        options.withApp(<div data-test="app">hello</div>, { ssr: false, page }),
+        { onRecoverableError },
+      );
+    });
+
+    expect(screen.getByTestId("app")).toHaveTextContent("hello");
+    expect(onRecoverableError).not.toHaveBeenCalled();
+    expect(consoleError).not.toHaveBeenCalled();
+    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {});
+
+    resolveConfigure();
+    await act(async () => {});
+
+    root?.unmount();
+    consoleError.mockRestore();
+  });
+
+  it("seeds the server-rendered appearance from the shared prop", () => {
+    function Probe() {
+      return <span>{useAppearance().appearance}</span>;
+    }
+
+    createLatticeApp();
+
+    const html = renderToString(
+      captureOptions().withApp(<Probe />, {
+        ssr: true,
+        page: fakePage({ lattice: { appearance: "dark" } }),
+      }),
+    );
+
+    expect(html).toContain("dark");
   });
 
   it("skips boot and the i18n bootstrap on the server render", () => {

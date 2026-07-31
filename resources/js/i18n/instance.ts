@@ -24,6 +24,7 @@ type TranslationResult = {
 export const i18n: I18nInstance = i18next.createInstance();
 
 let initialization: Promise<unknown> | undefined;
+let hold: Promise<unknown> | undefined;
 let revision = 0;
 
 function subscribe(onStoreChange: () => void): () => void {
@@ -52,11 +53,33 @@ function snapshot(): number {
 }
 
 /**
+ * Defer component-driven initialization until `until` settles — for shells
+ * that render before the i18n bootstrap has loaded (SSR hydration), where the
+ * first rendered `useT` would otherwise win the init race and lock the HTTP
+ * backend out. Configuring callers (those passing `extend` to {@link ensureI18n})
+ * bypass the hold; a failed bootstrap releases it, so init stays fail-open.
+ */
+export function holdI18nInit(until: Promise<unknown>): void {
+  const release = (): void => {
+    hold = undefined;
+  };
+  const released = until.then(release, release);
+
+  if (!initialization) {
+    hold = released;
+  }
+}
+
+/**
  * Initialize the instance exactly once. The first caller wins — a rendered
  * component (inline English, zero config) or `enableBackend()`, which registers
  * its backend first because i18next can only wire a backend during `init`.
  */
 export function ensureI18n(extend?: (base: InitOptions) => InitOptions): Promise<unknown> {
+  if (!initialization && hold && !extend) {
+    return hold.then(() => ensureI18n());
+  }
+
   if (!initialization) {
     const base: InitOptions = {
       lng: currentLocale(),
