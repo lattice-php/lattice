@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.31.1](https://github.com/lattice-php/lattice/compare/0.31.0...0.31.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* await the standalone boot instead of polling for it ([bf54758](https://github.com/lattice-php/lattice/commit/bf5475899547240938bb0f4ed9fc2a7e0dc6f63c))
+* **docs:** keep generated and on-disk asset paths correct under the workspace ([9c60587](https://github.com/lattice-php/lattice/commit/9c60587328e7ea3eb0dab72e5a0a0830462bb27f))
+* parse dates through toDate everywhere ([952d1ca](https://github.com/lattice-php/lattice/commit/952d1cad42636a00dbe276d613f35631dc662ae7))
+* parse dates through toDate, and await the standalone boot ([78090bc](https://github.com/lattice-php/lattice/commit/78090bc5c96a8f64e3c42d847b362b3e752af875))
+
+
+### Refactoring
+
+* **docs:** drop comments that restate the code ([a457457](https://github.com/lattice-php/lattice/commit/a4574574880bfb6b5fad795d391b45d2c25753cb))
+
 ## [0.31.0](https://github.com/lattice-php/lattice/compare/0.30.0...0.31.0) (2026-07-31)
 
 
