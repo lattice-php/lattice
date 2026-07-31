@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.30.0](https://github.com/lattice-php/lattice/compare/0.29.0...0.30.0) (2026-07-30)
+
+
+### Features
+
+* add a unique key to callouts ([5b2ee1b](https://github.com/lattice-php/lattice/commit/5b2ee1b48e3d213e9bb8d86d0b008209a025ba25))
+* keyed callouts as state projections ([6d0f84f](https://github.com/lattice-php/lattice/commit/6d0f84f849781da6154008035e1968d745eb30ef))
+* treat keyed callouts as state projections ([3577526](https://github.com/lattice-php/lattice/commit/35775262da467d288b613e1d7e9623bb37bf9fe4))
+
+
+### Documentation
+
+* correct the keyed callout retraction boundary ([65bf324](https://github.com/lattice-php/lattice/commit/65bf3249b3bdc289288c9ae5637d35d8b46dedd0))
+* describe the two callout lifetimes ([793a7c8](https://github.com/lattice-php/lattice/commit/793a7c8aa156a2c6865ca04a6277770ea638c255))
+
 ## [0.29.0](https://github.com/lattice-php/lattice/compare/0.28.0...0.29.0) (2026-07-30)
 
 
