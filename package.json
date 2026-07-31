@@ -162,6 +162,10 @@
       "types": "./dist/remote/index.d.ts",
       "import": "./dist/remote/index.js"
     },
+    "./ssr": {
+      "types": "./dist/ssr.d.ts",
+      "import": "./dist/ssr.js"
+    },
     "./table": {
       "types": "./dist/table/index.d.ts",
       "import": "./dist/table/index.js"
