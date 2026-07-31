@@ -142,7 +142,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        EncryptCookies::except('locale');
+        EncryptCookies::except(['locale', 'appearance']);
 
         // Serve Lattice's built-in chrome translations under the `lattice`
         // namespace so consumers get them (and i18next /locales/{lng}/lattice.json)
@@ -161,8 +161,22 @@ final class LatticeServiceProvider extends PackageServiceProvider
         });
 
         $this->callAfterResolving(ResponseFactory::class, function (ResponseFactory $inertia): void {
-            $inertia->share('lattice.urls', fn (): array => [
-                'refreshRef' => route('lattice.refs.refresh', absolute: false),
+            // Array form on purpose: share('lattice.urls', ...) Arr::sets a real
+            // nested `lattice` array, which a Lattice page's own `lattice` prop
+            // then clobbers wholesale. A literal dotted key survives the merge
+            // and is expanded into the nested position at resolve time.
+            $inertia->share([
+                'lattice.urls' => fn (): array => [
+                    'refreshRef' => route('lattice.refs.refresh', absolute: false),
+                ],
+                // The client stores the theme in this plain cookie; sharing it
+                // back lets the SSR render (and the hydration pass) start from
+                // the user's appearance instead of "system".
+                'lattice.appearance' => function (): ?string {
+                    $appearance = request()->cookies->get('appearance');
+
+                    return in_array($appearance, ['light', 'dark', 'system'], true) ? $appearance : null;
+                },
             ]);
         });
 

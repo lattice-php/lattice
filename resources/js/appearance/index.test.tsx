@@ -45,6 +45,25 @@ function stubColorScheme(initialMatches: boolean) {
   };
 }
 
+it("serves the seeded appearance to server renders and ignores unknown values", async () => {
+  const { seedAppearance, useAppearance } = await import(".");
+  const { renderToString } = await import("react-dom/server");
+
+  function Probe() {
+    return <span>{useAppearance().appearance}</span>;
+  }
+
+  expect(renderToString(<Probe />)).toContain("system");
+
+  seedAppearance("dark");
+
+  expect(renderToString(<Probe />)).toContain("dark");
+
+  seedAppearance("sepia");
+
+  expect(renderToString(<Probe />)).toContain("dark");
+});
+
 it("updates subscribers when the system theme changes in system mode", async () => {
   const colorScheme = stubColorScheme(false);
   localStorage.setItem("appearance", "system");
