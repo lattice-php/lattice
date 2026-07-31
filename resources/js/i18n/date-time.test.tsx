@@ -36,4 +36,19 @@ describe("<DateTime>", () => {
     expect(time?.getAttribute("dateTime")).toBeNull();
     expect(time?.getAttribute("title")).toBeNull();
   });
+
+  it("renders a numeric timestamp the same as its equivalent ISO string", () => {
+    setTimezone("Europe/Berlin");
+    const timestamp = new Date("2026-06-18T00:30:00Z").getTime();
+
+    const { container: fromTimestamp } = render(<DateTime value={timestamp} />);
+    const { container: fromIso } = render(<DateTime value="2026-06-18T00:30:00Z" />);
+
+    const timeFromTimestamp = fromTimestamp.querySelector("time");
+    const timeFromIso = fromIso.querySelector("time");
+
+    expect(timeFromTimestamp?.textContent).toBe(timeFromIso?.textContent);
+    expect(timeFromTimestamp?.getAttribute("dateTime")).toBe("2026-06-18T00:30:00.000Z");
+    expect(timeFromTimestamp?.getAttribute("dateTime")).toBe(timeFromIso?.getAttribute("dateTime"));
+  });
 });
