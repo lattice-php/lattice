@@ -102,6 +102,10 @@
       "types": "./dist/form/hooks/context.d.ts",
       "import": "./dist/form/hooks/context.js"
     },
+    "./form/hooks/field-scope": {
+      "types": "./dist/form/hooks/field-scope.d.ts",
+      "import": "./dist/form/hooks/field-scope.js"
+    },
     "./form/hooks/values": {
       "types": "./dist/form/hooks/values.d.ts",
       "import": "./dist/form/hooks/values.js"
