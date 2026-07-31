@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useIsomorphicLayoutEffect } from "@lattice-php/lattice/lib/use-isomorphic-layout-effect";
 import type { Node } from "@lattice-php/lattice/core/types";
 import type { ResolveResponse } from "@lattice-php/lattice/types/generated";
 import { walkFields } from "@lattice-php/lattice/form/lib/field-props";
@@ -41,7 +42,7 @@ export function useFormResolver(
   const targetsRef = useRef(targets);
   targetsRef.current = targets;
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const liveOverrideKeys = new Set(targets.map((target) => target.overrideKey));
     seededOverrideKeys.current = new Set(
       [...seededOverrideKeys.current].filter((overrideKey) => liveOverrideKeys.has(overrideKey)),

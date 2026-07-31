@@ -1,4 +1,5 @@
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
+import { useIsomorphicLayoutEffect } from "@lattice-php/lattice/lib/use-isomorphic-layout-effect";
 
 const DURATION_MS = 180;
 
@@ -26,7 +27,7 @@ export function useFlipReorder(
     }
   }, []);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const handles: number[] = [];
     const next = new Map<string, DOMRect>();
     elements.current.forEach((el, key) => {

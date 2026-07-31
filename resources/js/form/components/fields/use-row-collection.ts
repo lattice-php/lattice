@@ -1,4 +1,5 @@
-import { useCallback, useLayoutEffect } from "react";
+import { useCallback } from "react";
+import { useIsomorphicLayoutEffect } from "@lattice-php/lattice/lib/use-isomorphic-layout-effect";
 import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
 import { useFormValue, useSetFormValue } from "@lattice-php/lattice/form/hooks/values";
 import {
@@ -29,7 +30,7 @@ export function useRowCollection(name: string, defaultItems: number): RowCollect
   const raw: RepeaterRow[] = Array.isArray(stored) ? stored : seedRows(stored, defaultItems);
   const rows = ensureRowIds(raw);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (rows !== raw) {
       setValue(path, rows);
     }
