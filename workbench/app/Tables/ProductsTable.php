@@ -38,6 +38,15 @@ use Workbench\App\Tables\Columns\StatusBadgeColumn;
 class ProductsTable extends EloquentTableDefinition
 {
     /**
+     * @return array<int, int|string>
+     */
+    #[Override]
+    public function perPageOptions(): array
+    {
+        return [10, 25, 50, 100, 'infinite'];
+    }
+
+    /**
      * @return array<int, Column>
      */
     public function columns(): array

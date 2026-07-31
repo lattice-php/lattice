@@ -61,3 +61,19 @@ A [custom data source](/tables/data-sources/) chooses its own `TableResult` buil
 `fromPaginator()` for a full pager, `fromSimplePaginator()` for infinite scroll-to-load, or
 `fromSimplePaginator($paginator, PaginationType::Simple)` for previous/next. The
 [Eloquent source](/tables/eloquent-tables/) picks the right one from the mode automatically.
+
+### Page size options
+
+Declare `perPageOptions()` to render a page-size select in the pagination bar. Numeric entries offer
+fixed page sizes; the string `'infinite'` lets the user switch the table to infinite pagination on
+the fly — and back to numbered pages.
+
+```php
+public function perPageOptions(): array
+{
+    return [10, 25, 50, 100, 'infinite'];
+}
+```
+
+The endpoint accepts only declared sizes and falls back to `perPage()` for anything else. Tables
+without options keep their fixed page size and mode.
