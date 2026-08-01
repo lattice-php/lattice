@@ -58,9 +58,9 @@ describe('docs fixtures', function (): void {
     it('matches the grid example fixture', function (): void {
         assertFixtureMatches('components.grid', Wire::toWire([
             Grid::make()->columns(3)->schema([
-                Badge::make('First'),
-                Badge::make('Second'),
-                Badge::make('Third'),
+                Badge::make('Wide')->columnSpan(2),
+                Badge::make('Narrow'),
+                Badge::make('Full width')->columnSpanFull(),
             ]),
         ]));
     });

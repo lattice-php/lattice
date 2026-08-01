@@ -1,27 +1,35 @@
 [
     {
         "props": {
-            "columns": 3
+            "columns": {
+                "md": 3
+            }
         },
         "schema": [
             {
                 "props": {
                     "color": null,
-                    "label": "First"
+                    "columnSpan": {
+                        "md": 2
+                    },
+                    "label": "Wide"
                 },
                 "type": "badge"
             },
             {
                 "props": {
                     "color": null,
-                    "label": "Second"
+                    "label": "Narrow"
                 },
                 "type": "badge"
             },
             {
                 "props": {
                     "color": null,
-                    "label": "Third"
+                    "columnSpan": {
+                        "default": "full"
+                    },
+                    "label": "Full width"
                 },
                 "type": "badge"
             }

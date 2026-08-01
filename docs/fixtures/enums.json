@@ -455,6 +455,36 @@
         "name": "Align",
         "namespace": "Lattice\\Lattice\\Ui\\Enums"
     },
+    "Lattice\\Lattice\\Ui\\Enums\\Breakpoint": {
+        "cases": [
+            {
+                "name": "Default",
+                "value": "default"
+            },
+            {
+                "name": "Sm",
+                "value": "sm"
+            },
+            {
+                "name": "Md",
+                "value": "md"
+            },
+            {
+                "name": "Lg",
+                "value": "lg"
+            },
+            {
+                "name": "Xl",
+                "value": "xl"
+            },
+            {
+                "name": "Xxl",
+                "value": "2xl"
+            }
+        ],
+        "name": "Breakpoint",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+    },
     "Lattice\\Lattice\\Ui\\Enums\\ButtonType": {
         "cases": [
             {

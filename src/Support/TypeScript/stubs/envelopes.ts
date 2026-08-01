@@ -8,6 +8,7 @@
 export type NodeProps = Record<string, unknown>;
 
 export type CommonNodeProps = {
+  columnSpan?: Record<string, number | string> | null;
   dataBindings?: Record<string, string> | null;
   hideWhenCollapsed?: boolean | null;
 };

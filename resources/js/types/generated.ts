@@ -8,6 +8,7 @@
 export type NodeProps = Record<string, unknown>;
 
 export type CommonNodeProps = {
+  columnSpan?: Record<string, number | string> | null;
   dataBindings?: Record<string, string> | null;
   hideWhenCollapsed?: boolean | null;
 };
@@ -217,6 +218,7 @@ export type Breadcrumb = {
   readonly title: string;
 };
 export type Breadcrumbs = Record<string, never>;
+export type Breakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type BrowserToken = {
   readonly accessToken: string;
   readonly audience: string;
@@ -833,7 +835,7 @@ export type FragmentResponse = {
 };
 export type Gap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type Grid = {
-  columns: number | null;
+  columns: Record<string, number | string> | null;
 };
 export type Heading = {
   copyable: boolean;

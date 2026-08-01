@@ -42,10 +42,10 @@ final class ContainersPage extends WorkbenchPage
                             Text::make(__('workbench.pages.components.containers.card-body')),
                             Badge::make(__('workbench.pages.components.containers.card-badge')),
                         ]),
-                    Grid::make('containers-grid')->columns(3)->schema([
-                        Badge::make(__('workbench.pages.components.containers.grid-first')),
+                    Grid::make('containers-grid')->columns(['default' => 1, 'md' => 3])->schema([
+                        Badge::make(__('workbench.pages.components.containers.grid-first'))->columnSpan(2),
                         Badge::make(__('workbench.pages.components.containers.grid-second')),
-                        Badge::make(__('workbench.pages.components.containers.grid-third')),
+                        Badge::make(__('workbench.pages.components.containers.grid-third'))->columnSpanFull(),
                     ]),
                     Section::make(__('workbench.pages.components.containers.section-title'), __('workbench.pages.components.containers.section-description'))
                         ->collapsible()

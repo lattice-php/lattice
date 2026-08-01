@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Components;
 
+use InvalidArgumentException;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\WireEnvelope;
+use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\HasDataBindings;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Lattice\Ui\Concerns\GatesRendering;
 use Lattice\Lattice\Ui\Contracts\Renderable;
 use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Lattice\Ui\Enums\Breakpoint;
 
 /**
  * @phpstan-consistent-constructor
@@ -22,6 +25,13 @@ abstract class Component implements JsonSerializable, Renderable, SchemaEntry
     use SerializesWireNode;
 
     protected bool $hideWhenCollapsed = false;
+
+    /**
+     * Breakpoint => span toward the nearest Grid ancestor.
+     *
+     * @var array<string, int|string>|null
+     */
+    protected ?array $columnSpan = null;
 
     public function __construct(protected ?string $key = null) {}
 
@@ -42,6 +52,39 @@ abstract class Component implements JsonSerializable, Renderable, SchemaEntry
         $this->hideWhenCollapsed = $hide;
 
         return $this;
+    }
+
+    /**
+     * A bare integer applies from the `md` breakpoint up; `'full'` spans the
+     * whole row at every breakpoint; a map sets each breakpoint explicitly.
+     *
+     * @param  int|string|array<string, int|string>  $span
+     */
+    public function columnSpan(int|string|array $span): static
+    {
+        if (! is_array($span)) {
+            $span = $span === 'full' ? ['default' => 'full'] : ['md' => $span];
+        }
+
+        foreach ($span as $breakpoint => $value) {
+            Breakpoint::validateKey($breakpoint);
+
+            if ((! is_int($value) || $value < 1) && $value !== 'full') {
+                throw new InvalidArgumentException(sprintf(
+                    'Column span for "%s" must be a positive integer or "full".',
+                    $breakpoint,
+                ));
+            }
+        }
+
+        $this->columnSpan = $span;
+
+        return $this;
+    }
+
+    public function columnSpanFull(): static
+    {
+        return $this->columnSpan('full');
     }
 
     /**
@@ -81,6 +124,10 @@ abstract class Component implements JsonSerializable, Renderable, SchemaEntry
 
         if ($this->hideWhenCollapsed) {
             $props['hideWhenCollapsed'] = true;
+        }
+
+        if ($this->columnSpan !== null) {
+            $props['columnSpan'] = Wire::map($this->columnSpan);
         }
 
         return $props;
