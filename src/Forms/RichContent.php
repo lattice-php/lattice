@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms;
 
+use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Tiptap\Core\Extension;
@@ -55,19 +56,22 @@ final class RichContent
     /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes  Schema type names to keep beyond the baseline; null keeps the full built-in schema.
+     * @param  iterable<EditorExtension>  $extensions
      */
     public function __construct(
         private readonly array|string|null $document,
         private readonly ?array $allowedTypes = null,
+        private readonly iterable $extensions = [],
     ) {}
 
     /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes
+     * @param  iterable<EditorExtension>  $extensions
      */
-    public static function make(array|string|null $document, ?array $allowedTypes = null): self
+    public static function make(array|string|null $document, ?array $allowedTypes = null, iterable $extensions = []): self
     {
-        return new self($document, $allowedTypes);
+        return new self($document, $allowedTypes, $extensions);
     }
 
     public function toHtml(): string
@@ -191,16 +195,30 @@ final class RichContent
             new DetailsContent,
         ];
 
-        if ($this->allowedTypes === null) {
-            return $extensions;
+        $allowed = [...self::BASELINE_TYPES, ...$this->allowedTypes ?? []];
+
+        $builtin = $this->allowedTypes === null
+            ? $extensions
+            : array_values(array_filter(
+                $extensions,
+                static fn (Extension $extension): bool => in_array($extension::$name, $allowed, true),
+            ));
+
+        return [...$builtin, ...$this->contributedExtensions()];
+    }
+
+    /**
+     * @return list<Extension>
+     */
+    private function contributedExtensions(): array
+    {
+        $contributed = [];
+
+        foreach ($this->extensions as $extension) {
+            $contributed = [...$contributed, ...$extension->serverExtensions()];
         }
 
-        $allowed = [...self::BASELINE_TYPES, ...$this->allowedTypes];
-
-        return array_values(array_filter(
-            $extensions,
-            static fn (Extension $extension): bool => in_array($extension::$name, $allowed, true),
-        ));
+        return $contributed;
     }
 
     private function isEmpty(): bool

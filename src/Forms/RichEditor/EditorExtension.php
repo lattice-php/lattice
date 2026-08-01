@@ -7,6 +7,7 @@ use JsonSerializable;
 use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
+use Tiptap\Core\Extension;
 
 /**
  * A rich-editor extension: a `{type, props}` wire value whose props are the
@@ -41,6 +42,18 @@ abstract class EditorExtension implements JsonSerializable
     public function serverTypes(): array
     {
         return $this->serverTypes;
+    }
+
+    /**
+     * tiptap-php extensions contributed to RichContent's schema: the node/mark
+     * survives sanitization and renders to HTML via its own renderHTML. Types
+     * covered here need no serverTypes entry.
+     *
+     * @return list<Extension>
+     */
+    public function serverExtensions(): array
+    {
+        return [];
     }
 
     /**

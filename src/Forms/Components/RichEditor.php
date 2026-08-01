@@ -155,7 +155,18 @@ class RichEditor extends Field
             return $value;
         }
 
-        return RichContent::make($decoded, $this->allowedServerTypes())->toArray();
+        return RichContent::make($decoded, $this->allowedServerTypes(), $this->editorExtensionInstances())->toArray();
+    }
+
+    /**
+     * @return list<EditorExtension>
+     */
+    protected function editorExtensionInstances(): array
+    {
+        return array_values(array_filter(
+            $this->activeExtensions(),
+            static fn (EditorExtension|string $extension): bool => $extension instanceof EditorExtension,
+        ));
     }
 
     /**
