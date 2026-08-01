@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.34.0](https://github.com/lattice-php/lattice/compare/0.33.0...0.34.0) (2026-08-01)
+
+
+### Features
+
+* add Lattice::translations() for package lang registration ([71063e8](https://github.com/lattice-php/lattice/commit/71063e8e1ea22977b33bb8d2d24985164797ec68))
+* package DX — Lattice::translations() and shipped Testbench base cases ([956d400](https://github.com/lattice-php/lattice/commit/956d4004b0e3b1985d36f385f9bfbe5f65253660))
+* **rich-editor:** bare RichContent renders app-registered extensions ([504b5b6](https://github.com/lattice-php/lattice/commit/504b5b63fd45085b85dacd2efe57de9dfd990962))
+* **rich-editor:** extensions extend the display sanitizer ([849bc63](https://github.com/lattice-php/lattice/commit/849bc63de43a4498863c69360ed2ca6b365af32b))
+* **rich-editor:** let extensions contribute server-side tiptap schema ([a38a966](https://github.com/lattice-php/lattice/commit/a38a966886c551c379822347a43057753b93660a))
+* **rich-editor:** outbound document preparation for display and prefill ([2b9e0a9](https://github.com/lattice-php/lattice/commit/2b9e0a9b3c331e51906b8d552aae67defd4d2488))
+* **rich-editor:** scrub declared ephemeral attrs from the storage form ([1182c25](https://github.com/lattice-php/lattice/commit/1182c25c0c78486a2176528f872817cc1941e10f))
+* **rich-editor:** submit-time document validation seam ([a5376ae](https://github.com/lattice-php/lattice/commit/a5376ae433b1465dba54984c89a0f50064a0b361))
+* **rich-editor:** typed node walker on RichContent ([1e54fb8](https://github.com/lattice-php/lattice/commit/1e54fb8160f0cf349d322da8a4dc0473a0b34b2e))
+* server-side seams for rich-editor extensions ([4374ece](https://github.com/lattice-php/lattice/commit/4374ece558b34197becad643a1c8113dbaae627d))
+* ship PackageTestCase and PackageBrowserTestCase for component packages ([12d7f4a](https://github.com/lattice-php/lattice/commit/12d7f4ae02e4646a0202f20f48efe2466e20fa44))
+
+
+### Bug Fixes
+
+* **rich-editor:** given extension sets never fall back to the registry ([28de15c](https://github.com/lattice-php/lattice/commit/28de15c374da38681752d8e08103222021a98ece))
+
+
+### Refactoring
+
+* **console:** collapse the eight definition generators into one data-driven command ([fc5071e](https://github.com/lattice-php/lattice/commit/fc5071e577e43af69d14005cb025ec623570ec83))
+* drop uncalled rowField() and prune dead translations ([fc12d76](https://github.com/lattice-php/lattice/commit/fc12d76b28b68cf0620df3f54317e1b155cb0543))
+* **js:** share the listener-store and persistent-storage plumbing ([1ae5b15](https://github.com/lattice-php/lattice/commit/1ae5b15f5bbc565ed08852f5d8d30ba2bb3dbba4))
+* **js:** trim dead client surface ([d92bcef](https://github.com/lattice-php/lattice/commit/d92bcef5887f8b9a9e626f5e35b6f6a86148d9c2))
+* **rich-editor:** prepare the document once per RichContent instance ([70baab6](https://github.com/lattice-php/lattice/commit/70baab6de3113a1ded4c16ad42e167c925179d1e))
+* **rich-editor:** review cleanups for the extension seams ([3e505a9](https://github.com/lattice-php/lattice/commit/3e505a975e3573f8f5f409b0a0f07abb87c74638))
+* **ui:** require the SegmentedPills name prop ([afe3f1f](https://github.com/lattice-php/lattice/commit/afe3f1f071c8ab39d4a3d3d69a9f29c0bbb48935))
+
+
+### Documentation
+
+* document Lattice::translations() and the package test cases ([8cb5df5](https://github.com/lattice-php/lattice/commit/8cb5df5c0349354187cf34a0907e3a330598f990))
+* server-side rich-editor extension authoring ([065d62f](https://github.com/lattice-php/lattice/commit/065d62fda8a132fc0b1c8bf35d68960f0fde07d0))
+
 ## [0.33.0](https://github.com/lattice-php/lattice/compare/0.32.0...0.33.0) (2026-08-01)
 
 
