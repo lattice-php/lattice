@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.35.0](https://github.com/lattice-php/lattice/compare/0.34.0...0.35.0) (2026-08-01)
+
+
+### Features
+
+* **grid:** breakpoint-mapped columns, track-list templates, and column spans ([99946e6](https://github.com/lattice-php/lattice/commit/99946e632b69c860001074a716aec65774a127f4))
+* **grid:** breakpoint-mapped columns, track-list templates, and column spans ([47f3ef7](https://github.com/lattice-php/lattice/commit/47f3ef79f362c0d5c7b87bbe9172409f3e93f658))
+
+
+### Bug Fixes
+
+* **rich-editor:** run validation and casting for object-shaped submissions ([5a0b829](https://github.com/lattice-php/lattice/commit/5a0b829a261b4d0261e6e303b2358f4dfbbdf9f5))
+* **rich-editor:** run validation and casting for object-shaped submissions ([4f59438](https://github.com/lattice-php/lattice/commit/4f5943813b445f79a98edbb1dee67b7c0dce1b41))
+
 ## [0.34.0](https://github.com/lattice-php/lattice/compare/0.33.0...0.34.0) (2026-08-01)
 
 
