@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.36.0](https://github.com/lattice-php/lattice/compare/0.35.0...0.36.0) (2026-08-01)
+
+
+### Features
+
+* **tables:** support MorphOne/MorphMany relation columns ([1f67f2e](https://github.com/lattice-php/lattice/commit/1f67f2eec5b95be10c8e284bb973f051bc293c4d))
+* **tables:** support MorphOne/MorphMany relation columns ([77ece21](https://github.com/lattice-php/lattice/commit/77ece21b28dd5db40a25c4679e6a2723e9cdc438))
+
 ## [0.35.0](https://github.com/lattice-php/lattice/compare/0.34.0...0.35.0) (2026-08-01)
 
 
