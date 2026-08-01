@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Forms;
 
+use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Tiptap\Core\Extension;
@@ -53,21 +55,39 @@ final class RichContent
     private ?Editor $editor = null;
 
     /**
+     * @var list<Extension>|null
+     */
+    private ?array $schema = null;
+
+    /**
+     * @var array<string, mixed>|null
+     */
+    private ?array $preparedDocument = null;
+
+    /**
+     * @var list<EditorExtension>|null
+     */
+    private ?array $resolvedExtensions = null;
+
+    /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes  Schema type names to keep beyond the baseline; null keeps the full built-in schema.
+     * @param  iterable<EditorExtension>|null  $extensions  Null falls back to the app-wide registry; an explicit iterable (including empty) is used as-is.
      */
     public function __construct(
         private readonly array|string|null $document,
         private readonly ?array $allowedTypes = null,
+        private readonly ?iterable $extensions = null,
     ) {}
 
     /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes
+     * @param  iterable<EditorExtension>|null  $extensions
      */
-    public static function make(array|string|null $document, ?array $allowedTypes = null): self
+    public static function make(array|string|null $document, ?array $allowedTypes = null, ?iterable $extensions = null): self
     {
-        return new self($document, $allowedTypes);
+        return new self($document, $allowedTypes, $extensions);
     }
 
     public function toHtml(): string
@@ -76,7 +96,7 @@ final class RichContent
             return '';
         }
 
-        return $this->sanitize($this->editor()->getHTML());
+        return $this->sanitize($this->preparedEditor()->getHTML());
     }
 
     public function toText(): string
@@ -85,7 +105,29 @@ final class RichContent
             return '';
         }
 
-        return $this->editor()->getText();
+        return $this->preparedEditor()->getText();
+    }
+
+    private function preparedEditor(): Editor
+    {
+        return new Editor(['extensions' => $this->schema()])->setContent($this->toPreparedArray());
+    }
+
+    /**
+     * The submitted form value as a document array, or null when it isn't one
+     * (not a string, empty, or not valid JSON for an array).
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function decodeDocument(mixed $value): ?array
+    {
+        if (! is_string($value) || $value === '') {
+            return null;
+        }
+
+        $decoded = json_decode($value, true);
+
+        return is_array($decoded) ? $decoded : null;
     }
 
     /**
@@ -97,7 +139,77 @@ final class RichContent
             return ['type' => 'doc', 'content' => []];
         }
 
-        return $this->editor()->getDocument();
+        return $this->scrubEphemeral($this->editor()->getDocument());
+    }
+
+    /**
+     * The display/editing form: canonical document with every extension's
+     * outbound preparation applied (ephemeral attrs injected).
+     *
+     * @return array<string, mixed>
+     */
+    public function toPreparedArray(): array
+    {
+        if ($this->preparedDocument !== null) {
+            return $this->preparedDocument;
+        }
+
+        $document = $this->toArray();
+
+        foreach ($this->activeExtensions() as $extension) {
+            $document = $extension->prepareDocument($document);
+        }
+
+        return $this->preparedDocument = $document;
+    }
+
+    /**
+     * Matching nodes from the canonical document, depth-first. The typed
+     * traversal consumers would otherwise hand-roll (e.g. collecting media
+     * references for attachment sync).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function nodes(string $type): array
+    {
+        $collect = static function (array $node) use (&$collect, $type): array {
+            $matches = ($node['type'] ?? null) === $type ? [$node] : [];
+
+            foreach (is_array($node['content'] ?? null) ? $node['content'] : [] as $child) {
+                if (is_array($child)) {
+                    $matches = [...$matches, ...$collect($child)];
+                }
+            }
+
+            return $matches;
+        };
+
+        return $collect($this->toArray());
+    }
+
+    /**
+     * The active extension set: exactly what was given, including an explicit
+     * empty iterable (a field that activates none of them must strip their
+     * nodes everywhere — display, validation, and cast alike). Only an
+     * omitted argument (null) falls back to the app-wide registry defaults —
+     * the bare display path `RichContent::make($doc)`. Narrow with
+     * $allowedTypes, not an explicit `[]` here.
+     *
+     * @return list<EditorExtension>
+     */
+    private function activeExtensions(): array
+    {
+        if ($this->resolvedExtensions !== null) {
+            return $this->resolvedExtensions;
+        }
+
+        if ($this->extensions === null) {
+            return $this->resolvedExtensions = app(EditorExtensionRegistry::class)->instances();
+        }
+
+        return $this->resolvedExtensions = is_array($this->extensions)
+            ? array_values($this->extensions)
+            : iterator_to_array($this->extensions, false);
     }
 
     private function editor(): Editor
@@ -162,6 +274,10 @@ final class RichContent
      */
     private function schema(): array
     {
+        if ($this->schema !== null) {
+            return $this->schema;
+        }
+
         $extensions = [
             new Document,
             new Paragraph,
@@ -191,16 +307,74 @@ final class RichContent
             new DetailsContent,
         ];
 
-        if ($this->allowedTypes === null) {
-            return $extensions;
+        $allowed = [...self::BASELINE_TYPES, ...$this->allowedTypes ?? []];
+
+        $builtin = $this->allowedTypes === null
+            ? $extensions
+            : array_values(array_filter(
+                $extensions,
+                static fn (Extension $extension): bool => in_array($extension::$name, $allowed, true),
+            ));
+
+        return $this->schema = [...$builtin, ...$this->contributedExtensions()];
+    }
+
+    /**
+     * @return list<Extension>
+     */
+    private function contributedExtensions(): array
+    {
+        $contributed = [];
+
+        foreach ($this->activeExtensions() as $extension) {
+            $contributed = [...$contributed, ...$extension->serverExtensions()];
         }
 
-        $allowed = [...self::BASELINE_TYPES, ...$this->allowedTypes];
+        return $contributed;
+    }
 
-        return array_values(array_filter(
-            $extensions,
-            static fn (Extension $extension): bool => in_array($extension::$name, $allowed, true),
-        ));
+    /**
+     * @param  array<string, mixed>  $node
+     * @return array<string, mixed>
+     */
+    private function scrubEphemeral(array $node): array
+    {
+        $ephemeral = [];
+
+        foreach ($this->activeExtensions() as $extension) {
+            foreach ($extension->ephemeralAttributes() as $type => $attributes) {
+                $ephemeral[$type] = [...$ephemeral[$type] ?? [], ...$attributes];
+            }
+        }
+
+        return $ephemeral === [] ? $node : $this->withoutAttributes($node, $ephemeral);
+    }
+
+    /**
+     * @param  array<string, mixed>  $node
+     * @param  array<string, list<string>>  $ephemeral
+     * @return array<string, mixed>
+     */
+    private function withoutAttributes(array $node, array $ephemeral): array
+    {
+        $type = $node['type'] ?? null;
+
+        if (is_string($type) && isset($ephemeral[$type], $node['attrs']) && is_array($node['attrs'])) {
+            $node['attrs'] = array_diff_key($node['attrs'], array_flip($ephemeral[$type]));
+
+            if ($node['attrs'] === []) {
+                unset($node['attrs']);
+            }
+        }
+
+        if (isset($node['content']) && is_array($node['content'])) {
+            $node['content'] = array_values(array_map(
+                fn (array $child): array => $this->withoutAttributes($child, $ephemeral),
+                array_filter($node['content'], is_array(...)),
+            ));
+        }
+
+        return $node;
     }
 
     private function isEmpty(): bool
@@ -223,6 +397,10 @@ final class RichContent
             ->allowElement('details', ['open'])
             ->allowElement('summary')
             ->allowAttribute('style', ['p', 'h1', 'h2', 'h3']);
+
+        foreach ($this->activeExtensions() as $extension) {
+            $config = $extension->configureSanitizer($config);
+        }
 
         return new HtmlSanitizer($config)->sanitize($html);
     }

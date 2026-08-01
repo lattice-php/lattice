@@ -7,6 +7,8 @@ use JsonSerializable;
 use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+use Tiptap\Core\Extension;
 
 /**
  * A rich-editor extension: a `{type, props}` wire value whose props are the
@@ -41,6 +43,65 @@ abstract class EditorExtension implements JsonSerializable
     public function serverTypes(): array
     {
         return $this->serverTypes;
+    }
+
+    /**
+     * tiptap-php extensions contributed to RichContent's schema: the node/mark
+     * survives sanitization and renders to HTML via its own renderHTML. Types
+     * covered here need no serverTypes entry.
+     *
+     * @return list<Extension>
+     */
+    public function serverExtensions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Outbound-only attrs by node type — injected by prepareDocument() for
+     * display/editing, stripped from the canonical storage form. Needed
+     * because tiptap-php round-trips undeclared attrs untouched.
+     *
+     * @return array<string, list<string>>
+     */
+    public function ephemeralAttributes(): array
+    {
+        return [];
+    }
+
+    /**
+     * Transform a document on its way out of the server — form prefill and
+     * HTML/text rendering. The place to batch-resolve stored references into
+     * displayable ephemeral attrs; runs once per document, so resolve in bulk.
+     *
+     * @param  array<string, mixed>  $document
+     * @return array<string, mixed>
+     */
+    public function prepareDocument(array $document): array
+    {
+        return $document;
+    }
+
+    /**
+     * Extend the display sanitizer with the elements/attributes this
+     * extension's renderHTML emits — the sanitizer strips everything it was
+     * not explicitly told about.
+     */
+    public function configureSanitizer(HtmlSanitizerConfig $config): HtmlSanitizerConfig
+    {
+        return $config;
+    }
+
+    /**
+     * Validate this extension's nodes in a submitted document — e.g. can the
+     * user reference this id. Returned messages become field errors.
+     *
+     * @param  array<string, mixed>  $document
+     * @return list<string>
+     */
+    public function validateDocument(array $document): array
+    {
+        return [];
     }
 
     /**

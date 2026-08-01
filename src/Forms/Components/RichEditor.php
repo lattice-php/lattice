@@ -27,6 +27,7 @@ use Lattice\Lattice\Forms\RichEditor\Extensions\Strike;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Table;
 use Lattice\Lattice\Forms\RichEditor\Extensions\TextAlign;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Underline;
+use Lattice\Lattice\Forms\RichEditor\ValidatesEditorDocument;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
 
@@ -145,17 +146,33 @@ class RichEditor extends Field
     #[\Override]
     public function castValue(mixed $value): mixed
     {
-        if (! is_string($value) || $value === '') {
+        $decoded = RichContent::decodeDocument($value);
+
+        if ($decoded === null) {
             return $value;
         }
 
-        $decoded = json_decode($value, true);
+        return RichContent::make($decoded, $this->allowedServerTypes(), $this->editorExtensionInstances())->toArray();
+    }
 
-        if (! is_array($decoded)) {
-            return $value;
-        }
+    #[\Override]
+    protected function defaultRules(): array
+    {
+        return [
+            ...parent::defaultRules(),
+            new ValidatesEditorDocument($this->editorExtensionInstances()),
+        ];
+    }
 
-        return RichContent::make($decoded, $this->allowedServerTypes())->toArray();
+    /**
+     * @return list<EditorExtension>
+     */
+    protected function editorExtensionInstances(): array
+    {
+        return array_values(array_filter(
+            $this->activeExtensions(),
+            static fn (EditorExtension|string $extension): bool => $extension instanceof EditorExtension,
+        ));
     }
 
     /**
@@ -169,10 +186,8 @@ class RichEditor extends Field
     {
         $types = [];
 
-        foreach ($this->activeExtensions() as $extension) {
-            if ($extension instanceof EditorExtension) {
-                $types = [...$types, ...$extension->serverTypes()];
-            }
+        foreach ($this->editorExtensionInstances() as $extension) {
+            $types = [...$types, ...$extension->serverTypes()];
         }
 
         return array_values(array_unique($types));
@@ -193,6 +208,13 @@ class RichEditor extends Field
                 : ['type' => $extension, 'props' => Wire::map([])],
             array_values($this->activeExtensions()),
         );
+
+        $value = $props['value'] ?? null;
+        $document = is_array($value) ? $value : RichContent::decodeDocument($value);
+
+        if ($document !== null) {
+            $props['value'] = RichContent::make($document, $this->allowedServerTypes(), $this->editorExtensionInstances())->toPreparedArray();
+        }
 
         return $props;
     }
