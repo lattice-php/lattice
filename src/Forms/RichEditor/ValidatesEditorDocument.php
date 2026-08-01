@@ -10,7 +10,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
  * Decodes a submitted rich-editor document and runs each active extension's
  * validateDocument() over it, failing with every message returned.
  */
-final class ValidatesEditorDocument implements ValidationRule
+final readonly class ValidatesEditorDocument implements ValidationRule
 {
     /**
      * @param  list<EditorExtension>  $extensions

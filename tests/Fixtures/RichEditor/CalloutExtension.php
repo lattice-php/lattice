@@ -13,16 +13,19 @@ final class CalloutExtension extends EditorExtension
 {
     protected array $serverTypes = ['callout'];
 
+    #[\Override]
     public function serverExtensions(): array
     {
         return [new CalloutNode];
     }
 
+    #[\Override]
     public function ephemeralAttributes(): array
     {
         return ['callout' => ['resolvedLabel']];
     }
 
+    #[\Override]
     public function prepareDocument(array $document): array
     {
         $walk = static function (array $node) use (&$walk): array {
@@ -40,11 +43,13 @@ final class CalloutExtension extends EditorExtension
         return $walk($document);
     }
 
+    #[\Override]
     public function configureSanitizer(HtmlSanitizerConfig $config): HtmlSanitizerConfig
     {
         return $config->allowElement('aside', ['data-callout', 'data-tone']);
     }
 
+    #[\Override]
     public function validateDocument(array $document): array
     {
         $messages = [];

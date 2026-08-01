@@ -343,7 +343,7 @@ final class RichContent
         if (isset($node['content']) && is_array($node['content'])) {
             $node['content'] = array_values(array_map(
                 fn (array $child): array => $this->withoutAttributes($child, $ephemeral),
-                array_filter($node['content'], 'is_array'),
+                array_filter($node['content'], is_array(...)),
             ));
         }
 

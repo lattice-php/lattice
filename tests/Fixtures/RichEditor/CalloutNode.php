@@ -9,8 +9,13 @@ use Tiptap\Utils\HTML;
 
 final class CalloutNode extends Node
 {
+    /** @var string */
     public static $name = 'callout';
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    #[\Override]
     public function addAttributes(): array
     {
         return [
@@ -19,6 +24,11 @@ final class CalloutNode extends Node
         ];
     }
 
+    /**
+     * @param  mixed  $node
+     * @param  array<string, mixed>  $HTMLAttributes
+     * @return array{0: string, 1: array<string, mixed>, 2: int}
+     */
     public function renderHTML($node, $HTMLAttributes = []): array
     {
         return [

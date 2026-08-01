@@ -10,6 +10,9 @@ use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Lattice\Lattice\Tests\Fixtures\RichEditor\CalloutExtension;
 
+/**
+ * @return array<string, mixed>
+ */
 function calloutDoc(): array
 {
     return [
