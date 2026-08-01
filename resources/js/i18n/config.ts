@@ -1,5 +1,6 @@
 import type { I18nConfig } from "@lattice-php/lattice/types/generated";
 import { useSyncExternalStore } from "react";
+import { createListeners } from "@lattice-php/lattice/lib/listeners";
 
 type Config = {
   readonly locales: readonly string[];
@@ -7,7 +8,7 @@ type Config = {
 };
 
 const fallback: Config = { locales: [], timezone: null };
-const listeners = new Set<() => void>();
+const { subscribe, notify } = createListeners();
 
 let active: Config = fallback;
 
@@ -19,13 +20,7 @@ function snapshot(): Config {
   return active;
 }
 
-export function subscribeConfig(callback: () => void): () => void {
-  listeners.add(callback);
-
-  return () => {
-    listeners.delete(callback);
-  };
-}
+export const subscribeConfig = subscribe;
 
 export function setConfig(config: I18nConfig | undefined): void {
   const locales = normalizeLocales(config?.locales);
@@ -36,7 +31,7 @@ export function setConfig(config: I18nConfig | undefined): void {
   }
 
   active = { locales, timezone };
-  listeners.forEach((listener) => listener());
+  notify();
 }
 
 export function configTimezone(): string | null {

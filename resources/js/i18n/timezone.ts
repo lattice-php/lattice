@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { createListeners } from "@lattice-php/lattice/lib/listeners";
 import { configTimezone, subscribeConfig } from "./config";
 
 export type UseTimezoneReturn = {
@@ -8,7 +9,7 @@ export type UseTimezoneReturn = {
 };
 
 const fallback = "UTC";
-const listeners = new Set<() => void>();
+const { subscribe, notify } = createListeners();
 
 let override: string | undefined;
 
@@ -26,18 +27,6 @@ function detectedTimezone(): string {
 
 function snapshot(): string {
   return override ?? configTimezone() ?? detectedTimezone();
-}
-
-function subscribe(callback: () => void): () => void {
-  listeners.add(callback);
-
-  return () => {
-    listeners.delete(callback);
-  };
-}
-
-function notify(): void {
-  listeners.forEach((listener) => listener());
 }
 
 subscribeConfig(() => notify());

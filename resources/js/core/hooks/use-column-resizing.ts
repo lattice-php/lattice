@@ -1,5 +1,6 @@
 import type { HTMLAttributes, KeyboardEvent, PointerEvent } from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
+import { usePersistentState } from "@lattice-php/lattice/lib/use-persistent-state";
 import {
   buildColumnGridTemplate,
   defaultColumnWidthPx,
@@ -26,11 +27,6 @@ type ResizeHandleProps = HTMLAttributes<HTMLDivElement> & {
   tabIndex: number;
 };
 
-type StoredColumnWidths = {
-  columns: string[];
-  overrides: Record<string, number>;
-};
-
 const emptyTracks: string[] = [];
 
 export function useColumnResizing({
@@ -51,8 +47,14 @@ export function useColumnResizing({
   trailingTracks?: string[];
 }) {
   const columnKeys = useMemo(() => columns.map((column) => column.key), [columns]);
-  const [overrides, setOverrides] = useState<Record<string, number | undefined>>(() =>
-    readStoredOverrides(storageKey, columns),
+  const [overrides, setOverrides] = usePersistentState<Record<string, number | undefined>>(
+    storageKey ?? "",
+    {},
+    {
+      enabled: Boolean(storageKey),
+      parse: (raw) => parseStoredOverrides(raw, columns),
+      serialize: (value) => serializeOverrides(value, columnKeys),
+    },
   );
   const overridesRef = useRef(overrides);
   const drag = useRef<DragState | null>(null);
@@ -89,10 +91,9 @@ export function useColumnResizing({
     (next: Record<string, number | undefined>) => {
       overridesRef.current = next;
       setOverrides(next);
-      writeStoredOverrides(storageKey, columnKeys, next);
       applyTemplate(templateForOverrides(next));
     },
-    [applyTemplate, columnKeys, storageKey, templateForOverrides],
+    [applyTemplate, setOverrides, templateForOverrides],
   );
 
   const overridesWithColumnWidth = useCallback(
@@ -104,7 +105,7 @@ export function useColumnResizing({
     ): Record<string, number | undefined> => ({
       ...current,
       [column.key]: Math.min(
-        maxWidth ?? maxColumnWidthPx(column),
+        maxWidth ?? maxColumnWidthPx,
         Math.max(minColumnWidthPx(column), width),
       ),
     }),
@@ -143,7 +144,7 @@ export function useColumnResizing({
 
   const getResizeHandleProps = useCallback(
     (column: SizableColumn): ResizeHandleProps => {
-      const max = maxColumnWidthPx(column);
+      const max = maxColumnWidthPx;
       const min = minColumnWidthPx(column);
       const current = currentColumnWidth(column);
       const label = column.label ?? column.key;
@@ -312,7 +313,7 @@ function maxColumnWidthForGrid({
   const gridWidth = grid?.getBoundingClientRect().width ?? 0;
 
   if (gridWidth <= 0) {
-    return maxColumnWidthPx(column);
+    return maxColumnWidthPx;
   }
 
   const utilityWidth = [...leadingTracks, ...trailingTracks].reduce(
@@ -327,55 +328,33 @@ function maxColumnWidthForGrid({
   const gapWidth = Math.max(0, trackCount - 1) * columnGapPx;
   const available = gridWidth - utilityWidth - siblingMinWidth - gapWidth;
 
-  return Math.min(maxColumnWidthPx(column), Math.max(minColumnWidthPx(column), available));
+  return Math.min(maxColumnWidthPx, Math.max(minColumnWidthPx(column), available));
 }
 
-function readStoredOverrides(
-  storageKey: string | undefined,
+function parseStoredOverrides(
+  raw: string,
   columns: SizableColumn[],
 ): Record<string, number | undefined> {
-  if (!storageKey || typeof window === "undefined") {
-    return {};
+  const stored = JSON.parse(raw) as { overrides?: unknown };
+  const overrides = stored?.overrides;
+
+  if (typeof overrides !== "object" || overrides === null || Array.isArray(overrides)) {
+    throw new Error("unexpected stored column widths shape");
   }
 
-  try {
-    const raw = window.localStorage.getItem(storageKey);
+  const sanitized = sanitizeOverrides(overrides as Record<string, unknown>, columns);
 
-    if (raw === null) {
-      return {};
-    }
-
-    const stored = JSON.parse(raw) as unknown;
-
-    if (!isStoredColumnWidths(stored)) {
-      removeStoredOverrides(storageKey);
-
-      return {};
-    }
-
-    const overrides = sanitizeOverrides(stored.overrides, columns);
-
-    if (Object.keys(overrides).length === 0) {
-      removeStoredOverrides(storageKey);
-    }
-
-    return overrides;
-  } catch {
-    removeStoredOverrides(storageKey);
-
-    return {};
+  if (Object.keys(sanitized).length === 0) {
+    throw new Error("stored column widths hold no usable overrides");
   }
+
+  return sanitized;
 }
 
-function writeStoredOverrides(
-  storageKey: string | undefined,
-  columnKeys: string[],
+function serializeOverrides(
   overrides: Record<string, number | undefined>,
-): void {
-  if (!storageKey || typeof window === "undefined") {
-    return;
-  }
-
+  columnKeys: string[],
+): string | null {
   const stored: Record<string, number> = {};
   const knownKeys = new Set(columnKeys);
 
@@ -386,50 +365,10 @@ function writeStoredOverrides(
   }
 
   if (Object.keys(stored).length === 0) {
-    removeStoredOverrides(storageKey);
-
-    return;
+    return null;
   }
 
-  try {
-    window.localStorage.setItem(
-      storageKey,
-      JSON.stringify({
-        columns: columnKeys,
-        overrides: stored,
-      }),
-    );
-  } catch {
-    return;
-  }
-}
-
-function removeStoredOverrides(storageKey: string): void {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    window.localStorage.removeItem(storageKey);
-  } catch {
-    return;
-  }
-}
-
-function isStoredColumnWidths(value: unknown): value is StoredColumnWidths {
-  if (typeof value !== "object" || value === null) {
-    return false;
-  }
-
-  const record = value as Record<string, unknown>;
-
-  return (
-    Array.isArray(record.columns) &&
-    record.columns.every((column) => typeof column === "string") &&
-    typeof record.overrides === "object" &&
-    record.overrides !== null &&
-    !Array.isArray(record.overrides)
-  );
+  return JSON.stringify({ overrides: stored });
 }
 
 function sanitizeOverrides(
@@ -445,10 +384,7 @@ function sanitizeOverrides(
       continue;
     }
 
-    next[column.key] = Math.min(
-      maxColumnWidthPx(column),
-      Math.max(minColumnWidthPx(column), value),
-    );
+    next[column.key] = Math.min(maxColumnWidthPx, Math.max(minColumnWidthPx(column), value));
   }
 
   return next;

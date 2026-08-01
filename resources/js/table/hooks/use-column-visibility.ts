@@ -10,11 +10,6 @@ export type ToggleableColumn = {
   };
 };
 
-type StoredColumnVisibility = {
-  columns: string[];
-  overrides: Record<string, boolean>;
-};
-
 export function useColumnVisibility<TColumn extends ToggleableColumn>({
   columns,
   storageKey,
@@ -97,13 +92,14 @@ function pickKnownBooleans(
 }
 
 function parseStoredVisibility(raw: string, toggleableKeys: string[]): Record<string, boolean> {
-  const stored = JSON.parse(raw) as unknown;
+  const stored = JSON.parse(raw) as { overrides?: unknown };
+  const overrides = stored?.overrides;
 
-  if (!isStoredColumnVisibility(stored)) {
+  if (typeof overrides !== "object" || overrides === null || Array.isArray(overrides)) {
     throw new Error("unexpected stored column visibility shape");
   }
 
-  return pickKnownBooleans(stored.overrides, toggleableKeys);
+  return pickKnownBooleans(overrides as Record<string, unknown>, toggleableKeys);
 }
 
 function serializeVisibility(
@@ -116,21 +112,5 @@ function serializeVisibility(
     return null;
   }
 
-  return JSON.stringify({ columns: toggleableKeys, overrides: stored });
-}
-
-function isStoredColumnVisibility(value: unknown): value is StoredColumnVisibility {
-  if (typeof value !== "object" || value === null) {
-    return false;
-  }
-
-  const record = value as Record<string, unknown>;
-
-  return (
-    Array.isArray(record.columns) &&
-    record.columns.every((column) => typeof column === "string") &&
-    typeof record.overrides === "object" &&
-    record.overrides !== null &&
-    !Array.isArray(record.overrides)
-  );
+  return JSON.stringify({ overrides: stored });
 }

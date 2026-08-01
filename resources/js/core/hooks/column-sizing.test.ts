@@ -21,6 +21,6 @@ describe("column sizing", () => {
   });
 
   it("exposes a maximum width for resize handles", () => {
-    expect(maxColumnWidthPx({ key: "description", width: "xl" })).toBe(1024);
+    expect(maxColumnWidthPx).toBe(1024);
   });
 });
