@@ -21,6 +21,7 @@ use Lattice\Lattice\LatticeRegistry;
  * @method static \Lattice\Lattice\Remote\RemoteSourceRegistry remoteSourceRegistry()
  * @method static void extend(string $name, \Closure $factory, int $priority = 0)
  * @method static void theme(\Lattice\Lattice\Theme\Theme|\Closure $theme)
+ * @method static void translations(string $namespace, string $path)
  *
  * @see LatticeRegistry
  */

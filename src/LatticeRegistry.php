@@ -38,7 +38,19 @@ final readonly class LatticeRegistry
         private RemoteSourceRegistry $remoteSources,
         private SlotRegistry $slots,
         private ThemeRenderer $themeRenderer,
+        private Container $container,
     ) {}
+
+    /**
+     * Register a package's lang directory under a namespace, visible to both
+     * the translator and the i18next JSON route. Registered on the loader
+     * directly because that route resolves only the translation loader, so the
+     * deferred loadTranslationsFrom() callback would never fire for it.
+     */
+    public function translations(string $namespace, string $path): void
+    {
+        $this->container->make('translation.loader')->addNamespace($namespace, $path);
+    }
 
     /**
      * @param  class-string<FormDefinition>|array<int, class-string<FormDefinition>>  $forms
