@@ -7,6 +7,7 @@ use Lattice\Lattice\Forms\Components\RichEditor;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\RichContent;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Lattice\Lattice\Tests\Fixtures\RichEditor\CalloutExtension;
 
 function calloutDoc(): array
@@ -174,4 +175,12 @@ it('passes validation for resolvable references', function (): void {
     $rules = $field->resolveRules(FormData::make(['body' => $doc]), request());
 
     expect(Validator::make(['body' => $doc], ['body' => $rules])->fails())->toBeFalse();
+});
+
+it('renders registered package nodes through the bare display path', function (): void {
+    app(EditorExtensionRegistry::class)->register(CalloutExtension::class);
+
+    $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => 'info']]]];
+
+    expect(RichContent::make($doc)->toHtml())->toContain('data-callout="7"');
 });

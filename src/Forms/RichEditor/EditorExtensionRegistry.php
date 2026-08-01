@@ -69,6 +69,20 @@ final class EditorExtensionRegistry extends WireTypeRegistry
         return $registry;
     }
 
+    /**
+     * One configured-with-defaults instance per registered extension class —
+     * the app-wide set the bare RichContent display path renders with.
+     *
+     * @return list<EditorExtension>
+     */
+    public function instances(): array
+    {
+        return array_map(
+            static fn (string $class): EditorExtension => $class::make(),
+            array_values($this->all()),
+        );
+    }
+
     #[\Override]
     public static function attribute(): string
     {

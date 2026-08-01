@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Forms;
 
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Tiptap\Core\Extension;
@@ -62,6 +63,11 @@ final class RichContent
      * @var array<string, mixed>|null
      */
     private ?array $preparedDocument = null;
+
+    /**
+     * @var list<EditorExtension>|null
+     */
+    private ?array $resolvedExtensions = null;
 
     /**
      * @param  array<string, mixed>|string|null  $document
@@ -128,7 +134,7 @@ final class RichContent
 
         $document = $this->toArray();
 
-        foreach ($this->extensions as $extension) {
+        foreach ($this->activeExtensions() as $extension) {
             $document = $extension->prepareDocument($document);
         }
 
@@ -157,6 +163,26 @@ final class RichContent
         };
 
         return $collect($this->toArray());
+    }
+
+    /**
+     * The active extension set: what was given, or — when nothing was given,
+     * whether omitted or passed as an explicit empty iterable — the app-wide
+     * registry defaults. Narrow with $allowedTypes, not an explicit `[]` here.
+     *
+     * @return list<EditorExtension>
+     */
+    private function activeExtensions(): array
+    {
+        if ($this->resolvedExtensions !== null) {
+            return $this->resolvedExtensions;
+        }
+
+        $given = is_array($this->extensions) ? $this->extensions : iterator_to_array($this->extensions);
+
+        return $this->resolvedExtensions = $given === []
+            ? app(EditorExtensionRegistry::class)->instances()
+            : array_values($given);
     }
 
     private function editor(): Editor
@@ -273,7 +299,7 @@ final class RichContent
     {
         $contributed = [];
 
-        foreach ($this->extensions as $extension) {
+        foreach ($this->activeExtensions() as $extension) {
             $contributed = [...$contributed, ...$extension->serverExtensions()];
         }
 
@@ -288,7 +314,7 @@ final class RichContent
     {
         $ephemeral = [];
 
-        foreach ($this->extensions as $extension) {
+        foreach ($this->activeExtensions() as $extension) {
             foreach ($extension->ephemeralAttributes() as $type => $attributes) {
                 $ephemeral[$type] = [...$ephemeral[$type] ?? [], ...$attributes];
             }
@@ -345,7 +371,7 @@ final class RichContent
             ->allowElement('summary')
             ->allowAttribute('style', ['p', 'h1', 'h2', 'h3']);
 
-        foreach ($this->extensions as $extension) {
+        foreach ($this->activeExtensions() as $extension) {
             $config = $extension->configureSanitizer($config);
         }
 
