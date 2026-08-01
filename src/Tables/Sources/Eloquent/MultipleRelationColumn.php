@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Lattice\Lattice\Tables\RelationBinding;
 
 /**
@@ -23,13 +24,13 @@ use Lattice\Lattice\Tables\RelationBinding;
 final readonly class MultipleRelationColumn implements RelationProjection
 {
     /**
-     * @param  HasMany<Model, Model>|BelongsToMany<Model, Model>  $relationInstance
+     * @param  HasMany<Model, Model>|BelongsToMany<Model, Model>|MorphMany<Model, Model>  $relationInstance
      */
     private function __construct(
         private string $key,
         private string $labelField,
         private ?string $colorField,
-        private HasMany|BelongsToMany $relationInstance,
+        private HasMany|BelongsToMany|MorphMany $relationInstance,
     ) {}
 
     public static function resolve(Model $model, RelationBinding $binding): ?self
@@ -40,7 +41,7 @@ final readonly class MultipleRelationColumn implements RelationProjection
 
         $instance = $model->{$binding->relation}();
 
-        if (! $instance instanceof HasMany && ! $instance instanceof BelongsToMany) {
+        if (! $instance instanceof HasMany && ! $instance instanceof BelongsToMany && ! $instance instanceof MorphMany) {
             return null;
         }
 
