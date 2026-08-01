@@ -57,6 +57,18 @@ abstract class EditorExtension implements JsonSerializable
     }
 
     /**
+     * Outbound-only attrs by node type — injected by prepareDocument() for
+     * display/editing, stripped from the canonical storage form. Needed
+     * because tiptap-php round-trips undeclared attrs untouched.
+     *
+     * @return array<string, list<string>>
+     */
+    public function ephemeralAttributes(): array
+    {
+        return [];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toWire(): array

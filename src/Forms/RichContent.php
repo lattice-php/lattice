@@ -101,7 +101,7 @@ final class RichContent
             return ['type' => 'doc', 'content' => []];
         }
 
-        return $this->editor()->getDocument();
+        return $this->scrubEphemeral($this->editor()->getDocument());
     }
 
     /**
@@ -243,6 +243,50 @@ final class RichContent
         }
 
         return $contributed;
+    }
+
+    /**
+     * @param  array<string, mixed>  $node
+     * @return array<string, mixed>
+     */
+    private function scrubEphemeral(array $node): array
+    {
+        $ephemeral = [];
+
+        foreach ($this->extensions as $extension) {
+            foreach ($extension->ephemeralAttributes() as $type => $attributes) {
+                $ephemeral[$type] = [...$ephemeral[$type] ?? [], ...$attributes];
+            }
+        }
+
+        return $ephemeral === [] ? $node : $this->withoutAttributes($node, $ephemeral);
+    }
+
+    /**
+     * @param  array<string, mixed>  $node
+     * @param  array<string, list<string>>  $ephemeral
+     * @return array<string, mixed>
+     */
+    private function withoutAttributes(array $node, array $ephemeral): array
+    {
+        $type = $node['type'] ?? null;
+
+        if (is_string($type) && isset($ephemeral[$type], $node['attrs']) && is_array($node['attrs'])) {
+            $node['attrs'] = array_diff_key($node['attrs'], array_flip($ephemeral[$type]));
+
+            if ($node['attrs'] === []) {
+                unset($node['attrs']);
+            }
+        }
+
+        if (isset($node['content']) && is_array($node['content'])) {
+            $node['content'] = array_values(array_map(
+                fn (array $child): array => $this->withoutAttributes($child, $ephemeral),
+                array_filter($node['content'], 'is_array'),
+            ));
+        }
+
+        return $node;
     }
 
     private function isEmpty(): bool

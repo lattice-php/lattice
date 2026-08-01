@@ -16,4 +16,9 @@ final class CalloutExtension extends EditorExtension
     {
         return [new CalloutNode];
     }
+
+    public function ephemeralAttributes(): array
+    {
+        return ['callout' => ['resolvedLabel']];
+    }
 }

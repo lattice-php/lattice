@@ -67,3 +67,30 @@ it('collects nodes of a type depth-first', function (): void {
 it('collects no nodes from an empty document', function (): void {
     expect(RichContent::make(null)->nodes('callout'))->toBe([]);
 });
+
+it('scrubs ephemeral attrs from the canonical array', function (): void {
+    $doc = [
+        'type' => 'doc',
+        'content' => [
+            ['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => 'info', 'resolvedLabel' => 'Seven']],
+        ],
+    ];
+
+    $array = RichContent::make($doc, extensions: [CalloutExtension::make()])->toArray();
+
+    expect($array['content'][0]['attrs'])->toBe(['id' => 7, 'tone' => 'info']);
+});
+
+it('scrubs ephemeral attrs on the rich editor submit cast', function (): void {
+    $doc = [
+        'type' => 'doc',
+        'content' => [
+            ['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => null, 'resolvedLabel' => 'Seven']],
+        ],
+    ];
+    $field = RichEditor::make('body')->withExtensions(CalloutExtension::make());
+
+    $cast = $field->castValue(json_encode($doc));
+
+    expect($cast['content'][0]['attrs'] ?? [])->not->toHaveKey('resolvedLabel');
+});
