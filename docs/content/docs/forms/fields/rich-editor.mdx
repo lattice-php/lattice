@@ -5,6 +5,7 @@ description: A formatted-text editor that stores a structured document, not raw 
 
 import ComponentExample from "@components/ComponentExample.astro";
 import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
 
 The rich editor lets the user write formatted text — headings, lists, links, tables, and more. It
 stores a structured TipTap document rather than raw HTML, which keeps the stored value safe to render.
@@ -181,6 +182,168 @@ string — `->extensions([Bold::make(), 'mention'])` — and it serializes as `{
 Unknown types the client has no definition for are skipped (with a console warning in dev). See
 [Registry and types](/extending/registry-and-types/) for how generated types and the
 `EditorExtensionProps` augmentation give `props` a concrete shape on the client.
+
+## Server-side extensions
+
+An extension that adds its own document nodes — not just toolbar behavior — needs a server-side
+counterpart too: something has to teach `RichContent` how to render the node, decide what's safe to
+keep in a stored document, and validate any references it holds. `EditorExtension` exposes five
+seams for that, each with a no-op default so a toolbar-only extension can ignore all of them:
+
+- **`serverExtensions()`** — contributes tiptap-php schema classes, so `RichContent` can parse the
+  node and render it to HTML via their `renderHTML()`.
+- **`prepareDocument()`** — transforms a document once on its way out of the server (prefill and
+  display), the place to batch-resolve stored references into human-readable attrs.
+- **`ephemeralAttributes()`** — declares which node attrs are outbound-only display data, not part
+  of the canonical stored document.
+- **`configureSanitizer()`** — extends the HTML sanitizer with the elements/attrs the extension's
+  `renderHTML()` emits.
+- **`validateDocument()`** — validates the extension's nodes in a submitted document (e.g. that a
+  referenced id still exists); returned messages become field errors.
+
+Take a `callout` extension — a `{id, tone}` node that renders as an `<aside>` and resolves `id` to a
+label pulled from wherever those labels live:
+
+```php
+use Illuminate\Support\Collection;
+use Lattice\Lattice\Forms\RichContent;
+use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+
+#[AsEditorExtension('callout')]
+final class Callout extends EditorExtension
+{
+    protected array $serverTypes = ['callout'];
+
+    public function serverExtensions(): array
+    {
+        return [new CalloutNode];
+    }
+
+    public function ephemeralAttributes(): array
+    {
+        return ['callout' => ['resolvedLabel']];
+    }
+
+    public function prepareDocument(array $document): array
+    {
+        $ids = array_column(array_column(RichContent::make($document)->nodes('callout'), 'attrs'), 'id');
+        $labels = Topic::whereIn('id', array_unique($ids))->pluck('name', 'id');
+
+        return $this->injectLabels($document, $labels);
+    }
+
+    public function configureSanitizer(HtmlSanitizerConfig $config): HtmlSanitizerConfig
+    {
+        return $config->allowElement('aside', ['data-callout', 'data-tone']);
+    }
+
+    public function validateDocument(array $document): array
+    {
+        $ids = array_column(array_column(RichContent::make($document)->nodes('callout'), 'attrs'), 'id');
+        $missing = array_diff($ids, Topic::whereIn('id', $ids)->pluck('id')->all());
+
+        return array_map(fn (int $id): string => "Callout {$id} does not exist.", $missing);
+    }
+
+    private function injectLabels(array $node, Collection $labels): array
+    {
+        if (($node['type'] ?? null) === 'callout') {
+            $node['attrs']['resolvedLabel'] = $labels[$node['attrs']['id']] ?? '—';
+        }
+
+        if (isset($node['content'])) {
+            $node['content'] = array_map(fn (array $child): array => $this->injectLabels($child, $labels), $node['content']);
+        }
+
+        return $node;
+    }
+}
+```
+
+`Topic` above is your own model — the extension only knows the id a user picked; resolving it to a
+label is application logic, and `->nodes('callout')` is what lets it happen once per document
+instead of once per node.
+
+`serverExtensions()` returns the matching tiptap-php `Node`, which owns the attrs schema and the
+HTML it renders to:
+
+```php
+use Tiptap\Core\Node;
+use Tiptap\Utils\HTML;
+
+final class CalloutNode extends Node
+{
+    public static $name = 'callout';
+
+    public function addAttributes(): array
+    {
+        return ['id' => ['default' => null], 'tone' => ['default' => null]];
+    }
+
+    public function renderHTML($node, $HTMLAttributes = []): array
+    {
+        return ['aside', HTML::mergeAttributes($HTMLAttributes, [
+            'data-callout' => (string) ($node->attrs->id ?? ''),
+            'data-tone' => $node->attrs->tone ?? null,
+        ]), 0];
+    }
+}
+```
+
+Register it like any extension (see [Custom extensions](#custom-extensions)) and activate it on a
+field with `->withExtensions(Callout::make())`.
+
+### The ephemeral-attr contract
+
+`resolvedLabel` above never reaches storage. Declare it in `ephemeralAttributes()`, inject it in
+`prepareDocument()`, and `toArray()` — the canonical form `RichEditor` casts submitted values into —
+strips it back out before the document is persisted:
+
+<Info>
+  Declaring the attr matters even though `prepareDocument()` only runs on the way out. tiptap-php
+  round-trips attrs it doesn't recognize untouched, so a resolved label a user never edited would
+  otherwise re-enter the document unchanged on the next submit — `toArray()`'s scrub is what keeps
+  it out.
+</Info>
+
+### Sanitizing custom HTML
+
+`toHtml()` sanitizes its output with Symfony's `HtmlSanitizer`, which strips anything it wasn't
+explicitly told to keep.
+
+<Warning>
+  A custom node's `renderHTML()` output is sanitized like everything else — an element or attribute
+  your `configureSanitizer()` doesn't allow is silently dropped from the rendered HTML, not an
+  error. Allow exactly what `renderHTML()` emits, as `CalloutNode` does for `aside` and its two
+  `data-*` attrs above.
+</Warning>
+
+### Rendering without a field
+
+`RichContent::make($document)->toHtml()` needs no `$extensions` argument — called bare, it renders
+every extension [registered](#custom-extensions) app-wide via `EditorExtensionRegistry`, which is
+the usual way to display a stored document outside the context of the `RichEditor` field that
+produced it (an index page, an email, an API response):
+
+```php
+use Lattice\Lattice\Forms\RichContent;
+
+$html = RichContent::make($storedDocument)->toHtml();
+```
+
+`->nodes('callout')` walks the canonical document depth-first and returns every node of that type —
+what `prepareDocument()` and `validateDocument()` use above to batch-resolve and check ids, and what
+application code reaches for to sync references (e.g. attaching the callout's target as a related
+model) without hand-rolling the tree walk.
+
+<Info>
+  Extension labels — toolbar tooltips, validation messages a client-side UI might also render —
+  translate the same way a component package's do: register a namespace with
+  `Lattice::translations()`. See [Translations](/extending/component-packages/#translations) for the
+  full pattern.
+</Info>
 
 ## Common options
 

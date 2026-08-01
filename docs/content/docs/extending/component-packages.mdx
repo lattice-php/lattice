@@ -259,3 +259,7 @@ an actionable message when the workbench Vite build is missing or a stale dev-se
 behind, and widens Playwright's timeout for CI runners.
 
 See [Registry and types](/extending/registry-and-types/) for how the `type` string couples the two sides, and how generated types keep `node.props` sound.
+
+A package that adds a rich-editor node follows the same PHP-class-plus-client-definition shape, plus
+server-side seams of its own for rendering, sanitizing, and validating that node — see
+[Server-side extensions](/forms/fields/rich-editor/#server-side-extensions).
