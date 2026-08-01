@@ -46,3 +46,24 @@ it('strips extension nodes on submit when the field does not activate the extens
     $types = array_map(static fn (array $node): string => $node['type'], $cast['content']);
     expect($types)->not->toContain('callout');
 });
+
+it('collects nodes of a type depth-first', function (): void {
+    $doc = [
+        'type' => 'doc',
+        'content' => [
+            ['type' => 'callout', 'attrs' => ['id' => 1, 'tone' => null]],
+            ['type' => 'blockquote', 'content' => [
+                ['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'quoted']]],
+                ['type' => 'callout', 'attrs' => ['id' => 2, 'tone' => 'warn']],
+            ]],
+        ],
+    ];
+
+    $nodes = RichContent::make($doc, extensions: [CalloutExtension::make()])->nodes('callout');
+
+    expect(array_column(array_column($nodes, 'attrs'), 'id'))->toBe([1, 2]);
+});
+
+it('collects no nodes from an empty document', function (): void {
+    expect(RichContent::make(null)->nodes('callout'))->toBe([]);
+});

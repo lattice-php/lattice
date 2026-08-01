@@ -104,6 +104,30 @@ final class RichContent
         return $this->editor()->getDocument();
     }
 
+    /**
+     * Matching nodes from the canonical document, depth-first. The typed
+     * traversal consumers would otherwise hand-roll (e.g. collecting media
+     * references for attachment sync).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function nodes(string $type): array
+    {
+        $collect = static function (array $node) use (&$collect, $type): array {
+            $matches = ($node['type'] ?? null) === $type ? [$node] : [];
+
+            foreach (is_array($node['content'] ?? null) ? $node['content'] : [] as $child) {
+                if (is_array($child)) {
+                    $matches = [...$matches, ...$collect($child)];
+                }
+            }
+
+            return $matches;
+        };
+
+        return $collect($this->toArray());
+    }
+
     private function editor(): Editor
     {
         if ($this->editor instanceof Editor) {
