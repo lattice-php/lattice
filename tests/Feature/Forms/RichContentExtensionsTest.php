@@ -151,6 +151,15 @@ it('wires the prepared document as the rich editor value prop', function (): voi
     expect($wire['props']['value']['content'][0]['attrs']['resolvedLabel'] ?? null)->toBe('callout-7');
 });
 
+it('wires the prepared document as the rich editor value prop for a string value', function (): void {
+    $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => null]]]];
+    $field = RichEditor::make('body')->withExtensions(CalloutExtension::make())->value(json_encode($doc));
+
+    $wire = wire($field);
+
+    expect($wire['props']['value']['content'][0]['attrs']['resolvedLabel'] ?? null)->toBe('callout-7');
+});
+
 it('lets extensions extend the html sanitizer', function (): void {
     $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => 'info']]]];
 
@@ -186,4 +195,15 @@ it('renders registered package nodes through the bare display path', function ()
     $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => 'info']]]];
 
     expect(RichContent::make($doc)->toHtml())->toContain('data-callout="7"');
+});
+
+it('strips registered package nodes when a field activates none of them', function (): void {
+    app(EditorExtensionRegistry::class)->register(CalloutExtension::class);
+
+    $field = RichEditor::make('body')->extensions(['some-client-only-type']);
+
+    $cast = $field->castValue(json_encode(calloutDoc()));
+
+    $types = array_map(static fn (array $node): string => $node['type'], $cast['content']);
+    expect($types)->not->toContain('callout');
 });

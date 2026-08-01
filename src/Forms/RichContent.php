@@ -72,20 +72,20 @@ final class RichContent
     /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes  Schema type names to keep beyond the baseline; null keeps the full built-in schema.
-     * @param  iterable<EditorExtension>  $extensions
+     * @param  iterable<EditorExtension>|null  $extensions  Null falls back to the app-wide registry; an explicit iterable (including empty) is used as-is.
      */
     public function __construct(
         private readonly array|string|null $document,
         private readonly ?array $allowedTypes = null,
-        private readonly iterable $extensions = [],
+        private readonly ?iterable $extensions = null,
     ) {}
 
     /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes
-     * @param  iterable<EditorExtension>  $extensions
+     * @param  iterable<EditorExtension>|null  $extensions
      */
-    public static function make(array|string|null $document, ?array $allowedTypes = null, iterable $extensions = []): self
+    public static function make(array|string|null $document, ?array $allowedTypes = null, ?iterable $extensions = null): self
     {
         return new self($document, $allowedTypes, $extensions);
     }
@@ -166,9 +166,12 @@ final class RichContent
     }
 
     /**
-     * The active extension set: what was given, or — when nothing was given,
-     * whether omitted or passed as an explicit empty iterable — the app-wide
-     * registry defaults. Narrow with $allowedTypes, not an explicit `[]` here.
+     * The active extension set: exactly what was given, including an explicit
+     * empty iterable (a field that activates none of them must strip their
+     * nodes everywhere — display, validation, and cast alike). Only an
+     * omitted argument (null) falls back to the app-wide registry defaults —
+     * the bare display path `RichContent::make($doc)`. Narrow with
+     * $allowedTypes, not an explicit `[]` here.
      *
      * @return list<EditorExtension>
      */
@@ -178,11 +181,13 @@ final class RichContent
             return $this->resolvedExtensions;
         }
 
-        $given = is_array($this->extensions) ? $this->extensions : iterator_to_array($this->extensions);
+        if ($this->extensions === null) {
+            return $this->resolvedExtensions = app(EditorExtensionRegistry::class)->instances();
+        }
 
-        return $this->resolvedExtensions = $given === []
-            ? app(EditorExtensionRegistry::class)->instances()
-            : array_values($given);
+        return $this->resolvedExtensions = is_array($this->extensions)
+            ? array_values($this->extensions)
+            : array_values(iterator_to_array($this->extensions));
     }
 
     private function editor(): Editor

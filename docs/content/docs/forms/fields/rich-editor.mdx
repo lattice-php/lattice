@@ -264,7 +264,11 @@ final class Callout extends EditorExtension
 
 `Topic` above is your own model — the extension only knows the id a user picked; resolving it to a
 label is application logic, and `->nodes('callout')` is what lets it happen once per document
-instead of once per node.
+instead of once per node. `nodes()` walks the schema-filtered document, so `callout` only survives
+the walk when the extension is either passed to `RichContent::make(...)` or registered app-wide —
+here it's the latter, since these methods run on the `Callout` extension itself once it's
+[registered](#custom-extensions); an unregistered, unpassed extension's `->nodes()` call always
+returns an empty list.
 
 `serverExtensions()` returns the matching tiptap-php `Node`, which owns the attrs schema and the
 HTML it renders to:
