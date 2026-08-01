@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Validator;
 use Lattice\Lattice\Forms\Components\RichEditor;
+use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\RichContent;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 use Lattice\Lattice\Tests\Fixtures\RichEditor\CalloutExtension;
@@ -152,4 +154,24 @@ it('lets extensions extend the html sanitizer', function (): void {
 
     expect($html)->toContain('data-callout="7"')
         ->and($html)->toContain('data-tone="info"');
+});
+
+it('surfaces validateDocument messages as field validation errors', function (): void {
+    $field = RichEditor::make('body')->withExtensions(CalloutExtension::make());
+    $doc = json_encode(['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 999, 'tone' => null]]]]);
+
+    $rules = $field->resolveRules(FormData::make(['body' => $doc]), request());
+    $validator = Validator::make(['body' => $doc], ['body' => $rules]);
+
+    expect($validator->fails())->toBeTrue()
+        ->and($validator->errors()->first('body'))->toBe('Callout 999 does not exist.');
+});
+
+it('passes validation for resolvable references', function (): void {
+    $field = RichEditor::make('body')->withExtensions(CalloutExtension::make());
+    $doc = json_encode(['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => null]]]]);
+
+    $rules = $field->resolveRules(FormData::make(['body' => $doc]), request());
+
+    expect(Validator::make(['body' => $doc], ['body' => $rules])->fails())->toBeFalse();
 });

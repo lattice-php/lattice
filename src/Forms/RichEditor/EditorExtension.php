@@ -93,6 +93,18 @@ abstract class EditorExtension implements JsonSerializable
     }
 
     /**
+     * Validate this extension's nodes in a submitted document — e.g. can the
+     * user reference this id. Returned messages become field errors.
+     *
+     * @param  array<string, mixed>  $document
+     * @return list<string>
+     */
+    public function validateDocument(array $document): array
+    {
+        return [];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toWire(): array

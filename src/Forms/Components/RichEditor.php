@@ -27,6 +27,7 @@ use Lattice\Lattice\Forms\RichEditor\Extensions\Strike;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Table;
 use Lattice\Lattice\Forms\RichEditor\Extensions\TextAlign;
 use Lattice\Lattice\Forms\RichEditor\Extensions\Underline;
+use Lattice\Lattice\Forms\RichEditor\ValidatesEditorDocument;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
 
@@ -156,6 +157,15 @@ class RichEditor extends Field
         }
 
         return RichContent::make($decoded, $this->allowedServerTypes(), $this->editorExtensionInstances())->toArray();
+    }
+
+    #[\Override]
+    protected function defaultRules(): array
+    {
+        return [
+            ...parent::defaultRules(),
+            new ValidatesEditorDocument($this->editorExtensionInstances()),
+        ];
     }
 
     /**
