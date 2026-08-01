@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Lattice\Lattice\Support\Testing;
+
+use RuntimeException;
+
+use function Orchestra\Testbench\package_path;
+
+trait ChecksWorkbenchAssets
+{
+    private static bool $checkedWorkbenchManifest = false;
+
+    /**
+     * The browser serves whatever the last `npm run build` produced; a missing
+     * manifest or a leftover dev-server marker would fail every test with
+     * blank pages, so fail fast with an actionable message instead.
+     */
+    protected function assertWorkbenchManifestExists(): void
+    {
+        if (self::$checkedWorkbenchManifest) {
+            return;
+        }
+
+        $public = package_path('vendor/orchestra/testbench-core/laravel/public');
+        $manifest = $public.'/build/manifest.json';
+        $hot = $public.'/hot';
+
+        if (! is_file($manifest)) {
+            throw new RuntimeException("Missing workbench Vite manifest [{$manifest}]. Run `npm run build` before the browser suite.");
+        }
+
+        if (is_file($hot)) {
+            throw new RuntimeException("Stale Vite hot file [{$hot}]. Delete it (a `composer serve` leftover), then rerun the browser suite.");
+        }
+
+        self::$checkedWorkbenchManifest = true;
+    }
+}

@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tests;
 
+use Lattice\Lattice\Support\Testing\ChecksWorkbenchAssets;
 use Lattice\Lattice\Tests\Browser\Support\ReverbServer;
 use Pest\Browser\Api\ArrayablePendingAwaitablePage;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Playwright\Playwright;
 
-use function Orchestra\Testbench\package_path;
-
 class BrowserTestCase extends TestCase
 {
-    private static ?ReverbServer $reverb = null;
+    use ChecksWorkbenchAssets;
 
-    private static bool $checkedWorkbenchManifest = false;
+    private static ?ReverbServer $reverb = null;
 
     #[\Override]
     protected function setUp(): void
@@ -33,29 +32,6 @@ class BrowserTestCase extends TestCase
         // missing key mid-suite would leave junk behind. No browser test
         // needs the dump — keep it off.
         config(['i18next.save_missing.enabled' => false]);
-    }
-
-    private function assertWorkbenchManifestExists(): void
-    {
-        if (self::$checkedWorkbenchManifest) {
-            return;
-        }
-
-        $public = package_path('vendor/orchestra/testbench-core/laravel/public');
-        $manifest = $public.'/build/manifest.json';
-        $hot = $public.'/hot';
-
-        if (! is_file($manifest)) {
-            throw new \RuntimeException("Missing workbench Vite manifest [{$manifest}]. Run `npm run build` before `composer test:browser`.");
-        }
-
-        // A leftover dev-server marker makes every page load assets from a dead
-        // server, which renders blank pages and times out interactive tests.
-        if (is_file($hot)) {
-            throw new \RuntimeException("Stale Vite hot file [{$hot}]. Delete it (a `composer serve` leftover), then rerun the browser suite.");
-        }
-
-        self::$checkedWorkbenchManifest = true;
     }
 
     protected function bootReverb(): void
