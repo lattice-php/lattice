@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.33.0](https://github.com/lattice-php/lattice/compare/0.32.0...0.33.0) (2026-08-01)
+
+
+### Features
+
+* **ssr:** ship createLatticeSsr as the @lattice-php/lattice/ssr entry ([3e98c5d](https://github.com/lattice-php/lattice/commit/3e98c5df5e2351caee89c5409e140e0e1432e41a))
+
+
+### Bug Fixes
+
+* **appearance:** seed the SSR snapshot from the shared appearance cookie ([dee104b](https://github.com/lattice-php/lattice/commit/dee104b1d7d192dd674ad578e4c028f304322baa))
+* **create-app:** hydrate server-rendered pages without the boot gate ([27debfb](https://github.com/lattice-php/lattice/commit/27debfba749718541d48acd9aeb9b4c99e723c15))
+* **form:** swap useLayoutEffect for an isomorphic shim ([c902bfd](https://github.com/lattice-php/lattice/commit/c902bfda5624dd96d2875147043272f157309592))
+* make Inertia SSR work end to end ([765ff46](https://github.com/lattice-php/lattice/commit/765ff46f7978947d2c1b431f19547e0e76a2451b))
+* **vite:** drop the react alias that defeated SSR externalization ([3f8e271](https://github.com/lattice-php/lattice/commit/3f8e2716004617dd10c20baa9a25cf1116be7559))
+
+
+### Refactoring
+
+* **lib:** export the SSR-safe shim as useLayoutEffect ([695174b](https://github.com/lattice-php/lattice/commit/695174bc8ded84f3e5cfaa60d4e2e44a4ff67206))
+* trim comments to their load-bearing core ([3a5726b](https://github.com/lattice-php/lattice/commit/3a5726b72627e0c185045a6e62a79ca69cc52380))
+
+
+### Documentation
+
+* document server-side rendering ([86b6c43](https://github.com/lattice-php/lattice/commit/86b6c432d954a7ce97e0ba1214efa6d26435cec8))
+
 ## [0.32.0](https://github.com/lattice-php/lattice/compare/0.31.1...0.32.0) (2026-07-31)
 
 
