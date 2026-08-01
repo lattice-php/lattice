@@ -95,6 +95,9 @@
   --lt-control-h-md: 2.25rem;
   --lt-control-h-lg: 2.5rem;
 
+  /* >= 1rem, or iOS Safari auto-zooms the page on focus */
+  --lt-input-font-size-mobile: 1rem;
+
   /* Table cell padding — table density lever */
   --lt-table-cell-x: calc(var(--spacing) * 4);
   --lt-table-cell-y: calc(var(--spacing) * 4);
@@ -583,6 +586,19 @@
   --lt-color-green: oklch(0.85 0.13 155);
   --lt-color-blue: oklch(0.84 0.11 250);
   --lt-color-purple: oklch(0.85 0.11 305);
+  }
+}
+
+/* iOS Safari auto-zooms when a focused control computes below 16px; unlayered
+   so it beats the text-size utilities on the components. */
+@media (width < theme(--breakpoint-md)) {
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="combobox-search"],
+  [data-slot="prompt-input"],
+  .lattice-prose[contenteditable="true"] {
+    font-size: var(--lt-input-font-size-mobile);
   }
 }
 
