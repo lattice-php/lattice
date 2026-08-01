@@ -43,6 +43,7 @@ export function PromptInput({
         className={cn(
           "min-h-[2.5rem] flex-1 resize-none rounded-lt-sm border border-lt-input bg-lt-bg px-3 py-2 text-sm text-lt-fg placeholder:text-lt-muted-fg focus:outline-none focus:ring-[length:var(--lt-ring-width)] focus:ring-lt-ring/50 disabled:bg-lt-disabled disabled:text-lt-disabled-fg",
         )}
+        data-slot="prompt-input"
         data-test={testIdentity("chat-input")}
         disabled={disabled}
         onChange={(e) => setValue(e.target.value)}
