@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Workbench\App\Factories\BusinessPartnerFactory;
 
 /**
@@ -19,6 +21,8 @@ use Workbench\App\Factories\BusinessPartnerFactory;
  * @property-read Collection<int, Group> $groups
  * @property-read Collection<int, Address> $addresses
  * @property-read Collection<int, SalesOrder> $salesOrders
+ * @property-read Collection<int, Note> $notes
+ * @property-read Note|null $internalNote
  */
 class BusinessPartner extends Model
 {
@@ -56,6 +60,25 @@ class BusinessPartner extends Model
     public function salesOrders(): HasMany
     {
         return $this->hasMany(SalesOrder::class);
+    }
+
+    /** @return MorphMany<Note, $this> */
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'notable');
+    }
+
+    /**
+     * Scoped to `type = 'internal'` on purpose — this is the fixture a
+     * {@see RelationColumn} test uses to prove sorting/filtering through a
+     * `MorphOne` preserves an extra `where()` alongside the morph type
+     * constraint, not just the polymorphic wiring itself.
+     *
+     * @return MorphOne<Note, $this>
+     */
+    public function internalNote(): MorphOne
+    {
+        return $this->morphOne(Note::class, 'notable')->where('type', 'internal');
     }
 
     protected static function newFactory(): BusinessPartnerFactory

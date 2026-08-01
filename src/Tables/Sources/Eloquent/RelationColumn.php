@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Lattice\Lattice\Tables\RelationBinding;
 
 /**
@@ -21,13 +23,13 @@ use Lattice\Lattice\Tables\RelationBinding;
 final readonly class RelationColumn implements RelationProjection
 {
     /**
-     * @param  BelongsTo<Model, Model>|HasOne<Model, Model>  $relationInstance
+     * @param  BelongsTo<Model, Model>|HasOne<Model, Model>|MorphOne<Model, Model>  $relationInstance
      */
     private function __construct(
         private string $key,
         private string $relation,
         private string $field,
-        private BelongsTo|HasOne $relationInstance,
+        private BelongsTo|HasOne|MorphOne $relationInstance,
     ) {}
 
     public static function resolve(Model $model, RelationBinding $binding): ?self
@@ -38,7 +40,7 @@ final readonly class RelationColumn implements RelationProjection
 
         $instance = $model->{$binding->relation}();
 
-        if (! $instance instanceof BelongsTo && ! $instance instanceof HasOne) {
+        if (! $instance instanceof BelongsTo && ! $instance instanceof HasOne && ! $instance instanceof MorphOne) {
             return null;
         }
 
@@ -110,29 +112,27 @@ final readonly class RelationColumn implements RelationProjection
     }
 
     /**
+     * Sorts through a correlated subquery built the same way Eloquent builds
+     * `whereHas`: rebuild the relation with its automatic parent-key constraint
+     * suppressed (`Relation::noConstraints()`) so only the relation's own extra
+     * `where()` calls survive (e.g. a `hasOne()->where('channel', 'email')`),
+     * then let the relation compile its own correlation (`getRelationExistenceQuery`)
+     * and merge those extra constraints back in. This also covers `MorphOne`,
+     * whose type constraint `getRelationExistenceQuery` adds automatically.
+     *
      * @param  Builder<*>  $builder
      */
     public function applySort(Builder $builder, string $direction): void
     {
-        $related = $this->relationInstance->getRelated();
-        $baseTable = $builder->getModel()->getTable();
-        $relatedTable = $related->getTable();
+        $model = $builder->getModel();
 
-        $subquery = $related->newQuery()->select($this->field);
+        /** @var BelongsTo<Model, Model>|HasOne<Model, Model>|MorphOne<Model, Model> $relation */
+        $relation = Relation::noConstraints(fn () => $model->{$this->relation}());
 
-        if ($this->relationInstance instanceof BelongsTo) {
-            $subquery->whereColumn(
-                $relatedTable.'.'.$this->relationInstance->getOwnerKeyName(),
-                $baseTable.'.'.$this->relationInstance->getForeignKeyName(),
-            );
-        } else {
-            $subquery
-                ->whereColumn(
-                    $relatedTable.'.'.$this->relationInstance->getForeignKeyName(),
-                    $baseTable.'.'.$this->relationInstance->getLocalKeyName(),
-                )
-                ->limit(1);
-        }
+        $subquery = $relation
+            ->getRelationExistenceQuery($relation->getRelated()->newQueryWithoutRelationships(), $model->newQuery(), [$this->field])
+            ->mergeConstraintsFrom($relation->getQuery())
+            ->limit(1);
 
         $builder->orderBy($subquery, $direction);
     }
