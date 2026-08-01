@@ -189,6 +189,26 @@ it('passes validation for resolvable references', function (): void {
     expect(Validator::make(['body' => $doc], ['body' => $rules])->fails())->toBeFalse();
 });
 
+it('surfaces validateDocument messages for object-shaped submissions', function (): void {
+    $field = RichEditor::make('body')->withExtensions(CalloutExtension::make());
+    $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 999, 'tone' => null]]]];
+
+    $rules = $field->resolveRules(FormData::make(['body' => $doc]), request());
+    $validator = Validator::make(['body' => $doc], ['body' => $rules]);
+
+    expect($validator->fails())->toBeTrue()
+        ->and($validator->errors()->first('body'))->toBe('Callout 999 does not exist.');
+});
+
+it('strips disallowed nodes from object-shaped submissions on cast', function (): void {
+    $field = RichEditor::make('body');
+
+    $cast = $field->castValue(calloutDoc());
+
+    $types = array_map(static fn (array $node): string => $node['type'], $cast['content']);
+    expect($types)->not->toContain('callout');
+});
+
 it('renders registered package nodes through the bare display path', function (): void {
     app(EditorExtensionRegistry::class)->register(CalloutExtension::class);
 

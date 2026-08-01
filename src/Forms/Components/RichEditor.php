@@ -209,8 +209,7 @@ class RichEditor extends Field
             array_values($this->activeExtensions()),
         );
 
-        $value = $props['value'] ?? null;
-        $document = is_array($value) ? $value : RichContent::decodeDocument($value);
+        $document = RichContent::decodeDocument($props['value'] ?? null);
 
         if ($document !== null) {
             $props['value'] = RichContent::make($document, $this->allowedServerTypes(), $this->editorExtensionInstances())->toPreparedArray();
