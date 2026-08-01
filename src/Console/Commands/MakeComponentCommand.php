@@ -16,30 +16,9 @@ final class MakeComponentCommand extends Command
 
     public function handle(): int
     {
-        $name = (string) $this->argument('name');
-        $target = $this->scaffoldTarget($name, 'Components', 'components');
-        $class = $target['class'];
-        $type = $this->option('type') ?: $this->typeFromName($class, '');
-        $force = (bool) $this->option('force');
+        $target = $this->scaffoldTarget((string) $this->argument('name'), 'Components', 'components');
+        $type = $this->option('type') ?: $this->typeFromName($target['class'], '');
 
-        $this->writeStub(
-            'component.php.stub',
-            $target['php'],
-            ['namespace' => $target['namespace'], 'class' => $class, 'type' => $type], force: $force);
-
-        $this->writeStub(
-            'component.tsx.stub',
-            $target['tsx'],
-            ['class' => $class, 'type' => $type], force: $force);
-
-        $this->registerInPlugin($target['plugin'], $type, $class.'Component', $target['import']);
-
-        if ($target['refresh']) {
-            $this->refreshTypes();
-        }
-
-        $this->components->info("Component [$class] created with type [$type].");
-
-        return self::SUCCESS;
+        return $this->writePair('Component', $target, 'component', $type, $type, $type, 'Component');
     }
 }

@@ -17,39 +17,19 @@ final class MakeColumnCommand extends Command
 
     public function handle(): int
     {
-        $name = (string) $this->argument('name');
-        $target = $this->scaffoldTarget($name, 'Tables/Columns', 'columns');
-        $class = $target['class'];
-        $type = $this->option('type') ?: $this->typeFromName($class, '');
-        $attributeType = ColumnType::localType($type);
-        $wireType = ColumnType::wireType($type);
-        $force = (bool) $this->option('force');
+        $target = $this->scaffoldTarget((string) $this->argument('name'), 'Tables/Columns', 'columns');
+        $type = $this->option('type') ?: $this->typeFromName($target['class'], '');
 
-        $this->writeStub(
-            'column.php.stub',
-            $target['php'],
-            ['namespace' => $target['namespace'], 'class' => $class, 'type' => $attributeType], force: $force);
-
-        $this->writeStub(
-            'column.tsx.stub',
-            $target['tsx'],
-            ['class' => $class, 'type' => $type], force: $force);
-
-        $this->registerInPlugin(
-            $target['plugin'],
-            $wireType,
-            $class.'Cell',
-            $target['import'],
+        return $this->writePair(
+            'Column',
+            $target,
+            'column',
+            ColumnType::localType($type),
+            $type,
+            ColumnType::wireType($type),
+            'Cell',
             blockKey: 'columns',
             entryWrapper: null,
         );
-
-        if ($target['refresh']) {
-            $this->refreshTypes();
-        }
-
-        $this->components->info("Column [$class] created with type [$wireType].");
-
-        return self::SUCCESS;
     }
 }

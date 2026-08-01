@@ -23,17 +23,10 @@ use Lattice\Lattice\Attributes\AsRemoteSource;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
-use Lattice\Lattice\Console\Commands\MakeActionCommand;
-use Lattice\Lattice\Console\Commands\MakeBulkActionCommand;
 use Lattice\Lattice\Console\Commands\MakeColumnCommand;
 use Lattice\Lattice\Console\Commands\MakeComponentCommand;
+use Lattice\Lattice\Console\Commands\MakeDefinitionCommand;
 use Lattice\Lattice\Console\Commands\MakeFieldCommand;
-use Lattice\Lattice\Console\Commands\MakeFormCommand;
-use Lattice\Lattice\Console\Commands\MakeFragmentCommand;
-use Lattice\Lattice\Console\Commands\MakeLayoutCommand;
-use Lattice\Lattice\Console\Commands\MakePageCommand;
-use Lattice\Lattice\Console\Commands\MakeRemoteSourceCommand;
-use Lattice\Lattice\Console\Commands\MakeTableCommand;
 use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
@@ -81,14 +74,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
                 MakeComponentCommand::class,
                 MakeFieldCommand::class,
                 MakeColumnCommand::class,
-                MakePageCommand::class,
-                MakeFormCommand::class,
-                MakeTableCommand::class,
-                MakeActionCommand::class,
-                MakeBulkActionCommand::class,
-                MakeFragmentCommand::class,
-                MakeLayoutCommand::class,
-                MakeRemoteSourceCommand::class,
                 DiscoverCacheCommand::class,
                 DiscoverClearCommand::class,
                 PruneNotificationsCommand::class,
@@ -98,6 +83,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands(MakeDefinitionCommand::all());
+        }
+
         DiscoveryKinds::register('forms', AsForm::class);
         DiscoveryKinds::register('tables', AsTable::class);
         DiscoveryKinds::register('actions', AsAction::class);
