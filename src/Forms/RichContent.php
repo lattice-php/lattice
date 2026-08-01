@@ -345,6 +345,10 @@ final class RichContent
             ->allowElement('summary')
             ->allowAttribute('style', ['p', 'h1', 'h2', 'h3']);
 
+        foreach ($this->extensions as $extension) {
+            $config = $extension->configureSanitizer($config);
+        }
+
         return new HtmlSanitizer($config)->sanitize($html);
     }
 }

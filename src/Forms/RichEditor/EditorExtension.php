@@ -7,6 +7,7 @@ use JsonSerializable;
 use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Tiptap\Core\Extension;
 
 /**
@@ -79,6 +80,16 @@ abstract class EditorExtension implements JsonSerializable
     public function prepareDocument(array $document): array
     {
         return $document;
+    }
+
+    /**
+     * Extend the display sanitizer with the elements/attributes this
+     * extension's renderHTML emits — the sanitizer strips everything it was
+     * not explicitly told about.
+     */
+    public function configureSanitizer(HtmlSanitizerConfig $config): HtmlSanitizerConfig
+    {
+        return $config;
     }
 
     /**

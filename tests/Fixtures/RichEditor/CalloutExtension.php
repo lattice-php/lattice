@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Tests\Fixtures\RichEditor;
 
 use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 #[AsEditorExtension('callout')]
 final class CalloutExtension extends EditorExtension
@@ -37,5 +38,10 @@ final class CalloutExtension extends EditorExtension
         };
 
         return $walk($document);
+    }
+
+    public function configureSanitizer(HtmlSanitizerConfig $config): HtmlSanitizerConfig
+    {
+        return $config->allowElement('aside', ['data-callout', 'data-tone']);
     }
 }

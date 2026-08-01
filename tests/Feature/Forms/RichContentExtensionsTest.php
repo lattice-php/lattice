@@ -18,10 +18,11 @@ function calloutDoc(): array
     ];
 }
 
-it('keeps extension nodes in the schema when the extension is active', function (): void {
-    $array = RichContent::make(calloutDoc(), extensions: [CalloutExtension::make()])->toArray();
+it('renders extension nodes to html when the extension is active', function (): void {
+    $html = RichContent::make(calloutDoc(), extensions: [CalloutExtension::make()])->toHtml();
 
-    expect($array['content'][1]['type'])->toBe('callout');
+    expect($html)->toContain('<aside')
+        ->and($html)->toContain('data-callout="7"');
 });
 
 it('strips extension nodes from the schema without the extension', function (): void {
@@ -142,4 +143,13 @@ it('wires the prepared document as the rich editor value prop', function (): voi
     $wire = wire($field);
 
     expect($wire['props']['value']['content'][0]['attrs']['resolvedLabel'] ?? null)->toBe('callout-7');
+});
+
+it('lets extensions extend the html sanitizer', function (): void {
+    $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => 'info']]]];
+
+    $html = RichContent::make($doc, extensions: [CalloutExtension::make()])->toHtml();
+
+    expect($html)->toContain('data-callout="7"')
+        ->and($html)->toContain('data-tone="info"');
 });
