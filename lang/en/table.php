@@ -52,11 +52,7 @@ return [
         'value' => ':label filter value',
         'add' => 'Add filter',
         'filters' => 'Filters',
-        'from' => ':label from',
-        'until' => ':label until',
-        'selected-count' => ':amount selected',
         'reset-all' => 'Reset all',
-        'search' => 'Search',
     ],
     'operators' => [
         'contains' => 'contains',
