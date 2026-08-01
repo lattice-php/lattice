@@ -67,6 +67,41 @@ describe("i18n instance", () => {
     loadLanguages.mockRestore();
   });
 
+  it("holds component-driven init so a pending bootstrap can register its backend", async () => {
+    vi.resetModules();
+    const fresh = await import("./instance");
+
+    let releaseBootstrap = (): void => {};
+    fresh.holdI18nInit(
+      new Promise<void>((resolve) => {
+        releaseBootstrap = resolve;
+      }),
+    );
+
+    const deferred = fresh.ensureI18n();
+
+    expect(fresh.i18n.isInitialized).toBeFalsy();
+
+    await fresh.ensureI18n((base) => ({ ...base, ns: ["backend-ns"] }));
+
+    releaseBootstrap();
+    await deferred;
+
+    expect(fresh.i18n.isInitialized).toBe(true);
+    expect(fresh.i18n.options.ns).toEqual(["backend-ns"]);
+  });
+
+  it("releases the hold and initializes plainly when the bootstrap fails", async () => {
+    vi.resetModules();
+    const fresh = await import("./instance");
+
+    fresh.holdI18nInit(Promise.reject(new Error("bootstrap failed")));
+
+    await fresh.ensureI18n();
+
+    expect(fresh.i18n.isInitialized).toBe(true);
+  });
+
   it("returns locale controls and configured locales from useT", async () => {
     await configureI18n({
       enabled: false,

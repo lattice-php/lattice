@@ -138,6 +138,10 @@
       "types": "./dist/lib/use-debounced-callback.d.ts",
       "import": "./dist/lib/use-debounced-callback.js"
     },
+    "./lib/use-layout-effect": {
+      "types": "./dist/lib/use-layout-effect.d.ts",
+      "import": "./dist/lib/use-layout-effect.js"
+    },
     "./lib/utils": {
       "types": "./dist/lib/utils.d.ts",
       "import": "./dist/lib/utils.js"
@@ -161,6 +165,10 @@
     "./remote": {
       "types": "./dist/remote/index.d.ts",
       "import": "./dist/remote/index.js"
+    },
+    "./ssr": {
+      "types": "./dist/ssr.d.ts",
+      "import": "./dist/ssr.js"
     },
     "./table": {
       "types": "./dist/table/index.d.ts",

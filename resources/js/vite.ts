@@ -190,15 +190,17 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
 
   return {
     resolve: {
-      alias: options.source
+      // A react alias would break SSR: Vite only externalizes bare specifiers,
+      // so an absolute path inlines react's CJS into the SSR module runner.
+      // `dedupe` alone keeps the app on a single React copy, symlinks included.
+      ...(options.source
         ? {
-            "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
-            "@lattice-php/lattice": path.resolve(root, "resources/js"),
+            alias: {
+              "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
+              "@lattice-php/lattice": path.resolve(root, "resources/js"),
+            },
           }
-        : {
-            react: path.resolve(appRoot, "node_modules/react"),
-            "react-dom": path.resolve(appRoot, "node_modules/react-dom"),
-          },
+        : {}),
       dedupe: ["@inertiajs/react", "react", "react-dom"],
     },
     server: options.source

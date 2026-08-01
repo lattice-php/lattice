@@ -1,4 +1,5 @@
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
+import { useLayoutEffect } from "@lattice-php/lattice/lib/use-layout-effect";
 
 const DURATION_MS = 180;
 

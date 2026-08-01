@@ -14,6 +14,18 @@ export type UseAppearanceReturn = {
 
 const listeners = new Set<() => void>();
 let currentAppearance: Appearance = "system";
+let serverAppearance: Appearance = "system";
+
+/**
+ * Seed the SSR/hydration snapshot from the backend-shared `lattice.appearance`
+ * prop. The server render and the client's hydration pass must read the same
+ * value, or components branching on the appearance mismatch on hydration.
+ */
+export function seedAppearance(value: unknown): void {
+  if (isAppearance(value)) {
+    serverAppearance = value;
+  }
+}
 
 export function isAppearance(value: unknown): value is Appearance {
   return appearances.some((appearance) => appearance === value);
@@ -115,7 +127,7 @@ export function useAppearance(): UseAppearanceReturn {
   const appearance: Appearance = useSyncExternalStore(
     subscribe,
     () => currentAppearance,
-    () => "system",
+    () => serverAppearance,
   );
   const systemAppearance: ResolvedAppearance = useSyncExternalStore(
     subscribe,

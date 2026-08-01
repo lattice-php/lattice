@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect } from "@lattice-php/lattice/lib/use-layout-effect";
 import type { Node } from "@lattice-php/lattice/core/types";
 import type { ResolveResponse } from "@lattice-php/lattice/types/generated";
 import { walkFields } from "@lattice-php/lattice/form/lib/field-props";

@@ -1,13 +1,13 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
 import { createInertiaApp } from "@inertiajs/react";
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
-import { initializeAppearance } from "./appearance";
+import { initializeAppearance, seedAppearance } from "./appearance";
 import { setRefRefreshEndpoint } from "./core/api";
 import { isRecord } from "./core/materialize";
 import { extendRegistry, type Plugin, type PluginI18n, type Registry } from "./core/registry";
 import { setDefaultRegistry } from "./core/registry-context";
 import type { SpriteValue } from "./icons/sprite";
-import { DEFAULT_NAMESPACE } from "./i18n/instance";
+import { DEFAULT_NAMESPACE, holdI18nInit } from "./i18n/instance";
 import { LocaleReload } from "./i18n/locale-reload";
 import { i18nConfigFromPageProps } from "./i18n/shared-props";
 import {
@@ -50,8 +50,10 @@ export type CreateLatticeAppOptions = Omit<
   /**
    * Lattice's i18n bootstrap, on by default: when the backend shares the
    * `lattice.i18n` prop, the first render waits for the translation setup (no
-   * flash of untranslated fallbacks), `LocaleReload` re-fetches the page after
-   * a locale switch, and every visit carries the locale/timezone headers. The
+   * flash of untranslated fallbacks; a server-rendered page instead hydrates
+   * immediately and swaps strings in once ready), `LocaleReload` re-fetches the
+   * page after a locale switch, and every visit carries the locale/timezone
+   * headers. The
    * i18next chunk only loads when the backend actually shares the prop. Pass
    * `false` to opt out entirely.
    */
@@ -59,7 +61,8 @@ export type CreateLatticeAppOptions = Omit<
   /**
    * App bootstrap that needs the initial page — e.g. `configureEcho` from a
    * shared connection prop. Runs on the client before the first render; a
-   * returned promise delays that render until it resolves.
+   * returned promise delays that render until it resolves, except when
+   * hydrating a server-rendered page (hydration must match the SSR'd HTML).
    */
   boot?: (context: { page: InertiaPage }) => void | Promise<void>;
   /**
@@ -154,9 +157,18 @@ export function createLatticeApp({
     layout: createLayoutResolver({ defaultLayout }),
     withApp: (node: ReactElement, { ssr, page }: { ssr: boolean; page: InertiaPage }) => {
       const pending: Promise<unknown>[] = [];
+      const shared = page.props.lattice;
+      let hydrating = false;
+
+      if (isRecord(shared)) {
+        seedAppearance(shared.appearance);
+      }
 
       if (!ssr) {
-        const shared = page.props.lattice;
+        hydrating =
+          document
+            .getElementById(inertiaOptions.id ?? "app")
+            ?.hasAttribute("data-server-rendered") === true;
 
         if (
           isRecord(shared) &&
@@ -200,11 +212,20 @@ export function createLatticeApp({
         </ProviderBase>
       );
 
-      return pending.length > 0 ? (
-        <AwaitReady ready={Promise.all(pending)}>{shell}</AwaitReady>
-      ) : (
-        shell
-      );
+      if (pending.length === 0) {
+        return shell;
+      }
+
+      // A hydration pass must render what the server rendered — gating on the
+      // bootstrap would hydrate null against the SSR'd markup. The hold still
+      // lets the i18n backend win the init race; strings swap in once it resolves.
+      if (hydrating) {
+        holdI18nInit(Promise.all(pending));
+
+        return shell;
+      }
+
+      return <AwaitReady ready={Promise.all(pending)}>{shell}</AwaitReady>;
     },
   });
 
