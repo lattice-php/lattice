@@ -1,29 +1,3 @@
 {
-  "version": "0.33.0",
-  "files": {
-    "lattice.js": "a88bb1274e33",
-    "chunks/chart-view-WqyMTZiX.js": "24a0fa215276",
-    "chunks/date-picker-field-CCnkf4SC.js": "4d5eff85925f",
-    "chunks/dist-CK9gk4iB.js": "fcd98bf4a897",
-    "chunks/dist-DqlcM-vw.js": "574d76694c7a",
-    "chunks/icon-button-D4DKcnhp.js": "24c61d0b24b4",
-    "chunks/instance-BQeVkUpw.js": "87132e275d67",
-    "chunks/jsx-runtime-CN5ucv1d.js": "dad8b788d0f0",
-    "chunks/locale-CgtcxthU.js": "d6510680ac4d",
-    "chunks/materialize-CWqnSEHR.js": "cb96c5b9d4c0",
-    "chunks/notifications-echo-uU87iJAV.js": "5cf6365d2f9d",
-    "chunks/number-BvVKQqOG.js": "e94a1245aea2",
-    "chunks/page-props-BA5zqTIT.js": "f2461b38c425",
-    "chunks/react-SIfiwpqq.js": "160d3a8e9743",
-    "chunks/rich-editor-field-BeeSr2Zx.js": "3773a57e886e",
-    "chunks/shared-props-B_wT1GcG.js": "2e11a719edd0",
-    "chunks/subscriptions-Cwd1jFs5.js": "1971261e663b",
-    "chunks/test-id-Dh3L6Gfh.js": "7958de4f0270",
-    "chunks/time-picker-DSs9fDWe.js": "9b92e1560037",
-    "chunks/timezone-BORzyZp2.js": "908c1ebd3d64",
-    "chunks/translatable-DLw4h3x8.js": "11b3f013f0c5",
-    "chunks/use-effect-dispatcher-CiWYRvsF.js": "7aa1f207a179",
-    "chunks/with-selector-zFUY-tQj.js": "fb612a44de32",
-    "sprite.svg": "535ae5800374"
-  }
+  "version": "0.34.0"
 }
