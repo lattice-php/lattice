@@ -377,3 +377,36 @@ test('bound accepts an explicit component key', function (): void {
     expect(wire(Text::bound('email', 'contact-email')))
         ->toMatchArray(['key' => 'contact-email']);
 });
+
+test('grids normalize bare column values to the md breakpoint', function (): void {
+    expect(wire(Grid::make()->columns(3))['props']['columns'])->toBe(['md' => 3])
+        ->and(wire(Grid::make()->columns('2fr 1fr 1fr 1fr'))['props']['columns'])->toBe(['md' => '2fr 1fr 1fr 1fr']);
+});
+
+test('grids serialize breakpoint column maps as given', function (): void {
+    expect(wire(Grid::make()->columns(['default' => 1, 'md' => 2, 'xl' => 4]))['props']['columns'])
+        ->toBe(['default' => 1, 'md' => 2, 'xl' => 4]);
+});
+
+test('grids reject unknown breakpoints', function (): void {
+    Grid::make()->columns(['tablet' => 2]);
+})->throws(InvalidArgumentException::class);
+
+test('grids reject non-positive column counts', function (): void {
+    Grid::make()->columns(0);
+})->throws(InvalidArgumentException::class);
+
+test('components serialize their column span only when set', function (): void {
+    expect(wire(Text::make('hello'))['props'])->not->toHaveKey('columnSpan')
+        ->and(wire(Text::make('hello')->columnSpan(2))['props']['columnSpan'])->toBe(['md' => 2])
+        ->and(wire(Text::make('hello')->columnSpan(['default' => 2, 'xl' => 3]))['props']['columnSpan'])->toBe(['default' => 2, 'xl' => 3]);
+});
+
+test('full column spans normalize to the default breakpoint', function (): void {
+    expect(wire(Text::make('hello')->columnSpanFull())['props']['columnSpan'])->toBe(['default' => 'full'])
+        ->and(wire(Text::make('hello')->columnSpan('full'))['props']['columnSpan'])->toBe(['default' => 'full']);
+});
+
+test('column spans reject values that are neither positive integers nor full', function (): void {
+    Text::make('hello')->columnSpan('wide');
+})->throws(InvalidArgumentException::class);

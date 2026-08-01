@@ -33,16 +33,33 @@ Tune the layout with enum-typed options (see the [enums reference](/advanced/enu
 
 ## Grid
 
-`Grid::make()->columns(n)` lays children out in `n` equal columns.
+`Grid::make()->columns(…)` lays children out in a responsive CSS grid:
+
+- `->columns(3)` — three equal columns from the `md` breakpoint up, one column below.
+- `->columns(['default' => 1, 'md' => 2, 'xl' => 4])` — an explicit count per breakpoint
+  (`default`, `sm`, `md`, `lg`, `xl`, `2xl`), mobile-first: each value applies from its
+  breakpoint up until a larger breakpoint overrides it.
+- `->columns('2fr 1fr 1fr 1fr')` — a raw
+  [`grid-template-columns`](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns)
+  track list for unequal columns, e.g. one wide plus three narrow. Track lists work inside
+  breakpoint maps too.
+
+Any child component or field controls how many columns it covers with `->columnSpan(n)`
+(from `md` up), a breakpoint map, or `->columnSpanFull()` to stretch across the whole row.
 
 <ComponentExample
   php={`Grid::make()->columns(3)->schema([
-    Badge::make('First'),
-    Badge::make('Second'),
-    Badge::make('Third'),
+    Badge::make('Wide')->columnSpan(2),
+    Badge::make('Narrow'),
+    Badge::make('Full width')->columnSpanFull(),
 ]);`}
   fixture="components.grid"
 />
+
+<Info>
+  A span larger than the active column count overflows the grid — pair breakpoint-mapped spans with
+  matching `columns` maps when a grid gets narrow.
+</Info>
 
 ## Card
 

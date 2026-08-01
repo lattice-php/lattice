@@ -355,6 +355,95 @@
   z-index: var(--lt-z-toast);
 }
 
+/*
+ * Responsive grid templates and spans driven by CSS variables the Grid
+ * component sets inline (mobile-first fallback chains, so only the breakpoints
+ * a grid declares need a variable). Variables instead of generated utility
+ * classes so arbitrary column counts and track lists survive Tailwind's static
+ * class scanning and the prebuilt standalone bundle.
+ */
+@utility lt-grid {
+  grid-template-columns: var(--lt-grid-cols-default, none);
+
+  & > [data-slot="grid-item"] {
+    grid-column: var(--lt-col-span-default, auto);
+    min-width: 0;
+  }
+
+  /* A child renderer that returns null (e.g. a condition-hidden field) must
+     not leave an empty cell behind. */
+  & > [data-slot="grid-item"]:empty {
+    display: none;
+  }
+
+  @media (width >= theme(--breakpoint-sm)) {
+    grid-template-columns: var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none));
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(--lt-col-span-sm, var(--lt-col-span-default, auto));
+    }
+  }
+
+  @media (width >= theme(--breakpoint-md)) {
+    grid-template-columns: var(
+      --lt-grid-cols-md,
+      var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none))
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto)));
+    }
+  }
+
+  @media (width >= theme(--breakpoint-lg)) {
+    grid-template-columns: var(
+      --lt-grid-cols-lg,
+      var(--lt-grid-cols-md, var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none)))
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(
+        --lt-col-span-lg,
+        var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto)))
+      );
+    }
+  }
+
+  @media (width >= theme(--breakpoint-xl)) {
+    grid-template-columns: var(
+      --lt-grid-cols-xl,
+      var(--lt-grid-cols-lg, var(--lt-grid-cols-md, var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none))))
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(
+        --lt-col-span-xl,
+        var(--lt-col-span-lg, var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto))))
+      );
+    }
+  }
+
+  @media (width >= theme(--breakpoint-2xl)) {
+    grid-template-columns: var(
+      --lt-grid-cols-2xl,
+      var(
+        --lt-grid-cols-xl,
+        var(--lt-grid-cols-lg, var(--lt-grid-cols-md, var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none))))
+      )
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(
+        --lt-col-span-2xl,
+        var(
+          --lt-col-span-xl,
+          var(--lt-col-span-lg, var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto))))
+        )
+      );
+    }
+  }
+}
+
 @keyframes lt-toast-in {
   from {
     opacity: 0;

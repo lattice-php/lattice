@@ -135,7 +135,7 @@ test('workbench pages serialize package component trees for inertia', function (
             ->component(Heading::class, tap: fn ($heading) => $heading->assertProp('text', 'Workbench page')))
         ->component('card', tap: fn ($card) => $card->assertProp('title', 'Components'))
         ->component('grid', 'workbench-charts', fn ($charts) => $charts
-            ->assertProp('columns', 3)
+            ->assertProp('columns', ['md' => 3])
             ->component(Fragment::class, 'workbench.revenue-trend-chart', fn ($chart) => $chart
                 ->assertProps(['lazy' => true, 'size' => 'lg']))
             ->component(Fragment::class, 'workbench.sales-mix-chart', fn ($chart) => $chart
