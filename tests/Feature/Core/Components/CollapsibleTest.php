@@ -51,11 +51,11 @@ it('omits trigger components hidden by a condition', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the collapsible example fixture', function (): void {
-        assertFixtureMatches('components.collapsible', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.collapsible', Wire::toWire([
             Collapsible::make('account-name')
                 ->trigger([Text::make('Name')])
                 ->tooltip('Shown on invoices and receipts.')
                 ->content([Text::make('Update the name shown on your account.')]),
-        ]))));
+        ]));
     });
 });

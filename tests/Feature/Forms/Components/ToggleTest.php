@@ -23,8 +23,8 @@ it('serializes a default boolean value', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the toggle example fixture', function (): void {
-        assertFixtureMatches('toggle.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('toggle.basic', Wire::toWire([
             Toggle::make('published', 'Published')->helperText('Show this item publicly.'),
-        ]))));
+        ]));
     });
 });

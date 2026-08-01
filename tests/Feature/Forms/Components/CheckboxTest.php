@@ -13,8 +13,8 @@ it('serializes the shared focus options', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the checkbox example fixture', function (): void {
-        assertFixtureMatches('checkbox.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('checkbox.basic', Wire::toWire([
             Checkbox::make('newsletter', 'Subscribe to the newsletter'),
-        ]))));
+        ]));
     });
 });

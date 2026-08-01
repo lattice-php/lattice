@@ -13,12 +13,12 @@ it('serializes the shared focus options', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the choice example fixture', function (): void {
-        assertFixtureMatches('choice.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('choice.basic', Wire::toWire([
             Choice::make('plan', 'Plan')->options([
                 Choice::option('Free', 'free'),
                 Choice::option('Pro', 'pro'),
                 Choice::option('Enterprise', 'enterprise'),
             ]),
-        ]))));
+        ]));
     });
 });

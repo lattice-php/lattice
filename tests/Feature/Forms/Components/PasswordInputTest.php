@@ -6,15 +6,15 @@ use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
     it('matches the password input examples fixture', function (): void {
-        assertFixtureMatches('password-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('password-input.basic', Wire::toWire([
             PasswordInput::make('password', 'Password')->placeholder('Your password'),
-        ]))));
+        ]));
 
-        assertFixtureMatches('password-input.confirmation', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('password-input.confirmation', Wire::toWire([
             PasswordInput::make('password', 'Password')
                 ->needsConfirmation()
                 ->rules(['required', 'min:8', 'confirmed']),
-        ]))));
+        ]));
     });
 });
 

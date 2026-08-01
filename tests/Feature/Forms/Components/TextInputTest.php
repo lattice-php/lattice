@@ -75,71 +75,71 @@ describe('affixes', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the required text input example fixture', function (): void {
-        assertFixtureMatches('text-input.required', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('text-input.required', Wire::toWire([
             TextInput::make('name', 'Team name')->placeholder('My team')->required(),
-        ]))));
+        ]));
     });
 
     it('matches the email text input example fixture', function (): void {
-        assertFixtureMatches('text-input.email', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('text-input.email', Wire::toWire([
             TextInput::make('email', 'Email address')->email()->placeholder('you@example.com'),
-        ]))));
+        ]));
     });
 
     it('matches the affix examples fixture', function (): void {
-        assertFixtureMatches('text-input.affixes', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('text-input.affixes', Wire::toWire([
             TextInput::make('price', 'Price')->prefix('$')->suffix('USD'),
-        ]))));
+        ]));
 
-        assertFixtureMatches('text-input.affix-icon', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('text-input.affix-icon', Wire::toWire([
             TextInput::make('search', 'Search')->prefix(Icon::Search),
-        ]))));
+        ]));
     });
 
     it('matches the copyable example fixture', function (): void {
-        assertFixtureMatches('text-input.copyable', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('text-input.copyable', Wire::toWire([
             TextInput::make('api_key', 'API key')->value('sk-live-4242')->readOnly()->copyable(),
-        ]))));
+        ]));
     });
 
     it('matches the common field option examples fixture', function (): void {
-        assertFixtureMatches('field.required', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('field.required', Wire::toWire([
             TextInput::make('name', 'Team name')->required(),
-        ]))));
+        ]));
 
-        assertFixtureMatches('field.default-value', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('field.default-value', Wire::toWire([
             TextInput::make('name', 'Team name')->value('Acme Inc'),
-        ]))));
+        ]));
 
-        assertFixtureMatches('field.disabled', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('field.disabled', Wire::toWire([
             TextInput::make('name', 'Team name')->value('Acme Inc')->disabled(),
-        ]))));
+        ]));
 
-        assertFixtureMatches('field.read-only', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('field.read-only', Wire::toWire([
             TextInput::make('slug', 'Slug')->value('acme-inc')->readOnly(),
-        ]))));
+        ]));
 
-        assertFixtureMatches('field.helper-text', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('field.helper-text', Wire::toWire([
             TextInput::make('slug', 'Slug')->helperText('Used in the public URL for your team.'),
-        ]))));
+        ]));
     });
 
     it('matches the conditional field examples fixture', function (): void {
-        assertFixtureMatches('field.visible-when', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('field.visible-when', Wire::toWire([
             Choice::make('type', 'Account type')->options([
                 Choice::option('Business', 'business'),
                 Choice::option('Individual', 'individual'),
             ]),
             TextInput::make('vat', 'VAT ID')->visibleWhen('type', 'business'),
-        ]))));
+        ]));
 
-        assertFixtureMatches('field.required-when', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('field.required-when', Wire::toWire([
             Choice::make('country', 'Country')->options([
                 Choice::option('Germany', 'DE'),
                 Choice::option('Austria', 'AT'),
                 Choice::option('United States', 'US'),
             ]),
             TextInput::make('vat', 'VAT ID')->requiredWhen('country', 'DE'),
-        ]))));
+        ]));
     });
 });

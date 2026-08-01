@@ -240,7 +240,7 @@ it('defaults both formats to null', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the line chart example fixture', function (): void {
-        assertFixtureMatches('charts.line', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.line', Wire::toWire([
             Chart::make('Signups', 'signups-chart')
                 ->description('New users per month')
                 ->categoryKey('month')
@@ -254,11 +254,11 @@ describe('docs fixtures', function (): void {
                 ->line('free', 'Free')
                 ->line('pro', 'Pro')
                 ->height(260),
-        ]))));
+        ]));
     });
 
     it('matches the grouped bar chart example fixture', function (): void {
-        assertFixtureMatches('charts.grouped-bar', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.grouped-bar', Wire::toWire([
             Chart::make('Orders by channel', 'orders-chart')
                 ->categoryKey('week')
                 ->data([
@@ -270,11 +270,11 @@ describe('docs fixtures', function (): void {
                 ->bar('online', 'Online')
                 ->bar('store', 'In-store')
                 ->height(260),
-        ]))));
+        ]));
     });
 
     it('matches the stacked bar chart example fixture', function (): void {
-        assertFixtureMatches('charts.stacked-bar', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.stacked-bar', Wire::toWire([
             Chart::make('Monthly recurring revenue', 'mrr-chart')
                 ->description('Stacked by revenue type')
                 ->categoryKey('month')
@@ -287,11 +287,11 @@ describe('docs fixtures', function (): void {
                 ->bar('new', 'New', stackId: 'mrr')
                 ->bar('expansion', 'Expansion', stackId: 'mrr')
                 ->height(260),
-        ]))));
+        ]));
     });
 
     it('matches the composed area and line chart example fixture', function (): void {
-        assertFixtureMatches('charts.composed', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.composed', Wire::toWire([
             Chart::make('Revenue vs forecast', 'revenue-forecast-chart')
                 ->description('Actuals as a line over the forecast band')
                 ->categoryKey('month')
@@ -305,11 +305,11 @@ describe('docs fixtures', function (): void {
                 ->area('forecast', 'Forecast')
                 ->line('revenue', 'Revenue')
                 ->height(260),
-        ]))));
+        ]));
     });
 
     it('matches the pie chart example fixture', function (): void {
-        assertFixtureMatches('charts.pie', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.pie', Wire::toWire([
             Chart::make('Revenue by channel', 'channel-mix-chart')
                 ->description('Share of total revenue')
                 ->data([
@@ -320,11 +320,11 @@ describe('docs fixtures', function (): void {
                 ])
                 ->pie('amount', nameKey: 'channel')
                 ->height(260),
-        ]))));
+        ]));
     });
 
     it('matches the doughnut chart example fixture', function (): void {
-        assertFixtureMatches('charts.doughnut', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.doughnut', Wire::toWire([
             Chart::make('Revenue by channel', 'channel-mix-doughnut-chart')
                 ->description('Share of total revenue')
                 ->data([
@@ -335,11 +335,11 @@ describe('docs fixtures', function (): void {
                 ])
                 ->doughnut('amount', nameKey: 'channel')
                 ->height(260),
-        ]))));
+        ]));
     });
 
     it('matches the distribution chart example fixture', function (): void {
-        assertFixtureMatches('charts.distribution', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.distribution', Wire::toWire([
             Chart::make('Revenue by channel', 'channel-distribution-chart')
                 ->description('Share of total revenue')
                 ->data([
@@ -350,11 +350,11 @@ describe('docs fixtures', function (): void {
                 ])
                 ->distribution('amount', nameKey: 'channel')
                 ->valueFormat(NumberFormat::currency('USD')->compact()),
-        ]))));
+        ]));
     });
 
     it('matches the gauge chart example fixture', function (): void {
-        assertFixtureMatches('charts.gauge', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.gauge', Wire::toWire([
             Chart::make('CPU usage', 'cpu-gauge-chart')
                 ->description('Current utilization')
                 ->data([
@@ -363,11 +363,11 @@ describe('docs fixtures', function (): void {
                 ->gauge('value', nameKey: 'label', maxValue: 100)
                 ->valueFormat(NumberFormat::make()->unit(NumberFormatUnit::Percent))
                 ->height(260),
-        ]))));
+        ]));
     });
 
     it('matches the formatting example fixture', function (): void {
-        assertFixtureMatches('charts.formatting', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('charts.formatting', Wire::toWire([
             Chart::make('Revenue', 'formatting-chart')
                 ->description('Compact currency on the value axis, month labels on the category axis')
                 ->categoryKey('month')
@@ -381,6 +381,6 @@ describe('docs fixtures', function (): void {
                 ->categoryFormat(DateFormat::monthYear())
                 ->valueFormat(NumberFormat::currency('USD')->compact())
                 ->height(260),
-        ]))));
+        ]));
     });
 });

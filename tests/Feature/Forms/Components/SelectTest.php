@@ -178,7 +178,7 @@ it('contributes no nested rules without item rules', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the select examples fixture', function (): void {
-        assertFixtureMatches('select.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('select.basic', Wire::toWire([
             Select::make('country', 'Country')
                 ->placeholder('Pick a country')
                 ->options([
@@ -187,9 +187,9 @@ describe('docs fixtures', function (): void {
                     Select::option('Spain', 'es'),
                     Select::option('Italy', 'it'),
                 ]),
-        ]))));
+        ]));
 
-        assertFixtureMatches('select.multiple', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('select.multiple', Wire::toWire([
             Select::make('languages', 'Languages')
                 ->multiple()
                 ->placeholder('Choose languages')
@@ -199,9 +199,9 @@ describe('docs fixtures', function (): void {
                     Select::option('Go', 'go'),
                     Select::option('Rust', 'rust'),
                 ]),
-        ]))));
+        ]));
 
-        assertFixtureMatches('select.rich', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('select.rich', Wire::toWire([
             Select::make('customer', 'Customer')
                 ->placeholder('Pick a customer')
                 ->options([
@@ -215,13 +215,13 @@ describe('docs fixtures', function (): void {
                     ]),
                     Badge::make('')->dataKey('label', 'number'),
                 ]),
-        ]))));
+        ]));
 
-        assertFixtureMatches('select.creatable', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('select.creatable', Wire::toWire([
             Select::make('keywords', 'Keywords')
                 ->multiple()
                 ->creatable()
                 ->placeholder('Add a keyword'),
-        ]))));
+        ]));
     });
 });

@@ -47,8 +47,8 @@ it('rejects malformed time values', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the time input example fixture', function (): void {
-        assertFixtureMatches('time-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('time-input.basic', Wire::toWire([
             TimeInput::make('starts_at', 'Start time')->min('08:00')->max('18:00'),
-        ]))));
+        ]));
     });
 });
