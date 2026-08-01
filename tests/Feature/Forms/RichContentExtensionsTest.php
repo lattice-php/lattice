@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Lattice\Lattice\Forms\Components\RichEditor;
 use Lattice\Lattice\Forms\RichContent;
+use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 use Lattice\Lattice\Tests\Fixtures\RichEditor\CalloutExtension;
 
 function calloutDoc(): array
@@ -109,6 +110,29 @@ it('keeps toArray canonical while toPreparedArray carries ephemeral attrs', func
 
     expect($content->toArray()['content'][0]['attrs'] ?? [])->not->toHaveKey('resolvedLabel')
         ->and($content->toPreparedArray()['content'][0]['attrs'])->toHaveKey('resolvedLabel');
+});
+
+it('prepares the document once per instance across toHtml, toText, and toPreparedArray', function (): void {
+    $extension = new class extends EditorExtension
+    {
+        public int $calls = 0;
+
+        public function prepareDocument(array $document): array
+        {
+            $this->calls++;
+
+            return $document;
+        }
+    };
+
+    $doc = ['type' => 'doc', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => 'hi']]]]];
+    $content = RichContent::make($doc, extensions: [$extension]);
+
+    $content->toHtml();
+    $content->toText();
+    $content->toPreparedArray();
+
+    expect($extension->calls)->toBe(1);
 });
 
 it('wires the prepared document as the rich editor value prop', function (): void {

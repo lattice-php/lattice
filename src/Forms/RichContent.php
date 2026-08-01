@@ -59,6 +59,11 @@ final class RichContent
     private ?array $schema = null;
 
     /**
+     * @var array<string, mixed>|null
+     */
+    private ?array $preparedDocument = null;
+
+    /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes  Schema type names to keep beyond the baseline; null keeps the full built-in schema.
      * @param  iterable<EditorExtension>  $extensions
@@ -117,13 +122,17 @@ final class RichContent
      */
     public function toPreparedArray(): array
     {
+        if ($this->preparedDocument !== null) {
+            return $this->preparedDocument;
+        }
+
         $document = $this->toArray();
 
         foreach ($this->extensions as $extension) {
             $document = $extension->prepareDocument($document);
         }
 
-        return $document;
+        return $this->preparedDocument = $document;
     }
 
     /**
