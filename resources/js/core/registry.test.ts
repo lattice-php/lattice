@@ -3,7 +3,6 @@ import { createPlugin, createRegistry, eagerComponent, lazyComponent } from "@la
 import type { RendererComponent } from "./types";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
-const FallbackComponent: RendererComponent<"test.eager"> = () => null;
 
 describe("lattice registry", () => {
   it("registers eager components without a loader", () => {
@@ -27,19 +26,6 @@ describe("lattice registry", () => {
     expect(registration.mode).toBe("lazy");
     expect(registration.load).toBe(load);
     expect(registration.component).toBeTypeOf("object");
-  });
-
-  it("registers lazy components with an optional fallback", () => {
-    const load = () =>
-      Promise.resolve({
-        default: EagerComponent,
-      });
-
-    const registration = lazyComponent(load, {
-      fallback: FallbackComponent,
-    });
-
-    expect(registration.fallback).toBe(FallbackComponent);
   });
 
   it("merges plugins into a registry", () => {

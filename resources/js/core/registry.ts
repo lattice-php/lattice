@@ -12,7 +12,6 @@ export type EagerComponentRegistration = {
 
 export type LazyComponentRegistration = {
   component: LazyExoticComponent<RendererComponent>;
-  fallback?: RendererComponent;
   load: () => Promise<RendererComponentModule>;
   mode: "lazy";
 };
@@ -45,10 +44,6 @@ export type Registry = {
   effects: EffectHandlerRegistry;
 };
 
-export type LazyComponentOptions<TType extends string> = {
-  fallback?: RendererComponent<TType>;
-};
-
 export function eagerComponent<TType extends string>(
   component: RendererComponent<TType>,
 ): EagerComponentRegistration {
@@ -60,13 +55,11 @@ export function eagerComponent<TType extends string>(
 
 export function lazyComponent<TType extends string>(
   load: () => Promise<RendererComponentModule<TType>>,
-  options: LazyComponentOptions<TType> = {},
 ): LazyComponentRegistration {
   const erasedLoader = load as unknown as () => Promise<RendererComponentModule>;
 
   return {
     component: lazy(erasedLoader),
-    fallback: options.fallback as RendererComponent | undefined,
     load: erasedLoader,
     mode: "lazy",
   };

@@ -358,7 +358,6 @@ describe("remoteFetch", () => {
 
     const error = await remoteFetch("https://crm.example.test/customers", {
       remote,
-      retryOnUnauthorized: false,
     }).catch((reason: unknown) => reason);
 
     expect(error).toBeInstanceOf(ApiError);

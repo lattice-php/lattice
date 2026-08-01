@@ -177,20 +177,6 @@ abstract class RowsField extends Field implements ProvidesRowFields
         return FormData::make([...$form->all(), ...$row]);
     }
 
-    /**
-     * @param  array<string, mixed>  $row
-     */
-    public function rowField(array $row, string $name): ?Field
-    {
-        foreach ($this->rowFields($row) as $field) {
-            if ($field->name() === $name) {
-                return $field;
-            }
-        }
-
-        return null;
-    }
-
     public function prefillRowFields(mixed $rows, ?FormData $form = null, ?Request $request = null): void
     {
         if (! is_array($rows)) {

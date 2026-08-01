@@ -8,7 +8,7 @@ use Lattice\Lattice\Ui\Components\Text;
 
 describe('docs fixtures', function (): void {
     it('matches the wizard example fixture', function (): void {
-        assertFixtureMatches('wizard.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('wizard.basic', Wire::toWire([
             Wizard::make([
                 WizardStep::make('customer')
                     ->description('Who is this order for?')
@@ -26,6 +26,6 @@ describe('docs fixtures', function (): void {
                         Text::make('Everything looks good — finish to place the order.'),
                     ]),
             ])->vertical(),
-        ]))));
+        ]));
     });
 });

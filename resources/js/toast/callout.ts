@@ -1,7 +1,7 @@
 import type { Callout, RetractCallout } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
 import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
-import { isVariant } from "./toast";
+import { coerceMessage, isVariant, subscribeWindowEvent } from "./toast";
 
 export type { Callout };
 
@@ -11,12 +11,9 @@ export function normalizeCallout(detail: unknown): Callout | null {
   }
 
   const callout = detail as Record<string, unknown>;
+  const message = coerceMessage(callout.message);
 
-  const rawMessage = callout.message;
-  const message =
-    typeof rawMessage === "string" ? rawMessage : isTranslatable(rawMessage) ? rawMessage : null;
-
-  if (message === null || message === "") {
+  if (message === null) {
     return null;
   }
 
@@ -32,29 +29,17 @@ export function normalizeCallout(detail: unknown): Callout | null {
 }
 
 export function onCallout(callback: (callout: Callout) => void): () => void {
-  const listener = (event: Event): void => {
-    const callout = normalizeCallout((event as CustomEvent).detail);
-
-    if (callout) {
-      callback(callout);
-    }
-  };
-
-  window.addEventListener(LATTICE_EVENT.callout, listener);
-
-  return () => window.removeEventListener(LATTICE_EVENT.callout, listener);
+  return subscribeWindowEvent(LATTICE_EVENT.callout, normalizeCallout, callback);
 }
 
 export function onRetractCallout(callback: (unique: string) => void): () => void {
-  const listener = (event: Event): void => {
-    const unique = (event as CustomEvent<RetractCallout>).detail?.unique;
+  return subscribeWindowEvent(
+    LATTICE_EVENT.retractCallout,
+    (detail) => {
+      const unique = (detail as RetractCallout | undefined)?.unique;
 
-    if (typeof unique === "string") {
-      callback(unique);
-    }
-  };
-
-  window.addEventListener(LATTICE_EVENT.retractCallout, listener);
-
-  return () => window.removeEventListener(LATTICE_EVENT.retractCallout, listener);
+      return typeof unique === "string" ? unique : null;
+    },
+    callback,
+  );
 }

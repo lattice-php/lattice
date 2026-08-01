@@ -18,8 +18,8 @@ it('serializes a date input', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the date input example fixture', function (): void {
-        assertFixtureMatches('date-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('date-input.basic', Wire::toWire([
             DateInput::make('birthday', 'Birthday')->max('2026-01-01'),
-        ]))));
+        ]));
     });
 });

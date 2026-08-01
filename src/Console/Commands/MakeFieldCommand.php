@@ -17,32 +17,10 @@ final class MakeFieldCommand extends Command
 
     public function handle(): int
     {
-        $name = (string) $this->argument('name');
-        $target = $this->scaffoldTarget($name, 'Forms/Fields', 'fields');
-        $class = $target['class'];
-        $type = $this->option('type') ?: $this->typeFromName($class, '');
-        $attributeType = FieldType::localType($type);
+        $target = $this->scaffoldTarget((string) $this->argument('name'), 'Forms/Fields', 'fields');
+        $type = $this->option('type') ?: $this->typeFromName($target['class'], '');
         $wireType = FieldType::wireType($type);
-        $force = (bool) $this->option('force');
 
-        $this->writeStub(
-            'field.php.stub',
-            $target['php'],
-            ['namespace' => $target['namespace'], 'class' => $class, 'type' => $attributeType], force: $force);
-
-        $this->writeStub(
-            'field.tsx.stub',
-            $target['tsx'],
-            ['class' => $class, 'type' => $wireType], force: $force);
-
-        $this->registerInPlugin($target['plugin'], $wireType, $class.'Component', $target['import']);
-
-        if ($target['refresh']) {
-            $this->refreshTypes();
-        }
-
-        $this->components->info("Field [$class] created with type [$wireType].");
-
-        return self::SUCCESS;
+        return $this->writePair('Field', $target, 'field', FieldType::localType($type), $wireType, $wireType, 'Component');
     }
 }

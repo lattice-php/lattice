@@ -9,7 +9,7 @@ use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
     it('matches the builder example fixture', function (): void {
-        assertFixtureMatches('builder.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('builder.basic', Wire::toWire([
             Builder::make('items', 'Line items')
                 ->templates([
                     RowTemplate::make('text')->label('Text')->schema([
@@ -23,6 +23,6 @@ describe('docs fixtures', function (): void {
                 ])
                 ->minItems(1)
                 ->addLabel('Add block'),
-        ]))));
+        ]));
     });
 });

@@ -359,7 +359,6 @@ describe("Lattice table component", () => {
     expect(
       JSON.parse(window.localStorage.getItem("lattice:table-columns:workbench.products") ?? ""),
     ).toEqual({
-      columns: ["qty", "price"],
       overrides: {
         qty: 256,
       },

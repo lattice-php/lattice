@@ -9,23 +9,49 @@ use Illuminate\Support\Str;
 use Lattice\Lattice\Console\Commands\Concerns\ResolvesScaffoldTarget;
 
 /**
- * Base for the PHP-only definition generators (page, form, table, action, …).
- * Each subclass sets {@see $type}, {@see $directory}, and {@see $stub}.
+ * The PHP-only definition generators (page, form, table, action, …): one
+ * command instance per {@see self::TYPES} row, registered via {@see self::all()}.
  *
  * A bare name is written to app/Ui/{directory}/{Name}.php (the default UI
  * layer); a name with a path separator is placed verbatim under App, so
  * feature-first apps pass e.g. `Projects/Ui/Forms/RoleForm`. See
  * {@see ResolvesScaffoldTarget}. `--force` overwrites an existing file.
  */
-abstract class MakeDefinitionCommand extends Command
+final class MakeDefinitionCommand extends Command
 {
     use ResolvesScaffoldTarget;
 
-    protected string $type;
+    private const array TYPES = [
+        'page' => ['Page', 'Pages', 'page.php.stub'],
+        'form' => ['Form', 'Forms', 'form.php.stub'],
+        'table' => ['Table', 'Tables', 'table.php.stub'],
+        'action' => ['Action', 'Actions', 'action.php.stub'],
+        'bulk-action' => ['Bulk action', 'Actions', 'bulk-action.php.stub'],
+        'fragment' => ['Fragment', 'Fragments', 'fragment.php.stub'],
+        'layout' => ['Layout', 'Layouts', 'layout.php.stub'],
+        'remote-source' => ['Remote source', 'Remote', 'remote-source.php.stub'],
+    ];
 
-    protected string $directory;
+    /** @return list<self> */
+    public static function all(): array
+    {
+        return array_map(
+            fn (string $command): self => new self($command, ...self::TYPES[$command]),
+            array_keys(self::TYPES),
+        );
+    }
 
-    protected string $stub;
+    private function __construct(
+        string $command,
+        private readonly string $type,
+        private readonly string $directory,
+        private readonly string $stub,
+    ) {
+        $this->signature = "lattice:{$command} {name} {--force}";
+        $this->description = 'Scaffold a Lattice '.strtolower($type);
+
+        parent::__construct();
+    }
 
     public function handle(): int
     {

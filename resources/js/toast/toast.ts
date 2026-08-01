@@ -17,18 +17,39 @@ export function isVariant(value: unknown): value is Variant {
   return variants.some((variant) => variant === value);
 }
 
+export function coerceMessage(value: unknown): ToastMessage["message"] | null {
+  const message = typeof value === "string" ? value : isTranslatable(value) ? value : null;
+
+  return message === "" ? null : message;
+}
+
+export function subscribeWindowEvent<T>(
+  event: string,
+  normalize: (detail: unknown) => T | null,
+  callback: (value: T) => void,
+): () => void {
+  const listener = (windowEvent: Event): void => {
+    const value = normalize((windowEvent as CustomEvent).detail);
+
+    if (value !== null) {
+      callback(value);
+    }
+  };
+
+  window.addEventListener(event, listener);
+
+  return () => window.removeEventListener(event, listener);
+}
+
 export function normalizeToastMessage(value: unknown): ToastMessage | null {
   if (typeof value !== "object" || value === null) {
     return null;
   }
 
   const toast = value as Record<string, unknown>;
+  const message = coerceMessage(toast.message);
 
-  const rawMessage = toast.message;
-  const message =
-    typeof rawMessage === "string" ? rawMessage : isTranslatable(rawMessage) ? rawMessage : null;
-
-  if (message === null || message === "") {
+  if (message === null) {
     return null;
   }
 
@@ -43,15 +64,5 @@ export function normalizeToastMessage(value: unknown): ToastMessage | null {
 }
 
 export function onToast(callback: (toast: ToastMessage) => void): () => void {
-  const listener = (event: Event): void => {
-    const toast = normalizeToastMessage((event as CustomEvent).detail);
-
-    if (toast) {
-      callback(toast);
-    }
-  };
-
-  window.addEventListener(LATTICE_EVENT.toast, listener);
-
-  return () => window.removeEventListener(LATTICE_EVENT.toast, listener);
+  return subscribeWindowEvent(LATTICE_EVENT.toast, normalizeToastMessage, callback);
 }

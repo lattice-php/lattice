@@ -6,8 +6,8 @@ use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
     it('matches the file upload example fixture', function (): void {
-        assertFixtureMatches('file-upload.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('file-upload.basic', Wire::toWire([
             FileUpload::make('avatar', 'Avatar')->image()->maxSize(2048),
-        ]))));
+        ]));
     });
 });

@@ -45,7 +45,6 @@ describe("useColumnVisibility", () => {
     fireEvent.click(screen.getByTestId("hide-sku"));
     expect(screen.getByTestId("visible")).toHaveTextContent("name");
     expect(JSON.parse(window.localStorage.getItem("vis") ?? "")).toEqual({
-      columns: ["sku", "notes"],
       overrides: { sku: false },
     });
   });

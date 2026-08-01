@@ -218,7 +218,6 @@ it("stores table layout column widths under the field base", () => {
 
   expect(JSON.parse(window.localStorage.getItem("lattice:table-columns:form:items") ?? "")).toEqual(
     {
-      columns: ["qty", "price"],
       overrides: {
         qty: 256,
       },

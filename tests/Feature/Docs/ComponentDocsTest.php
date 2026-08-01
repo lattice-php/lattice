@@ -41,7 +41,7 @@ it('serializes a null card tooltip when unset', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the card example fixture', function (): void {
-        assertFixtureMatches('components.card', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.card', Wire::toWire([
             Card::make('Team settings', 'Manage how your team appears.')
                 ->tooltip('These settings affect everyone on the team.')
                 ->schema([
@@ -52,21 +52,21 @@ describe('docs fixtures', function (): void {
                     ]),
                     Button::make('Invite member'),
                 ]),
-        ]))));
+        ]));
     });
 
     it('matches the grid example fixture', function (): void {
-        assertFixtureMatches('components.grid', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.grid', Wire::toWire([
             Grid::make()->columns(3)->schema([
                 Badge::make('First'),
                 Badge::make('Second'),
                 Badge::make('Third'),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the section example fixture', function (): void {
-        assertFixtureMatches('components.section', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.section', Wire::toWire([
             Section::make('Members', 'People with access to this team.')
                 ->collapsible()
                 ->tooltip('Only admins can change who has access.')
@@ -75,11 +75,11 @@ describe('docs fixtures', function (): void {
                     Text::make('Three people have access to this team.'),
                     Badge::make('3 active'),
                 ]),
-        ]))));
+        ]));
     });
 
     it('matches the progress example fixture', function (): void {
-        assertFixtureMatches('components.progress', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.progress', Wire::toWire([
             Stack::make()->gap(Gap::Small)->schema([
                 Progress::bar(65)->showValue(),
                 Progress::bar(80)->color(Color::success())->size(Size::Lg),
@@ -88,20 +88,20 @@ describe('docs fixtures', function (): void {
                     Progress::circle(35)->max(50)->color(Color::warning())->size(Size::Xl)->showValue(),
                 ]),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the tooltip example fixture', function (): void {
-        assertFixtureMatches('components.tooltip', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.tooltip', Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Badge::make('Plan: Pro'),
                 Tooltip::make()->content('Includes unlimited seats and priority support.'),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the button variants example fixture', function (): void {
-        assertFixtureMatches('components.buttons', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.buttons', Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Button::make('Primary'),
                 Button::make('Secondary')->variant(Variant::Secondary),
@@ -112,36 +112,36 @@ describe('docs fixtures', function (): void {
                 Button::make('Outline')->emphasis(Emphasis::Outline),
                 Button::make('Ghost')->emphasis(Emphasis::Ghost),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the stack example fixture', function (): void {
-        assertFixtureMatches('components.stack', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.stack', Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Button::make('Save'),
                 Button::make('Cancel')->emphasis(Emphasis::Ghost),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the display example fixture', function (): void {
-        assertFixtureMatches('components.text', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.text', Wire::toWire([
             Stack::make()->gap(Gap::Small)->schema([
                 Heading::make('Billing', 2),
                 Text::make('Invoices are sent on the first of each month.'),
                 Badge::make('Trialing'),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the raw block example fixture', function (): void {
-        assertFixtureMatches('components.raw-block', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.raw-block', Wire::toWire([
             RawBlock::make()->html('<p>Rendered from <strong>trusted</strong> server HTML.</p>'),
-        ]))));
+        ]));
     });
 
     it('matches the segmented control example fixture', function (): void {
-        assertFixtureMatches('components.segmented-control', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.segmented-control', Wire::toWire([
             SegmentedControl::make('appearance', 'Appearance')
                 ->options([
                     SegmentedControl::option('Light', 'light'),
@@ -150,22 +150,22 @@ describe('docs fixtures', function (): void {
                 ])
                 ->value('light')
                 ->emits('appearance-changed'),
-        ]))));
+        ]));
     });
 
     it('matches the avatar example fixture', function (): void {
-        assertFixtureMatches('components.avatar', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.avatar', Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Avatar::make('https://i.pravatar.cc/96?img=13')->name('Ada Lovelace'),
                 Avatar::make()->name('Grace Hopper'),
                 Avatar::make()->name('Katherine Johnson')->size(Size::Lg),
                 Avatar::make(),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the image example fixture', function (): void {
-        assertFixtureMatches('components.image', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.image', Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Image::make('https://picsum.photos/id/1060/600/400')
                     ->alt('Coffee brewing setup')
@@ -179,11 +179,11 @@ describe('docs fixtures', function (): void {
                     ->size(96)
                     ->previewable(false),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the separator example fixture', function (): void {
-        assertFixtureMatches('components.separator', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.separator', Wire::toWire([
             Stack::make()->gap(Gap::Small)->schema([
                 Text::make('Profile'),
                 Separator::make(),
@@ -191,11 +191,11 @@ describe('docs fixtures', function (): void {
                 Separator::make(),
                 Text::make('Security'),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the vertical separator example fixture', function (): void {
-        assertFixtureMatches('components.separator-vertical', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.separator-vertical', Wire::toWire([
             Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
                 Text::make('Draft'),
                 Separator::make()->orientation(Orientation::Vertical),
@@ -203,11 +203,11 @@ describe('docs fixtures', function (): void {
                 Separator::make()->orientation(Orientation::Vertical),
                 Text::make('Archived'),
             ]),
-        ]))));
+        ]));
     });
 
     it('matches the tabs example fixture', function (): void {
-        assertFixtureMatches('components.tabs', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('components.tabs', Wire::toWire([
             Tabs::make()->defaultValue('details')->schema([
                 Tab::make('details', 'Details')->schema([
                     Text::make('Team details go here.'),
@@ -216,6 +216,6 @@ describe('docs fixtures', function (): void {
                     Text::make('Recent activity for the team.'),
                 ]),
             ]),
-        ]))));
+        ]));
     });
 });

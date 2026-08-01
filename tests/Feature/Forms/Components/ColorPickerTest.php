@@ -20,9 +20,9 @@ it('serializes a custom palette', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the color picker example fixture', function (): void {
-        assertFixtureMatches('color-picker.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('color-picker.basic', Wire::toWire([
             ColorPicker::make('color', 'Tag color')
                 ->placeholder('Pick a color'),
-        ]))));
+        ]));
     });
 });

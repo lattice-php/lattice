@@ -42,7 +42,6 @@ export type RemoteAccess = GeneratedRemoteAccess;
 export type RemoteInit = Omit<RequestInit, "credentials" | "headers"> & {
   headers?: Record<string, string>;
   remote: RemoteAccess;
-  retryOnUnauthorized?: boolean;
   throwOnError?: boolean;
 };
 
@@ -207,7 +206,7 @@ function isUnauthorized(response: Response): boolean {
 
 async function fetchRemoteWithToken(
   url: string,
-  init: Omit<RemoteInit, "remote" | "retryOnUnauthorized" | "throwOnError">,
+  init: Omit<RemoteInit, "remote" | "throwOnError">,
   token: BrowserToken,
 ): Promise<Response> {
   const { headers, ...rest } = init;
@@ -225,11 +224,11 @@ async function fetchRemoteWithToken(
 }
 
 export async function remoteFetch(url: string, init: RemoteInit): Promise<Response> {
-  const { remote, retryOnUnauthorized = true, throwOnError = true, ...request } = init;
+  const { remote, throwOnError = true, ...request } = init;
   let token = await remoteToken(remote);
   let response = await fetchRemoteWithToken(url, request, token);
 
-  if (retryOnUnauthorized && isUnauthorized(response)) {
+  if (isUnauthorized(response)) {
     invalidateRemoteToken(remote);
     token = await remoteToken(remote);
     response = await fetchRemoteWithToken(url, request, token);

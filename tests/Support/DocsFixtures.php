@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\File;
 function assertFixtureMatches(string $fixtureKey, mixed $payload): void
 {
     $path = dirname(__DIR__, 2).'/docs/fixtures/'.$fixtureKey.'.json';
-    $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+    $json = json_encode(normalizeFixture($payload), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
 
     if (getenv('LATTICE_UPDATE_FIXTURES') !== false) {
         File::put($path, $json.PHP_EOL);
@@ -18,14 +18,15 @@ function assertFixtureMatches(string $fixtureKey, mixed $payload): void
     expect(File::get($path))->toBe($json.PHP_EOL);
 }
 
-/** Removes randomized signed references from committed docs fixtures. */
-function stripFixtureRefs(mixed $value): mixed
+/** Drops randomized signed references and sorts keys so committed fixtures stay stable. */
+function normalizeFixture(mixed $value): mixed
 {
     if ($value instanceof stdClass) {
         $properties = (array) $value;
         unset($properties['ref']);
+        ksort($properties);
 
-        return (object) array_map(stripFixtureRefs(...), $properties);
+        return (object) array_map(normalizeFixture(...), $properties);
     }
 
     if (! is_array($value)) {
@@ -34,25 +35,9 @@ function stripFixtureRefs(mixed $value): mixed
 
     unset($value['ref']);
 
-    return array_map(stripFixtureRefs(...), $value);
-}
-
-function sortFixtureKeys(mixed $value): mixed
-{
-    if ($value instanceof stdClass) {
-        $properties = (array) $value;
-        ksort($properties);
-
-        return (object) array_map(sortFixtureKeys(...), $properties);
-    }
-
-    if (! is_array($value)) {
-        return $value;
-    }
-
     if (! array_is_list($value)) {
         ksort($value);
     }
 
-    return array_map(sortFixtureKeys(...), $value);
+    return array_map(normalizeFixture(...), $value);
 }

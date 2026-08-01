@@ -9,33 +9,31 @@ function parseFrame(line: string): ChatFrame | null {
   }
 }
 
-export async function* ndjsonChatTransport({
-  url,
-  body,
-  signal,
-}: ChatTransportRequest): AsyncGenerator<ChatFrame> {
-  const res = await apiFetch(url, {
+function ndjsonTransport(fetchResponse: (request: ChatTransportRequest) => Promise<Response>) {
+  return async function* transport(request: ChatTransportRequest): AsyncGenerator<ChatFrame> {
+    const res = await fetchResponse(request);
+
+    if (!res.ok || !res.body) {
+      throw new Error(`Chat stream failed (${res.status})`);
+    }
+
+    yield* readNdjsonFrames(res.body);
+  };
+}
+
+export const ndjsonChatTransport = ndjsonTransport(({ url, body, signal }) =>
+  apiFetch(url, {
     method: "POST",
     signal,
     headers: { Accept: "application/x-ndjson" },
     body: JSON.stringify(body),
     throwOnError: false,
-  });
-
-  if (!res.ok || !res.body) {
-    throw new Error(`Chat stream failed (${res.status})`);
-  }
-
-  yield* readNdjsonFrames(res.body);
-}
+  }),
+);
 
 export function createRemoteNdjsonChatTransport(remote: RemoteAccess) {
-  return async function* remoteNdjsonChatTransport({
-    url,
-    body,
-    signal,
-  }: ChatTransportRequest): AsyncGenerator<ChatFrame> {
-    const res = await remoteFetch(url, {
+  return ndjsonTransport(({ url, body, signal }) =>
+    remoteFetch(url, {
       remote,
       method: "POST",
       signal,
@@ -45,14 +43,8 @@ export function createRemoteNdjsonChatTransport(remote: RemoteAccess) {
       },
       body: JSON.stringify(body),
       throwOnError: false,
-    });
-
-    if (!res.ok || !res.body) {
-      throw new Error(`Chat stream failed (${res.status})`);
-    }
-
-    yield* readNdjsonFrames(res.body);
-  };
+    }),
+  );
 }
 
 async function* readNdjsonFrames(body: ReadableStream<Uint8Array>): AsyncGenerator<ChatFrame> {

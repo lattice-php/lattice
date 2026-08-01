@@ -111,24 +111,17 @@ describe("Renderer", () => {
     expect(screen.queryByText("Hidden")).not.toBeInTheDocument();
   });
 
-  it("renders a lazy component fallback while the chunk is loading", () => {
-    const LazyFallback: RendererComponent<"test.lazy"> = ({ node }) => (
-      <div data-test={`${node.id}-fallback`} />
-    );
-
+  it("suspends to an empty fallback while a lazy chunk is loading", () => {
     const registry = createRegistry({
       components: {
         "test.lazy": lazyComponent(
           () => new Promise<RendererComponentModule<"test.lazy">>(() => {}),
-          {
-            fallback: LazyFallback,
-          },
         ),
       },
       name: "test",
     });
 
-    renderWithRegistry(
+    const { container } = renderWithRegistry(
       <Renderer
         nodes={[
           {
@@ -140,7 +133,7 @@ describe("Renderer", () => {
       registry,
     );
 
-    expect(screen.getByTestId("lazy-node-fallback")).toBeVisible();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it("does not rerender stable nodes when a parent updates", () => {

@@ -217,7 +217,7 @@ describe("Lattice table component in a browser", () => {
 
     await expect
       .poll(() => window.localStorage.getItem(storageKey))
-      .toBe(JSON.stringify({ columns: ["sku", "name"], overrides: { sku: 136 } }));
+      .toBe(JSON.stringify({ overrides: { sku: 136 } }));
 
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
     await screen.getByTestId("table-reset-columns").click();
@@ -245,7 +245,7 @@ describe("Lattice table component in a browser", () => {
 
     await expect
       .poll(() => window.localStorage.getItem(storageKey))
-      .toBe(JSON.stringify({ columns: ["sku", "name"], overrides: { name: 224 } }));
+      .toBe(JSON.stringify({ overrides: { name: 224 } }));
     expect(table).toBeInstanceOf(HTMLElement);
     expect((table as HTMLElement).style.getPropertyValue("--lattice-table-columns")).toBe(
       "minmax(6rem, 0.5fr) 224px",

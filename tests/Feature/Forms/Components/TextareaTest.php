@@ -18,8 +18,8 @@ it('serializes a textarea', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the textarea example fixture', function (): void {
-        assertFixtureMatches('textarea.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('textarea.basic', Wire::toWire([
             Textarea::make('bio', 'Bio')->rows(4)->placeholder('Tell us about yourself'),
-        ]))));
+        ]));
     });
 });

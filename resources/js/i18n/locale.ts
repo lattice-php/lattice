@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { createListeners } from "@lattice-php/lattice/lib/listeners";
 
 export type UseLocaleReturn = {
   readonly locale: string;
@@ -9,7 +10,7 @@ export type UseLocaleReturn = {
 const key = "locale";
 const fallback = "en";
 const maxAge = 365 * 24 * 60 * 60;
-const listeners = new Set<() => void>();
+const { subscribe, notify } = createListeners();
 
 let active: string | undefined;
 
@@ -83,18 +84,6 @@ function snapshot(): string {
   active ??= detectedLocale();
 
   return active;
-}
-
-function subscribe(callback: () => void): () => void {
-  listeners.add(callback);
-
-  return () => {
-    listeners.delete(callback);
-  };
-}
-
-function notify(): void {
-  listeners.forEach((listener) => listener());
 }
 
 function dispatch(locale: string): void {

@@ -77,8 +77,8 @@ it('hydrates Carbon values to datetime plus timezone', function (): void {
 
 describe('docs fixtures', function (): void {
     it('matches the datetime input example fixture', function (): void {
-        assertFixtureMatches('date-time-input.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('date-time-input.basic', Wire::toWire([
             DateTimeInput::make('starts_at', 'Starts at'),
-        ]))));
+        ]));
     });
 });

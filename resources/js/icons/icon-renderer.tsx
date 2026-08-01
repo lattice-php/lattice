@@ -12,23 +12,15 @@ export type IconRendererFunction = (props: IconRendererProps) => ReactNode;
 
 type IconRendererProviderProps = {
   children: ReactNode;
-  mode?: "replace" | "stack";
   renderer: IconRendererFunction;
 };
 
 const IconRenderersContext = createContext<IconRendererFunction[]>([]);
 const loggedMissingIcons = new Set<string>();
 
-export function IconRendererProvider({
-  children,
-  mode = "stack",
-  renderer,
-}: IconRendererProviderProps) {
+export function IconRendererProvider({ children, renderer }: IconRendererProviderProps) {
   const parentRenderers = useContext(IconRenderersContext);
-  const renderers = useMemo(
-    () => (mode === "replace" ? [renderer] : [renderer, ...parentRenderers]),
-    [mode, parentRenderers, renderer],
-  );
+  const renderers = useMemo(() => [renderer, ...parentRenderers], [parentRenderers, renderer]);
 
   return (
     <IconRenderersContext.Provider value={renderers}>{children}</IconRenderersContext.Provider>

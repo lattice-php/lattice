@@ -232,7 +232,7 @@ describe("useColumnResizing", () => {
     expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "192px" });
   });
 
-  it("stores resized widths with the complete column key list", () => {
+  it("stores resized widths once a drag commits", () => {
     render(<Harness hookColumns={twoColumns} storageKey="lattice:table-columns:orders" />);
 
     const handle = screen.getByRole("separator", { name: "Resize Qty" });
@@ -245,7 +245,6 @@ describe("useColumnResizing", () => {
     fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
 
     expect(JSON.parse(window.localStorage.getItem("lattice:table-columns:orders") ?? "")).toEqual({
-      columns: ["qty", "price"],
       overrides: {
         qty: 208,
       },
@@ -376,7 +375,6 @@ describe("useColumnResizing", () => {
     expect(screen.getByTestId("grid")).toHaveStyle({ gridTemplateColumns: "208px" });
     expect(screen.getByTestId("has-overrides")).toHaveTextContent("true");
     expect(JSON.parse(window.localStorage.getItem("cols") ?? "")).toEqual({
-      columns: ["qty"],
       overrides: {
         qty: 208,
       },

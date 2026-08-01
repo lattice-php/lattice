@@ -7,7 +7,6 @@ import { playwright } from "@vitest/browser-playwright";
 import laravel from "laravel-vite-plugin";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { createHash } from "node:crypto";
 import Sonda from "sonda/vite";
 import type { Plugin } from "vite";
 import { componentPackagesPlugin, discoverComponentPackages } from "./resources/js/vite";
@@ -146,24 +145,17 @@ function standaloneSprite(): Plugin {
 function standaloneManifest(): Plugin {
   return {
     name: "lattice:standalone-manifest",
-    generateBundle(_options, bundle) {
+    generateBundle() {
       const { version } = JSON.parse(
         readFileSync(path.resolve(__dirname, "package.json"), "utf8"),
       ) as {
         version: string;
       };
-      const files: Record<string, string> = {};
-
-      for (const [fileName, output] of Object.entries(bundle)) {
-        const source = output.type === "chunk" ? output.code : output.source;
-
-        files[fileName] = createHash("sha256").update(source).digest("hex").slice(0, 12);
-      }
 
       this.emitFile({
         type: "asset",
         fileName: "manifest.json",
-        source: `${JSON.stringify({ version, files }, null, 2)}\n`,
+        source: `${JSON.stringify({ version }, null, 2)}\n`,
       });
     },
   };
@@ -345,10 +337,8 @@ export default defineConfig(({ mode }) => {
                   /^vite($|\/)/,
                   /^@laravel\/echo-react($|\/)/,
                   /^i18next($|\/)/,
-                  /^react-i18next($|\/)/,
                   /^i18next-http-backend($|\/)/,
                   /^recharts($|\/)/,
-                  /^use-sync-external-store($|\/)/,
                 ],
                 output: {
                   preserveModules: true,

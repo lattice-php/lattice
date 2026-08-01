@@ -136,6 +136,44 @@ trait GeneratesComponentPair
     }
 
     /**
+     * @param  array{class: string, kebab: string, php: string, namespace: string, tsx: string, plugin: string, import: string, refresh: bool}  $target
+     */
+    protected function writePair(
+        string $label,
+        array $target,
+        string $stub,
+        string $phpType,
+        string $tsxType,
+        string $registryType,
+        string $suffix,
+        string $blockKey = 'components',
+        ?string $entryWrapper = 'eagerComponent',
+    ): int {
+        $class = $target['class'];
+        $force = (bool) $this->option('force');
+
+        $this->writeStub(
+            $stub.'.php.stub',
+            $target['php'],
+            ['namespace' => $target['namespace'], 'class' => $class, 'type' => $phpType], force: $force);
+
+        $this->writeStub(
+            $stub.'.tsx.stub',
+            $target['tsx'],
+            ['class' => $class, 'type' => $tsxType], force: $force);
+
+        $this->registerInPlugin($target['plugin'], $registryType, $class.$suffix, $target['import'], $blockKey, $entryWrapper);
+
+        if ($target['refresh']) {
+            $this->refreshTypes();
+        }
+
+        $this->components->info("$label [$class] created with type [$registryType].");
+
+        return self::SUCCESS;
+    }
+
+    /**
      * @param  array<string, string>  $replacements
      */
     protected function writeStub(string $stub, string $targetPath, array $replacements, bool $force = false): void

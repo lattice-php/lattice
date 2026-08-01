@@ -135,8 +135,7 @@ final class TableRegistry extends DefinitionRegistry
             ? explode('.', $target, 2)
             : [$target, 'value'];
 
-        $filter = collect($definition->filters())
-            ->first(fn (Filter $filter): bool => $filter->key() === $filterKey);
+        $filter = array_find($definition->filters(), fn (Filter $filter): bool => $filter->key() === $filterKey);
 
         abort_if($filter === null, Response::HTTP_NOT_FOUND);
 
@@ -156,8 +155,7 @@ final class TableRegistry extends DefinitionRegistry
      */
     private function searchColumnFilterOptions(TableDefinition $definition, string $columnKey, string $query): array
     {
-        $column = collect($definition->columns())
-            ->first(fn (Column $column): bool => $column->key() === $columnKey);
+        $column = array_find($definition->columns(), fn (Column $column): bool => $column->key() === $columnKey);
 
         abort_unless($column instanceof Filterable, Response::HTTP_NOT_FOUND);
         abort_unless($column->filterSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -182,7 +180,8 @@ final class TableRegistry extends DefinitionRegistry
      */
     private function hasSearchableColumns(array $columns): bool
     {
-        return collect($columns)->contains(
+        return array_any(
+            $columns,
             static fn (Column $column): bool => $column instanceof Searchable && $column->isSearchable(),
         );
     }

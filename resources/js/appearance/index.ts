@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { createListeners } from "@lattice-php/lattice/lib/listeners";
 
 const appearances = ["light", "dark", "system"] as const;
 
@@ -12,7 +13,7 @@ export type UseAppearanceReturn = {
   readonly updateAppearance: (mode: Appearance) => void;
 };
 
-const listeners = new Set<() => void>();
+const { subscribe, notify } = createListeners();
 let currentAppearance: Appearance = "system";
 let serverAppearance: Appearance = "system";
 
@@ -74,14 +75,6 @@ const applyAppearance = (appearance: Appearance): void => {
   document.documentElement.classList.toggle("dark", isDark);
   document.documentElement.style.colorScheme = isDark ? "dark" : "light";
 };
-
-const subscribe = (callback: () => void) => {
-  listeners.add(callback);
-
-  return () => listeners.delete(callback);
-};
-
-const notify = (): void => listeners.forEach((listener) => listener());
 
 const mediaQuery = (): MediaQueryList | null => {
   if (typeof window === "undefined") {

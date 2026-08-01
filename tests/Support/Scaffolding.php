@@ -53,25 +53,8 @@ function withScaffoldWorkspace(Closure $callback): mixed
 function withRegistryScaffold(Closure $callback): mixed
 {
     return withScaffoldWorkspace(function () use ($callback): mixed {
-        File::put(resource_path('js/registry.ts'), latticeRegistryStub());
+        File::put(resource_path('js/registry.ts'), File::get(dirname(__DIR__, 2).'/stubs/registry.ts'));
 
         return $callback();
     });
-}
-
-function latticeRegistryStub(): string
-{
-    return <<<'TS'
-import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
-
-export const registry = extendRegistry(
-  packageRegistry,
-  createPlugin({
-    name: "app",
-    components: {},
-    columns: {},
-  }),
-);
-
-TS;
 }

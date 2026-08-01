@@ -5,7 +5,6 @@ return [
     'tabs' => 'Tabs',
     'loading' => 'Lädt',
     'more-info' => 'Mehr Informationen',
-    'close-menu' => 'Menü schließen',
     'dismiss' => 'Schließen',
     'close' => 'Schließen',
     'cancel' => 'Abbrechen',
@@ -28,9 +27,7 @@ return [
         'run' => 'Aktion ausführen',
     ],
     'chat' => [
-        'launcher' => 'Chat',
         'title' => 'Chat',
-        'close' => 'Schließen',
         'send' => 'Senden',
         'input-label' => 'Nachrichteneingabe',
     ],

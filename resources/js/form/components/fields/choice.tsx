@@ -37,7 +37,7 @@ export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => 
         ariaLabel={node.props.label ?? undefined}
         autoFocus={node.props.autoFocus ?? undefined}
         disabled={readOnly || disabled}
-        name={testId}
+        name={testId ?? "segment"}
         onSelect={commit}
         options={options}
         tabIndex={node.props.tabIndex ?? undefined}

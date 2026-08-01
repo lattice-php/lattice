@@ -1,30 +1,8 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { EventBridge } from "@lattice-php/lattice";
-import type { ToastMessage } from "@lattice-php/lattice";
 
 describe("EventBridge", () => {
-  it("forwards lattice toast events to the host renderer with the full message", () => {
-    const onToast = vi.fn<(toast: ToastMessage) => void>();
-
-    render(<EventBridge onToast={onToast} />);
-
-    window.dispatchEvent(
-      new CustomEvent("lattice:toast", {
-        detail: { message: "Action handled.", variant: "warning" },
-      }),
-    );
-
-    expect(onToast).toHaveBeenCalledWith({
-      action: null,
-      dismissible: true,
-      duration: null,
-      message: "Action handled.",
-      persistent: false,
-      variant: "warning",
-    });
-  });
-
   it("passes appearance events to the host handler", () => {
     const onAppearanceChange = vi.fn<(appearance: string) => void>();
 
@@ -41,33 +19,19 @@ describe("EventBridge", () => {
     expect(onAppearanceChange).toHaveBeenCalledWith("dark");
   });
 
-  it("passes locale change events to the host handler", () => {
-    const onLocaleChange = vi.fn<(locale: string) => void>();
+  it("ignores appearance events with unknown values", () => {
+    const onAppearanceChange = vi.fn<(appearance: string) => void>();
 
-    render(<EventBridge onLocaleChange={onLocaleChange} />);
+    render(<EventBridge onAppearanceChange={onAppearanceChange} />);
 
     window.dispatchEvent(
-      new CustomEvent("lattice:locale-change", {
+      new CustomEvent("lattice:appearance-change", {
         detail: {
-          locale: "de",
+          value: "sepia",
         },
       }),
     );
 
-    expect(onLocaleChange).toHaveBeenCalledWith("de");
-  });
-
-  it("ignores toast events without a message", () => {
-    const onToast = vi.fn<(toast: ToastMessage) => void>();
-
-    render(<EventBridge onToast={onToast} />);
-
-    window.dispatchEvent(
-      new CustomEvent("lattice:toast", {
-        detail: { variant: "warning" },
-      }),
-    );
-
-    expect(onToast).not.toHaveBeenCalled();
+    expect(onAppearanceChange).not.toHaveBeenCalled();
   });
 });

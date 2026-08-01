@@ -8,7 +8,7 @@ use Lattice\Lattice\Support\Wire;
 
 describe('docs fixtures', function (): void {
     it('matches the repeater example fixture', function (): void {
-        assertFixtureMatches('repeater.basic', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('repeater.basic', Wire::toWire([
             Repeater::make('items', 'Line items')
                 ->schema([
                     TextInput::make('name', 'Name')->required(),
@@ -19,11 +19,11 @@ describe('docs fixtures', function (): void {
                 ->reorderable()
                 ->addLabel('Add line')
                 ->defaultItems(1),
-        ]))));
+        ]));
     });
 
     it('matches the repeater row-actions example fixture', function (): void {
-        assertFixtureMatches('repeater.row-actions', sortFixtureKeys(stripFixtureRefs(Wire::toWire([
+        assertFixtureMatches('repeater.row-actions', Wire::toWire([
             Repeater::make('items', 'Line items')
                 ->schema([
                     TextInput::make('name', 'Name'),
@@ -33,6 +33,6 @@ describe('docs fixtures', function (): void {
                     RowAction::duplicate(),
                     RowAction::remove()->label('Delete'),
                 ]),
-        ]))));
+        ]));
     });
 });
