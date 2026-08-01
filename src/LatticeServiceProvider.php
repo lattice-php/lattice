@@ -148,11 +148,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
         // namespace so consumers get them (and i18next /locales/{lng}/lattice.json)
         // without copying any files. Each lang group is its own file so the
         // i18next keys stay un-prefixed (e.g. `editor.bold`, not `lattice.editor.bold`).
-        // Registered directly on the loader rather than via loadTranslationsFrom():
-        // the i18next route resolves only the translation loader, never the
-        // translator, so the deferred loadTranslationsFrom() callback would never fire.
-        $translationLoader = $this->app->make('translation.loader');
-        $translationLoader->addNamespace(self::$name, __DIR__.'/../lang');
+        // Registered on the loader (not loadTranslationsFrom) for the reason
+        // documented on LatticeRegistry::translations(); resolved directly to
+        // keep the registry graph out of the boot path.
+        $this->app->make('translation.loader')->addNamespace(self::$name, __DIR__.'/../lang');
 
         $this->callAfterResolving(Kernel::class, function (Kernel $kernel): void {
             if ($kernel instanceof HttpKernel) {

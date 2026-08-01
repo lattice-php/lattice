@@ -190,11 +190,20 @@ const Signature: RendererComponent<"signature"> = ({ node }) => {
 };
 ```
 
-`createLatticeApp` merges every plugin's namespace into the [i18n bootstrap](/core/i18n/), so when the app enables the translation backend the namespace loads from `/locales/{lng}/acme-signature.json` like any other — serve the package's lang files by registering them on the translation loader in the package's service provider:
+`createLatticeApp` merges every plugin's namespace into the [i18n bootstrap](/core/i18n/), so when the app enables the translation backend the namespace loads from `/locales/{lng}/acme-signature.json` like any other — serve the package's lang files by registering them in the package's service provider:
 
 ```php
-$this->app->make('translation.loader')->addNamespace('acme-signature', __DIR__.'/../lang');
+use Lattice\Lattice\Facades\Lattice;
+
+Lattice::translations('acme-signature', __DIR__.'/../lang');
 ```
+
+<Warning>
+  Do not use Laravel's `loadTranslationsFrom()` here: it registers the namespace in a deferred
+  callback the i18next JSON route never triggers, so the translations silently fail to appear.
+  `Lattice::translations()` registers on the translation loader directly, which both the translator
+  and the route read.
+</Warning>
 
 <Info>
   The inline defaults are the no-backend fallback: apps that never enable the translation backend
@@ -219,5 +228,34 @@ import {
 A Composer package has no way to deliver npm dependencies into the consumer's bundle, so core owns
 the dependency and republishes it under its export map, the same way core owns i18next behind
 `.../i18n` above.
+
+## Testing the package
+
+Extend `Lattice\Lattice\Support\Testing\PackageTestCase` instead of hand-writing a Testbench
+`TestCase`: it boots Inertia and Lattice around the package's own providers on an in-memory sqlite
+app, applies the package's config overrides before boot, pulls in the
+[Lattice component assertions](/testing/overview/), and wires the conventional `workbench/` view and
+migration paths when they exist:
+
+```php
+use Lattice\Lattice\Support\Testing\PackageTestCase;
+
+abstract class TestCase extends PackageTestCase
+{
+    protected function packageProviders(): array
+    {
+        return [AcmeSignatureServiceProvider::class];
+    }
+
+    protected function packageConfig(): array
+    {
+        return ['lattice.discover' => [__DIR__.'/../workbench/app']];
+    }
+}
+```
+
+For Pest browser suites, extend `PackageBrowserTestCase` instead — it additionally fails fast with
+an actionable message when the workbench Vite build is missing or a stale dev-server marker is left
+behind, and widens Playwright's timeout for CI runners.
 
 See [Registry and types](/extending/registry-and-types/) for how the `type` string couples the two sides, and how generated types keep `node.props` sound.
