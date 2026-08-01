@@ -146,13 +146,9 @@ class RichEditor extends Field
     #[\Override]
     public function castValue(mixed $value): mixed
     {
-        if (! is_string($value) || $value === '') {
-            return $value;
-        }
+        $decoded = RichContent::decodeDocument($value);
 
-        $decoded = json_decode($value, true);
-
-        if (! is_array($decoded)) {
+        if ($decoded === null) {
             return $value;
         }
 
@@ -190,10 +186,8 @@ class RichEditor extends Field
     {
         $types = [];
 
-        foreach ($this->activeExtensions() as $extension) {
-            if ($extension instanceof EditorExtension) {
-                $types = [...$types, ...$extension->serverTypes()];
-            }
+        foreach ($this->editorExtensionInstances() as $extension) {
+            $types = [...$types, ...$extension->serverTypes()];
         }
 
         return array_values(array_unique($types));
@@ -216,13 +210,10 @@ class RichEditor extends Field
         );
 
         $value = $props['value'] ?? null;
+        $document = is_array($value) ? $value : RichContent::decodeDocument($value);
 
-        if (is_string($value) && $value !== '') {
-            $value = json_decode($value, true);
-        }
-
-        if (is_array($value)) {
-            $props['value'] = RichContent::make($value, $this->allowedServerTypes(), $this->editorExtensionInstances())->toPreparedArray();
+        if ($document !== null) {
+            $props['value'] = RichContent::make($document, $this->allowedServerTypes(), $this->editorExtensionInstances())->toPreparedArray();
         }
 
         return $props;

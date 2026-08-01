@@ -96,7 +96,7 @@ final class RichContent
             return '';
         }
 
-        return $this->sanitize(new Editor(['extensions' => $this->schema()])->setContent($this->toPreparedArray())->getHTML());
+        return $this->sanitize($this->preparedEditor()->getHTML());
     }
 
     public function toText(): string
@@ -105,7 +105,29 @@ final class RichContent
             return '';
         }
 
-        return new Editor(['extensions' => $this->schema()])->setContent($this->toPreparedArray())->getText();
+        return $this->preparedEditor()->getText();
+    }
+
+    private function preparedEditor(): Editor
+    {
+        return new Editor(['extensions' => $this->schema()])->setContent($this->toPreparedArray());
+    }
+
+    /**
+     * The submitted form value as a document array, or null when it isn't one
+     * (not a string, empty, or not valid JSON for an array).
+     *
+     * @return array<string, mixed>|null
+     */
+    public static function decodeDocument(mixed $value): ?array
+    {
+        if (! is_string($value) || $value === '') {
+            return null;
+        }
+
+        $decoded = json_decode($value, true);
+
+        return is_array($decoded) ? $decoded : null;
     }
 
     /**
@@ -187,7 +209,7 @@ final class RichContent
 
         return $this->resolvedExtensions = is_array($this->extensions)
             ? array_values($this->extensions)
-            : array_values(iterator_to_array($this->extensions));
+            : iterator_to_array($this->extensions, false);
     }
 
     private function editor(): Editor

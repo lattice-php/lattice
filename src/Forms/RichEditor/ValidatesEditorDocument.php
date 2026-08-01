@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Forms\RichEditor;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Lattice\Lattice\Forms\RichContent;
 
 /**
  * Decodes a submitted rich-editor document and runs each active extension's
@@ -19,13 +20,9 @@ final readonly class ValidatesEditorDocument implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (! is_string($value) || $value === '') {
-            return;
-        }
+        $document = RichContent::decodeDocument($value);
 
-        $document = json_decode($value, true);
-
-        if (! is_array($document)) {
+        if ($document === null) {
             return;
         }
 
