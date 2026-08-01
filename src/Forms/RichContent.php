@@ -115,12 +115,18 @@ final class RichContent
 
     /**
      * The submitted form value as a document array, or null when it isn't one
-     * (not a string, empty, or not valid JSON for an array).
+     * (neither an array nor a non-empty JSON string decoding to an array).
+     * Accepting already-decoded arrays keeps object-shaped JSON submissions on
+     * the same validation/cast pipeline as the string wire format.
      *
      * @return array<string, mixed>|null
      */
     public static function decodeDocument(mixed $value): ?array
     {
+        if (is_array($value)) {
+            return $value;
+        }
+
         if (! is_string($value) || $value === '') {
             return null;
         }
