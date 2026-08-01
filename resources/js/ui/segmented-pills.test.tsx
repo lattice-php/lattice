@@ -19,21 +19,10 @@ describe("SegmentedPills", () => {
     expect(onSelect).toHaveBeenCalledWith("dark");
   });
 
-  it("falls back to a generic test id prefix when unnamed", () => {
-    render(
-      <SegmentedPills
-        onSelect={vi.fn<(value: string) => void>()}
-        options={options}
-        value="light"
-      />,
-    );
-
-    expect(screen.getByTestId("segment-dark")).toBeInTheDocument();
-  });
-
   it("disables every pill when disabled", () => {
     render(
       <SegmentedPills
+        name="theme"
         onSelect={vi.fn<(value: string) => void>()}
         options={options}
         value="light"
@@ -48,6 +37,7 @@ describe("SegmentedPills", () => {
   it("does not steal focus when autoFocus is off", () => {
     render(
       <SegmentedPills
+        name="theme"
         onSelect={vi.fn<(value: string) => void>()}
         options={options}
         value="light"
@@ -60,6 +50,7 @@ describe("SegmentedPills", () => {
   it("focuses the selected pill when autoFocus is on", () => {
     render(
       <SegmentedPills
+        name="theme"
         onSelect={vi.fn<(value: string) => void>()}
         options={options}
         value="dark"
@@ -73,6 +64,7 @@ describe("SegmentedPills", () => {
   it("focuses the first pill when autoFocus is on and nothing is selected", () => {
     render(
       <SegmentedPills
+        name="theme"
         onSelect={vi.fn<(value: string) => void>()}
         options={options}
         value=""
