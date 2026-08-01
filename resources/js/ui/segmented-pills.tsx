@@ -20,7 +20,7 @@ export function SegmentedPills({
   ariaLabel?: string;
   autoFocus?: boolean;
   disabled?: boolean;
-  name?: string;
+  name: string;
   onSelect: (value: string) => void;
   options: Option[];
   tabIndex?: number;
@@ -54,7 +54,7 @@ export function SegmentedPills({
         return (
           <button
             aria-checked={isSelected}
-            data-test={`${name ?? "segment"}-${option.value}`}
+            data-test={`${name}-${option.value}`}
             className={cn(pillClassName(isSelected), disabled && "cursor-not-allowed opacity-60")}
             disabled={disabled}
             key={option.value}

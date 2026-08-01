@@ -127,7 +127,7 @@ describe("Lattice action component", () => {
     });
 
     render(
-      <IconRendererProvider mode="replace" renderer={iconRenderer}>
+      <IconRendererProvider renderer={iconRenderer}>
         <ActionComponent node={node}>{null}</ActionComponent>
       </IconRendererProvider>,
     );

@@ -89,12 +89,7 @@ const NodeRenderer = memo(function NodeRenderer({ node }: { node: Node }) {
   const renderedComponent = <Component node={node}>{children}</Component>;
 
   if (registration.mode === "lazy") {
-    const FallbackComponent = registration.fallback;
-    const fallback = FallbackComponent ? (
-      <FallbackComponent node={node}>{null}</FallbackComponent>
-    ) : null;
-
-    return <Suspense fallback={fallback}>{renderedComponent}</Suspense>;
+    return <Suspense fallback={null}>{renderedComponent}</Suspense>;
   }
 
   return renderedComponent;

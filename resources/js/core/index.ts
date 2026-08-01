@@ -2,7 +2,6 @@ export {
   ApiError,
   apiFetch,
   apiJson,
-  clearRemoteTokenCache,
   invalidateRemoteToken,
   remoteFetch,
   remoteJson,

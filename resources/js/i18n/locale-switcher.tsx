@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { useT } from "./instance";
 
 export type LocaleOption = {
@@ -19,10 +18,6 @@ export type UseLocaleOptionsReturn = {
   readonly setLocale: (locale: string) => void;
 };
 
-export type LocaleSwitcherProps = UseLocaleOptionsOptions & {
-  readonly children: (state: UseLocaleOptionsReturn) => ReactNode;
-};
-
 export function useLocaleOptions({
   namespace = "lattice",
   label,
@@ -41,8 +36,4 @@ export function useLocaleOptions({
     })),
     setLocale,
   };
-}
-
-export function LocaleSwitcher({ children, ...options }: LocaleSwitcherProps) {
-  return <>{children(useLocaleOptions(options))}</>;
 }

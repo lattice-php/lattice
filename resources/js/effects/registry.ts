@@ -70,8 +70,5 @@ export const builtinEffectHandlers: EffectHandlerRegistryFor<keyof EffectPropsMa
 export function mergeEffectHandlers(
   ...registries: Array<EffectHandlerRegistry | undefined>
 ): EffectHandlerRegistry {
-  return registries.reduce<EffectHandlerRegistry>(
-    (merged, registry) => ({ ...merged, ...registry }),
-    {},
-  );
+  return Object.assign({}, ...registries);
 }

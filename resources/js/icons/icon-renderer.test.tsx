@@ -69,13 +69,13 @@ describe("Lattice icon renderer", () => {
     expect(screen.getByTestId("fallback-icon")).toBeVisible();
   });
 
-  it("can replace parent renderers", () => {
+  it("prefers the innermost renderer when it resolves the icon", () => {
     const fallbackRenderer = vi.fn<IconRendererFunction>(() => <span data-test="fallback-icon" />);
     const customRenderer = vi.fn<IconRendererFunction>(() => <span data-test="custom-icon" />);
 
     render(
       <IconRendererProvider renderer={fallbackRenderer}>
-        <IconRendererProvider mode="replace" renderer={customRenderer}>
+        <IconRendererProvider renderer={customRenderer}>
           <IconRenderer icon="custom.spark" />
         </IconRendererProvider>
       </IconRendererProvider>,
