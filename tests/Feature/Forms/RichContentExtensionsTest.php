@@ -94,3 +94,28 @@ it('scrubs ephemeral attrs on the rich editor submit cast', function (): void {
 
     expect($cast['content'][0]['attrs'] ?? [])->not->toHaveKey('resolvedLabel');
 });
+
+it('prepares the document for display rendering', function (): void {
+    $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => null]]]];
+
+    $prepared = RichContent::make($doc, extensions: [CalloutExtension::make()])->toPreparedArray();
+
+    expect($prepared['content'][0]['attrs']['resolvedLabel'])->toBe('callout-7');
+});
+
+it('keeps toArray canonical while toPreparedArray carries ephemeral attrs', function (): void {
+    $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => null]]]];
+    $content = RichContent::make($doc, extensions: [CalloutExtension::make()]);
+
+    expect($content->toArray()['content'][0]['attrs'] ?? [])->not->toHaveKey('resolvedLabel')
+        ->and($content->toPreparedArray()['content'][0]['attrs'])->toHaveKey('resolvedLabel');
+});
+
+it('wires the prepared document as the rich editor value prop', function (): void {
+    $doc = ['type' => 'doc', 'content' => [['type' => 'callout', 'attrs' => ['id' => 7, 'tone' => null]]]];
+    $field = RichEditor::make('body')->withExtensions(CalloutExtension::make())->value($doc);
+
+    $wire = wire($field);
+
+    expect($wire['props']['value']['content'][0]['attrs']['resolvedLabel'] ?? null)->toBe('callout-7');
+});

@@ -69,6 +69,19 @@ abstract class EditorExtension implements JsonSerializable
     }
 
     /**
+     * Transform a document on its way out of the server — form prefill and
+     * HTML/text rendering. The place to batch-resolve stored references into
+     * displayable ephemeral attrs; runs once per document, so resolve in bulk.
+     *
+     * @param  array<string, mixed>  $document
+     * @return array<string, mixed>
+     */
+    public function prepareDocument(array $document): array
+    {
+        return $document;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toWire(): array

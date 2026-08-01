@@ -54,6 +54,11 @@ final class RichContent
     private ?Editor $editor = null;
 
     /**
+     * @var list<Extension>|null
+     */
+    private ?array $schema = null;
+
+    /**
      * @param  array<string, mixed>|string|null  $document
      * @param  list<string>|null  $allowedTypes  Schema type names to keep beyond the baseline; null keeps the full built-in schema.
      * @param  iterable<EditorExtension>  $extensions
@@ -80,7 +85,7 @@ final class RichContent
             return '';
         }
 
-        return $this->sanitize($this->editor()->getHTML());
+        return $this->sanitize(new Editor(['extensions' => $this->schema()])->setContent($this->toPreparedArray())->getHTML());
     }
 
     public function toText(): string
@@ -89,7 +94,7 @@ final class RichContent
             return '';
         }
 
-        return $this->editor()->getText();
+        return new Editor(['extensions' => $this->schema()])->setContent($this->toPreparedArray())->getText();
     }
 
     /**
@@ -102,6 +107,23 @@ final class RichContent
         }
 
         return $this->scrubEphemeral($this->editor()->getDocument());
+    }
+
+    /**
+     * The display/editing form: canonical document with every extension's
+     * outbound preparation applied (ephemeral attrs injected).
+     *
+     * @return array<string, mixed>
+     */
+    public function toPreparedArray(): array
+    {
+        $document = $this->toArray();
+
+        foreach ($this->extensions as $extension) {
+            $document = $extension->prepareDocument($document);
+        }
+
+        return $document;
     }
 
     /**
@@ -190,6 +212,10 @@ final class RichContent
      */
     private function schema(): array
     {
+        if ($this->schema !== null) {
+            return $this->schema;
+        }
+
         $extensions = [
             new Document,
             new Paragraph,
@@ -228,7 +254,7 @@ final class RichContent
                 static fn (Extension $extension): bool => in_array($extension::$name, $allowed, true),
             ));
 
-        return [...$builtin, ...$this->contributedExtensions()];
+        return $this->schema = [...$builtin, ...$this->contributedExtensions()];
     }
 
     /**

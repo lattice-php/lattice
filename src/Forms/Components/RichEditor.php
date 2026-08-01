@@ -205,6 +205,10 @@ class RichEditor extends Field
             array_values($this->activeExtensions()),
         );
 
+        if (isset($props['value']) && is_array($props['value'])) {
+            $props['value'] = RichContent::make($props['value'], $this->allowedServerTypes(), $this->editorExtensionInstances())->toPreparedArray();
+        }
+
         return $props;
     }
 

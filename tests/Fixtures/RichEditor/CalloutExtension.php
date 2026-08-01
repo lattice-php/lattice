@@ -21,4 +21,21 @@ final class CalloutExtension extends EditorExtension
     {
         return ['callout' => ['resolvedLabel']];
     }
+
+    public function prepareDocument(array $document): array
+    {
+        $walk = static function (array $node) use (&$walk): array {
+            if (($node['type'] ?? null) === 'callout') {
+                $node['attrs']['resolvedLabel'] = 'callout-'.($node['attrs']['id'] ?? '?');
+            }
+
+            if (isset($node['content']) && is_array($node['content'])) {
+                $node['content'] = array_map($walk, $node['content']);
+            }
+
+            return $node;
+        };
+
+        return $walk($document);
+    }
 }
