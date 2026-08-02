@@ -22,7 +22,12 @@ use Spatie\Attributes\Attributes;
  */
 final class WireTypeDiscovery
 {
-    public function discover(string $path): WireTypeManifest
+    /**
+     * @param  list<string>  $ignoreDirectories  paths skipped entirely (e.g. test scaffolding
+     *                                           that can never be a wire type) so they're
+     *                                           never autoloaded during the walk
+     */
+    public function discover(string $path, array $ignoreDirectories = []): WireTypeManifest
     {
         if (! is_dir($path)) {
             return new WireTypeManifest([], [], [], []);
@@ -33,8 +38,15 @@ final class WireTypeDiscovery
         $components = [];
         $families = [];
 
-        foreach (ClassWalker::all($path) as $class) {
-            $abstract = new ReflectionClass($class)->isAbstract();
+        foreach (ClassWalker::all($path, $ignoreDirectories) as $class) {
+            try {
+                $abstract = new ReflectionClass($class)->isAbstract();
+            } catch (\Throwable) {
+                // A discovered class can fail to autoload when it depends on an
+                // optional (e.g. require-dev) package that isn't installed in the
+                // consuming app. It can't be a wire type either way, so skip it.
+                continue;
+            }
 
             if ($this->collectFamilyMember($class, $abstract, $families)) {
                 continue;

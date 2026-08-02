@@ -13,6 +13,7 @@ use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedA;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedB;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleEditorExtension;
 use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
+use Lattice\Lattice\Tests\Fixtures\TypeScript\Unloadable\LoadableSibling;
 use Lattice\Lattice\Ui\Components\Card;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Variant;
@@ -172,6 +173,21 @@ it('classifies AsRemoteComponent with correct precedence in components', functio
     expect($dataList->type)->toBe('remote.data-list')
         ->and($dataList->category)->toBe('component')
         ->and($manifest->valueObjects)->not->toContain(DataList::class);
+});
+
+it('skips a class that fails to autoload during discovery instead of throwing', function (): void {
+    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript/Unloadable');
+
+    expect($manifest->valueObjects)->toContain(LoadableSibling::class);
+});
+
+it('excludes classes under an ignored directory from discovery', function (): void {
+    $manifest = new WireTypeDiscovery()->discover(
+        __DIR__.'/../../Fixtures/TypeScript/Unloadable',
+        [__DIR__.'/../../Fixtures/TypeScript/Unloadable'],
+    );
+
+    expect($manifest->valueObjects)->toBe([]);
 });
 
 it('resolves a domain for every discovered src component', function (): void {
