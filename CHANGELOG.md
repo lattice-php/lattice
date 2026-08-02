@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.36.1](https://github.com/lattice-php/lattice/compare/0.36.0...0.36.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **css:** prevent iOS Safari auto-zoom on text-entry controls ([fb95a0f](https://github.com/lattice-php/lattice/commit/fb95a0f60a5edec7c458f287674d626c75c04532))
+* **css:** prevent iOS Safari auto-zoom on text-entry controls ([26bb515](https://github.com/lattice-php/lattice/commit/26bb5154510ffa9b1d3121686ae102e7efd2e438))
+* **typescript:** stop lattice:typescript scanning package test scaffolding ([4f682aa](https://github.com/lattice-php/lattice/commit/4f682aa7eae50c44219ff743e6ae74ead3f9d6e0))
+* **typescript:** stop lattice:typescript scanning package test scaffolding ([928e673](https://github.com/lattice-php/lattice/commit/928e673374a5ca74c2103dc55310e02077be124a))
+
 ## [0.36.0](https://github.com/lattice-php/lattice/compare/0.35.0...0.36.0) (2026-08-01)
 
 
