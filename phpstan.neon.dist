@@ -7,4 +7,6 @@ parameters:
         - src
         - tests
         - workbench/app
+    excludePaths:
+        - tests/Fixtures/TypeScript/Unloadable/BrokenExtendsMissingClass.php
     level: 6
