@@ -10,11 +10,11 @@ const withVisitHeaders = vi.hoisted(() => vi.fn());
 
 vi.mock("@lattice-php/lattice/runtime", () => ({
   createLatticeApp,
+  loadPluginModules,
   setRefRefreshEndpoint,
   withVisitHeaders,
 }));
 vi.mock("@laravel/echo-react", () => ({ configureEcho }));
-vi.mock("./plugins", () => ({ loadPluginModules }));
 
 function setConfigScript(json?: string): void {
   document.body.innerHTML = json

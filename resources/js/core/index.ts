@@ -22,7 +22,13 @@ export {
 } from "./materialize";
 export type { DataBindings, RemoteRow } from "./materialize";
 export { toNodes } from "./nodes";
-export { createRegistry, eagerComponent, extendRegistry, lazyComponent } from "./registry";
+export {
+  createRegistry,
+  eagerComponent,
+  extendRegistry,
+  lazyComponent,
+  loadPluginModules,
+} from "./registry";
 export type { Plugin, Registry } from "./registry";
 export {
   RegistryContext,

@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
 import type { Plugin } from "@lattice-php/lattice";
+import { loadPluginModules } from "@lattice-php/lattice/core/registry";
 import type { RendererComponent } from "./types";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
@@ -45,5 +46,54 @@ describe("lattice registry", () => {
 
     expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.first");
     expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.second");
+  });
+
+  it("loads plugin modules through the core registry API", async () => {
+    const plugin = { name: "app" } satisfies Plugin;
+    const load = vi.fn<(url: string) => Promise<unknown>>().mockResolvedValue({ default: plugin });
+
+    await expect(loadPluginModules(["/plugin.js"], load)).resolves.toEqual([plugin]);
+  });
+
+  it("preserves plugin module order", async () => {
+    const first = { name: "first" } satisfies Plugin;
+    const second = { name: "second" } satisfies Plugin;
+    const load = vi
+      .fn<(url: string) => Promise<unknown>>()
+      .mockResolvedValueOnce({ default: first })
+      .mockResolvedValueOnce({ default: second });
+
+    await expect(loadPluginModules(["/first.js", "/second.js"], load)).resolves.toEqual([
+      first,
+      second,
+    ]);
+    expect(load).toHaveBeenNthCalledWith(1, "/first.js");
+    expect(load).toHaveBeenNthCalledWith(2, "/second.js");
+  });
+
+  it.each([{}, { default: null }, { default: {} }, { default: { name: "" } }])(
+    "rejects a module without a valid default plugin export",
+    async (module) => {
+      const load = vi.fn<(url: string) => Promise<unknown>>().mockResolvedValue(module);
+
+      await expect(loadPluginModules(["/invalid.js"], load)).rejects.toThrow(
+        "[/invalid.js] must default export a Plugin object",
+      );
+    },
+  );
+
+  it.each([
+    { name: "invalid", components: [] },
+    { name: "invalid", components: { invalid: null } },
+    { name: "invalid", components: { invalid: { mode: "eager", component: null } } },
+    { name: "invalid", columns: { invalid: null } },
+    { name: "invalid", effects: { invalid: "not-a-function" } },
+    { name: "invalid", i18n: {} },
+  ])("rejects invalid plugin registries", async (plugin) => {
+    const load = vi.fn<(url: string) => Promise<unknown>>().mockResolvedValue({ default: plugin });
+
+    await expect(loadPluginModules(["/invalid.js"], load)).rejects.toThrow(
+      "[/invalid.js] must default export a Plugin object",
+    );
   });
 });

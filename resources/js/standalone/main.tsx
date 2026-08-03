@@ -1,11 +1,11 @@
 import "./standalone.css";
 import {
   createLatticeApp,
+  loadPluginModules,
   setRefRefreshEndpoint,
   withVisitHeaders,
 } from "@lattice-php/lattice/runtime";
 import { readStandaloneConfig } from "./config";
-import { loadPluginModules } from "./plugins";
 
 const config = readStandaloneConfig(document);
 

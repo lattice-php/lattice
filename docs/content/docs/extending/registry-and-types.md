@@ -54,6 +54,19 @@ export const appPlugin = {
 } satisfies Plugin;
 ```
 
+### Loading precompiled plugins
+
+`loadPluginModules` imports and validates precompiled plugin URLs. It is a core API, so both regular
+apps and the standalone build can load plugins before creating the app:
+
+```ts
+import { createLatticeApp, loadPluginModules } from "@lattice-php/lattice";
+
+const plugins = await loadPluginModules(["/vendor/acme/plugin.js"]);
+
+createLatticeApp({ plugins });
+```
+
 ### extendRegistry
 
 Merges a plugin into an existing registry, returning a new registry without mutating the original. The

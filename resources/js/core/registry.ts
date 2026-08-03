@@ -4,6 +4,7 @@ import type { RendererComponent, RendererComponentModule } from "./types";
 import type { EffectHandlerRegistry } from "@lattice-php/lattice/effects/registry";
 import type { ColumnRegistry } from "@lattice-php/lattice/table/registry";
 import type { ComponentPropsMap } from "@lattice-php/lattice/types/generated";
+import { isRecord } from "./materialize";
 
 export type EagerComponentRegistration = {
   component: RendererComponent;
@@ -63,6 +64,58 @@ export function lazyComponent<TType extends string>(
     load: erasedLoader,
     mode: "lazy",
   };
+}
+
+const importModule = (url: string): Promise<unknown> => import(/* @vite-ignore */ url);
+
+function componentRegistryIsValid(registry: unknown): boolean {
+  return (
+    registry === undefined ||
+    (isRecord(registry) &&
+      Object.values(registry).every(
+        (entry) =>
+          isRecord(entry) &&
+          ((entry.mode === "eager" && typeof entry.component === "function") ||
+            (entry.mode === "lazy" &&
+              isRecord(entry.component) &&
+              typeof entry.load === "function")),
+      ))
+  );
+}
+
+function functionRegistryIsValid(registry: unknown): boolean {
+  return (
+    registry === undefined ||
+    (isRecord(registry) && Object.values(registry).every((entry) => typeof entry === "function"))
+  );
+}
+
+function pluginFromModule(module: unknown, url: string): Plugin {
+  const plugin = isRecord(module) ? module.default : undefined;
+
+  if (
+    !isRecord(plugin) ||
+    typeof plugin.name !== "string" ||
+    plugin.name.trim() === "" ||
+    !componentRegistryIsValid(plugin.components) ||
+    !functionRegistryIsValid(plugin.columns) ||
+    !functionRegistryIsValid(plugin.effects) ||
+    (plugin.i18n !== undefined &&
+      (!isRecord(plugin.i18n) ||
+        typeof plugin.i18n.namespace !== "string" ||
+        plugin.i18n.namespace.trim() === ""))
+  ) {
+    throw new TypeError(`[lattice] Plugin module [${url}] must default export a Plugin object.`);
+  }
+
+  return plugin as Plugin;
+}
+
+export function loadPluginModules(
+  urls: string[],
+  load: (url: string) => Promise<unknown> = importModule,
+): Promise<Plugin[]> {
+  return Promise.all(urls.map(async (url) => pluginFromModule(await load(url), url)));
 }
 
 export function createRegistry(...plugins: Plugin[]): Registry {
