@@ -1,0 +1,10 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/mrpunyapal/peststan/extension.neon
+
+parameters:
+    paths:
+        - src
+        - tests
+        - workbench/app
+    level: 6

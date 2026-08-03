@@ -1,0 +1,17 @@
+{
+  "name": "@lattice-php/tree",
+  "version": "0.38.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build:plugin": "vite build --mode plugin",
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@lattice-php/lattice": "^0.38.0",
+    "react": "^19.0.0"
+  }
+}

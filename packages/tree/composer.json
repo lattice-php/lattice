@@ -1,0 +1,79 @@
+{
+    "name": "lattice-php/tree",
+    "description": "Tree view component for Lattice — hierarchy rendering from callback or Eloquent adjacency-list sources.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "lattice-php/lattice": "self.version"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.4",
+        "laravel/pint": "^1.16",
+        "mrpunyapal/peststan": "^0.2.12",
+        "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-browser": "^4.3",
+        "pestphp/pest-plugin-laravel": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Tree\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lattice\\Tree\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "plugin": "resources/js/plugin.ts",
+            "standalone": "dist/plugin.js",
+            "discover": ["src"]
+        },
+        "laravel": {
+            "providers": [
+                "Lattice\\Tree\\TreeServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:purge-skeleton --ansi",
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "post-install-cmd": [
+            "@boost:refresh"
+        ],
+        "post-update-cmd": [
+            "@boost:refresh"
+        ],
+        "boost:update": "@php vendor/bin/testbench boost:update --no-interaction",
+        "boost:refresh": "[ -n \"$CI\" ] || [ ! -f vendor/bin/testbench ] || vendor/bin/testbench boost:update --no-interaction",
+        "serve": "@php vendor/bin/testbench serve",
+        "test": "@php vendor/bin/pest --testsuite Unit,Feature",
+        "test:browser": [
+            "npm run build",
+            "@php vendor/bin/pest --testsuite Browser"
+        ],
+        "test:lint": "@php vendor/bin/pint --test",
+        "lint": "@php vendor/bin/pint",
+        "analyse": "@php vendor/bin/phpstan analyse",
+        "check": [
+            "@test:lint",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

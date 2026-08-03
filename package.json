@@ -6,7 +6,8 @@
   "author": "Manuel Christlieb <manuel@christlieb.eu>",
   "type": "module",
   "workspaces": [
-    "docs"
+    "docs",
+    "packages/*"
   ],
   "homepage": "https://latticephp.com",
   "repository": {
@@ -279,7 +280,8 @@
     "boost:refresh": "php vendor/bin/testbench boost:update --no-interaction",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib && npm run check:package",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:plugins && npm run build:lib && npm run check:package",
+    "build:plugins": "npm run build:plugin --workspaces --if-present && git diff --exit-code -- packages/*/dist",
     "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css",
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "npm run build:lib && tsc --noEmit -p docs/tsconfig.json",

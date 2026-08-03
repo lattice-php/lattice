@@ -5,6 +5,7 @@ includes:
 parameters:
     paths:
         - src
+        - packages/tree/src
         - tests
         - workbench/app
     excludePaths:
