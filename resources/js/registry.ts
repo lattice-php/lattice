@@ -14,7 +14,7 @@ import type {
 import { actionComponents } from "./action/plugin";
 import { chatComponents } from "./chat/plugin";
 import { uiComponents } from "./ui/plugin";
-import { formComponents } from "./form/plugin";
+import { formComponents } from "@lattice-php/form/plugin";
 import { layoutComponents } from "./layout/plugin";
 import { notificationsComponents } from "./notifications/plugin";
 import { remoteComponents } from "./remote/plugin";

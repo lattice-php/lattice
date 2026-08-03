@@ -1,5 +1,5 @@
 import { setConfig } from "./config.js";
-import { localeHeader } from "./locale.js";
+import { locale_exports } from "./locale.js";
 import { ensureI18n, i18n, preloadLanguages } from "./instance.js";
 import HttpBackend from "i18next-http-backend";
 //#region resources/js/i18n/backend.ts
@@ -31,7 +31,7 @@ async function configureI18n(config, options = {}) {
 async function enableBackend(options = {}) {
 	const { namespaces, loadPath = DEFAULT_LOAD_PATH, addPath = DEFAULT_ADD_PATH, saveMissing = false, customHeaders } = options;
 	const customHeadersWithLocale = () => ({
-		...localeHeader(),
+		...(0, locale_exports.localeHeader)(),
 		...customHeaders?.()
 	});
 	i18n.use(HttpBackend);

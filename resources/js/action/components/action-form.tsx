@@ -18,8 +18,8 @@ import {
   ResolvedNodesProvider,
   useFormResolver,
   useFormValues,
-} from "@lattice-php/lattice/form/embed";
-import type { FieldErrors } from "@lattice-php/lattice/form/embed";
+} from "@lattice-php/form/embed";
+import type { FieldErrors } from "@lattice-php/form/embed";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 import { useT } from "@lattice-php/ui/i18n";
 import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";

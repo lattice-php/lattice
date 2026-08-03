@@ -4,8 +4,4 @@
  * `rememberState` as `props.rememberState !== false`; the wire prop is always a
  * boolean, so the polarity is uniform across all three.
  */
-export declare function useCollapsibleState(
-  storageKey: string,
-  fallback: boolean,
-  rememberState: boolean,
-): [boolean, () => void];
+export declare function useCollapsibleState(storageKey: string, fallback: boolean, rememberState: boolean): [boolean, () => void];

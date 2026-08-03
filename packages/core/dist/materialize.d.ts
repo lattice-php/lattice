@@ -1,4 +1,4 @@
-import { Node, NodeProps, Schema } from "./index.js";
+import { Node, NodeProps, Schema } from './index.js';
 export type RemoteRow = Record<string, unknown>;
 export type DataBindings = Record<string, string>;
 export declare function isRecord(value: unknown): value is Record<string, unknown>;

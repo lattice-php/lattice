@@ -1,6 +1,6 @@
 import { useConfig } from "./config.js";
 import { registerDateTimeFormatter } from "./date-time-formatter.js";
-import { currentLocale, subscribeLocale, useLocale } from "./locale.js";
+import { locale_exports } from "./locale.js";
 import { useCallback, useSyncExternalStore } from "react";
 import i18next from "i18next";
 //#region resources/js/i18n/instance.ts
@@ -53,7 +53,7 @@ function ensureI18n(extend) {
 	if (!initialization && hold && !extend) return hold.then(() => ensureI18n());
 	if (!initialization) {
 		const base = {
-			lng: currentLocale(),
+			lng: (0, locale_exports.currentLocale)(),
 			fallbackLng: "en",
 			ns: [DEFAULT_NAMESPACE],
 			defaultNS: DEFAULT_NAMESPACE,
@@ -64,7 +64,7 @@ function ensureI18n(extend) {
 	}
 	return initialization;
 }
-subscribeLocale((locale) => {
+(0, locale_exports.subscribeLocale)((locale) => {
 	ensureI18n().then(() => {
 		if (i18n.language !== locale) i18n.changeLanguage(locale);
 	});
@@ -76,7 +76,7 @@ subscribeLocale((locale) => {
 * locale is already loaded by {@link ensureI18n}, so it is skipped.
 */
 async function preloadLanguages(locales) {
-	const pending = locales.filter((locale) => locale !== currentLocale());
+	const pending = locales.filter((locale) => locale !== (0, locale_exports.currentLocale)());
 	if (pending.length === 0) return;
 	await ensureI18n();
 	await i18n.loadLanguages([...pending]);
@@ -85,7 +85,7 @@ function useT(namespace) {
 	ensureI18n();
 	useSyncExternalStore(subscribe, snapshot, snapshot);
 	const { locales } = useConfig();
-	const { locale, setLocale } = useLocale();
+	const { locale, setLocale } = (0, locale_exports.useLocale)();
 	return {
 		t: useCallback((key, defaultValue = key, options = {}) => translate(namespace, key, defaultValue, options), [namespace]),
 		i18n,

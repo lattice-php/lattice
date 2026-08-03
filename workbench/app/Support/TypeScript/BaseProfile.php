@@ -46,7 +46,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         $configuredOutput = config('lattice.typescript.base_output');
         $outputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput
-            : $packageRoot.'/resources/js/types';
+            : $packageRoot.'/packages/core/resources/js';
 
         $manifest = $this->discovery->discoverMany($sources);
 

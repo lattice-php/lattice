@@ -1,4 +1,4 @@
-import { usePersistentState } from "./lib/use-persistent-state.js";
+import { use_persistent_state_exports } from "./lib/use-persistent-state.js";
 import { useCallback } from "react";
 //#region resources/js/use-collapsible-state.ts
 /**
@@ -8,7 +8,7 @@ import { useCallback } from "react";
 * boolean, so the polarity is uniform across all three.
 */
 function useCollapsibleState(storageKey, fallback, rememberState) {
-	const [value, setValue] = usePersistentState(storageKey, fallback, {
+	const [value, setValue] = (0, use_persistent_state_exports.usePersistentState)(storageKey, fallback, {
 		enabled: rememberState,
 		parse: (raw) => raw === "true",
 		serialize: String

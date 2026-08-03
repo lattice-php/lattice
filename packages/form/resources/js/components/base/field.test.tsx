@@ -1,0 +1,69 @@
+import { render, screen } from "@testing-library/react";
+import { expect, it } from "vitest";
+import { FormFieldFrame as PublicFormFieldFrame } from "@lattice-php/form";
+import { TableCellProvider } from "@lattice-php/form/hooks/row-layout-context";
+import { FormFieldFrame } from "./field";
+
+it("is exported from the form entry point", () => {
+  expect(PublicFormFieldFrame).toBe(FormFieldFrame);
+});
+
+it("connects a standalone control to its label, helper text, and error", () => {
+  render(
+    <FormFieldFrame
+      id="qty"
+      label="Qty"
+      helperText="Whole numbers only"
+      error="Invalid quantity"
+      required
+      className="min-w-0"
+      data-test="qty-frame"
+    >
+      {(controlProps) => <input {...controlProps} />}
+    </FormFieldFrame>,
+  );
+
+  const input = screen.getByLabelText("Qty");
+
+  expect(input).not.toHaveAttribute("required");
+  expect(input).toHaveAttribute("aria-required", "true");
+  expect(input).toHaveAttribute("aria-invalid", "true");
+  expect(input).toHaveAttribute("aria-describedby", "qty-helper qty-error");
+  expect(screen.getByText("Whole numbers only")).toHaveAttribute("id", "qty-helper");
+  expect(screen.getByText("Invalid quantity")).toHaveAttribute("id", "qty-error");
+  expect(input.closest("[data-test='qty-frame']")).toHaveClass("min-w-0");
+});
+
+it("keeps a visually-hidden accessible label inside a table cell", () => {
+  render(
+    <TableCellProvider>
+      <FormFieldFrame id="qty" label="Qty" error="bad">
+        {(controlProps) => <input {...controlProps} />}
+      </FormFieldFrame>
+    </TableCellProvider>,
+  );
+
+  expect(screen.getByLabelText("Qty")).toBeInTheDocument();
+  expect(screen.getByText("bad")).toHaveAttribute("id", "qty-error");
+  expect(screen.getByText("Qty")).toHaveClass("sr-only");
+});
+
+it("renders a tooltip trigger when a tooltip is provided", () => {
+  render(
+    <FormFieldFrame id="qty" label="Qty" tooltip="How many units">
+      {(controlProps) => <input {...controlProps} />}
+    </FormFieldFrame>,
+  );
+
+  expect(screen.getByRole("button", { name: "More information" })).toBeInTheDocument();
+});
+
+it("renders no tooltip trigger when no tooltip is provided", () => {
+  render(
+    <FormFieldFrame id="qty" label="Qty">
+      {(controlProps) => <input {...controlProps} />}
+    </FormFieldFrame>,
+  );
+
+  expect(screen.queryByRole("button", { name: "More information" })).not.toBeInTheDocument();
+});

@@ -1,4 +1,4 @@
-import { Node } from "./index.js";
+import { Node } from './index.js';
 /**
  * Keep only the well-formed component nodes from an untyped value, dropping
  * anything that isn't an object carrying a string `type`.

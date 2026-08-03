@@ -12,10 +12,10 @@ if ! git diff --cached --quiet --diff-filter=ACMR -- '*.php'; then
     git diff -z --cached --name-only --diff-filter=ACMR -- '*.php' | xargs -0 git add
 fi
 
-if ! git diff --cached --quiet --diff-filter=ACMR -- '*.ts' '*.tsx'; then
+if ! git diff --cached --quiet --diff-filter=ACMR -- '*.ts' '*.tsx' ':!packages/*/dist/**'; then
     echo "▶ oxfmt + oxlint (staged JS)"
-    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 ./node_modules/.bin/oxfmt --write
-    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 ./node_modules/.bin/oxlint --fix
-    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 git add
-    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' | xargs -0 ./node_modules/.bin/oxlint
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' ':!packages/*/dist/**' | xargs -0 ./node_modules/.bin/oxfmt --write
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' ':!packages/*/dist/**' | xargs -0 ./node_modules/.bin/oxlint --fix
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' ':!packages/*/dist/**' | xargs -0 git add
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.ts' '*.tsx' ':!packages/*/dist/**' | xargs -0 ./node_modules/.bin/oxlint
 fi

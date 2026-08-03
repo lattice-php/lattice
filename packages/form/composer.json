@@ -26,6 +26,13 @@
         ]
     },
     "extra": {
+        "lattice": {
+            "discover": [
+                "src"
+            ],
+            "plugin": "resources/js/plugin.ts",
+            "standalone": "dist/plugin.js"
+        },
         "laravel": {
             "providers": [
                 "Lattice\\Lattice\\Forms\\FormsServiceProvider"

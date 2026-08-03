@@ -1,0 +1,20 @@
+import { FormFieldControlProps } from '../base/field.js';
+export type DatePickerFieldProps = {
+    mode: "date" | "date-time";
+    controlProps: FormFieldControlProps;
+    label: string;
+    name: string;
+    testId: string;
+    value: unknown;
+    min?: string | null;
+    max?: string | null;
+    step?: number | null;
+    disabled: boolean;
+    readOnly: boolean;
+    autoFocus?: boolean;
+    tabIndex?: number | null;
+    timezone?: string;
+    onChange: (value: string) => void;
+    onBlur?: () => void;
+};
+export declare function DatePickerField({ mode, controlProps, label, name, testId, value, min, max, step, disabled, readOnly, autoFocus, tabIndex, timezone, onChange, onBlur, }: DatePickerFieldProps): import("react").JSX.Element;

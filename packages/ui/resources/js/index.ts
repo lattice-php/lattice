@@ -35,3 +35,5 @@ export * from "./lib/use-layout-effect";
 export * from "./lib/use-media-query";
 export * from "./lib/use-persistent-state";
 export * from "./lib/utils";
+export * from "./affix-group";
+export * from "./text-link";

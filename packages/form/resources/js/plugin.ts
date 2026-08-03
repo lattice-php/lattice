@@ -1,0 +1,52 @@
+import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
+import type { FormNodeType } from "@lattice-php/core/generated";
+import {
+  BuilderComponent,
+  CheckboxComponent,
+  ChoiceComponent,
+  ColorPickerFieldComponent,
+  DateInputComponent,
+  DateTimeInputComponent,
+  FileUploadComponent,
+  FormComponent,
+  HiddenInputComponent,
+  NumberInputComponent,
+  OtpInputComponent,
+  PasswordInputComponent,
+  RepeaterComponent,
+  SelectComponent,
+  TextareaComponent,
+  TextInputComponent,
+  TimeInputComponent,
+  ToggleComponent,
+  WizardComponent,
+  WizardStepComponent,
+} from "./components";
+import { RichEditorComponent } from "./components/fields/rich-editor";
+
+export const formComponents: Plugin = {
+  components: {
+    form: eagerComponent(FormComponent),
+    "field.builder": eagerComponent(BuilderComponent),
+    "field.checkbox": eagerComponent(CheckboxComponent),
+    "field.choice": eagerComponent(ChoiceComponent),
+    "field.color-picker": eagerComponent(ColorPickerFieldComponent),
+    "field.date-input": eagerComponent(DateInputComponent),
+    "field.date-time-input": eagerComponent(DateTimeInputComponent),
+    "field.file-upload": eagerComponent(FileUploadComponent),
+    "field.hidden-input": eagerComponent(HiddenInputComponent),
+    "field.number-input": eagerComponent(NumberInputComponent),
+    "field.otp": eagerComponent(OtpInputComponent),
+    "field.password-input": eagerComponent(PasswordInputComponent),
+    "field.repeater": eagerComponent(RepeaterComponent),
+    "field.rich-editor": eagerComponent(RichEditorComponent),
+    "field.select": eagerComponent(SelectComponent),
+    "field.textarea": eagerComponent(TextareaComponent),
+    "field.text-input": eagerComponent(TextInputComponent),
+    "field.time-input": eagerComponent(TimeInputComponent),
+    "field.toggle": eagerComponent(ToggleComponent),
+    wizard: eagerComponent(WizardComponent),
+    "wizard-step": eagerComponent(WizardStepComponent),
+  } satisfies ComponentRegistryFor<FormNodeType>,
+  name: "lattice/form",
+};

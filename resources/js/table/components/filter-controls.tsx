@@ -14,7 +14,7 @@ import {
   TableCellProvider,
   useFormValues,
   useSetFormValue,
-} from "@lattice-php/lattice/form/embed";
+} from "@lattice-php/form/embed";
 import { IconButton } from "@lattice-php/ui/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";

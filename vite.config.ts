@@ -292,6 +292,9 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
+        ...(!isLibrary && {
+          "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
+        }),
         "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
         "@lattice-php/lattice": sourceRoot,
       },
@@ -345,6 +348,7 @@ export default defineConfig(({ mode }) => {
                   /^@codemirror\//,
                   /^@inertiajs\//,
                   /^@internationalized\/date($|\/)/,
+                  /^@lattice-php\/form($|\/)/,
                   /^@lattice-php\/vite-svg-sprite($|\/)/,
                   /^@lezer\//,
                   /^@radix-ui\//,
@@ -386,7 +390,7 @@ export default defineConfig(({ mode }) => {
             // exclude replaces Vitest's defaults instead of extending them, and
             // docs/ links the repo root through file:.., so the docs glob walks
             // back into the whole tree unless node_modules is restored here.
-            exclude: ["**/node_modules/**", "resources/js/**/*.browser.test.{ts,tsx}"],
+            exclude: ["**/node_modules/**", "**/*.browser.test.{ts,tsx}"],
             setupFiles: ["resources/js/test/setup.ts"],
           },
         },
@@ -394,7 +398,10 @@ export default defineConfig(({ mode }) => {
           extends: true,
           test: {
             name: "browser",
-            include: ["resources/js/**/*.browser.test.{ts,tsx}"],
+            include: [
+              "resources/js/**/*.browser.test.{ts,tsx}",
+              "packages/*/resources/js/**/*.browser.test.{ts,tsx}",
+            ],
             setupFiles: ["resources/js/test/browser-setup.ts"],
             browser: {
               enabled: true,
