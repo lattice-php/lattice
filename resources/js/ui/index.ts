@@ -35,6 +35,7 @@ export { Input } from "./input";
 export { default as InputError } from "./input-error";
 export { InputOTP } from "./input-otp";
 export { Label } from "./label";
+export { NativeSelect } from "./native-select";
 export { TextLink } from "./link";
 export { default as PasswordInput } from "./password-input";
 export { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "./popover";
