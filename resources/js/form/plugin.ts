@@ -1,7 +1,7 @@
 import {
-  createPlugin,
   eagerComponent,
   type ComponentRegistryFor,
+  type Plugin,
 } from "@lattice-php/lattice/core/registry";
 import type { FormNodeType } from "@lattice-php/lattice/types/generated";
 import {
@@ -28,7 +28,7 @@ import {
 } from "./components";
 import { RichEditorComponent } from "./components/fields/rich-editor";
 
-export const formComponents = createPlugin({
+export const formComponents = {
   components: {
     form: eagerComponent(FormComponent),
     "field.builder": eagerComponent(BuilderComponent),
@@ -53,4 +53,4 @@ export const formComponents = createPlugin({
     "wizard-step": eagerComponent(WizardStepComponent),
   } satisfies ComponentRegistryFor<FormNodeType>,
   name: "lattice/form",
-});
+} satisfies Plugin;

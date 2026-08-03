@@ -7,7 +7,7 @@ import Warning from "@components/Warning.astro";
 
 The standard setup in [Installation](/introduction/installation/) installs `@lattice-php/lattice` from npm and builds it with Vite alongside your own frontend. If your application is server-driven only — no hand-written React pages, no Node tooling in the deploy pipeline at all — Lattice can ship its own prebuilt bundle instead. One Artisan command and two Blade directives replace the entire npm/Vite half of the setup.
 
-This path is for apps that render everything through Lattice's PHP-defined pages, forms, and tables and don't need to write custom React components. If you already have (or plan to add) custom fields, pages, or table columns, use the [regular installation](/introduction/installation/) — those require the Vite build.
+This path is for apps that render through Lattice's PHP-defined pages, forms, and tables. Custom components and table cells work when they ship as precompiled plugin modules; custom React pages still require the [regular installation](/introduction/installation/).
 
 ## Install
 
@@ -47,7 +47,47 @@ Add `@latticeHead` before `@inertiaHead`, and `@latticeScripts` after `@inertia`
 </body>
 ```
 
-`@latticeHead` renders the stylesheet link, the [theme](/theming/) registered via `Lattice::theme()` (if any), and a small JSON config script the bundle reads on boot. `@latticeScripts` renders the module `<script>` tag for the JS entry. Both read the published `manifest.json` to version their URLs (`?v=<hash>`), so browsers pick up new assets after every republish without manual cache-busting.
+`@latticeHead` renders the stylesheet link, the [theme](/theming/) registered via `Lattice::theme()` (if any), an import map for the shared React and Lattice runtimes, and a small JSON config script the bundle reads on boot. `@latticeScripts` renders the module `<script>` tag for the JS entry. Both read the published `manifest.json` to version their URLs (`?v=<hash>`), so browsers pick up new assets after every republish without manual cache-busting.
+
+## Custom component plugins
+
+A plugin is a separately precompiled ESM file whose default export satisfies Lattice's `Plugin` type.
+It may import React from `react`, JSX from `react/jsx-runtime`, and component helpers or hooks from
+`@lattice-php/lattice/runtime`; the import map makes all plugins share the host's instances.
+
+For an app-owned module, add its public URL to the frontend config:
+
+```php
+'frontend' => [
+    'path' => 'vendor/lattice',
+    'plugins' => [
+        '/build/lattice-plugin.js',
+    ],
+],
+```
+
+You can also override the list for one layout:
+
+```blade
+@latticeHead(['plugins' => ['/build/lattice-plugin.js']])
+```
+
+Composer [component packages](/extending/component-packages/) can register the same file without app
+configuration:
+
+```json
+{
+  "extra": {
+    "lattice": {
+      "standalone": "dist/plugin.js"
+    }
+  }
+}
+```
+
+`php artisan lattice:assets` copies each discovered module and adds it to the boot config. All plugin
+modules load before `createLatticeApp`; a missing or invalid module stops boot with its URL in the
+error. Registration after boot is not currently supported.
 
 ## Configuring realtime
 
@@ -61,6 +101,7 @@ php artisan vendor:publish --tag="lattice-config"
 'frontend' => [
     'path' => 'vendor/lattice',
     'echo' => null,
+    'plugins' => [],
 ],
 ```
 
@@ -73,9 +114,9 @@ php artisan vendor:publish --tag="lattice-config"
   release. The list below is what requires switching to the regular Vite-based installation.
 </Warning>
 
-- No custom JS components, pages, or table columns — [extending Lattice](/extending/overview/) requires the Vite build.
+- Custom React pages still require the regular Vite build.
 - Only Lattice's built-in icon set; you can't add your own `resources/icons` sprite.
 - English-only chrome. There's no i18n backend wired in, so [Internationalization](/core/i18n/) locale switching doesn't apply here.
-- The bundle includes its own copy of React. If the page already loads React from elsewhere, you end up with two React runtimes on the page.
+- Plugin modules must be single-file ESM builds; additional emitted chunks are not published automatically.
 
 If you outgrow any of these, switch to the [regular installation](/introduction/installation/) — the PHP side (pages, forms, tables, config) is identical either way; only the frontend delivery changes.

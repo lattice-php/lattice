@@ -1,6 +1,6 @@
-import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+import { lazyComponent, type Plugin } from "@lattice-php/lattice/runtime";
 
-export default createPlugin({
+export default {
   name: "signature-example",
   components: {
     signature: lazyComponent(() => import("./signature")),
@@ -8,4 +8,4 @@ export default createPlugin({
   i18n: {
     namespace: "signature-example",
   },
-});
+} satisfies Plugin;

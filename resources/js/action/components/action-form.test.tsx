@@ -1,6 +1,6 @@
 import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createPlugin, createRegistry, eagerComponent, Renderer } from "@lattice-php/lattice";
+import { createRegistry, eagerComponent, Renderer } from "@lattice-php/lattice";
 import type { Node, Plugin } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/lattice/form";
 import { useFormContext } from "@lattice-php/lattice/form/toolkit";
@@ -20,12 +20,12 @@ function ValidateFieldsProbe() {
   return null;
 }
 
-const validateFieldsProbePlugin: Plugin = createPlugin({
+const validateFieldsProbePlugin = {
   components: {
     "test.validate-fields-probe": eagerComponent(ValidateFieldsProbe),
   },
   name: "test/validate-fields-probe",
-});
+} satisfies Plugin;
 
 function validateFieldsAction(): Node {
   return fakeNode({

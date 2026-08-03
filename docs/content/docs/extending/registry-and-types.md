@@ -11,21 +11,19 @@ Before registering custom components or columns, publish the scaffold file:
 php artisan vendor:publish --tag=lattice-js
 ```
 
-This writes a single `resources/js/registry.ts`. It calls `createPlugin` with empty `components` and
+This writes a single `resources/js/registry.ts`. It defines an app plugin with empty `components` and
 `columns` blocks and merges it onto the built-in registry with `extendRegistry`, exporting the result
 as `registry`:
 
 ```ts
-import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import { extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 
-export const registry = extendRegistry(
-  packageRegistry,
-  createPlugin({
-    name: "app",
-    components: {}, // custom fields and UI components
-    columns: {}, // custom column cells
-  }),
-);
+export const registry = extendRegistry(packageRegistry, {
+  name: "app",
+  components: {}, // custom fields and UI components
+  columns: {}, // custom column cells
+} satisfies Plugin);
 ```
 
 The generators (`lattice:field`, `lattice:component`, `lattice:column`) append their entries to this
@@ -36,22 +34,24 @@ to publish once, and you pass the exported `registry` to `Provider`.
 
 The node registry maps type strings to `RendererComponent` functions. Imports come from `@lattice-php/lattice`.
 
-### createPlugin
+### Plugin objects
 
-Creates a named plugin object that bundles one or more component registrations:
+A plugin is a plain object that bundles one or more component registrations. Use `satisfies Plugin`
+to check its shape without changing the inferred component keys:
 
 ```ts
-import { createPlugin, eagerComponent } from "@lattice-php/lattice";
+import { eagerComponent } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import { ColorPickerComponent } from "./fields/color-picker";
 import { RatingComponent } from "./components/rating";
 
-export const appPlugin = createPlugin({
+export const appPlugin = {
   name: "app",
   components: {
     "field.color-picker": eagerComponent(ColorPickerComponent),
     rating: eagerComponent(RatingComponent),
   },
-});
+} satisfies Plugin;
 ```
 
 ### extendRegistry
@@ -60,12 +60,14 @@ Merges a plugin into an existing registry, returning a new registry without muta
 published `resources/js/registry.ts` already calls it for you — this is the pattern it uses:
 
 ```ts
-import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import { extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 
-export const registry = extendRegistry(
-  packageRegistry,
-  createPlugin({ name: "app", components: {}, columns: {} }),
-);
+export const registry = extendRegistry(packageRegistry, {
+  name: "app",
+  components: {},
+  columns: {},
+} satisfies Plugin);
 ```
 
 `packageRegistry` is Lattice's built-in registry. Pass the extended `registry` to `Provider`. Call
@@ -90,10 +92,11 @@ const minimalRegistry = createRegistry(appPlugin);
 Components can be registered eagerly (imported at module load time) or lazily (code-split on first render):
 
 ```ts
-import { createPlugin, eagerComponent, lazyComponent } from "@lattice-php/lattice";
+import { eagerComponent, lazyComponent } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import { RatingComponent } from "./components/rating";
 
-export const appPlugin = createPlugin({
+export const appPlugin = {
   name: "app",
   components: {
     // Eager — bundled with the entry point.
@@ -103,7 +106,7 @@ export const appPlugin = createPlugin({
       default: (await import("./fields/color-picker")).ColorPickerComponent,
     })),
   },
-});
+} satisfies Plugin;
 ```
 
 ### Provider and the registry
@@ -138,19 +141,17 @@ Column cell renderers use the same plugin object as components. They go under th
 same `resources/js/registry.ts` (registered bare — `columnCell()` is optional, see below):
 
 ```ts
-import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import { extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
-export const registry = extendRegistry(
-  packageRegistry,
-  createPlugin({
-    name: "app",
-    components: {},
-    columns: {
-      "column.status-badge": StatusBadgeCell,
-    },
-  }),
-);
+export const registry = extendRegistry(packageRegistry, {
+  name: "app",
+  components: {},
+  columns: {
+    "column.status-badge": StatusBadgeCell,
+  },
+} satisfies Plugin);
 ```
 
 The same exported `registry` carries both your components and your column cells — there is no second

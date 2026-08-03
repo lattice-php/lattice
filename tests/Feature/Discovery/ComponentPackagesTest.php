@@ -31,6 +31,7 @@ it('maps installed packages to their name, roots and plugin entry', function ():
             'name' => 'acme/widget',
             'roots' => [realpath(__DIR__.'/../../Fixtures/PackageDiscovery/acme/widget/src')],
             'plugin' => realpath(__DIR__.'/../../Fixtures/PackageDiscovery/acme/widget/resources/js/plugin.ts'),
+            'standalone' => realpath(__DIR__.'/../../Fixtures/PackageDiscovery/acme/widget/dist/plugin.js'),
         ],
     ]);
 });
@@ -49,6 +50,7 @@ it('resolves the root package from its own composer.json extra.lattice', functio
             'name' => 'acme/root-widget',
             'roots' => [realpath(__DIR__.'/../../Fixtures/PackageDiscovery/root-package/src')],
             'plugin' => realpath(__DIR__.'/../../Fixtures/PackageDiscovery/root-package/resources/js/plugin.ts'),
+            'standalone' => realpath(__DIR__.'/../../Fixtures/PackageDiscovery/root-package/dist/plugin.js'),
         ],
     ]);
 });
@@ -63,6 +65,19 @@ it('returns nothing for a root composer.json without extra.lattice', function ()
 
 it('returns nothing when the root composer.json is absent', function (): void {
     expect(ComponentPackages::packagesFromRootComposerJson('/no/such/composer.json'))->toBe([]);
+});
+
+it('preserves a declared standalone path when its file is missing', function (): void {
+    $directory = __DIR__.'/../../Fixtures/PackageDiscovery/root-missing-standalone';
+
+    expect(ComponentPackages::packagesFromRootComposerJson($directory.'/composer.json'))->toBe([
+        [
+            'name' => 'acme/missing-widget',
+            'roots' => [],
+            'plugin' => null,
+            'standalone' => realpath($directory).'/dist/missing.js',
+        ],
+    ]);
 });
 
 it('reads the root package via Composer\InstalledVersions::getRootPackage()', function (): void {

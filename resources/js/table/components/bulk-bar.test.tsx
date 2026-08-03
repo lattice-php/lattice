@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import type { EffectHandler } from "@lattice-php/lattice/effects/registry";
-import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { Provider } from "@lattice-php/lattice/provider";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { BulkBar } from "./bulk-bar";
@@ -75,14 +75,12 @@ function action(partial: Partial<BulkAction> & Pick<BulkAction, "id">): BulkActi
 }
 
 const effectHandler = vi.fn<EffectHandler>();
-const registry = createRegistry(
-  createPlugin({
-    name: "bulk-bar-test",
-    effects: {
-      "test.bulk-success": effectHandler,
-    },
-  }),
-);
+const registry = createRegistry({
+  name: "bulk-bar-test",
+  effects: {
+    "test.bulk-success": effectHandler,
+  },
+});
 
 function renderBar(props: Partial<Parameters<typeof BulkBar>[0]> = {}) {
   const onSelectAllMatching = vi.fn<() => void>();

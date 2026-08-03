@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { createPlugin, createRegistry, eagerComponent, Provider } from "@lattice-php/lattice";
+import { createRegistry, eagerComponent, Provider } from "@lattice-php/lattice";
 import type { PagePayload, RendererComponent } from "@lattice-php/lattice";
 import Page from "./page";
 
@@ -76,14 +76,12 @@ describe("Page", () => {
     const CustomComponent: RendererComponent<"custom.message"> = ({ node }) => (
       <div>{String(node.props?.message ?? "")}</div>
     );
-    const registry = createRegistry(
-      createPlugin({
-        components: {
-          "custom.message": eagerComponent(CustomComponent),
-        },
-        name: "test/custom",
-      }),
-    );
+    const registry = createRegistry({
+      components: {
+        "custom.message": eagerComponent(CustomComponent),
+      },
+      name: "test/custom",
+    });
 
     render(
       <Provider registry={registry}>

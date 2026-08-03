@@ -1,12 +1,17 @@
 import "./standalone.css";
-import { setRefRefreshEndpoint } from "@lattice-php/lattice/core/api";
-import { createLatticeApp } from "@lattice-php/lattice/create-app";
-import { withVisitHeaders } from "@lattice-php/lattice/inertia";
+import {
+  createLatticeApp,
+  setRefRefreshEndpoint,
+  withVisitHeaders,
+} from "@lattice-php/lattice/runtime";
 import { readStandaloneConfig } from "./config";
+import { loadPluginModules } from "./plugins";
 
 const config = readStandaloneConfig(document);
 
 async function boot(): Promise<void> {
+  const plugins = await loadPluginModules(config.plugins ?? []);
+
   if (config.refreshRefUrl) {
     setRefRefreshEndpoint(config.refreshRefUrl);
   }
@@ -22,6 +27,7 @@ async function boot(): Promise<void> {
   }
 
   void createLatticeApp({
+    plugins,
     ...(config.spriteUrl ? { sprite: { href: config.spriteUrl } } : {}),
     defaults: { visitOptions: withVisitHeaders },
   });

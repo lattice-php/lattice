@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createPlugin, createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
+import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import type { RendererComponent } from "./types";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
@@ -29,18 +30,18 @@ describe("lattice registry", () => {
   });
 
   it("merges plugins into a registry", () => {
-    const firstPlugin = createPlugin({
+    const firstPlugin = {
       components: {
         first: eagerComponent(EagerComponent),
       },
       name: "first",
-    });
-    const secondPlugin = createPlugin({
+    } satisfies Plugin;
+    const secondPlugin = {
       components: {
         second: eagerComponent(EagerComponent),
       },
       name: "second",
-    });
+    } satisfies Plugin;
 
     expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.first");
     expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.second");

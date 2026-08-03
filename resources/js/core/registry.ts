@@ -65,10 +65,6 @@ export function lazyComponent<TType extends string>(
   };
 }
 
-export function createPlugin(plugin: Plugin): Plugin {
-  return plugin;
-}
-
 export function createRegistry(...plugins: Plugin[]): Registry {
   return plugins.reduce<Registry>(
     (registry, plugin) => ({

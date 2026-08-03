@@ -1,11 +1,20 @@
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { CreateLatticeAppOptions } from "@lattice-php/lattice/create-app";
+import type { Plugin } from "@lattice-php/lattice/core/registry";
 
 const createLatticeApp = vi.hoisted(() => vi.fn<(options?: CreateLatticeAppOptions) => unknown>());
 const configureEcho = vi.hoisted(() => vi.fn<(config: unknown) => unknown>());
+const loadPluginModules = vi.hoisted(() => vi.fn<(urls: string[]) => Promise<Plugin[]>>());
+const setRefRefreshEndpoint = vi.hoisted(() => vi.fn());
+const withVisitHeaders = vi.hoisted(() => vi.fn());
 
-vi.mock("@lattice-php/lattice/create-app", () => ({ createLatticeApp }));
+vi.mock("@lattice-php/lattice/runtime", () => ({
+  createLatticeApp,
+  setRefRefreshEndpoint,
+  withVisitHeaders,
+}));
 vi.mock("@laravel/echo-react", () => ({ configureEcho }));
+vi.mock("./plugins", () => ({ loadPluginModules }));
 
 function setConfigScript(json?: string): void {
   document.body.innerHTML = json
@@ -13,17 +22,39 @@ function setConfigScript(json?: string): void {
     : "";
 }
 
+beforeEach(() => {
+  loadPluginModules.mockResolvedValue([]);
+});
+
 afterEach(() => {
   createLatticeApp.mockClear();
   configureEcho.mockClear();
+  loadPluginModules.mockReset();
+  setRefRefreshEndpoint.mockClear();
+  withVisitHeaders.mockClear();
   document.body.innerHTML = "";
+});
+
+it("loads configured plugins before booting the app", async () => {
+  const plugins = [{ name: "app" }] satisfies Plugin[];
+  loadPluginModules.mockResolvedValueOnce(plugins);
+  setConfigScript(JSON.stringify({ plugins: ["/plugin.js"] }));
+  vi.resetModules();
+
+  const { booted } = await import("./main");
+  await booted;
+
+  expect(loadPluginModules).toHaveBeenCalledExactlyOnceWith(["/plugin.js"]);
+  expect(createLatticeApp).toHaveBeenCalledWith(expect.objectContaining({ plugins }));
+  expect(loadPluginModules.mock.invocationCallOrder[0]).toBeLessThan(
+    createLatticeApp.mock.invocationCallOrder[0]!,
+  );
 });
 
 it("boots with no config script", async () => {
   setConfigScript();
   vi.resetModules();
 
-  const { withVisitHeaders } = await import("@lattice-php/lattice/inertia");
   const { booted } = await import("./main");
   await booted;
 

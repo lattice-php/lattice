@@ -1,7 +1,8 @@
-import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+import { lazyComponent } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
-export const appColumns = createPlugin({
+export const appColumns = {
   name: "workbench",
   columns: {
     "column.status-badge": StatusBadgeCell,
@@ -9,4 +10,4 @@ export const appColumns = createPlugin({
   components: {
     "echo-status": lazyComponent(() => import("./components/EchoStatus")),
   },
-});
+} satisfies Plugin;

@@ -127,11 +127,11 @@ trait GeneratesComponentPair
         File::ensureDirectoryExists(dirname($pluginPath));
         File::put(
             $pluginPath,
-            'import { createPlugin } from "@lattice-php/lattice";'."\n\n"
-            .'export default createPlugin({'."\n"
+            'import { type Plugin } from "@lattice-php/lattice/runtime";'."\n\n"
+            .'export default {'."\n"
             .'  name: "'.$name.'",'."\n"
             .'  components: {},'."\n"
-            .'});'."\n",
+            .'} satisfies Plugin;'."\n",
         );
     }
 
@@ -230,7 +230,7 @@ trait GeneratesComponentPair
 
     private function ensureEagerComponentImport(string $contents, string $helperName = 'eagerComponent'): string
     {
-        $packageImportPattern = '/^(import\s*\{[^}]*\}\s*from\s*"@lattice-php\/lattice"\s*;)/m';
+        $packageImportPattern = '/^(import\s*\{[^}]*\}\s*from\s*"@lattice-php\/lattice(?:\/runtime)?"\s*;)/m';
 
         if (! preg_match($packageImportPattern, $contents, $matches)) {
             return $contents;
@@ -243,7 +243,7 @@ trait GeneratesComponentPair
         }
 
         $updated = preg_replace(
-            '/^(import\s*\{)([^}]*)(\}\s*from\s*"@lattice-php\/lattice"\s*;)/m',
+            '/^(import\s*\{)([^}]*)(\}\s*from\s*"@lattice-php\/lattice(?:\/runtime)?"\s*;)/m',
             '$1$2, '.$helperName.'$3',
             $contents,
             1,
@@ -260,7 +260,7 @@ trait GeneratesComponentPair
             return $contents;
         }
 
-        $packageImportPattern = '/^(import\s*\{[^}]*\}\s*from\s*"@lattice-php\/lattice"\s*;)/m';
+        $packageImportPattern = '/^(import\s*\{[^}]*\}\s*from\s*"@lattice-php\/lattice(?:\/runtime)?"\s*;)/m';
 
         return preg_replace(
             $packageImportPattern,

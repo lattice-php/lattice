@@ -44,7 +44,8 @@ it('scaffolds into a Composer package via --package', function (): void {
         expect(File::exists($dir.'/resources/js/widget.tsx'))->toBeTrue();
 
         expect(File::get($dir.'/resources/js/plugin.ts'))
-            ->toContain('createPlugin')
+            ->toContain('from "@lattice-php/lattice/runtime"')
+            ->toContain('satisfies Plugin')
             ->toContain('import { WidgetComponent } from "./widget";')
             ->toContain('"widget": eagerComponent(WidgetComponent)');
     } finally {

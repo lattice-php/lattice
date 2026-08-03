@@ -19,6 +19,9 @@ beforeEach(function (): void {
             'lattice.js' => 'jshash123456',
             'lattice.css' => 'csshash12345',
             'sprite.svg' => 'svghash12345',
+            'runtime.js' => 'runtimehash12',
+            'react.js' => 'reacthash1234',
+            'jsx-runtime.js' => 'jsxhash123456',
         ],
     ], JSON_THROW_ON_ERROR));
 });
@@ -38,6 +41,15 @@ it('embeds the boot config with the versioned sprite url', function (): void {
 
     expect($html)->toContain('<script type="application/json" data-lattice-config>')
         ->and($html)->toContain('vendor/lattice/sprite.svg?v=svghash12345');
+});
+
+it('maps standalone plugin imports to the shared runtime', function (): void {
+    $html = Blade::render('@latticeHead');
+
+    expect($html)->toContain('<script type="importmap">')
+        ->toContain('"@lattice-php/lattice/runtime":"http://localhost/vendor/lattice/runtime.js?v=runtimehash12"')
+        ->toContain('"react":"http://localhost/vendor/lattice/react.js?v=reacthash1234"')
+        ->toContain('"react/jsx-runtime":"http://localhost/vendor/lattice/jsx-runtime.js?v=jsxhash123456"');
 });
 
 it('renders a registered theme as a managed style tag', function (): void {
@@ -60,6 +72,27 @@ it('merges the directive argument over the configured frontend settings', functi
 
     expect(Blade::render('@latticeHead'))->toContain('"broadcaster":"reverb"');
     expect(Blade::render("@latticeHead(['echo' => null])"))->not->toContain('"broadcaster"');
+});
+
+it('passes configured plugin module urls to the standalone boot', function (): void {
+    config()->set('lattice.frontend.plugins', [
+        '/build/app-plugin.js',
+        'https://cdn.example.com/vendor-plugin.js',
+    ]);
+
+    expect(Blade::render('@latticeHead'))
+        ->toContain('"plugins":["/build/app-plugin.js","https://cdn.example.com/vendor-plugin.js"]');
+});
+
+it('passes published component package modules to the standalone boot', function (): void {
+    $path = public_path('vendor/lattice/manifest.json');
+    $manifest = json_decode(File::get($path), true);
+    $manifest['plugins'] = ['plugins/acme-widget.js'];
+    $manifest['files']['plugins/acme-widget.js'] = 'pluginhash12';
+    File::put($path, json_encode($manifest, JSON_THROW_ON_ERROR));
+
+    expect(Blade::render('@latticeHead'))
+        ->toContain('"plugins":["http://localhost/vendor/lattice/plugins/acme-widget.js?v=pluginhash12"]');
 });
 
 it('renders the module script tag', function (): void {
