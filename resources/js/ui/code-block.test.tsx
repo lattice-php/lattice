@@ -13,7 +13,7 @@ afterEach(() => {
 describe("CodeBlock", () => {
   it("server-renders an accessible pre while CodeMirror loads", () => {
     const html = renderToString(
-      <CodeBlock aria-label="PHP example" language="php">
+      <CodeBlock aria-label="PHP example" copyable language="php">
         {"<?php echo 'Hello';"}
       </CodeBlock>,
     );
@@ -21,6 +21,7 @@ describe("CodeBlock", () => {
     expect(html).toContain("<pre");
     expect(html).toContain('aria-label="PHP example"');
     expect(html).toContain("&lt;?php echo &#x27;Hello&#x27;;");
+    expect(html).not.toContain("pt-11");
   });
 
   it("server-renders the maximum height on the fallback", () => {

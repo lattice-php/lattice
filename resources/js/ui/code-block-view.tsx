@@ -44,21 +44,11 @@ const codeBlockTheme = EditorView.theme({
     borderRightColor: "var(--lt-border)",
     color: "var(--lt-muted-fg)",
   },
+  ".cm-lineNumbers .cm-gutterElement": { padding: "0 0.75rem" },
   ".cm-line": { padding: "0" },
 });
 
-const copyableTheme = EditorView.theme({
-  ".cm-content": { padding: "2.75rem 0.75rem 0.75rem" },
-});
-
-function CodeBlockView({
-  children,
-  copyable,
-  language,
-  lineNumbers,
-  maxHeight,
-  wrap,
-}: CodeBlockViewProps) {
+function CodeBlockView({ children, language, lineNumbers, maxHeight, wrap }: CodeBlockViewProps) {
   const container = useRef<HTMLDivElement>(null);
   const content = useRef(children);
   const editor = useRef<EditorView>(null);
@@ -81,7 +71,6 @@ function CodeBlockView({
         EditorView.contentAttributes.of({ role: "code" }),
         languageCompartment.of(initialLanguage),
         syntaxHighlighting(highlightStyle),
-        copyable ? copyableTheme : [],
         codeBlockTheme,
         lineNumbers ? showLineNumbers() : [],
         maxHeight === null
@@ -114,7 +103,7 @@ function CodeBlockView({
       editor.current = null;
       view.destroy();
     };
-  }, [copyable, language, lineNumbers, maxHeight, wrap]);
+  }, [language, lineNumbers, maxHeight, wrap]);
 
   useEffect(() => {
     const view = editor.current;

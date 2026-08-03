@@ -21,7 +21,6 @@ interface CodeBlockProps extends Omit<ComponentProps<"div">, "children"> {
 
 interface CodeBlockViewProps {
   children: string;
-  copyable: boolean;
   language: CodeBlockLanguage | CodeBlockLanguageLoader;
   lineNumbers: boolean;
   maxHeight: number | null;
@@ -45,7 +44,6 @@ function CodeBlock({
       className={cn(
         "max-w-full overflow-auto p-3 font-lt-mono text-xs",
         wrap && "whitespace-pre-wrap wrap-anywhere",
-        copyable && "pt-11",
       )}
       style={{ maxHeight: maxHeight ?? undefined }}
     >
@@ -85,12 +83,11 @@ function CodeBlock({
           value={children}
           label={ariaLabel ?? "code"}
           iconOnly
-          className="absolute top-2 right-5 z-10 bg-lt-bg/80 hover:bg-lt-bg"
+          className="absolute top-3 right-6 z-10 bg-lt-bg/80 hover:bg-lt-bg"
         />
       ) : null}
       <Suspense fallback={fallback}>
         <CodeBlockView
-          copyable={copyable}
           language={language}
           lineNumbers={lineNumbers}
           maxHeight={maxHeight}
