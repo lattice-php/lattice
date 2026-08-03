@@ -1,12 +1,17 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import formPlugin, { formComponents } from "./plugin";
 
 const packageRoot = path.resolve(import.meta.dirname, "../..");
 const repositoryRoot = path.resolve(packageRoot, "../..");
 const sourceRoot = path.join(packageRoot, "resources/js");
 
 describe("form npm package contract", () => {
+  it("provides the default export expected by Composer plugin discovery", () => {
+    expect(formPlugin).toBe(formComponents);
+  });
+
   it("is independently installable above Core and UI", () => {
     const manifest = JSON.parse(readFileSync(path.join(packageRoot, "package.json"), "utf8")) as {
       dependencies?: Record<string, string>;

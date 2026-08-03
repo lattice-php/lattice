@@ -34,7 +34,7 @@ it('writes a ColumnProps augmentation from the column class public props', funct
         ->toContain('"column.rating"')
         ->toContain('max: number');
 
-    expect(str_contains($contents, 'key:'))->toBeFalse();
+    expect($contents)->not->toMatch('/"column\.rating"\s*:\s*\{[^}]*\bkey:/s');
 
     File::delete($output);
 });

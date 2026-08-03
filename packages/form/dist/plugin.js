@@ -47,6 +47,6 @@ var formComponents = {
 	name: "lattice/form"
 };
 //#endregion
-export { formComponents };
+export { formComponents as default, formComponents };
 
 //# sourceMappingURL=plugin.js.map

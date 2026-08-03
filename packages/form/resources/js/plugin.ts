@@ -50,3 +50,5 @@ export const formComponents: Plugin = {
   } satisfies ComponentRegistryFor<FormNodeType>,
   name: "lattice/form",
 };
+
+export default formComponents;

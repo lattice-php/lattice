@@ -19,5 +19,5 @@ import { TimeInputComponent } from "./components/fields/time-input.js";
 import { ToggleComponent } from "./components/fields/toggle.js";
 import { WizardComponent, WizardStepComponent } from "./components/wizard.js";
 import { FormFieldFrame } from "./components/base/field.js";
-import { formComponents } from "./plugin.js";
+import formComponents from "./plugin.js";
 export { BuilderComponent, CheckboxComponent, ChoiceComponent, ColorPickerFieldComponent, DateInputComponent, DateTimeInputComponent, FileUploadComponent, FormComponent, FormFieldFrame, FormValuesProvider, HiddenInputComponent, NumberInputComponent, OtpInputComponent, PasswordInputComponent, RepeaterComponent, SelectComponent, TextInputComponent, TextareaComponent, TimeInputComponent, ToggleComponent, WizardComponent, WizardStepComponent, formComponents };
