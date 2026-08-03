@@ -103,7 +103,7 @@ arch('core does not depend on feature or ui domains')
     ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
 
 it('shared source does not reference feature or ui namespaces in strings', function (string $directory): void {
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/src/'.$directory));
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/packages/core/src/'.$directory));
     $violations = [];
 
     foreach ($files as $file) {

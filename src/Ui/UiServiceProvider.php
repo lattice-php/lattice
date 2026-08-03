@@ -30,6 +30,7 @@ final class UiServiceProvider extends ServiceProvider
         $this->app->scoped(EffectFlasher::class);
 
         $families = $this->app->make(WireFamilies::class);
+        $families->registerSource(dirname(__DIR__));
         $families->register(new WireFamily('component', AsComponent::class, Component::class, marker: true));
         $families->register(new WireFamily('effect', AsEffect::class, Effect::class));
     }

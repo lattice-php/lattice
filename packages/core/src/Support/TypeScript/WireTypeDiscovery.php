@@ -22,6 +22,43 @@ final readonly class WireTypeDiscovery
     public function __construct(private WireFamilies $families) {}
 
     /**
+     * @param  list<string>  $paths
+     * @param  list<string>  $ignoreDirectories
+     */
+    public function discoverMany(array $paths, array $ignoreDirectories = []): WireTypeManifest
+    {
+        $enums = [];
+        $valueObjects = [];
+        $components = [];
+        $families = [];
+
+        foreach ($paths as $path) {
+            $manifest = $this->discover($path, $ignoreDirectories);
+            $enums = [...$enums, ...$manifest->enums];
+            $valueObjects = [...$valueObjects, ...$manifest->valueObjects];
+
+            foreach ($manifest->components as $component) {
+                $components[$component->class] = $component;
+            }
+
+            foreach ($manifest->families as $category => $members) {
+                $families[$category] = [...($families[$category] ?? []), ...$members];
+            }
+        }
+
+        $enums = array_values(array_unique($enums));
+        $valueObjects = array_values(array_unique($valueObjects));
+        sort($enums);
+        sort($valueObjects);
+
+        foreach ($families as &$members) {
+            ksort($members);
+        }
+
+        return new WireTypeManifest($enums, $valueObjects, array_values($components), $families);
+    }
+
+    /**
      * @param  list<string>  $ignoreDirectories  paths skipped entirely (e.g. test scaffolding
      *                                           that can never be a wire type) so they're
      *                                           never autoloaded during the walk

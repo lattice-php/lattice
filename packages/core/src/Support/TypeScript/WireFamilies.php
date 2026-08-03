@@ -11,6 +11,21 @@ final class WireFamilies
     /** @var array<string, WireFamily> */
     private array $families = [];
 
+    /** @var array<string, string> */
+    private array $sources = [];
+
+    public function registerSource(string $path): void
+    {
+        $path = realpath($path) ?: $path;
+        $this->sources[$path] = $path;
+    }
+
+    /** @return list<string> */
+    public function sources(): array
+    {
+        return array_values($this->sources);
+    }
+
     public function register(WireFamily $family): void
     {
         if (isset($this->families[$family->category])) {

@@ -25,5 +25,6 @@ final class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(PageMetadataResolver::class);
         $this->app->singleton(WireFamilies::class);
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
+        $this->app->make(WireFamilies::class)->registerSource(dirname(__DIR__));
     }
 }

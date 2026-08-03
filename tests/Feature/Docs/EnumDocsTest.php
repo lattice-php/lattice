@@ -14,30 +14,32 @@ use Lattice\Lattice\Ui\Enums\Icon;
 function generateEnumReference(): array
 {
     $root = dirname(__DIR__, 3);
-    $files = glob($root.'/src/*/Enums/*.php') ?: [];
+    $sources = [$root.'/src', $root.'/packages/core/src'];
 
     $enums = [];
 
-    foreach ($files as $file) {
-        $relative = substr($file, strlen($root.'/src/'), -strlen('.php'));
-        $class = 'Lattice\\Lattice\\'.str_replace('/', '\\', $relative);
+    foreach ($sources as $source) {
+        foreach (glob($source.'/*/Enums/*.php') ?: [] as $file) {
+            $relative = substr($file, strlen($source.'/'), -strlen('.php'));
+            $class = 'Lattice\\Lattice\\'.str_replace('/', '\\', $relative);
 
-        if ($class === Icon::class || ! enum_exists($class)) {
-            continue;
+            if ($class === Icon::class || ! enum_exists($class)) {
+                continue;
+            }
+
+            $reflection = new ReflectionEnum($class);
+
+            $cases = array_map(fn (ReflectionEnumUnitCase $case): array => [
+                'name' => $case->getName(),
+                'value' => $case instanceof ReflectionEnumBackedCase ? $case->getBackingValue() : null,
+            ], $reflection->getCases());
+
+            $enums[$class] = [
+                'name' => $reflection->getShortName(),
+                'namespace' => $reflection->getNamespaceName(),
+                'cases' => $cases,
+            ];
         }
-
-        $reflection = new ReflectionEnum($class);
-
-        $cases = array_map(fn (ReflectionEnumUnitCase $case): array => [
-            'name' => $case->getName(),
-            'value' => $case instanceof ReflectionEnumBackedCase ? $case->getBackingValue() : null,
-        ], $reflection->getCases());
-
-        $enums[$class] = [
-            'name' => $reflection->getShortName(),
-            'namespace' => $reflection->getNamespaceName(),
-            'cases' => $cases,
-        ];
     }
 
     ksort($enums);

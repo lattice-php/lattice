@@ -101,7 +101,11 @@ it('discovers columns via attribute inheritance and captures the column class', 
 });
 
 it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $root = dirname(__DIR__, 3);
+    $manifest = app(WireTypeDiscovery::class)->discoverMany([
+        $root.'/src',
+        $root.'/packages/core/src',
+    ]);
 
     expect($manifest->enums)->toContain(Align::class)->toContain(Variant::class);
     expect($manifest->enums)->not->toContain(Option::class);

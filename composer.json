@@ -36,6 +36,7 @@
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
         "inertiajs/inertia-laravel": "^3.0",
+        "lattice-php/core": "self.version",
         "spatie/laravel-package-tools": "^1.16 || ^2.0",
         "spatie/php-attribute-reader": "^1.1",
         "spatie/php-structure-discoverer": "^2.4",

@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Attributes\WireEnvelope;
+use Lattice\Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 
 /**
@@ -111,8 +112,10 @@ final readonly class AugmentProfile implements TypeScriptProfile
     private function builtinClassTypes(): array
     {
         $byCategory = ['component' => [], 'column' => [], 'filter' => []];
+        $sources = [...$this->families->sources(), ...ComponentPackages::discoverRoots()];
+        $ignored = array_map(static fn (string $source): string => $source.'/Support/Testing', $sources);
 
-        foreach ($this->discovery->discover(dirname(__DIR__, 2), [dirname(__DIR__).'/Testing'])->components as $component) {
+        foreach ($this->discovery->discoverMany($sources, $ignored)->components as $component) {
             $byCategory[$component->category][$component->class] = $component->type;
         }
 
