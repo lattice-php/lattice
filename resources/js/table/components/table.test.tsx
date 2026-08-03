@@ -109,7 +109,12 @@ describe("Lattice table component", () => {
     window.localStorage.clear();
   });
 
-  it("renders columns and rows from server props", () => {
+  it("renders columns and rows from server props", async () => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+    });
+
     const node = {
       id: "workbench.users",
       props: {
@@ -204,7 +209,7 @@ describe("Lattice table component", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Copy Email" }));
 
-    expect(screen.getByRole("button", { name: "Copied Email" })).toBeVisible();
+    expect(await screen.findByRole("button", { name: "Copied Email" })).toBeVisible();
   });
 
   it("refreshes rows when table data props change", () => {

@@ -105,7 +105,7 @@ describe("TextInputComponent copy affix", () => {
     expect(screen.queryByRole("button", { name: /Copy/ })).not.toBeInTheDocument();
   });
 
-  it("copies the current input value", () => {
+  it("copies the current input value", async () => {
     const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
 
@@ -122,6 +122,6 @@ describe("TextInputComponent copy affix", () => {
     fireEvent.click(screen.getByRole("button", { name: "Copy API key" }));
 
     expect(writeText).toHaveBeenCalledWith("tok_secret");
-    expect(screen.getByRole("button", { name: "Copied API key" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Copied API key" })).toBeInTheDocument();
   });
 });

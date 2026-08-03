@@ -10,7 +10,7 @@ export const ColorPickerFieldComponent: RendererComponent<"field.color-picker"> 
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, value, readOnly, disabled, commit }) => {
+      {({ name, value, readOnly, disabled, commit }, controlProps) => {
         const hex = normalizeHex(value);
 
         return (
@@ -18,10 +18,10 @@ export const ColorPickerFieldComponent: RendererComponent<"field.color-picker"> 
             <input name={name} type="hidden" value={hex ?? ""} />
             <PopoverTrigger asChild>
               <button
+                {...controlProps}
                 className={cn(controlSurface(), "flex items-center gap-2 text-left")}
                 data-test={`color-picker-${name}`}
                 disabled={disabled || readOnly}
-                id={name}
                 type="button"
               >
                 {hex ? (

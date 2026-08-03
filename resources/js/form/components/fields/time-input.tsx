@@ -14,14 +14,14 @@ export const TimeInputComponent: RendererComponent<"field.time-input"> = ({ node
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, testId, value, readOnly, disabled, commit, blur }) => (
+      {({ name, testId, value, readOnly, disabled, commit, blur }, controlProps) => (
         <div className="flex gap-2">
           <Input
+            {...controlProps}
             aria-label={triggerLabel}
             autoFocus={props.autoFocus ?? false}
             data-test={testId}
             disabled={disabled}
-            id={name}
             name={name}
             onBlur={() => {
               const parsed = parseTimeString(value);

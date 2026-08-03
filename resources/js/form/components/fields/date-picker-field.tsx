@@ -7,6 +7,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import { useLocale } from "@lattice-php/lattice/i18n";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { Input } from "@lattice-php/lattice/ui/input";
+import type { FormFieldControlProps } from "@lattice-php/lattice/form/components/base/field";
 import {
   formatDateDisplayValue,
   formatDateTimeDisplayValue,
@@ -23,6 +24,7 @@ import { parseTimeString } from "./time-picker-columns";
 
 export type DatePickerFieldProps = {
   mode: "date" | "date-time";
+  controlProps: FormFieldControlProps;
   label: string;
   name: string;
   testId: string;
@@ -41,6 +43,7 @@ export type DatePickerFieldProps = {
 
 export function DatePickerField({
   mode,
+  controlProps,
   label,
   name,
   testId,
@@ -109,11 +112,11 @@ export function DatePickerField({
       <div {...api.getControlProps()} className="flex gap-2">
         <Input
           {...inputProps}
+          {...controlProps}
           aria-label={label}
           autoFocus={autoFocus}
           data-test={testId}
           disabled={disabled}
-          id={name}
           onInput={(event) => {
             onInput?.(event);
 

@@ -7,12 +7,12 @@ export const TextareaComponent: RendererComponent<"field.textarea"> = ({ node })
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, testId, value, readOnly, disabled, commit }) => (
+      {({ name, testId, value, readOnly, disabled, commit }, controlProps) => (
         <Textarea
+          {...controlProps}
           autoFocus={props.autoFocus ?? false}
           data-test={testId}
           disabled={disabled}
-          id={name}
           name={name}
           onChange={(event) => commit(event.target.value)}
           placeholder={props.placeholder ?? ""}

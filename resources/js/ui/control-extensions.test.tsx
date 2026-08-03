@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { Button } from "./button";
-import { NativeSelect } from "./native-select";
+import { NativeSelect } from "./index";
 
 describe("NativeSelect", () => {
   it("renders a styled native select with its options", () => {

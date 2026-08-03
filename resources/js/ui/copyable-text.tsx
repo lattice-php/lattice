@@ -1,7 +1,7 @@
 import { useT } from "@lattice-php/lattice/i18n";
-import { Icon } from "@lattice-php/lattice/icons";
-import { cn } from "@lattice-php/lattice/lib/utils";
 import { type ReactNode, useEffect, useState } from "react";
+import { Button } from "./button";
+import { IconButton } from "./icon-button";
 
 export async function copyToClipboard(text: string): Promise<boolean> {
   if (!navigator?.clipboard) {
@@ -22,9 +22,18 @@ interface CopyButtonProps {
   label: string;
   testId?: string;
   className?: string;
+  iconOnly?: boolean;
+  children?: ReactNode;
 }
 
-export function CopyButton({ value, label, testId, className }: CopyButtonProps): ReactNode {
+export function CopyButton({
+  value,
+  label,
+  testId,
+  className,
+  iconOnly = false,
+  children,
+}: CopyButtonProps): ReactNode {
   const { t } = useT("lattice");
   const [copied, setCopied] = useState(false);
 
@@ -38,29 +47,41 @@ export function CopyButton({ value, label, testId, className }: CopyButtonProps)
     return () => window.clearTimeout(timeout);
   }, [copied]);
 
-  function handleCopy(): void {
-    void copyToClipboard(value);
-    setCopied(true);
+  async function handleCopy(): Promise<void> {
+    if (await copyToClipboard(value)) {
+      setCopied(true);
+    }
   }
 
   const ariaLabel = copied
     ? t("common.copied-value", "Copied {{label}}", { label })
     : t("common.copy-value", "Copy {{label}}", { label });
 
+  if (iconOnly) {
+    return (
+      <IconButton
+        icon={copied ? "check" : "copy"}
+        label={ariaLabel}
+        data-test={testId}
+        className={className}
+        onClick={() => void handleCopy()}
+      />
+    );
+  }
+
   return (
-    <button
+    <Button
       type="button"
+      size="sm"
+      emphasis="outline"
+      icon={copied ? "check" : "copy"}
       data-test={testId}
-      className={cn(
-        "inline-flex items-center gap-1 rounded-lt-sm border border-lt-border px-2 py-1 text-xs",
-        className,
-      )}
+      className={className}
       aria-label={ariaLabel}
-      onClick={handleCopy}
+      onClick={() => void handleCopy()}
     >
-      <Icon name={copied ? "check" : "copy"} className="size-lt-icon-xs" />
-      {copied ? t("common.copied", "Copied") : t("common.copy", "Copy")}
-    </button>
+      {copied ? t("common.copied", "Copied") : (children ?? t("common.copy", "Copy"))}
+    </Button>
   );
 }
 

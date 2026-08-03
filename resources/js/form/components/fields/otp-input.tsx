@@ -7,12 +7,12 @@ export const OtpInputComponent: RendererComponent<"field.otp"> = ({ node }) => {
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, testId, value, readOnly, disabled, commit }) => (
+      {({ name, testId, value, readOnly, disabled, commit }, controlProps) => (
         <InputOTP
+          {...controlProps}
           autoFocus={props.autoFocus ?? false}
           data-test={testId}
           disabled={disabled || readOnly}
-          id={name}
           length={props.length}
           name={name}
           onChange={(next) => commit(next)}

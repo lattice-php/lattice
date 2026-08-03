@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 import type { Node } from "@lattice-php/lattice/core/types";
-import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
+import {
+  FormFieldFrame,
+  type FormFieldControlProps,
+} from "@lattice-php/lattice/form/components/base/field";
 import { fieldProps } from "@lattice-php/lattice/form/lib/field-props";
 import {
   type ControlledField,
@@ -14,7 +17,7 @@ export function SimpleField({
 }: {
   node: Node;
   label: string;
-  children: (field: ControlledField) => ReactNode;
+  children: (field: ControlledField, controlProps: FormFieldControlProps) => ReactNode;
 }) {
   const field = useControlledField(node);
 
@@ -28,10 +31,10 @@ export function SimpleField({
       helperText={fieldProps(node).helperText ?? undefined}
       tooltip={fieldProps(node).tooltip ?? undefined}
       label={label}
-      name={field.name}
+      id={field.name}
       required={field.required}
     >
-      {children(field)}
+      {(controlProps) => children(field, controlProps)}
     </FormFieldFrame>
   );
 }

@@ -9,7 +9,7 @@ export const TextInputComponent: RendererComponent<"field.text-input"> = ({ node
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, testId, value, readOnly, disabled, commit }) => (
+      {({ name, testId, value, readOnly, disabled, commit }, controlProps) => (
         <AffixGroup
           prefix={props.prefix}
           suffix={props.suffix}
@@ -26,12 +26,12 @@ export const TextInputComponent: RendererComponent<"field.text-input"> = ({ node
         >
           {(controlClassName) => (
             <Input
+              {...controlProps}
               autoComplete={props.autoComplete ?? ""}
               autoFocus={props.autoFocus ?? false}
               className={controlClassName}
               data-test={testId}
               disabled={disabled}
-              id={name}
               name={name}
               onChange={(event) => commit(event.target.value)}
               placeholder={props.placeholder ?? ""}
