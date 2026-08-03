@@ -136,19 +136,17 @@ The generator registers column cells **bare** (`"column.status-badge": StatusBad
 The generator appended an entry under `columns` in `resources/js/registry.ts`:
 
 ```ts
-import { createPlugin, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import { extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import { StatusBadgeCell } from "./columns/status-badge";
 
-export const registry = extendRegistry(
-  packageRegistry,
-  createPlugin({
-    name: "app",
-    components: {},
-    columns: {
-      "column.status-badge": StatusBadgeCell,
-    },
-  }),
-);
+export const registry = extendRegistry(packageRegistry, {
+  name: "app",
+  components: {},
+  columns: {
+    "column.status-badge": StatusBadgeCell,
+  },
+} satisfies Plugin);
 ```
 
 ## 6. Wire the registry in app.tsx

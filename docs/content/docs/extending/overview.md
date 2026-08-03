@@ -37,7 +37,7 @@ That string — `"field.color-picker"` — is the only coupling between the PHP 
 | UI component | `Lattice\Lattice\Ui\Components\Component` | `components` (node registry)     |
 | Table column | `Lattice\Lattice\Tables\Columns\Column`   | `columns` (column-cell registry) |
 
-All three register in a single file — `resources/js/registry.ts`, published by `php artisan vendor:publish --tag=lattice-js`. It calls `createPlugin({ components: {}, columns: {} })` and merges it onto the package registry with `extendRegistry`. Form fields and UI components share the **node registry** (the `components` block) — the renderer walks the component tree and resolves each `type` to a `RendererComponent`. Table columns use the separate **column-cell registry** (the `columns` block) because only the cell needs a custom renderer; the table chrome (header, sorting, filtering) is provided by Lattice.
+All three register in a single file — `resources/js/registry.ts`, published by `php artisan vendor:publish --tag=lattice-js`. It defines a plain plugin object with `components` and `columns` blocks and merges it onto the package registry with `extendRegistry`. Form fields and UI components share the **node registry** (the `components` block) — the renderer walks the component tree and resolves each `type` to a `RendererComponent`. Table columns use the separate **column-cell registry** (the `columns` block) because only the cell needs a custom renderer; the table chrome (header, sorting, filtering) is provided by Lattice.
 
 ## Generators scaffold both sides
 

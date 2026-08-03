@@ -38,6 +38,7 @@ return [
         'dist_path' => null,
         'path' => 'vendor/lattice',
         'echo' => null,
+        'plugins' => [],
     ],
 
     // Pages ship unauthenticated by default; authorization is opt-in via

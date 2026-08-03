@@ -10,7 +10,7 @@ use RuntimeException;
 
 final class StandaloneAssets
 {
-    /** @var array{version: string, files: array<string, string>}|null */
+    /** @var array{version: string, files: array<string, string>, plugins?: list<string>}|null */
     private ?array $manifest = null;
 
     public function __construct(
@@ -31,6 +31,7 @@ final class StandaloneAssets
             $tags[] = $theme;
         }
 
+        $tags[] = $this->importMap();
         $tags[] = $this->configScript($frontend);
 
         return implode("\n", $tags);
@@ -41,13 +42,34 @@ final class StandaloneAssets
         return sprintf('<script type="module" src="%s"></script>', $this->versionedUrl('lattice.js'));
     }
 
+    private function importMap(): string
+    {
+        $imports = [
+            '@lattice-php/lattice/runtime' => $this->versionedUrl('runtime.js'),
+            'react' => $this->versionedUrl('react.js'),
+            'react/jsx-runtime' => $this->versionedUrl('jsx-runtime.js'),
+        ];
+
+        return sprintf(
+            '<script type="importmap">%s</script>',
+            json_encode(['imports' => $imports], JSON_THROW_ON_ERROR | JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES),
+        );
+    }
+
     /** @param array<string, mixed> $frontend */
     private function configScript(array $frontend): string
     {
+        $configuredPlugins = array_values(array_filter((array) ($frontend['plugins'] ?? []), is_string(...)));
+        $publishedPlugins = array_map(
+            $this->versionedUrl(...),
+            array_values(array_filter((array) ($this->manifest()['plugins'] ?? []), is_string(...))),
+        );
+        $plugins = array_values(array_unique([...$publishedPlugins, ...$configuredPlugins]));
         $config = array_filter([
             'spriteUrl' => $this->versionedUrl('sprite.svg'),
             'refreshRefUrl' => route('lattice.refs.refresh', absolute: false),
             'echo' => $frontend['echo'] ?? null,
+            'plugins' => $plugins !== [] ? $plugins : null,
         ], static fn (mixed $value): bool => $value !== null);
 
         return sprintf(
@@ -63,7 +85,7 @@ final class StandaloneAssets
         return asset(config('lattice.frontend.path').'/'.$file).'?v='.($manifest['files'][$file] ?? $manifest['version']);
     }
 
-    /** @return array{version: string, files: array<string, string>} */
+    /** @return array{version: string, files: array<string, string>, plugins?: list<string>} */
     private function manifest(): array
     {
         if ($this->manifest !== null) {

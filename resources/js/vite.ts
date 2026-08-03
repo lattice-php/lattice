@@ -59,7 +59,7 @@ export type LatticeComponentPackage = {
   name: string;
   /** Absolute path to the package's installed directory. */
   dir: string;
-  /** Absolute path to the package's JS plugin entry (its `createPlugin(...)`). */
+  /** Absolute path to the package's JS plugin entry. */
   plugin: string;
 };
 
@@ -151,7 +151,7 @@ const RESOLVED_VIRTUAL_PLUGINS_ID = `\0${VIRTUAL_PLUGINS_ID}`;
 
 /**
  * Exposes the discovered component packages as `virtual:lattice/plugins` — a
- * module whose default export is the array of their `createPlugin(...)` results,
+ * module whose default export is the array of their plugin objects,
  * ready for `extendRegistry(registry, ...plugins)`. Also grants Vite filesystem
  * access to each package dir so its source compiles from `vendor/` (or a symlink).
  */

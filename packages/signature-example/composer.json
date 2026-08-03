@@ -11,6 +11,7 @@
     "extra": {
         "lattice": {
             "plugin": "resources/js/plugin.ts",
+            "standalone": "dist/plugin.js",
             "discover": ["src"]
         }
     }

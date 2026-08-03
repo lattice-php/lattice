@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createPlugin, createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
+import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
@@ -12,10 +12,10 @@ const CustomPart: RendererComponent = ({ node }) => (
 );
 
 const registry = createRegistry(chatComponents);
-const customRegistry = createRegistry(
-  chatComponents,
-  createPlugin({ name: "test", components: { custom: eagerComponent(CustomPart) } }),
-);
+const customRegistry = createRegistry(chatComponents, {
+  name: "test",
+  components: { custom: eagerComponent(CustomPart) },
+});
 
 describe("Message", () => {
   it("renders a user message with its text part", () => {

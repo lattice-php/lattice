@@ -6,17 +6,18 @@ description: Ship a custom component — PHP and its React renderer — as a Com
 import Info from "@components/Info.astro";
 import Warning from "@components/Warning.astro";
 
-The [extension points](/extending/overview/) assume a component lives in your own app. To _distribute_ one — a signature pad, a chart widget, a domain-specific field — you would normally also publish an npm package for its React renderer, and keep it in lockstep with the PHP side. Lattice removes that second release pipeline: a component package ships its React renderer as source inside its Composer package, and the `lattice()` Vite plugin compiles it straight into your app's existing build — resolving `@lattice-php/lattice` against the copy you already installed. A plain `composer require` is enough.
+The [extension points](/extending/overview/) assume a component lives in your own app. To _distribute_ one — a signature pad, a chart widget, a domain-specific field — you would normally also publish an npm package for its React renderer, and keep it in lockstep with the PHP side. Lattice removes that second release pipeline: a component package can ship its React source for Vite consumers and a precompiled module for [no-build apps](/introduction/no-build/) inside the same Composer release. A plain `composer require` is enough.
 
 ## What a package ships
 
-Four things — or let the generator write them. Point `--package` at a directory that has no `composer.json` yet and Lattice scaffolds the whole package on first use (the name and PSR-4 namespace are derived from the folder — `packages/acme-signature` → `acme/signature`, `Acme\Signature\`), then creates the component inside it:
+Four source pieces — or let the generator write them. Point `--package` at a directory that has no `composer.json` yet and Lattice scaffolds the package on first use (the name and PSR-4 namespace are derived from the folder — `packages/acme-signature` → `acme/signature`, `Acme\Signature\`), then creates the component inside it:
 
 ```bash
 php artisan lattice:component Signature --package=packages/acme-signature
 ```
 
-**1. A `composer.json` declaring the two Lattice entry points:**
+**1. A `composer.json` declaring the Lattice entry points.** The generator writes `plugin` and
+`discover`; add `standalone` after configuring the separate precompile described below:
 
 ```json
 {
@@ -25,6 +26,7 @@ php artisan lattice:component Signature --package=packages/acme-signature
   "extra": {
     "lattice": {
       "plugin": "resources/js/plugin.ts",
+      "standalone": "dist/plugin.js",
       "discover": ["src"]
     }
   }
@@ -73,21 +75,27 @@ export default Signature;
 **4. The plugin entry that registers it:**
 
 ```ts
-import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+import { lazyComponent, type Plugin } from "@lattice-php/lattice/runtime";
 
-export default createPlugin({
+export default {
   name: "acme-signature",
   components: {
     signature: lazyComponent(() => import("./signature")),
   },
-});
+} satisfies Plugin;
 ```
+
+The optional `dist/plugin.js` is a single precompiled ESM file. Build it with `react`,
+`react/jsx-runtime`, and `@lattice-php/lattice/runtime` left as external imports; the standalone host
+maps those specifiers to its own React and Lattice instances. Bundle every other dependency and
+inline dynamic imports so the Composer package does not need to publish additional chunks.
 
 ## How it reaches the app
 
 The two `extra.lattice` keys are each read by one side of the stack:
 
 - **`plugin`** — the `lattice()` Vite plugin scans `vendor/composer/installed.json`, and for every package that declares it, grants Vite filesystem access to the package directory and exposes its plugin under the virtual module `virtual:lattice/plugins`. The package's TSX compiles straight into the consumer's bundle: no separate build step, one shared React instance, full tree-shaking.
+- **`standalone`** — `php artisan lattice:assets` copies the precompiled module into `public/vendor/lattice/plugins` and adds its versioned URL to the standalone boot config.
 - **`discover`** — Lattice's PHP discovery merges these roots into `lattice.discover`, so the package's `#[AsComponent]` classes are picked up by `php artisan lattice:typescript` (which types `node.props` for the package's components) and by definition discovery for any forms, tables, or pages the package also ships.
 
 A package that owns full screens (an auth UI, say) does not need to register a route for each one — its controllers can return a `Page` directly instead; see [Embedded pages](/core/pages/#embedded-pages).
@@ -122,10 +130,8 @@ Signature::make('signature')->label('Sign the contract');
 </Info>
 
 <Warning title="Requires the Vite plugin">
-  Build-time discovery only runs when the consuming app uses Lattice's `lattice()` Vite plugin —
-  that plugin reads `installed.json`, provides `virtual:lattice/plugins`, and grants filesystem
-  access to the vendor package so its source can compile. Apps scaffolded from the Lattice starter
-  kit already have it.
+  Source-plugin discovery requires Lattice's `lattice()` Vite plugin. No-build apps instead require
+  the package's `standalone` entry and run `php artisan lattice:assets` after installation.
 </Warning>
 
 ## Verifying your package is discovered
@@ -163,9 +169,9 @@ way.
 A package component translates like a built-in one: declare an i18next namespace on the plugin and read keys with `useT`, passing the English default inline at the call site:
 
 ```ts
-import { createPlugin, lazyComponent } from "@lattice-php/lattice";
+import { lazyComponent, type Plugin } from "@lattice-php/lattice/runtime";
 
-export default createPlugin({
+export default {
   name: "acme-signature",
   components: {
     signature: lazyComponent(() => import("./signature")),
@@ -173,11 +179,11 @@ export default createPlugin({
   i18n: {
     namespace: "acme-signature",
   },
-});
+} satisfies Plugin;
 ```
 
 ```tsx
-import { useT } from "@lattice-php/lattice/i18n";
+import { useT } from "@lattice-php/lattice/runtime";
 
 const Signature: RendererComponent<"signature"> = ({ node }) => {
   const { t } = useT("acme-signature");

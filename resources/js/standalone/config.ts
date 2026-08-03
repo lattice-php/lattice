@@ -2,6 +2,7 @@ export type StandaloneConfig = {
   spriteUrl?: string;
   refreshRefUrl?: string;
   echo?: Record<string, unknown>;
+  plugins?: string[];
 };
 
 function invalidConfig(): StandaloneConfig {

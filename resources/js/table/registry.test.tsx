@@ -4,7 +4,7 @@ import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { TableColumn } from "./types";
 import { Provider } from "@lattice-php/lattice/provider";
-import { createPlugin, createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/lattice/core/registry";
 import { ColumnCell } from "./components/table-cell";
 
 function col(partial: {
@@ -56,14 +56,12 @@ describe("column registry", () => {
   });
 
   it("dispatches a registered custom cell renderer", () => {
-    const registry = createRegistry(
-      createPlugin({
-        name: "test",
-        columns: {
-          "column.upper": ({ value }) => <span>{String(value).toUpperCase()}</span>,
-        },
-      }),
-    );
+    const registry = createRegistry({
+      name: "test",
+      columns: {
+        "column.upper": ({ value }) => <span>{String(value).toUpperCase()}</span>,
+      },
+    });
 
     render(
       <Provider registry={registry}>
@@ -137,14 +135,12 @@ describe("column registry", () => {
   });
 
   it("custom renderer takes precedence over built-in stack", () => {
-    const registry = createRegistry(
-      createPlugin({
-        name: "test",
-        columns: {
-          "column.stack": () => <span>custom-stack</span>,
-        },
-      }),
-    );
+    const registry = createRegistry({
+      name: "test",
+      columns: {
+        "column.stack": () => <span>custom-stack</span>,
+      },
+    });
 
     render(
       <Provider registry={registry}>

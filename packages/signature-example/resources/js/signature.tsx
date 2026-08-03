@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { useT } from "@lattice-php/lattice/i18n";
+import { useT } from "@lattice-php/lattice/runtime";
 
 const Signature: RendererComponent<"signature"> = ({ node }) => {
   const { t } = useT("signature-example");

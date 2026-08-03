@@ -162,6 +162,10 @@
       "types": "./dist/registry.d.ts",
       "import": "./dist/registry.js"
     },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.js"
+    },
     "./remote": {
       "types": "./dist/remote/index.d.ts",
       "import": "./dist/remote/index.js"

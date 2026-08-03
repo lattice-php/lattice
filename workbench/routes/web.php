@@ -13,6 +13,7 @@ use Workbench\App\Http\Controllers\FakeRemoteChatStreamController;
 use Workbench\App\Http\Controllers\FakeRemoteTodosController;
 use Workbench\App\Http\Controllers\SessionController;
 use Workbench\App\Pages\HomePage;
+use Workbench\App\Pages\Platform\PackageComponentPage;
 
 Route::post('/login', [SessionController::class, 'store'])->name('login.store');
 Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
@@ -21,6 +22,12 @@ Route::middleware('web')->get('/standalone-demo', function () {
     Inertia::setRootView('standalone');
 
     return app(HomePage::class);
+});
+
+Route::middleware('web')->get('/standalone-package-demo', function () {
+    Inertia::setRootView('standalone');
+
+    return app(PackageComponentPage::class);
 });
 
 Route::middleware(['web', 'auth'])->group(function (): void {

@@ -294,7 +294,13 @@ export default defineConfig(({ mode }) => {
             sourcemap: false,
             cssCodeSplit: false,
             rollupOptions: {
-              input: { lattice: path.resolve(sourceRoot, "standalone/main.tsx") },
+              preserveEntrySignatures: "strict",
+              input: {
+                lattice: path.resolve(sourceRoot, "standalone/main.tsx"),
+                runtime: path.resolve(sourceRoot, "runtime.ts"),
+                react: path.resolve(sourceRoot, "standalone/react.ts"),
+                "jsx-runtime": path.resolve(sourceRoot, "standalone/jsx-runtime.ts"),
+              },
               output: {
                 entryFileNames: "[name].js",
                 chunkFileNames: "chunks/[name]-[hash].js",

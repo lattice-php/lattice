@@ -8,11 +8,8 @@ use Composer\InstalledVersions;
 use ReflectionClass;
 
 /**
- * Resolves the discovery roots contributed by installed Composer packages that
- * declare `extra.lattice.discover` in their composer.json — the PHP counterpart
- * to the `extra.lattice.plugin` the Vite plugin reads for the JS renderer. This
- * is what lets a plain `composer require` surface a package's components to
- * definition discovery and TypeScript generation without editing app config.
+ * Resolves the discovery roots and frontend entries contributed by installed
+ * Composer packages through `extra.lattice`.
  *
  * Also reads the composer ROOT project's own `extra.lattice` (see
  * `rootPackage()`), since `installed.json` never lists it — the mechanism a
@@ -38,7 +35,7 @@ final class ComponentPackages
     /**
      * Includes the composer ROOT project — it never appears in `installed.json`.
      *
-     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     * @return list<array{name: string, roots: list<string>, plugin: string|null, standalone: string|null}>
      */
     public static function packages(): array
     {
@@ -58,7 +55,7 @@ final class ComponentPackages
      * `extra.lattice.discover` would be invisible to discovery inside its own
      * testbench-driven test suite, where the package itself is the root.
      *
-     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     * @return list<array{name: string, roots: list<string>, plugin: string|null, standalone: string|null}>
      */
     public static function rootPackage(): array
     {
@@ -70,7 +67,7 @@ final class ComponentPackages
     }
 
     /**
-     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     * @return list<array{name: string, roots: list<string>, plugin: string|null, standalone: string|null}>
      */
     public static function packagesFromRootComposerJson(string $composerJsonPath): array
     {
@@ -97,7 +94,7 @@ final class ComponentPackages
     }
 
     /**
-     * @return list<array{name: string, roots: list<string>, plugin: string|null}>
+     * @return list<array{name: string, roots: list<string>, plugin: string|null, standalone: string|null}>
      */
     public static function packagesFromInstalled(string $installedJsonPath): array
     {
@@ -140,14 +137,16 @@ final class ComponentPackages
 
     /**
      * @param  array<string, mixed>  $lattice
-     * @return array{name: string, roots: list<string>, plugin: string|null}|null
+     * @return array{name: string, roots: list<string>, plugin: string|null, standalone: string|null}|null
      */
     private static function resolvePackage(string $name, array $lattice, string $packageDir): ?array
     {
+        $packageDir = realpath($packageDir) ?: $packageDir;
         $discover = is_array($lattice['discover'] ?? null) ? $lattice['discover'] : [];
         $plugin = is_string($lattice['plugin'] ?? null) ? $lattice['plugin'] : null;
+        $standalone = is_string($lattice['standalone'] ?? null) ? $lattice['standalone'] : null;
 
-        if ($discover === [] && $plugin === null) {
+        if ($discover === [] && $plugin === null && $standalone === null) {
             return null;
         }
 
@@ -169,11 +168,14 @@ final class ComponentPackages
             'name' => $name,
             'roots' => array_values($roots),
             'plugin' => $plugin !== null ? (realpath($packageDir.'/'.$plugin) ?: null) : null,
+            'standalone' => $standalone !== null
+                ? (realpath($packageDir.'/'.$standalone) ?: $packageDir.'/'.$standalone)
+                : null,
         ];
     }
 
     /**
-     * @param  list<array{name: string, roots: list<string>, plugin: string|null}>  $packages
+     * @param  list<array{name: string, roots: list<string>, plugin: string|null, standalone: string|null}>  $packages
      * @return list<string>
      */
     private static function rootsOf(array $packages): array

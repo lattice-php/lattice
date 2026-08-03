@@ -1,7 +1,7 @@
 import {
-  createPlugin,
   eagerComponent,
   type ComponentRegistryFor,
+  type Plugin,
 } from "@lattice-php/lattice/core/registry";
 import type { FragmentNodeType, UiNodeType } from "@lattice-php/lattice/types/generated";
 import AvatarComponent from "./avatar";
@@ -31,7 +31,7 @@ import TooltipComponent from "./tooltip";
 
 type UiComponentType = UiNodeType | FragmentNodeType;
 
-export const uiComponents = createPlugin({
+export const uiComponents = {
   components: {
     avatar: eagerComponent(AvatarComponent),
     badge: eagerComponent(BadgeComponent),
@@ -60,4 +60,4 @@ export const uiComponents = createPlugin({
     tooltip: eagerComponent(TooltipComponent),
   } satisfies ComponentRegistryFor<UiComponentType>,
   name: "lattice/ui",
-});
+} satisfies Plugin;

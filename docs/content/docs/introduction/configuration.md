@@ -114,7 +114,7 @@ Component references embedded in the page payload are signed. `security.ref_life
 
 ## Frontend (no-build)
 
-The `'frontend'` block configures the prebuilt-asset path, theme variables, and Echo settings for the no-build installation — see [No-Build Installation](/introduction/no-build/).
+The `'frontend'` block configures the prebuilt-asset path, precompiled plugin URLs, theme variables, and Echo settings for the no-build installation — see [No-Build Installation](/introduction/no-build/).
 
 ## TypeScript
 

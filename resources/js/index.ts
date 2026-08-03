@@ -36,11 +36,11 @@ export {
 export { Provider, useColumnRegistry, useComponentRegistry } from "./provider";
 export { onCallout, onToast, Toaster } from "./toast";
 export {
-  createPlugin,
   createRegistry,
   eagerComponent,
   extendRegistry,
   lazyComponent,
+  loadPluginModules,
 } from "./core/registry";
 export type { Plugin, Registry } from "./core/registry";
 export type { UseChatOptions } from "./chat/hooks/use-chat";

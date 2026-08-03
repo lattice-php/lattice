@@ -42,6 +42,16 @@ it('publishes the standalone bundle into the public directory', function (): voi
         ->and(json_decode(File::get(public_path('vendor/lattice/manifest.json')), true)['version'])->toBe('1.2.3');
 });
 
+it('publishes standalone modules from discovered component packages', function (): void {
+    artisan('lattice:assets')->assertSuccessful();
+
+    $manifest = json_decode(File::get(public_path('vendor/lattice/manifest.json')), true);
+
+    expect(File::exists(public_path('vendor/lattice/plugins/lattice-php/signature-example.js')))->toBeTrue()
+        ->and($manifest['plugins'])->toBe(['plugins/lattice-php/signature-example.js'])
+        ->and($manifest['files']['plugins/lattice-php/signature-example.js'])->toBeString();
+});
+
 it('removes files left over from a previous version', function (): void {
     File::makeDirectory(public_path('vendor/lattice/chunks'), recursive: true);
     File::put(public_path('vendor/lattice/chunks/stale-old.js'), 'stale');

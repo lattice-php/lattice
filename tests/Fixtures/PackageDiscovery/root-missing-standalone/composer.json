@@ -1,0 +1,8 @@
+{
+    "name": "acme/missing-widget",
+    "extra": {
+        "lattice": {
+            "standalone": "dist/missing.js"
+        }
+    }
+}

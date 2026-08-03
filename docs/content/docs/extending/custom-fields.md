@@ -99,27 +99,20 @@ export const ColorPickerComponent: RendererComponent<"field.color-picker"> = ({ 
 The generator appended an entry to `resources/js/registry.ts`, wrapping the renderer in `eagerComponent`:
 
 ```ts
-import {
-  createPlugin,
-  eagerComponent,
-  extendRegistry,
-  registry as packageRegistry,
-} from "@lattice-php/lattice";
+import { eagerComponent, extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import { ColorPickerComponent } from "./fields/color-picker";
 
-export const registry = extendRegistry(
-  packageRegistry,
-  createPlugin({
-    name: "app",
-    components: {
-      "field.color-picker": eagerComponent(ColorPickerComponent),
-    },
-    columns: {},
-  }),
-);
+export const registry = extendRegistry(packageRegistry, {
+  name: "app",
+  components: {
+    "field.color-picker": eagerComponent(ColorPickerComponent),
+  },
+  columns: {},
+} satisfies Plugin);
 ```
 
-`createPlugin` accepts any number of component type keys. Use `lazyComponent` instead for a code-split renderer — its loader must resolve to a module with a `default` export:
+The plugin object accepts any number of component type keys. Use `lazyComponent` instead for a code-split renderer — its loader must resolve to a module with a `default` export:
 
 ```ts
 "field.color-picker": lazyComponent(async () => ({
