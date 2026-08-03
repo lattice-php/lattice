@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.37.0](https://github.com/lattice-php/lattice/compare/0.36.1...0.37.0) (2026-08-03)
+
+
+### Features
+
+* expose public client primitives ([b558444](https://github.com/lattice-php/lattice/commit/b558444de9c7205919f1e4afcbabf966f4a0023c))
+* **forms:** expose standalone field frames ([143f32f](https://github.com/lattice-php/lattice/commit/143f32f06133e5feb47d12cb009845575c335027))
+* **ui:** add CodeBlock primitive ([72bf011](https://github.com/lattice-php/lattice/commit/72bf011af5027bf9d675dd5e16fdca399fe336a8))
+* **ui:** add CodeMirror CodeBlock primitive ([e436227](https://github.com/lattice-php/lattice/commit/e436227b4aec5ee321b0797f16ea9ee0e80bd37f))
+* **ui:** add PHP CodeBlock component ([655bd8c](https://github.com/lattice-php/lattice/commit/655bd8cc97696e729eebff7215566af341fe589c))
+* **ui:** export NativeSelect from UI barrel ([3767801](https://github.com/lattice-php/lattice/commit/3767801aeea1c968577599871093936291ece9a5))
+* **ui:** extend CopyButton variants ([b0c6211](https://github.com/lattice-php/lattice/commit/b0c62117e96a7c83112a1c917614ea3e163b6a1e))
+* **workbench:** add CodeBlock examples ([be42c60](https://github.com/lattice-php/lattice/commit/be42c60227a7c109bd2a21620816ec9676715af6))
+
+
+### Bug Fixes
+
+* **build:** support Vite native config loading ([a5d715f](https://github.com/lattice-php/lattice/commit/a5d715f0ada9823d48997c3b8af786ffe83623ac))
+
 ## [0.36.1](https://github.com/lattice-php/lattice/compare/0.36.0...0.36.1) (2026-08-02)
 
 
