@@ -377,6 +377,7 @@ return [
         'buttons' => 'Buttons & badges',
         'charts' => 'Charts',
         'chat' => 'Chat',
+        'code-blocks' => 'Code blocks',
         'columns' => 'Columns',
         'columns-custom' => 'Custom column',
         'columns-number' => 'Number & money',
@@ -506,6 +507,11 @@ return [
                 'badge-trialing' => 'Trialing',
                 'badges' => 'Badges',
                 'title' => 'Buttons & badges',
+            ],
+            'code-blocks' => [
+                'json' => 'JSON',
+                'php' => 'PHP with copy and wrapping',
+                'title' => 'Code blocks',
             ],
             'chat' => [
                 'title' => 'Chat',

@@ -377,6 +377,7 @@ return [
         'buttons' => 'Buttons & Badges',
         'charts' => 'Diagramme',
         'chat' => 'Chat',
+        'code-blocks' => 'Codeblöcke',
         'columns' => 'Spalten',
         'columns-custom' => 'Eigene Spalte',
         'columns-number' => 'Zahl & Währung',
@@ -506,6 +507,11 @@ return [
                 'badge-trialing' => 'Testphase',
                 'badges' => 'Badges',
                 'title' => 'Buttons & Badges',
+            ],
+            'code-blocks' => [
+                'json' => 'JSON',
+                'php' => 'PHP mit Kopieren und Zeilenumbruch',
+                'title' => 'Codeblöcke',
             ],
             'chat' => [
                 'title' => 'Chat',
