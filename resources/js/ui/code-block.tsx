@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import type { ComponentProps } from "react";
 import type { Extension } from "@codemirror/state";
+import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { CopyButton } from "./copyable-text";
 
@@ -73,5 +74,12 @@ function CodeBlock({
   );
 }
 
+const CodeBlockComponent: RendererComponent<"code-block"> = ({ node }) => (
+  <CodeBlock copyable={node.props.copyable} language={node.props.language} wrap={node.props.wrap}>
+    {node.props.code}
+  </CodeBlock>
+);
+
+export default CodeBlockComponent;
 export { CodeBlock };
 export type { CodeBlockLanguage, CodeBlockLanguageLoader, CodeBlockProps, CodeBlockViewProps };

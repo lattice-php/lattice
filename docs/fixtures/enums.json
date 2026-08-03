@@ -533,6 +533,32 @@
         "name": "ChartSeriesType",
         "namespace": "Lattice\\Lattice\\Ui\\Enums"
     },
+    "Lattice\\Lattice\\Ui\\Enums\\CodeBlockLanguage": {
+        "cases": [
+            {
+                "name": "Text",
+                "value": "text"
+            },
+            {
+                "name": "Json",
+                "value": "json"
+            },
+            {
+                "name": "JavaScript",
+                "value": "javascript"
+            },
+            {
+                "name": "Shell",
+                "value": "shell"
+            },
+            {
+                "name": "Php",
+                "value": "php"
+            }
+        ],
+        "name": "CodeBlockLanguage",
+        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+    },
     "Lattice\\Lattice\\Ui\\Enums\\ColumnWidth": {
         "cases": [
             {

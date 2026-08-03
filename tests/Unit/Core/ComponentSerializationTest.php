@@ -15,6 +15,7 @@ use Lattice\Lattice\Ui\Components\Avatar;
 use Lattice\Lattice\Ui\Components\Badge;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Card;
+use Lattice\Lattice\Ui\Components\CodeBlock;
 use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\FloatingPanel;
 use Lattice\Lattice\Ui\Components\Grid;
@@ -29,6 +30,7 @@ use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\Enums\CodeBlockLanguage;
 use Lattice\Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Icon;
@@ -103,6 +105,30 @@ test('headings serialize their copyable flag', function (): void {
         ->toHaveKey('copyable', true)
         ->and(wire(Heading::make('Plain'))['props'])
         ->toHaveKey('copyable', false);
+});
+
+test('code blocks serialize their code and presentation configuration', function (): void {
+    expect(wire(CodeBlock::make('<?php echo "Hello";')
+        ->language(CodeBlockLanguage::Php)
+        ->copyable()
+        ->wrap()))
+        ->toMatchArray([
+            'type' => 'code-block',
+            'props' => [
+                'code' => '<?php echo "Hello";',
+                'language' => 'php',
+                'copyable' => true,
+                'wrap' => true,
+            ],
+        ])
+        ->and(wire(CodeBlock::make('plain'))['props'])
+        ->toMatchArray([
+            'language' => 'text',
+            'copyable' => false,
+            'wrap' => false,
+        ])
+        ->and(wire(CodeBlock::bound('snippet'))['props']['dataBindings'])
+        ->toBe(['code' => 'snippet']);
 });
 
 test('separators default to horizontal and serialize their orientation', function (): void {

@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { fakeNode } from "@lattice-php/lattice/test-support";
+import CodeBlockComponent from "./code-block";
 import { CodeBlock, type CodeBlockLanguageLoader } from "./index";
 
 afterEach(() => {
@@ -19,6 +21,25 @@ describe("CodeBlock", () => {
     expect(html).toContain("<pre");
     expect(html).toContain('aria-label="PHP example"');
     expect(html).toContain("&lt;?php echo &#x27;Hello&#x27;;");
+  });
+
+  it("renders serialized node props", async () => {
+    const node = fakeNode({
+      type: "code-block",
+      props: {
+        code: "<?php echo 'Hello';",
+        language: "php",
+        copyable: false,
+        wrap: true,
+      },
+    });
+    const { container } = render(<CodeBlockComponent node={node}>{null}</CodeBlockComponent>);
+
+    await waitFor(() => expect(container.querySelector(".cm-editor")).toBeInTheDocument());
+
+    expect(container.querySelector(".cm-content")).toHaveTextContent("<?php echo 'Hello';");
+    expect(container.querySelector(".cm-lineWrapping")).toBeInTheDocument();
+    expect(container.querySelector(".cm-content span")).toBeInTheDocument();
   });
 
   it("renders a read-only CodeMirror view for built-in languages", async () => {
