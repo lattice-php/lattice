@@ -64,6 +64,11 @@ function assertPresentEventually(AwaitableWebpage|PendingAwaitablePage|Webpage $
     });
 }
 
+function stubSuccessfulClipboard(AwaitableWebpage|PendingAwaitablePage|Webpage $page): void
+{
+    $page->script('Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: async () => {} } })');
+}
+
 /**
  * The infinite tab's IntersectionObserver auto-fires loadMore() when the
  * sentinel enters its 240px root margin — which can happen before the first

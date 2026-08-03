@@ -2,7 +2,10 @@
 declare(strict_types=1);
 
 it('copies a copyable text input value via the copy affix', function (): void {
-    $this->visitAsWorkbenchUser('/form/fields/text?type=copyable')
+    $page = $this->visitAsWorkbenchUser('/form/fields/text?type=copyable');
+    stubSuccessfulClipboard($page);
+
+    $page
         ->click('@referral_code-copy')
         ->assertSee('Copied')
         ->assertNoSmoke();

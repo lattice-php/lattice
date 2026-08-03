@@ -24,8 +24,9 @@ it('copies a cell value to the clipboard', function (): void {
     deleteWorkbenchUsersExceptAuthenticated();
     UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
 
-    $page = visit('/')
-        ->click('@copy-email');
+    $page = visit('/');
+    stubSuccessfulClipboard($page);
+    $page->click('@copy-email');
 
     assertSeeEventually($page, 'Copied');
 
