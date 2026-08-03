@@ -14,6 +14,8 @@ interface CodeBlockProps extends Omit<ComponentProps<"div">, "children"> {
   children: string;
   copyable?: boolean;
   language?: CodeBlockLanguage | CodeBlockLanguageLoader;
+  lineNumbers?: boolean;
+  maxHeight?: number | null;
   wrap?: boolean;
 }
 
@@ -21,6 +23,8 @@ interface CodeBlockViewProps {
   children: string;
   copyable: boolean;
   language: CodeBlockLanguage | CodeBlockLanguageLoader;
+  lineNumbers: boolean;
+  maxHeight: number | null;
   wrap: boolean;
 }
 
@@ -30,6 +34,8 @@ function CodeBlock({
   className,
   copyable = false,
   language = "text",
+  lineNumbers = false,
+  maxHeight = null,
   role = ariaLabel ? "region" : undefined,
   wrap = false,
   ...props
@@ -41,6 +47,7 @@ function CodeBlock({
         wrap && "whitespace-pre-wrap wrap-anywhere",
         copyable && "pt-11",
       )}
+      style={{ maxHeight: maxHeight ?? undefined }}
     >
       {children}
     </pre>
@@ -66,7 +73,13 @@ function CodeBlock({
         />
       ) : null}
       <Suspense fallback={fallback}>
-        <CodeBlockView copyable={copyable} language={language} wrap={wrap}>
+        <CodeBlockView
+          copyable={copyable}
+          language={language}
+          lineNumbers={lineNumbers}
+          maxHeight={maxHeight}
+          wrap={wrap}
+        >
           {children}
         </CodeBlockView>
       </Suspense>
@@ -75,7 +88,13 @@ function CodeBlock({
 }
 
 const CodeBlockComponent: RendererComponent<"code-block"> = ({ node }) => (
-  <CodeBlock copyable={node.props.copyable} language={node.props.language} wrap={node.props.wrap}>
+  <CodeBlock
+    copyable={node.props.copyable}
+    language={node.props.language}
+    lineNumbers={node.props.lineNumbers}
+    maxHeight={node.props.maxHeight}
+    wrap={node.props.wrap}
+  >
     {node.props.code}
   </CodeBlock>
 );

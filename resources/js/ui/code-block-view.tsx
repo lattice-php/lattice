@@ -5,7 +5,7 @@ import { php } from "@codemirror/lang-php";
 import { HighlightStyle, StreamLanguage, syntaxHighlighting } from "@codemirror/language";
 import { shell } from "@codemirror/legacy-modes/mode/shell";
 import { Compartment, EditorState, type Extension } from "@codemirror/state";
-import { EditorView } from "@codemirror/view";
+import { EditorView, lineNumbers as showLineNumbers } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
 import type { CodeBlockLanguage, CodeBlockViewProps } from "./code-block";
 
@@ -46,7 +46,14 @@ const copyableTheme = EditorView.theme({
   ".cm-content": { padding: "2.75rem 0.75rem 0.75rem" },
 });
 
-function CodeBlockView({ children, copyable, language, wrap }: CodeBlockViewProps) {
+function CodeBlockView({
+  children,
+  copyable,
+  language,
+  lineNumbers,
+  maxHeight,
+  wrap,
+}: CodeBlockViewProps) {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,6 +75,12 @@ function CodeBlockView({ children, copyable, language, wrap }: CodeBlockViewProp
         syntaxHighlighting(highlightStyle),
         codeBlockTheme,
         copyable ? copyableTheme : [],
+        lineNumbers ? showLineNumbers() : [],
+        maxHeight === null
+          ? []
+          : EditorView.theme({
+              "&": { maxHeight: `${maxHeight}px` },
+            }),
         wrap ? EditorView.lineWrapping : [],
       ],
     });
@@ -91,7 +104,7 @@ function CodeBlockView({ children, copyable, language, wrap }: CodeBlockViewProp
       active = false;
       view.destroy();
     };
-  }, [children, copyable, language, wrap]);
+  }, [children, copyable, language, lineNumbers, maxHeight, wrap]);
 
   return <div ref={container} />;
 }

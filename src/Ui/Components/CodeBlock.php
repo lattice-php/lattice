@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Components;
 
+use InvalidArgumentException;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
 use Lattice\Lattice\Ui\Concerns\HasCopyable;
@@ -18,6 +19,10 @@ class CodeBlock extends Component
 
     public CodeBlockLanguage $language = CodeBlockLanguage::Text;
 
+    public bool $lineNumbers = false;
+
+    public ?int $maxHeight = null;
+
     public bool $wrap = false;
 
     public static function make(string $code, ?string $key = null): static
@@ -31,6 +36,24 @@ class CodeBlock extends Component
     public function language(CodeBlockLanguage $language): static
     {
         $this->language = $language;
+
+        return $this;
+    }
+
+    public function lineNumbers(bool $lineNumbers = true): static
+    {
+        $this->lineNumbers = $lineNumbers;
+
+        return $this;
+    }
+
+    public function maxHeight(?int $maxHeight): static
+    {
+        if ($maxHeight !== null && $maxHeight <= 0) {
+            throw new InvalidArgumentException('Code block maximum height must be greater than zero.');
+        }
+
+        $this->maxHeight = $maxHeight;
 
         return $this;
     }

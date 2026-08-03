@@ -23,6 +23,12 @@ describe("CodeBlock", () => {
     expect(html).toContain("&lt;?php echo &#x27;Hello&#x27;;");
   });
 
+  it("server-renders the maximum height on the fallback", () => {
+    const html = renderToString(<CodeBlock maxHeight={240}>one\ntwo</CodeBlock>);
+
+    expect(html).toContain('style="max-height:240px"');
+  });
+
   it("renders serialized node props", async () => {
     const node = fakeNode({
       type: "code-block",
@@ -30,6 +36,8 @@ describe("CodeBlock", () => {
         code: "<?php echo 'Hello';",
         language: "php",
         copyable: false,
+        lineNumbers: true,
+        maxHeight: 240,
         wrap: true,
       },
     });
@@ -38,6 +46,8 @@ describe("CodeBlock", () => {
     await waitFor(() => expect(container.querySelector(".cm-editor")).toBeInTheDocument());
 
     expect(container.querySelector(".cm-content")).toHaveTextContent("<?php echo 'Hello';");
+    expect(container.querySelector(".cm-gutters")).toBeInTheDocument();
+    expect(container.querySelector(".cm-editor")).toHaveStyle({ maxHeight: "240px" });
     expect(container.querySelector(".cm-lineWrapping")).toBeInTheDocument();
     expect(container.querySelector(".cm-content span")).toBeInTheDocument();
   });

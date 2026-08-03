@@ -19,6 +19,8 @@ test('the workbench code blocks page renders JSON and PHP examples', function ()
 JSON,
             'language' => 'json',
             'copyable' => false,
+            'lineNumbers' => false,
+            'maxHeight' => null,
             'wrap' => false,
         ],
     ])->and($schema[0]['schema'][4])->toMatchArray([
@@ -35,6 +37,8 @@ CodeBlock::make('echo "Hello, Lattice!";')
 PHP,
             'language' => 'php',
             'copyable' => true,
+            'lineNumbers' => false,
+            'maxHeight' => null,
             'wrap' => true,
         ],
     ]);

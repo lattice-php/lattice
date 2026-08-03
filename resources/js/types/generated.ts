@@ -380,6 +380,8 @@ export type CodeBlock = {
   code: string;
   copyable: boolean;
   language: CodeBlockLanguage;
+  lineNumbers: boolean;
+  maxHeight: number | null;
   wrap: boolean;
 };
 export type CodeBlockLanguage = "text" | "json" | "javascript" | "shell" | "php";
