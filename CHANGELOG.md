@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.38.0](https://github.com/lattice-php/lattice/compare/0.37.0...0.38.0) (2026-08-03)
+
+
+### Features
+
+* **ui:** add code block display options ([9274b99](https://github.com/lattice-php/lattice/commit/9274b9964db00ed0b270a67b383888977fb19af7))
+* **ui:** add code block display options ([34cb549](https://github.com/lattice-php/lattice/commit/34cb549e1df28e6aa38b73dc05781610b17ac6d4))
+
+
+### Bug Fixes
+
+* **ui:** align code block loading chrome ([2831f6a](https://github.com/lattice-php/lattice/commit/2831f6a031fb9db6eb0030a2e4b93a0f6e17888f))
+* **ui:** preserve code block rendering state ([cb76988](https://github.com/lattice-php/lattice/commit/cb7698837de261316dbae6adcfdd9f8e173367ee))
+* **ui:** smooth code block loading transition ([ffdb296](https://github.com/lattice-php/lattice/commit/ffdb2967bfaef27504d2f5a628a9a5786b9a0429))
+
+
+### Documentation
+
+* **ui:** demonstrate code block display options ([f5f2c7a](https://github.com/lattice-php/lattice/commit/f5f2c7ae8ab1083d1e2610741e57d4d8141cf82d))
+
 ## [0.37.0](https://github.com/lattice-php/lattice/compare/0.36.1...0.37.0) (2026-08-03)
 
 
