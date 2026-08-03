@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
 import { cn } from "@lattice-php/lattice/lib/utils";

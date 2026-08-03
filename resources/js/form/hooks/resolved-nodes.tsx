@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { fieldProps } from "@lattice-php/lattice/form/lib/field-props";
 import { useFieldScope } from "./field-scope";
 

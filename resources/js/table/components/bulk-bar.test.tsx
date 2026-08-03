@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import type { EffectHandler } from "@lattice-php/lattice/effects/registry";
-import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/core/registry";
 import { Provider } from "@lattice-php/lattice/provider";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { BulkBar } from "./bulk-bar";

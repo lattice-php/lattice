@@ -13,7 +13,7 @@ use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
  * The base-module writer, plus the envelope machinery the generated shapes plug
  * into (`Node`, `ColumnNode`, `FilterNode`, the `ResolveProps` calculus and the
  * augmentable interfaces), inlined from the stubs directory so the module is
- * fully self-contained; hand-written modules re-export from it.
+ * hand-written modules re-export from it.
  */
 final class NodeModuleWriter extends FlatModuleWriter
 {

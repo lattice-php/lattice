@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core";
+import { createRegistry, eagerComponent } from "@lattice-php/core";
 import { fakeNode, renderWithRegistry, TestText, treeNode } from "./test-support";
 import TreeComponent, { type TreeNodeData } from "./tree";
 

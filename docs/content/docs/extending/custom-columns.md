@@ -181,10 +181,10 @@ Custom fields, components, and columns all live in this same `registry.ts` — t
 php artisan lattice:typescript
 ```
 
-This augments `ColumnProps` in `@lattice-php/lattice`:
+This augments `ColumnProps` in `@lattice-php/core`:
 
 ```ts
-declare module "@lattice-php/lattice" {
+declare module "@lattice-php/core" {
   interface ColumnProps {
     "column.status-badge": {
       colorMap: Record<string, string> | null;

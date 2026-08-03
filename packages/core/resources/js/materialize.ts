@@ -1,4 +1,4 @@
-import type { Node, NodeProps, Schema } from "./types";
+import type { Node, NodeProps, Schema } from "./index";
 
 export type RemoteRow = Record<string, unknown>;
 

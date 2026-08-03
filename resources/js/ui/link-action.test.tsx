@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { Node, ComponentPropsOf } from "@lattice-php/lattice/core/types";
+import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import LinkComponent from "./link";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());

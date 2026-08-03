@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { Option } from "@lattice-php/lattice/core/types";
+import type { Option } from "@lattice-php/core/types";
 import { SegmentedPills } from "./segmented-pills";
 
 const options: Option[] = [

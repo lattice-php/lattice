@@ -1,8 +1,4 @@
-import {
-  eagerComponent,
-  type ComponentRegistryFor,
-  type Plugin,
-} from "@lattice-php/lattice/core/registry";
+import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { LayoutNodeType } from "@lattice-php/lattice/types/generated";
 import BreadcrumbsComponent from "./components/breadcrumbs";
 import CalloutsComponent from "./components/callouts";
@@ -13,7 +9,7 @@ import OutletComponent from "./components/outlet";
 import SidebarComponent from "./components/sidebar";
 import TopbarComponent from "./components/topbar";
 
-export const layoutComponents = {
+export const layoutComponents: Plugin = {
   components: {
     breadcrumbs: eagerComponent(BreadcrumbsComponent),
     callouts: eagerComponent(CalloutsComponent),
@@ -25,4 +21,4 @@ export const layoutComponents = {
     topbar: eagerComponent(TopbarComponent),
   } satisfies ComponentRegistryFor<LayoutNodeType>,
   name: "lattice/layout",
-} satisfies Plugin;
+};

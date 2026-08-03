@@ -8,7 +8,7 @@ import {
   type Registry,
   type RendererComponent,
   type Schema,
-} from "@lattice-php/lattice/core";
+} from "@lattice-php/core";
 import type { TreeNodeData } from "./tree";
 
 /**

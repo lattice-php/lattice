@@ -1,6 +1,6 @@
-import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
+import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { isAppearance, type Appearance } from "./appearance";
-import { LATTICE_EVENT } from "./core/event-names";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 
 type EventBridgeProps = {
   onAppearanceChange?: (appearance: Appearance) => void;

@@ -1,8 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
-import type { Plugin } from "@lattice-php/lattice";
-import { loadPluginModules } from "@lattice-php/lattice/core/registry";
-import type { RendererComponent } from "./types";
+import { createRegistry, eagerComponent, lazyComponent, loadPluginModules } from "./registry";
+import type { Plugin } from "./registry";
+import type { RendererComponent } from "./index";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
 

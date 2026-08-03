@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Provider } from "@lattice-php/lattice/provider";
 import { Toaster } from "./toaster";
 

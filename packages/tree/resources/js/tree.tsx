@@ -31,7 +31,7 @@ export type TreeWireProps = {
   lazy: boolean;
 };
 
-declare module "@lattice-php/lattice" {
+declare module "@lattice-php/core" {
   interface ComponentProps {
     tree: TreeWireProps;
   }

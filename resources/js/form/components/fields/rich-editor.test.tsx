@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";

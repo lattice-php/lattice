@@ -1,11 +1,11 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
-import { Renderer } from "@lattice-php/lattice";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { createRegistry, eagerComponent, lazyComponent } from "./registry";
+import { RegistryContext } from "./registry-context";
+import { Renderer } from "./renderer";
 import { CollapsedContext } from "./collapsed-context";
-import type { RendererComponent, RendererComponentModule } from "./types";
+import type { RendererComponent, RendererComponentModule } from "./index";
 
 const TestComponent: RendererComponent<"test.component"> = ({ children, node }) => (
   <section data-test={node.id}>
@@ -13,6 +13,10 @@ const TestComponent: RendererComponent<"test.component"> = ({ children, node }) 
     {children}
   </section>
 );
+
+function renderWithRegistry(ui: React.ReactNode, registry: ReturnType<typeof createRegistry>) {
+  return render(<RegistryContext.Provider value={registry}>{ui}</RegistryContext.Provider>);
+}
 
 describe("Renderer", () => {
   it("renders registered components recursively", () => {

@@ -1,8 +1,8 @@
 import type { CSSProperties } from "react";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { RenderNode } from "@lattice-php/lattice/core/renderer";
-import { nodeKey } from "@lattice-php/lattice/core/nodes";
-import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { RenderNode } from "@lattice-php/core/renderer";
+import { nodeKey } from "@lattice-php/core/nodes";
+import { nodeIdentity } from "@lattice-php/core/test-id";
 
 type BreakpointMap = Record<string, number | string>;
 

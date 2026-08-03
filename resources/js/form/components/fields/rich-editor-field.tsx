@@ -4,7 +4,7 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { useEffect, useMemo } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";

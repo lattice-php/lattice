@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { OutletContext } from "@lattice-php/lattice/layout/hooks/context";
 
 /**

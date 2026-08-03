@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { ColorPicker, normalizeHex } from "@lattice-php/lattice/ui/color-picker";
 import { controlSurface } from "@lattice-php/lattice/ui/control";

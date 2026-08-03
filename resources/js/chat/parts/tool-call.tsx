@@ -1,5 +1,5 @@
-import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { testIdentity } from "@lattice-php/core/test-id";
+import type { RendererComponent } from "@lattice-php/core/types";
 
 export const ToolCallPart: RendererComponent<"chat.part.tool-call"> = ({ node }) => {
   return (

@@ -1,4 +1,4 @@
-import { isRecord } from "@lattice-php/lattice/core/materialize";
+import { isRecord } from "@lattice-php/core/materialize";
 import type { I18nConfig } from "@lattice-php/lattice/types/generated";
 
 function isStringArray(value: unknown): value is string[] {

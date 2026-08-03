@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { router } from "@inertiajs/react";
-import { eagerComponent, loadPluginModules } from "./core/registry";
+import { eagerComponent, loadPluginModules } from "@lattice-php/core/registry";
 import {
   eagerComponent as runtimeEagerComponent,
   loadPluginModules as runtimeLoadPluginModules,

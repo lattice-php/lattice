@@ -1,7 +1,7 @@
 import { Fragment, lazy, Suspense } from "react";
 import type { ComponentProps } from "react";
 import type { Extension } from "@codemirror/state";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { CopyButton } from "./copyable-text";
 

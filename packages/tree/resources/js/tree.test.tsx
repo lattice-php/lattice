@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core";
-import type { RendererComponent } from "@lattice-php/lattice/core";
+import { createRegistry, eagerComponent } from "@lattice-php/core";
+import type { RendererComponent } from "@lattice-php/core";
 import { fakeNode, renderWithRegistry, TestText, treeNode } from "./test-support";
 import TreeComponent, { type TreeNodeData } from "./tree";
 

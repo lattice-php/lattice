@@ -1,6 +1,6 @@
 import type { Method } from "@inertiajs/core";
 import { createContext, useContext, type ReactNode } from "react";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import type { Effect } from "@lattice-php/lattice/types/generated";

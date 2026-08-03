@@ -1,6 +1,6 @@
 import { configure, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import type { FormContextValue } from "@lattice-php/lattice/form/hooks/context";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";

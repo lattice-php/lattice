@@ -8,7 +8,7 @@ import {
   remoteJson,
   type RemoteAccess,
 } from "./api";
-import { clearRefreshedRefs } from "./component-ref";
+import { clearRefreshedRefs } from "@lattice-php/core/component-ref";
 
 function okResponse(body: unknown = {}): Response {
   return { ok: true, status: 200, json: async () => body } as unknown as Response;

@@ -1,6 +1,6 @@
 import { memo, Suspense } from "react";
 import type { ReactNode } from "react";
-import type { Node } from "./types";
+import type { Node } from "./index";
 import { nodeKey } from "./nodes";
 import { useCollapsed } from "./collapsed-context";
 import { useComponentRegistry } from "./registry-context";

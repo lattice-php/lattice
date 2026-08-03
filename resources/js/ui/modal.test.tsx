@@ -1,8 +1,8 @@
 import { act, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
-import type { Node } from "@lattice-php/lattice/core/types";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
+import type { Node } from "@lattice-php/core/types";
 import ModalComponent from "./modal";
 
 function renderModal(node: Node<"modal">) {

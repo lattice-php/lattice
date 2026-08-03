@@ -1,4 +1,4 @@
-import type { Node } from "./types";
+import type { Node } from "./index";
 
 type IdentifiedNode = Pick<Node, "id" | "key">;
 

@@ -1,4 +1,4 @@
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "./index";
 
 /**
  * Keep only the well-formed component nodes from an untyped value, dropping

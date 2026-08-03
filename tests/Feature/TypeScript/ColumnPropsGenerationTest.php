@@ -16,7 +16,7 @@ it('writes a ColumnProps augmentation from the column class public props', funct
     $output = base_path('resources/js/lattice/generated-column.d.ts');
 
     config()->set('lattice.typescript.output', $output);
-    config()->set('lattice.typescript.module', '@lattice-php/lattice');
+    config()->set('lattice.typescript.module', '@lattice-php/core');
     config()->set('lattice.discover', [
         dirname(__DIR__, 2).'/Fixtures/TypeScript',
     ]);
@@ -26,7 +26,7 @@ it('writes a ColumnProps augmentation from the column class public props', funct
     $contents = (string) file_get_contents($output);
 
     expect($contents)
-        ->toContain('declare module "@lattice-php/lattice"')
+        ->toContain('declare module "@lattice-php/core"')
         ->toContain('interface ComponentProps')
         ->toContain('"field.sample"')
         ->toContain('"sample.widget"')
