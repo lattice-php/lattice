@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Fragments;
 
 use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 
 abstract class FragmentDefinition extends Definition
 {

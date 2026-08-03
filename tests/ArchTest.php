@@ -24,6 +24,21 @@ use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
 
+const CORE_FORBIDDEN_NAMESPACES = [
+    'Lattice\\Lattice\\Actions',
+    'Lattice\\Lattice\\Forms',
+    'Lattice\\Lattice\\Tables',
+    'Lattice\\Lattice\\Fragments',
+    'Lattice\\Lattice\\Layouts',
+    'Lattice\\Lattice\\Ui',
+    'Lattice\\Lattice\\Chat',
+    'Lattice\\Lattice\\Notifications',
+    'Lattice\\Lattice\\Realtime',
+    'Lattice\\Lattice\\Remote',
+    'Lattice\\Lattice\\Effects',
+    'Lattice\\Lattice\\I18n',
+];
+
 /*
  * Layering.
  *
@@ -83,14 +98,30 @@ arch('layouts depend on no feature domain other than actions')
         'Lattice\Lattice\Fragments',
     ]);
 
-arch('core does not depend on the feature domains other than actions')
+arch('core does not depend on feature or ui domains')
     ->expect('Lattice\Lattice\Core')
-    ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
-    ]);
+    ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
+
+it('core source does not reference feature or ui namespaces in strings', function (): void {
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/src/Core'));
+    $violations = [];
+
+    foreach ($files as $file) {
+        if ($file->getExtension() !== 'php') {
+            continue;
+        }
+
+        $contents = (string) file_get_contents($file->getPathname());
+
+        foreach (CORE_FORBIDDEN_NAMESPACES as $namespace) {
+            if (str_contains($contents, $namespace)) {
+                $violations[] = $file->getFilename().': '.$namespace;
+            }
+        }
+    }
+
+    expect($violations)->toBe([]);
+});
 
 arch('core does not depend upward on the orchestration or tooling layers')
     ->expect('Lattice\Lattice\Core')
@@ -140,6 +171,7 @@ arch('attributes depend on no feature domain or higher layer')
         'Lattice\Lattice\Tables',
         'Lattice\Lattice\Fragments',
         'Lattice\Lattice\Layouts',
+        'Lattice\Lattice\Ui',
         'Lattice\Lattice\Http',
         'Lattice\Lattice\Console',
         'Lattice\Lattice\Facades',

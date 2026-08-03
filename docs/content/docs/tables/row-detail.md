@@ -26,7 +26,7 @@ independently of the table. It reads the row context you passed to `Fragment::la
 
 ```php
 use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Fragments\FragmentDefinition;
 
 #[AsFragment('order-lines')]

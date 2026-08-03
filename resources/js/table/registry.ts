@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useExtensionRegistry } from "@lattice-php/lattice/core/registry-context";
 import type { ColumnPropsOf, TableColumn, TableRow } from "./types";
 import type { ColumnPropsMap } from "@lattice-php/lattice/types/generated";
 
@@ -14,6 +15,12 @@ export type ColumnCellComponent<TType extends string = string> = (
 ) => ReactNode;
 
 export type ColumnRegistry = Record<string, ColumnCellComponent>;
+
+export const COLUMN_REGISTRY_EXTENSION = "table.columns";
+
+export function useColumnRegistry(): ColumnRegistry {
+  return useExtensionRegistry<ColumnRegistry>(COLUMN_REGISTRY_EXTENSION);
+}
 
 export type ColumnRegistryFor<TTypes extends keyof ColumnPropsMap & string> = Record<
   TTypes,

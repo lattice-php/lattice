@@ -9,6 +9,8 @@ namespace Lattice\Lattice\Core\Contracts;
  */
 interface InteractiveComponent
 {
+    public function hidden(bool $condition = true): static;
+
     public function signedAs(string $signatureKey): static;
 
     /**

@@ -11,7 +11,7 @@ component of your own.
 ```php
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Tables\Components\Table;
 
@@ -224,7 +224,7 @@ The page itself needs no `#[AsPage]` attribute — a plain `Page` subclass works
 attribute is present:
 
 ```php
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Ui\Enums\PageLayout;
 
 class ProductEmbedPage extends Page

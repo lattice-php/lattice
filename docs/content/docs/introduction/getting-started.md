@@ -22,7 +22,7 @@ use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\PageLayout;
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 
 #[AsPage(route: '/dashboard', layout: PageLayout::None, middleware: ['web'])]

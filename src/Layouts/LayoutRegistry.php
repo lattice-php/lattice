@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
 use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\PageSchema;
 
 /**
  * @extends DefinitionRegistry<LayoutDefinition>

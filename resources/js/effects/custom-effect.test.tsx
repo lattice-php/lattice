@@ -13,7 +13,7 @@ describe("custom effect end to end", () => {
     const toastListener = vi.fn<(event: Event) => void>();
     const registry = extendRegistry(defaultRegistry, {
       name: "app/confetti",
-      effects: { confetti },
+      extensions: { effects: { confetti } },
     });
 
     const wrapper = ({ children }: { children: ReactNode }) => (

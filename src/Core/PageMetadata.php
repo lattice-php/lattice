@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Core;
 
+use BackedEnum;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Contracts\PageContract;
 use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
 use Spatie\Attributes\Attributes;
 
 final readonly class PageMetadata
@@ -25,8 +24,8 @@ final readonly class PageMetadata
         public string $class,
         public ?string $route,
         public string $name,
-        public PageLayout|string $layout,
-        public PageContainer|string $container,
+        public BackedEnum|string $layout,
+        public BackedEnum|string $container,
         public ?array $middleware,
     ) {}
 
@@ -45,8 +44,8 @@ final readonly class PageMetadata
             class: $class,
             route: $own?->route,
             name: self::resolveName($class, $own),
-            layout: self::inherited($class, fn (AsPage $a): PageLayout|string|null => $a->layout) ?? PageLayout::None,
-            container: self::inherited($class, fn (AsPage $a): PageContainer|string|null => $a->container) ?? PageContainer::Centered,
+            layout: self::inherited($class, fn (AsPage $a): BackedEnum|string|null => $a->layout) ?? 'none',
+            container: self::inherited($class, fn (AsPage $a): BackedEnum|string|null => $a->container) ?? 'centered',
             middleware: self::inheritedMiddleware($class),
         );
     }
@@ -91,7 +90,7 @@ final readonly class PageMetadata
         );
     }
 
-    private function serialize(PageLayout|PageContainer|string $value): string
+    private function serialize(BackedEnum|string $value): string
     {
         return Wire::scalar($value);
     }
@@ -102,7 +101,7 @@ final readonly class PageMetadata
     }
 
     /**
-     * @param  callable(AsPage): (PageLayout|PageContainer|array<int,string>|string|null)  $value
+     * @param  callable(AsPage): (BackedEnum|array<int,string>|string|null)  $value
      */
     private static function inherited(string $class, callable $value): mixed
     {

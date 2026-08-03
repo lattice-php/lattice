@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 use function Pest\Laravel\artisan;
 
@@ -26,6 +27,7 @@ it('scaffolds a column class, a cell tsx and registers it in registry.ts', funct
         $columns = File::get(resource_path('js/registry.ts'));
         expect($columns)
             ->toContain('import { StatusBadgeCell } from "./columns/status-badge";')
+            ->toContain('"table.columns": {')
             ->toContain('"column.status-badge": StatusBadgeCell');
     });
 });
@@ -40,4 +42,18 @@ it('is idempotent and honors --type', function (): void {
         expect(File::get(app_path('Ui/Tables/Columns/Priority.php')))->toContain("#[AsColumn(type: 'prio')]");
         expect(File::get(resource_path('js/registry.ts')))->toContain('"column.prio": PriorityCell');
     });
+});
+
+it('registers a column in a Composer package plugin', function (): void {
+    $dir = sys_get_temp_dir().'/lattice-column-pkg-'.Str::random(8);
+
+    try {
+        artisan('lattice:column', ['name' => 'StatusBadge', '--package' => $dir])->assertSuccessful();
+
+        expect(File::get($dir.'/resources/js/plugin.ts'))
+            ->toContain('"table.columns": {')
+            ->toContain('"column.status-badge": StatusBadgeCell');
+    } finally {
+        File::deleteDirectory($dir);
+    }
 });

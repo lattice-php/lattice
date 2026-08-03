@@ -1,7 +1,5 @@
 import { createContext, useContext } from "react";
-import type { ComponentRegistry, Registry } from "./registry";
-import type { EffectHandlerRegistry } from "@lattice-php/lattice/effects/registry";
-import type { ColumnRegistry } from "@lattice-php/lattice/table/registry";
+import type { ComponentRegistry, ExtensionRegistry, Registry } from "./registry";
 
 /**
  * Holds the active Registry for the current Provider subtree. Extracted into
@@ -36,12 +34,8 @@ export function useComponentRegistry(): ComponentRegistry {
   return registry?.components ?? {};
 }
 
-export function useColumnRegistry(): ColumnRegistry {
+export function useExtensionRegistry<TRegistry extends ExtensionRegistry>(name: string): TRegistry {
   const registry = useContext(RegistryContext) ?? _defaultRegistry;
-  return registry?.columns ?? {};
-}
 
-export function useEffectHandlerRegistry(): EffectHandlerRegistry {
-  const registry = useContext(RegistryContext) ?? _defaultRegistry;
-  return registry?.effects ?? {};
+  return (registry?.extensions[name] ?? {}) as TRegistry;
 }

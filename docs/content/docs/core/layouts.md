@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Width;
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;
 use Lattice\Lattice\Layouts\Components\Outlet;

@@ -1,8 +1,6 @@
 import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./types";
-import type { EffectHandlerRegistry } from "@lattice-php/lattice/effects/registry";
-import type { ColumnRegistry } from "@lattice-php/lattice/table/registry";
 import type { ComponentPropsMap } from "@lattice-php/lattice/types/generated";
 import { isRecord } from "./materialize";
 
@@ -26,6 +24,10 @@ export type ComponentRegistryFor<TTypes extends keyof ComponentPropsMap & string
   ComponentRegistration
 >;
 
+export type ExtensionRegistry = Record<string, (...args: never[]) => unknown>;
+
+export type ExtensionRegistries = Record<string, ExtensionRegistry>;
+
 export type PluginI18n = {
   /** i18next namespace the plugin's components translate under. */
   namespace: string;
@@ -34,15 +36,13 @@ export type PluginI18n = {
 export type Plugin = {
   name: string;
   components?: ComponentRegistry;
-  columns?: ColumnRegistry;
-  effects?: EffectHandlerRegistry;
+  extensions?: ExtensionRegistries;
   i18n?: PluginI18n;
 };
 
 export type Registry = {
   components: ComponentRegistry;
-  columns: ColumnRegistry;
-  effects: EffectHandlerRegistry;
+  extensions: ExtensionRegistries;
 };
 
 export function eagerComponent<TType extends string>(
@@ -90,6 +90,16 @@ function functionRegistryIsValid(registry: unknown): boolean {
   );
 }
 
+function extensionRegistriesAreValid(registries: unknown): boolean {
+  return (
+    registries === undefined ||
+    (isRecord(registries) &&
+      Object.values(registries).every(
+        (registry) => isRecord(registry) && functionRegistryIsValid(registry),
+      ))
+  );
+}
+
 function pluginFromModule(module: unknown, url: string): Plugin {
   const plugin = isRecord(module) ? module.default : undefined;
 
@@ -98,8 +108,7 @@ function pluginFromModule(module: unknown, url: string): Plugin {
     typeof plugin.name !== "string" ||
     plugin.name.trim() === "" ||
     !componentRegistryIsValid(plugin.components) ||
-    !functionRegistryIsValid(plugin.columns) ||
-    !functionRegistryIsValid(plugin.effects) ||
+    !extensionRegistriesAreValid(plugin.extensions) ||
     (plugin.i18n !== undefined &&
       (!isRecord(plugin.i18n) ||
         typeof plugin.i18n.namespace !== "string" ||
@@ -118,14 +127,27 @@ export function loadPluginModules(
   return Promise.all(urls.map(async (url) => pluginFromModule(await load(url), url)));
 }
 
+function mergeExtensions(
+  ...registries: Array<ExtensionRegistries | undefined>
+): ExtensionRegistries {
+  const merged: ExtensionRegistries = {};
+
+  for (const registriesByName of registries) {
+    for (const [name, registry] of Object.entries(registriesByName ?? {})) {
+      merged[name] = { ...merged[name], ...registry };
+    }
+  }
+
+  return merged;
+}
+
 export function createRegistry(...plugins: Plugin[]): Registry {
   return plugins.reduce<Registry>(
     (registry, plugin) => ({
       components: { ...registry.components, ...plugin.components },
-      columns: { ...registry.columns, ...plugin.columns },
-      effects: { ...registry.effects, ...plugin.effects },
+      extensions: mergeExtensions(registry.extensions, plugin.extensions),
     }),
-    { components: {}, columns: {}, effects: {} },
+    { components: {}, extensions: {} },
   );
 }
 
@@ -134,7 +156,6 @@ export function extendRegistry(registry: Registry, ...plugins: Plugin[]): Regist
 
   return {
     components: { ...registry.components, ...merged.components },
-    columns: { ...registry.columns, ...merged.columns },
-    effects: { ...registry.effects, ...merged.effects },
+    extensions: mergeExtensions(registry.extensions, merged.extensions),
   };
 }

@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Ui\Slot;
 
 final readonly class PageExtensionProject

@@ -25,7 +25,7 @@ This creates:
 
 - `app/Tables/Columns/StatusBadge.php` — the PHP column class.
 - `resources/js/columns/status-badge.tsx` — the React cell renderer stub.
-- An entry under `columns` in `resources/js/registry.ts` wiring them together.
+- An entry under `extensions["table.columns"]` in `resources/js/registry.ts` wiring them together.
 - Runs `lattice:typescript` to refresh the generated types file.
 
 The PHP attribute receives the short identifier `status-badge`; the wire type is `column.status-badge`.
@@ -133,7 +133,8 @@ The generator registers column cells **bare** (`"column.status-badge": StatusBad
 
 ## 5. The registry entry
 
-The generator appended an entry under `columns` in `resources/js/registry.ts`:
+The generator appended an entry to the `table.columns` extension registry in
+`resources/js/registry.ts`:
 
 ```ts
 import { extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
@@ -143,8 +144,10 @@ import { StatusBadgeCell } from "./columns/status-badge";
 export const registry = extendRegistry(packageRegistry, {
   name: "app",
   components: {},
-  columns: {
-    "column.status-badge": StatusBadgeCell,
+  extensions: {
+    "table.columns": {
+      "column.status-badge": StatusBadgeCell,
+    },
   },
 } satisfies Plugin);
 ```

@@ -96,7 +96,7 @@ describe("createLatticeApp", () => {
 
   it("wraps the app in the Provider so toasts use Lattice's own Toaster", () => {
     const sprite = { href: "/sprite.svg" };
-    const registry = { columns: {}, components: {}, effects: {} };
+    const registry = { components: {}, extensions: {} };
 
     createLatticeApp({ registry, sprite });
 
