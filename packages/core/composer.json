@@ -26,6 +26,7 @@
             "Lattice\\Lattice\\Support\\TypeScript\\": "src/Support/TypeScript/"
         },
         "classmap": [
+            "src/Facades/Evaluate.php",
             "src/Support/Affix.php",
             "src/Support/Wire.php",
             "src/Support/WireTypeRegistry.php"

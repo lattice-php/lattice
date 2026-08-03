@@ -73,6 +73,6 @@ class CheckoutWizardForm extends FormDefinition
     {
         $this->validate($request);
 
-        return $this->toast(__('workbench.pages.wizard.submitted'))->back();
+        return LatticeResponse::make()->toast(__('workbench.pages.wizard.submitted'))->back();
     }
 }

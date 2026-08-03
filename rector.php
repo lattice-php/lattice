@@ -9,6 +9,7 @@ return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/src',
         __DIR__.'/packages/core/src',
+        __DIR__.'/packages/form/src',
         __DIR__.'/packages/ui/src',
         __DIR__.'/packages/tree/src',
         __DIR__.'/tests',
@@ -25,6 +26,6 @@ return RectorConfig::configure()
         // Misinfers the array_map row callback as `int $original`, contradicting the
         // `is_array($original)` guard in Builder::castValue().
         AddClosureParamTypeForArrayMapRector::class => [
-            __DIR__.'/src/Forms/Components/Builder.php',
+            __DIR__.'/packages/form/src/Components/Builder.php',
         ],
     ]);

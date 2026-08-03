@@ -22,6 +22,6 @@ class {{ class }} extends FormDefinition
     {
         $this->validate($request);
 
-        return $this->respond()->back();
+        return back();
     }
 }

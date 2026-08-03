@@ -25,7 +25,7 @@ final class FormsServiceProvider extends ServiceProvider
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(EditorExtensionRegistry::class, fn (): EditorExtensionRegistry => EditorExtensionRegistry::withBuiltins());
         $families = $this->app->make(WireFamilies::class);
-        $families->registerSource(dirname(__DIR__));
+        $families->registerSource(__DIR__);
         $families->register(
             new WireFamily('editor-extension', AsEditorExtension::class, EditorExtension::class),
         );

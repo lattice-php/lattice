@@ -72,7 +72,7 @@ test('Effects::respond starts a fluent response', function (): void {
     expect(app(EffectFlasher::class)->all())->toHaveCount(1);
 });
 
-test('FormDefinition::toast starts a fluent response from the handler', function (): void {
+test('a form handler can return a fluent response with a toast', function (): void {
     $response = (new FlashForm)->handle(request())->toResponse(request());
 
     expect($response->getStatusCode())->toBe(302);
@@ -80,7 +80,7 @@ test('FormDefinition::toast starts a fluent response from the handler', function
     expect(app(EffectFlasher::class)->all())->toHaveCount(1);
 });
 
-test('FormDefinition::respond starts an empty fluent response from the handler', function (): void {
+test('a form handler can return a fluent response with other effects', function (): void {
     $response = (new RespondForm)->handle(request())->toResponse(request());
 
     expect($response->getStatusCode())->toBe(302);
@@ -97,7 +97,7 @@ final class FlashForm extends FormDefinition
 
     public function handle(Request $request): LatticeResponse
     {
-        return $this->toast('Saved.', Variant::Success)->toRoute('after-save');
+        return LatticeResponse::make()->toast('Saved.', Variant::Success)->toRoute('after-save');
     }
 }
 
@@ -110,6 +110,6 @@ final class RespondForm extends FormDefinition
 
     public function handle(Request $request): LatticeResponse
     {
-        return $this->respond()->reloadPage()->toRoute('after-save');
+        return LatticeResponse::make()->reloadPage()->toRoute('after-save');
     }
 }
