@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Components;
 
+use Lattice\Lattice\Core\Contracts\ContainerComponent as ContainerComponentContract;
 use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 
-abstract class ContainerComponent extends Component
+abstract class ContainerComponent extends Component implements ContainerComponentContract
 {
     use HasChildSchema;
 

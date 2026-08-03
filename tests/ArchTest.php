@@ -102,8 +102,8 @@ arch('core does not depend on feature or ui domains')
     ->expect('Lattice\Lattice\Core')
     ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
 
-it('core source does not reference feature or ui namespaces in strings', function (): void {
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/src/Core'));
+it('shared source does not reference feature or ui namespaces in strings', function (string $directory): void {
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/src/'.$directory));
     $violations = [];
 
     foreach ($files as $file) {
@@ -121,7 +121,7 @@ it('core source does not reference feature or ui namespaces in strings', functio
     }
 
     expect($violations)->toBe([]);
-});
+})->with(['Core', 'Support/TypeScript']);
 
 arch('core does not depend upward on the orchestration or tooling layers')
     ->expect('Lattice\Lattice\Core')
@@ -178,22 +178,16 @@ arch('attributes depend on no feature domain or higher layer')
     ]);
 
 /*
- * The Support utilities (Evaluation, Discovery) are part of the shared base and
- * stay free of the feature domains. Support\Testing and Support\TypeScript are
- * tooling that intentionally consumes the domains, so they are not constrained.
+ * The Support utilities are part of the shared base and stay free of the feature
+ * domains. Support\Testing intentionally consumes the domains.
  */
 arch('the support utilities do not depend on the feature domains')
     ->expect([
         'Lattice\Lattice\Support\Evaluation',
         'Lattice\Lattice\Support\Discovery',
+        'Lattice\Lattice\Support\TypeScript',
     ])
-    ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
-    ]);
+    ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
 
 /*
  * Cross-boundary contracts live in a `Contracts` namespace and are interfaces.

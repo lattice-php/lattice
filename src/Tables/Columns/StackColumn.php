@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables\Columns;
 
+use Lattice\Lattice\Core\Contracts\ContainerComponent;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Enums\ColumnType;
 use Lattice\Lattice\Ui\Components\Component;
@@ -10,7 +11,7 @@ use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 use Lattice\Lattice\Ui\Enums\ColumnWidth;
 
 #[AsColumn(ColumnType::Stack)]
-final class StackColumn extends Column
+final class StackColumn extends Column implements ContainerComponent
 {
     use HasChildSchema;
 
