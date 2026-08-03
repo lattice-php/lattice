@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages\Components;
 
+use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Ui\Components\CodeBlock;
@@ -35,16 +36,11 @@ final class CodeBlocksPage extends WorkbenchPage
 }
 JSON, 'code-block-json')->language(CodeBlockLanguage::Json),
                     Heading::make(__('workbench.pages.components.code-blocks.php'), 2),
-                    CodeBlock::make(<<<'PHP'
-<?php
-
-CodeBlock::make('echo "Hello, Lattice!";')
-    ->language(CodeBlockLanguage::Php)
-    ->copyable()
-    ->wrap();
-PHP, 'code-block-php')
+                    CodeBlock::make(File::get(__FILE__), 'code-block-php')
                         ->language(CodeBlockLanguage::Php)
                         ->copyable()
+                        ->lineNumbers()
+                        ->maxHeight(320)
                         ->wrap(),
                 ]),
         ]);
