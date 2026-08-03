@@ -4,7 +4,7 @@ import { svgSprite } from "@lattice-php/vite-svg-sprite";
 import type { IconTypesOptions, SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
 import { searchForWorkspaceRoot } from "vite";
 import type { Plugin, PluginOption, UserConfig } from "vite";
-import { refreshTypeScriptTypes } from "./vite-typescript-refresh";
+import { refreshTypeScriptTypes } from "./vite-typescript-refresh.ts";
 
 type InlineDependency = string | RegExp;
 
