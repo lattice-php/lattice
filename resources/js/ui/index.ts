@@ -5,6 +5,8 @@ export { Button, buttonVariants } from "./button";
 export type { Emphasis, Variant } from "./button";
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
 export { Checkbox } from "./checkbox";
+export { CodeBlock } from "./code-block";
+export type { CodeBlockLanguage, CodeBlockLanguageLoader, CodeBlockProps } from "./code-block";
 export { Combobox } from "./combobox";
 export { ConfirmDialog } from "./confirm-dialog";
 export {
