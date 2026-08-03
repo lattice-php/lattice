@@ -55,6 +55,9 @@ function CodeBlockView({
   wrap,
 }: CodeBlockViewProps) {
   const container = useRef<HTMLDivElement>(null);
+  const content = useRef(children);
+  const editor = useRef<EditorView>(null);
+  content.current = children;
 
   useEffect(() => {
     if (!container.current) {
@@ -65,7 +68,7 @@ function CodeBlockView({
     const customLanguage = typeof language === "function" ? language : null;
     const initialLanguage = typeof language === "function" ? [] : languages[language];
     const view = new EditorView({
-      doc: children,
+      doc: content.current,
       parent: container.current,
       extensions: [
         EditorState.readOnly.of(true),
@@ -84,6 +87,7 @@ function CodeBlockView({
         wrap ? EditorView.lineWrapping : [],
       ],
     });
+    editor.current = view;
     let active = true;
 
     if (customLanguage) {
@@ -102,9 +106,20 @@ function CodeBlockView({
 
     return () => {
       active = false;
+      editor.current = null;
       view.destroy();
     };
-  }, [children, copyable, language, lineNumbers, maxHeight, wrap]);
+  }, [copyable, language, lineNumbers, maxHeight, wrap]);
+
+  useEffect(() => {
+    const view = editor.current;
+
+    if (!view || view.state.doc.toString() === children) {
+      return;
+    }
+
+    view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: children } });
+  }, [children]);
 
   return <div ref={container} />;
 }

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { Fragment, lazy, Suspense } from "react";
 import type { ComponentProps } from "react";
 import type { Extension } from "@codemirror/state";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
@@ -43,13 +43,29 @@ function CodeBlock({
   const fallback = (
     <pre
       className={cn(
-        "max-w-full overflow-x-auto p-3 font-lt-mono text-xs",
+        "max-w-full overflow-auto p-3 font-lt-mono text-xs",
         wrap && "whitespace-pre-wrap wrap-anywhere",
         copyable && "pt-11",
       )}
       style={{ maxHeight: maxHeight ?? undefined }}
     >
-      {children}
+      {lineNumbers ? (
+        <code className="grid grid-cols-[auto_1fr]">
+          {children.split("\n").map((line, index) => (
+            <Fragment key={index}>
+              <span
+                aria-hidden="true"
+                className="mr-3 border-r border-lt-border pr-3 text-right text-lt-muted-fg select-none"
+              >
+                {index + 1}
+              </span>
+              <span>{line || "\u200b"}</span>
+            </Fragment>
+          ))}
+        </code>
+      ) : (
+        children
+      )}
     </pre>
   );
 
