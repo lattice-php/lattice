@@ -126,19 +126,25 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
       helperText={node.props.helperText ?? undefined}
       tooltip={node.props.tooltip ?? undefined}
       label={node.props.label ?? ""}
-      name={domName}
+      id={domName}
       required={required}
     >
-      <div
-        className={cn(
-          "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-lt-xs focus-within:border-lt-ring focus-within:ring-[length:var(--lt-ring-width)] focus-within:ring-lt-ring/50",
-          locked && "opacity-60",
-        )}
-      >
-        {editor && !locked && toolbar.length > 0 && <Toolbar editor={editor} items={toolbar} />}
-        <EditorContent editor={editor} />
-      </div>
-      <input name={domName} type="hidden" value={submittedValue} />
+      {(controlProps) => (
+        <>
+          <div
+            {...controlProps}
+            className={cn(
+              "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-lt-xs focus-within:border-lt-ring focus-within:ring-[length:var(--lt-ring-width)] focus-within:ring-lt-ring/50",
+              locked && "opacity-60",
+            )}
+            role="group"
+          >
+            {editor && !locked && toolbar.length > 0 && <Toolbar editor={editor} items={toolbar} />}
+            <EditorContent editor={editor} />
+          </div>
+          <input name={domName} type="hidden" value={submittedValue} />
+        </>
+      )}
     </FormFieldFrame>
   );
 };

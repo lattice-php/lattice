@@ -34,53 +34,57 @@ export const PasswordInputComponent: RendererComponent<"field.password-input"> =
         tooltip={props.tooltip ?? undefined}
         label={props.label ?? ""}
         labelAction={props.labelAction ?? undefined}
-        name={field.name}
+        id={field.name}
         required={field.required}
       >
-        <AffixGroup prefix={props.prefix} suffix={props.suffix}>
-          {(controlClassName) => (
-            <PasswordInput
-              autoComplete={props.autoComplete ?? ""}
-              autoFocus={props.autoFocus ?? false}
-              className={controlClassName}
-              data-test={field.testId}
-              disabled={field.disabled}
-              id={field.name}
-              name={field.name}
-              onChange={(event) => {
-                field.commit(event.target.value);
-              }}
-              placeholder={props.placeholder ?? ""}
-              passwordrules={passwordRules}
-              readOnly={field.readOnly}
-              tabIndex={props.tabIndex ?? undefined}
-              value={field.value}
-            />
-          )}
-        </AffixGroup>
+        {(controlProps) => (
+          <AffixGroup prefix={props.prefix} suffix={props.suffix}>
+            {(controlClassName) => (
+              <PasswordInput
+                {...controlProps}
+                autoComplete={props.autoComplete ?? ""}
+                autoFocus={props.autoFocus ?? false}
+                className={controlClassName}
+                data-test={field.testId}
+                disabled={field.disabled}
+                name={field.name}
+                onChange={(event) => {
+                  field.commit(event.target.value);
+                }}
+                placeholder={props.placeholder ?? ""}
+                passwordrules={passwordRules}
+                readOnly={field.readOnly}
+                tabIndex={props.tabIndex ?? undefined}
+                value={field.value}
+              />
+            )}
+          </AffixGroup>
+        )}
       </FormFieldFrame>
 
       {confirmation && (
         <FormFieldFrame
           error={errors[confirmationErrorKey]}
           label={confirmation.label ?? "Confirm password"}
-          name={confirmationName}
+          id={confirmationName}
           required={field.required}
         >
-          <PasswordInput
-            autoComplete="new-password"
-            data-test={testIdentity(confirmationLocalName)}
-            disabled={field.disabled}
-            id={confirmationName}
-            name={confirmationName}
-            onChange={(event) => {
-              commit(confirmationLocalName, event.target.value);
-            }}
-            placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
-            passwordrules={passwordRules}
-            readOnly={field.readOnly}
-            tabIndex={props.tabIndex ?? undefined}
-          />
+          {(controlProps) => (
+            <PasswordInput
+              {...controlProps}
+              autoComplete="new-password"
+              data-test={testIdentity(confirmationLocalName)}
+              disabled={field.disabled}
+              name={confirmationName}
+              onChange={(event) => {
+                commit(confirmationLocalName, event.target.value);
+              }}
+              placeholder={confirmation.placeholder ?? confirmation.label ?? "Confirm password"}
+              passwordrules={passwordRules}
+              readOnly={field.readOnly}
+              tabIndex={props.tabIndex ?? undefined}
+            />
+          )}
         </FormFieldFrame>
       )}
     </div>

@@ -29,20 +29,25 @@ export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => 
       helperText={node.props.helperText ?? undefined}
       tooltip={node.props.tooltip ?? undefined}
       label={node.props.label ?? ""}
-      name={name}
+      id={name}
       required={required}
     >
-      <input name={name} type="hidden" value={selected} />
-      <SegmentedPills
-        ariaLabel={node.props.label ?? undefined}
-        autoFocus={node.props.autoFocus ?? undefined}
-        disabled={readOnly || disabled}
-        name={testId ?? "segment"}
-        onSelect={commit}
-        options={options}
-        tabIndex={node.props.tabIndex ?? undefined}
-        value={selected}
-      />
+      {(controlProps) => (
+        <>
+          <input name={name} type="hidden" value={selected} />
+          <SegmentedPills
+            {...controlProps}
+            ariaLabel={node.props.label ?? undefined}
+            autoFocus={node.props.autoFocus ?? undefined}
+            disabled={readOnly || disabled}
+            name={testId ?? "segment"}
+            onSelect={commit}
+            options={options}
+            tabIndex={node.props.tabIndex ?? undefined}
+            value={selected}
+          />
+        </>
+      )}
     </FormFieldFrame>
   );
 };

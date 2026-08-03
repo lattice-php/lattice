@@ -7,8 +7,9 @@ export const DateInputComponent: RendererComponent<"field.date-input"> = ({ node
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, testId, value, readOnly, disabled, change, blur }) => (
+      {({ name, testId, value, readOnly, disabled, change, blur }, controlProps) => (
         <DatePicker
+          controlProps={controlProps}
           autoFocus={props.autoFocus ?? false}
           disabled={disabled}
           label={props.label ?? props.name}

@@ -8,18 +8,18 @@ export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ 
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
-      {({ name, testId, value, readOnly, disabled, commit }) => {
+      {({ name, testId, value, readOnly, disabled, commit }, controlProps) => {
         const onChange = (event: React.ChangeEvent<HTMLInputElement>): void =>
           commit(event.target.value);
 
         return props.slider ? (
           <div className="flex items-center gap-3">
             <input
+              {...controlProps}
               aria-label={props.label ?? ""}
               className="h-2 w-full cursor-pointer appearance-none rounded-lt-sm bg-lt-muted accent-lt-primary disabled:cursor-not-allowed disabled:accent-lt-disabled"
               data-test={testId}
               disabled={disabled || readOnly}
-              id={name}
               max={props.max ?? undefined}
               min={props.min ?? undefined}
               name={name}
@@ -37,11 +37,11 @@ export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ 
           <AffixGroup prefix={props.prefix} suffix={props.suffix}>
             {(controlClassName) => (
               <Input
+                {...controlProps}
                 autoFocus={props.autoFocus ?? false}
                 className={controlClassName}
                 data-test={testId}
                 disabled={disabled}
-                id={name}
                 max={props.max ?? undefined}
                 min={props.min ?? undefined}
                 name={name}

@@ -64,84 +64,86 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
-      name={path}
+      id={path}
       required={required}
     >
-      <div className="flex flex-col gap-3">
-        <RowKeyInputs path={path} rows={rows} rowKey={ROW_ID_KEY} />
-        <RowKeyInputs path={path} rows={rows} rowKey="type" />
-        {isTable ? (
-          <>
-            <TableRows
-              base={path}
-              columns={columnsFromSchema(primary?.schema ?? [])}
-              rows={tableRows}
-              reorderable={props.reorderable ?? false}
-              removable={() => !atMin}
-              rowActions={props.rowActions}
-              onField={onField}
-              onMove={onMove}
-              onRemove={onRemove}
-              onDuplicate={onDuplicate}
-              registerRow={registerRow}
-              resizableColumns={props.resizableColumns === true}
-              resizeIndicator={props.resizeIndicator === true}
-            />
-          </>
-        ) : (
-          rows.map((row, index) => {
-            const template = templateFor(row.type);
-            const key = String(row[ROW_ID_KEY] ?? index);
+      {(controlProps) => (
+        <div {...controlProps} className="flex flex-col gap-3" role="group">
+          <RowKeyInputs path={path} rows={rows} rowKey={ROW_ID_KEY} />
+          <RowKeyInputs path={path} rows={rows} rowKey="type" />
+          {isTable ? (
+            <>
+              <TableRows
+                base={path}
+                columns={columnsFromSchema(primary?.schema ?? [])}
+                rows={tableRows}
+                reorderable={props.reorderable ?? false}
+                removable={() => !atMin}
+                rowActions={props.rowActions}
+                onField={onField}
+                onMove={onMove}
+                onRemove={onRemove}
+                onDuplicate={onDuplicate}
+                registerRow={registerRow}
+                resizableColumns={props.resizableColumns === true}
+                resizeIndicator={props.resizeIndicator === true}
+              />
+            </>
+          ) : (
+            rows.map((row, index) => {
+              const template = templateFor(row.type);
+              const key = String(row[ROW_ID_KEY] ?? index);
 
-            return (
-              <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
-                {template ? (
-                  <RowItem
-                    base={path}
-                    index={index}
-                    row={row}
-                    template={template.schema ?? EMPTY_TEMPLATE}
-                    heading={template.label}
-                    reorderable={props.reorderable ?? false}
-                    isFirst={index === 0}
-                    isLast={index === rows.length - 1}
-                    removable={!atMin}
-                    rowActions={props.rowActions}
-                    onField={onField}
-                    onRemove={onRemove}
-                    onMove={onMove}
-                    onDuplicate={onDuplicate}
-                  />
-                ) : (
-                  <div
-                    data-test={`repeater-${name}-row-${index}`}
-                    className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
-                  >
-                    <span>Unknown block: {String(row.type)}</span>
-                    <RowActions
-                      actions={buildRowActions(props.rowActions, {
-                        index,
-                        removable: !atMin,
-                        onRemove,
-                        onDuplicate,
-                        t,
-                      })}
+              return (
+                <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
+                  {template ? (
+                    <RowItem
+                      base={path}
+                      index={index}
+                      row={row}
+                      template={template.schema ?? EMPTY_TEMPLATE}
+                      heading={template.label}
+                      reorderable={props.reorderable ?? false}
+                      isFirst={index === 0}
+                      isLast={index === rows.length - 1}
+                      removable={!atMin}
+                      rowActions={props.rowActions}
+                      onField={onField}
+                      onRemove={onRemove}
+                      onMove={onMove}
+                      onDuplicate={onDuplicate}
                     />
-                  </div>
-                )}
-              </div>
-            );
-          })
-        )}
+                  ) : (
+                    <div
+                      data-test={`repeater-${name}-row-${index}`}
+                      className="flex items-center justify-between rounded-lt border border-dashed border-lt-border p-4 text-sm text-lt-muted-fg"
+                    >
+                      <span>Unknown block: {String(row.type)}</span>
+                      <RowActions
+                        actions={buildRowActions(props.rowActions, {
+                          index,
+                          removable: !atMin,
+                          onRemove,
+                          onDuplicate,
+                          t,
+                        })}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
 
-        {!atMax && (
-          <AddRowMenu
-            addLabel={props.addLabel ?? "Add"}
-            options={options}
-            onSelect={(type) => append({ type })}
-          />
-        )}
-      </div>
+          {!atMax && (
+            <AddRowMenu
+              addLabel={props.addLabel ?? "Add"}
+              options={options}
+              onSelect={(type) => append({ type })}
+            />
+          )}
+        </div>
+      )}
     </FormFieldFrame>
   );
 };

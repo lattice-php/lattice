@@ -2,7 +2,7 @@
  * Entry point for building custom form fields outside the package. Form
  * modules not re-exported here are internal and may change without notice.
  */
-export { FormFieldFrame } from "./components/base/field";
+export { FormFieldFrame, type FormFieldControlProps } from "./components/base/field";
 export { useFormContext } from "./hooks/context";
 export { FieldScopeProvider, useFieldScope } from "./hooks/field-scope";
 export { fieldProps, walkFields } from "./lib/field-props";

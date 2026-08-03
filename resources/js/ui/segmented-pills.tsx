@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { type ComponentProps, useEffect, useRef } from "react";
 import type { Option } from "@lattice-php/lattice/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { pillClassName } from "./pill";
@@ -10,13 +10,15 @@ import { pillClassName } from "./pill";
 export function SegmentedPills({
   ariaLabel,
   autoFocus = false,
+  className,
   disabled = false,
   name,
   onSelect,
   options,
   tabIndex,
   value,
-}: {
+  ...props
+}: Omit<ComponentProps<"div">, "children" | "onSelect" | "ref"> & {
   ariaLabel?: string;
   autoFocus?: boolean;
   disabled?: boolean;
@@ -43,8 +45,12 @@ export function SegmentedPills({
 
   return (
     <div
+      {...props}
       aria-label={ariaLabel}
-      className="inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1"
+      className={cn(
+        "inline-flex w-fit max-w-full gap-1 overflow-x-auto rounded-lt bg-lt-muted p-1",
+        className,
+      )}
       ref={groupRef}
       role="radiogroup"
     >

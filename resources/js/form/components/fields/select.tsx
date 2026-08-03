@@ -186,103 +186,110 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
-      name={domName}
+      id={domName}
       required={required}
     >
-      {multiple ? (
-        selected.map((value) => (
-          <input key={value} name={`${domName}[]`} type="hidden" value={value} />
-        ))
-      ) : (
-        <input name={domName} type="hidden" value={selected[0] ?? ""} />
-      )}
-
-      <div>
-        {multiple && selected.length > 0 && (
-          <div className="mb-1.5 flex flex-wrap gap-1">
-            {selected.map((value) => {
-              const color = colorFor(value);
-
-              return (
-                <span
-                  className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
-                  key={value}
-                >
-                  {color && (
-                    <span
-                      aria-hidden="true"
-                      className="size-2 shrink-0 rounded-full"
-                      style={{ background: colorValue(color) }}
-                    />
-                  )}
-                  {labelFor(value)}
-                  {!locked && (
-                    <button
-                      aria-label={t("form.remove-option", "Remove {{label}}", {
-                        label: labelFor(value),
-                      })}
-                      data-test={`select-${name}-remove-${value}`}
-                      className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
-                      onClick={() => remove(value)}
-                      type="button"
-                    >
-                      <Icon name="x" />
-                    </button>
-                  )}
-                </span>
-              );
-            })}
-          </div>
-        )}
-
-        <Combobox
-          creatable={creatable}
-          emptyLabel={props.emptyLabel ?? undefined}
-          loading={loading}
-          multiple={multiple}
-          onCommit={applyCreated}
-          onCreate={applyCreated}
-          onSearch={searchable ? search : undefined}
-          onSelect={select}
-          open={open && !locked}
-          onOpenChange={(next) => {
-            setOpen(next);
-
-            if (!next) {
-              blur(name);
-            }
-          }}
-          options={options}
-          renderOption={renderOption}
-          searchPlaceholder={props.searchPlaceholder ?? undefined}
-          showSearch={Boolean(searchable || creatable)}
-          selected={selected}
-          testId={`select-${name}`}
-          trigger={
-            <>
-              {!multiple && selected.length > 0 ? (
-                <span>{labelFor(selected[0])}</span>
-              ) : (
-                <span className="text-lt-muted-fg">{placeholder}</span>
-              )}
-              <Icon name="chevrons-up-down" className="size-lt-icon-md shrink-0 text-lt-muted-fg" />
-            </>
-          }
-          triggerClassName={cn(
-            controlSurface(),
-            "flex items-center justify-between gap-2 text-left",
-            locked && "cursor-not-allowed opacity-60",
+      {(controlProps) => (
+        <>
+          {multiple ? (
+            selected.map((value) => (
+              <input key={value} name={`${domName}[]`} type="hidden" value={value} />
+            ))
+          ) : (
+            <input name={domName} type="hidden" value={selected[0] ?? ""} />
           )}
-          triggerProps={{
-            "aria-haspopup": "listbox",
-            autoFocus: props.autoFocus ?? undefined,
-            "data-test": `select-${name}`,
-            disabled: locked,
-            id: domName,
-            tabIndex: props.tabIndex ?? undefined,
-          }}
-        />
-      </div>
+
+          <div>
+            {multiple && selected.length > 0 && (
+              <div className="mb-1.5 flex flex-wrap gap-1">
+                {selected.map((value) => {
+                  const color = colorFor(value);
+
+                  return (
+                    <span
+                      className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
+                      key={value}
+                    >
+                      {color && (
+                        <span
+                          aria-hidden="true"
+                          className="size-2 shrink-0 rounded-full"
+                          style={{ background: colorValue(color) }}
+                        />
+                      )}
+                      {labelFor(value)}
+                      {!locked && (
+                        <button
+                          aria-label={t("form.remove-option", "Remove {{label}}", {
+                            label: labelFor(value),
+                          })}
+                          data-test={`select-${name}-remove-${value}`}
+                          className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
+                          onClick={() => remove(value)}
+                          type="button"
+                        >
+                          <Icon name="x" />
+                        </button>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+
+            <Combobox
+              creatable={creatable}
+              emptyLabel={props.emptyLabel ?? undefined}
+              loading={loading}
+              multiple={multiple}
+              onCommit={applyCreated}
+              onCreate={applyCreated}
+              onSearch={searchable ? search : undefined}
+              onSelect={select}
+              open={open && !locked}
+              onOpenChange={(next) => {
+                setOpen(next);
+
+                if (!next) {
+                  blur(name);
+                }
+              }}
+              options={options}
+              renderOption={renderOption}
+              searchPlaceholder={props.searchPlaceholder ?? undefined}
+              showSearch={Boolean(searchable || creatable)}
+              selected={selected}
+              testId={`select-${name}`}
+              trigger={
+                <>
+                  {!multiple && selected.length > 0 ? (
+                    <span>{labelFor(selected[0])}</span>
+                  ) : (
+                    <span className="text-lt-muted-fg">{placeholder}</span>
+                  )}
+                  <Icon
+                    name="chevrons-up-down"
+                    className="size-lt-icon-md shrink-0 text-lt-muted-fg"
+                  />
+                </>
+              }
+              triggerClassName={cn(
+                controlSurface(),
+                "flex items-center justify-between gap-2 text-left",
+                locked && "cursor-not-allowed opacity-60",
+              )}
+              triggerProps={{
+                ...controlProps,
+                "aria-haspopup": "listbox",
+                autoFocus: props.autoFocus ?? undefined,
+                "data-test": `select-${name}`,
+                disabled: locked,
+                tabIndex: props.tabIndex ?? undefined,
+              }}
+            />
+          </div>
+        </>
+      )}
     </FormFieldFrame>
   );
 };

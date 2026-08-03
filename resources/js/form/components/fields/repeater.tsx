@@ -57,65 +57,67 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
       label={props.label ?? ""}
-      name={path}
+      id={path}
       required={required}
     >
-      <div className="flex flex-col gap-3">
-        <RowKeyInputs path={path} rows={rows} rowKey={ROW_ID_KEY} />
-        {isTable ? (
-          <TableRows
-            base={path}
-            columns={columnsFromSchema(template)}
-            rows={tableRows}
-            reorderable={props.reorderable ?? false}
-            removable={() => !atMin}
-            rowActions={props.rowActions}
-            onField={onField}
-            onMove={onMove}
-            onRemove={onRemove}
-            onDuplicate={onDuplicate}
-            registerRow={registerRow}
-            resizableColumns={props.resizableColumns === true}
-            resizeIndicator={props.resizeIndicator === true}
-          />
-        ) : (
-          rows.map((row, index) => {
-            const key = String(row[ROW_ID_KEY] ?? index);
-            return (
-              <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
-                <RowItem
-                  base={path}
-                  index={index}
-                  row={row}
-                  template={template}
-                  heading={rowHeading(index)}
-                  reorderable={props.reorderable ?? false}
-                  isFirst={index === 0}
-                  isLast={index === rows.length - 1}
-                  removable={!atMin}
-                  rowActions={props.rowActions}
-                  onField={onField}
-                  onRemove={onRemove}
-                  onMove={onMove}
-                  onDuplicate={onDuplicate}
-                />
-              </div>
-            );
-          })
-        )}
+      {(controlProps) => (
+        <div {...controlProps} className="flex flex-col gap-3" role="group">
+          <RowKeyInputs path={path} rows={rows} rowKey={ROW_ID_KEY} />
+          {isTable ? (
+            <TableRows
+              base={path}
+              columns={columnsFromSchema(template)}
+              rows={tableRows}
+              reorderable={props.reorderable ?? false}
+              removable={() => !atMin}
+              rowActions={props.rowActions}
+              onField={onField}
+              onMove={onMove}
+              onRemove={onRemove}
+              onDuplicate={onDuplicate}
+              registerRow={registerRow}
+              resizableColumns={props.resizableColumns === true}
+              resizeIndicator={props.resizeIndicator === true}
+            />
+          ) : (
+            rows.map((row, index) => {
+              const key = String(row[ROW_ID_KEY] ?? index);
+              return (
+                <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
+                  <RowItem
+                    base={path}
+                    index={index}
+                    row={row}
+                    template={template}
+                    heading={rowHeading(index)}
+                    reorderable={props.reorderable ?? false}
+                    isFirst={index === 0}
+                    isLast={index === rows.length - 1}
+                    removable={!atMin}
+                    rowActions={props.rowActions}
+                    onField={onField}
+                    onRemove={onRemove}
+                    onMove={onMove}
+                    onDuplicate={onDuplicate}
+                  />
+                </div>
+              );
+            })
+          )}
 
-        {!atMax && (
-          <button
-            type="button"
-            data-test={`repeater-${name}-add`}
-            className="inline-flex items-center gap-1.5 self-start rounded-lt-sm border border-lt-border px-3 py-1.5 text-sm hover:bg-lt-accent [&_svg]:size-lt-icon-sm"
-            onClick={() => append({})}
-          >
-            <Icon name="plus" />
-            {props.addLabel ?? "Add"}
-          </button>
-        )}
-      </div>
+          {!atMax && (
+            <button
+              type="button"
+              data-test={`repeater-${name}-add`}
+              className="inline-flex items-center gap-1.5 self-start rounded-lt-sm border border-lt-border px-3 py-1.5 text-sm hover:bg-lt-accent [&_svg]:size-lt-icon-sm"
+              onClick={() => append({})}
+            >
+              <Icon name="plus" />
+              {props.addLabel ?? "Add"}
+            </button>
+          )}
+        </div>
+      )}
     </FormFieldFrame>
   );
 };
