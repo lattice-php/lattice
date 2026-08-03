@@ -5,7 +5,7 @@ import { php } from "@codemirror/lang-php";
 import { HighlightStyle, StreamLanguage, syntaxHighlighting } from "@codemirror/language";
 import { shell } from "@codemirror/legacy-modes/mode/shell";
 import { Compartment, EditorState, type Extension } from "@codemirror/state";
-import { EditorView } from "@codemirror/view";
+import { EditorView, lineNumbers as showLineNumbers } from "@codemirror/view";
 import { tags } from "@lezer/highlight";
 import type { CodeBlockLanguage, CodeBlockViewProps } from "./code-block";
 
@@ -39,15 +39,20 @@ const codeBlockTheme = EditorView.theme({
     overflow: "auto",
   },
   ".cm-content": { padding: "0.75rem" },
+  ".cm-gutters": {
+    backgroundColor: "transparent",
+    borderRightColor: "var(--lt-border)",
+    color: "var(--lt-muted-fg)",
+  },
+  ".cm-lineNumbers .cm-gutterElement": { padding: "0 0.75rem" },
   ".cm-line": { padding: "0" },
 });
 
-const copyableTheme = EditorView.theme({
-  ".cm-content": { padding: "2.75rem 0.75rem 0.75rem" },
-});
-
-function CodeBlockView({ children, copyable, language, wrap }: CodeBlockViewProps) {
+function CodeBlockView({ children, language, lineNumbers, maxHeight, wrap }: CodeBlockViewProps) {
   const container = useRef<HTMLDivElement>(null);
+  const content = useRef(children);
+  const editor = useRef<EditorView>(null);
+  content.current = children;
 
   useEffect(() => {
     if (!container.current) {
@@ -58,7 +63,7 @@ function CodeBlockView({ children, copyable, language, wrap }: CodeBlockViewProp
     const customLanguage = typeof language === "function" ? language : null;
     const initialLanguage = typeof language === "function" ? [] : languages[language];
     const view = new EditorView({
-      doc: children,
+      doc: content.current,
       parent: container.current,
       extensions: [
         EditorState.readOnly.of(true),
@@ -67,10 +72,16 @@ function CodeBlockView({ children, copyable, language, wrap }: CodeBlockViewProp
         languageCompartment.of(initialLanguage),
         syntaxHighlighting(highlightStyle),
         codeBlockTheme,
-        copyable ? copyableTheme : [],
+        lineNumbers ? showLineNumbers() : [],
+        maxHeight === null
+          ? []
+          : EditorView.theme({
+              "&": { maxHeight: `${maxHeight}px` },
+            }),
         wrap ? EditorView.lineWrapping : [],
       ],
     });
+    editor.current = view;
     let active = true;
 
     if (customLanguage) {
@@ -89,9 +100,20 @@ function CodeBlockView({ children, copyable, language, wrap }: CodeBlockViewProp
 
     return () => {
       active = false;
+      editor.current = null;
       view.destroy();
     };
-  }, [children, copyable, language, wrap]);
+  }, [language, lineNumbers, maxHeight, wrap]);
+
+  useEffect(() => {
+    const view = editor.current;
+
+    if (!view || view.state.doc.toString() === children) {
+      return;
+    }
+
+    view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: children } });
+  }, [children]);
 
   return <div ref={container} />;
 }

@@ -13,7 +13,7 @@ afterEach(() => {
 describe("CodeBlock", () => {
   it("server-renders an accessible pre while CodeMirror loads", () => {
     const html = renderToString(
-      <CodeBlock aria-label="PHP example" language="php">
+      <CodeBlock aria-label="PHP example" copyable language="php">
         {"<?php echo 'Hello';"}
       </CodeBlock>,
     );
@@ -21,6 +21,29 @@ describe("CodeBlock", () => {
     expect(html).toContain("<pre");
     expect(html).toContain('aria-label="PHP example"');
     expect(html).toContain("&lt;?php echo &#x27;Hello&#x27;;");
+    expect(html).not.toContain("pt-11");
+  });
+
+  it("server-renders the maximum height on the fallback", () => {
+    const html = renderToString(<CodeBlock maxHeight={240}>one\ntwo</CodeBlock>);
+
+    expect(html).toContain('style="max-height:240px"');
+  });
+
+  it("server-renders line numbers on the fallback", () => {
+    const html = renderToString(<CodeBlock lineNumbers>{"one\ntwo"}</CodeBlock>);
+    const container = document.createElement("div");
+    container.innerHTML = html;
+
+    expect(
+      Array.from(container.querySelectorAll('[aria-hidden="true"]'), (line) => line.textContent),
+    ).toEqual(["1", "2"]);
+  });
+
+  it("makes a height-limited fallback vertically scrollable", () => {
+    const html = renderToString(<CodeBlock maxHeight={240}>one\ntwo</CodeBlock>);
+
+    expect(html).toContain("overflow-auto");
   });
 
   it("renders serialized node props", async () => {
@@ -30,6 +53,8 @@ describe("CodeBlock", () => {
         code: "<?php echo 'Hello';",
         language: "php",
         copyable: false,
+        lineNumbers: true,
+        maxHeight: 240,
         wrap: true,
       },
     });
@@ -38,6 +63,8 @@ describe("CodeBlock", () => {
     await waitFor(() => expect(container.querySelector(".cm-editor")).toBeInTheDocument());
 
     expect(container.querySelector(".cm-content")).toHaveTextContent("<?php echo 'Hello';");
+    expect(container.querySelector(".cm-gutters")).toBeInTheDocument();
+    expect(container.querySelector(".cm-editor")).toHaveStyle({ maxHeight: "240px" });
     expect(container.querySelector(".cm-lineWrapping")).toBeInTheDocument();
     expect(container.querySelector(".cm-content span")).toBeInTheDocument();
   });
@@ -59,6 +86,24 @@ describe("CodeBlock", () => {
     expect(container.querySelector(".cm-content")).toHaveAttribute("role", "code");
     expect(container.querySelector(".cm-content")).toHaveTextContent("<?php echo 'Hello';");
     expect(container.querySelector(".cm-content span")).toBeInTheDocument();
+  });
+
+  it("updates content without recreating the CodeMirror view", async () => {
+    const { container, rerender } = render(<CodeBlock>one\ntwo\nthree</CodeBlock>);
+
+    await waitFor(() => expect(container.querySelector(".cm-editor")).toBeInTheDocument());
+
+    const editor = container.querySelector(".cm-editor");
+    const scroller = container.querySelector<HTMLElement>(".cm-scroller");
+    expect(scroller).not.toBeNull();
+    scroller!.scrollTop = 24;
+
+    rerender(<CodeBlock>four\nfive\nsix</CodeBlock>);
+
+    await waitFor(() => expect(container.querySelector(".cm-content")).toHaveTextContent("four"));
+    expect(container.querySelector(".cm-editor")).toBe(editor);
+    expect(container.querySelector(".cm-scroller")).toBe(scroller);
+    expect(scroller).toHaveProperty("scrollTop", 24);
   });
 
   it("loads custom languages through the public lazy loader", async () => {

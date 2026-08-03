@@ -111,6 +111,8 @@ test('code blocks serialize their code and presentation configuration', function
     expect(wire(CodeBlock::make('<?php echo "Hello";')
         ->language(CodeBlockLanguage::Php)
         ->copyable()
+        ->lineNumbers()
+        ->maxHeight(320)
         ->wrap()))
         ->toMatchArray([
             'type' => 'code-block',
@@ -118,6 +120,8 @@ test('code blocks serialize their code and presentation configuration', function
                 'code' => '<?php echo "Hello";',
                 'language' => 'php',
                 'copyable' => true,
+                'lineNumbers' => true,
+                'maxHeight' => 320,
                 'wrap' => true,
             ],
         ])
@@ -125,11 +129,17 @@ test('code blocks serialize their code and presentation configuration', function
         ->toMatchArray([
             'language' => 'text',
             'copyable' => false,
+            'lineNumbers' => false,
+            'maxHeight' => null,
             'wrap' => false,
         ])
         ->and(wire(CodeBlock::bound('snippet'))['props']['dataBindings'])
         ->toBe(['code' => 'snippet']);
 });
+
+test('code blocks reject non-positive maximum heights', function (): void {
+    CodeBlock::make('plain')->maxHeight(0);
+})->throws(InvalidArgumentException::class);
 
 test('separators default to horizontal and serialize their orientation', function (): void {
     expect(wire(Separator::make()))
