@@ -6,6 +6,7 @@ parameters:
     paths:
         - src
         - packages/core/src
+        - packages/ui/src
         - packages/tree/src
         - tests
         - workbench/app

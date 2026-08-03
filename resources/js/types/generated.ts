@@ -273,7 +273,7 @@ export type BulkAction = {
   variant: Variant | null;
 };
 export type Button = {
-  action: Node<"action"> | Node<"action.bulk"> | null;
+  action: Node | null;
   buttonType: ButtonType;
   effects: Effect[];
   emphasis: Emphasis | null;
@@ -938,7 +938,7 @@ export type LayoutNodeType =
   | "sidebar"
   | "topbar";
 export type Link = {
-  action: Node<"action"> | Node<"action.bulk"> | null;
+  action: Node | null;
   effects: Effect[];
   href: string | null;
   icon: string | null;
@@ -959,7 +959,7 @@ export type LocaleChange = {
 };
 export type Menu = Record<string, never>;
 export type MenuItem = {
-  action: Node<"action"> | Node<"action.bulk"> | null;
+  action: Node | null;
   effects: Effect[];
   href: string | null;
   icon: string | null;

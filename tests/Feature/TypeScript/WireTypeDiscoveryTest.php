@@ -19,7 +19,12 @@ use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Variant;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $root = dirname(__DIR__, 3);
+    $manifest = app(WireTypeDiscovery::class)->discoverMany([
+        $root.'/src',
+        $root.'/packages/core/src',
+        $root.'/packages/ui/src',
+    ]);
 
     expect($manifest->family('effect'))->toHaveKey(Toast::class, 'toast')
         ->and($manifest->enums)->toContain(Variant::class)
@@ -80,7 +85,7 @@ it('classifies dual-marked classes as components regardless of attribute declara
 });
 
 it('derives the domain from the namespace segment before Components', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src/Ui/Components');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src/Components');
 
     $card = collect($manifest->components)->keyBy->type->get('card');
 
@@ -105,6 +110,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
     $manifest = app(WireTypeDiscovery::class)->discoverMany([
         $root.'/src',
         $root.'/packages/core/src',
+        $root.'/packages/ui/src',
     ]);
 
     expect($manifest->enums)->toContain(Align::class)->toContain(Variant::class);
@@ -115,7 +121,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
 });
 
 it('excludes classes without the #[TypeScript] attribute from enum/value-object discovery', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src');
 
     $all = [...$manifest->enums, ...$manifest->valueObjects];
 

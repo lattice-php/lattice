@@ -14,14 +14,18 @@ use Lattice\Lattice\Ui\Enums\Icon;
 function generateEnumReference(): array
 {
     $root = dirname(__DIR__, 3);
-    $sources = [$root.'/src', $root.'/packages/core/src'];
+    $sources = [
+        [$root.'/src', 'Lattice\\Lattice\\', '*/Enums/*.php'],
+        [$root.'/packages/core/src', 'Lattice\\Lattice\\', '*/Enums/*.php'],
+        [$root.'/packages/ui/src', 'Lattice\\Lattice\\Ui\\', 'Enums/*.php'],
+    ];
 
     $enums = [];
 
-    foreach ($sources as $source) {
-        foreach (glob($source.'/*/Enums/*.php') ?: [] as $file) {
+    foreach ($sources as [$source, $namespace, $pattern]) {
+        foreach (glob($source.'/'.$pattern) ?: [] as $file) {
             $relative = substr($file, strlen($source.'/'), -strlen('.php'));
-            $class = 'Lattice\\Lattice\\'.str_replace('/', '\\', $relative);
+            $class = $namespace.str_replace('/', '\\', $relative);
 
             if ($class === Icon::class || ! enum_exists($class)) {
                 continue;

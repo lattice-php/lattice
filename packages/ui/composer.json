@@ -1,0 +1,33 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/ui",
+    "description": "UI components, effects, and serialization for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "lattice-php/core": "self.version",
+        "spatie/php-attribute-reader": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Lattice\\Ui\\": "src/"
+        },
+        "classmap": [
+            "src/Effects/Attributes/AsEffect.php",
+            "src/Effects/Effect.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lattice\\Lattice\\Ui\\UiServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

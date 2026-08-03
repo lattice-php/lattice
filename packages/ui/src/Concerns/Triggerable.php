@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Ui\Concerns;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Ui\Components\Component;
 
 /**
  * The shared click surface for clickable components (Link, Button, MenuItem): a
@@ -21,7 +20,7 @@ trait Triggerable
 
     public ?string $href = null;
 
-    public ?Action $action = null;
+    public ?Component $action = null;
 
     /** @var array<int, Effect> */
     public array $effects = [];
@@ -36,14 +35,16 @@ trait Triggerable
     }
 
     /**
-     * @param  class-string<ActionDefinition>  $actionClass
+     * @param  class-string  $actionClass
      * @param  array<string, mixed>  $context
      */
     public function action(string $actionClass, array $context = []): static
     {
         $this->assertBehaviorAllowed('action');
 
-        $this->action = Action::use($actionClass, $context);
+        /** @var callable(class-string, array<string, mixed>): Component $resolve */
+        $resolve = app('lattice.actions.component');
+        $this->action = $resolve($actionClass, $context);
 
         return $this;
     }

@@ -216,7 +216,7 @@ export default defineConfig(({ mode }) => {
               name: "lattice:icon-enum",
               buildStart() {
                 writePhpEnum([...latticeIcons].sort(), {
-                  file: "src/Ui/Enums/Icon.php",
+                  file: "packages/ui/src/Enums/Icon.php",
                   namespace: "Lattice\\Lattice\\Ui\\Enums",
                   enum: "Icon",
                 });
