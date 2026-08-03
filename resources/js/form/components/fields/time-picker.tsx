@@ -1,5 +1,5 @@
 import { type KeyboardEvent, useEffect, useRef } from "react";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { buildTimeColumns, type TimeColumnOption, type TimeValue } from "./time-picker-columns";
 
 type TimePickerProps = {

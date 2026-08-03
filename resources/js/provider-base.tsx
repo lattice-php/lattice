@@ -4,8 +4,8 @@ import type { Registry } from "@lattice-php/core/registry";
 import { RegistryContext } from "@lattice-php/core/registry-context";
 import { useFlashEffects } from "./effects/use-flash-effects";
 import { EventBridge } from "./event-bridge";
-import type { SpriteValue } from "./icons/sprite";
-import { SpriteProvider } from "./icons/sprite";
+import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
+import { SpriteProvider } from "@lattice-php/ui/icons/sprite";
 import { Toaster } from "./toast";
 import { updateAppearance } from "./appearance";
 

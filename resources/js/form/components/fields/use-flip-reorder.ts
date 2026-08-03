@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import { useLayoutEffect } from "@lattice-php/lattice/lib/use-layout-effect";
+import { useLayoutEffect } from "@lattice-php/ui/lib/use-layout-effect";
 
 const DURATION_MS = 180;
 

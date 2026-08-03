@@ -2,7 +2,7 @@ import type { RendererComponent } from "@lattice-php/core/types";
 import { testIdentity } from "@lattice-php/core/test-id";
 import { AffixGroup } from "@lattice-php/lattice/ui/affix-group";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
-import PasswordInput from "@lattice-php/lattice/ui/password-input";
+import PasswordInput from "@lattice-php/ui/password-input";
 import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
 import { useControlledField } from "@lattice-php/lattice/form/hooks/use-controlled-field";
 import { useFieldCommit } from "@lattice-php/lattice/form/hooks/use-field-commit";

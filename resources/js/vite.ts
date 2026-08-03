@@ -196,8 +196,13 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
       ...(options.source
         ? {
             alias: {
-              "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
+              "@lattice-php/lattice/css": path.resolve(
+                root,
+                "packages/ui/resources/css/lattice.css",
+              ),
               "@lattice-php/lattice": path.resolve(root, "resources/js"),
+              "@lattice-php/ui/css": path.resolve(root, "packages/ui/resources/css/lattice.css"),
+              "@lattice-php/ui": path.resolve(root, "packages/ui/resources/js"),
             },
           }
         : {}),
@@ -215,6 +220,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
         deps: {
           inline: [
             "@lattice-php/lattice",
+            "@lattice-php/ui",
             /[/\\]lattice[/\\]dist[/\\]/,
             /[/\\]lattice[/\\]node_modules[/\\]@radix-ui[/\\]/,
             /[/\\]lattice[/\\]node_modules[/\\]@tiptap[/\\]/,
@@ -323,7 +329,7 @@ export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOption
   const { dirs = [], dts, ...spriteOptions } = iconOptions;
   const defaultTypes = {
     file: "resources/js/types/sprite-icons.ts",
-    augmentModule: "@lattice-php/lattice",
+    augmentModule: "@lattice-php/ui",
     augmentInterface: "KnownIcons",
   };
 

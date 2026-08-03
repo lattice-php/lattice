@@ -7,7 +7,7 @@ import type {
 } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useExtensionRegistry } from "@lattice-php/core/registry-context";
-import { setLocale } from "@lattice-php/lattice/i18n/locale";
+import { setLocale } from "@lattice-php/ui/i18n/locale";
 
 export type { EffectOf, EffectProps, EffectPropsOf };
 

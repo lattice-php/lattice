@@ -4,7 +4,7 @@ import type { RendererComponent, Schema } from "@lattice-php/core/types";
 import { remoteJson } from "@lattice-php/lattice/core/api";
 import { materializeSchema, type RemoteRow } from "@lattice-php/core/materialize";
 import type { DataList as DataListProps } from "@lattice-php/lattice/types/generated";
-import { useT } from "@lattice-php/lattice/i18n";
+import { useT } from "@lattice-php/ui/i18n";
 
 type RemotePayload = {
   data?: Array<Record<string, unknown>>;

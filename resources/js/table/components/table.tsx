@@ -1,13 +1,13 @@
 import { type ReactNode, Fragment, useMemo } from "react";
-import { useT } from "@lattice-php/lattice/i18n";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { Renderer, RenderNode } from "@lattice-php/core/renderer";
 import { useColumnResizing } from "@lattice-php/lattice/core/hooks/use-column-resizing";
 import { useColumnVisibility } from "@lattice-php/lattice/table/hooks/use-column-visibility";
 import { useExpandedRows } from "@lattice-php/lattice/table/hooks/use-expanded-rows";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
-import { Icon } from "@lattice-php/lattice/icons";
+import { Checkbox } from "@lattice-php/ui/checkbox";
+import { Icon } from "@lattice-php/ui/icons";
 import { alignJustifyItems, alignText } from "@lattice-php/lattice/table/lib/align";
 import type { TableNode } from "@lattice-php/lattice/table/types";
 import { getBulkActions } from "@lattice-php/lattice/table/lib/bulk";

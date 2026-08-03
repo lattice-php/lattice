@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/core/types";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 
 const TopbarComponent: RendererComponent<"topbar"> = ({ children, node }) => {
   const sticky = node.props.sticky;

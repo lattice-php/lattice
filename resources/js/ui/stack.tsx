@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/core/types";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 
 const gridAlignments: Record<string, string> = {

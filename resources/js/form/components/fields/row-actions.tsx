@@ -1,11 +1,11 @@
-import { Icon } from "@lattice-php/lattice/icons";
-import { useT } from "@lattice-php/lattice/i18n";
+import { Icon } from "@lattice-php/ui/icons";
+import { useT } from "@lattice-php/ui/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@lattice-php/lattice/ui/dropdown-menu";
+} from "@lattice-php/ui/dropdown-menu";
 
 export type RowAction = {
   key: string;

@@ -1,14 +1,14 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import { Button } from "@lattice-php/lattice/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@lattice-php/lattice/ui/dropdown-menu";
+} from "@lattice-php/ui/dropdown-menu";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useT } from "@lattice-php/lattice/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
 import { ActionMenuProvider } from "@lattice-php/lattice/ui/action-menu-context";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {

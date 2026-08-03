@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/core/types";
-import { useTimezone } from "@lattice-php/lattice/i18n";
+import { useTimezone } from "@lattice-php/ui/i18n";
 import { DatePicker } from "./date-picker";
 import { SimpleField } from "./simple-field";
 

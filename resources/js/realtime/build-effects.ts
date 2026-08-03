@@ -1,6 +1,6 @@
 import type { Effect } from "@lattice-php/lattice/types/generated";
-import { isTranslatable, resolveTranslatable } from "@lattice-php/lattice/i18n/translatable";
-import type { Translate } from "@lattice-php/lattice/i18n/translatable";
+import { isTranslatable, resolveTranslatable } from "@lattice-php/ui/i18n/translatable";
+import type { Translate } from "@lattice-php/ui/i18n/translatable";
 
 type RawEffect = Record<string, unknown>;
 

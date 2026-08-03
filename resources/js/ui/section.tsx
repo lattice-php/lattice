@@ -1,11 +1,11 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import { Renderer } from "@lattice-php/core/renderer";
 import { nodeIdentity, prefixedTestId } from "@lattice-php/core/test-id";
 import { toNodes } from "@lattice-php/core/nodes";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { InfoTooltip } from "./info-tooltip";
-import { useCollapsibleState } from "./use-collapsible-state";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
+import { useCollapsibleState } from "@lattice-php/ui/use-collapsible-state";
 
 const SectionComponent: RendererComponent<"section"> = ({ children, node }) => {
   const { title, description, tooltip } = node.props;

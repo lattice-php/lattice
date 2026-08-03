@@ -1,10 +1,10 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@lattice-php/lattice/ui/dropdown-menu";
+} from "@lattice-php/ui/dropdown-menu";
 
 export type AddRowOption = { type: string; label: string };
 

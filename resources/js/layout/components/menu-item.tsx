@@ -3,8 +3,8 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { prefixedNodeTestId } from "@lattice-php/core/test-id";
 import type { RendererComponent, Schema } from "@lattice-php/core/types";
-import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { Icon, IconRenderer } from "@lattice-php/ui/icons";
+import { cn } from "@lattice-php/ui/lib/utils";
 import type { Affix } from "@lattice-php/lattice/types/generated";
 import {
   ActionTrigger,

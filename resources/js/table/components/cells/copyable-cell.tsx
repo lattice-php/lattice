@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { CopyableText } from "@lattice-php/lattice/ui/copyable-text";
+import { CopyableText } from "@lattice-php/ui/copyable-text";
 import type { TableColumn } from "@lattice-php/lattice/table/types";
 
 /** Wrap cell content in a copy-to-clipboard affordance when `copyable` is set. */

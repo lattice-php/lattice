@@ -1,8 +1,8 @@
 import * as React from "react";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { InfoTooltip } from "./info-tooltip";
+import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 
 function Card({ className, ...props }: React.ComponentProps<"article">) {
   return (

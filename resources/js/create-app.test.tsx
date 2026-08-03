@@ -19,7 +19,7 @@ vi.mock("@inertiajs/react", async () =>
     router,
   }),
 );
-vi.mock("./i18n/page-props", () => ({ configureI18nFromPageProps }));
+vi.mock("@lattice-php/ui/i18n/page-props", () => ({ configureI18nFromPageProps }));
 
 import { useAppearance } from "./appearance";
 import { createLatticeApp } from "./create-app";

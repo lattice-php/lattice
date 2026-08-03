@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { createListeners } from "@lattice-php/lattice/lib/listeners";
+import { createListeners } from "@lattice-php/ui/lib/listeners";
 
 const appearances = ["light", "dark", "system"] as const;
 

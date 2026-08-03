@@ -1,7 +1,7 @@
 import type { RendererComponent } from "@lattice-php/core/types";
 import { testIdentity } from "@lattice-php/core/test-id";
-import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
-import { Label } from "@lattice-php/lattice/ui/label";
+import { Checkbox } from "@lattice-php/ui/checkbox";
+import { Label } from "@lattice-php/ui/label";
 import { toBoolean } from "@lattice-php/lattice/form/lib/conditions";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 import { fieldDomName } from "@lattice-php/lattice/form/lib/field-dom-name";

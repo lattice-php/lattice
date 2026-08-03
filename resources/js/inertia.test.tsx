@@ -1,7 +1,7 @@
 import type { Page as InertiaPage } from "@inertiajs/core";
 import type { ResolvedComponent } from "@inertiajs/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { setLocale } from "./i18n/locale";
+import { setLocale } from "@lattice-php/ui/i18n/locale";
 import { createLayoutResolver, createPageResolver, withVisitHeaders } from "./inertia";
 import { SchemaLayout } from "./layout";
 import Page from "./page";

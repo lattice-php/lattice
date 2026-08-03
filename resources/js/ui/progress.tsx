@@ -1,7 +1,7 @@
 import type { RendererComponent } from "@lattice-php/core/types";
-import { useLocale } from "@lattice-php/lattice/i18n";
-import { coerceColor, colorValue, namedColor } from "@lattice-php/lattice/lib/color";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { useLocale } from "@lattice-php/ui/i18n";
+import { coerceColor, colorValue, namedColor } from "@lattice-php/ui/lib/color";
+import { cn } from "@lattice-php/ui/lib/utils";
 import type { Size } from "@lattice-php/lattice/types/generated";
 
 const barHeights: Record<Size, string> = {

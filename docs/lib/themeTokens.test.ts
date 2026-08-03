@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseSuffixMap, parseTokens } from "./tokens";
 
-const css = readFileSync(resolve(process.cwd(), "resources/css/lattice.css"), "utf8");
+const css = readFileSync(resolve(process.cwd(), "packages/ui/resources/css/lattice.css"), "utf8");
 const tokenRegistry = parseTokens(css);
 const suffixMap = parseSuffixMap(css);
 

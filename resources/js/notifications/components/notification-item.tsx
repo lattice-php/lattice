@@ -1,9 +1,9 @@
 import { Link } from "@inertiajs/react";
 import { RenderNode } from "@lattice-php/core/renderer";
-import { IconRenderer } from "@lattice-php/lattice/icons";
-import { useT } from "@lattice-php/lattice/i18n";
-import { resolveText } from "@lattice-php/lattice/i18n/translatable";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { IconRenderer } from "@lattice-php/ui/icons";
+import { useT } from "@lattice-php/ui/i18n";
+import { resolveText } from "@lattice-php/ui/i18n/translatable";
+import { cn } from "@lattice-php/ui/lib/utils";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
 const variantIconClass: Record<NonNullable<NotificationItem["variant"]>, string> = {
