@@ -39,6 +39,11 @@ const codeBlockTheme = EditorView.theme({
     overflow: "auto",
   },
   ".cm-content": { padding: "0.75rem" },
+  ".cm-gutters": {
+    backgroundColor: "transparent",
+    borderRightColor: "var(--lt-border)",
+    color: "var(--lt-muted-fg)",
+  },
   ".cm-line": { padding: "0" },
 });
 
@@ -76,8 +81,8 @@ function CodeBlockView({
         EditorView.contentAttributes.of({ role: "code" }),
         languageCompartment.of(initialLanguage),
         syntaxHighlighting(highlightStyle),
-        codeBlockTheme,
         copyable ? copyableTheme : [],
+        codeBlockTheme,
         lineNumbers ? showLineNumbers() : [],
         maxHeight === null
           ? []

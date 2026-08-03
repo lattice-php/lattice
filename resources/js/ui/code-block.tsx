@@ -85,7 +85,7 @@ function CodeBlock({
           value={children}
           label={ariaLabel ?? "code"}
           iconOnly
-          className="absolute top-2 right-2 z-10 bg-lt-bg/80 hover:bg-lt-bg"
+          className="absolute top-2 right-5 z-10 bg-lt-bg/80 hover:bg-lt-bg"
         />
       ) : null}
       <Suspense fallback={fallback}>
