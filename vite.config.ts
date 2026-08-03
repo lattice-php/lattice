@@ -9,11 +9,11 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import Sonda from "sonda/vite";
 import type { Plugin } from "vite";
-import { componentPackagesPlugin, discoverComponentPackages } from "./resources/js/vite";
+import { componentPackagesPlugin, discoverComponentPackages } from "./resources/js/vite.ts";
 import dts from "vite-plugin-dts";
 import { defineConfig } from "vitest/config";
 
-const sourceRoot = path.resolve(__dirname, "resources/js");
+const sourceRoot = path.resolve(import.meta.dirname, "resources/js");
 
 const isVitest = process.env.VITEST !== undefined;
 
@@ -108,7 +108,7 @@ function libraryEntries(): string[] {
 function withExplicitExtensions(filePath: string, content: string): string {
   const sourceDir = path.join(
     sourceRoot,
-    path.relative(path.resolve(__dirname, "dist"), path.dirname(filePath)),
+    path.relative(path.resolve(import.meta.dirname, "dist"), path.dirname(filePath)),
   );
   const existsAsModule = (base: string): boolean =>
     ["ts", "tsx"].some((extension) => existsSync(`${base}.${extension}`));
@@ -135,7 +135,7 @@ function standaloneSprite(): Plugin {
   return {
     name: "lattice:standalone-sprite",
     generateBundle() {
-      const sprite = buildSprite([path.resolve(__dirname, "resources/icons")]);
+      const sprite = buildSprite([path.resolve(import.meta.dirname, "resources/icons")]);
 
       this.emitFile({ type: "asset", fileName: "sprite.svg", source: sprite.source });
     },
@@ -147,7 +147,7 @@ function standaloneManifest(): Plugin {
     name: "lattice:standalone-manifest",
     generateBundle() {
       const { version } = JSON.parse(
-        readFileSync(path.resolve(__dirname, "package.json"), "utf8"),
+        readFileSync(path.resolve(import.meta.dirname, "package.json"), "utf8"),
       ) as {
         version: string;
       };
@@ -229,13 +229,13 @@ export default defineConfig(({ mode }) => {
             // The workbench acts as a Lattice consumer: auto-discover component
             // packages installed via Composer and expose them as
             // `virtual:lattice/plugins` (external apps get this from `lattice()`).
-            componentPackagesPlugin(discoverComponentPackages(__dirname)),
+            componentPackagesPlugin(discoverComponentPackages(import.meta.dirname)),
           ]),
       react(),
       ...(isLibrary
         ? [
             dts({
-              tsconfigPath: path.resolve(__dirname, "tsconfig.json"),
+              tsconfigPath: path.resolve(import.meta.dirname, "tsconfig.json"),
               include: ["resources/js"],
               copyDtsFiles: true,
               exclude: [
@@ -261,7 +261,7 @@ export default defineConfig(({ mode }) => {
             Sonda({
               format: ["html", "json"],
               filename: "bundle-report",
-              outputDir: path.resolve(__dirname, "docs/generated"),
+              outputDir: path.resolve(import.meta.dirname, "docs/generated"),
               gzip: true,
               deep: true,
               open: false,
@@ -323,9 +323,11 @@ export default defineConfig(({ mode }) => {
                   /^react($|\/)/,
                   /^react-dom($|\/)/,
                   /^@atlaskit\//,
+                  /^@codemirror\//,
                   /^@inertiajs\//,
                   /^@internationalized\/date($|\/)/,
                   /^@lattice-php\/vite-svg-sprite($|\/)/,
+                  /^@lezer\//,
                   /^@radix-ui\//,
                   /^@tiptap\//,
                   /^@zag-js\//,

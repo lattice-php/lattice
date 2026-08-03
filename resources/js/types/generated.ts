@@ -376,6 +376,13 @@ export type Choice = {
 export type CloseModal = {
   readonly modal: string | null;
 };
+export type CodeBlock = {
+  code: string;
+  copyable: boolean;
+  language: CodeBlockLanguage;
+  wrap: boolean;
+};
+export type CodeBlockLanguage = "text" | "json" | "javascript" | "shell" | "php";
 export type Collapsible = {
   collapsed: boolean;
   rememberState: boolean;
@@ -485,6 +492,7 @@ export type ComponentPropsMap = {
   "chat.box": ChatBox;
   "chat.part.text": TextPart;
   "chat.part.tool-call": ToolCallPart;
+  "code-block": CodeBlock;
   collapsible: Collapsible;
   dropdown: Dropdown;
   "field.builder": Builder;
@@ -990,6 +998,7 @@ export type NodeType =
   | "chat.box"
   | "chat.part.text"
   | "chat.part.tool-call"
+  | "code-block"
   | "collapsible"
   | "dropdown"
   | "field.builder"
@@ -1623,6 +1632,7 @@ export type UiNodeType =
   | "button"
   | "card"
   | "chart"
+  | "code-block"
   | "collapsible"
   | "floating-panel"
   | "grid"

@@ -9,6 +9,7 @@ import BadgeComponent from "./badge";
 import ButtonComponent from "./button";
 import CardComponent from "./card";
 import ChartComponent from "./chart";
+import CodeBlockComponent from "./code-block";
 import CollapsibleComponent from "./collapsible";
 import FloatingPanelComponent from "./floating-panel";
 import FragmentComponent from "./fragment";
@@ -37,6 +38,7 @@ export const uiComponents = createPlugin({
     button: eagerComponent(ButtonComponent),
     card: eagerComponent(CardComponent),
     chart: eagerComponent(ChartComponent),
+    "code-block": eagerComponent(CodeBlockComponent),
     collapsible: eagerComponent(CollapsibleComponent),
     "floating-panel": eagerComponent(FloatingPanelComponent),
     fragment: eagerComponent(FragmentComponent),

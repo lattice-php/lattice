@@ -41,6 +41,7 @@ use Workbench\App\Pages\BusinessPartnersPage;
 use Workbench\App\Pages\Components\ButtonsPage;
 use Workbench\App\Pages\Components\ChartsPage;
 use Workbench\App\Pages\Components\ChatPage;
+use Workbench\App\Pages\Components\CodeBlocksPage;
 use Workbench\App\Pages\Components\ContainersPage;
 use Workbench\App\Pages\Components\ModalsPage;
 use Workbench\App\Pages\Components\NotificationsPage;
@@ -155,6 +156,7 @@ class AppLayout extends LayoutDefinition
                 ]),
                 MenuItem::make(__('workbench.navigation.components'), 'components')->prefix(Affix::icon('spark'))->children([
                     MenuItem::fromPage(ButtonsPage::class)->key('buttons')->label(__('workbench.navigation.buttons')),
+                    MenuItem::fromPage(CodeBlocksPage::class)->key('code-blocks')->label(__('workbench.navigation.code-blocks')),
                     MenuItem::fromPage(TabsPage::class)->key('tabs')->label(__('workbench.navigation.tabs')),
                     MenuItem::fromPage(ChartsPage::class)->key('charts')->label(__('workbench.navigation.charts')),
                     MenuItem::fromPage(ProgressPage::class)->key('progress')->label(__('workbench.navigation.progress')),
