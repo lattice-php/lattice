@@ -91,7 +91,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);
-        $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(StandaloneAssets::class);
         if (! ResponseFactory::hasMacro('toRoute')) {
             ResponseFactory::macro(

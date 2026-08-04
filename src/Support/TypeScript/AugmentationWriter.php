@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
+use Lattice\Lattice\LatticeRegistry;
 use Spatie\TypeScriptTransformer\Actions\ResolveImportsAndResolvedReferenceMapAction;
 use Spatie\TypeScriptTransformer\Collections\TransformedCollection;
 use Spatie\TypeScriptTransformer\Data\ModuleImportResolvedReference;
@@ -25,7 +26,7 @@ final readonly class AugmentationWriter implements Writer
      */
     public function __construct(
         private array $components,
-        private WireFamilies $families,
+        private LatticeRegistry $lattice,
         private string $module,
         private string $path,
     ) {}
@@ -75,7 +76,7 @@ final readonly class AugmentationWriter implements Writer
     {
         $interfaces = [];
 
-        foreach ($this->families->all() as $family) {
+        foreach ($this->lattice->wireFamilies() as $family) {
             $entries = $entriesByCategory[$family->category] ?? [];
 
             // The component interface is always emitted so the module augmentation is

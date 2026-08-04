@@ -2,10 +2,12 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Facade;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\CoreServiceProvider;
+use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormsServiceProvider;
-use Lattice\Lattice\Support\TypeScript\WireFamilies;
+use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Lattice\Lattice\Tables\TablesServiceProvider;
 use Lattice\Lattice\Ui\Components\Component;
@@ -18,18 +20,27 @@ it('loads domain providers through the umbrella provider', function (): void {
         ->and(app()->getProvider(TablesServiceProvider::class))->not->toBeNull();
 });
 
+it('registers wire families through the Lattice facade', function (): void {
+    Lattice::wireFamily('fixture', AsComponent::class, Component::class, marker: true);
+
+    $categories = array_map(
+        static fn (WireFamily $family): string => $family->category,
+        app(LatticeRegistry::class)->wireFamilies(),
+    );
+
+    expect($categories)->toContain('fixture');
+});
+
 it('rejects duplicate wire family categories', function (): void {
-    $families = new WireFamilies;
-    $family = new WireFamily('component', AsComponent::class, Component::class, marker: true);
+    Lattice::wireFamily('fixture', AsComponent::class, Component::class, marker: true);
 
-    $families->register($family);
-
-    expect(fn () => $families->register($family))
-        ->toThrow(InvalidArgumentException::class, 'Wire family [component] is already registered.');
+    expect(fn () => Lattice::wireFamily('fixture', AsComponent::class, Component::class, marker: true))
+        ->toThrow(InvalidArgumentException::class, 'Wire family [fixture] is already registered.');
 });
 
 it('loads each domain provider with its package dependencies', function (): void {
     $testApplication = Application::getInstance();
+    $testFacadeApplication = Facade::getFacadeApplication();
 
     try {
         foreach ([
@@ -39,16 +50,20 @@ it('loads each domain provider with its package dependencies', function (): void
             TablesServiceProvider::class => ['component', 'effect', 'editor-extension', 'column', 'filter'],
         ] as $provider => $expectedCategories) {
             $application = new Application;
+            Facade::setFacadeApplication($application);
+            Lattice::clearResolvedInstance();
             $application->register($provider);
 
             $categories = array_map(
                 static fn (WireFamily $family): string => $family->category,
-                $application->make(WireFamilies::class)->all(),
+                $application->make(LatticeRegistry::class)->wireFamilies(),
             );
 
             expect($categories)->toBe($expectedCategories);
         }
     } finally {
         Application::setInstance($testApplication);
+        Facade::setFacadeApplication($testFacadeApplication);
+        Lattice::clearResolvedInstance();
     }
 });

@@ -6,9 +6,8 @@ namespace Lattice\Lattice\Tables;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
+use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormsServiceProvider;
-use Lattice\Lattice\Support\TypeScript\WireFamilies;
-use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Lattice\Lattice\Tables\Attributes\AsColumn;
 use Lattice\Lattice\Tables\Attributes\AsFilter;
 use Lattice\Lattice\Tables\Columns\Column;
@@ -25,8 +24,7 @@ final class TablesServiceProvider extends ServiceProvider
 
         $this->app->singleton(TableRegistry::class);
 
-        $families = $this->app->make(WireFamilies::class);
-        $families->register(new WireFamily('column', AsColumn::class, Column::class, marker: true));
-        $families->register(new WireFamily('filter', AsFilter::class, Filter::class, marker: true));
+        Lattice::wireFamily('column', AsColumn::class, Column::class, marker: true);
+        Lattice::wireFamily('filter', AsFilter::class, Filter::class, marker: true);
     }
 }

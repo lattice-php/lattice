@@ -10,9 +10,8 @@ use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Effects\EffectRegistry;
+use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
-use Lattice\Lattice\Support\TypeScript\WireFamilies;
-use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Lattice\Lattice\Theme\ThemeRenderer;
 use Lattice\Lattice\Ui\Components\Component;
 
@@ -29,8 +28,7 @@ final class UiServiceProvider extends ServiceProvider
         $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
         $this->app->scoped(EffectFlasher::class);
 
-        $families = $this->app->make(WireFamilies::class);
-        $families->register(new WireFamily('component', AsComponent::class, Component::class, marker: true));
-        $families->register(new WireFamily('effect', AsEffect::class, Effect::class));
+        Lattice::wireFamily('component', AsComponent::class, Component::class, marker: true);
+        Lattice::wireFamily('effect', AsEffect::class, Effect::class);
     }
 }

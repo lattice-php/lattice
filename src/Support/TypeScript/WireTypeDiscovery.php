@@ -7,6 +7,7 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Contracts\ContainerComponent;
 use Lattice\Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
@@ -19,7 +20,7 @@ use Spatie\Attributes\Attributes;
  */
 final readonly class WireTypeDiscovery
 {
-    public function __construct(private WireFamilies $families) {}
+    public function __construct(private LatticeRegistry $lattice) {}
 
     /**
      * @param  list<string>  $ignoreDirectories  paths skipped entirely (e.g. test scaffolding
@@ -82,7 +83,7 @@ final readonly class WireTypeDiscovery
      */
     private function collectFamilyMember(string $class, bool $abstract, array &$families): bool
     {
-        foreach ($this->families->valueFamilies() as $family) {
+        foreach ($this->lattice->valueWireFamilies() as $family) {
             $attribute = Attributes::get($class, $family->attribute);
 
             if ($attribute === null) {
@@ -109,7 +110,7 @@ final readonly class WireTypeDiscovery
             type: $attribute->type,
             container: is_a($class, ContainerComponent::class, true),
             interactive: is_a($class, InteractiveComponent::class, true),
-            category: $this->families->categoryFor($attribute),
+            category: $this->lattice->wireCategoryFor($attribute),
             domain: $this->domainFor($class),
         );
     }

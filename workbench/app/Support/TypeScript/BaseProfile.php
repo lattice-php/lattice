@@ -6,6 +6,7 @@ namespace Workbench\App\Support\TypeScript;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\NodeModuleWriter;
@@ -13,7 +14,6 @@ use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Support\TypeScript\WireFamilies;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
@@ -28,7 +28,7 @@ final readonly class BaseProfile implements TypeScriptProfile
 {
     public function __construct(
         private WireTypeDiscovery $discovery,
-        private WireFamilies $families,
+        private LatticeRegistry $lattice,
     ) {}
 
     public function pendingTypeCount(): int
@@ -61,7 +61,7 @@ final readonly class BaseProfile implements TypeScriptProfile
 
         $markerRefs = [];
 
-        foreach ($this->families->markerFamilies() as $family) {
+        foreach ($this->lattice->markerWireFamilies() as $family) {
             $markerRefs[$family->reference] = new NodeTypeReference(
                 $this->buildClassTypes($discovered, $family->category),
                 WireEnvelope::forClass($family->reference),
@@ -70,7 +70,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         }
         $valueObjectClasses = $manifest->valueObjects;
 
-        foreach ($this->families->valueFamilies() as $family) {
+        foreach ($this->lattice->valueWireFamilies() as $family) {
             $classes = $manifest->family($family->category);
 
             if ($classes === []) {
@@ -102,7 +102,7 @@ final readonly class BaseProfile implements TypeScriptProfile
                     $formFields,
                     Form::class,
                     $domainNodes,
-                    $this->families,
+                    $this->lattice,
                     'form',
                     $familyProps,
                 ),

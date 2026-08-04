@@ -9,9 +9,9 @@ use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Core\Services\RequestReferenceIdentity;
+use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Support\TypeScript\WireFamilies;
 
 final class CoreServiceProvider extends ServiceProvider
 {
@@ -23,7 +23,7 @@ final class CoreServiceProvider extends ServiceProvider
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
         $this->app->singleton(DiscoveryManifest::class);
         $this->app->singleton(PageMetadataResolver::class);
-        $this->app->singleton(WireFamilies::class);
+        $this->app->singleton(LatticeRegistry::class);
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
     }
 }

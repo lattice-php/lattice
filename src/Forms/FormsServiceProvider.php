@@ -6,11 +6,10 @@ namespace Lattice\Lattice\Forms;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
+use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtension;
 use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
-use Lattice\Lattice\Support\TypeScript\WireFamilies;
-use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Lattice\Lattice\Ui\UiServiceProvider;
 
 final class FormsServiceProvider extends ServiceProvider
@@ -24,8 +23,7 @@ final class FormsServiceProvider extends ServiceProvider
 
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(EditorExtensionRegistry::class, fn (): EditorExtensionRegistry => EditorExtensionRegistry::withBuiltins());
-        $this->app->make(WireFamilies::class)->register(
-            new WireFamily('editor-extension', AsEditorExtension::class, EditorExtension::class),
-        );
+
+        Lattice::wireFamily('editor-extension', AsEditorExtension::class, EditorExtension::class);
     }
 }
