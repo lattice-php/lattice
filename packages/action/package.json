@@ -1,7 +1,11 @@
 {
   "name": "@lattice-php/action",
   "version": "0.38.0",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lattice-php/lattice.git",
+    "directory": "packages/action"
+  },
   "files": [
     "dist"
   ],
@@ -20,6 +24,9 @@
       "import": "./dist/*.js"
     },
     "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "vite build",

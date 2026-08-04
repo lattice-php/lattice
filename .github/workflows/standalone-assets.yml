@@ -29,14 +29,18 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run versions:sync
+
+      - run: npm install --package-lock-only --ignore-scripts
+
       - run: npm run build:standalone
 
       - name: Commit refreshed standalone assets
         run: |
-          if [ -n "$(git status --porcelain dist-standalone)" ]; then
+          if [ -n "$(git status --porcelain package.json package-lock.json packages dist-standalone)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add dist-standalone
+            git add package.json package-lock.json packages/*/package.json dist-standalone
             git commit -m "chore: build standalone assets"
             git push
           fi

@@ -48,12 +48,54 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run versions:check
+
       # `files` includes dist-standalone, but `npm pack` silently skips missing
       # entries — without this gate a tag whose asset commit never landed would
       # publish a package with no standalone assets.
       - run: npm run verify:standalone
 
-      # The prepack hook builds dist/ and runs the build guardrail before publish.
-      - run: npm publish --access public --provenance
+      # The root prepack hook rebuilds dist/; workspace dist files are committed
+      # and checked by the normal CI package gate.
+      - run: npm publish --workspaces --include-workspace-root --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  split-composer:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - local_path: action
+            split_repository: action
+          - local_path: core
+            split_repository: core
+          - local_path: form
+            split_repository: form
+          - local_path: media
+            split_repository: media
+          - local_path: table
+            split_repository: table
+          - local_path: tree
+            split_repository: tree
+          - local_path: ui
+            split_repository: ui
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.release-please.outputs.tag_name }}
+
+      - uses: danharrin/monorepo-split-github-action@v2.4.0
+        with:
+          package_directory: packages/${{ matrix.package.local_path }}
+          repository_organization: lattice-php
+          repository_name: ${{ matrix.package.split_repository }}
+          tag: ${{ needs.release-please.outputs.tag_name }}
+          user_email: github-actions[bot]@users.noreply.github.com
+          user_name: github-actions[bot]
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
