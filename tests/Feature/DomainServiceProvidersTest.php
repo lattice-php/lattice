@@ -23,12 +23,11 @@ it('loads domain providers through the umbrella provider', function (): void {
 it('registers wire families through the Lattice facade', function (): void {
     Lattice::wireFamily('fixture', AsComponent::class, Component::class, marker: true);
 
-    $categories = array_map(
-        static fn (WireFamily $family): string => $family->category,
-        app(LatticeRegistry::class)->wireFamilies(),
-    );
+    $families = app(LatticeRegistry::class)->wireFamilies();
 
-    expect($categories)->toContain('fixture');
+    expect($families->keys()->all())->toContain('fixture')
+        ->and($families->where('marker', true)->keys()->all())->toContain('fixture')
+        ->and($families->get('fixture'))->toBeInstanceOf(WireFamily::class);
 });
 
 it('rejects duplicate wire family categories', function (): void {
@@ -54,10 +53,7 @@ it('loads each domain provider with its package dependencies', function (): void
             Lattice::clearResolvedInstance();
             $application->register($provider);
 
-            $categories = array_map(
-                static fn (WireFamily $family): string => $family->category,
-                $application->make(LatticeRegistry::class)->wireFamilies(),
-            );
+            $categories = $application->make(LatticeRegistry::class)->wireFamilies()->keys()->all();
 
             expect($categories)->toBe($expectedCategories);
         }

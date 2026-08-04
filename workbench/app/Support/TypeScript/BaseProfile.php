@@ -61,7 +61,7 @@ final readonly class BaseProfile implements TypeScriptProfile
 
         $markerRefs = [];
 
-        foreach ($this->lattice->markerWireFamilies() as $family) {
+        foreach ($this->lattice->wireFamilies()->where('marker', true) as $family) {
             $markerRefs[$family->reference] = new NodeTypeReference(
                 $this->buildClassTypes($discovered, $family->category),
                 WireEnvelope::forClass($family->reference),
@@ -70,7 +70,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         }
         $valueObjectClasses = $manifest->valueObjects;
 
-        foreach ($this->lattice->valueWireFamilies() as $family) {
+        foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
             $classes = $manifest->family($family->category);
 
             if ($classes === []) {

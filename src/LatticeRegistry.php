@@ -5,6 +5,7 @@ namespace Lattice\Lattice;
 
 use Closure;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Lattice\Lattice\Actions\ActionDefinition;
 use Lattice\Lattice\Actions\ActionRegistry;
@@ -145,39 +146,23 @@ final class LatticeRegistry
         $this->wireFamilies[$category] = new WireFamily($category, $attribute, $reference, $marker);
     }
 
-    /** @return list<WireFamily> */
-    public function wireFamilies(): array
+    /** @return Collection<string, WireFamily> */
+    public function wireFamilies(): Collection
     {
-        return array_values($this->wireFamilies);
-    }
-
-    /** @return list<WireFamily> */
-    public function markerWireFamilies(): array
-    {
-        return array_values(array_filter(
-            $this->wireFamilies,
-            static fn (WireFamily $family): bool => $family->marker,
-        ));
-    }
-
-    /** @return list<WireFamily> */
-    public function valueWireFamilies(): array
-    {
-        return array_values(array_filter(
-            $this->wireFamilies,
-            static fn (WireFamily $family): bool => ! $family->marker,
-        ));
+        return collect($this->wireFamilies);
     }
 
     public function wireCategoryFor(WireType $attribute): string
     {
-        foreach ($this->markerWireFamilies() as $family) {
+        $families = $this->wireFamilies()->where('marker', true);
+
+        foreach ($families as $family) {
             if ($attribute::class === $family->attribute) {
                 return $family->category;
             }
         }
 
-        foreach ($this->markerWireFamilies() as $family) {
+        foreach ($families as $family) {
             if (is_a($attribute, $family->attribute)) {
                 return $family->category;
             }

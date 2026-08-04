@@ -83,7 +83,7 @@ final readonly class WireTypeDiscovery
      */
     private function collectFamilyMember(string $class, bool $abstract, array &$families): bool
     {
-        foreach ($this->lattice->valueWireFamilies() as $family) {
+        foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
             $attribute = Attributes::get($class, $family->attribute);
 
             if ($attribute === null) {

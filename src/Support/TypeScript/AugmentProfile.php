@@ -31,7 +31,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
                 $entries[$component->class] = true;
             }
 
-            foreach ($this->lattice->valueWireFamilies() as $family) {
+            foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
                 foreach (array_keys($manifest->family($family->category)) as $class) {
                     $entries[$class] = true;
                 }
@@ -64,7 +64,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
                 $entries[$component->class] = [$component->type, $component->category];
             }
 
-            foreach ($this->lattice->valueWireFamilies() as $family) {
+            foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
                 foreach ($manifest->family($family->category) as $class => $type) {
                     $entries[$class] = [$type, $family->category];
                 }
@@ -81,7 +81,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
         $markerRefs = [];
 
-        foreach ($this->lattice->markerWireFamilies() as $family) {
+        foreach ($this->lattice->wireFamilies()->where('marker', true) as $family) {
             $markerRefs[$family->reference] = new NodeTypeReference(
                 $byCategory[$family->category] ?? [],
                 WireEnvelope::forClass($family->reference),
