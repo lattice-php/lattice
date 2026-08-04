@@ -399,6 +399,9 @@ export default defineConfig(({ mode }) => {
             // back into the whole tree unless node_modules is restored here.
             exclude: ["**/node_modules/**", "**/*.browser.test.{ts,tsx}"],
             setupFiles: ["resources/js/test/setup.ts"],
+            coverage: {
+              include: ["resources/js/**/*.{ts,tsx}", "packages/*/resources/js/**/*.{ts,tsx}"],
+            },
           },
         },
         {
@@ -430,7 +433,6 @@ export default defineConfig(({ mode }) => {
         provider: "v8",
         reportsDirectory: "coverage_vitest",
         reporter: ["text", "lcov"],
-        include: ["resources/js/**/*.{ts,tsx}", "packages/*/resources/js/**/*.{ts,tsx}"],
         exclude: [
           "packages/*/resources/js/**/*.d.ts",
           "packages/*/resources/js/**/*.test.{ts,tsx}",
