@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { coerceColor, colorValue, namedColor } from "@lattice-php/lattice/lib/color";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import type { Size } from "@lattice-php/lattice/types/generated";

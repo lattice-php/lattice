@@ -1,8 +1,8 @@
 import { type CSSProperties, useState } from "react";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import type { FloatingPlacement } from "@lattice-php/lattice/types/generated";
-import { RenderNode } from "@lattice-php/lattice/core/renderer";
-import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
+import { RenderNode } from "@lattice-php/core/renderer";
+import { nodeIdentity } from "@lattice-php/core/test-id";
 import { cn } from "@lattice-php/lattice/lib/utils";
 
 function placementStyle(placement: FloatingPlacement, offset: number): CSSProperties {

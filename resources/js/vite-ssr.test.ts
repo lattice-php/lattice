@@ -15,10 +15,13 @@ function ssrServer(): Promise<ViteDevServer> {
     configFile: false,
     logLevel: "silent",
     server: { middlewareMode: true },
-    plugins: lattice({ appRoot, icons: { dts: false }, typescript: false }),
-    resolve: {
-      alias: { "@lattice-php/lattice": path.resolve(appRoot, "resources/js") },
-    },
+    plugins: lattice({
+      appRoot,
+      root: appRoot,
+      source: true,
+      icons: { dts: false },
+      typescript: false,
+    }),
   });
 }
 

@@ -5,7 +5,7 @@ import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dis
 import { Button } from "@lattice-php/lattice/ui/button";
 import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
 import { Spinner } from "@lattice-php/lattice/ui/spinner";
-import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
+import { prefixedTestId } from "@lattice-php/core/test-id";
 import { useT } from "@lattice-php/lattice/i18n";
 import type { BulkAction } from "@lattice-php/lattice/table/lib/bulk";
 

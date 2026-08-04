@@ -1,5 +1,5 @@
 import type { Callout, RetractCallout } from "@lattice-php/lattice/types/generated";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { isTranslatable } from "@lattice-php/lattice/i18n/translatable";
 import { coerceMessage, isVariant, subscribeWindowEvent } from "./toast";
 

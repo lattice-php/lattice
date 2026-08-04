@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import {
   CollapsedContext as SidebarCollapsedContext,
   useCollapsed as useSidebarCollapsed,
-} from "@lattice-php/lattice/core/collapsed-context";
+} from "@lattice-php/core/collapsed-context";
 
 export const OutletContext = createContext<ReactNode>(null);
 

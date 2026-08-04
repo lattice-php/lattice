@@ -1,6 +1,6 @@
-import type { Node } from "@lattice-php/lattice/core/types";
-import { nodeKey } from "@lattice-php/lattice/core/nodes";
-import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import type { Node } from "@lattice-php/core/types";
+import { nodeKey } from "@lattice-php/core/nodes";
+import { RenderNode } from "@lattice-php/core/renderer";
 import {
   DEFAULT_COLUMN_WIDTH,
   type SizableColumn,

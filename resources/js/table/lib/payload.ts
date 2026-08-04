@@ -1,4 +1,4 @@
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import type { PaginationType } from "@lattice-php/lattice/types/generated";
 import type {
   FilterClause,

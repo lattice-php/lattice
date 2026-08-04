@@ -1,8 +1,4 @@
-import {
-  eagerComponent,
-  type ComponentRegistryFor,
-  type Plugin,
-} from "@lattice-php/lattice/core/registry";
+import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { NotificationNodeType } from "@lattice-php/lattice/types/generated";
 import NotificationsComponent from "./components/notifications";
 

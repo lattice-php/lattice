@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { RendererComponent, Schema } from "@lattice-php/lattice/core/types";
+import { Renderer } from "@lattice-php/core/renderer";
+import type { RendererComponent, Schema } from "@lattice-php/core/types";
 import { remoteJson } from "@lattice-php/lattice/core/api";
-import { materializeSchema, type RemoteRow } from "@lattice-php/lattice/core/materialize";
+import { materializeSchema, type RemoteRow } from "@lattice-php/core/materialize";
 import type { DataList as DataListProps } from "@lattice-php/lattice/types/generated";
 import { useT } from "@lattice-php/lattice/i18n";
 

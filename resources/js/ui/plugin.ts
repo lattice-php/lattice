@@ -1,8 +1,4 @@
-import {
-  eagerComponent,
-  type ComponentRegistryFor,
-  type Plugin,
-} from "@lattice-php/lattice/core/registry";
+import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { FragmentNodeType, UiNodeType } from "@lattice-php/lattice/types/generated";
 import AvatarComponent from "./avatar";
 import BadgeComponent from "./badge";

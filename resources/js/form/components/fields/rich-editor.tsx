@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import type { RendererComponent, RendererComponentModule } from "@lattice-php/lattice/core/types";
+import type { RendererComponent, RendererComponentModule } from "@lattice-php/core/types";
 
 const RichEditorField = lazy(
   () => import("./rich-editor-field") as unknown as Promise<RendererComponentModule>,

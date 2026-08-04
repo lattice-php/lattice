@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/lattice/ui/dialog";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useT } from "@lattice-php/lattice/i18n";
 
 type ModalEvent = CustomEvent<{

@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
+import type { RendererComponent } from "@lattice-php/core/types";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";

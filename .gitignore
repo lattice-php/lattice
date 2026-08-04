@@ -13,6 +13,7 @@ node_modules
 /tests/Browser/Screenshots
 /tests/Browser/FailureScreenshots
 /dist
+/packages/*/dist
 /dist-docs
 /myreport
 .astro/

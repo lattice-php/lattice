@@ -1,5 +1,5 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { testIdentity } from "@lattice-php/core/test-id";
 import { AffixGroup } from "@lattice-php/lattice/ui/affix-group";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import PasswordInput from "@lattice-php/lattice/ui/password-input";

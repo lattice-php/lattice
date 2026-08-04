@@ -2,7 +2,7 @@ import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import { Provider } from "@lattice-php/lattice/provider";
-import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/core/registry";
 import { useEffectDispatcher } from "./use-effect-dispatcher";
 
 describe("useEffectDispatcher", () => {

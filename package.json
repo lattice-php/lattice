@@ -6,7 +6,8 @@
   "author": "Manuel Christlieb <manuel@christlieb.eu>",
   "type": "module",
   "workspaces": [
-    "docs"
+    "docs",
+    "packages/*"
   ],
   "homepage": "https://latticephp.com",
   "repository": {
@@ -268,7 +269,7 @@
     "postinstall": "[ -n \"$CI\" ] || test ! -f vendor/bin/testbench || npm run boost:refresh",
     "dev": "vite",
     "build": "vite build",
-    "build:lib": "vite build --mode lib",
+    "build:lib": "npm run build --workspace @lattice-php/core && vite build --mode lib",
     "build:lib:watch": "vite build --mode lib --watch",
     "build:standalone": "vite build --mode standalone",
     "verify:standalone": "node -e \"const fs = require('fs'); if (!fs.existsSync('./dist-standalone/manifest.json')) { console.error('dist-standalone/manifest.json is missing; run npm run build:standalone.'); process.exit(1); } const m = require('./dist-standalone/manifest.json'); const pkg = require('./package.json'); if (m.version !== pkg.version) { console.error('dist-standalone manifest ' + m.version + ' != package ' + pkg.version + '; run npm run build:standalone.'); process.exit(1); }\"",
@@ -279,14 +280,16 @@
     "boost:refresh": "php vendor/bin/testbench boost:update --no-interaction",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib && npm run check:package",
-    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css",
+    "check": "npm run versions:check && npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib && npm run check:package",
+    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css --ignore-rules internal-resolution-error && publint packages/core --strict && attw --pack packages/core --profile esm-only",
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "npm run build:lib && tsc --noEmit -p docs/tsconfig.json",
     "docs:test": "vitest run --project jsdom docs",
     "lint": "oxlint resources/js workbench/resources/js packages/*/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js packages/*/resources/js --fix",
     "lint:github": "oxlint resources/js workbench/resources/js packages/*/resources/js --format=github",
+    "versions:check": "node .github/scripts/sync-package-versions.mjs --check",
+    "versions:sync": "node .github/scripts/sync-package-versions.mjs",
     "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "analyze": "SONDA=1 vite build && mkdir -p docs/public && cp docs/generated/bundle-report.html docs/public/bundle-report.html",
@@ -295,6 +298,7 @@
     "docs:preview": "npm run preview -w docs"
   },
   "dependencies": {
+    "@lattice-php/core": "0.38.0",
     "@atlaskit/pragmatic-drag-and-drop": "^2.0.1",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",

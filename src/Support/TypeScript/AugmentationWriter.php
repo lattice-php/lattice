@@ -16,7 +16,7 @@ use Spatie\TypeScriptTransformer\Writers\Writer;
 
 /**
  * Writes the discovered classes as a TypeScript module augmentation of the app's
- * `@lattice-php/lattice` module, keying each transformed prop body by wire type
+ * `@lattice-php/core` module, keying each transformed prop body by wire type
  * under the augmentable interface for its category ({@see WireFamily}).
  */
 final readonly class AugmentationWriter implements Writer

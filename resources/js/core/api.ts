@@ -6,7 +6,7 @@
  * which carries its own headers.
  */
 
-import { latestRef, storeRefreshedRef } from "./component-ref";
+import { latestRef, storeRefreshedRef } from "@lattice-php/core/component-ref";
 import { withHeaders } from "./headers";
 import { localeHeader } from "@lattice-php/lattice/i18n/locale";
 import type {

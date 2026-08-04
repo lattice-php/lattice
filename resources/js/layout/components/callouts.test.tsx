@@ -1,9 +1,9 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { vi } from "vitest";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Provider } from "@lattice-php/lattice/provider";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { Renderer } from "@lattice-php/core/renderer";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 
 const navigateListeners: Array<() => void> = [];

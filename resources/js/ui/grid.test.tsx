@@ -1,9 +1,9 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
+import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice-php/core/types";
 import GridComponent from "./grid";
 
 const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;

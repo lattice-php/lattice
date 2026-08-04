@@ -1,10 +1,6 @@
-import {
-  eagerComponent,
-  type ComponentRegistryFor,
-  type Plugin,
-} from "@lattice-php/lattice/core/registry";
+import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { TableNodeType } from "@lattice-php/lattice/types/generated";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import TableComponent from "./components/table";
 
 // The table renders an enriched TableNode (rows/pagination/state the server

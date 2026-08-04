@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice-php/core/types";
 import type { Tab } from "@lattice-php/lattice/types/generated";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { pillClassName } from "./pill";

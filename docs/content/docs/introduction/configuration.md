@@ -123,6 +123,6 @@ Where `php artisan lattice:typescript` writes the generated type definitions, an
 ```php
 'typescript' => [
     'output' => resource_path('js/lattice/generated.d.ts'),
-    'module' => '@lattice-php/lattice',
+    'module' => '@lattice-php/core',
 ],
 ```

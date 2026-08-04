@@ -107,7 +107,7 @@ arch('core does not depend on feature or ui domains')
     ->ignoring([PageMetadata::class, PageSchema::class]);
 
 it('shared source does not reference feature or ui namespaces in strings', function (string $directory): void {
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/src/'.$directory));
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/'.$directory));
     $violations = [];
 
     foreach ($files as $file) {
@@ -116,7 +116,7 @@ it('shared source does not reference feature or ui namespaces in strings', funct
         }
 
         // Their public types stay compatible until the package-extraction release.
-        if ($directory === 'Core' && in_array($file->getFilename(), ['PageMetadata.php', 'PageSchema.php'], true)) {
+        if (str_ends_with($directory, 'Core') && in_array($file->getFilename(), ['PageMetadata.php', 'PageSchema.php'], true)) {
             continue;
         }
 
@@ -130,7 +130,7 @@ it('shared source does not reference feature or ui namespaces in strings', funct
     }
 
     expect($violations)->toBe([]);
-})->with(['Core', 'Support/TypeScript']);
+})->with(['packages/core/src/Core', 'src/Core', 'src/Support/TypeScript']);
 
 arch('core does not depend upward on the orchestration or tooling layers')
     ->expect('Lattice\Lattice\Core')

@@ -1,6 +1,6 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
-import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
+import { nodeIdentity } from "@lattice-php/core/test-id";
 
 const gridAlignments: Record<string, string> = {
   center: "justify-items-center text-center",

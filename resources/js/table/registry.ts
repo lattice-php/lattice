@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useExtensionRegistry } from "@lattice-php/lattice/core/registry-context";
+import { useExtensionRegistry } from "@lattice-php/core/registry-context";
 import type { ColumnPropsOf, TableColumn, TableRow } from "./types";
 import type { ColumnPropsMap } from "@lattice-php/lattice/types/generated";
 

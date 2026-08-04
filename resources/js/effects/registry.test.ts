@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { effect } from "@lattice-php/lattice/test/effect-fixture";
 import { builtinEffectHandlers } from "./registry";
 

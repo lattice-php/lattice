@@ -21,7 +21,8 @@ use Lattice\Lattice\Ui\Enums\Variant;
 use Spatie\Attributes\Attributes;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $root = dirname(__DIR__, 3);
+    $manifest = app(WireTypeDiscovery::class)->discover([$root.'/src', $root.'/packages/core/src']);
 
     expect($manifest->family('effect'))->toHaveKey(Toast::class, 'toast')
         ->and($manifest->enums)->toContain(Variant::class)
@@ -104,7 +105,8 @@ it('discovers columns without treating them as components', function (): void {
 });
 
 it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $root = dirname(__DIR__, 3);
+    $manifest = app(WireTypeDiscovery::class)->discover([$root.'/src', $root.'/packages/core/src']);
 
     expect($manifest->enums)->toContain(Align::class)->toContain(Variant::class);
     expect($manifest->enums)->not->toContain(Option::class);

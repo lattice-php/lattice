@@ -20,9 +20,9 @@ import {
   YAxis,
 } from "recharts";
 import type { ComponentType, ReactNode } from "react";
-import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
-import { isRecord } from "@lattice-php/lattice/core/materialize";
-import type { ComponentPropsOf, RendererComponent } from "@lattice-php/lattice/core/types";
+import { nodeIdentity } from "@lattice-php/core/test-id";
+import { isRecord } from "@lattice-php/core/materialize";
+import type { ComponentPropsOf, RendererComponent } from "@lattice-php/core/types";
 import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
 import { useFormatContext } from "@lattice-php/lattice/format/format-context";
 import { numericValue } from "@lattice-php/lattice/format/numeric";

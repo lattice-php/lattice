@@ -1,7 +1,7 @@
 import type { VisitOptions } from "@inertiajs/core";
 import { router } from "@inertiajs/react";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
-import { useWindowEvent } from "@lattice-php/lattice/core/hooks/use-window-event";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
+import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 
 type LocaleReloadProps = Pick<VisitOptions, "preserveScroll" | "preserveState">;
 

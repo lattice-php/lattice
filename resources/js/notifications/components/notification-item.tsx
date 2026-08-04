@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import { RenderNode } from "@lattice-php/core/renderer";
 import { IconRenderer } from "@lattice-php/lattice/icons";
 import { useT } from "@lattice-php/lattice/i18n";
 import { resolveText } from "@lattice-php/lattice/i18n/translatable";

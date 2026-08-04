@@ -20,7 +20,7 @@ use Lattice\Lattice\Tables\Filters\Filter;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript module
- * (generated.ts) from src/. Bound in the workbench so lattice:typescript rebuilds
+ * (generated.ts) from the package sources. Bound in the workbench so lattice:typescript rebuilds
  * the base types every consumer app then augments. Workbench-only, so this
  * build code never ships.
  */
@@ -33,13 +33,13 @@ final readonly class BaseProfile implements TypeScriptProfile
 
     public function pendingTypeCount(): int
     {
-        return count($this->discovery->discover(dirname(__DIR__, 4).'/src')->components);
+        return count($this->discovery->discover($this->sources(dirname(__DIR__, 4)))->components);
     }
 
     public function run(TypeScriptGenerator $generator): string
     {
         $packageRoot = dirname(__DIR__, 4);
-        $src = $packageRoot.'/src';
+        $sources = $this->sources($packageRoot);
 
         // Overridable so the snapshot test regenerates into a scratch dir instead
         // of rewriting the committed resources/js/types mid-suite.
@@ -48,7 +48,7 @@ final readonly class BaseProfile implements TypeScriptProfile
             ? $configuredOutput
             : $packageRoot.'/resources/js/types';
 
-        $manifest = $this->discovery->discover($src);
+        $manifest = $this->discovery->discover($sources);
 
         $discovered = $manifest->components;
         $formFields = $this->buildFormFields($discovered);
@@ -82,7 +82,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         }
 
         $generator->generate(
-            [$src],
+            $sources,
             [
                 new HttpMethodTransformer,
                 new EnumTransformer($manifest->enums),
@@ -113,6 +113,17 @@ final readonly class BaseProfile implements TypeScriptProfile
         );
 
         return 'Regenerated built-in TypeScript types.';
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function sources(string $packageRoot): array
+    {
+        return [
+            $packageRoot.'/src',
+            $packageRoot.'/packages/core/src',
+        ];
     }
 
     /**

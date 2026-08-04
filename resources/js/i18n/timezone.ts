@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { createListeners } from "@lattice-php/lattice/lib/listeners";
 import { configTimezone, subscribeConfig } from "./config";
 

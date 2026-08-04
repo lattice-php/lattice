@@ -1,4 +1,4 @@
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { errorKeyBelongsTo } from "./field-errors";
 import { fieldProps, ROW_FIELD_TYPES } from "./field-props";
 

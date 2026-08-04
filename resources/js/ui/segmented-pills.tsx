@@ -1,5 +1,5 @@
 import { type ComponentProps, useEffect, useRef } from "react";
-import type { Option } from "@lattice-php/lattice/core/types";
+import type { Option } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { pillClassName } from "./pill";
 

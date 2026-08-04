@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/core/registry";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { uiComponents } from "./plugin";
 import FloatingPanelComponent from "./floating-panel";

@@ -3,9 +3,14 @@ import { createInertiaApp } from "@inertiajs/react";
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { initializeAppearance, seedAppearance } from "./appearance";
 import { setRefRefreshEndpoint } from "./core/api";
-import { isRecord } from "./core/materialize";
-import { extendRegistry, type Plugin, type PluginI18n, type Registry } from "./core/registry";
-import { setDefaultRegistry } from "./core/registry-context";
+import { isRecord } from "@lattice-php/core/materialize";
+import {
+  extendRegistry,
+  type Plugin,
+  type PluginI18n,
+  type Registry,
+} from "@lattice-php/core/registry";
+import { setDefaultRegistry } from "@lattice-php/core/registry-context";
 import type { SpriteValue } from "./icons/sprite";
 import { DEFAULT_NAMESPACE, holdI18nInit } from "./i18n/instance";
 import { LocaleReload } from "./i18n/locale-reload";

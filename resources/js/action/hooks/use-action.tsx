@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { withHeaders } from "@lattice-php/lattice/core/headers";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { translate } from "@lattice-php/lattice/i18n";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { runAction } from "@lattice-php/lattice/action/lib/run-action";

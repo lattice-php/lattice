@@ -1,9 +1,9 @@
 import { Icon } from "@lattice-php/lattice/icons";
 import { router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import { RenderNode } from "@lattice-php/lattice/core/renderer";
+import { RenderNode } from "@lattice-php/core/renderer";
 import type { Callout } from "@lattice-php/lattice/types/generated";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { onCallout, onRetractCallout } from "@lattice-php/lattice/toast";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";

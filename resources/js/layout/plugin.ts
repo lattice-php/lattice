@@ -1,8 +1,4 @@
-import {
-  eagerComponent,
-  type ComponentRegistryFor,
-  type Plugin,
-} from "@lattice-php/lattice/core/registry";
+import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { LayoutNodeType } from "@lattice-php/lattice/types/generated";
 import BreadcrumbsComponent from "./components/breadcrumbs";
 import CalloutsComponent from "./components/callouts";

@@ -9,8 +9,8 @@ import {
 } from "@lattice-php/lattice/ui/dialog";
 import { Skeleton } from "@lattice-php/lattice/ui/skeleton";
 import { Spinner } from "@lattice-php/lattice/ui/spinner";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { Node } from "@lattice-php/lattice/core/types";
+import { Renderer } from "@lattice-php/core/renderer";
+import type { Node } from "@lattice-php/core/types";
 import type { ModalWidth } from "@lattice-php/lattice/types/generated";
 import {
   collectFields,

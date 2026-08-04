@@ -45,7 +45,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
     {
         $roots = DiscoveryManifest::configuredPaths();
         $output = (string) config('lattice.typescript.output');
-        $module = (string) config('lattice.typescript.module', '@lattice-php/lattice');
+        $module = (string) config('lattice.typescript.module', '@lattice-php/core');
 
         if ($roots === []) {
             File::ensureDirectoryExists(dirname($output));

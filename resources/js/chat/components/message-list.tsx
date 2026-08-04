@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
-import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import { testIdentity } from "@lattice-php/core/test-id";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { Message } from "./message";
 

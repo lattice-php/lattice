@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { eagerComponent, loadPluginModules } from "./core/registry";
+import { eagerComponent, loadPluginModules } from "@lattice-php/core/registry";
 import {
   eagerComponent as runtimeEagerComponent,
   loadPluginModules as runtimeLoadPluginModules,

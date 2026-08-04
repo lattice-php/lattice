@@ -1,6 +1,6 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
 import { http, type ResolvedComponent } from "@inertiajs/react";
-import { LATTICE_REF_HEADER, latestRef } from "./core/component-ref";
+import { LATTICE_REF_HEADER, latestRef } from "@lattice-php/core/component-ref";
 import { withHeaders } from "./core/headers";
 import { SchemaLayout } from "./layout";
 import Page from "./page";
