@@ -24,6 +24,7 @@ node_modules
 _ide_helper.php
 /resources/js/types/typescript-transformer-manifest.json
 /packages/form/resources/js/typescript-transformer-manifest.json
+/packages/table/resources/js/typescript-transformer-manifest.json
 
 .agents
 .claude

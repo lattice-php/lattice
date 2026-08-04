@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { ActionEffect } from "@lattice-php/lattice/effects/dispatch";
-import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
+import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
+import { dispatchActionError, getActionEffects } from "@lattice-php/ui/effects/dispatch";
 import { runAction } from "./run-action";
 
-vi.mock("@lattice-php/lattice/effects/dispatch", () => ({
+vi.mock("@lattice-php/ui/effects/dispatch", () => ({
   dispatchActionError: vi.fn(),
   getActionEffects: vi.fn(),
 }));

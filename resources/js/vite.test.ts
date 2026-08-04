@@ -73,6 +73,7 @@ describe("lattice Vite helper", () => {
               "@lattice-php/lattice",
               "@lattice-php/core",
               "@lattice-php/form",
+              "@lattice-php/table",
               "@lattice-php/ui",
               /[/\\]lattice[/\\]dist[/\\]/,
               /[/\\]lattice[/\\]node_modules[/\\]@radix-ui[/\\]/,

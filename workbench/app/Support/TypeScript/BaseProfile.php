@@ -5,6 +5,8 @@ namespace Workbench\App\Support\TypeScript;
 
 use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\WireEnvelope;
+use Lattice\Lattice\Core\Color;
+use Lattice\Lattice\Core\Enums\ColorKind;
 use Lattice\Lattice\Core\Enums\Op;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
@@ -19,10 +21,13 @@ use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Components\Table as TableComponent;
 use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Lattice\Ui\Enums\DateTimeStyle;
 use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
 use Lattice\Lattice\Ui\Enums\Orientation;
 use Lattice\Lattice\Ui\Enums\Variant;
 
@@ -58,6 +63,9 @@ final readonly class BaseProfile implements TypeScriptProfile
         $formOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput.'/form'
             : $packageRoot.'/packages/form/resources/js';
+        $tableOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
+            ? $configuredOutput.'/table'
+            : $packageRoot.'/packages/table/resources/js';
 
         $manifest = $this->discovery->discover($sources);
 
@@ -123,6 +131,53 @@ final readonly class BaseProfile implements TypeScriptProfile
             new OxfmtFormatter,
         );
 
+        $tableEnums = array_values(array_filter(
+            $manifest->enums,
+            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Tables\\')
+                || in_array($class, [ColorKind::class, Op::class, ColumnWidth::class, DateTimeStyle::class, NumberFormatUnit::class], true),
+        ));
+        $tableValueObjects = array_values(array_unique([
+            ...array_filter(
+                $manifest->valueObjects,
+                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Tables\\'),
+            ),
+            Color::class,
+            Option::class,
+        ]));
+        $tableNodes = ['TableNode' => $this->buildBucket($discovered, 'Tables')];
+
+        $generator->generate(
+            $sources,
+            [
+                new HttpMethodTransformer,
+                new EnumTransformer($tableEnums),
+                new ValueObjectTransformer($tableValueObjects, $markerRefs),
+                new ComponentTransformer([
+                    TableComponent::class,
+                    Column::class,
+                    Filter::class,
+                    ...array_values($familyProps['column']),
+                    ...array_values($familyProps['filter']),
+                ], $markerRefs),
+            ],
+            [
+                new NodesProvider(
+                    [],
+                    null,
+                    $tableNodes,
+                    $this->lattice,
+                    familyProps: array_intersect_key($familyProps, array_flip(['column', 'filter'])),
+                ),
+            ],
+            new NodeModuleWriter(
+                'generated.ts',
+                'import type { Node } from "@lattice-php/core";'.PHP_EOL
+                    .'import type { ColumnNode, FilterNode } from "./types";'.PHP_EOL.PHP_EOL,
+            ),
+            $tableOutputDirectory,
+            new OxfmtFormatter,
+        );
+
         $editorExtensions = array_flip($manifest->family('editor-extension'));
         $formEnums = array_values(array_filter(
             $manifest->enums,
@@ -177,6 +232,7 @@ final readonly class BaseProfile implements TypeScriptProfile
             $packageRoot.'/src',
             $packageRoot.'/packages/core/src',
             $packageRoot.'/packages/form/src',
+            $packageRoot.'/packages/table/src',
             $packageRoot.'/packages/ui/src',
         ];
     }

@@ -1427,7 +1427,7 @@ export type Tab = {
 };
 export type Table = {
   actionsLabel: string | null;
-  bulkActions: (Node<"action"> | Node<"action.bulk">)[];
+  bulkActions: Node[];
   columns: ColumnNode[];
   emptyLabel: string | null;
   endpoint: string | null;
