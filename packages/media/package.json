@@ -1,0 +1,43 @@
+{
+  "name": "@lattice-php/media",
+  "version": "0.38.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "vite build",
+    "build:plugin": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lattice-php/action": "0.38.0",
+    "@lattice-php/core": "0.38.0",
+    "@lattice-php/form": "0.38.0",
+    "@lattice-php/table": "0.38.0",
+    "@lattice-php/ui": "0.38.0"
+  },
+  "peerDependencies": {
+    "@inertiajs/core": "^3.0.0",
+    "@inertiajs/react": "^3.0.0",
+    "@tiptap/core": "^3.26.0",
+    "@tiptap/react": "^3.26.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

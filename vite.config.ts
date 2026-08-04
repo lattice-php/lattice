@@ -295,6 +295,7 @@ export default defineConfig(({ mode }) => {
         ...(!isLibrary && {
           "@lattice-php/action": path.resolve(import.meta.dirname, "packages/action/resources/js"),
           "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
+          "@lattice-php/media": path.resolve(import.meta.dirname, "packages/media/resources/js"),
           "@lattice-php/table": path.resolve(import.meta.dirname, "packages/table/resources/js"),
         }),
         "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),

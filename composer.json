@@ -54,6 +54,7 @@
         "laravel/boost": "^2.4",
         "laravel/pint": "^1.16",
         "laravel/reverb": "^1.10",
+        "lattice-php/media": "@dev",
         "lattice-php/signature-example": "@dev",
         "lattice-php/tree": "@dev",
         "league/flysystem-aws-s3-v3": "^3.34",
