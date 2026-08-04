@@ -2,7 +2,8 @@ import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
 import { createInertiaApp } from "@inertiajs/react";
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { initializeAppearance, seedAppearance } from "./appearance";
-import { setRefRefreshEndpoint } from "./core/api";
+import { setRefRefreshEndpoint } from "@lattice-php/core/api";
+import { setRequestHeaderProvider } from "@lattice-php/core/headers";
 import { isRecord } from "@lattice-php/core/materialize";
 import {
   extendRegistry,
@@ -14,6 +15,7 @@ import { setDefaultRegistry } from "@lattice-php/core/registry-context";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
 import { DEFAULT_NAMESPACE, holdI18nInit } from "@lattice-php/ui/i18n/instance";
 import { LocaleReload } from "@lattice-php/ui/i18n/locale-reload";
+import { localeHeader } from "@lattice-php/ui/i18n/locale";
 import { i18nConfigFromPageProps } from "@lattice-php/ui/i18n/shared-props";
 import {
   createLayoutResolver,
@@ -140,6 +142,7 @@ export function createLatticeApp({
     plugins && plugins.length > 0 ? extendRegistry(baseRegistry, ...plugins) : baseRegistry;
 
   setDefaultRegistry(activeRegistry);
+  setRequestHeaderProvider(localeHeader);
   registerRefRenewal();
 
   const i18nEnabled = i18n !== false;

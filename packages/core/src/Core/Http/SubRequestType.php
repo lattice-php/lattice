@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Lattice\Core\Http;
 
 enum SubRequestType: string
 {

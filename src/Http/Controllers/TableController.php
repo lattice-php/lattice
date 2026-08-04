@@ -7,8 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Http\SubRequest;
-use Lattice\Lattice\Http\SubRequestType;
+use Lattice\Lattice\Core\Http\SubRequest;
+use Lattice\Lattice\Core\Http\SubRequestType;
 use Lattice\Lattice\Tables\TableRegistry;
 
 final readonly class TableController

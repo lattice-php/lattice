@@ -1,4 +1,4 @@
-import { apiFetch, apiJson } from "@lattice-php/lattice/core/api";
+import { apiFetch, apiJson } from "@lattice-php/core/api";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

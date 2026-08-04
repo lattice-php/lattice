@@ -1,5 +1,5 @@
 import { testIdentity } from "@lattice-php/core/test-id";
-import { requestSignedUpload, xhrTransfer } from "@lattice-php/lattice/core/upload";
+import { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 import type { RendererComponent } from "@lattice-php/core/types";
 import type { SignedUpload } from "@lattice-php/lattice/types/generated";
 import { IconButton } from "@lattice-php/ui/icon-button";

@@ -2,7 +2,6 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { SizableColumn } from "./column-sizing";
 import { useColumnResizing } from "./use-column-resizing";
-
 type ResizeGetter = ReturnType<typeof useColumnResizing>["getResizeHandleProps"];
 
 const columns: SizableColumn[] = [

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ApiError,
   apiFetch,
@@ -9,6 +9,7 @@ import {
   type RemoteAccess,
 } from "./api";
 import { clearRefreshedRefs } from "@lattice-php/core/component-ref";
+import { setRequestHeaderProvider } from "./headers";
 
 function okResponse(body: unknown = {}): Response {
   return { ok: true, status: 200, json: async () => body } as unknown as Response;
@@ -17,7 +18,12 @@ function okResponse(body: unknown = {}): Response {
 afterEach(() => {
   clearRemoteTokenCache();
   clearRefreshedRefs();
+  setRequestHeaderProvider(() => ({}));
   document.cookie = "XSRF-TOKEN=;path=/;max-age=0";
+});
+
+beforeEach(() => {
+  setRequestHeaderProvider(() => ({ "Accept-Language": "en" }));
 });
 
 const remote: RemoteAccess = {

@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Forms\Concerns;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Lattice\Core\Http\SubRequest;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Field;
 use Lattice\Lattice\Forms\Components\FileUpload;
@@ -13,7 +14,6 @@ use Lattice\Lattice\Forms\Components\SignedUpload;
 use Lattice\Lattice\Forms\FormData;
 use Lattice\Lattice\Forms\FormSchemaWalker;
 use Lattice\Lattice\Forms\ResolveResponse;
-use Lattice\Lattice\Http\SubRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

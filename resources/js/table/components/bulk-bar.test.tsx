@@ -12,7 +12,7 @@ const apiFetch = vi.hoisted(() =>
   vi.fn<(url: string, init?: Record<string, unknown>) => Promise<Response>>(),
 );
 
-vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
+vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
 
 const router = vi.hoisted(() => ({
   on: vi.fn<(event: string, listener: (event: Event) => void) => () => void>(() =>

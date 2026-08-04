@@ -7,12 +7,7 @@
  */
 
 import { latestRef, storeRefreshedRef } from "@lattice-php/core/component-ref";
-import { withHeaders } from "./headers";
-import { localeHeader } from "@lattice-php/ui/i18n/locale";
-import type {
-  BrowserToken as GeneratedBrowserToken,
-  RemoteAccess as GeneratedRemoteAccess,
-} from "@lattice-php/lattice/types/generated";
+import { withHeaders, withRequestHeaders } from "./headers";
 
 export class ApiError extends Error {
   constructor(readonly response: Response) {
@@ -36,8 +31,23 @@ export type ApiInit = Omit<RequestInit, "headers"> & {
   throwOnError?: boolean;
 };
 
-export type BrowserToken = GeneratedBrowserToken;
-export type RemoteAccess = GeneratedRemoteAccess;
+export type BrowserToken = {
+  readonly accessToken: string;
+  readonly audience: string;
+  readonly expiresIn: number;
+  readonly scopes: string[];
+  readonly tokenType: string;
+};
+
+export type RemoteAccess = {
+  readonly audience: string;
+  readonly nodeId: string;
+  readonly nodeType: string;
+  readonly ref: string;
+  readonly scopes: string[];
+  readonly source: string;
+  readonly tokenEndpoint: string;
+};
 
 export type RemoteInit = Omit<RequestInit, "credentials" | "headers"> & {
   headers?: Record<string, string>;
@@ -214,12 +224,11 @@ async function fetchRemoteWithToken(
   return fetch(url, {
     ...rest,
     credentials: "omit",
-    headers: {
+    headers: withRequestHeaders({
       Accept: "application/json",
-      ...localeHeader(),
       ...headers,
       Authorization: `${token.tokenType} ${token.accessToken}`,
-    },
+    }),
   });
 }
 

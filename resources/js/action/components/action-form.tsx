@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { apiFetch } from "@lattice-php/lattice/core/api";
+import { apiFetch } from "@lattice-php/core/api";
 import { Button } from "@lattice-php/lattice/ui/button";
 import { Dialog, DialogContent, DialogHeader, type DialogPlacement } from "@lattice-php/ui/dialog";
 import { Skeleton } from "@lattice-php/ui/skeleton";

@@ -1,4 +1,4 @@
-import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
+import type { ColumnWidth } from "./types";
 
 export type SizableColumn = {
   key: string;

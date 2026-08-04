@@ -1,6 +1,7 @@
 export * from "./button";
 export * from "./checkbox";
 export * from "./color-picker";
+export * from "./column-sizing";
 export * from "./combobox";
 export * from "./confirm-dialog";
 export * from "./control";
@@ -26,6 +27,7 @@ export * from "./spinner";
 export * from "./textarea";
 export * from "./types";
 export * from "./use-collapsible-state";
+export * from "./use-column-resizing";
 export * from "./format/date-time";
 export * from "./lib/color";
 export * from "./lib/is-truthy";

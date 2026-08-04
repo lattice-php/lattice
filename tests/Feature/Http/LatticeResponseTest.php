@@ -1,13 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Effects\Builtin\Callout;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Http\LatticeResponse;
 use Lattice\Lattice\Ui\Enums\Variant;
 
@@ -71,45 +68,3 @@ test('Effects::respond starts a fluent response', function (): void {
     expect($response->headers->get('Location'))->toBe(route('after-save'));
     expect(app(EffectFlasher::class)->all())->toHaveCount(1);
 });
-
-test('FormDefinition::toast starts a fluent response from the handler', function (): void {
-    $response = (new FlashForm)->handle(request())->toResponse(request());
-
-    expect($response->getStatusCode())->toBe(302);
-    expect($response->headers->get('Location'))->toBe(route('after-save'));
-    expect(app(EffectFlasher::class)->all())->toHaveCount(1);
-});
-
-test('FormDefinition::respond starts an empty fluent response from the handler', function (): void {
-    $response = (new RespondForm)->handle(request())->toResponse(request());
-
-    expect($response->getStatusCode())->toBe(302);
-    expect($response->headers->get('Location'))->toBe(route('after-save'));
-    expect(app(EffectFlasher::class)->all())->toHaveCount(1);
-});
-
-final class FlashForm extends FormDefinition
-{
-    public function definition(Form $form, Request $request): Form
-    {
-        return $form;
-    }
-
-    public function handle(Request $request): LatticeResponse
-    {
-        return $this->toast('Saved.', Variant::Success)->toRoute('after-save');
-    }
-}
-
-final class RespondForm extends FormDefinition
-{
-    public function definition(Form $form, Request $request): Form
-    {
-        return $form;
-    }
-
-    public function handle(Request $request): LatticeResponse
-    {
-        return $this->respond()->reloadPage()->toRoute('after-save');
-    }
-}

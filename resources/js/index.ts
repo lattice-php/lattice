@@ -54,7 +54,7 @@ export type {
 } from "./chat/types";
 export { Renderer } from "@lattice-php/core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "@lattice-php/core/component-ref";
-export { withHeaders } from "./core/headers";
+export { withHeaders } from "@lattice-php/core/headers";
 export { LATTICE_EVENT } from "@lattice-php/core/event-names";
 export type { Emphasis } from "./ui/button";
 export type { ReloadComponentEvent } from "@lattice-php/core/event-names";

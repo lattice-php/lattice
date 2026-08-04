@@ -1,7 +1,7 @@
 import type { FormComponentRef, HttpExceptionResponse } from "@inertiajs/core";
 import { Form as InertiaForm } from "@inertiajs/react";
-import { refreshRef } from "@lattice-php/lattice/core/api";
-import { withHeaders } from "@lattice-php/lattice/core/headers";
+import { refreshRef } from "@lattice-php/core/api";
+import { withHeaders } from "@lattice-php/core/headers";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { nodeKey } from "@lattice-php/core/nodes";
