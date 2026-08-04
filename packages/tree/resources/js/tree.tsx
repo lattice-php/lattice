@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import type { KeyboardEvent } from "react";
-import { cn, Icon, nodeIdentity, Renderer, router, useT } from "@lattice-php/lattice/runtime";
-import type { RendererComponent, Schema } from "@lattice-php/lattice/runtime";
+import { router } from "@inertiajs/react";
+import { nodeIdentity, Renderer } from "@lattice-php/core";
+import type { RendererComponent, Schema } from "@lattice-php/core";
+import { cn, Icon, useT } from "@lattice-php/ui";
 import { ROOTS_KEY, TreeContext, useTreeContext, useTreeState } from "./tree-context";
 
 /**

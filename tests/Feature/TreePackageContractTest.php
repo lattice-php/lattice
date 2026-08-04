@@ -41,6 +41,18 @@ it('boots the tree package through the ui boundary', function (): void {
     }
 });
 
+it('depends on core and ui instead of the aggregate package', function (): void {
+    $package = json_decode(
+        (string) file_get_contents(dirname(__DIR__, 2).'/packages/tree/composer.json'),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+
+    expect($package['require'])
+        ->toHaveKeys(['lattice-php/core', 'lattice-php/ui'])
+        ->not->toHaveKey('lattice-php/lattice');
+});
+
 it('contributes discovery and frontend entries', function (): void {
     $package = collect(ComponentPackages::packages())->firstWhere('name', 'lattice-php/tree');
     $packagePath = realpath(dirname(__DIR__, 2).'/packages/tree');

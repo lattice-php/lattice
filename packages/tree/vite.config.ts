@@ -3,12 +3,48 @@ import { lattice } from "../../resources/js/vite.ts";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import laravel from "laravel-vite-plugin";
+import { readdirSync } from "node:fs";
+import path from "node:path";
 import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
+
+const sourceRoot = path.resolve(import.meta.dirname, "resources/js");
+
+function libraryEntries(): string[] {
+  return readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
+    .filter((file) => /\.(ts|tsx)$/.test(file))
+    .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
+    .filter((file) => !/test-(setup|support)\.(ts|tsx)$/.test(file))
+    .map((file) => path.join(sourceRoot, file));
+}
+
+function withExplicitExtensions(content: string): string {
+  return content.replace(
+    /(\bfrom\s*|\bimport\()(["'])(\.\.?(?:\/[^"']+)?)\2/g,
+    (match, prefix: string, quote: string, specifier: string) =>
+      /\.[a-z]+$/i.test(specifier) ? match : `${prefix}${quote}${specifier}.js${quote}`,
+  );
+}
 
 export default defineConfig(({ mode }) => ({
   plugins:
     mode === "plugin"
-      ? [react()]
+      ? [
+          react(),
+          dts({
+            tsconfigPath: path.resolve(import.meta.dirname, "tsconfig.json"),
+            include: ["resources/js"],
+            exclude: [
+              "resources/js/**/*.test.*",
+              "resources/js/**/*.test-d.*",
+              "resources/js/test-*.ts*",
+            ],
+            beforeWriteFile: (filePath, content) => ({
+              filePath,
+              content: withExplicitExtensions(content),
+            }),
+          }),
+        ]
       : [
           lattice({ icons: { dts: false } }),
           laravel({
@@ -27,14 +63,18 @@ export default defineConfig(({ mode }) => ({
           outDir: "dist",
           emptyOutDir: true,
           minify: false,
+          sourcemap: true,
           lib: {
-            entry: "resources/js/plugin.ts",
+            entry: libraryEntries(),
             formats: ["es"] as const,
-            fileName: "plugin",
           },
           rollupOptions: {
-            external: [/^@lattice-php\/lattice\/runtime$/, /^react(?:\/.*)?$/],
-            output: { codeSplitting: false },
+            external: (id) => !id.startsWith(".") && !path.isAbsolute(id),
+            output: {
+              preserveModules: true,
+              preserveModulesRoot: "resources/js",
+              entryFileNames: "[name].js",
+            },
           },
         },
       }

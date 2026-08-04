@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Tree;
 
 use JsonSerializable;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Actions\Components\ActionGroup;
 use Lattice\Lattice\Core\Color;
 use Lattice\Lattice\Core\Enums\ColorName;
 use Lattice\Lattice\Ui\Components\Badge;
@@ -31,7 +29,7 @@ final class TreeNode implements JsonSerializable
 
     public ?string $href = null;
 
-    public Action|ActionGroup|null $actions = null;
+    public ?Component $actions = null;
 
     /** @var list<TreeNode> */
     public array $children = [];
@@ -72,14 +70,14 @@ final class TreeNode implements JsonSerializable
         return $this;
     }
 
-    public function action(Action $action): self
+    public function action(Component $action): self
     {
         $this->actions = $action;
 
         return $this;
     }
 
-    public function actions(ActionGroup $group): self
+    public function actions(Component $group): self
     {
         $this->actions = $group;
 
@@ -231,7 +229,7 @@ final class TreeNode implements JsonSerializable
             $schema[] = $badge;
         }
 
-        if ($this->actions !== null) {
+        if ($this->actions instanceof Component) {
             $schema[] = Stack::make()
                 ->direction(StackDirection::Row)
                 ->width(Width::Auto)

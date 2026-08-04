@@ -8,7 +8,15 @@
     "noEmit": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@lattice-php/tree": ["./resources/js/index.ts"],
+      "@lattice-php/tree/*": ["./resources/js/*"],
+      "@lattice-php/ui": ["../ui/dist/index.d.ts"],
+      "@lattice-php/ui/*": ["../ui/dist/*"]
+    },
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
-  "include": ["resources/js"]
+  "include": ["resources/js"],
+  "exclude": ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*"]
 }

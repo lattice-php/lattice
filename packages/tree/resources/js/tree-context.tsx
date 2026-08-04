@@ -8,7 +8,8 @@ import {
   useState,
 } from "react";
 import type { RefObject } from "react";
-import { apiJson, usePersistentState } from "@lattice-php/lattice/runtime";
+import { apiJson } from "@lattice-php/core/api";
+import { usePersistentState } from "@lattice-php/ui";
 import type { TreeNodeData } from "./tree";
 
 export const ROOTS_KEY = "";

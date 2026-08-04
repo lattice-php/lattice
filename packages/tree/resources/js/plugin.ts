@@ -1,4 +1,4 @@
-import { lazyComponent, type Plugin } from "@lattice-php/lattice/runtime";
+import { lazyComponent, type Plugin } from "@lattice-php/core";
 
 export default {
   name: "lattice/tree",
