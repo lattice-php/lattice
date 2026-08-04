@@ -131,6 +131,9 @@ trait GeneratesComponentPair
             .'export default {'."\n"
             .'  name: "'.$name.'",'."\n"
             .'  components: {},'."\n"
+            .'  extensions: {'."\n"
+            .'    "table.columns": {},'."\n"
+            .'  },'."\n"
             .'} satisfies Plugin;'."\n",
         );
     }
@@ -287,16 +290,16 @@ trait GeneratesComponentPair
             return $contents;
         }
 
-        // [^}]* assumes entry values contain no `}` — true for eagerComponent(X) and bare identifiers
         return preg_replace_callback(
-            '/('.preg_quote($blockKey, '/').':\s*\{)([^}]*)(\})/s',
+            '/^([ \t]*)('.preg_quote($blockKey, '/').':\s*\{)([^}]*)(\})/m',
             function (array $matches) use ($entry): string {
-                $existingBody = trim($matches[2]);
+                $existingBody = trim($matches[3]);
+                $entryIndent = $matches[1].'  ';
                 $lines = $existingBody !== ''
-                    ? $existingBody."\n    ".$entry
+                    ? $existingBody."\n".$entryIndent.$entry
                     : $entry;
 
-                return $matches[1]."\n    ".$lines."\n  ".$matches[3];
+                return $matches[1].$matches[2]."\n".$entryIndent.$lines."\n".$matches[1].$matches[4];
             },
             $contents,
             1,

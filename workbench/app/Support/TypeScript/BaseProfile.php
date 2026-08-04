@@ -6,6 +6,7 @@ namespace Workbench\App\Support\TypeScript;
 use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\NodeModuleWriter;
@@ -13,7 +14,6 @@ use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
 use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Support\TypeScript\WireFamily;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
@@ -24,11 +24,16 @@ use Lattice\Lattice\Tables\Filters\Filter;
  * the base types every consumer app then augments. Workbench-only, so this
  * build code never ships.
  */
-final class BaseProfile implements TypeScriptProfile
+final readonly class BaseProfile implements TypeScriptProfile
 {
+    public function __construct(
+        private WireTypeDiscovery $discovery,
+        private LatticeRegistry $lattice,
+    ) {}
+
     public function pendingTypeCount(): int
     {
-        return count(new WireTypeDiscovery()->discover(dirname(__DIR__, 4).'/src')->components);
+        return count($this->discovery->discover(dirname(__DIR__, 4).'/src')->components);
     }
 
     public function run(TypeScriptGenerator $generator): string
@@ -43,7 +48,7 @@ final class BaseProfile implements TypeScriptProfile
             ? $configuredOutput
             : $packageRoot.'/resources/js/types';
 
-        $manifest = new WireTypeDiscovery()->discover($src);
+        $manifest = $this->discovery->discover($src);
 
         $discovered = $manifest->components;
         $formFields = $this->buildFormFields($discovered);
@@ -56,16 +61,16 @@ final class BaseProfile implements TypeScriptProfile
 
         $markerRefs = [];
 
-        foreach (WireFamily::markerFamilies() as $family) {
-            $markerRefs[$family->marker] = new NodeTypeReference(
+        foreach ($this->lattice->wireFamilies()->where('marker', true) as $family) {
+            $markerRefs[$family->reference] = new NodeTypeReference(
                 $this->buildClassTypes($discovered, $family->category),
-                WireEnvelope::forClass($family->marker),
+                WireEnvelope::forClass($family->reference),
                 attributeFallback: $family->category === 'component',
             );
         }
         $valueObjectClasses = $manifest->valueObjects;
 
-        foreach (WireFamily::registryFamilies() as $family) {
+        foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
             $classes = $manifest->family($family->category);
 
             if ($classes === []) {
@@ -97,6 +102,7 @@ final class BaseProfile implements TypeScriptProfile
                     $formFields,
                     Form::class,
                     $domainNodes,
+                    $this->lattice,
                     'form',
                     $familyProps,
                 ),

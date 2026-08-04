@@ -44,12 +44,36 @@ describe("lattice registry", () => {
       name: "second",
     } satisfies Plugin;
 
-    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.first");
-    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.second");
+    expect(createRegistry(firstPlugin, secondPlugin)).toEqual({
+      components: {
+        first: firstPlugin.components.first,
+        second: secondPlugin.components.second,
+      },
+      extensions: {},
+    });
+  });
+
+  it("merges named extension registries", () => {
+    const first = vi.fn();
+    const second = vi.fn();
+
+    expect(
+      createRegistry(
+        { name: "first", extensions: { effects: { first } } },
+        { name: "second", extensions: { effects: { second } } },
+      ),
+    ).toMatchObject({ extensions: { effects: { first, second } } });
   });
 
   it("loads plugin modules through the core registry API", async () => {
-    const plugin = { name: "app" } satisfies Plugin;
+    const plugin = {
+      name: "app",
+      extensions: {
+        "form.rich-editor": {
+          stamp: { group: "custom" },
+        },
+      },
+    } satisfies Plugin;
     const load = vi.fn<(url: string) => Promise<unknown>>().mockResolvedValue({ default: plugin });
 
     await expect(loadPluginModules(["/plugin.js"], load)).resolves.toEqual([plugin]);
@@ -86,9 +110,8 @@ describe("lattice registry", () => {
     { name: "invalid", components: [] },
     { name: "invalid", components: { invalid: null } },
     { name: "invalid", components: { invalid: { mode: "eager", component: null } } },
-    { name: "invalid", columns: { invalid: null } },
-    { name: "invalid", effects: { invalid: "not-a-function" } },
     { name: "invalid", i18n: {} },
+    { name: "invalid", extensions: [] },
   ])("rejects invalid plugin registries", async (plugin) => {
     const load = vi.fn<(url: string) => Promise<unknown>>().mockResolvedValue({ default: plugin });
 

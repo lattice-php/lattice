@@ -14,6 +14,8 @@ import type {
  */
 export interface EditorExtensionProps {}
 
+export const RICH_EDITOR_EXTENSION = "form.rich-editor";
+
 export type EditorExtensionPayloadOf<TType extends string> = ResolveProps<
   EditorExtensionProps,
   EditorExtensionPropsMap,
@@ -55,6 +57,12 @@ export type RichEditorExtensionDefinition<P = Record<string, unknown>> = {
   group?: string;
 };
 
+export type RichEditorExtensionRegistry = Record<string, RichEditorExtensionDefinition>;
+
+export type RichEditorExtensionRegistryFor<TTypes extends string> = {
+  [TType in TTypes]: RichEditorExtensionDefinition<Partial<EditorExtensionPayloadOf<TType>>>;
+};
+
 export type ResolvedRichEditorExtension = {
   type: string;
   props: Record<string, unknown>;
@@ -62,44 +70,16 @@ export type ResolvedRichEditorExtension = {
   group: string;
 };
 
-const registry = new Map<string, RichEditorExtensionDefinition>();
-
-/**
- * Wire props stay `Partial` at the definition boundary — a client-registered
- * type's props carry no generated shape, so definitions default each field.
- */
-export function registerRichEditorExtension<TType extends string>(
-  type: TType,
-  definition: RichEditorExtensionDefinition<Partial<EditorExtensionPayloadOf<TType>>>,
-): void {
-  registry.set(type, definition as unknown as RichEditorExtensionDefinition);
-}
-
-/**
- * Registration that yields to an existing entry. The built-ins load with the
- * lazy editor chunk — after app boot code ran — so seeding (instead of
- * registering) keeps a consumer's deliberate override of a built-in type.
- *
- * @internal
- */
-export function seedRichEditorExtension<TType extends string>(
-  type: TType,
-  definition: RichEditorExtensionDefinition<Partial<EditorExtensionPayloadOf<TType>>>,
-): void {
-  if (!registry.has(type)) {
-    registerRichEditorExtension(type, definition);
-  }
-}
-
 const warned = new Set<string>();
 
 export function resolveRichEditorExtensions(
   specs: EditorExtension[],
+  registry: RichEditorExtensionRegistry,
 ): ResolvedRichEditorExtension[] {
   const resolved: ResolvedRichEditorExtension[] = [];
 
   for (const spec of specs) {
-    const definition = registry.get(spec.type);
+    const definition = registry[spec.type];
 
     if (!definition) {
       if (import.meta.env.DEV && !warned.has(spec.type)) {

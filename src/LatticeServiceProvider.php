@@ -16,11 +16,9 @@ use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
 use Lattice\Lattice\Console\Commands\MakeColumnCommand;
@@ -30,32 +28,21 @@ use Lattice\Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
-use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Lattice\Core\CoreServiceProvider;
 use Lattice\Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Core\PageMetadataResolver;
-use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
-use Lattice\Lattice\Core\Services\RequestReferenceIdentity;
-use Lattice\Lattice\Effects\EffectFlasher;
-use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\FormRegistry;
-use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
+use Lattice\Lattice\Forms\FormsServiceProvider;
 use Lattice\Lattice\Fragments\FragmentRegistry;
 use Lattice\Lattice\Http\Middleware\SetLocale;
 use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\Frontend\StandaloneAssets;
-use Lattice\Lattice\Support\TypeScript\AugmentProfile;
-use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Lattice\Tables\TablesServiceProvider;
 use Lattice\Lattice\Theme\ThemeRenderer;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\SlotRegistry;
+use Lattice\Lattice\Ui\UiServiceProvider;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -83,44 +70,28 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        $this->app->register(CoreServiceProvider::class);
+        $this->app->register(UiServiceProvider::class);
+        $this->app->register(FormsServiceProvider::class);
+        $this->app->register(TablesServiceProvider::class);
+
         if ($this->app->runningInConsole()) {
             $this->commands(MakeDefinitionCommand::all());
         }
 
-        DiscoveryKinds::register('forms', AsForm::class);
-        DiscoveryKinds::register('tables', AsTable::class);
         DiscoveryKinds::register('actions', AsAction::class);
         DiscoveryKinds::register('bulk-actions', AsBulkAction::class);
         DiscoveryKinds::register('fragments', AsFragment::class);
         DiscoveryKinds::register('remote-sources', AsRemoteSource::class);
         DiscoveryKinds::register('layouts', AsLayout::class);
 
-        $this->app->singleton(FormRegistry::class);
-        $this->app->singleton(TableRegistry::class);
         $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(LayoutRegistry::class);
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);
-        $this->app->singleton(SlotRegistry::class);
-        $this->app->singleton(ResolvesReferenceIdentity::class, RequestReferenceIdentity::class);
-        $this->app->singleton(ComponentReferenceSigner::class);
-        $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);
-        $this->app->singleton(LatticeRegistry::class);
-        $this->app->singleton(DiscoveryManifest::class);
-        $this->app->singleton(PageMetadataResolver::class);
         $this->app->singleton(StandaloneAssets::class);
-        $this->app->singleton(ThemeRenderer::class);
-        $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
-        $this->app->scoped(EffectFlasher::class);
-
-        $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
-        $this->app->singleton(EditorExtensionRegistry::class, fn (): EditorExtensionRegistry => EditorExtensionRegistry::withBuiltins());
-
-        // Default role; the workbench rebinds this to BaseProfile.
-        $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
-
         if (! ResponseFactory::hasMacro('toRoute')) {
             ResponseFactory::macro(
                 'toRoute',

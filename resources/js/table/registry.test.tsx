@@ -58,8 +58,12 @@ describe("column registry", () => {
   it("dispatches a registered custom cell renderer", () => {
     const registry = createRegistry({
       name: "test",
-      columns: {
-        "column.upper": ({ value }) => <span>{String(value).toUpperCase()}</span>,
+      extensions: {
+        "table.columns": {
+          "column.upper": ({ value }: { value: unknown }) => (
+            <span>{String(value).toUpperCase()}</span>
+          ),
+        },
       },
     });
 
@@ -137,8 +141,10 @@ describe("column registry", () => {
   it("custom renderer takes precedence over built-in stack", () => {
     const registry = createRegistry({
       name: "test",
-      columns: {
-        "column.stack": () => <span>custom-stack</span>,
+      extensions: {
+        "table.columns": {
+          "column.stack": () => <span>custom-stack</span>,
+        },
       },
     });
 

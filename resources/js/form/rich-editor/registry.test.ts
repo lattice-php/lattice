@@ -4,8 +4,8 @@ import {
   assembleStarterKitOptions,
   assembleTiptapExtensions,
   assembleToolbar,
-  registerRichEditorExtension,
   resolveRichEditorExtensions,
+  type RichEditorExtensionRegistry,
   type ToolbarButton,
 } from "./registry";
 
@@ -25,9 +25,12 @@ afterEach(() => {
 
 describe("resolveRichEditorExtensions", () => {
   it("resolves registered types with their wire props", () => {
-    registerRichEditorExtension("custom-a", { toolbar: () => [button("a")] });
+    const registry = { "custom-a": { toolbar: () => [button("a")] } };
 
-    const resolved = resolveRichEditorExtensions([{ type: "custom-a", props: { flavor: "sour" } }]);
+    const resolved = resolveRichEditorExtensions(
+      [{ type: "custom-a", props: { flavor: "sour" } }],
+      registry,
+    );
 
     expect(resolved).toHaveLength(1);
     expect(resolved[0].type).toBe("custom-a");
@@ -36,18 +39,21 @@ describe("resolveRichEditorExtensions", () => {
   });
 
   it("defaults missing props to an empty object", () => {
-    registerRichEditorExtension("custom-b", {});
-
-    expect(resolveRichEditorExtensions([{ type: "custom-b", props: {} }])[0].props).toEqual({});
+    expect(
+      resolveRichEditorExtensions([{ type: "custom-b", props: {} }], { "custom-b": {} })[0].props,
+    ).toEqual({});
   });
 
   it("warns once and skips unknown types", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    const resolved = resolveRichEditorExtensions([
-      { type: "never-registered", props: {} },
-      { type: "never-registered", props: {} },
-    ]);
+    const resolved = resolveRichEditorExtensions(
+      [
+        { type: "never-registered", props: {} },
+        { type: "never-registered", props: {} },
+      ],
+      {},
+    );
 
     expect(resolved).toEqual([]);
     expect(warn).toHaveBeenCalledOnce();
@@ -71,12 +77,14 @@ describe("assembleStarterKitOptions", () => {
   });
 
   it("merges contributions from the active extensions over the disabled baseline", () => {
-    registerRichEditorExtension("custom-c", {
-      starterKit: (props) => ({ heading: { levels: props.levels as [1] } }),
-    });
+    const registry: RichEditorExtensionRegistry = {
+      "custom-c": {
+        starterKit: (props) => ({ heading: { levels: props.levels as [1] } }),
+      },
+    };
 
     const options = assembleStarterKitOptions(
-      resolveRichEditorExtensions([{ type: "custom-c", props: { levels: [1] } }]),
+      resolveRichEditorExtensions([{ type: "custom-c", props: { levels: [1] } }], registry),
     );
 
     expect(options.heading).toEqual({ levels: [1] });
@@ -86,16 +94,21 @@ describe("assembleStarterKitOptions", () => {
 
 describe("assembleToolbar", () => {
   it("keeps wire order and separates contributions from different groups", () => {
-    registerRichEditorExtension("mark-a", { group: "marks", toolbar: () => [button("a")] });
-    registerRichEditorExtension("mark-b", { group: "marks", toolbar: () => [button("b")] });
-    registerRichEditorExtension("block-c", { toolbar: () => [button("c"), button("d")] });
+    const registry: RichEditorExtensionRegistry = {
+      "mark-a": { group: "marks", toolbar: () => [button("a")] },
+      "mark-b": { group: "marks", toolbar: () => [button("b")] },
+      "block-c": { toolbar: () => [button("c"), button("d")] },
+    };
 
     const entries = assembleToolbar(
-      resolveRichEditorExtensions([
-        { type: "mark-a", props: {} },
-        { type: "mark-b", props: {} },
-        { type: "block-c", props: {} },
-      ]),
+      resolveRichEditorExtensions(
+        [
+          { type: "mark-a", props: {} },
+          { type: "mark-b", props: {} },
+          { type: "block-c", props: {} },
+        ],
+        registry,
+      ),
     );
 
     expect(entries.map((entry) => (entry === "separator" ? entry : `item:${entry.key}`))).toEqual([
@@ -108,15 +121,20 @@ describe("assembleToolbar", () => {
   });
 
   it("skips extensions without toolbar contributions entirely", () => {
-    registerRichEditorExtension("silent", { starterKit: () => ({ bold: {} }) });
-    registerRichEditorExtension("loud", { toolbar: () => [button("loud")] });
+    const registry: RichEditorExtensionRegistry = {
+      silent: { starterKit: () => ({ bold: {} }) },
+      loud: { toolbar: () => [button("loud")] },
+    };
 
     const entries = assembleToolbar(
-      resolveRichEditorExtensions([
-        { type: "loud", props: {} },
-        { type: "silent", props: {} },
-        { type: "loud", props: {} },
-      ]),
+      resolveRichEditorExtensions(
+        [
+          { type: "loud", props: {} },
+          { type: "silent", props: {} },
+          { type: "loud", props: {} },
+        ],
+        registry,
+      ),
     );
 
     expect(entries.filter((entry) => entry === "separator")).toHaveLength(0);
@@ -128,17 +146,20 @@ describe("assembleTiptapExtensions", () => {
     // Stands in for a real Tiptap extension instance; constructing one for real
     // is unnecessary — assembleTiptapExtensions only flat-maps by reference.
     const fakeExtension = { name: "fake" } as unknown as AnyExtension;
-    registerRichEditorExtension("with-instances", {
-      extensions: () => [fakeExtension],
-    });
-    registerRichEditorExtension("without-instances", {});
+    const registry: RichEditorExtensionRegistry = {
+      "with-instances": { extensions: () => [fakeExtension] },
+      "without-instances": {},
+    };
 
     expect(
       assembleTiptapExtensions(
-        resolveRichEditorExtensions([
-          { type: "with-instances", props: {} },
-          { type: "without-instances", props: {} },
-        ]),
+        resolveRichEditorExtensions(
+          [
+            { type: "with-instances", props: {} },
+            { type: "without-instances", props: {} },
+          ],
+          registry,
+        ),
       ),
     ).toEqual([fakeExtension]);
   });

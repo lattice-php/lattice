@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\WireEnvelope;
 use ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionClass as RoaveReflectionClass;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
@@ -31,33 +30,15 @@ final class ComponentTransformer extends ClassTransformer
 
     /**
      * @param  array<int, class-string>  $allowed
-     * @param  array<class-string, NodeTypeReference>|null  $markerRefs  Marker base class => its envelope resolver.
+     * @param  array<class-string, NodeTypeReference>  $markerRefs  Marker base class => its envelope resolver.
      */
     public function __construct(
         array $allowed,
-        private readonly ?array $markerRefs = null,
+        private readonly array $markerRefs,
     ) {
         $this->allowed = $allowed;
 
         parent::__construct();
-    }
-
-    /**
-     * @return array<class-string, NodeTypeReference>
-     */
-    private function markerRefs(): array
-    {
-        if ($this->markerRefs !== null) {
-            return $this->markerRefs;
-        }
-
-        $refs = [];
-
-        foreach (WireFamily::markerFamilies() as $family) {
-            $refs[$family->marker] = new NodeTypeReference(envelope: WireEnvelope::forClass($family->marker));
-        }
-
-        return $refs;
     }
 
     protected function shouldTransform(PhpClassNode $phpClassNode): bool
@@ -144,7 +125,7 @@ final class ComponentTransformer extends ClassTransformer
     {
         $processors = parent::classPropertyProcessors();
 
-        foreach ($this->markerRefs() as $marker => $ref) {
+        foreach ($this->markerRefs as $marker => $ref) {
             $processors[] = new MarkerRewriteClassPropertyProcessor($marker, $ref(...));
         }
 

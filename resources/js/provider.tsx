@@ -16,8 +16,6 @@ export function Provider({ registry = defaultRegistry, ...props }: ProviderProps
   return <ProviderBase {...props} registry={registry} />;
 }
 
-export {
-  useComponentRegistry,
-  useColumnRegistry,
-  useEffectHandlerRegistry,
-} from "./core/registry-context";
+export { useComponentRegistry } from "./core/registry-context";
+export { useEffectHandlerRegistry } from "./effects/registry";
+export { useColumnRegistry } from "./table/registry";

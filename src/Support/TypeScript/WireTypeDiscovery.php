@@ -3,25 +3,25 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Attributes\AsWireNode;
 use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Lattice\Core\Contracts\ContainerComponent;
+use Lattice\Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\Discovery\ClassWalker;
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Attributes\AsFilter;
-use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
-use Lattice\Lattice\Ui\Components\IsInteractive;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
 
 /**
  * The single wire-surface discovery: one walk over a path, classifying every
  * #[TypeScript]-instanceof-marked class into the manifest the generation
- * profiles consume. Attribute-sourced families come from the WireFamily table,
+ * profiles consume. Attribute-sourced families come from registered providers,
  * so a new family needs no branch here.
  */
-final class WireTypeDiscovery
+final readonly class WireTypeDiscovery
 {
+    public function __construct(private LatticeRegistry $lattice) {}
+
     /**
      * @param  list<string>  $ignoreDirectories  paths skipped entirely (e.g. test scaffolding
      *                                           that can never be a wire type) so they're
@@ -52,7 +52,7 @@ final class WireTypeDiscovery
                 continue;
             }
 
-            $component = Attributes::get($class, AsComponent::class);
+            $component = Attributes::get($class, AsWireNode::class);
 
             if ($component !== null) {
                 if (! $abstract) {
@@ -83,8 +83,8 @@ final class WireTypeDiscovery
      */
     private function collectFamilyMember(string $class, bool $abstract, array &$families): bool
     {
-        foreach (WireFamily::registryFamilies() as $family) {
-            $attribute = Attributes::get($class, $family->attribute());
+        foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
+            $attribute = Attributes::get($class, $family->attribute);
 
             if ($attribute === null) {
                 continue;
@@ -103,19 +103,14 @@ final class WireTypeDiscovery
     /**
      * @param  class-string  $class
      */
-    private function component(string $class, AsComponent $attribute): DiscoveredComponent
+    private function component(string $class, AsWireNode $attribute): DiscoveredComponent
     {
         return new DiscoveredComponent(
             class: $class,
             type: $attribute->type,
-            container: is_subclass_of($class, ContainerComponent::class)
-                || in_array(HasChildSchema::class, class_uses_recursive($class), true),
-            interactive: in_array(IsInteractive::class, class_uses_recursive($class), true),
-            category: match (true) {
-                $attribute instanceof AsColumn => 'column',
-                $attribute instanceof AsFilter => 'filter',
-                default => 'component',
-            },
+            container: is_a($class, ContainerComponent::class, true),
+            interactive: is_a($class, InteractiveComponent::class, true),
+            category: $this->lattice->wireCategoryFor($attribute),
             domain: $this->domainFor($class),
         );
     }

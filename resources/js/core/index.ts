@@ -29,13 +29,12 @@ export {
   lazyComponent,
   loadPluginModules,
 } from "./registry";
-export type { Plugin, Registry } from "./registry";
+export type { ExtensionRegistries, ExtensionRegistry, Plugin, Registry } from "./registry";
 export {
   RegistryContext,
   setDefaultRegistry,
-  useColumnRegistry,
   useComponentRegistry,
-  useEffectHandlerRegistry,
+  useExtensionRegistry,
 } from "./registry-context";
 export { Renderer, RenderNode } from "./renderer";
 export { nodeIdentity } from "./test-id";

@@ -5,6 +5,7 @@ import { TextAlign } from "@tiptap/extension-text-align";
 import type { Editor } from "@tiptap/core";
 import type { StarterKitOptions } from "@tiptap/starter-kit";
 import { useState } from "react";
+import type { EditorExtensionPropsMap } from "@lattice-php/lattice/types/generated";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
 import {
@@ -14,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@lattice-php/lattice/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
-import { seedRichEditorExtension, type ToolbarButton } from "./registry";
+import type { RichEditorExtensionRegistryFor, ToolbarButton } from "./registry";
 import { ToolbarIconButton } from "./toolbar-button";
 
 type HeadingLevels = NonNullable<Exclude<StarterKitOptions["heading"], false>["levels"]>;
@@ -22,6 +23,13 @@ type HeadingLevels = NonNullable<Exclude<StarterKitOptions["heading"], false>["l
 const ALL_HEADING_LEVELS = [1, 2, 3, 4, 5, 6];
 
 const ALL_ALIGNMENTS = ["left", "center", "right", "justify"];
+
+const ALIGNMENT_BUTTONS: Record<string, { icon: string; key: string; label: string }> = {
+  left: { icon: "align-left", key: "align-left", label: "Align left" },
+  center: { icon: "align-center", key: "align-center", label: "Align center" },
+  right: { icon: "align-right", key: "align-right", label: "Align right" },
+  justify: { icon: "align-justify", key: "justify", label: "Justify" },
+};
 
 const DEFAULT_EMOJIS = [
   "😀",
@@ -201,57 +209,44 @@ function markButton(key: string, icon: string, label: string, mark: string): Too
   };
 }
 
-let registered = false;
-
-/**
- * Called by the editor field when its chunk loads. Registration must be an
- * explicitly invoked export: the package ships side-effect-free modules, so a
- * bare `import "./builtins"` would be tree-shaken out of production builds.
- */
-export function registerBuiltinRichEditorExtensions(): void {
-  if (registered) {
-    return;
-  }
-
-  registered = true;
-
-  seedRichEditorExtension("bold", {
+export const builtinRichEditorExtensions = {
+  bold: {
     group: "marks",
     starterKit: () => ({ bold: {} }),
     toolbar: () => [markButton("bold", "bold", "Bold", "bold")],
-  });
+  },
 
-  seedRichEditorExtension("italic", {
+  italic: {
     group: "marks",
     starterKit: () => ({ italic: {} }),
     toolbar: () => [markButton("italic", "italic", "Italic", "italic")],
-  });
+  },
 
-  seedRichEditorExtension("strike", {
+  strike: {
     group: "marks",
     starterKit: () => ({ strike: {} }),
     toolbar: () => [markButton("strikethrough", "strikethrough", "Strikethrough", "strike")],
-  });
+  },
 
-  seedRichEditorExtension("underline", {
+  underline: {
     group: "marks",
     starterKit: () => ({ underline: {} }),
     toolbar: () => [markButton("underline", "underline", "Underline", "underline")],
-  });
+  },
 
-  seedRichEditorExtension("highlight", {
+  highlight: {
     group: "marks",
     extensions: () => [Highlight],
     toolbar: () => [markButton("highlight", "highlighter", "Highlight", "highlight")],
-  });
+  },
 
-  seedRichEditorExtension("code", {
+  code: {
     group: "marks",
     starterKit: () => ({ code: {} }),
     toolbar: () => [markButton("code", "code-xml", "Code", "code")],
-  });
+  },
 
-  seedRichEditorExtension("heading", {
+  heading: {
     starterKit: (props) => ({ heading: { levels: headingLevels(props.levels) } }),
     toolbar: (props) => {
       const levels = headingLevels(props.levels);
@@ -263,9 +258,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         },
       ];
     },
-  });
+  },
 
-  seedRichEditorExtension("bullet-list", {
+  "bullet-list": {
     group: "blocks",
     starterKit: () => ({ bulletList: {}, listItem: {} }),
     toolbar: () => [
@@ -277,9 +272,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         run: (editor) => editor.chain().focus().toggleBulletList().run(),
       },
     ],
-  });
+  },
 
-  seedRichEditorExtension("ordered-list", {
+  "ordered-list": {
     group: "blocks",
     starterKit: () => ({ orderedList: {}, listItem: {} }),
     toolbar: () => [
@@ -291,9 +286,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         run: (editor) => editor.chain().focus().toggleOrderedList().run(),
       },
     ],
-  });
+  },
 
-  seedRichEditorExtension("blockquote", {
+  blockquote: {
     group: "blocks",
     starterKit: () => ({ blockquote: {} }),
     toolbar: () => [
@@ -305,9 +300,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         run: (editor) => editor.chain().focus().toggleBlockquote().run(),
       },
     ],
-  });
+  },
 
-  seedRichEditorExtension("code-block", {
+  "code-block": {
     group: "blocks",
     starterKit: () => ({ codeBlock: {} }),
     toolbar: () => [
@@ -319,9 +314,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         run: (editor) => editor.chain().focus().toggleCodeBlock().run(),
       },
     ],
-  });
+  },
 
-  seedRichEditorExtension("horizontal-rule", {
+  "horizontal-rule": {
     group: "blocks",
     starterKit: () => ({ horizontalRule: {} }),
     toolbar: () => [
@@ -333,16 +328,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         run: (editor) => editor.chain().focus().setHorizontalRule().run(),
       },
     ],
-  });
+  },
 
-  const ALIGNMENT_BUTTONS: Record<string, { icon: string; key: string; label: string }> = {
-    left: { icon: "align-left", key: "align-left", label: "Align left" },
-    center: { icon: "align-center", key: "align-center", label: "Align center" },
-    right: { icon: "align-right", key: "align-right", label: "Align right" },
-    justify: { icon: "align-justify", key: "justify", label: "Justify" },
-  };
-
-  seedRichEditorExtension("text-align", {
+  "text-align": {
     extensions: (props) => [
       TextAlign.configure({
         alignments: props.alignments ?? ALL_ALIGNMENTS,
@@ -357,9 +345,9 @@ export function registerBuiltinRichEditorExtensions(): void {
           isActive: (editor: Editor) => editor.isActive({ textAlign: alignment }),
           run: (editor: Editor) => editor.chain().focus().setTextAlign(alignment).run(),
         })),
-  });
+  },
 
-  seedRichEditorExtension("link", {
+  link: {
     starterKit: (props) => ({
       link: {
         openOnClick: props.openOnClick ?? false,
@@ -372,9 +360,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         component: ({ editor }) => <LinkControl editor={editor} />,
       },
     ],
-  });
+  },
 
-  seedRichEditorExtension("table", {
+  table: {
     group: "insert",
     extensions: () => [TableKit.configure({ table: { resizable: false } })],
     toolbar: (props) => [
@@ -419,9 +407,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         run: (editor) => editor.chain().focus().deleteTable().run(),
       },
     ],
-  });
+  },
 
-  seedRichEditorExtension("details", {
+  details: {
     group: "insert",
     extensions: () => [Details, DetailsSummary, DetailsContent],
     toolbar: () => [
@@ -441,9 +429,9 @@ export function registerBuiltinRichEditorExtensions(): void {
         },
       },
     ],
-  });
+  },
 
-  seedRichEditorExtension("emoji", {
+  emoji: {
     toolbar: (props) => {
       const emojis = props.emojis ?? DEFAULT_EMOJIS;
 
@@ -454,5 +442,5 @@ export function registerBuiltinRichEditorExtensions(): void {
         },
       ];
     },
-  });
-}
+  },
+} satisfies RichEditorExtensionRegistryFor<keyof EditorExtensionPropsMap & string>;

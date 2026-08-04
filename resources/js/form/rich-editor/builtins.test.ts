@@ -1,13 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import type { EditorExtension } from "@lattice-php/lattice/types/generated";
-import { registerBuiltinRichEditorExtensions } from "./builtins";
+import { builtinRichEditorExtensions } from "./builtins";
 import {
   assembleStarterKitOptions,
   assembleToolbar,
   resolveRichEditorExtensions,
 } from "./registry";
-
-registerBuiltinRichEditorExtensions();
 
 const DEFAULT_SET: EditorExtension[] = [
   { type: "bold", props: {} },
@@ -33,14 +31,16 @@ describe("built-in definitions", () => {
   it("resolves the whole default set without warnings", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    expect(resolveRichEditorExtensions(DEFAULT_SET)).toHaveLength(17);
+    expect(resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions)).toHaveLength(17);
     expect(warn).not.toHaveBeenCalled();
 
     warn.mockRestore();
   });
 
   it("assembles the default StarterKit with the previously hardcoded features", () => {
-    const options = assembleStarterKitOptions(resolveRichEditorExtensions(DEFAULT_SET));
+    const options = assembleStarterKitOptions(
+      resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions),
+    );
 
     expect(options.bold).toEqual({});
     expect(options.heading).toEqual({ levels: [1, 2, 3, 4, 5, 6] });
@@ -51,10 +51,13 @@ describe("built-in definitions", () => {
 
   it("passes heading levels and link options from the wire props into StarterKit", () => {
     const options = assembleStarterKitOptions(
-      resolveRichEditorExtensions([
-        { type: "heading", props: { levels: [2, 3] } },
-        { type: "link", props: { protocols: ["https", "mailto"], openOnClick: true } },
-      ]),
+      resolveRichEditorExtensions(
+        [
+          { type: "heading", props: { levels: [2, 3] } },
+          { type: "link", props: { protocols: ["https", "mailto"], openOnClick: true } },
+        ],
+        builtinRichEditorExtensions,
+      ),
     );
 
     expect(options.heading).toEqual({ levels: [2, 3] });
@@ -62,7 +65,9 @@ describe("built-in definitions", () => {
   });
 
   it("renders the default toolbar in the previously hardcoded group order", () => {
-    const entries = assembleToolbar(resolveRichEditorExtensions(DEFAULT_SET));
+    const entries = assembleToolbar(
+      resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions),
+    );
 
     expect(entries.map((entry) => (entry === "separator" ? "|" : entry.key))).toEqual([
       "bold",
@@ -99,9 +104,10 @@ describe("built-in definitions", () => {
 
   it("renders only the configured text-align buttons", () => {
     const entries = assembleToolbar(
-      resolveRichEditorExtensions([
-        { type: "text-align", props: { alignments: ["left", "right"] } },
-      ]),
+      resolveRichEditorExtensions(
+        [{ type: "text-align", props: { alignments: ["left", "right"] } }],
+        builtinRichEditorExtensions,
+      ),
     );
 
     expect(entries.map((entry) => (entry === "separator" ? "|" : entry.key))).toEqual([

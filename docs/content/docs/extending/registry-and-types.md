@@ -11,9 +11,9 @@ Before registering custom components or columns, publish the scaffold file:
 php artisan vendor:publish --tag=lattice-js
 ```
 
-This writes a single `resources/js/registry.ts`. It defines an app plugin with empty `components` and
-`columns` blocks and merges it onto the built-in registry with `extendRegistry`, exporting the result
-as `registry`:
+This writes a single `resources/js/registry.ts`. It defines an app plugin with empty component and
+table-column registries and merges it onto the built-in registry with `extendRegistry`, exporting the
+result as `registry`:
 
 ```ts
 import { extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
@@ -22,13 +22,26 @@ import type { Plugin } from "@lattice-php/lattice";
 export const registry = extendRegistry(packageRegistry, {
   name: "app",
   components: {}, // custom fields and UI components
-  columns: {}, // custom column cells
+  extensions: {
+    "table.columns": {}, // custom column cells
+  },
 } satisfies Plugin);
 ```
 
 The generators (`lattice:field`, `lattice:component`, `lattice:column`) append their entries to this
-file automatically — fields and components under `components`, columns under `columns`. You only need
-to publish once, and you pass the exported `registry` to `Provider`.
+file automatically — fields and components under `components`, columns under
+`extensions["table.columns"]`. You only need to publish once, and you pass the exported `registry` to
+`Provider`.
+
+## Components and extensions
+
+`components` contains complete wire nodes. They have `type`, `props`, and optional children, and the
+core renderer owns their lifecycle. Form fields belong here because they are full nodes rendered in
+the form tree.
+
+`extensions` contains named registries owned by a feature. A table column contributes a cell renderer
+to `table.columns`; a rich-editor extension contributes Tiptap behavior to `form.rich-editor`. Core
+only merges these registries—the table or editor decides how to use them.
 
 ## Node registry API
 
@@ -79,7 +92,9 @@ import type { Plugin } from "@lattice-php/lattice";
 export const registry = extendRegistry(packageRegistry, {
   name: "app",
   components: {},
-  columns: {},
+  extensions: {
+    "table.columns": {},
+  },
 } satisfies Plugin);
 ```
 
@@ -150,8 +165,9 @@ The column-cell registry maps type strings to `ColumnCellComponent` functions.
 
 ### Column plugins
 
-Column cell renderers use the same plugin object as components. They go under the `columns` key of the
-same `resources/js/registry.ts` (registered bare — `columnCell()` is optional, see below):
+Column cell renderers use the same plugin object as components. They go in the named `table.columns`
+extension registry in `resources/js/registry.ts` (registered bare — `columnCell()` is optional, see
+below):
 
 ```ts
 import { extendRegistry, registry as packageRegistry } from "@lattice-php/lattice";
@@ -161,8 +177,10 @@ import { StatusBadgeCell } from "./columns/status-badge";
 export const registry = extendRegistry(packageRegistry, {
   name: "app",
   components: {},
-  columns: {
-    "column.status-badge": StatusBadgeCell,
+  extensions: {
+    "table.columns": {
+      "column.status-badge": StatusBadgeCell,
+    },
   },
 } satisfies Plugin);
 ```
@@ -196,8 +214,8 @@ All of them use TypeScript's declaration merging. You can augment them manually 
 
 ### php artisan lattice:typescript
 
-Run this command whenever your PHP classes gain or lose public properties. It discovers your
-`#[AsComponent]`-marked components, columns and filters, plus `#[AsEffect]` effects and
+Run this command whenever your PHP classes gain or lose public properties. It discovers
+`#[AsComponent]` components, `#[AsColumn]` columns, `#[AsFilter]` filters, `#[AsEffect]` effects, and
 `#[AsEditorExtension]` rich-editor extensions:
 
 ```bash

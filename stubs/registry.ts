@@ -7,5 +7,7 @@ import type { Plugin } from "@lattice-php/lattice";
 export const registry = extendRegistry(packageRegistry, {
   name: "app",
   components: {},
-  columns: {},
+  extensions: {
+    "table.columns": {},
+  },
 } satisfies Plugin);

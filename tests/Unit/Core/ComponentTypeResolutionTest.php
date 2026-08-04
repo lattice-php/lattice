@@ -22,5 +22,5 @@ it('throws a clear error when the attribute is missing', function (): void {
     $component = new class extends Component {};
 
     expect(fn (): array => $component->jsonSerialize())
-        ->toThrow(LogicException::class, 'missing the #[AsComponent] attribute');
+        ->toThrow(LogicException::class, 'missing the #[AsWireNode] attribute');
 });

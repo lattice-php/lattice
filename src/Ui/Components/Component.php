@@ -6,6 +6,7 @@ namespace Lattice\Lattice\Ui\Components;
 use InvalidArgumentException;
 use JsonSerializable;
 use Lattice\Lattice\Attributes\WireEnvelope;
+use Lattice\Lattice\Core\Contracts\CanBeHidden;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Components\Concerns\HasDataBindings;
 use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
@@ -18,7 +19,7 @@ use Lattice\Lattice\Ui\Enums\Breakpoint;
  * @phpstan-consistent-constructor
  */
 #[WireEnvelope('Node')]
-abstract class Component implements JsonSerializable, Renderable, SchemaEntry
+abstract class Component implements CanBeHidden, JsonSerializable, Renderable, SchemaEntry
 {
     use GatesRendering;
     use HasDataBindings;

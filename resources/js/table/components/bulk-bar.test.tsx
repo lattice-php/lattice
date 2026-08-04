@@ -77,8 +77,10 @@ function action(partial: Partial<BulkAction> & Pick<BulkAction, "id">): BulkActi
 const effectHandler = vi.fn<EffectHandler>();
 const registry = createRegistry({
   name: "bulk-bar-test",
-  effects: {
-    "test.bulk-success": effectHandler,
+  extensions: {
+    effects: {
+      "test.bulk-success": effectHandler,
+    },
   },
 });
 

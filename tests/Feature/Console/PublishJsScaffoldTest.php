@@ -39,6 +39,7 @@ it('publishes a single registry scaffold to resources/js', function (): void {
             ->and(File::get(resource_path('js/registry.ts')))
             ->toContain('extendRegistry')
             ->toContain('components: {}')
-            ->toContain('columns: {}');
+            ->toContain('extensions: {')
+            ->toContain('"table.columns": {}');
     });
 });

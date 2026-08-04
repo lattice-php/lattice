@@ -1,9 +1,9 @@
-import { useColumnRegistry } from "@lattice-php/lattice/core/registry-context";
 import type { ColumnNodeType } from "@lattice-php/lattice/types/generated";
 import {
   columnCell,
   type ColumnRegistry,
   type ColumnRegistryFor,
+  useColumnRegistry,
 } from "@lattice-php/lattice/table/registry";
 import type { TableColumn, TableRow } from "@lattice-php/lattice/table/types";
 import { BadgeCell } from "./cells/badge-cell";

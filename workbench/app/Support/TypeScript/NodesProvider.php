@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Support\TypeScript\WireFamily;
+use Lattice\Lattice\LatticeRegistry;
 use Spatie\TypeScriptTransformer\References\ClassStringReference;
 use Spatie\TypeScriptTransformer\References\CustomReference;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;
@@ -42,6 +42,7 @@ final readonly class NodesProvider implements TransformedProvider
         private array $formFields,
         private string $formClass,
         private array $domainNodes,
+        private LatticeRegistry $lattice,
         private string $formType = 'form',
         private array $familyProps = [],
     ) {}
@@ -75,17 +76,17 @@ final readonly class NodesProvider implements TransformedProvider
 
         $familyProps = ['component' => $this->componentClassesByType()] + $this->familyProps;
 
-        foreach (WireFamily::all() as $family) {
+        foreach ($this->lattice->wireFamilies() as $family) {
             $entries = $familyProps[$family->category] ?? [];
 
             if ($entries === []) {
                 continue;
             }
 
-            if ($family->registry !== null) {
+            if (! $family->marker) {
                 $transformed[] = new Transformed(
                     new TypeScriptAlias($family->looseAlias(), $this->loosePayload()),
-                    new ClassStringReference($family->reference()),
+                    new ClassStringReference($family->reference),
                     [],
                 );
             }

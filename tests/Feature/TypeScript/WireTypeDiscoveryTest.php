@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\I18n\Values\Translatable;
@@ -17,9 +18,10 @@ use Lattice\Lattice\Tests\Fixtures\TypeScript\Unloadable\LoadableSibling;
 use Lattice\Lattice\Ui\Components\Card;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Variant;
+use Spatie\Attributes\Attributes;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
 
     expect($manifest->family('effect'))->toHaveKey(Toast::class, 'toast')
         ->and($manifest->enums)->toContain(Variant::class)
@@ -29,7 +31,7 @@ it('classifies the src tree into enums, value objects, components and effects', 
 });
 
 it('returns an empty manifest for a missing path', function (): void {
-    $manifest = new WireTypeDiscovery()->discover('/nonexistent');
+    $manifest = app(WireTypeDiscovery::class)->discover('/nonexistent');
 
     expect($manifest->enums)->toBe([])
         ->and($manifest->valueObjects)->toBe([])
@@ -38,7 +40,7 @@ it('returns an empty manifest for a missing path', function (): void {
 });
 
 it('discovers attributed components under a path with type, flags and category', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+    $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $byType = collect($manifest->components)->keyBy->type;
 
@@ -56,7 +58,7 @@ it('discovers attributed components under a path with type, flags and category',
 });
 
 it('excludes classes without the AsComponent attribute from component discovery', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+    $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $types = collect($manifest->components)->pluck('type')->all();
 
@@ -67,7 +69,7 @@ it('excludes classes without the AsComponent attribute from component discovery'
 });
 
 it('classifies dual-marked classes as components regardless of attribute declaration order', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+    $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $classes = collect($manifest->components)->pluck('class')->all();
 
@@ -80,7 +82,7 @@ it('classifies dual-marked classes as components regardless of attribute declara
 });
 
 it('derives the domain from the namespace segment before Components', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src/Ui/Components');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src/Ui/Components');
 
     $card = collect($manifest->components)->keyBy->type->get('card');
 
@@ -89,19 +91,20 @@ it('derives the domain from the namespace segment before Components', function (
     expect($card->domain)->toBe('Ui');
 });
 
-it('discovers columns via attribute inheritance and captures the column class', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+it('discovers columns without treating them as components', function (): void {
+    $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $column = collect($manifest->components)->keyBy->type->get('column.rating');
 
     assert($column instanceof DiscoveredComponent);
 
     expect($column->category)->toBe('column')
-        ->and($column->class)->toBe(SampleColumn::class);
+        ->and($column->class)->toBe(SampleColumn::class)
+        ->and(Attributes::has(SampleColumn::class, AsComponent::class))->toBeFalse();
 });
 
 it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
 
     expect($manifest->enums)->toContain(Align::class)->toContain(Variant::class);
     expect($manifest->enums)->not->toContain(Option::class);
@@ -111,7 +114,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
 });
 
 it('excludes classes without the #[TypeScript] attribute from enum/value-object discovery', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
 
     $all = [...$manifest->enums, ...$manifest->valueObjects];
 
@@ -119,7 +122,7 @@ it('excludes classes without the #[TypeScript] attribute from enum/value-object 
 });
 
 it('sorts enums and value objects deterministically by class-string', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
 
     $sortedEnums = $manifest->enums;
     sort($sortedEnums);
@@ -131,7 +134,7 @@ it('sorts enums and value objects deterministically by class-string', function (
 });
 
 it('keys effects by class-string, valued by wire type, sorted by class-string', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
 
     expect($manifest->family('effect')[Toast::class])->toBe('toast');
 
@@ -143,20 +146,20 @@ it('keys effects by class-string, valued by wire type, sorted by class-string', 
 });
 
 it('does not classify an effect as a value object', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
 
     expect($manifest->valueObjects)->not->toContain(Toast::class)
         ->and($manifest->enums)->not->toContain(Toast::class);
 });
 
 it('keys editor extensions by class-string, valued by wire type', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+    $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     expect($manifest->family('editor-extension'))->toBe([SampleEditorExtension::class => 'sample-extension']);
 });
 
 it('does not classify an editor extension as a value object', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript');
+    $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     expect($manifest->valueObjects)->not->toContain(SampleEditorExtension::class)
         ->and($manifest->enums)->not->toContain(SampleEditorExtension::class)
@@ -164,7 +167,7 @@ it('does not classify an editor extension as a value object', function (): void 
 });
 
 it('classifies AsRemoteComponent with correct precedence in components', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
 
     $dataList = collect($manifest->components)->firstWhere('class', DataList::class);
 
@@ -176,13 +179,13 @@ it('classifies AsRemoteComponent with correct precedence in components', functio
 });
 
 it('skips a class that fails to autoload during discovery instead of throwing', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(__DIR__.'/../../Fixtures/TypeScript/Unloadable');
+    $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript/Unloadable');
 
     expect($manifest->valueObjects)->toContain(LoadableSibling::class);
 });
 
 it('excludes classes under an ignored directory from discovery', function (): void {
-    $manifest = new WireTypeDiscovery()->discover(
+    $manifest = app(WireTypeDiscovery::class)->discover(
         __DIR__.'/../../Fixtures/TypeScript/Unloadable',
         [__DIR__.'/../../Fixtures/TypeScript/Unloadable'],
     );
@@ -191,7 +194,7 @@ it('excludes classes under an ignored directory from discovery', function (): vo
 });
 
 it('resolves a domain for every discovered src component', function (): void {
-    $components = new WireTypeDiscovery()->discover(dirname(__DIR__, 3).'/src')->components;
+    $components = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src')->components;
 
     $orphans = collect($components)
         ->filter(fn (DiscoveredComponent $dc): bool => $dc->category === 'component' && $dc->domain === '')

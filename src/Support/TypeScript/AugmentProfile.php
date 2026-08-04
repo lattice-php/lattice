@@ -6,15 +6,19 @@ namespace Lattice\Lattice\Support\TypeScript;
 use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Attributes\WireEnvelope;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Lattice\LatticeRegistry;
 
 /**
  * Default profile: discovers an app's own wire-typed classes — components,
- * columns, filters and every attribute-sourced family in the WireFamily table —
+ * columns, filters and every attribute-sourced family registered by providers —
  * and writes a module augmentation extending the package's published types.
  */
 final readonly class AugmentProfile implements TypeScriptProfile
 {
-    public function __construct(private WireTypeDiscovery $discovery) {}
+    public function __construct(
+        private WireTypeDiscovery $discovery,
+        private LatticeRegistry $lattice,
+    ) {}
 
     public function pendingTypeCount(): int
     {
@@ -27,7 +31,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
                 $entries[$component->class] = true;
             }
 
-            foreach (WireFamily::registryFamilies() as $family) {
+            foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
                 foreach (array_keys($manifest->family($family->category)) as $class) {
                     $entries[$class] = true;
                 }
@@ -45,7 +49,8 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
         if ($roots === []) {
             File::ensureDirectoryExists(dirname($output));
-            File::put($output, AugmentationWriter::render($module, []));
+            $writer = new AugmentationWriter([], $this->lattice, $module, basename($output));
+            File::put($output, $writer->render([]));
 
             return sprintf('Generated 0 type(s) → %s', $output);
         }
@@ -59,7 +64,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
                 $entries[$component->class] = [$component->type, $component->category];
             }
 
-            foreach (WireFamily::registryFamilies() as $family) {
+            foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
                 foreach ($manifest->family($family->category) as $class => $type) {
                     $entries[$class] = [$type, $family->category];
                 }
@@ -76,10 +81,10 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
         $markerRefs = [];
 
-        foreach (WireFamily::markerFamilies() as $family) {
-            $markerRefs[$family->marker] = new NodeTypeReference(
+        foreach ($this->lattice->wireFamilies()->where('marker', true) as $family) {
+            $markerRefs[$family->reference] = new NodeTypeReference(
                 $byCategory[$family->category] ?? [],
-                WireEnvelope::forClass($family->marker),
+                WireEnvelope::forClass($family->reference),
                 attributeFallback: $family->category === 'component',
             );
         }
@@ -88,7 +93,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
             $roots,
             [new ComponentTransformer(array_keys($entries), $markerRefs)],
             [],
-            new AugmentationWriter($entries, $module, basename($output)),
+            new AugmentationWriter($entries, $this->lattice, $module, basename($output)),
             dirname($output),
             new OxfmtFormatter,
         );
