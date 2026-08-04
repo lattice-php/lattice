@@ -1,4 +1,4 @@
-import { translate } from "@lattice-php/lattice/i18n";
+import { translate } from "@lattice-php/ui/i18n";
 import { DEFAULT_COLUMN_WIDTH } from "@lattice-php/lattice/core/hooks/column-sizing";
 import type { ColumnWidth } from "@lattice-php/lattice/types/generated";
 import { isEmptyMember } from "./filter-values";

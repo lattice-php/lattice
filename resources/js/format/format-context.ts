@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useLocale } from "@lattice-php/lattice/i18n/locale";
-import { useTimezone } from "@lattice-php/lattice/i18n/timezone";
+import { useLocale } from "@lattice-php/ui/i18n/locale";
+import { useTimezone } from "@lattice-php/ui/i18n/timezone";
 
 export type FormatContext = { locale: string; timezone: string };
 

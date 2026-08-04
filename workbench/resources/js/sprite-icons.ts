@@ -67,7 +67,7 @@ export const iconNames = [
 
 export type IconName = (typeof iconNames)[number];
 
-declare module "@lattice-php/lattice" {
+declare module "@lattice-php/ui" {
   interface KnownIcons {
     "align-center": true;
     "align-justify": true;

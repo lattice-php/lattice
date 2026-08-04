@@ -1,6 +1,6 @@
 import * as React from "react";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { coerceColor, namedColor, toneProps } from "@lattice-php/lattice/lib/color";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { coerceColor, namedColor, toneProps } from "@lattice-php/ui/lib/color";
 import type { Color } from "@lattice-php/lattice/types/generated";
 import type { RendererComponent } from "@lattice-php/core/types";
 

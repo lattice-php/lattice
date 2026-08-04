@@ -17,10 +17,14 @@
         "psr-4": {
             "Lattice\\Lattice\\Attributes\\": "src/Attributes/",
             "Lattice\\Lattice\\Core\\": "src/Core/",
+            "Lattice\\Lattice\\Facades\\": "src/Facades/",
             "Lattice\\Lattice\\Support\\Discovery\\": "src/Support/Discovery/",
-            "Lattice\\Lattice\\Support\\Evaluation\\": "src/Support/Evaluation/"
+            "Lattice\\Lattice\\Support\\Evaluation\\": "src/Support/Evaluation/",
+            "Lattice\\Lattice\\Support\\TypeScript\\": "src/Support/TypeScript/"
         },
         "classmap": [
+            "src/LatticeRegistry.php",
+            "src/Support/Affix.php",
             "src/Support/Wire.php",
             "src/Support/WireTypeRegistry.php",
             "src/Ui/Enums/PageContainer.php",

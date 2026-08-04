@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "@lattice-php/lattice/icons";
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
-import { Input } from "@lattice-php/lattice/ui/input";
-import { useT } from "@lattice-php/lattice/i18n";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useDebouncedCallback } from "@lattice-php/lattice/lib/use-debounced-callback";
+import { Icon } from "@lattice-php/ui/icons";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { Input } from "@lattice-php/ui/input";
+import { useT } from "@lattice-php/ui/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 
 const DEBOUNCE_MS = 300;
 

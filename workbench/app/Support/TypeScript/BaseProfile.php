@@ -123,6 +123,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         return [
             $packageRoot.'/src',
             $packageRoot.'/packages/core/src',
+            $packageRoot.'/packages/ui/src',
         ];
     }
 

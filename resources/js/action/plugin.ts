@@ -5,10 +5,10 @@ import ActionGroupComponent from "./components/action-group";
 
 type ActionComponentType = Exclude<ActionNodeType, "action.bulk">;
 
-export const actionComponents = {
+export const actionComponents: Plugin = {
   components: {
     action: eagerComponent(ActionComponent),
     "action.group": eagerComponent(ActionGroupComponent),
   } satisfies ComponentRegistryFor<ActionComponentType>,
   name: "lattice/action",
-} satisfies Plugin;
+};

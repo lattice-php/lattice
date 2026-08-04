@@ -1,9 +1,9 @@
-import InputError from "@lattice-php/lattice/ui/input-error";
-import { InfoTooltip } from "@lattice-php/lattice/ui/info-tooltip";
+import InputError from "@lattice-php/ui/input-error";
+import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 import { TextLink } from "@lattice-php/lattice/ui/link";
-import { Label } from "@lattice-php/lattice/ui/label";
+import { Label } from "@lattice-php/ui/label";
 import { useInTableCell } from "@lattice-php/lattice/form/hooks/row-layout-context";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 import type { LabelAction } from "@lattice-php/lattice/form/types";
 import type { ComponentProps, ReactNode } from "react";
 

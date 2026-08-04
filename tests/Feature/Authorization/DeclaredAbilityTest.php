@@ -13,7 +13,6 @@ use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Http\Page;
@@ -25,6 +24,7 @@ use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableQuery;
 use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Ui\Components\Heading;
+use Lattice\Lattice\Ui\PageSchema;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;

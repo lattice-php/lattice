@@ -5,7 +5,7 @@ const translate = vi.hoisted(() =>
   vi.fn<(namespace: string, key: string, fallback?: string) => string>((_namespace, key) => key),
 );
 
-vi.mock("@lattice-php/lattice/i18n", () => ({ translate }));
+vi.mock("@lattice-php/ui/i18n", () => ({ translate }));
 
 it("builds the operator translation key from the operator value verbatim", () => {
   expect(operatorLabel("starts_with")).toBe("table.operators.starts_with");

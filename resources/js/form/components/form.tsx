@@ -7,7 +7,7 @@ import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { nodeKey } from "@lattice-php/core/nodes";
 import { RenderNode } from "@lattice-php/core/renderer";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
-import { useT } from "@lattice-php/lattice/i18n";
+import { useT } from "@lattice-php/ui/i18n";
 import type { Emphasis, Justify, Variant } from "@lattice-php/lattice/types/generated";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormSubmitButton } from "./base/submit-button";

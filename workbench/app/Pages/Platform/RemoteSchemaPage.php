@@ -5,8 +5,8 @@ namespace Workbench\App\Pages\Platform;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
 #[AsPage(route: '/platform/remote-schema')]

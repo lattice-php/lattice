@@ -1,7 +1,7 @@
 import type { RendererComponent } from "@lattice-php/core/types";
 import { AffixGroup } from "@lattice-php/lattice/ui/affix-group";
-import { CopyButton } from "@lattice-php/lattice/ui/copyable-text";
-import { Input } from "@lattice-php/lattice/ui/input";
+import { CopyButton } from "@lattice-php/ui/copyable-text";
+import { Input } from "@lattice-php/ui/input";
 import { SimpleField } from "./simple-field";
 
 export const TextInputComponent: RendererComponent<"field.text-input"> = ({ node }) => {

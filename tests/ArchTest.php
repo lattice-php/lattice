@@ -10,7 +10,6 @@ use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\PageMetadata;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
@@ -104,7 +103,7 @@ arch('layouts depend on no feature domain other than actions')
 arch('core does not depend on feature or ui domains')
     ->expect('Lattice\Lattice\Core')
     ->not->toUse(CORE_FORBIDDEN_NAMESPACES)
-    ->ignoring([PageMetadata::class, PageSchema::class]);
+    ->ignoring([PageMetadata::class]);
 
 it('shared source does not reference feature or ui namespaces in strings', function (string $directory): void {
     $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/'.$directory));
@@ -115,8 +114,7 @@ it('shared source does not reference feature or ui namespaces in strings', funct
             continue;
         }
 
-        // Their public types stay compatible until the package-extraction release.
-        if (str_ends_with($directory, 'Core') && in_array($file->getFilename(), ['PageMetadata.php', 'PageSchema.php'], true)) {
+        if (str_ends_with($directory, 'Core') && $file->getFilename() === 'PageMetadata.php') {
             continue;
         }
 

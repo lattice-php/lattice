@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { CopyableText } from "./copyable-text";
-import { InfoTooltip } from "./info-tooltip";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { CopyableText } from "@lattice-php/ui/copyable-text";
+import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 
 const HeadingComponent: RendererComponent<"heading"> = ({ node }) => {
   const { text, tooltip } = node.props;

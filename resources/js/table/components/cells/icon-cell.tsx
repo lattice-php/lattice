@@ -1,6 +1,6 @@
-import { IconRenderer } from "@lattice-php/lattice/icons";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { coerceColor, toneProps } from "@lattice-php/lattice/lib/color";
+import { IconRenderer } from "@lattice-php/ui/icons";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { coerceColor, toneProps } from "@lattice-php/ui/lib/color";
 import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
 
 export const IconCell: ColumnCellComponent<"column.icon"> = ({ props, value }) => {

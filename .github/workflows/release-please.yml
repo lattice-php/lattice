@@ -62,6 +62,13 @@ jobs:
   split-composer:
     needs: release-please
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package:
+          - directory: packages/core
+            repository: core
+          - directory: packages/ui
+            repository: ui
     steps:
       - uses: actions/checkout@v6
         with:
@@ -69,9 +76,9 @@ jobs:
 
       - uses: danharrin/monorepo-split-github-action@v2.4.0
         with:
-          package_directory: packages/core
+          package_directory: ${{ matrix.package.directory }}
           repository_organization: lattice-php
-          repository_name: core
+          repository_name: ${{ matrix.package.repository }}
           tag: ${{ needs.release-please.outputs.tag_name }}
           user_email: github-actions[bot]@users.noreply.github.com
           user_name: github-actions[bot]

@@ -3,7 +3,7 @@ import type { RendererComponent } from "@lattice-php/core/types";
 import type { FloatingPlacement } from "@lattice-php/lattice/types/generated";
 import { RenderNode } from "@lattice-php/core/renderer";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 
 function placementStyle(placement: FloatingPlacement, offset: number): CSSProperties {
   if (placement === "top-start") {

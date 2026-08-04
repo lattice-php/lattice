@@ -1,14 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { Button } from "@lattice-php/lattice/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  type DialogPlacement,
-} from "@lattice-php/lattice/ui/dialog";
-import { Skeleton } from "@lattice-php/lattice/ui/skeleton";
-import { Spinner } from "@lattice-php/lattice/ui/spinner";
+import { Dialog, DialogContent, DialogHeader, type DialogPlacement } from "@lattice-php/ui/dialog";
+import { Skeleton } from "@lattice-php/ui/skeleton";
+import { Spinner } from "@lattice-php/ui/spinner";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import type { ModalWidth } from "@lattice-php/lattice/types/generated";
@@ -25,8 +20,8 @@ import {
   useFormValues,
 } from "@lattice-php/lattice/form/embed";
 import type { FieldErrors } from "@lattice-php/lattice/form/embed";
-import { useDebouncedCallback } from "@lattice-php/lattice/lib/use-debounced-callback";
-import { useT } from "@lattice-php/lattice/i18n";
+import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
+import { useT } from "@lattice-php/ui/i18n";
 import { dispatchActionError, getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";

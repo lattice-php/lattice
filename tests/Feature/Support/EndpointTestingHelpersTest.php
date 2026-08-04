@@ -13,7 +13,6 @@ use Lattice\Lattice\Attributes\AsBulkAction;
 use Lattice\Lattice\Attributes\AsForm;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\FormDefinition;
@@ -28,6 +27,7 @@ use Lattice\Lattice\Tables\TableResult;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Lattice\Ui\PageSchema;
 use PHPUnit\Framework\AssertionFailedError;
 use Symfony\Component\HttpFoundation\Response;
 

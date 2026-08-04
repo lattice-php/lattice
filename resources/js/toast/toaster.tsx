@@ -1,13 +1,13 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
 import { RenderNode } from "@lattice-php/core/renderer";
 import type { Toast as ToastMessage } from "@lattice-php/lattice/types/generated";
 import { onToast } from "./toast";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useT } from "@lattice-php/lattice/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
 import { variantStyles } from "./variant-styles";
-import { resolveText } from "@lattice-php/lattice/i18n/translatable";
+import { resolveText } from "@lattice-php/ui/i18n/translatable";
 
 type ToastItem = ToastMessage & { id: number };
 

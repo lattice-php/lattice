@@ -5,9 +5,9 @@ import { CollapsedContext } from "@lattice-php/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useMediaQuery } from "@lattice-php/lattice/lib/use-media-query";
-import { useCollapsibleState } from "@lattice-php/lattice/ui/use-collapsible-state";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useMediaQuery } from "@lattice-php/ui/lib/use-media-query";
+import { useCollapsibleState } from "@lattice-php/ui/use-collapsible-state";
 
 const DESKTOP_QUERY = "(min-width: 768px)";
 

@@ -24,7 +24,7 @@ import {
 } from "./components";
 import { RichEditorComponent } from "./components/fields/rich-editor";
 
-export const formComponents = {
+export const formComponents: Plugin = {
   components: {
     form: eagerComponent(FormComponent),
     "field.builder": eagerComponent(BuilderComponent),
@@ -49,4 +49,4 @@ export const formComponents = {
     "wizard-step": eagerComponent(WizardStepComponent),
   } satisfies ComponentRegistryFor<FormNodeType>,
   name: "lattice/form",
-} satisfies Plugin;
+};

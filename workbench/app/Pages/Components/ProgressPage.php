@@ -5,13 +5,13 @@ namespace Workbench\App\Pages\Components;
 
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Progress;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\Size;
 use Lattice\Lattice\Ui\Enums\StackDirection;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
 #[AsPage(route: '/components/progress')]

@@ -5,7 +5,7 @@ namespace Lattice\Lattice\Layouts;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 
 abstract class LayoutDefinition extends Definition
 {

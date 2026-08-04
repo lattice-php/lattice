@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { testIdentity } from "@lattice-php/core/test-id";
 import { RenderNode } from "@lattice-php/core/renderer";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";

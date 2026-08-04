@@ -1,8 +1,8 @@
 import { Renderer } from "@lattice-php/core/renderer";
 import { toNodes } from "@lattice-php/core/nodes";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { InfoTooltip } from "./info-tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
 
 const TooltipComponent: RendererComponent<"tooltip"> = ({ node }) => {
   const content = node.props.content;

@@ -1,12 +1,8 @@
 import { usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import {
-  Popover as PopoverRoot,
-  PopoverContent,
-  PopoverTrigger,
-} from "@lattice-php/lattice/ui/popover";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { Popover as PopoverRoot, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { CollapsedContext } from "@lattice-php/core/collapsed-context";
 
 /**

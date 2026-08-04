@@ -28,7 +28,7 @@ composer serve   # PHP server
 npm run dev      # Vite HMR (separate terminal)
 ```
 
-The workbench compiles Lattice directly from `resources/js` and imports the stylesheet directly from `resources/css/lattice.css`, so frontend changes are picked up by Vite without running the package build.
+The workbench compiles Lattice directly from `resources/js` and imports the stylesheet directly from `packages/ui/resources/css/lattice.css`, so frontend changes are picked up by Vite without running the package build.
 
 The canonical references are:
 

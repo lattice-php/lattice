@@ -22,7 +22,11 @@ use Spatie\Attributes\Attributes;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
     $root = dirname(__DIR__, 3);
-    $manifest = app(WireTypeDiscovery::class)->discover([$root.'/src', $root.'/packages/core/src']);
+    $manifest = app(WireTypeDiscovery::class)->discover([
+        $root.'/src',
+        $root.'/packages/core/src',
+        $root.'/packages/ui/src',
+    ]);
 
     expect($manifest->family('effect'))->toHaveKey(Toast::class, 'toast')
         ->and($manifest->enums)->toContain(Variant::class)
@@ -83,7 +87,7 @@ it('classifies dual-marked classes as components regardless of attribute declara
 });
 
 it('derives the domain from the namespace segment before Components', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src/Ui/Components');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src/Components');
 
     $card = collect($manifest->components)->keyBy->type->get('card');
 
@@ -106,7 +110,11 @@ it('discovers columns without treating them as components', function (): void {
 
 it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {
     $root = dirname(__DIR__, 3);
-    $manifest = app(WireTypeDiscovery::class)->discover([$root.'/src', $root.'/packages/core/src']);
+    $manifest = app(WireTypeDiscovery::class)->discover([
+        $root.'/src',
+        $root.'/packages/core/src',
+        $root.'/packages/ui/src',
+    ]);
 
     expect($manifest->enums)->toContain(Align::class)->toContain(Variant::class);
     expect($manifest->enums)->not->toContain(Option::class);
@@ -116,7 +124,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
 });
 
 it('excludes classes without the #[TypeScript] attribute from enum/value-object discovery', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src');
 
     $all = [...$manifest->enums, ...$manifest->valueObjects];
 
@@ -124,7 +132,7 @@ it('excludes classes without the #[TypeScript] attribute from enum/value-object 
 });
 
 it('sorts enums and value objects deterministically by class-string', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src');
 
     $sortedEnums = $manifest->enums;
     sort($sortedEnums);
@@ -196,7 +204,7 @@ it('excludes classes under an ignored directory from discovery', function (): vo
 });
 
 it('resolves a domain for every discovered src component', function (): void {
-    $components = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src')->components;
+    $components = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src')->components;
 
     $orphans = collect($components)
         ->filter(fn (DiscoveredComponent $dc): bool => $dc->category === 'component' && $dc->domain === '')
