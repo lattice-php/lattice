@@ -1,0 +1,48 @@
+import { readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+import actionPlugin, { actionComponents } from "./plugin";
+
+const packageRoot = path.resolve(import.meta.dirname, "../..");
+const repositoryRoot = path.resolve(packageRoot, "../..");
+const sourceRoot = path.join(packageRoot, "resources/js");
+
+describe("action npm package contract", () => {
+  it("provides the default export expected by Composer plugin discovery", () => {
+    expect(actionPlugin).toBe(actionComponents);
+  });
+
+  it("is independently installable above Core, UI, and Form", () => {
+    const manifest = JSON.parse(readFileSync(path.join(packageRoot, "package.json"), "utf8")) as {
+      dependencies?: Record<string, string>;
+      name: string;
+      peerDependencies?: Record<string, string>;
+    };
+    const aggregate = JSON.parse(
+      readFileSync(path.join(repositoryRoot, "package.json"), "utf8"),
+    ) as {
+      dependencies?: Record<string, string>;
+      version: string;
+    };
+
+    expect(manifest.name).toBe("@lattice-php/action");
+    expect(manifest.dependencies?.["@lattice-php/core"]).toBe(aggregate.version);
+    expect(manifest.dependencies?.["@lattice-php/form"]).toBe(aggregate.version);
+    expect(manifest.dependencies?.["@lattice-php/ui"]).toBe(aggregate.version);
+    expect(manifest.dependencies?.["@lattice-php/lattice"]).toBeUndefined();
+    expect(manifest.peerDependencies?.["@lattice-php/lattice"]).toBeUndefined();
+    expect(aggregate.dependencies?.["@lattice-php/action"]).toBe(aggregate.version);
+  });
+
+  it("does not import the umbrella package", () => {
+    const violations = readdirSync(sourceRoot, { encoding: "utf8", recursive: true })
+      .filter((file) => /\.(ts|tsx)$/.test(file) && !/\.test(-d)?\.(ts|tsx)$/.test(file))
+      .flatMap((file) => {
+        const contents = readFileSync(path.join(sourceRoot, file), "utf8");
+
+        return contents.includes("@lattice-php/lattice") ? [file] : [];
+      });
+
+    expect(violations).toEqual([]);
+  });
+});

@@ -11,7 +11,7 @@ import type {
   TableNodeType,
   UiNodeType,
 } from "@lattice-php/lattice/types/generated";
-import { actionComponents } from "./action/plugin";
+import { actionComponents } from "@lattice-php/action/plugin";
 import { chatComponents } from "./chat/plugin";
 import { uiComponents } from "./ui/plugin";
 import { formComponents } from "@lattice-php/form/plugin";

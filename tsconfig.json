@@ -11,6 +11,8 @@
     "noEmit": true,
     "noImplicitAny": true,
     "paths": {
+      "@lattice-php/action": ["./packages/action/resources/js/index.ts"],
+      "@lattice-php/action/*": ["./packages/action/resources/js/*"],
       "@lattice-php/core": ["./packages/core/resources/js/index.ts"],
       "@lattice-php/core/*": ["./packages/core/resources/js/*"],
       "@lattice-php/table": ["./packages/table/resources/js/index.ts"],

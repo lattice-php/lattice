@@ -1,1 +1,1 @@
-export * from "@lattice-php/ui/effects/run-action";
+export * from "@lattice-php/action/lib/run-action";

@@ -17,6 +17,8 @@ it('owns the action backend in an independently installable package', function (
         ->and($package['require']['lattice-php/form'])->toBe('self.version')
         ->and($package['require']['lattice-php/ui'])->toBe('self.version')
         ->and($package['require'])->not->toHaveKey('lattice-php/lattice')
+        ->and($package['extra']['lattice']['plugin'])->toBe('resources/js/plugin.ts')
+        ->and($package['extra']['lattice']['standalone'])->toBe('dist/plugin.js')
         ->and($package['extra']['laravel']['providers'])->toBe([ActionsServiceProvider::class])
         ->and($aggregate['require']['lattice-php/action'])->toBe('self.version')
         ->and(new ReflectionClass(ActionsServiceProvider::class)->getFileName())->toStartWith($packageRoot.'/src/')

@@ -1,0 +1,1 @@
+{"version":3,"file":"run-action.js","names":[],"sources":["../../resources/js/lib/run-action.ts"],"sourcesContent":["export * from \"@lattice-php/ui/effects/run-action\";\n"],"mappings":""}

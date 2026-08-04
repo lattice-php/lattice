@@ -10,7 +10,7 @@ import {
   ActionTrigger,
   type TriggerState,
   useClickBehavior,
-} from "@lattice-php/lattice/ui/click-behavior";
+} from "@lattice-php/action/click-behavior";
 import { useSidebarCollapsed } from "@lattice-php/lattice/layout/hooks/context";
 import { Popover } from "./popover";
 

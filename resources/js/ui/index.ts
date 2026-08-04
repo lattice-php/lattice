@@ -1,5 +1,9 @@
 export { AffixGroup } from "./affix-group";
-export { ActionMenuProvider, actionMenuItemClassName, useActionMenu } from "./action-menu-context";
+export {
+  ActionMenuProvider,
+  actionMenuItemClassName,
+  useActionMenu,
+} from "@lattice-php/action/action-menu-context";
 export { Badge } from "./badge";
 export { Button, buttonVariants } from "@lattice-php/ui/button";
 export type { Emphasis, Variant } from "@lattice-php/ui/button";
@@ -14,8 +18,12 @@ export {
   ActionTriggerProvider,
   useActionTrigger,
   useClickBehavior,
-} from "./click-behavior";
-export type { ActionTriggerRenderer, ClickBehavior, TriggerState } from "./click-behavior";
+} from "@lattice-php/action/click-behavior";
+export type {
+  ActionTriggerRenderer,
+  ClickBehavior,
+  TriggerState,
+} from "@lattice-php/action/click-behavior";
 export {
   Dialog,
   DialogClose,

@@ -293,6 +293,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
         ...(!isLibrary && {
+          "@lattice-php/action": path.resolve(import.meta.dirname, "packages/action/resources/js"),
           "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
           "@lattice-php/table": path.resolve(import.meta.dirname, "packages/table/resources/js"),
         }),
@@ -341,6 +342,7 @@ export default defineConfig(({ mode }) => {
               rollupOptions: {
                 external: [
                   /^node:/,
+                  /^@lattice-php\/action($|\/)/,
                   /^@lattice-php\/core($|\/)/,
                   /^@lattice-php\/ui($|\/)/,
                   /^react($|\/)/,

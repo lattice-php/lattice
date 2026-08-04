@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { formComponents } from "@lattice-php/form/plugin";
-import { actionComponents } from "./action/plugin";
+import { actionComponents } from "@lattice-php/action/plugin";
 import { chatComponents } from "./chat/plugin";
 import { notificationsComponents } from "./notifications/plugin";
 import { registry } from "./registry";

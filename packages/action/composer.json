@@ -23,7 +23,9 @@
         "lattice": {
             "discover": [
                 "src"
-            ]
+            ],
+            "plugin": "resources/js/plugin.ts",
+            "standalone": "dist/plugin.js"
         },
         "laravel": {
             "providers": [
