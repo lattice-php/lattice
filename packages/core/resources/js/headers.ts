@@ -1,4 +1,4 @@
-import { withRefHeader } from "@lattice-php/core/component-ref";
+import { withRefHeader } from "./component-ref";
 
 type RequestHeaderProvider = () => Record<string, string>;
 

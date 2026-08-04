@@ -6,7 +6,7 @@
  * which carries its own headers.
  */
 
-import { latestRef, storeRefreshedRef } from "@lattice-php/core/component-ref";
+import { latestRef, storeRefreshedRef } from "./component-ref";
 import { withHeaders, withRequestHeaders } from "./headers";
 
 export class ApiError extends Error {
