@@ -1,0 +1,73 @@
+import type { RendererComponent } from "@lattice-php/core";
+import { testIdentity } from "@lattice-php/core/test-id";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { toBoolean } from "@lattice-php/form/lib/conditions";
+import { useFormContext } from "@lattice-php/form/hooks/context";
+import { fieldDomName } from "@lattice-php/form/lib/field-dom-name";
+import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
+import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
+import { useFieldCommit } from "@lattice-php/form/hooks/use-field-commit";
+import { useSeedDefault } from "@lattice-php/form/hooks/use-seed-default";
+import { useFormValue } from "@lattice-php/form/hooks/values";
+
+export const ToggleComponent: RendererComponent<"field.toggle"> = ({ node }) => {
+  const { hidden, required, readOnly, disabled } = useDependentField(node);
+  const props = node.props;
+  const localName = props.name;
+  const scope = useFieldScope();
+  const { errors, fieldIdPrefix } = useFormContext();
+  const name = fieldDomName(scope ? scope.scopedName(localName) : localName, fieldIdPrefix);
+  const errorKey = scope ? scope.errorKey(localName) : localName;
+  const globalValue = useFormValue(localName);
+  const storedValue = scope ? scope.getValue(localName) : globalValue;
+  const defaultChecked = toBoolean(props.value);
+  const checked = storedValue !== undefined ? toBoolean(storedValue) : defaultChecked;
+  const locked = readOnly || disabled;
+  const { commit } = useFieldCommit();
+
+  useSeedDefault(localName, defaultChecked);
+
+  if (hidden) {
+    return null;
+  }
+
+  return (
+    <FormFieldFrame
+      error={errors[errorKey]}
+      helperText={props.helperText ?? undefined}
+      tooltip={props.tooltip ?? undefined}
+      label={props.label ?? ""}
+      id={name}
+      required={required}
+    >
+      {(controlProps) => (
+        <>
+          <input disabled={locked} name={name} type="hidden" value={checked ? "1" : "0"} />
+          <button
+            {...controlProps}
+            aria-checked={checked}
+            aria-label={props.label ?? localName}
+            autoFocus={props.autoFocus ?? false}
+            className={cn(
+              "inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border border-transparent bg-lt-muted p-0.5 shadow-lt-xs transition-colors outline-none focus-visible:border-lt-ring focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50 disabled:cursor-not-allowed disabled:bg-lt-disabled data-[state=checked]:bg-lt-primary disabled:data-[state=checked]:bg-lt-disabled",
+            )}
+            data-state={checked ? "checked" : "unchecked"}
+            data-test={testIdentity(localName)}
+            disabled={locked}
+            name={name}
+            onClick={() => commit(localName, !checked)}
+            role="switch"
+            tabIndex={props.tabIndex ?? undefined}
+            type="button"
+          >
+            <span
+              className="size-5 rounded-full bg-lt-bg shadow-lt-sm transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"
+              data-state={checked ? "checked" : "unchecked"}
+            />
+          </button>
+        </>
+      )}
+    </FormFieldFrame>
+  );
+};

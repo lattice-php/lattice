@@ -1,3 +1,4 @@
+export * from "./affix-group";
 export * from "./button";
 export * from "./checkbox";
 export * from "./color-picker";
@@ -25,6 +26,7 @@ export * from "./segmented-pills";
 export * from "./skeleton";
 export * from "./spinner";
 export * from "./textarea";
+export * from "./text-link";
 export * from "./types";
 export * from "./use-collapsible-state";
 export * from "./use-column-resizing";

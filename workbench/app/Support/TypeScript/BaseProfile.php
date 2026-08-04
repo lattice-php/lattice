@@ -5,8 +5,11 @@ namespace Workbench\App\Support\TypeScript;
 
 use Illuminate\Support\Str;
 use Lattice\Lattice\Attributes\WireEnvelope;
+use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\LatticeRegistry;
+use Lattice\Lattice\Support\Affix;
 use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
 use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Lattice\Support\TypeScript\NodeModuleWriter;
@@ -17,6 +20,11 @@ use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Lattice\Ui\Enums\Emphasis;
+use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Lattice\Ui\Enums\Variant;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript module
@@ -47,6 +55,9 @@ final readonly class BaseProfile implements TypeScriptProfile
         $outputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput
             : $packageRoot.'/resources/js/types';
+        $formOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
+            ? $configuredOutput.'/form'
+            : $packageRoot.'/packages/form/resources/js';
 
         $manifest = $this->discovery->discover($sources);
 
@@ -112,6 +123,48 @@ final readonly class BaseProfile implements TypeScriptProfile
             new OxfmtFormatter,
         );
 
+        $editorExtensions = array_flip($manifest->family('editor-extension'));
+        $formEnums = array_values(array_filter(
+            $manifest->enums,
+            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Forms\\')
+                || in_array($class, [Op::class, ColumnWidth::class, Emphasis::class, Justify::class, Orientation::class, Variant::class], true),
+        ));
+        $formValueObjects = array_values(array_unique([
+            ...array_filter(
+                $manifest->valueObjects,
+                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Forms\\'),
+            ),
+            ...array_values($editorExtensions),
+            Affix::class,
+            Option::class,
+        ]));
+
+        $generator->generate(
+            $sources,
+            [
+                new HttpMethodTransformer,
+                new EnumTransformer($formEnums),
+                new ValueObjectTransformer($formValueObjects, $markerRefs),
+                new ComponentTransformer([...array_keys($formFields), Form::class], $markerRefs),
+            ],
+            [
+                new NodesProvider(
+                    $formFields,
+                    Form::class,
+                    [],
+                    $this->lattice,
+                    'form',
+                    ['editor-extension' => $editorExtensions],
+                ),
+            ],
+            new NodeModuleWriter(
+                'generated.ts',
+                'import type { Node } from "@lattice-php/core";'.PHP_EOL.PHP_EOL,
+            ),
+            $formOutputDirectory,
+            new OxfmtFormatter,
+        );
+
         return 'Regenerated built-in TypeScript types.';
     }
 
@@ -123,6 +176,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         return [
             $packageRoot.'/src',
             $packageRoot.'/packages/core/src',
+            $packageRoot.'/packages/form/src',
             $packageRoot.'/packages/ui/src',
         ];
     }

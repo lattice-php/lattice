@@ -67,6 +67,8 @@ jobs:
         package:
           - directory: packages/core
             repository: core
+          - directory: packages/form
+            repository: form
           - directory: packages/ui
             repository: ui
     steps:

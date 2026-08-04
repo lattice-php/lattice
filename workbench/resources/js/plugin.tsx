@@ -1,8 +1,5 @@
 import { lazyComponent, type Plugin } from "@lattice-php/lattice";
-import {
-  ToolbarIconButton,
-  type RichEditorExtensionRegistry,
-} from "@lattice-php/lattice/form/rich-editor";
+import { ToolbarIconButton, type RichEditorExtensionRegistry } from "@lattice-php/form/rich-editor";
 import { StatusBadgeCell } from "./columns/status-badge";
 
 export const appPlugin = {

@@ -239,7 +239,7 @@ export default defineConfig(({ mode }) => {
         ? [
             dts({
               tsconfigPath: path.resolve(import.meta.dirname, "tsconfig.json"),
-              aliasesExclude: [/^@lattice-php\/(?:core|ui)(?:\/|$)/],
+              aliasesExclude: [/^@lattice-php\/(?:core|form|ui)(?:\/|$)/],
               include: ["resources/js"],
               copyDtsFiles: true,
               exclude: [
@@ -254,6 +254,8 @@ export default defineConfig(({ mode }) => {
                 paths: {
                   "@lattice-php/core": ["packages/core/dist/index.d.ts"],
                   "@lattice-php/core/*": ["packages/core/dist/index.d.ts"],
+                  "@lattice-php/form": ["packages/form/dist/index.d.ts"],
+                  "@lattice-php/form/*": ["packages/form/dist/*"],
                   "@lattice-php/lattice": ["resources/js/index.ts"],
                   "@lattice-php/lattice/*": ["resources/js/*"],
                 },
@@ -295,6 +297,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
+        "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
         "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
         "@lattice-php/lattice": sourceRoot,
       },
@@ -341,6 +344,7 @@ export default defineConfig(({ mode }) => {
                 external: [
                   /^node:/,
                   /^@lattice-php\/core($|\/)/,
+                  /^@lattice-php\/form($|\/)/,
                   /^@lattice-php\/ui($|\/)/,
                   /^react($|\/)/,
                   /^react-dom($|\/)/,
@@ -389,7 +393,7 @@ export default defineConfig(({ mode }) => {
             // exclude replaces Vitest's defaults instead of extending them, and
             // docs/ links the repo root through file:.., so the docs glob walks
             // back into the whole tree unless node_modules is restored here.
-            exclude: ["**/node_modules/**", "resources/js/**/*.browser.test.{ts,tsx}"],
+            exclude: ["**/node_modules/**", "**/*.browser.test.{ts,tsx}"],
             setupFiles: ["resources/js/test/setup.ts"],
           },
         },
@@ -397,7 +401,10 @@ export default defineConfig(({ mode }) => {
           extends: true,
           test: {
             name: "browser",
-            include: ["resources/js/**/*.browser.test.{ts,tsx}"],
+            include: [
+              "resources/js/**/*.browser.test.{ts,tsx}",
+              "packages/*/resources/js/**/*.browser.test.{ts,tsx}",
+            ],
             setupFiles: ["resources/js/test/browser-setup.ts"],
             browser: {
               enabled: true,

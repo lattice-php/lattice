@@ -1,0 +1,50 @@
+import type { Node } from "@lattice-php/core";
+import type { ComponentPropsMap } from "@lattice-php/form/generated";
+
+/**
+ * The props every form-field node shares (the PHP Field base). Nodes flow through
+ * the form framework loosely typed via the generic schema, so this is the typed
+ * lens the shared hooks read them through. Everything is optional because the
+ * lens is also applied to non-field nodes while walking the schema. Derived from
+ * a generated field type (every field bakes the base in) rather than hand-written.
+ */
+type FieldProps = Partial<
+  Pick<
+    ComponentPropsMap["field.text-input"],
+    | "conditions"
+    | "dependsOnAny"
+    | "dependsOnKeys"
+    | "disabled"
+    | "editablePrefill"
+    | "helperText"
+    | "label"
+    | "name"
+    | "prefillRefreshOn"
+    | "prefillResetOn"
+    | "readOnly"
+    | "required"
+    | "tooltip"
+    | "value"
+  >
+>;
+
+/**
+ * Field types whose value is a collection of rows. Schema walkers must not
+ * descend into their child schemas as top-level fields; children live under
+ * `name.<index>.` paths instead.
+ */
+export const ROW_FIELD_TYPES = new Set(["field.builder", "field.repeater"]);
+
+export function fieldProps(node: Node): FieldProps {
+  return node.props as FieldProps;
+}
+
+export function walkFields(
+  nodes: Node[] | undefined,
+  visit: (props: FieldProps, node: Node) => void,
+): void {
+  for (const child of nodes ?? []) {
+    visit(fieldProps(child), child);
+    walkFields(child.schema, visit);
+  }
+}

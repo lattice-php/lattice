@@ -17,8 +17,7 @@
       "files": ["resources/js/**/*.{ts,tsx}"],
       "excludeFiles": [
         "resources/js/test/browser-setup.ts",
-        "resources/js/ui/**",
-        "resources/js/form/rich-editor/toolbar-button.tsx"
+        "resources/js/ui/**"
       ],
       "rules": {
         "no-restricted-imports": [

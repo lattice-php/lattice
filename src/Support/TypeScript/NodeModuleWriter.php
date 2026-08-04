@@ -17,6 +17,11 @@ use Spatie\TypeScriptTransformer\Writers\FlatModuleWriter;
  */
 final class NodeModuleWriter extends FlatModuleWriter
 {
+    public function __construct(string $path = 'types.ts', private readonly ?string $preamble = null)
+    {
+        parent::__construct($path);
+    }
+
     /**
      * @param  array<mixed>  $transformed
      * @return array<WriteableFile>
@@ -26,7 +31,7 @@ final class NodeModuleWriter extends FlatModuleWriter
     {
         $this->guardUniqueNames($transformed);
 
-        $envelopes = (string) file_get_contents(__DIR__.'/stubs/envelopes.ts');
+        $envelopes = $this->preamble ?? (string) file_get_contents(__DIR__.'/stubs/envelopes.ts');
 
         return array_map(
             fn (WriteableFile $file): WriteableFile => new WriteableFile(

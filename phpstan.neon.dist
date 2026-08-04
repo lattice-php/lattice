@@ -5,9 +5,9 @@ includes:
 parameters:
     paths:
         - packages/core/src
-        - src
-        - packages/core/src
+        - packages/form/src
         - packages/ui/src
+        - src
         - tests
         - workbench/app
     excludePaths:
