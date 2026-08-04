@@ -33,6 +33,16 @@ file automatically — fields and components under `components`, columns under
 `extensions["table.columns"]`. You only need to publish once, and you pass the exported `registry` to
 `Provider`.
 
+## Components and extensions
+
+`components` contains complete wire nodes. They have `type`, `props`, and optional children, and the
+core renderer owns their lifecycle. Form fields belong here because they are full nodes rendered in
+the form tree.
+
+`extensions` contains named registries owned by a feature. A table column contributes a cell renderer
+to `table.columns`; a rich-editor extension contributes Tiptap behavior to `form.rich-editor`. Core
+only merges these registries—the table or editor decides how to use them.
+
 ## Node registry API
 
 The node registry maps type strings to `RendererComponent` functions. Imports come from `@lattice-php/lattice`.
@@ -204,8 +214,8 @@ All of them use TypeScript's declaration merging. You can augment them manually 
 
 ### php artisan lattice:typescript
 
-Run this command whenever your PHP classes gain or lose public properties. It discovers your
-`#[AsComponent]`-marked components, columns and filters, plus `#[AsEffect]` effects and
+Run this command whenever your PHP classes gain or lose public properties. It discovers
+`#[AsComponent]` components, `#[AsColumn]` columns, `#[AsFilter]` filters, `#[AsEffect]` effects, and
 `#[AsEditorExtension]` rich-editor extensions:
 
 ```bash

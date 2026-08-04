@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Ui\Components\Concerns;
 
-use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Attributes\AsWireNode;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Support\Wire;
 use Lattice\Lattice\Ui\Contracts\Renderable;
@@ -44,7 +44,7 @@ trait SerializesWireNode
 
     protected function type(): string
     {
-        return AsComponent::wireTypeForClass(static::class);
+        return AsWireNode::wireTypeForClass(static::class);
     }
 
     protected function wireKey(): ?string

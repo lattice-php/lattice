@@ -149,24 +149,32 @@ protected `$serverTypes` property (e.g. `['mention']`) — submitted nodes of ty
 extension declares are stripped server-side. Toolbar-only extensions that insert plain text, like
 the built-in emoji picker, don't need this.
 
-On the client, register a definition for the same wire type before the app boots:
+On the client, add a definition for the same wire type to the app plugin before boot:
 
 ```tsx
-import { registerRichEditorExtension } from "@lattice-php/lattice/form/rich-editor";
+import type { Plugin } from "@lattice-php/lattice";
+import type { RichEditorExtensionRegistry } from "@lattice-php/lattice/form/rich-editor";
 import { Mention } from "./tiptap/mention";
 
-registerRichEditorExtension("mention", {
-  extensions: (props) => [Mention.configure({ triggers: props.triggers ?? ["@"] })],
-  toolbar: () => [
-    {
-      icon: "at-sign",
-      key: "mention",
-      label: "Mention",
-      isActive: (editor) => editor.isActive("mention"),
-      run: (editor) => editor.chain().focus().insertContent("@").run(),
-    },
-  ],
-});
+export const appPlugin = {
+  name: "app",
+  extensions: {
+    "form.rich-editor": {
+      mention: {
+        extensions: (props) => [Mention.configure({ triggers: props.triggers ?? ["@"] })],
+        toolbar: () => [
+          {
+            icon: "at-sign",
+            key: "mention",
+            label: "Mention",
+            isActive: (editor) => editor.isActive("mention"),
+            run: (editor) => editor.chain().focus().insertContent("@").run(),
+          },
+        ],
+      },
+    } satisfies RichEditorExtensionRegistry,
+  },
+} satisfies Plugin;
 ```
 
 A definition can contribute three things, all optional: `extensions` (Tiptap instances),

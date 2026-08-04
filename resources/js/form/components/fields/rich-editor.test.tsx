@@ -1,10 +1,12 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { createRegistry, type Registry } from "@lattice-php/lattice/core/registry";
+import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
 import type { Node } from "@lattice-php/lattice/core/types";
 import { fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/lattice/form/hooks/values";
-import { registerRichEditorExtension } from "@lattice-php/lattice/form/rich-editor/registry";
+import type { RichEditorExtensionRegistry } from "@lattice-php/lattice/form/rich-editor/registry";
 import type { EditorExtension } from "@lattice-php/lattice/types/generated";
 import { RichEditorComponent } from "./rich-editor";
 
@@ -32,25 +34,28 @@ function renderField(
   node: Node<"field.rich-editor">,
   initial: Record<string, unknown> = {},
   scoped = false,
+  registry: Registry = createRegistry(),
 ) {
   const field = <RichEditorComponent node={node}>{null}</RichEditorComponent>;
   const nested = initial as { items?: Array<{ children?: Array<{ body?: unknown }> }> };
 
   return render(
-    <FormValuesProvider initial={initial}>
-      {scoped ? (
-        <FieldScopeProvider
-          base="items.0.children"
-          index={1}
-          row={{ rowId: "r1", body: nested.items?.[0]?.children?.[1]?.body }}
-          onChange={() => {}}
-        >
-          {field}
-        </FieldScopeProvider>
-      ) : (
-        field
-      )}
-    </FormValuesProvider>,
+    <RegistryContext.Provider value={registry}>
+      <FormValuesProvider initial={initial}>
+        {scoped ? (
+          <FieldScopeProvider
+            base="items.0.children"
+            index={1}
+            row={{ rowId: "r1", body: nested.items?.[0]?.children?.[1]?.body }}
+            onChange={() => {}}
+          >
+            {field}
+          </FieldScopeProvider>
+        ) : (
+          field
+        )}
+      </FormValuesProvider>
+    </RegistryContext.Provider>,
   );
 }
 
@@ -244,19 +249,7 @@ describe("RichEditorComponent", () => {
     expect(screen.queryByLabelText("Insert emoji")).not.toBeInTheDocument();
   });
 
-  it("renders a client-registered custom extension", async () => {
-    registerRichEditorExtension("stamp", {
-      toolbar: () => [
-        {
-          icon: "check",
-          key: "stamp",
-          label: "Stamp",
-          isActive: () => false,
-          run: (editor) => editor.chain().focus().insertContent("STAMPED").run(),
-        },
-      ],
-    });
-
+  it("renders a custom extension from the plugin registry", async () => {
     renderField(
       fakeNode({
         type: "field.rich-editor",
@@ -267,6 +260,26 @@ describe("RichEditorComponent", () => {
             { type: "bold", props: {} },
             { type: "stamp", props: {} },
           ],
+        },
+      }),
+      {},
+      false,
+      createRegistry({
+        name: "test",
+        extensions: {
+          "form.rich-editor": {
+            stamp: {
+              toolbar: () => [
+                {
+                  icon: "check",
+                  key: "stamp",
+                  label: "Stamp",
+                  isActive: () => false,
+                  run: (editor) => editor.chain().focus().insertContent("STAMPED").run(),
+                },
+              ],
+            },
+          } satisfies RichEditorExtensionRegistry,
         },
       }),
     );

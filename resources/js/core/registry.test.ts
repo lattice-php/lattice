@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent, lazyComponent } from "@lattice-php/lattice";
-import type { Plugin, Registry } from "@lattice-php/lattice";
+import type { Plugin } from "@lattice-php/lattice";
 import { loadPluginModules } from "@lattice-php/lattice/core/registry";
 import type { RendererComponent } from "./types";
 
@@ -44,8 +44,13 @@ describe("lattice registry", () => {
       name: "second",
     } satisfies Plugin;
 
-    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.first");
-    expect(createRegistry(firstPlugin, secondPlugin)).toHaveProperty("components.second");
+    expect(createRegistry(firstPlugin, secondPlugin)).toEqual({
+      components: {
+        first: firstPlugin.components.first,
+        second: secondPlugin.components.second,
+      },
+      extensions: {},
+    });
   });
 
   it("merges named extension registries", () => {
@@ -60,38 +65,15 @@ describe("lattice registry", () => {
     ).toMatchObject({ extensions: { effects: { first, second } } });
   });
 
-  it("keeps legacy column and effect plugin registrations working", () => {
-    const column = vi.fn();
-    const effect = vi.fn();
-
-    expect(
-      createRegistry({
-        name: "legacy",
-        columns: { column },
-        effects: { effect },
-      }),
-    ).toMatchObject({
-      columns: { column },
-      effects: { effect },
-      extensions: {
-        effects: { effect },
-        "table.columns": { column },
-      },
-    });
-  });
-
-  it("accepts registries created with the original shape", () => {
-    const registry = {
-      columns: {},
-      components: {},
-      effects: {},
-    } satisfies Registry;
-
-    expect(registry).toEqual({ columns: {}, components: {}, effects: {} });
-  });
-
   it("loads plugin modules through the core registry API", async () => {
-    const plugin = { name: "app" } satisfies Plugin;
+    const plugin = {
+      name: "app",
+      extensions: {
+        "form.rich-editor": {
+          stamp: { group: "custom" },
+        },
+      },
+    } satisfies Plugin;
     const load = vi.fn<(url: string) => Promise<unknown>>().mockResolvedValue({ default: plugin });
 
     await expect(loadPluginModules(["/plugin.js"], load)).resolves.toEqual([plugin]);
@@ -129,10 +111,7 @@ describe("lattice registry", () => {
     { name: "invalid", components: { invalid: null } },
     { name: "invalid", components: { invalid: { mode: "eager", component: null } } },
     { name: "invalid", i18n: {} },
-    { name: "invalid", columns: [] },
-    { name: "invalid", effects: [] },
     { name: "invalid", extensions: [] },
-    { name: "invalid", extensions: { effects: { invalid: null } } },
   ])("rejects invalid plugin registries", async (plugin) => {
     const load = vi.fn<(url: string) => Promise<unknown>>().mockResolvedValue({ default: plugin });
 

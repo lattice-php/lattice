@@ -40,19 +40,4 @@ describe("custom effect end to end", () => {
     expect(toastListener).toHaveBeenCalledOnce();
     window.removeEventListener("lattice:toast", toastListener);
   });
-
-  it("uses handlers from the original registry shape", () => {
-    const confetti = vi.fn<() => void>();
-    const registry = { components: {}, columns: {}, effects: { confetti } };
-    const wrapper = ({ children }: { children: ReactNode }) => (
-      <Provider registry={registry} toaster={false}>
-        {children}
-      </Provider>
-    );
-    const { result } = renderHook(() => useEffectDispatcher(), { wrapper });
-
-    result.current([{ type: "confetti", props: {} }]);
-
-    expect(confetti).toHaveBeenCalledOnce();
-  });
 });

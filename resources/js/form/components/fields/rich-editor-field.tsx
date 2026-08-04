@@ -4,6 +4,7 @@ import { StarterKit } from "@tiptap/starter-kit";
 import { useEffect, useMemo } from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";
+import { useExtensionRegistry } from "@lattice-php/lattice/core/registry-context";
 import type { RendererComponent } from "@lattice-php/lattice/core/types";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
@@ -11,17 +12,17 @@ import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
 import { useDependentField } from "@lattice-php/lattice/form/hooks/use-dependent-field";
 import { useFieldCommit } from "@lattice-php/lattice/form/hooks/use-field-commit";
 import { useFormValue } from "@lattice-php/lattice/form/hooks/values";
-import { registerBuiltinRichEditorExtensions } from "@lattice-php/lattice/form/rich-editor/builtins";
+import { builtinRichEditorExtensions } from "@lattice-php/lattice/form/rich-editor/builtins";
 import {
   assembleStarterKitOptions,
   assembleTiptapExtensions,
   assembleToolbar,
+  RICH_EDITOR_EXTENSION,
   resolveRichEditorExtensions,
+  type RichEditorExtensionRegistry,
   type ToolbarEntry,
 } from "@lattice-php/lattice/form/rich-editor/registry";
 import { ToolbarIconButton } from "@lattice-php/lattice/form/rich-editor/toolbar-button";
-
-registerBuiltinRichEditorExtensions();
 
 function Toolbar({ editor, items }: { editor: Editor; items: ToolbarEntry[] }) {
   const { t } = useT("lattice");
@@ -59,6 +60,7 @@ function Toolbar({ editor, items }: { editor: Editor; items: ToolbarEntry[] }) {
 }
 
 const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
+  const customExtensions = useExtensionRegistry<RichEditorExtensionRegistry>(RICH_EDITOR_EXTENSION);
   const { errors } = useFormContext();
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { change, blur } = useFieldCommit();
@@ -75,8 +77,12 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
       : ((node.props.value as object | undefined) ?? "");
 
   const resolved = useMemo(
-    () => resolveRichEditorExtensions(node.props.extensions),
-    [node.props.extensions],
+    () =>
+      resolveRichEditorExtensions(node.props.extensions, {
+        ...builtinRichEditorExtensions,
+        ...customExtensions,
+      }),
+    [customExtensions, node.props.extensions],
   );
   const toolbar = useMemo(() => assembleToolbar(resolved), [resolved]);
   const extensions = useMemo(

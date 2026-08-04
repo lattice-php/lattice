@@ -33,9 +33,7 @@ export type { ExtensionRegistries, ExtensionRegistry, Plugin, Registry } from ".
 export {
   RegistryContext,
   setDefaultRegistry,
-  useColumnRegistry,
   useComponentRegistry,
-  useEffectHandlerRegistry,
   useExtensionRegistry,
 } from "./registry-context";
 export { Renderer, RenderNode } from "./renderer";

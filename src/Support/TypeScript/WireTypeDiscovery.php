@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Lattice\Attributes\AsWireNode;
 use Lattice\Lattice\Attributes\TypeScript;
 use Lattice\Lattice\Core\Contracts\ContainerComponent;
 use Lattice\Lattice\Core\Contracts\InteractiveComponent;
@@ -52,7 +52,7 @@ final readonly class WireTypeDiscovery
                 continue;
             }
 
-            $component = Attributes::get($class, AsComponent::class);
+            $component = Attributes::get($class, AsWireNode::class);
 
             if ($component !== null) {
                 if (! $abstract) {
@@ -103,7 +103,7 @@ final readonly class WireTypeDiscovery
     /**
      * @param  class-string  $class
      */
-    private function component(string $class, AsComponent $attribute): DiscoveredComponent
+    private function component(string $class, AsWireNode $attribute): DiscoveredComponent
     {
         return new DiscoveredComponent(
             class: $class,

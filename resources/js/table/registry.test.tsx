@@ -87,37 +87,6 @@ describe("column registry", () => {
     expect(screen.getByText("HI")).toBeVisible();
   });
 
-  it("uses renderers from the original registry shape", () => {
-    const registry = {
-      components: {},
-      columns: {
-        "column.upper": ({ value }: { value: unknown }) => (
-          <span>{String(value).toUpperCase()}</span>
-        ),
-      },
-      effects: {},
-    };
-
-    render(
-      <Provider registry={registry}>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <ColumnCell
-                  column={col({ key: "a", label: "A", type: "column.upper" })}
-                  row={{ a: "legacy" }}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </Provider>,
-    );
-
-    expect(screen.getByText("LEGACY")).toBeVisible();
-  });
-
   it("falls back to the built-in text renderer for unregistered types", () => {
     render(
       <Provider>

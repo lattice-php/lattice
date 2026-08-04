@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Effects\Builtin\Toast;
 use Lattice\Lattice\I18n\Values\Translatable;
@@ -17,6 +18,7 @@ use Lattice\Lattice\Tests\Fixtures\TypeScript\Unloadable\LoadableSibling;
 use Lattice\Lattice\Ui\Components\Card;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Variant;
+use Spatie\Attributes\Attributes;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
     $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
@@ -89,7 +91,7 @@ it('derives the domain from the namespace segment before Components', function (
     expect($card->domain)->toBe('Ui');
 });
 
-it('discovers columns via attribute inheritance and captures the column class', function (): void {
+it('discovers columns without treating them as components', function (): void {
     $manifest = app(WireTypeDiscovery::class)->discover(__DIR__.'/../../Fixtures/TypeScript');
 
     $column = collect($manifest->components)->keyBy->type->get('column.rating');
@@ -97,7 +99,8 @@ it('discovers columns via attribute inheritance and captures the column class', 
     assert($column instanceof DiscoveredComponent);
 
     expect($column->category)->toBe('column')
-        ->and($column->class)->toBe(SampleColumn::class);
+        ->and($column->class)->toBe(SampleColumn::class)
+        ->and(Attributes::has(SampleColumn::class, AsComponent::class))->toBeFalse();
 });
 
 it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {

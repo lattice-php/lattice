@@ -24,7 +24,7 @@ export type ComponentRegistryFor<TTypes extends keyof ComponentPropsMap & string
   ComponentRegistration
 >;
 
-export type ExtensionRegistry = Record<string, (...args: never[]) => unknown>;
+export type ExtensionRegistry = Record<string, unknown>;
 
 export type ExtensionRegistries = Record<string, ExtensionRegistry>;
 
@@ -36,23 +36,14 @@ export type PluginI18n = {
 export type Plugin = {
   name: string;
   components?: ComponentRegistry;
-  columns?: ExtensionRegistry;
-  effects?: ExtensionRegistry;
   extensions?: ExtensionRegistries;
   i18n?: PluginI18n;
 };
 
 export type Registry = {
   components: ComponentRegistry;
-  columns: ExtensionRegistry;
-  effects: ExtensionRegistry;
-  extensions?: ExtensionRegistries;
+  extensions: ExtensionRegistries;
 };
-
-type CompleteRegistry = Registry & { extensions: ExtensionRegistries };
-
-const LEGACY_COLUMN_EXTENSION = "table.columns";
-const LEGACY_EFFECT_EXTENSION = "effects";
 
 export function eagerComponent<TType extends string>(
   component: RendererComponent<TType>,
@@ -92,20 +83,10 @@ function componentRegistryIsValid(registry: unknown): boolean {
   );
 }
 
-function functionRegistryIsValid(registry: unknown): boolean {
-  return (
-    registry === undefined ||
-    (isRecord(registry) && Object.values(registry).every((entry) => typeof entry === "function"))
-  );
-}
-
 function extensionRegistriesAreValid(registries: unknown): boolean {
   return (
     registries === undefined ||
-    (isRecord(registries) &&
-      Object.values(registries).every(
-        (registry) => isRecord(registry) && functionRegistryIsValid(registry),
-      ))
+    (isRecord(registries) && Object.values(registries).every((registry) => isRecord(registry)))
   );
 }
 
@@ -117,8 +98,6 @@ function pluginFromModule(module: unknown, url: string): Plugin {
     typeof plugin.name !== "string" ||
     plugin.name.trim() === "" ||
     !componentRegistryIsValid(plugin.components) ||
-    !functionRegistryIsValid(plugin.columns) ||
-    !functionRegistryIsValid(plugin.effects) ||
     !extensionRegistriesAreValid(plugin.extensions) ||
     (plugin.i18n !== undefined &&
       (!isRecord(plugin.i18n) ||
@@ -152,52 +131,16 @@ function mergeExtensions(
   return merged;
 }
 
-function legacyExtensions(
-  columns: ExtensionRegistry | undefined,
-  effects: ExtensionRegistry | undefined,
-): ExtensionRegistries {
-  return {
-    [LEGACY_COLUMN_EXTENSION]: columns ?? {},
-    [LEGACY_EFFECT_EXTENSION]: effects ?? {},
-  };
-}
-
-function registryWithAliases(
-  components: ComponentRegistry,
-  extensions: ExtensionRegistries,
-): CompleteRegistry {
-  return {
-    components,
-    columns: extensions[LEGACY_COLUMN_EXTENSION] ?? {},
-    effects: extensions[LEGACY_EFFECT_EXTENSION] ?? {},
-    extensions,
-  };
-}
-
-export function createRegistry(...plugins: Plugin[]): CompleteRegistry {
-  return plugins.reduce<CompleteRegistry>(
-    (registry, plugin) =>
-      registryWithAliases(
-        { ...registry.components, ...plugin.components },
-        mergeExtensions(
-          registry.extensions,
-          legacyExtensions(plugin.columns, plugin.effects),
-          plugin.extensions,
-        ),
-      ),
-    registryWithAliases({}, {}),
+export function createRegistry(...plugins: Plugin[]): Registry {
+  return plugins.reduce<Registry>(
+    (registry, plugin) => ({
+      components: { ...registry.components, ...plugin.components },
+      extensions: mergeExtensions(registry.extensions, plugin.extensions),
+    }),
+    { components: {}, extensions: {} },
   );
 }
 
-export function extendRegistry(registry: Registry, ...plugins: Plugin[]): CompleteRegistry {
-  const merged = createRegistry(...plugins);
-
-  return registryWithAliases(
-    { ...registry.components, ...merged.components },
-    mergeExtensions(
-      legacyExtensions(registry.columns, registry.effects),
-      registry.extensions,
-      merged.extensions,
-    ),
-  );
+export function extendRegistry(registry: Registry, ...plugins: Plugin[]): Registry {
+  return createRegistry({ name: "registry", ...registry }, ...plugins);
 }

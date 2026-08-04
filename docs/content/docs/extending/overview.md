@@ -7,7 +7,9 @@ Lattice ships with a built-in set of components, fields, and columns. When your 
 
 ## The mental model
 
-Every renderable in Lattice carries a `type` string. The PHP class declares it once via an attribute, and the React renderer looks that type up in a registry to decide which component to render. Use `#[AsField]` for form fields, `#[AsComponent]` for regular UI components, and `#[AsColumn]` for table columns.
+Every client extension in Lattice carries a `type` string. The PHP class declares it once via an
+attribute, and the client uses that type to find the matching implementation. Use `#[AsField]` for
+form fields, `#[AsComponent]` for regular UI components, and `#[AsColumn]` for table columns.
 
 ```php
 use Lattice\Lattice\Forms\Attributes\AsField;
@@ -37,7 +39,9 @@ That string — `"field.color-picker"` — is the only coupling between the PHP 
 | UI component | `Lattice\Lattice\Ui\Components\Component` | `components`                  |
 | Table column | `Lattice\Lattice\Tables\Columns\Column`   | `extensions["table.columns"]` |
 
-All three register in a single file — `resources/js/registry.ts`, published by `php artisan vendor:publish --tag=lattice-js`. It defines a plain plugin object and merges it onto the package registry with `extendRegistry`. Form fields and UI components share the **node registry** (`components`) — the renderer walks the component tree and resolves each `type` to a `RendererComponent`. Table columns use the named **column-cell registry** (`extensions["table.columns"]`) because only the cell needs a custom renderer; the table chrome (header, sorting, filtering) is provided by Lattice.
+All three register in one plugin object. Form fields and UI components are complete nodes, so the core
+renderer resolves them through `components`. A table column only contributes a cell renderer to the
+table feature, so it goes in `extensions["table.columns"]`.
 
 ## Generators scaffold both sides
 

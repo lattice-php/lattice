@@ -1,7 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import * as core from "@lattice-php/lattice/core";
 
 const coreRoot = path.resolve(process.cwd(), "resources/js/core");
 const packageImport = /["'](@lattice-php\/lattice(?:\/[^"']*)?)["']/g;
@@ -20,10 +19,5 @@ describe("core dependency boundary", () => {
       );
 
     expect(violations).toEqual([]);
-  });
-
-  it("keeps the original registry hooks exported", () => {
-    expect(core.useColumnRegistry).toBeTypeOf("function");
-    expect(core.useEffectHandlerRegistry).toBeTypeOf("function");
   });
 });
