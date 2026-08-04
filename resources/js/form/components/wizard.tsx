@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice-php/core/types";
 import type { WizardStep } from "@lattice-php/lattice/types/generated";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useT } from "@lattice-php/lattice/i18n";
-import { Icon } from "@lattice-php/lattice/icons";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
+import { Icon } from "@lattice-php/ui/icons";
 import { Button } from "@lattice-php/lattice/ui/button";
-import { Spinner } from "@lattice-php/lattice/ui/spinner";
+import { Spinner } from "@lattice-php/ui/spinner";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 import {
   firstErroredStep,

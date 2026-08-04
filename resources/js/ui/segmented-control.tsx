@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { SegmentedPills } from "./segmented-pills";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
 
 const SegmentedControlComponent: RendererComponent<"segmented-control"> = ({ node }) => {
   const { options, name, emits } = node.props;

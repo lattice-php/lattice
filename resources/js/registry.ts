@@ -1,4 +1,4 @@
-import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry, type Registry } from "@lattice-php/core/registry";
 import type {
   ActionNodeType,
   ChatNodeType,
@@ -37,7 +37,7 @@ export type AllNodeTypesRegistered = Assert<
   Exclude<NodeType, RegisteredNodeType> extends never ? true : false
 >;
 
-export const registry = createRegistry(
+export const registry: Registry = createRegistry(
   uiComponents,
   actionComponents,
   formComponents,

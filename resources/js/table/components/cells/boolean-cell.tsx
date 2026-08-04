@@ -1,7 +1,7 @@
-import { Icon } from "@lattice-php/lattice/icons";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { isTruthy } from "@lattice-php/lattice/lib/is-truthy";
-import { useT } from "@lattice-php/lattice/i18n";
+import { Icon } from "@lattice-php/ui/icons";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { isTruthy } from "@lattice-php/ui/lib/is-truthy";
+import { useT } from "@lattice-php/ui/i18n";
 import type { ColumnCellComponent } from "@lattice-php/lattice/table/registry";
 
 export const BooleanCell: ColumnCellComponent<"column.boolean"> = ({ value }) => {

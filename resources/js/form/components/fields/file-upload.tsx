@@ -1,9 +1,9 @@
-import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import { testIdentity } from "@lattice-php/core/test-id";
 import { requestSignedUpload, xhrTransfer } from "@lattice-php/lattice/core/upload";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import type { SignedUpload } from "@lattice-php/lattice/types/generated";
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
-import { useT } from "@lattice-php/lattice/i18n";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { useT } from "@lattice-php/ui/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";

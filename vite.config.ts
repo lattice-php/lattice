@@ -165,7 +165,10 @@ function stylesheet(): Plugin {
   return {
     name: "lattice:stylesheet",
     generateBundle() {
-      const css = readFileSync(path.join(sourceRoot, "../css/lattice.css"), "utf8");
+      const css = readFileSync(
+        path.resolve(import.meta.dirname, "packages/ui/resources/css/lattice.css"),
+        "utf8",
+      );
 
       this.emitFile({
         type: "asset",
@@ -203,7 +206,7 @@ export default defineConfig(({ mode }) => {
               // Generate an importable IconName union + augment <Icon name>.
               dts: {
                 file: "workbench/resources/js/sprite-icons.ts",
-                augmentModule: "@lattice-php/lattice",
+                augmentModule: "@lattice-php/ui",
                 augmentInterface: "KnownIcons",
               },
             }),
@@ -213,7 +216,7 @@ export default defineConfig(({ mode }) => {
               name: "lattice:icon-enum",
               buildStart() {
                 writePhpEnum([...latticeIcons].sort(), {
-                  file: "src/Ui/Enums/Icon.php",
+                  file: "packages/ui/src/Enums/Icon.php",
                   namespace: "Lattice\\Lattice\\Ui\\Enums",
                   enum: "Icon",
                 });
@@ -245,7 +248,13 @@ export default defineConfig(({ mode }) => {
                 "resources/js/test-support.ts",
                 "resources/js/standalone/**",
               ],
-              compilerOptions: { rootDir: sourceRoot },
+              compilerOptions: {
+                rootDir: sourceRoot,
+                paths: {
+                  "@lattice-php/lattice": [path.join(sourceRoot, "index.ts")],
+                  "@lattice-php/lattice/*": [path.join(sourceRoot, "*")],
+                },
+              },
               outDirs: "dist",
               beforeWriteFile: (filePath, content) => ({
                 filePath,
@@ -282,6 +291,8 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
+        "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
+        "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
         "@lattice-php/lattice": sourceRoot,
       },
     },
@@ -326,6 +337,8 @@ export default defineConfig(({ mode }) => {
               rollupOptions: {
                 external: [
                   /^node:/,
+                  /^@lattice-php\/core($|\/)/,
+                  /^@lattice-php\/ui($|\/)/,
                   /^react($|\/)/,
                   /^react-dom($|\/)/,
                   /^@atlaskit\//,

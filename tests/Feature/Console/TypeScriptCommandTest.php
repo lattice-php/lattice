@@ -17,7 +17,7 @@ it('writes an augmentation file for app components, not built-ins', function ():
         $output = base_path('resources/js/lattice/generated.d.ts');
 
         config()->set('lattice.typescript.output', $output);
-        config()->set('lattice.typescript.module', '@lattice-php/lattice');
+        config()->set('lattice.typescript.module', '@lattice-php/core');
         config()->set('lattice.discover', [
             dirname(__DIR__, 2).'/Fixtures/TypeScript',
         ]);
@@ -28,7 +28,7 @@ it('writes an augmentation file for app components, not built-ins', function ():
 
         expect($contents)
             ->toBeString()
-            ->toContain('declare module "@lattice-php/lattice"')
+            ->toContain('declare module "@lattice-php/core"')
             ->toContain('interface ComponentProps')
             ->toContain('"field.sample"')
             ->toContain('"sample.widget"')

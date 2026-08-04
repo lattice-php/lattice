@@ -1,0 +1,73 @@
+{
+  "name": "@lattice-php/core",
+  "version": "0.38.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./collapsed-context": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./component-ref": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./event-names": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./hooks/use-window-event": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./materialize": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./nodes": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./registry": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./registry-context": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./renderer": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./test-id": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && oxlint --fix dist/*.d.ts dist/**/*.d.ts && oxfmt --write \"dist/**/*.d.ts\"",
+    "build:plugin": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

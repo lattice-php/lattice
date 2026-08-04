@@ -1,24 +1,30 @@
 import type { Method } from "@inertiajs/core";
 import { createContext, useContext, type ReactNode } from "react";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { getActionEffects } from "@lattice-php/lattice/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import type { Effect } from "@lattice-php/lattice/types/generated";
 
+type ActionNode = Node<"action" | "action.bulk">;
+
 export type ClickBehavior =
   | { kind: "navigate"; href: string; method: Method }
-  | { kind: "action"; action: Node<"action" | "action.bulk"> }
+  | { kind: "action"; action: ActionNode }
   | { kind: "effects"; onClick: () => void }
   | { kind: "none" };
 
 export type TriggerState = { onClick: () => void; processing: boolean };
 
 export type ActionTriggerRenderer = (props: {
-  action: Node<"action" | "action.bulk">;
+  action: ActionNode;
   children: (trigger: TriggerState) => ReactNode;
 }) => ReactNode;
 
 const ActionTriggerContext = createContext<ActionTriggerRenderer | null>(null);
+
+function isActionNode(node: Node): node is ActionNode {
+  return node.type === "action" || node.type === "action.bulk";
+}
 
 export function ActionTriggerProvider({
   children,
@@ -38,7 +44,7 @@ export function ActionTrigger({
   action,
   children,
 }: {
-  action: Node<"action" | "action.bulk">;
+  action: ActionNode;
   children: (trigger: TriggerState) => ReactNode;
 }) {
   const render = useActionTrigger();
@@ -53,7 +59,7 @@ export function ActionTrigger({
 export function useClickBehavior(props: {
   href?: string | null;
   method?: Method | null;
-  action?: Node<"action" | "action.bulk"> | null;
+  action?: Node | null;
   effects?: Effect[] | null;
 }): ClickBehavior {
   const dispatch = useEffectDispatcher();
@@ -61,6 +67,10 @@ export function useClickBehavior(props: {
   const effects = props.effects ?? [];
 
   if (action) {
+    if (!isActionNode(action)) {
+      throw new Error("Clickable action nodes must have type [action] or [action.bulk].");
+    }
+
     return { kind: "action", action };
   }
 

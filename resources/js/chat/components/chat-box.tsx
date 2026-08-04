@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { apiFetch, remoteJson } from "@lattice-php/lattice/core/api";
-import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { testIdentity } from "@lattice-php/core/test-id";
+import type { RendererComponent } from "@lattice-php/core/types";
 import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";
-import { useT } from "@lattice-php/lattice/i18n";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
 import {
   createRemoteNdjsonChatTransport,
   ndjsonChatTransport,

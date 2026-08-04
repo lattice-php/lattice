@@ -5,12 +5,12 @@ namespace Workbench\App\Pages\Components;
 
 use Illuminate\Support\Facades\File;
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Ui\Components\CodeBlock;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\CodeBlockLanguage;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
 #[AsPage(route: '/components/code-blocks')]

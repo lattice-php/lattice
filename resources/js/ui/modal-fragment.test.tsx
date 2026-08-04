@@ -1,9 +1,9 @@
 import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
+import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import FragmentComponent from "./fragment";
 import ModalComponent from "./modal";
 import TextComponent from "./text";

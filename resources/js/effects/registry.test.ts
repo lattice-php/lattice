@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { effect } from "@lattice-php/lattice/test/effect-fixture";
 import { builtinEffectHandlers } from "./registry";
 
@@ -13,7 +13,7 @@ vi.mock("@inertiajs/react", async () =>
 );
 
 const setLocale = vi.hoisted(() => vi.fn<(locale: string) => void>());
-vi.mock("@lattice-php/lattice/i18n/locale", () => ({ setLocale }));
+vi.mock("@lattice-php/ui/i18n/locale", () => ({ setLocale }));
 
 afterEach(() => {
   router.reload.mockReset();

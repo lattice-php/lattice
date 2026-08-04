@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/lattice/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { Node, ComponentPropsOf } from "@lattice-php/lattice/core/types";
+import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import ButtonComponent from "./button";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
@@ -61,6 +61,22 @@ describe("button action trigger", () => {
         throwOnError: false,
       });
     });
+  });
+
+  it("rejects a nested component that is not an action", () => {
+    const node = fakeNode({
+      id: "broken",
+      type: "button",
+      props: {
+        action: fakeNode({ id: "card", type: "card", props: {} }),
+        buttonType: "button",
+        label: "Broken",
+      },
+    });
+
+    expect(() => renderActionButton(node)).toThrow(
+      "Clickable action nodes must have type [action] or [action.bulk].",
+    );
   });
 
   it("confirms before dispatching when the action requires confirmation", async () => {

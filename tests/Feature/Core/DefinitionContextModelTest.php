@@ -8,10 +8,10 @@ use Lattice\Lattice\Actions\ActionResult;
 use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsAction;
 use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchContextModelAction;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Models\Product;
 
 use function Pest\Laravel\get;

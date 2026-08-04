@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
+import { IconButton } from "@lattice-php/ui/icon-button";
 
 /**
  * The shared editor toolbar trigger: an {@link IconButton} that keeps focus in

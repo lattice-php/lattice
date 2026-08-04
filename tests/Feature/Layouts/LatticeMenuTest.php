@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Layouts\Components\Menu;
 use Lattice\Lattice\Layouts\Components\MenuItem;
@@ -10,6 +9,7 @@ use Lattice\Lattice\Support\Affix;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\HttpMethod;
 use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Lattice\Ui\PageSchema;
 
 final class MenuProductsPage extends Page
 {

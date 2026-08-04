@@ -1,6 +1,6 @@
 import { registry as defaultRegistry } from "./registry";
-import type { Registry } from "./core/registry";
-import { setDefaultRegistry } from "./core/registry-context";
+import type { Registry } from "@lattice-php/core/registry";
+import { setDefaultRegistry } from "@lattice-php/core/registry-context";
 import { ProviderBase, type ProviderBaseProps } from "./provider-base";
 
 // Register the default registry so selectors work outside <Provider>.
@@ -16,6 +16,6 @@ export function Provider({ registry = defaultRegistry, ...props }: ProviderProps
   return <ProviderBase {...props} registry={registry} />;
 }
 
-export { useComponentRegistry } from "./core/registry-context";
+export { useComponentRegistry } from "@lattice-php/core/registry-context";
 export { useEffectHandlerRegistry } from "./effects/registry";
 export { useColumnRegistry } from "./table/registry";

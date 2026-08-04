@@ -1,6 +1,6 @@
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
-import { useT } from "@lattice-php/lattice/i18n";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+import { useT } from "@lattice-php/ui/i18n";
 import type { Option } from "@lattice-php/lattice/types/generated";
 import { isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
 import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "@lattice-php/lattice/table/lib/query";

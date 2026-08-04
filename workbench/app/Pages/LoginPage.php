@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\PasswordInput;
 use Lattice\Lattice\Forms\Components\TextInput;
@@ -18,6 +17,7 @@ use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\PageContainer;
 use Lattice\Lattice\Ui\Enums\PageLayout;
 use Lattice\Lattice\Ui\Enums\Width;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Support\Logo;
 
 #[AsPage(route: '/login', name: 'login', layout: PageLayout::None, container: PageContainer::Centered, middleware: ['web'])]

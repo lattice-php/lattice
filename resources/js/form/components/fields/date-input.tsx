@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { DatePicker } from "./date-picker";
 import { SimpleField } from "./simple-field";
 

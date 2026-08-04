@@ -19,10 +19,10 @@ vi.mock("@inertiajs/react", async () =>
     router,
   }),
 );
-vi.mock("./i18n/page-props", () => ({ configureI18nFromPageProps }));
+vi.mock("@lattice-php/ui/i18n/page-props", () => ({ configureI18nFromPageProps }));
 
 import { useAppearance } from "./appearance";
-import { createRegistry } from "./core/registry";
+import { createRegistry } from "@lattice-php/core/registry";
 import { createLatticeApp } from "./create-app";
 import { pageComponentName } from "./inertia";
 import Page from "./page";

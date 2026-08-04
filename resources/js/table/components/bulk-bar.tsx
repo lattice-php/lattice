@@ -3,10 +3,10 @@ import { ActionForm, runAction } from "@lattice-php/lattice/action";
 import { apiFetch } from "@lattice-php/lattice/core/api";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { Button } from "@lattice-php/lattice/ui/button";
-import { ConfirmDialog } from "@lattice-php/lattice/ui/confirm-dialog";
-import { Spinner } from "@lattice-php/lattice/ui/spinner";
-import { prefixedTestId } from "@lattice-php/lattice/core/test-id";
-import { useT } from "@lattice-php/lattice/i18n";
+import { ConfirmDialog } from "@lattice-php/ui/confirm-dialog";
+import { Spinner } from "@lattice-php/ui/spinner";
+import { prefixedTestId } from "@lattice-php/core/test-id";
+import { useT } from "@lattice-php/ui/i18n";
 import type { BulkAction } from "@lattice-php/lattice/table/lib/bulk";
 
 export function BulkBar({

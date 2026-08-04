@@ -11,7 +11,7 @@ export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { registerRichEditorExtension } from "./form/rich-editor/registry";
 export { initializeAppearance, updateAppearance, useAppearance } from "./appearance";
-export { copyToClipboard } from "./ui/copyable-text";
+export { copyToClipboard } from "@lattice-php/ui/copyable-text";
 export {
   createLatticeApp,
   type CreateLatticeAppI18nOptions,
@@ -41,8 +41,8 @@ export {
   extendRegistry,
   lazyComponent,
   loadPluginModules,
-} from "./core/registry";
-export type { Plugin, Registry } from "./core/registry";
+} from "@lattice-php/core/registry";
+export type { Plugin, Registry } from "@lattice-php/core/registry";
 export type { UseChatOptions } from "./chat/hooks/use-chat";
 export type {
   ChatFrame,
@@ -53,12 +53,12 @@ export type {
   ChatTransportRequest,
   UseChatReturn,
 } from "./chat/types";
-export { Renderer } from "./core/renderer";
-export { LATTICE_REF_HEADER, withRefHeader } from "./core/component-ref";
+export { Renderer } from "@lattice-php/core/renderer";
+export { LATTICE_REF_HEADER, withRefHeader } from "@lattice-php/core/component-ref";
 export { withHeaders } from "./core/headers";
-export { LATTICE_EVENT } from "./core/event-names";
+export { LATTICE_EVENT } from "@lattice-php/core/event-names";
 export type { Emphasis } from "./ui/button";
-export type { ReloadComponentEvent } from "./core/event-names";
+export type { ReloadComponentEvent } from "@lattice-php/core/event-names";
 export type {
   ComponentProps,
   KnownPageContainer,

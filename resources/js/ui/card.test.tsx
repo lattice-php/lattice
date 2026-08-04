@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import CardComponent from "./card";
 

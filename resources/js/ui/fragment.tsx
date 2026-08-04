@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { apiJson } from "@lattice-php/lattice/core/api";
-import { Skeleton } from "@lattice-php/lattice/ui/skeleton";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { Skeleton } from "@lattice-php/ui/skeleton";
+import { Renderer } from "@lattice-php/core/renderer";
+import type { RendererComponent } from "@lattice-php/core/types";
 import type { FragmentResponse } from "@lattice-php/lattice/types/generated";
-import { toNodes } from "@lattice-php/lattice/core/nodes";
-import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/lattice/core/event-names";
+import { toNodes } from "@lattice-php/core/nodes";
+import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/core/event-names";
 
 const fragmentSizeHeights = {
   lg: 320,

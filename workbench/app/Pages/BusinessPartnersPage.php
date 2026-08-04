@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Heading;
@@ -12,6 +11,7 @@ use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\StackDirection;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Tables\BusinessPartnersTable;
 
 #[AsPage(route: '/business-partners', name: 'business-partners.index')]

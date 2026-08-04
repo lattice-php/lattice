@@ -24,6 +24,7 @@ final class TablesServiceProvider extends ServiceProvider
 
         $this->app->singleton(TableRegistry::class);
 
+        Lattice::wireSource(dirname(__DIR__));
         Lattice::wireFamily('column', AsColumn::class, Column::class, marker: true);
         Lattice::wireFamily('filter', AsFilter::class, Filter::class, marker: true);
     }

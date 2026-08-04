@@ -5,7 +5,7 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /* Component preview: design tokens + scan the renderer source for utilities. */
-@import "../../resources/css/lattice.css";
+@import "../../packages/ui/resources/css/lattice.css";
 @source "../../resources/js";
 
 /*

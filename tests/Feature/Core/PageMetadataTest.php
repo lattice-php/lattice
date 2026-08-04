@@ -54,8 +54,8 @@ test('a page without any attribute resolves to defaults', function (): void {
     $meta = PageMetadata::for($page);
 
     expect($meta->route)->toBeNull()
-        ->and($meta->layout)->toBe(PageLayout::None)
-        ->and($meta->container)->toBe(PageContainer::Centered)
+        ->and($meta->layout)->toBe('none')
+        ->and($meta->container)->toBe('centered')
         ->and($meta->middleware)->toBeNull();
 });
 

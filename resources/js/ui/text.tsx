@@ -1,8 +1,8 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { coerceColor, colorValue, namedColor } from "@lattice-php/lattice/lib/color";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { coerceColor, colorValue, namedColor } from "@lattice-php/ui/lib/color";
+import { cn } from "@lattice-php/ui/lib/utils";
 import type { Size } from "@lattice-php/lattice/types/generated";
-import { CopyableText } from "./copyable-text";
+import { CopyableText } from "@lattice-php/ui/copyable-text";
 
 const textAlignments: Record<string, string> = {
   center: "text-center",

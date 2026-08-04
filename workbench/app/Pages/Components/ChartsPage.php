@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Pages\Components;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Ui\Components\Badge;
 use Lattice\Lattice\Ui\Components\Chart;
@@ -14,6 +13,7 @@ use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Ui\Values\DateFormat;
 use Lattice\Lattice\Ui\Values\NumberFormat;
 use Workbench\App\Fragments\OrderVolumeChartFragment;

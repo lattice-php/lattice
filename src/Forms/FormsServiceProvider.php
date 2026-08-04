@@ -24,6 +24,7 @@ final class FormsServiceProvider extends ServiceProvider
         $this->app->singleton(FormRegistry::class);
         $this->app->singleton(EditorExtensionRegistry::class, fn (): EditorExtensionRegistry => EditorExtensionRegistry::withBuiltins());
 
+        Lattice::wireSource(dirname(__DIR__));
         Lattice::wireFamily('editor-extension', AsEditorExtension::class, EditorExtension::class);
     }
 }

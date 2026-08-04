@@ -1,0 +1,880 @@
+@source "./**/*.js";
+
+/*
+ * Token defaults live in a cascade layer so any unlayered override wins
+ * regardless of stylesheet order — the @latticeTheme style tag and plain
+ * `:root { --lt-primary: … }` rules in an app's CSS both take precedence.
+ */
+@layer lattice {
+  :root,
+  [data-theme="light"] {
+  --lt-bg: oklch(0.976 0.003 210);
+  --lt-fg: oklch(0.18 0.01 220);
+  --lt-surface: oklch(1 0 0);
+  --lt-surface-fg: oklch(0.18 0.01 220);
+  --lt-popover: oklch(1 0 0);
+  --lt-popover-fg: oklch(0.18 0.01 220);
+  --lt-primary: oklch(0.51 0.12 195);
+  --lt-primary-fg: oklch(0.985 0 0);
+  --lt-secondary: oklch(0.955 0.005 210);
+  --lt-secondary-fg: oklch(0.25 0.012 220);
+  --lt-muted: oklch(0.955 0.004 210);
+  --lt-muted-fg: oklch(0.52 0.015 220);
+  /* Accent tint and focus ring take their hue from the primary, so a themed
+     primary keeps them coherent; an explicit override still wins. */
+  --lt-accent: oklch(from var(--lt-primary) 0.95 0.024 h);
+  --lt-accent-fg: oklch(from var(--lt-primary) 0.36 0.085 h);
+  --lt-danger: oklch(0.55 0.2 26);
+  --lt-danger-fg: oklch(0.985 0 0);
+  --lt-border: oklch(0.915 0.005 210);
+  --lt-input: oklch(0.88 0.007 210);
+  --lt-ring: oklch(from var(--lt-primary) 0.7 0.1 h);
+  --lt-overlay: oklch(0.15 0.02 225 / 0.5);
+  --lt-warning: oklch(0.83 0.15 85);
+  --lt-warning-fg: oklch(0.28 0.06 70);
+  --lt-success: oklch(0.56 0.13 158);
+  --lt-success-fg: oklch(0.985 0 0);
+  --lt-info: oklch(0.55 0.13 245);
+  --lt-info-fg: oklch(0.985 0 0);
+  /* Hover/active derive from the base colour so a themed base recolours its
+     whole state family; setting the state token directly still wins. Light
+     surfaces darken on interaction, the near-white secondary by less. */
+  --lt-primary-hover: oklch(from var(--lt-primary) calc(l - 0.05) c h);
+  --lt-primary-active: oklch(from var(--lt-primary) calc(l - 0.1) c h);
+  --lt-danger-hover: oklch(from var(--lt-danger) calc(l - 0.05) c h);
+  --lt-danger-active: oklch(from var(--lt-danger) calc(l - 0.1) c h);
+  --lt-success-hover: oklch(from var(--lt-success) calc(l - 0.05) c h);
+  --lt-success-active: oklch(from var(--lt-success) calc(l - 0.1) c h);
+  --lt-info-hover: oklch(from var(--lt-info) calc(l - 0.05) c h);
+  --lt-info-active: oklch(from var(--lt-info) calc(l - 0.1) c h);
+  --lt-warning-hover: oklch(from var(--lt-warning) calc(l - 0.05) c h);
+  --lt-warning-active: oklch(from var(--lt-warning) calc(l - 0.1) c h);
+  --lt-secondary-hover: oklch(from var(--lt-secondary) calc(l - 0.03) c h);
+  --lt-secondary-active: oklch(from var(--lt-secondary) calc(l - 0.06) c h);
+  --lt-disabled: oklch(0.945 0.003 210);
+  --lt-disabled-fg: oklch(0.68 0.008 220);
+
+  /* Radius: base = cards, -sm = controls, -xs = chips */
+  --lt-radius: 0.5rem;
+  --lt-radius-sm: calc(var(--lt-radius) - 0.125rem);
+  --lt-radius-xs: calc(var(--lt-radius) - 0.25rem);
+  --lt-radius-lg: calc(var(--lt-radius) + 0.25rem);
+  --lt-radius-xl: calc(var(--lt-radius) + 0.5rem);
+  --lt-radius-full: 9999px;
+
+  --lt-ring-width: 3px;
+  --lt-ring-offset: 0px;
+
+  --lt-font-sans:
+    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --lt-font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  --lt-font-display: var(--lt-font-sans);
+
+  --lt-shadow-inner: inset 0 1px 2px 0 oklch(0.2 0.02 225 / 0.06);
+
+  --lt-chart-1: oklch(0.55 0.12 195);
+  --lt-chart-2: oklch(0.58 0.14 250);
+  --lt-chart-3: oklch(0.68 0.14 60);
+  --lt-chart-4: oklch(0.58 0.19 305);
+  --lt-chart-5: oklch(0.6 0.16 20);
+  --lt-chart-6: oklch(0.62 0.13 150);
+  --lt-chart-7: oklch(0.6 0.13 100);
+  --lt-chart-8: oklch(0.55 0.05 280);
+
+  --lt-icon-xs: 0.75rem;
+  --lt-icon-sm: 0.875rem;
+  --lt-icon-md: 1rem;
+  --lt-icon-lg: 1.25rem;
+  --lt-icon-xl: 1.5rem;
+  --lt-icon-2xl: 2rem;
+  --lt-icon-3xl: 2.5rem;
+  --lt-icon-4xl: 3rem;
+
+  /* Control heights — density lever */
+  --lt-control-h-sm: 2rem;
+  --lt-control-h-md: 2.25rem;
+  --lt-control-h-lg: 2.5rem;
+
+  /* >= 1rem, or iOS Safari auto-zooms the page on focus */
+  --lt-input-font-size-mobile: 1rem;
+
+  /* Table cell padding — table density lever */
+  --lt-table-cell-x: calc(var(--spacing) * 4);
+  --lt-table-cell-y: calc(var(--spacing) * 4);
+
+  --lt-font-weight-normal: 400;
+  --lt-font-weight-medium: 500;
+  --lt-font-weight-semibold: 600;
+  --lt-font-weight-bold: 700;
+
+  --lt-shadow-xs: 0 1px 1px 0 oklch(0.2 0.02 225 / 0.05);
+  --lt-shadow-sm: 0 1px 2px 0 oklch(0.2 0.02 225 / 0.06);
+  --lt-shadow-md:
+    0 2px 4px -1px oklch(0.2 0.02 225 / 0.09), 0 1px 2px -1px oklch(0.2 0.02 225 / 0.06);
+  --lt-shadow-lg:
+    0 8px 16px -4px oklch(0.2 0.02 225 / 0.13), 0 2px 4px -2px oklch(0.2 0.02 225 / 0.08);
+
+  --lt-z-dropdown: 1000;
+  --lt-z-sticky: 1100;
+  --lt-z-overlay: 1200;
+  --lt-z-modal: 1300;
+  --lt-z-popover: 1400;
+  --lt-z-toast: 1500;
+
+  --lt-duration-fast: 120ms;
+  --lt-duration-base: 160ms;
+  --lt-duration-slow: 240ms;
+
+  --lt-sidebar-w: 16rem;
+  --lt-sidebar-w-collapsed: 4rem;
+  --lt-container-max: 80rem;
+
+  /* Card / section content inset — the gutter apps can break out of */
+  --lt-gutter: calc(var(--spacing) * 6);
+
+  color-scheme: light;
+  }
+}
+
+/*
+ * Radix keeps dialogs mounted until their exit animation ends, so reduced
+ * motion zeroes the durations instead of removing the animations — the
+ * animation events still fire and close stays instant.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  [data-theme="light"] {
+    --lt-duration-fast: 0ms;
+    --lt-duration-base: 0ms;
+    --lt-duration-slow: 0ms;
+  }
+}
+
+@layer lattice {
+  [data-theme="dark"],
+  .dark {
+  --lt-bg: oklch(0.155 0.008 225);
+  --lt-fg: oklch(0.955 0.005 210);
+  --lt-surface: oklch(0.195 0.01 225);
+  --lt-surface-fg: oklch(0.955 0.005 210);
+  --lt-popover: oklch(0.225 0.012 225);
+  --lt-popover-fg: oklch(0.955 0.005 210);
+  --lt-primary: oklch(0.75 0.115 190);
+  --lt-primary-fg: oklch(0.17 0.03 195);
+  --lt-secondary: oklch(0.27 0.012 225);
+  --lt-secondary-fg: oklch(0.955 0.005 210);
+  --lt-muted: oklch(0.26 0.01 225);
+  --lt-muted-fg: oklch(0.72 0.012 220);
+  --lt-accent: oklch(from var(--lt-primary) 0.29 0.03 h);
+  --lt-accent-fg: oklch(from var(--lt-primary) 0.97 0.005 h);
+  --lt-danger: oklch(0.55 0.18 25);
+  --lt-danger-fg: oklch(0.985 0 0);
+  --lt-border: oklch(0.285 0.012 225);
+  --lt-input: oklch(0.33 0.014 225);
+  --lt-ring: oklch(from var(--lt-primary) 0.6 0.1 h);
+  --lt-overlay: oklch(0.08 0.01 225 / 0.65);
+  --lt-warning: oklch(0.75 0.14 82);
+  --lt-warning-fg: oklch(0.28 0.06 70);
+  --lt-success: oklch(0.72 0.14 160);
+  --lt-success-fg: oklch(0.2 0.04 160);
+  --lt-info: oklch(0.72 0.13 242);
+  --lt-info-fg: oklch(0.2 0.04 242);
+
+  /* Dark surfaces lighten on interaction. */
+  --lt-primary-hover: oklch(from var(--lt-primary) calc(l + 0.04) c h);
+  --lt-primary-active: oklch(from var(--lt-primary) calc(l + 0.08) c h);
+  --lt-danger-hover: oklch(from var(--lt-danger) calc(l + 0.04) c h);
+  --lt-danger-active: oklch(from var(--lt-danger) calc(l + 0.08) c h);
+  --lt-success-hover: oklch(from var(--lt-success) calc(l + 0.04) c h);
+  --lt-success-active: oklch(from var(--lt-success) calc(l + 0.08) c h);
+  --lt-info-hover: oklch(from var(--lt-info) calc(l + 0.04) c h);
+  --lt-info-active: oklch(from var(--lt-info) calc(l + 0.08) c h);
+  --lt-warning-hover: oklch(from var(--lt-warning) calc(l + 0.04) c h);
+  --lt-warning-active: oklch(from var(--lt-warning) calc(l + 0.08) c h);
+  --lt-secondary-hover: oklch(from var(--lt-secondary) calc(l + 0.04) c h);
+  --lt-secondary-active: oklch(from var(--lt-secondary) calc(l + 0.08) c h);
+  --lt-disabled: oklch(0.28 0.01 225);
+  --lt-disabled-fg: oklch(0.56 0.012 225);
+
+  --lt-chart-1: oklch(0.72 0.12 190);
+  --lt-chart-2: oklch(0.7 0.12 250);
+  --lt-chart-3: oklch(0.76 0.14 60);
+  --lt-chart-4: oklch(0.7 0.16 305);
+  --lt-chart-5: oklch(0.7 0.16 20);
+  --lt-chart-6: oklch(0.74 0.12 150);
+  --lt-chart-7: oklch(0.72 0.12 100);
+  --lt-chart-8: oklch(0.68 0.05 280);
+
+  color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --font-sans: var(--lt-font-sans);
+  --font-mono: var(--lt-font-mono);
+  --color-lt-bg: var(--lt-bg);
+  --color-lt-fg: var(--lt-fg);
+  --color-lt-surface: var(--lt-surface);
+  --color-lt-surface-fg: var(--lt-surface-fg);
+  --color-lt-popover: var(--lt-popover);
+  --color-lt-popover-fg: var(--lt-popover-fg);
+  --color-lt-primary: var(--lt-primary);
+  --color-lt-primary-fg: var(--lt-primary-fg);
+  --color-lt-secondary: var(--lt-secondary);
+  --color-lt-secondary-fg: var(--lt-secondary-fg);
+  --color-lt-muted: var(--lt-muted);
+  --color-lt-muted-fg: var(--lt-muted-fg);
+  --color-lt-accent: var(--lt-accent);
+  --color-lt-accent-fg: var(--lt-accent-fg);
+  --color-lt-danger: var(--lt-danger);
+  --color-lt-danger-fg: var(--lt-danger-fg);
+  --color-lt-border: var(--lt-border);
+  --color-lt-input: var(--lt-input);
+  --color-lt-ring: var(--lt-ring);
+  --color-lt-overlay: var(--lt-overlay);
+  --color-lt-warning: var(--lt-warning);
+  --color-lt-success: var(--lt-success);
+  --color-lt-success-fg: var(--lt-success-fg);
+  --color-lt-info: var(--lt-info);
+  --color-lt-info-fg: var(--lt-info-fg);
+  --color-lt-primary-hover: var(--lt-primary-hover);
+  --color-lt-primary-active: var(--lt-primary-active);
+  --color-lt-danger-hover: var(--lt-danger-hover);
+  --color-lt-danger-active: var(--lt-danger-active);
+  --color-lt-success-hover: var(--lt-success-hover);
+  --color-lt-success-active: var(--lt-success-active);
+  --color-lt-info-hover: var(--lt-info-hover);
+  --color-lt-info-active: var(--lt-info-active);
+  --color-lt-warning-hover: var(--lt-warning-hover);
+  --color-lt-warning-active: var(--lt-warning-active);
+  --color-lt-secondary-hover: var(--lt-secondary-hover);
+  --color-lt-secondary-active: var(--lt-secondary-active);
+  --color-lt-disabled: var(--lt-disabled);
+  --color-lt-disabled-fg: var(--lt-disabled-fg);
+  --radius-lt: var(--lt-radius);
+  --radius-lt-sm: var(--lt-radius-sm);
+  --radius-lt-xs: var(--lt-radius-xs);
+  --shadow-lt-xs: var(--lt-shadow-xs);
+  --shadow-lt-sm: var(--lt-shadow-sm);
+  --shadow-lt-md: var(--lt-shadow-md);
+  --shadow-lt-lg: var(--lt-shadow-lg);
+  --shadow-lt-inner: var(--lt-shadow-inner);
+  --radius-lt-lg: var(--lt-radius-lg);
+  --radius-lt-xl: var(--lt-radius-xl);
+  --radius-lt-full: var(--lt-radius-full);
+  --color-lt-warning-fg: var(--lt-warning-fg);
+  --color-lt-chart-1: var(--lt-chart-1);
+  --color-lt-chart-2: var(--lt-chart-2);
+  --color-lt-chart-3: var(--lt-chart-3);
+  --color-lt-chart-4: var(--lt-chart-4);
+  --color-lt-chart-5: var(--lt-chart-5);
+  --color-lt-chart-6: var(--lt-chart-6);
+  --color-lt-chart-7: var(--lt-chart-7);
+  --color-lt-chart-8: var(--lt-chart-8);
+  --font-lt-mono: var(--lt-font-mono);
+  --font-lt-display: var(--lt-font-display);
+  --spacing-lt-sidebar: var(--lt-sidebar-w);
+  --spacing-lt-sidebar-collapsed: var(--lt-sidebar-w-collapsed);
+  --spacing-lt-container: var(--lt-container-max);
+  --spacing-lt-icon-xs: var(--lt-icon-xs);
+  --spacing-lt-icon-sm: var(--lt-icon-sm);
+  --spacing-lt-icon-md: var(--lt-icon-md);
+  --spacing-lt-icon-lg: var(--lt-icon-lg);
+  --spacing-lt-icon-xl: var(--lt-icon-xl);
+  --spacing-lt-icon-2xl: var(--lt-icon-2xl);
+  --spacing-lt-icon-3xl: var(--lt-icon-3xl);
+  --spacing-lt-icon-4xl: var(--lt-icon-4xl);
+  --spacing-lt-control-sm: var(--lt-control-h-sm);
+  --spacing-lt-control-md: var(--lt-control-h-md);
+  --spacing-lt-control-lg: var(--lt-control-h-lg);
+  --spacing-lt-gutter: var(--lt-gutter);
+  --spacing-lt-cell-x: var(--lt-table-cell-x);
+  --spacing-lt-cell-y: var(--lt-table-cell-y);
+  --font-weight-lt-normal: var(--lt-font-weight-normal);
+  --font-weight-lt-medium: var(--lt-font-weight-medium);
+  --font-weight-lt-semibold: var(--lt-font-weight-semibold);
+  --font-weight-lt-bold: var(--lt-font-weight-bold);
+  --animate-lt-toast-in: lt-toast-in var(--lt-duration-base) ease-out;
+  --animate-lt-toast-out: lt-toast-out var(--lt-duration-fast) ease-in;
+  --animate-lt-fade-in: lt-fade-in var(--lt-duration-base) ease-out;
+  --animate-lt-fade-out: lt-fade-out var(--lt-duration-fast) ease-in;
+  --animate-lt-dialog-in: lt-dialog-in var(--lt-duration-base) ease-out;
+  --animate-lt-dialog-out: lt-dialog-out var(--lt-duration-fast) ease-in;
+  --animate-lt-sheet-in-start: lt-sheet-in-start var(--lt-duration-slow) ease-out;
+  --animate-lt-sheet-out-start: lt-sheet-out-start var(--lt-duration-fast) ease-in;
+  --animate-lt-sheet-in-end: lt-sheet-in-end var(--lt-duration-slow) ease-out;
+  --animate-lt-sheet-out-end: lt-sheet-out-end var(--lt-duration-fast) ease-in;
+}
+
+@theme {
+
+  --spacing: 0.25rem;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.5385;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.5714;
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.125rem;
+  --text-xl--line-height: 1.5556;
+  --text-2xl: 1.375rem;
+  --text-2xl--line-height: 1.2727;
+  --text-3xl: 1.625rem;
+  --text-3xl--line-height: 1.2308;
+  --text-4xl: 2rem;
+  --text-4xl--line-height: 1.25;
+  --text-5xl: 2.5rem;
+  --text-5xl--line-height: 1.1;
+  --text-6xl: 3rem;
+  --text-6xl--line-height: 1;
+  --text-7xl: 3.75rem;
+  --text-7xl--line-height: 1;
+}
+
+/*
+ * Layering utilities backed by the --lt-z-* scale. Tailwind v4 does not expose
+ * z-index as a themeable namespace, so these are defined as named utilities
+ * (the scale itself stays the single source of truth in the :root block above).
+ */
+@utility z-lt-dropdown {
+  z-index: var(--lt-z-dropdown);
+}
+@utility z-lt-sticky {
+  z-index: var(--lt-z-sticky);
+}
+@utility z-lt-overlay {
+  z-index: var(--lt-z-overlay);
+}
+@utility z-lt-modal {
+  z-index: var(--lt-z-modal);
+}
+@utility z-lt-popover {
+  z-index: var(--lt-z-popover);
+}
+@utility z-lt-toast {
+  z-index: var(--lt-z-toast);
+}
+
+/*
+ * Responsive grid templates and spans driven by CSS variables the Grid
+ * component sets inline (mobile-first fallback chains, so only the breakpoints
+ * a grid declares need a variable). Variables instead of generated utility
+ * classes so arbitrary column counts and track lists survive Tailwind's static
+ * class scanning and the prebuilt standalone bundle.
+ */
+@utility lt-grid {
+  grid-template-columns: var(--lt-grid-cols-default, none);
+
+  & > [data-slot="grid-item"] {
+    grid-column: var(--lt-col-span-default, auto);
+    min-width: 0;
+  }
+
+  /* A child renderer that returns null (e.g. a condition-hidden field) must
+     not leave an empty cell behind. */
+  & > [data-slot="grid-item"]:empty {
+    display: none;
+  }
+
+  @media (width >= theme(--breakpoint-sm)) {
+    grid-template-columns: var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none));
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(--lt-col-span-sm, var(--lt-col-span-default, auto));
+    }
+  }
+
+  @media (width >= theme(--breakpoint-md)) {
+    grid-template-columns: var(
+      --lt-grid-cols-md,
+      var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none))
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto)));
+    }
+  }
+
+  @media (width >= theme(--breakpoint-lg)) {
+    grid-template-columns: var(
+      --lt-grid-cols-lg,
+      var(--lt-grid-cols-md, var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none)))
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(
+        --lt-col-span-lg,
+        var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto)))
+      );
+    }
+  }
+
+  @media (width >= theme(--breakpoint-xl)) {
+    grid-template-columns: var(
+      --lt-grid-cols-xl,
+      var(--lt-grid-cols-lg, var(--lt-grid-cols-md, var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none))))
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(
+        --lt-col-span-xl,
+        var(--lt-col-span-lg, var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto))))
+      );
+    }
+  }
+
+  @media (width >= theme(--breakpoint-2xl)) {
+    grid-template-columns: var(
+      --lt-grid-cols-2xl,
+      var(
+        --lt-grid-cols-xl,
+        var(--lt-grid-cols-lg, var(--lt-grid-cols-md, var(--lt-grid-cols-sm, var(--lt-grid-cols-default, none))))
+      )
+    );
+
+    & > [data-slot="grid-item"] {
+      grid-column: var(
+        --lt-col-span-2xl,
+        var(
+          --lt-col-span-xl,
+          var(--lt-col-span-lg, var(--lt-col-span-md, var(--lt-col-span-sm, var(--lt-col-span-default, auto))))
+        )
+      );
+    }
+  }
+}
+
+@keyframes lt-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lt-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@keyframes lt-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lt-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Centering uses Tailwind's standalone translate property, which composes
+   with transform — so these keyframes may only animate opacity and scale,
+   never a translate of their own. */
+@keyframes lt-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes lt-dialog-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+/* Sheet slides are physical (translateX): under RTL a sheet docks to the
+   correct logical edge but enters from the mirrored side. Shipped locales
+   are LTR. */
+@keyframes lt-sheet-in-start {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes lt-sheet-out-start {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes lt-sheet-in-end {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes lt-sheet-out-end {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/*
+ * Named colours. Semantic names alias the theme tokens; hue names carry their
+ * own oklch values with `.dark` overrides. Renderers resolve a named colour to
+ * `var(--lt-color-<name>)` for paint, or to an `.lt-tone-<name>` class for the
+ * soft-background/strong-foreground pair used by badge and icon cells. Defined
+ * here (not as utility strings in the renderers) so the palette lives with the
+ * theme and can be overridden, and so a colour can be picked by name at
+ * runtime without Tailwind needing to see every class.
+ */
+@layer lattice {
+  :root {
+  --lt-color-default: var(--lt-fg);
+  --lt-color-muted: var(--lt-muted-fg);
+  --lt-color-primary: var(--lt-primary);
+  --lt-color-success: var(--lt-success);
+  --lt-color-info: var(--lt-info);
+  --lt-color-warning: var(--lt-warning);
+  --lt-color-danger: var(--lt-danger);
+  --lt-color-gray: var(--lt-muted-fg);
+  --lt-color-red: oklch(0.51 0.19 27);
+  --lt-color-orange: oklch(0.55 0.14 55);
+  --lt-color-yellow: oklch(0.52 0.1 85);
+  --lt-color-green: oklch(0.52 0.13 152);
+  --lt-color-blue: oklch(0.54 0.17 252);
+  --lt-color-purple: oklch(0.53 0.19 305);
+  }
+
+  [data-theme="dark"],
+  .dark {
+  --lt-color-red: oklch(0.83 0.11 27);
+  --lt-color-orange: oklch(0.84 0.1 65);
+  --lt-color-yellow: oklch(0.87 0.11 100);
+  --lt-color-green: oklch(0.85 0.13 155);
+  --lt-color-blue: oklch(0.84 0.11 250);
+  --lt-color-purple: oklch(0.85 0.11 305);
+  }
+}
+
+/* iOS Safari auto-zooms when a focused control computes below 16px; unlayered
+   so it beats the text-size utilities on the components. */
+@media (width < theme(--breakpoint-md)) {
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="combobox-search"],
+  [data-slot="prompt-input"],
+  .lattice-prose[contenteditable="true"] {
+    font-size: var(--lt-input-font-size-mobile);
+  }
+}
+
+.lt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: var(--lt-radius-sm);
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  background-color: var(--lt-tone-bg, var(--lt-muted));
+  color: var(--lt-tone-fg, var(--lt-muted-fg));
+}
+
+.lt-cell-icon {
+  display: inline-flex;
+  color: var(--lt-tone-fg, var(--lt-fg));
+}
+
+.lt-tone-gray {
+  --lt-tone-bg: var(--lt-muted);
+  --lt-tone-fg: var(--lt-color-gray);
+}
+.lt-tone-red {
+  --lt-tone-bg: oklch(0.94 0.03 25);
+  --lt-tone-fg: var(--lt-color-red);
+}
+.lt-tone-orange {
+  --lt-tone-bg: oklch(0.95 0.04 65);
+  --lt-tone-fg: var(--lt-color-orange);
+}
+.lt-tone-yellow {
+  --lt-tone-bg: oklch(0.96 0.05 100);
+  --lt-tone-fg: var(--lt-color-yellow);
+}
+.lt-tone-green {
+  --lt-tone-bg: oklch(0.95 0.05 155);
+  --lt-tone-fg: var(--lt-color-green);
+}
+.lt-tone-blue {
+  --lt-tone-bg: oklch(0.95 0.03 245);
+  --lt-tone-fg: var(--lt-color-blue);
+}
+.lt-tone-purple {
+  --lt-tone-bg: oklch(0.95 0.03 305);
+  --lt-tone-fg: var(--lt-color-purple);
+}
+
+.lt-tone-default,
+.lt-tone-primary,
+.lt-tone-success,
+.lt-tone-info,
+.lt-tone-warning,
+.lt-tone-danger {
+  --lt-tone-bg: color-mix(in oklab, var(--lt-tone-fg) 12%, transparent);
+}
+.lt-tone-default {
+  --lt-tone-fg: var(--lt-color-default);
+}
+.lt-tone-muted {
+  --lt-tone-bg: var(--lt-muted);
+  --lt-tone-fg: var(--lt-color-muted);
+}
+.lt-tone-primary {
+  --lt-tone-fg: var(--lt-color-primary);
+}
+.lt-tone-success {
+  --lt-tone-fg: var(--lt-color-success);
+}
+.lt-tone-info {
+  --lt-tone-fg: var(--lt-color-info);
+}
+.lt-tone-warning {
+  --lt-tone-fg: var(--lt-color-warning);
+}
+.lt-tone-danger {
+  --lt-tone-fg: var(--lt-color-danger);
+}
+
+[data-theme="dark"] .lt-tone-red,
+.dark .lt-tone-red {
+  --lt-tone-bg: oklch(0.29 0.08 27);
+}
+[data-theme="dark"] .lt-tone-orange,
+.dark .lt-tone-orange {
+  --lt-tone-bg: oklch(0.3 0.07 65);
+}
+[data-theme="dark"] .lt-tone-yellow,
+.dark .lt-tone-yellow {
+  --lt-tone-bg: oklch(0.31 0.06 100);
+}
+[data-theme="dark"] .lt-tone-green,
+.dark .lt-tone-green {
+  --lt-tone-bg: oklch(0.3 0.07 155);
+}
+[data-theme="dark"] .lt-tone-blue,
+.dark .lt-tone-blue {
+  --lt-tone-bg: oklch(0.3 0.07 245);
+}
+[data-theme="dark"] .lt-tone-purple,
+.dark .lt-tone-purple {
+  --lt-tone-bg: oklch(0.3 0.07 305);
+}
+
+/*
+ * Rich text content styling. Applied to the rich editor and reusable for rendered
+ * output (wrap stored HTML in `.lattice-prose`). Restores the element styles that
+ * Tailwind's preflight resets, using the theme tokens so it adapts to dark mode.
+ * `:where()` keeps specificity low so consumers can override freely.
+ */
+.lattice-prose :where(h1) {
+  font-size: var(--text-4xl);
+  line-height: 2rem;
+  font-weight: var(--lt-font-weight-bold);
+  margin: calc(var(--spacing) * 4) 0 calc(var(--spacing) * 2);
+}
+
+.lattice-prose :where(h2) {
+  font-size: var(--text-3xl);
+  line-height: 1.75rem;
+  font-weight: var(--lt-font-weight-bold);
+  margin: calc(var(--spacing) * 4) 0 calc(var(--spacing) * 2);
+}
+
+.lattice-prose :where(h3) {
+  font-size: var(--text-2xl);
+  line-height: 1.5rem;
+  font-weight: var(--lt-font-weight-semibold);
+  margin: calc(var(--spacing) * 3) 0 calc(var(--spacing) * 2);
+}
+
+.lattice-prose :where(p) {
+  margin: calc(var(--spacing) * 2) 0;
+}
+
+/* TipTap renders the empty-editor placeholder via this attribute hook. */
+.lattice-prose :where(p.is-editor-empty:first-child)::before {
+  content: attr(data-placeholder);
+  color: var(--lt-muted-fg);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.lattice-prose :where(ul) {
+  list-style: disc;
+  padding-left: calc(var(--spacing) * 6);
+  margin: calc(var(--spacing) * 2) 0;
+}
+
+.lattice-prose :where(ol) {
+  list-style: decimal;
+  padding-left: calc(var(--spacing) * 6);
+  margin: calc(var(--spacing) * 2) 0;
+}
+
+.lattice-prose :where(li) {
+  margin: var(--spacing) 0;
+}
+
+.lattice-prose :where(li p) {
+  margin: 0;
+}
+
+.lattice-prose :where(blockquote) {
+  border-left: 3px solid var(--lt-border);
+  padding-left: calc(var(--spacing) * 4);
+  margin: calc(var(--spacing) * 3) 0;
+  color: var(--lt-muted-fg);
+  font-style: italic;
+}
+
+.lattice-prose :where(strong) {
+  font-weight: var(--lt-font-weight-bold);
+}
+
+.lattice-prose :where(em) {
+  font-style: italic;
+}
+
+.lattice-prose :where(s) {
+  text-decoration: line-through;
+}
+
+.lattice-prose :where(u) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lattice-prose :where(mark) {
+  background: var(--lt-warning);
+  color: inherit;
+  border-radius: var(--lt-radius-sm);
+  padding: 0.05em 0.15em;
+}
+
+.lattice-prose :where(a) {
+  color: var(--lt-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lattice-prose :where(code) {
+  background: var(--lt-muted);
+  border-radius: var(--lt-radius-sm);
+  padding: calc(var(--spacing) * 0.5) var(--spacing);
+  font-family: var(--lt-font-mono);
+  font-size: 0.875em;
+}
+
+.lattice-prose :where(pre) {
+  background: var(--lt-muted);
+  border-radius: var(--lt-radius-sm);
+  padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+  margin: calc(var(--spacing) * 3) 0;
+  overflow-x: auto;
+  font-family: var(--lt-font-mono);
+  font-size: var(--text-lg);
+}
+
+.lattice-prose :where(pre code) {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+
+.lattice-prose :where(hr) {
+  border: none;
+  border-top: 1px solid var(--lt-border);
+  margin: calc(var(--spacing) * 4) 0;
+}
+
+.lattice-prose :where(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: calc(var(--spacing) * 3) 0;
+  table-layout: fixed;
+  overflow: hidden;
+}
+
+.lattice-prose :where(th, td) {
+  border: 1px solid var(--lt-border);
+  padding: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  text-align: left;
+  vertical-align: top;
+}
+
+.lattice-prose :where(th) {
+  background: var(--lt-muted);
+  font-weight: var(--lt-font-weight-semibold);
+}
+
+.lattice-prose :where(.selectedCell) {
+  background: var(--lt-accent);
+}
+
+.lattice-prose :where(details) {
+  border: 1px solid var(--lt-border);
+  border-radius: var(--lt-radius-sm);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+  margin: calc(var(--spacing) * 3) 0;
+}
+
+.lattice-prose :where(summary) {
+  cursor: pointer;
+  font-weight: var(--lt-font-weight-semibold);
+}
+
+.lattice-prose :where(:first-child) {
+  margin-top: 0;
+}
+
+.lattice-prose :where(:last-child) {
+  margin-bottom: 0;
+}

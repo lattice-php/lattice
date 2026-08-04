@@ -1,5 +1,5 @@
 import { Button } from "@lattice-php/lattice/ui/button";
-import { Spinner } from "@lattice-php/lattice/ui/spinner";
+import { Spinner } from "@lattice-php/ui/spinner";
 import type { Emphasis, Variant } from "@lattice-php/lattice/types/generated";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";
 

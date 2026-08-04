@@ -1,0 +1,1 @@
+function e(e){return e==null||e===``?void 0:e}function t(t){return e(t.key)??e(t.id)}function n(t){return e(t)?.split(`.`).at(-1)}function r(e,t){let r=n(t);return r?`${e}-${r}`:void 0}function i(e,n){return r(e,t(n))}export{e as i,i as n,r,t};

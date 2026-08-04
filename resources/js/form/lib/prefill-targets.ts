@@ -1,4 +1,4 @@
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { fieldProps, ROW_FIELD_TYPES } from "./field-props";
 import { rowSchemaFor } from "@lattice-php/lattice/form/components/fields/row-templates";
 import { appendPath, getPath } from "./form-path";

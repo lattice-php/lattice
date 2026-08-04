@@ -1,9 +1,9 @@
 import { expect, it, vi } from "vitest";
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import type { ComponentPropsOf, Node } from "@lattice-php/lattice/core/types";
+import type { ComponentPropsOf, Node } from "@lattice-php/core/types";
 import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 
-vi.mock("@lattice-php/lattice/core/renderer", async () => {
+vi.mock("@lattice-php/core/renderer", async () => {
   const { RenderNode } = await import("@lattice-php/lattice/test/form-renderer-probe");
 
   return { RenderNode };

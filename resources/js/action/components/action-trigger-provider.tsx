@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { ActionTriggerProvider, type TriggerState } from "@lattice-php/lattice/ui/click-behavior";
 import { useAction } from "@lattice-php/lattice/action/hooks/use-action";
 

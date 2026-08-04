@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useLocale } from "@lattice-php/lattice/i18n";
+import { useLocale } from "@lattice-php/ui/i18n";
 import type { NumberFormat } from "@lattice-php/lattice/types/generated";
 import { formatNumber } from "@lattice-php/lattice/format/number";
 import { numericValue } from "@lattice-php/lattice/format/numeric";

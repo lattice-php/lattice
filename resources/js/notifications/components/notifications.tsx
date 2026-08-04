@@ -1,13 +1,9 @@
 import { Component, lazy, Suspense, type ReactNode } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@lattice-php/lattice/ui/dialog";
-import {
-  Popover as PopoverRoot,
-  PopoverContent,
-  PopoverTrigger,
-} from "@lattice-php/lattice/ui/popover";
-import { Icon } from "@lattice-php/lattice/icons";
-import { useT } from "@lattice-php/lattice/i18n";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { Dialog, DialogContent, DialogTitle } from "@lattice-php/ui/dialog";
+import { Popover as PopoverRoot, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+import { Icon } from "@lattice-php/ui/icons";
+import { useT } from "@lattice-php/ui/i18n";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { useNotifications } from "@lattice-php/lattice/notifications/store";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 import { NotificationList } from "./notification-list";

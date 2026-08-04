@@ -1,0 +1,46 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/core",
+    "description": "Core contracts, discovery, evaluation, and serialization for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/database": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/filesystem": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/routing": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "spatie/php-attribute-reader": "^1.1",
+        "spatie/php-structure-discoverer": "^2.4"
+    },
+    "suggest": {
+        "spatie/laravel-typescript-transformer": "Required to generate TypeScript wire types."
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Lattice\\Attributes\\": "src/Attributes/",
+            "Lattice\\Lattice\\Core\\": "src/Core/",
+            "Lattice\\Lattice\\Facades\\": "src/Facades/",
+            "Lattice\\Lattice\\Support\\Discovery\\": "src/Support/Discovery/",
+            "Lattice\\Lattice\\Support\\Evaluation\\": "src/Support/Evaluation/",
+            "Lattice\\Lattice\\Support\\TypeScript\\": "src/Support/TypeScript/"
+        },
+        "classmap": [
+            "src/LatticeRegistry.php",
+            "src/Support/Affix.php",
+            "src/Support/Wire.php",
+            "src/Support/WireTypeRegistry.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lattice\\Lattice\\Core\\CoreServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

@@ -1,10 +1,10 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
+import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import TabComponent, { TabsComponent } from "./tabs";
 
 vi.mock("@inertiajs/react", async () =>

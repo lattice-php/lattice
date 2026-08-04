@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
-import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { Node, Option } from "@lattice-php/lattice/core/types";
+import { Checkbox } from "@lattice-php/ui/checkbox";
+import { Renderer } from "@lattice-php/core/renderer";
+import type { Node, Option } from "@lattice-php/core/types";
 import {
   FieldCommitOverrideProvider,
   FormProvider,
@@ -15,10 +15,10 @@ import {
   useFormValues,
   useSetFormValue,
 } from "@lattice-php/lattice/form/embed";
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
-import { useT } from "@lattice-php/lattice/i18n";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { isTruthy } from "@lattice-php/lattice/lib/is-truthy";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { useT } from "@lattice-php/ui/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { isTruthy } from "@lattice-php/ui/lib/is-truthy";
 import { filterValue, isActiveFilterValue } from "@lattice-php/lattice/table/lib/filter-values";
 import type { FilterNode } from "@lattice-php/lattice/table/types";
 

@@ -1,5 +1,5 @@
-import type { Node } from "@lattice-php/lattice/core/types";
-import { testIdentity } from "@lattice-php/lattice/core/test-id";
+import type { Node } from "@lattice-php/core/types";
+import { testIdentity } from "@lattice-php/core/test-id";
 import type { FieldState } from "@lattice-php/lattice/form/lib/conditions";
 import { fieldProps } from "@lattice-php/lattice/form/lib/field-props";
 import { useFieldScope } from "./field-scope";

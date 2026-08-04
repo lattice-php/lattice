@@ -6,11 +6,8 @@ use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Core\PageMetadata;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
@@ -53,8 +50,8 @@ const CORE_FORBIDDEN_NAMESPACES = [
  * only intentional cross-domain couplings are tables -> actions (row and bulk
  * actions), tables -> forms (table filters are form-field schemas), actions ->
  * forms (action forms), and layouts -> actions (menu items that trigger an
- * action). The UI layer likewise reaches Actions in one deliberate spot — the
- * Triggerable primitive (links/buttons that trigger an action).
+ * action). UI stays below those domains; the aggregate wires its optional
+ * action trigger integration through the container.
  *
  * Top: the orchestration and tooling layers — Http (which renders and routes
  * pages, including the page registry, by consuming the feature domains),
@@ -103,20 +100,14 @@ arch('layouts depend on no feature domain other than actions')
 
 arch('core does not depend on feature or ui domains')
     ->expect('Lattice\Lattice\Core')
-    ->not->toUse(CORE_FORBIDDEN_NAMESPACES)
-    ->ignoring([PageMetadata::class, PageSchema::class]);
+    ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
 
 it('shared source does not reference feature or ui namespaces in strings', function (string $directory): void {
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/src/'.$directory));
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/packages/core/src/'.$directory));
     $violations = [];
 
     foreach ($files as $file) {
         if ($file->getExtension() !== 'php') {
-            continue;
-        }
-
-        // Their public types stay compatible until the package-extraction release.
-        if ($directory === 'Core' && in_array($file->getFilename(), ['PageMetadata.php', 'PageSchema.php'], true)) {
             continue;
         }
 
@@ -184,8 +175,7 @@ arch('attributes depend on no feature domain or higher layer')
         'Lattice\Lattice\Http',
         'Lattice\Lattice\Console',
         'Lattice\Lattice\Facades',
-    ])
-    ->ignoring(AsPage::class);
+    ]);
 
 /*
  * The Support utilities are part of the shared base and stay free of the feature

@@ -1,9 +1,9 @@
 import { Fragment, lazy, Suspense } from "react";
 import type { ComponentProps } from "react";
 import type { Extension } from "@codemirror/state";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { CopyButton } from "./copyable-text";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { CopyButton } from "@lattice-php/ui/copyable-text";
 
 const CodeBlockView = lazy(() => import("./code-block-view"));
 

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import type { CreateLatticeAppOptions } from "@lattice-php/lattice/create-app";
-import type { Plugin } from "@lattice-php/lattice/core/registry";
+import type { Plugin } from "@lattice-php/core/registry";
 
 const createLatticeApp = vi.hoisted(() => vi.fn<(options?: CreateLatticeAppOptions) => unknown>());
 const configureEcho = vi.hoisted(() => vi.fn<(config: unknown) => unknown>());

@@ -1,6 +1,6 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
-import { testIdentity } from "@lattice-php/lattice/core/test-id";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { testIdentity } from "@lattice-php/core/test-id";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import { toBoolean } from "@lattice-php/lattice/form/lib/conditions";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";

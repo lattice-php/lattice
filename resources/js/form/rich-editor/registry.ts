@@ -1,7 +1,7 @@
 import type { AnyExtension, Editor } from "@tiptap/core";
 import type { StarterKitOptions } from "@tiptap/starter-kit";
 import type { ComponentType } from "react";
-import type { ResolveProps } from "@lattice-php/lattice/core/types";
+import type { ResolveProps } from "@lattice-php/core/types";
 import type {
   EditorExtension,
   EditorExtensionPropsMap,

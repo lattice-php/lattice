@@ -1,4 +1,4 @@
-import { DateTime } from "@lattice-php/lattice/i18n";
+import { DateTime } from "@lattice-php/ui/i18n";
 import { Badge } from "@lattice-php/lattice/ui/badge";
 import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "@lattice-php/lattice/table/lib/format";

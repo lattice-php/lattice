@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { NotificationItemRow } from "./notification-item";
@@ -21,8 +21,8 @@ vi.mock("@inertiajs/react", async () =>
   }),
 );
 
-vi.mock("@lattice-php/lattice/icons", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@lattice-php/lattice/icons")>();
+vi.mock("@lattice-php/ui/icons", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@lattice-php/ui/icons")>();
 
   return {
     ...actual,
@@ -32,7 +32,7 @@ vi.mock("@lattice-php/lattice/icons", async (importOriginal) => {
   };
 });
 
-vi.mock("@lattice-php/lattice/core/renderer", () => ({
+vi.mock("@lattice-php/core/renderer", () => ({
   RenderNode: ({ node }: { node: Node }) => (
     <span data-test="notification-action">
       {node.type}:{node.id}

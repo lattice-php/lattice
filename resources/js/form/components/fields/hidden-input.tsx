@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
 
 export const HiddenInputComponent: RendererComponent<"field.hidden-input"> = ({ node }) => {

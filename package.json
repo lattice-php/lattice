@@ -6,7 +6,8 @@
   "author": "Manuel Christlieb <manuel@christlieb.eu>",
   "type": "module",
   "workspaces": [
-    "docs"
+    "docs",
+    "packages/*"
   ],
   "homepage": "https://latticephp.com",
   "repository": {
@@ -279,8 +280,9 @@
     "boost:refresh": "php vendor/bin/testbench boost:update --no-interaction",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib && npm run check:package",
-    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:plugins && npm run build:lib && npm run check:package",
+    "build:plugins": "npm run build:plugin --workspaces --if-present && git diff --exit-code -- packages/*/dist",
+    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css --ignore-rules internal-resolution-error && publint packages/core --strict && attw --pack packages/core --profile esm-only && publint packages/ui --strict && attw --pack packages/ui --profile esm-only --exclude-entrypoints ./css",
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "npm run build:lib && tsc --noEmit -p docs/tsconfig.json",
     "docs:test": "vitest run --project jsdom docs",
@@ -295,6 +297,8 @@
     "docs:preview": "npm run preview -w docs"
   },
   "dependencies": {
+    "@lattice-php/core": "0.38.0",
+    "@lattice-php/ui": "0.38.0",
     "@atlaskit/pragmatic-drag-and-drop": "^2.0.1",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
@@ -309,11 +313,6 @@
     "@internationalized/date": "^3.12.2",
     "@lattice-php/vite-svg-sprite": "^0.3.0",
     "@lezer/highlight": "^1.2.3",
-    "@radix-ui/react-checkbox": "^1.1.4",
-    "@radix-ui/react-dialog": "^1.1.16",
-    "@radix-ui/react-label": "^2.1.2",
-    "@radix-ui/react-popover": "^1.1.16",
-    "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-toast": "^1.2.16",
     "@tiptap/core": "^3.26.0",
     "@tiptap/extension-details": "^3.26.0",
@@ -326,14 +325,7 @@
     "@tiptap/starter-kit": "^3.26.0",
     "@zag-js/date-picker": "^1.41.2",
     "@zag-js/react": "^1.41.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "i18next": "^26.3.1",
-    "i18next-http-backend": "^4.0.0",
-    "input-otp": "^1.4.2",
-    "react-colorful": "^5.8.0",
-    "recharts": "^3.8.1",
-    "tailwind-merge": "^3.0.1"
+    "recharts": "^3.8.1"
   },
   "peerDependencies": {
     "@inertiajs/react": "^3.0.0",

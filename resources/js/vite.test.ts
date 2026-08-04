@@ -71,6 +71,7 @@ describe("lattice Vite helper", () => {
           deps: {
             inline: [
               "@lattice-php/lattice",
+              "@lattice-php/ui",
               /[/\\]lattice[/\\]dist[/\\]/,
               /[/\\]lattice[/\\]node_modules[/\\]@radix-ui[/\\]/,
               /[/\\]lattice[/\\]node_modules[/\\]@tiptap[/\\]/,
@@ -89,8 +90,10 @@ describe("lattice Vite helper", () => {
     expect(latticeConfig({ appRoot, source: true })).toMatchObject({
       resolve: {
         alias: {
-          "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
+          "@lattice-php/lattice/css": path.resolve(root, "packages/ui/resources/css/lattice.css"),
           "@lattice-php/lattice": path.resolve(root, "resources/js"),
+          "@lattice-php/ui/css": path.resolve(root, "packages/ui/resources/css/lattice.css"),
+          "@lattice-php/ui": path.resolve(root, "packages/ui/resources/js"),
         },
         dedupe: ["@inertiajs/react", "react", "react-dom"],
       },
@@ -289,7 +292,7 @@ describe("lattice Vite helper", () => {
 
     expect(iconOptions?.dts).toEqual({
       file: "resources/js/types/sprite-icons.ts",
-      augmentModule: "@lattice-php/lattice",
+      augmentModule: "@lattice-php/ui",
       augmentInterface: "MyIcons",
     });
   });
