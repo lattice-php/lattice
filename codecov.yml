@@ -15,6 +15,7 @@ coverage:
           - vitest
           - vitest-browser
         paths:
+          - packages/*/resources/js
           - resources/js
     patch:
       default:
@@ -27,14 +28,17 @@ coverage:
           - vitest
           - vitest-browser
         paths:
+          - packages/*/resources/js
           - resources/js
 
 flags:
   vitest:
     paths:
+      - packages/*/resources/js
       - resources/js
   vitest-browser:
     paths:
+      - packages/*/resources/js
       - resources/js
 
 comment:
