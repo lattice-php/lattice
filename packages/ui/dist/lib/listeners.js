@@ -1,19 +1,10 @@
+import { __exportAll, __reExport } from "../_virtual/_rolldown/runtime.js";
+export * from "@lattice-php/core/lib/listeners";
 //#region resources/js/lib/listeners.ts
-function createListeners() {
-	const listeners = /* @__PURE__ */ new Set();
-	return {
-		subscribe(callback) {
-			listeners.add(callback);
-			return () => {
-				listeners.delete(callback);
-			};
-		},
-		notify() {
-			listeners.forEach((listener) => listener());
-		}
-	};
-}
+var listeners_exports = /* @__PURE__ */ __exportAll({});
+import * as import__lattice_php_core_lib_listeners from "@lattice-php/core/lib/listeners";
+__reExport(listeners_exports, import__lattice_php_core_lib_listeners);
 //#endregion
-export { createListeners };
+export { listeners_exports };
 
 //# sourceMappingURL=listeners.js.map

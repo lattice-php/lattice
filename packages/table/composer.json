@@ -1,0 +1,39 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/table",
+    "description": "Table definitions, columns, filters, and data sources for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/database": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/validation": "^11.0 || ^12.0 || ^13.0",
+        "lattice-php/core": "self.version",
+        "lattice-php/form": "self.version",
+        "lattice-php/ui": "self.version",
+        "symfony/http-foundation": "^7.0 || ^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Lattice\\Tables\\": "src/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "discover": [
+                "src"
+            ],
+            "plugin": "resources/js/plugin.ts"
+        },
+        "laravel": {
+            "providers": [
+                "Lattice\\Lattice\\Tables\\TablesServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

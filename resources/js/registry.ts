@@ -11,14 +11,14 @@ import type {
   TableNodeType,
   UiNodeType,
 } from "@lattice-php/lattice/types/generated";
-import { actionComponents } from "./action/plugin";
+import { actionComponents } from "@lattice-php/action/plugin";
 import { chatComponents } from "./chat/plugin";
 import { uiComponents } from "./ui/plugin";
-import { formComponents } from "./form/plugin";
+import { formComponents } from "@lattice-php/form/plugin";
 import { layoutComponents } from "./layout/plugin";
 import { notificationsComponents } from "./notifications/plugin";
 import { remoteComponents } from "./remote/plugin";
-import { tableComponents } from "./table/plugin";
+import { tableComponents } from "@lattice-php/table/plugin";
 
 // Compile-time totality: every generated NodeType must belong to a registered
 // plugin's union. A new PHP domain fails here until its plugin exists.

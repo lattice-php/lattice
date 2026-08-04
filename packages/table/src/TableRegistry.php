@@ -1,0 +1,260 @@
+<?php
+declare(strict_types=1);
+
+namespace Lattice\Lattice\Tables;
+
+use Illuminate\Http\Request;
+use Lattice\Lattice\Attributes\AsTable;
+use Lattice\Lattice\Attributes\DefinitionAttribute;
+use Lattice\Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Core\Option;
+use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Lattice\Forms\FormData;
+use Lattice\Lattice\Forms\FormSchemaWalker;
+use Lattice\Lattice\Http\SubRequest;
+use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Lattice\Tables\Components\Table as TableComponent;
+use Lattice\Lattice\Tables\Contracts\Filterable;
+use Lattice\Lattice\Tables\Contracts\Searchable;
+use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * @extends DefinitionRegistry<TableDefinition>
+ */
+final class TableRegistry extends DefinitionRegistry
+{
+    use FiltersRenderableComponents;
+
+    private const array ROW_IDENTITY_KEYS = ['id', 'uuid', 'key'];
+
+    /**
+     * @param  class-string<TableDefinition>  $table
+     * @param  array<string, mixed>  $context
+     */
+    public function component(string $table, array $context = []): TableComponent
+    {
+        return $this->buildComponent(
+            $table,
+            fn (TableDefinition $definition, TableQuery $query): TableResult => $definition->source()->query($query),
+            $context,
+        );
+    }
+
+    /**
+     * @param  class-string<TableDefinition>  $table
+     * @param  array<string, mixed>  $context
+     */
+    public function lazyComponent(string $table, array $context = []): TableComponent
+    {
+        return $this->buildComponent(
+            $table,
+            fn (TableDefinition $definition, TableQuery $query): TableResult => TableResult::make([])
+                ->pagination(TablePagination::pending($definition->paginationType())),
+            $context,
+            lazy: true,
+        );
+    }
+
+    /**
+     * @param  class-string<TableDefinition>  $table
+     * @param  callable(TableDefinition, TableQuery): TableResult  $result
+     * @param  array<string, mixed>  $context
+     */
+    private function buildComponent(string $table, callable $result, array $context = [], bool $lazy = false): TableComponent
+    {
+        return $this->gatedComponent(
+            $table,
+            fn (string $key): TableComponent => TableComponent::make($key),
+            function (TableDefinition $definition, TableComponent $component, string $key) use ($result, $context, $lazy): TableComponent {
+                $columns = $definition->columns();
+                $query = TableQuery::empty($definition->perPage());
+
+                $component
+                    ->endpoint($this->endpointFor($key))
+                    ->columns($columns)
+                    ->filters($definition->filters())
+                    ->perPageOptions($definition->perPageOptions())
+                    ->searchable($this->hasSearchableColumns($columns))
+                    ->layout($definition->layout())
+                    ->striped($definition->striped())
+                    ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
+                    ->actionsLabel($definition->actionsLabel())
+                    ->emptyLabel($definition->emptyLabel())
+                    ->bulkActions($this->bulkActions($definition, $key, $context))
+                    ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
+
+                $component->lazy = $lazy;
+
+                return $component;
+            },
+            $context,
+        );
+    }
+
+    public function response(string $key, Request $request, ?TableDefinition $definition = null): TableResult
+    {
+        $definition ??= $this->resolve($key);
+        $columns = $definition->columns();
+        $query = TableQuery::fromRequest($request, $columns, $key, $definition->perPage(), $definition->filters(), $definition->perPageOptions());
+
+        return $this->decorateResult($definition, $definition->source()->query($query), $columns)->forQuery($query);
+    }
+
+    /**
+     * Resolve options for a searchable filter from the user's query (the search
+     * sub-request of the table endpoint). Targets are namespaced — `filter:<key>.<field>`
+     * addresses a dedicated filter's schema field, `column:<key>` a column filter — so
+     * a filter key can never shadow a dot-keyed relation column.
+     *
+     * @return array{options: list<Option>}
+     */
+    public function searchFilterOptions(string $key, Request $request, SubRequest $sub, ?TableDefinition $definition = null): array
+    {
+        $definition ??= $this->resolve($key);
+
+        if (str_starts_with($sub->target, 'filter:')) {
+            return ['options' => $this->searchFilterFieldOptions($definition, substr($sub->target, strlen('filter:')), $sub->query, $request)];
+        }
+
+        if (str_starts_with($sub->target, 'column:')) {
+            return ['options' => $this->searchColumnFilterOptions($definition, substr($sub->target, strlen('column:')), $sub->query)];
+        }
+
+        abort(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
+     * @return list<Option>
+     */
+    private function searchFilterFieldOptions(TableDefinition $definition, string $target, string $query, Request $request): array
+    {
+        [$filterKey, $fieldKey] = str_contains($target, '.')
+            ? explode('.', $target, 2)
+            : [$target, 'value'];
+
+        $filter = array_find($definition->filters(), fn (Filter $filter): bool => $filter->key() === $filterKey);
+
+        abort_if($filter === null, Response::HTTP_NOT_FOUND);
+
+        $instance = app(FormSchemaWalker::class)->find($filter->schema(), $fieldKey, FormData::fromRequest($request));
+
+        abort_if($instance === null, Response::HTTP_NOT_FOUND);
+
+        $field = $instance->field;
+
+        abort_unless($field instanceof Select && $field->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return $field->resolveSearch($query, $instance->scope, $request);
+    }
+
+    /**
+     * @return list<Option>
+     */
+    private function searchColumnFilterOptions(TableDefinition $definition, string $columnKey, string $query): array
+    {
+        $column = array_find($definition->columns(), fn (Column $column): bool => $column->key() === $columnKey);
+
+        abort_unless($column instanceof Filterable, Response::HTTP_NOT_FOUND);
+        abort_unless($column->filterSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        return $column->searchFilterOptions($query);
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<int, Component>
+     */
+    private function bulkActions(TableDefinition $definition, string $key, array $context): array
+    {
+        return array_map(
+            fn (Component&InteractiveComponent $action): Component => $action->context([...$context, 'table' => $key]),
+            $this->renderableComponents($definition->bulkActions()),
+        );
+    }
+
+    /**
+     * @param  array<int, Column>  $columns
+     */
+    private function hasSearchableColumns(array $columns): bool
+    {
+        return array_any(
+            $columns,
+            static fn (Column $column): bool => $column instanceof Searchable && $column->isSearchable(),
+        );
+    }
+
+    /**
+     * @return class-string<TableDefinition>
+     */
+    protected function definitionClass(): string
+    {
+        return TableDefinition::class;
+    }
+
+    /**
+     * @return class-string<DefinitionAttribute>
+     */
+    public function attributeClass(): string
+    {
+        return AsTable::class;
+    }
+
+    protected function name(): string
+    {
+        return 'table';
+    }
+
+    public function group(): string
+    {
+        return 'tables';
+    }
+
+    /**
+     * @param  array<int, Column>  $columns
+     */
+    private function decorateResult(TableDefinition $definition, TableResult $result, array $columns): TableResult
+    {
+        $rowKeys = $this->rowKeys($columns);
+
+        return $result->decorateRows(function (array $row) use ($definition, $rowKeys): array {
+            $actions = $this->renderableComponents($definition->actions($row));
+            $detail = array_values($this->renderableComponents(array_filter([$definition->rowDetail($row)])));
+            $projected = array_intersect_key($row, array_flip($rowKeys));
+
+            unset($projected['actions'], $projected['detail']);
+
+            if ($detail !== []) {
+                $projected['detail'] = $detail[0];
+            }
+
+            if ($actions !== []) {
+                $projected['actions'] = $actions;
+            }
+
+            return $projected;
+        });
+    }
+
+    /**
+     * @param  array<int, Column>  $columns
+     * @return array<int, string>
+     */
+    private function rowKeys(array $columns): array
+    {
+        $keys = self::ROW_IDENTITY_KEYS;
+
+        foreach ($columns as $column) {
+            if (! $column->shouldRender()) {
+                continue;
+            }
+
+            array_push($keys, ...$column->boundRowKeys());
+        }
+
+        return array_values(array_unique($keys));
+    }
+}

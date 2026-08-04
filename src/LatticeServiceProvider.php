@@ -12,11 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
-use Lattice\Lattice\Actions\ActionRegistry;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\AsBulkAction;
+use Lattice\Lattice\Actions\ActionsServiceProvider;
 use Lattice\Lattice\Attributes\AsFragment;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsRemoteSource;
@@ -34,7 +30,6 @@ use Lattice\Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Effects\EffectFlasher;
-use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\FormsServiceProvider;
 use Lattice\Lattice\Fragments\FragmentRegistry;
@@ -76,6 +71,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->register(CoreServiceProvider::class);
         $this->app->register(UiServiceProvider::class);
         $this->app->register(FormsServiceProvider::class);
+        $this->app->register(ActionsServiceProvider::class);
         $this->app->register(TablesServiceProvider::class);
         Lattice::wireSource(__DIR__);
 
@@ -83,18 +79,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
             $this->commands(MakeDefinitionCommand::all());
         }
 
-        DiscoveryKinds::register('actions', AsAction::class);
-        DiscoveryKinds::register('bulk-actions', AsBulkAction::class);
         DiscoveryKinds::register('fragments', AsFragment::class);
         DiscoveryKinds::register('remote-sources', AsRemoteSource::class);
         DiscoveryKinds::register('layouts', AsLayout::class);
 
         $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(LayoutRegistry::class);
-        $this->app->singleton(ActionRegistry::class);
-        $this->app->singleton(BulkActionRegistry::class);
-        $this->app->singleton('lattice.actions.component', fn (): callable => fn (string $actionClass, array $context): Action => Action::use($actionClass, $context));
-        $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
         $this->app->scoped(EffectFlasher::class);
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);

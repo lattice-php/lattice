@@ -1,4 +1,4 @@
-import { i18n as I18nInstance } from "i18next";
+import { i18n as I18nInstance } from 'i18next';
 /**
  * i18next's built-in `datetime` formatter throws on a string, and
  * `Translatable::with()` sends dates over the wire as ISO 8601 strings, so

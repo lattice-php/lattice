@@ -13,12 +13,10 @@
     },
     "autoload": {
         "psr-4": {
+            "Lattice\\Lattice\\Effects\\": "src/Effects/",
+            "Lattice\\Lattice\\I18n\\": "src/I18n/",
             "Lattice\\Lattice\\Ui\\": "src/"
-        },
-        "classmap": [
-            "src/Effects/Attributes/AsEffect.php",
-            "src/Effects/Effect.php"
-        ]
+        }
     },
     "extra": {
         "laravel": {

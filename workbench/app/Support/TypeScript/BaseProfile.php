@@ -33,22 +33,20 @@ final readonly class BaseProfile implements TypeScriptProfile
 
     public function pendingTypeCount(): int
     {
-        $packageRoot = dirname(__DIR__, 4);
-
-        return count($this->discovery->discoverMany($this->sources($packageRoot))->components);
+        return count($this->discovery->discoverMany($this->lattice->wireSources())->components);
     }
 
     public function run(TypeScriptGenerator $generator): string
     {
         $packageRoot = dirname(__DIR__, 4);
-        $sources = $this->sources($packageRoot);
+        $sources = $this->lattice->wireSources();
 
         // Overridable so the snapshot test regenerates into a scratch dir instead
         // of rewriting the committed resources/js/types mid-suite.
         $configuredOutput = config('lattice.typescript.base_output');
         $outputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput
-            : $packageRoot.'/resources/js/types';
+            : $packageRoot.'/packages/core/resources/js';
 
         $manifest = $this->discovery->discoverMany($sources);
 
@@ -115,16 +113,6 @@ final readonly class BaseProfile implements TypeScriptProfile
         );
 
         return 'Regenerated built-in TypeScript types.';
-    }
-
-    /** @return list<string> */
-    private function sources(string $packageRoot): array
-    {
-        return [
-            $packageRoot.'/src',
-            $packageRoot.'/packages/core/src',
-            $packageRoot.'/packages/ui/src',
-        ];
     }
 
     /**

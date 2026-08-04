@@ -1,0 +1,26 @@
+laravel: '@testbench'
+
+env:
+  - DB_CONNECTION=sqlite
+
+migrations:
+  - workbench/database/migrations
+
+workbench:
+  start: '/tree'
+  welcome: false
+  build:
+    - create-sqlite-db
+    - migrate:fresh:
+        --force: true
+    - db:seed:
+        --class: Workbench\App\Seeders\DatabaseSeeder
+        --force: true
+  discovers:
+    views: true
+
+providers:
+  - Inertia\ServiceProvider
+  - Lattice\Lattice\LatticeServiceProvider
+  - Lattice\Tree\TreeServiceProvider
+  - Workbench\App\Providers\WorkbenchServiceProvider

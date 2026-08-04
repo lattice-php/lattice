@@ -1,10 +1,10 @@
-import { createListeners } from "../lib/listeners.js";
+import { listeners_exports } from "../lib/listeners.js";
 import { configTimezone, subscribeConfig } from "./config.js";
 import { useSyncExternalStore } from "react";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 //#region resources/js/i18n/timezone.ts
 var fallback = "UTC";
-var { subscribe, notify } = createListeners();
+var { subscribe, notify } = (0, listeners_exports.createListeners)();
 var override;
 function detectedTimezone() {
 	if (typeof Intl === "undefined") return fallback;

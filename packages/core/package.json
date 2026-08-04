@@ -12,49 +12,12 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./collapsed-context": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+    "./generated": {
+      "types": "./dist/generated.d.ts"
     },
-    "./component-ref": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./event-names": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./hooks/use-window-event": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./materialize": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./nodes": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./registry": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./registry-context": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./renderer": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./test-id": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./types": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
     },
     "./package.json": "./package.json"
   },
@@ -68,6 +31,7 @@
     "test": "vitest run"
   },
   "peerDependencies": {
+    "@inertiajs/core": "^3.0.0",
     "react": "^19.0.0"
   }
 }

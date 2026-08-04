@@ -1,0 +1,407 @@
+import { useState } from "react";
+import { Button } from "@lattice-php/ui/button";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { NativeSelect } from "@lattice-php/ui/native-select";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+import { useT } from "@lattice-php/ui/i18n";
+import type { ColumnFilterOption, FilterType, Option, Op } from "@lattice-php/core/generated";
+import { filterValue } from "@lattice-php/table/lib/filter-values";
+import { operatorLabel, VALUELESS_FILTER_OPERATORS } from "@lattice-php/table/lib/query";
+import type { FilterClause, FilterNode, TableColumn } from "@lattice-php/table/types";
+import { TableFilterControl } from "./filter-controls";
+import { FilterValueInput } from "./filter-value-input";
+
+type ColumnClause = { clause: FilterClause; index: number };
+
+export function ColumnFilterControl({
+  column,
+  clauses,
+  processing,
+  onAdd,
+  onUpdate,
+  onRemove,
+  onReplace,
+  onSearch,
+}: {
+  column: TableColumn;
+  clauses: ColumnClause[];
+  processing: boolean;
+  onAdd: (clause: FilterClause) => void;
+  onUpdate: (index: number, clause: FilterClause) => void;
+  onRemove: (index: number) => void;
+  onReplace: (field: string, clauses: FilterClause[]) => void;
+  onSearch?: (query: string, signal?: AbortSignal) => Promise<Option[]>;
+}) {
+  const { t } = useT("lattice");
+  const { filter, label: rawLabel } = column.props;
+  const label = rawLabel ?? column.key;
+
+  if (!filter) {
+    return null;
+  }
+
+  if (filter.control === "filter.select") {
+    return (
+      <ColumnSelectFilter
+        column={column}
+        clauses={clauses}
+        processing={processing}
+        onReplace={onReplace}
+        onSearch={onSearch}
+      />
+    );
+  }
+
+  const type = filter.type ?? "text";
+  const operators = filter.operators ?? [];
+  const defaultOperator = filter.defaultOperator ?? operators[0] ?? "eq";
+  const primary = clauses.find((entry) => entry.clause.operator === defaultOperator) ?? clauses[0];
+
+  function commitPrimary(value: string): void {
+    if (value === "") {
+      if (primary) {
+        onRemove(primary.index);
+      }
+
+      return;
+    }
+
+    if (primary) {
+      onUpdate(primary.index, { ...primary.clause, value });
+    } else {
+      onAdd({ field: column.key, operator: defaultOperator, value });
+    }
+  }
+
+  return (
+    <div className="flex min-w-0 max-w-80 items-stretch">
+      <div className="min-w-0 flex-1">
+        <FilterValueInput
+          type={type}
+          label={label}
+          value={primary?.clause.value ?? ""}
+          processing={processing}
+          withSearchIcon={type === "text" || type === "number"}
+          grouped
+          testId={`filter-${column.key}-value`}
+          onCommit={commitPrimary}
+          onClear={primary ? () => onRemove(primary.index) : undefined}
+        />
+      </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <IconButton
+            emphasis="segmented"
+            size="md"
+            icon="filter"
+            label={t("table.filter.column-filters", "{{label}} filters", { label })}
+            data-test={`filter-${column.key}`}
+            disabled={processing}
+          >
+            {clauses.length > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 inline-flex size-4 items-center justify-center rounded-full bg-lt-primary text-xs font-medium text-lt-primary-fg">
+                {clauses.length}
+              </span>
+            )}
+          </IconButton>
+        </PopoverTrigger>
+
+        <PopoverContent align="start" className="w-80 p-4">
+          <FilterClauseList
+            column={column}
+            clauses={clauses}
+            operators={operators}
+            defaultOperator={defaultOperator}
+            processing={processing}
+            onAdd={onAdd}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}
+
+function serializeColumnValue(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value.join(",");
+  }
+
+  return typeof value === "string" ? value : "";
+}
+
+function ColumnSelectFilter({
+  column,
+  clauses,
+  processing,
+  onReplace,
+  onSearch,
+}: {
+  column: TableColumn;
+  clauses: ColumnClause[];
+  processing: boolean;
+  onReplace: (field: string, clauses: FilterClause[]) => void;
+  onSearch?: (query: string, signal?: AbortSignal) => Promise<Option[]>;
+}) {
+  const { filter, label } = column.props;
+
+  if (!filter) {
+    return null;
+  }
+
+  const multiple = filter.multiple;
+  const operator = filter.defaultOperator;
+  const clauseOptions = filter.clauseOptions ?? [];
+  const activeClauseOption = findActiveClauseOption(
+    clauses.map((entry) => entry.clause),
+    clauseOptions,
+  );
+  const active = clauses.find((entry) => entry.clause.operator === operator) ?? clauses[0];
+  const value: unknown = activeClauseOption
+    ? activeClauseOption.value
+    : multiple
+      ? active?.clause.value
+        ? active.clause.value.split(",")
+        : []
+      : (active?.clause.value ?? "");
+
+  const data: FilterNode<"filter.select"> = {
+    key: column.key,
+    type: "filter.select",
+    props: {
+      label,
+      options: filter.options,
+      multiple,
+      searchable: filter.searchable,
+      placeholder: null,
+    },
+    schema: [
+      {
+        type: "field.select",
+        key: column.key,
+        props: {
+          name: "value",
+          label,
+          options: filter.options,
+          multiple,
+          searchable: filter.searchable,
+          placeholder: null,
+        },
+      },
+    ],
+  };
+
+  function change(next: unknown): void {
+    const serialized = serializeColumnValue(filterValue(next).value);
+
+    if (serialized === "") {
+      onReplace(column.key, []);
+
+      return;
+    }
+
+    const clauseOption = clauseOptions.find((option) => option.value === serialized);
+
+    if (clauseOption) {
+      onReplace(column.key, clausesForOption(column.key, clauseOption));
+
+      return;
+    }
+
+    onReplace(column.key, [{ field: column.key, operator, value: serialized }]);
+  }
+
+  return (
+    <TableFilterControl
+      filter={data}
+      value={{ value }}
+      processing={processing}
+      bare
+      onChange={change}
+      onSearch={onSearch ? (_field, query, signal) => onSearch(query, signal) : undefined}
+    />
+  );
+}
+
+function clausesForOption(field: string, option: ColumnFilterOption): FilterClause[] {
+  return option.clauses.map((clause) => ({
+    field,
+    operator: clause.operator,
+    value: clause.value,
+  }));
+}
+
+function findActiveClauseOption(
+  clauses: FilterClause[],
+  options: ColumnFilterOption[],
+): ColumnFilterOption | undefined {
+  return options.find((option) => clausesMatch(clauses, clausesForOption("", option)));
+}
+
+function clausesMatch(active: FilterClause[], expected: FilterClause[]): boolean {
+  if (active.length !== expected.length) {
+    return false;
+  }
+
+  return expected.every((clause) =>
+    active.some(
+      (current) => current.operator === clause.operator && current.value === clause.value,
+    ),
+  );
+}
+
+function FilterClauseList({
+  column,
+  clauses,
+  operators,
+  defaultOperator,
+  processing,
+  onAdd,
+  onUpdate,
+  onRemove,
+}: {
+  column: TableColumn;
+  clauses: ColumnClause[];
+  operators: Op[];
+  defaultOperator: Op;
+  processing: boolean;
+  onAdd: (clause: FilterClause) => void;
+  onUpdate: (index: number, clause: FilterClause) => void;
+  onRemove: (index: number) => void;
+}) {
+  const { t } = useT("lattice");
+  const type = column.props.filter?.type ?? "text";
+  const [draftOperator, setDraftOperator] = useState(defaultOperator);
+  const [adding, setAdding] = useState(clauses.length === 0);
+
+  return (
+    <div className="grid gap-3">
+      {clauses.map((entry) => (
+        <FilterClauseRow
+          key={entry.index}
+          column={column}
+          type={type}
+          operators={operators}
+          clause={entry.clause}
+          processing={processing}
+          onOperator={(operator) => onUpdate(entry.index, { ...entry.clause, operator })}
+          onValue={(value) =>
+            value === "" ? onRemove(entry.index) : onUpdate(entry.index, { ...entry.clause, value })
+          }
+          onRemove={() => onRemove(entry.index)}
+        />
+      ))}
+
+      {adding && (
+        <FilterClauseRow
+          column={column}
+          type={type}
+          operators={operators}
+          clause={{ field: column.key, operator: draftOperator, value: "" }}
+          processing={processing}
+          onOperator={(operator) => {
+            if (VALUELESS_FILTER_OPERATORS.has(operator)) {
+              onAdd({ field: column.key, operator, value: "" });
+              setDraftOperator(defaultOperator);
+              setAdding(false);
+              return;
+            }
+            setDraftOperator(operator);
+          }}
+          onValue={(value) => {
+            if (value !== "") {
+              onAdd({ field: column.key, operator: draftOperator, value });
+              setDraftOperator(defaultOperator);
+              setAdding(false);
+            }
+          }}
+          onRemove={() => setAdding(false)}
+        />
+      )}
+
+      <div className="border-t border-lt-border pt-3">
+        <Button
+          variant="secondary"
+          icon="plus"
+          data-test={`filter-${column.key}-add`}
+          className="w-full"
+          disabled={processing}
+          onClick={() => setAdding(true)}
+        >
+          {t("table.filter.add", "Add filter")}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function FilterClauseRow({
+  column,
+  type,
+  operators,
+  clause,
+  processing,
+  onOperator,
+  onValue,
+  onRemove,
+}: {
+  column: TableColumn;
+  type: FilterType;
+  operators: Op[];
+  clause: FilterClause;
+  processing: boolean;
+  onOperator: (operator: Op) => void;
+  onValue: (value: string) => void;
+  onRemove: () => void;
+}) {
+  const { t } = useT("lattice");
+  const label = column.props.label ?? column.key;
+  const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
+
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center gap-2">
+        {operators.length > 1 ? (
+          <NativeSelect
+            density="compact"
+            aria-label={t("table.filter.operator", "{{label}} operator", { label })}
+            data-test={`filter-${column.key}-operator`}
+            className="flex-1"
+            disabled={processing}
+            value={clause.operator}
+            onChange={(event) => onOperator(event.target.value as Op)}
+          >
+            {operators.map((operator) => (
+              <option key={operator} value={operator}>
+                {operatorLabel(operator)}
+              </option>
+            ))}
+          </NativeSelect>
+        ) : (
+          <span className="flex-1 text-sm font-medium">{operatorLabel(clause.operator)}</span>
+        )}
+        <Button
+          emphasis="outline"
+          size="icon"
+          icon="trash-2"
+          aria-label={t("table.filter.remove", "Remove {{label}} filter", { label })}
+          data-test={`filter-${column.key}-remove`}
+          disabled={processing}
+          onClick={onRemove}
+        />
+      </div>
+      {!valueless && (
+        <FilterValueInput
+          type={type}
+          label={label}
+          ariaLabel={t("table.filter.value", "{{label}} filter value", { label })}
+          value={clause.value}
+          processing={processing}
+          onCommit={onValue}
+          onClear={() => onValue("")}
+        />
+      )}
+    </div>
+  );
+}

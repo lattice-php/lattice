@@ -1,13 +1,22 @@
 import react from "@vitejs/plugin-react";
+import { readdirSync } from "node:fs";
 import path from "node:path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
 const sourceRoot = path.resolve(import.meta.dirname, "resources/js");
 
+function libraryEntries(): string[] {
+  return readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
+    .filter((file) => /\.(ts|tsx)$/.test(file))
+    .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
+    .filter((file) => file !== "generated.ts" && file !== "test-setup.ts")
+    .map((file) => path.join(sourceRoot, file));
+}
+
 function withExplicitExtensions(content: string): string {
   return content.replace(
-    /(\bfrom\s*)(["'])(\.\.?(?:\/[^"']+)?)\2/g,
+    /(\bfrom\s*|\bimport\()(["'])(\.\.?(?:\/[^"']+)?)\2/g,
     (match, prefix: string, quote: string, specifier: string) =>
       /\.[a-z]+$/i.test(specifier) ? match : `${prefix}${quote}${specifier}.js${quote}`,
   );
@@ -24,7 +33,7 @@ export default defineConfig({
         "resources/js/**/*.test-d.*",
         "resources/js/test-setup.ts",
       ],
-      rollupTypes: true,
+      copyDtsFiles: true,
       beforeWriteFile: (filePath, content) => ({
         filePath,
         content: withExplicitExtensions(content),
@@ -37,12 +46,16 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: path.join(sourceRoot, "index.ts"),
+      entry: libraryEntries(),
       formats: ["es"],
-      fileName: "index",
     },
     rollupOptions: {
-      external: [/^react($|\/)/],
+      external: (id) => !id.startsWith(".") && !path.isAbsolute(id),
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: "resources/js",
+        entryFileNames: "[name].js",
+      },
     },
   },
 });

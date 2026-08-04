@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\File;
 use function Pest\Laravel\artisan;
 
 it('keeps the committed generated.ts in sync with the transformer', function (): void {
-    $committed = dirname(__DIR__, 3).'/resources/js/types/generated.ts';
+    $committed = dirname(__DIR__, 3).'/packages/core/resources/js/generated.ts';
     $output = sys_get_temp_dir().'/lattice-package-tests/generated-types-'.getmypid();
 
     config()->set('lattice.typescript.base_output', $output);

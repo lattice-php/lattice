@@ -1,9 +1,9 @@
 import { cn } from "./lib/utils.js";
 import { Icon } from "./icons/sprite.js";
-import { Slot } from "@radix-ui/react-slot";
-import { cva } from "class-variance-authority";
 import "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { Slot } from "@radix-ui/react-slot";
+import { cva } from "class-variance-authority";
 //#region resources/js/button.tsx
 var buttonVariants = cva("inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lt-sm text-base font-medium transition-[color,box-shadow] disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-lt-icon-md [&_svg]:shrink-0 outline-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger", {
 	variants: {

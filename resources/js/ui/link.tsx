@@ -1,23 +1,18 @@
-import { Link } from "@inertiajs/react";
-import type { ComponentProps } from "react";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { IconRenderer } from "@lattice-php/ui/icons";
+import { TextLink } from "@lattice-php/ui/text-link";
 import type { Affix } from "@lattice-php/lattice/types/generated";
-import { actionMenuItemClassName, useActionMenu } from "./action-menu-context";
-import { ActionTrigger, type TriggerState, useClickBehavior } from "./click-behavior";
+import { actionMenuItemClassName, useActionMenu } from "@lattice-php/action/action-menu-context";
+import {
+  ActionTrigger,
+  type TriggerState,
+  useClickBehavior,
+} from "@lattice-php/action/click-behavior";
 
 const textLinkClassName =
   "text-lt-fg underline decoration-lt-border underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-lt-border";
-
-function TextLink({ className = "", children, ...props }: ComponentProps<typeof Link>) {
-  return (
-    <Link className={cn(textLinkClassName, className)} {...props}>
-      {children}
-    </Link>
-  );
-}
 
 function LinkAffix({ affix, className }: { affix: Affix; className?: string }) {
   if (affix.icon) {

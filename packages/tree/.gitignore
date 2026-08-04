@@ -1,0 +1,10 @@
+/vendor/
+/node_modules/
+composer.lock
+.phpunit.cache/
+.phpunit.result.cache
+/.idea/
+/AGENTS.md
+/CLAUDE.md
+/.claude/
+/.agents/

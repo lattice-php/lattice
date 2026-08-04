@@ -4,7 +4,11 @@ import { Button, buttonVariants } from "@lattice-php/ui/button";
 import type { Emphasis, Variant } from "@lattice-php/ui/button";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { ActionTrigger, type TriggerState, useClickBehavior } from "./click-behavior";
+import {
+  ActionTrigger,
+  type TriggerState,
+  useClickBehavior,
+} from "@lattice-php/action/click-behavior";
 
 export type { Emphasis, Variant };
 

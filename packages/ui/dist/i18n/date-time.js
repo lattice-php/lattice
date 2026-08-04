@@ -1,10 +1,10 @@
 import { formatDateValue, preciseDateTime, toDate } from "../format/date-time.js";
 import { useTimezone } from "./timezone.js";
-import { useLocale } from "./locale.js";
+import { locale_exports } from "./locale.js";
 import { jsx } from "react/jsx-runtime";
 //#region resources/js/i18n/date-time.tsx
 function DateTime({ value, dateStyle = "medium", timeStyle = "short" }) {
-	const { locale } = useLocale();
+	const { locale } = (0, locale_exports.useLocale)();
 	const { timezone } = useTimezone();
 	if (value === null || value === void 0 || value === "") return null;
 	const options = {

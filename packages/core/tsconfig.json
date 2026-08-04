@@ -9,7 +9,11 @@
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     "types": ["node", "vite/client"],
-    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@lattice-php/core": ["./resources/js/index.ts"],
+      "@lattice-php/core/*": ["./resources/js/*"]
+    }
   },
   "include": ["resources/js"]
 }

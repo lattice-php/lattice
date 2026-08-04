@@ -1,11 +1,11 @@
-import { createListeners } from "../lib/listeners.js";
+import { listeners_exports } from "../lib/listeners.js";
 import { useSyncExternalStore } from "react";
 //#region resources/js/i18n/config.ts
 var fallback = {
 	locales: [],
 	timezone: null
 };
-var { subscribe, notify } = createListeners();
+var { subscribe, notify } = (0, listeners_exports.createListeners)();
 var active = fallback;
 function normalizeLocales(locales) {
 	return Array.from(new Set((locales ?? []).map((locale) => locale.trim()).filter(Boolean)));

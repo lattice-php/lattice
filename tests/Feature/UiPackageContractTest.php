@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Effects\EffectRegistry;
+use Lattice\Lattice\I18n\Values\Translatable;
 use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Ui\UiServiceProvider;
 
@@ -19,6 +21,8 @@ it('owns the ui backend in an independently installable package', function (): v
         ->and($aggregate['require']['lattice-php/ui'])->toBe('self.version')
         ->and(new ReflectionClass(UiServiceProvider::class)->getFileName())->toStartWith($packageRoot.'/src/')
         ->and(new ReflectionClass(Effect::class)->getFileName())->toStartWith($packageRoot.'/src/')
+        ->and(new ReflectionClass(EffectRegistry::class)->getFileName())->toStartWith($packageRoot.'/src/')
+        ->and(new ReflectionClass(Translatable::class)->getFileName())->toStartWith($packageRoot.'/src/')
         ->and(app(LatticeRegistry::class)->wireSources())->toContain(realpath($packageRoot.'/src'));
 });
 

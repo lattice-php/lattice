@@ -1,7 +1,7 @@
 import "../css/app.css";
 import { configureEcho } from "@laravel/echo-react";
 import { createLatticeApp, registerRichEditorExtension } from "@lattice-php/lattice";
-import { ToolbarIconButton } from "@lattice-php/lattice/form/rich-editor";
+import { ToolbarIconButton } from "@lattice-php/form/rich-editor";
 import sprite from "virtual:svg-sprite";
 import plugins from "virtual:lattice/plugins";
 import { appColumns } from "./columns";

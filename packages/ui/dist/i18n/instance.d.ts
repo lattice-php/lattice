@@ -1,17 +1,13 @@
-import { i18n as I18nInstance, InitOptions } from "i18next";
+import { i18n as I18nInstance, InitOptions } from 'i18next';
 export declare const DEFAULT_NAMESPACE = "lattice";
-type TranslationFunction = (
-  key: string,
-  defaultValue?: string,
-  options?: Record<string, unknown>,
-) => string;
+type TranslationFunction = (key: string, defaultValue?: string, options?: Record<string, unknown>) => string;
 type TranslationResult = {
-  t: TranslationFunction;
-  i18n: I18nInstance;
-  locale: string;
-  locales: readonly string[];
-  ready: boolean;
-  setLocale: (locale: string) => void;
+    t: TranslationFunction;
+    i18n: I18nInstance;
+    locale: string;
+    locales: readonly string[];
+    ready: boolean;
+    setLocale: (locale: string) => void;
 };
 export declare const i18n: I18nInstance;
 /**
@@ -36,9 +32,5 @@ export declare function ensureI18n(extend?: (base: InitOptions) => InitOptions):
  */
 export declare function preloadLanguages(locales: readonly string[]): Promise<void>;
 export declare function useT(namespace: string): TranslationResult;
-export declare function translate(
-  namespace: string,
-  key: string,
-  defaultValue: string,
-  options?: Record<string, unknown>,
-): string;
+export declare function translate(namespace: string, key: string, defaultValue: string, options?: Record<string, unknown>): string;
+export {};

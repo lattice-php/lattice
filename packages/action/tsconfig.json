@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "types": ["node", "vite/client"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@lattice-php/action": ["./resources/js/index.ts"],
+      "@lattice-php/action/*": ["./resources/js/*"],
+      "@lattice-php/core": ["../core/dist/index.d.ts"],
+      "@lattice-php/core/*": ["../core/dist/*"],
+      "@lattice-php/form": ["../form/dist/index.d.ts"],
+      "@lattice-php/form/*": ["../form/dist/*"],
+      "@lattice-php/ui": ["../ui/dist/index.d.ts"],
+      "@lattice-php/ui/*": ["../ui/dist/*"]
+    }
+  },
+  "include": ["resources/js"],
+  "exclude": ["resources/js/**/*.test.*"]
+}

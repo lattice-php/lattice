@@ -22,6 +22,7 @@ node_modules
 .phpstorm.meta.php
 _ide_helper.php
 /resources/js/types/typescript-transformer-manifest.json
+/packages/core/resources/js/typescript-transformer-manifest.json
 
 .agents
 .claude

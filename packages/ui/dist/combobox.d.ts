@@ -1,4 +1,4 @@
-import { Option } from "@lattice-php/core/types";
+import { Option } from '@lattice-php/core/types';
 import * as React from "react";
 /**
  * A popover select list with an optional search box and single/multi selection.
@@ -14,51 +14,29 @@ import * as React from "react";
  * `onSelect` when it is not provided, so consumers can make tag entry
  * additive instead of toggling.
  */
-declare function Combobox({
-  contentClassName,
-  creatable,
-  emptyLabel,
-  loading,
-  multiple,
-  onCommit,
-  onCreate,
-  onSearch,
-  onSelect,
-  open,
-  onOpenChange,
-  options,
-  renderOption,
-  searchLabel,
-  searchPlaceholder,
-  selected,
-  showSearch,
-  testId,
-  trigger,
-  triggerClassName,
-  triggerProps,
-}: {
-  contentClassName?: string;
-  creatable?: boolean;
-  emptyLabel?: string;
-  loading?: boolean;
-  multiple?: boolean;
-  onCommit?: (value: string) => void;
-  onCreate?: (label: string) => void;
-  onSearch?: (query: string) => void;
-  onSelect: (value: string) => void;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  options: Option[];
-  renderOption?: (option: Option) => React.ReactNode;
-  searchLabel?: string;
-  searchPlaceholder?: string;
-  selected: string[];
-  showSearch?: boolean;
-  testId?: string;
-  trigger: React.ReactNode;
-  triggerClassName?: string;
-  triggerProps?: React.ComponentProps<"button"> & {
-    "data-test"?: string;
-  };
+declare function Combobox({ contentClassName, creatable, emptyLabel, loading, multiple, onCommit, onCreate, onSearch, onSelect, open, onOpenChange, options, renderOption, searchLabel, searchPlaceholder, selected, showSearch, testId, trigger, triggerClassName, triggerProps, }: {
+    contentClassName?: string;
+    creatable?: boolean;
+    emptyLabel?: string;
+    loading?: boolean;
+    multiple?: boolean;
+    onCommit?: (value: string) => void;
+    onCreate?: (label: string) => void;
+    onSearch?: (query: string) => void;
+    onSelect: (value: string) => void;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    options: Option[];
+    renderOption?: (option: Option) => React.ReactNode;
+    searchLabel?: string;
+    searchPlaceholder?: string;
+    selected: string[];
+    showSearch?: boolean;
+    testId?: string;
+    trigger: React.ReactNode;
+    triggerClassName?: string;
+    triggerProps?: React.ComponentProps<"button"> & {
+        "data-test"?: string;
+    };
 }): React.JSX.Element;
 export { Combobox };

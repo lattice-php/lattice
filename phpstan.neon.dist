@@ -6,7 +6,9 @@ parameters:
     paths:
         - src
         - packages/core/src
+        - packages/form/src
         - packages/ui/src
+        - packages/tree/src
         - tests
         - workbench/app
     excludePaths:

@@ -36,13 +36,14 @@
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
         "inertiajs/inertia-laravel": "^3.0",
+        "lattice-php/action": "self.version",
         "lattice-php/core": "self.version",
+        "lattice-php/form": "self.version",
+        "lattice-php/table": "self.version",
         "lattice-php/ui": "self.version",
         "spatie/laravel-package-tools": "^1.16 || ^2.0",
         "spatie/php-attribute-reader": "^1.1",
-        "spatie/php-structure-discoverer": "^2.4",
-        "symfony/html-sanitizer": "^8.1",
-        "ueberdosis/tiptap-php": "^2.1"
+        "spatie/php-structure-discoverer": "^2.4"
     },
     "require-dev": {
         "bambamboole/extended-faker": "^0.8.0",
@@ -54,6 +55,7 @@
         "laravel/pint": "^1.16",
         "laravel/reverb": "^1.10",
         "lattice-php/signature-example": "@dev",
+        "lattice-php/tree": "@dev",
         "league/flysystem-aws-s3-v3": "^3.34",
         "orchestra/testbench": "^10.0 || ^11.0",
         "pestphp/pest": "^5.0",

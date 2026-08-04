@@ -1,7 +1,6 @@
 import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./index";
-import type { ComponentProps } from "./index";
 import { isRecord } from "./materialize";
 
 export type EagerComponentRegistration = {
@@ -19,10 +18,7 @@ export type ComponentRegistration = EagerComponentRegistration | LazyComponentRe
 
 export type ComponentRegistry = Record<string, ComponentRegistration>;
 
-export type ComponentRegistryFor<TTypes extends keyof ComponentProps & string> = Record<
-  TTypes,
-  ComponentRegistration
->;
+export type ComponentRegistryFor<TTypes extends string> = Record<TTypes, ComponentRegistration>;
 
 export type ExtensionRegistry = Record<string, (...args: never[]) => unknown>;
 

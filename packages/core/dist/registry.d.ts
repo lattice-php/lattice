@@ -1,5 +1,5 @@
 import { LazyExoticComponent } from "react";
-import { RendererComponent, RendererComponentModule, ComponentProps } from "./index.js";
+import { RendererComponent, RendererComponentModule } from "./index.js";
 export type EagerComponentRegistration = {
   component: RendererComponent;
   mode: "eager";
@@ -11,10 +11,7 @@ export type LazyComponentRegistration = {
 };
 export type ComponentRegistration = EagerComponentRegistration | LazyComponentRegistration;
 export type ComponentRegistry = Record<string, ComponentRegistration>;
-export type ComponentRegistryFor<TTypes extends keyof ComponentProps & string> = Record<
-  TTypes,
-  ComponentRegistration
->;
+export type ComponentRegistryFor<TTypes extends string> = Record<TTypes, ComponentRegistration>;
 export type ExtensionRegistry = Record<string, (...args: never[]) => unknown>;
 export type ExtensionRegistries = Record<string, ExtensionRegistry>;
 export type PluginI18n = {

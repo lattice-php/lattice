@@ -23,6 +23,7 @@ it('classifies the src tree into enums, value objects, components and effects', 
     $manifest = app(WireTypeDiscovery::class)->discoverMany([
         $root.'/src',
         $root.'/packages/core/src',
+        $root.'/packages/table/src',
         $root.'/packages/ui/src',
     ]);
 
@@ -110,6 +111,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
     $manifest = app(WireTypeDiscovery::class)->discoverMany([
         $root.'/src',
         $root.'/packages/core/src',
+        $root.'/packages/table/src',
         $root.'/packages/ui/src',
     ]);
 
@@ -141,7 +143,7 @@ it('sorts enums and value objects deterministically by class-string', function (
 });
 
 it('keys effects by class-string, valued by wire type, sorted by class-string', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src');
 
     expect($manifest->family('effect')[Toast::class])->toBe('toast');
 
@@ -153,7 +155,7 @@ it('keys effects by class-string, valued by wire type, sorted by class-string', 
 });
 
 it('does not classify an effect as a value object', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/ui/src');
 
     expect($manifest->valueObjects)->not->toContain(Toast::class)
         ->and($manifest->enums)->not->toContain(Toast::class);

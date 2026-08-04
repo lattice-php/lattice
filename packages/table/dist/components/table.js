@@ -1,0 +1,333 @@
+import { BulkBar } from "./bulk-bar.js";
+import { ColumnFilterControl } from "./column-filter-control.js";
+import { ColumnHeader } from "./column-header.js";
+import { ColumnVisibilityMenu } from "./column-visibility-menu.js";
+import { FilterBar, FilterMenu } from "./filter-bar.js";
+import { TablePagination } from "./pagination.js";
+import { SortBar } from "./sort-bar.js";
+import { TableSearch } from "./table-search.js";
+import { ColumnCell } from "./table-cell.js";
+import { Fragment, useMemo } from "react";
+import { getPerPageOptions, getRowActions, getRowDetail, getRowKey } from "@lattice-php/table/lib/payload";
+import { getQueryParams, getTableSizingColumns, getTableUtilityTracks, getVisiblePages } from "@lattice-php/table/lib/query";
+import { useT } from "@lattice-php/ui/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { RenderNode, Renderer } from "@lattice-php/core/renderer";
+import { useColumnResizing } from "@lattice-php/core/hooks/use-column-resizing";
+import { useColumnVisibility } from "@lattice-php/table/hooks/use-column-visibility";
+import { useExpandedRows } from "@lattice-php/table/hooks/use-expanded-rows";
+import { nodeIdentity } from "@lattice-php/core/test-id";
+import { Checkbox } from "@lattice-php/ui/checkbox";
+import { Icon } from "@lattice-php/ui/icons";
+import { alignJustifyItems, alignText } from "@lattice-php/table/lib/align";
+import { getBulkActions } from "@lattice-php/table/lib/bulk";
+import { useTable } from "@lattice-php/table/hooks/use-table";
+import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
+import { jsx, jsxs } from "react/jsx-runtime";
+//#region resources/js/components/table.tsx
+var TableComponent = ({ node }) => {
+	const { t } = useT("lattice");
+	const { columns, rows, pagination, query, filters, tableFilters, search, addFilter, updateFilter, removeFilter, replaceColumnFilters, setTableFilter, resetFilters, setSearch, searchFilterOptions, processing, hasLoaded, infiniteLoaderRef, sort, clearSort, goToPage, setPerPage, loadMore } = useTable(node);
+	const bulkActions = useMemo(() => getBulkActions(node.props?.bulkActions), [node.props?.bulkActions]);
+	const hasBulkActions = bulkActions.length > 0;
+	const rowEntries = useMemo(() => rows.map((row, index) => ({
+		row,
+		actions: getRowActions(row),
+		detail: getRowDetail(row),
+		key: getRowKey(row, index)
+	})), [rows]);
+	const selection = useTableSelection(rowEntries.map((entry) => entry.key));
+	const { isExpanded, toggle: toggleRow } = useExpandedRows();
+	const hasExpandable = rowEntries.some((entry) => entry.detail != null);
+	const columnsByKey = useMemo(() => new Map(columns.map((column) => [column.key, column])), [columns]);
+	const visibilityIdentity = nodeIdentity(node);
+	const { hasToggleableColumns, hasHidden, isVisible, resetVisibility, setColumnVisible, toggleableColumns, visibleColumns } = useColumnVisibility({
+		columns,
+		storageKey: visibilityIdentity ? `lattice:table-column-visibility:${visibilityIdentity}` : void 0
+	});
+	const currentPage = pagination.currentPage ?? query.page;
+	const lastPage = pagination.lastPage ?? currentPage;
+	const mode = pagination.mode ?? "table";
+	const perPageOptions = useMemo(() => getPerPageOptions(node.props?.perPageOptions), [node.props?.perPageOptions]);
+	const visiblePages = getVisiblePages(currentPage, lastPage);
+	const hasNextPage = pagination.hasMore ?? currentPage < lastPage;
+	const hasActions = rowEntries.some((entry) => entry.actions.length > 0);
+	const striped = node.props?.striped === true;
+	const hasFilters = visibleColumns.some((column) => column.props.filter != null);
+	const filterEntries = filters.map((clause, index) => ({
+		clause,
+		index
+	}));
+	const filterDefinitions = useMemo(() => Array.isArray(node.props?.filters) ? node.props.filters : [], [node.props?.filters]);
+	const hasDedicatedFilters = filterDefinitions.length > 0;
+	const hasTrailingUtility = hasActions || hasDedicatedFilters || hasToggleableColumns;
+	const sizingColumns = useMemo(() => getTableSizingColumns(visibleColumns), [visibleColumns]);
+	const utilityTracks = useMemo(() => getTableUtilityTracks(hasTrailingUtility, hasBulkActions, hasExpandable), [
+		hasTrailingUtility,
+		hasBulkActions,
+		hasExpandable
+	]);
+	const resizingEnabled = node.props?.resizableColumns === true;
+	const resizeStorageIdentity = nodeIdentity(node);
+	const { getResizeHandleProps, gridTemplateColumns, hasOverrides, resizeRootRef, resetColumns } = useColumnResizing({
+		columns: sizingColumns,
+		enabled: resizingEnabled,
+		leadingTracks: utilityTracks.leadingTracks,
+		showIndicator: node.props?.resizeIndicator === true,
+		storageKey: resizingEnabled && resizeStorageIdentity ? `lattice:table-columns:${resizeStorageIdentity}` : void 0,
+		trailingTracks: utilityTracks.trailingTracks
+	});
+	return /* @__PURE__ */ jsxs("div", {
+		"data-slot": "table",
+		"data-lattice-component": node.id,
+		className: "relative",
+		children: [hasOverrides && /* @__PURE__ */ jsx("button", {
+			"aria-label": t("table.reset-column-widths", "Reset column widths"),
+			className: "absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex",
+			"data-test": "table-reset-columns",
+			onClick: resetColumns,
+			title: t("table.reset-column-widths", "Reset column widths"),
+			type: "button",
+			children: /* @__PURE__ */ jsx(Icon, {
+				name: "rotate-ccw",
+				className: "size-lt-icon-sm"
+			})
+		}), /* @__PURE__ */ jsxs("div", {
+			"data-slot": "table-scroll",
+			className: "overflow-x-auto rounded-lt-sm border border-lt-border",
+			children: [
+				node.props?.searchable && /* @__PURE__ */ jsx("div", {
+					"data-slot": "table-toolbar",
+					className: "flex items-center gap-2 border-b border-lt-border px-4 py-2",
+					children: /* @__PURE__ */ jsx(TableSearch, {
+						value: search,
+						onSearch: setSearch
+					})
+				}),
+				/* @__PURE__ */ jsx(FilterBar, {
+					clauses: filters,
+					columnsByKey,
+					indicators: query.tableFilterIndicators,
+					processing,
+					onRemoveClause: removeFilter,
+					onChange: setTableFilter,
+					onReset: resetFilters
+				}),
+				hasBulkActions && selection.active && /* @__PURE__ */ jsx(BulkBar, {
+					actions: bulkActions,
+					selectedKeys: selection.selectedKeys,
+					allMatching: selection.allMatching,
+					total: pagination.total ?? void 0,
+					query: getQueryParams(query),
+					canSelectAllMatching: selection.allVisibleSelected && !selection.allMatching && pagination.total != null && pagination.total > selection.selectedKeys.length,
+					onSelectAllMatching: selection.selectAllMatching,
+					onCompleted: selection.clear
+				}),
+				query.sorts.length > 0 && /* @__PURE__ */ jsx(SortBar, {
+					columnsByKey,
+					query,
+					processing,
+					onClear: clearSort
+				}),
+				/* @__PURE__ */ jsxs("div", {
+					ref: resizeRootRef,
+					className: "min-w-full text-base",
+					role: "table",
+					style: { "--lattice-table-columns": gridTemplateColumns },
+					children: [/* @__PURE__ */ jsxs("div", {
+						"data-slot": "table-header",
+						className: "border-b border-lt-border bg-lt-muted/50",
+						role: "rowgroup",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]",
+							role: "row",
+							children: [
+								hasExpandable && /* @__PURE__ */ jsx("div", {
+									className: "px-2 py-3",
+									role: "columnheader",
+									"aria-hidden": "true"
+								}),
+								hasBulkActions && /* @__PURE__ */ jsx("div", {
+									className: "flex items-center px-4 py-3",
+									role: "columnheader",
+									children: /* @__PURE__ */ jsx(Checkbox, {
+										"aria-label": t("table.select-all-rows", "Select all rows"),
+										"data-test": "select-all",
+										checked: selection.allSelected,
+										onCheckedChange: () => selection.toggleAll()
+									})
+								}),
+								visibleColumns.map((column, index) => /* @__PURE__ */ jsx(ColumnHeader, {
+									column,
+									processing,
+									resizeHandleProps: resizingEnabled ? getResizeHandleProps(sizingColumns[index]) : void 0,
+									sort,
+									query
+								}, column.key)),
+								hasTrailingUtility && /* @__PURE__ */ jsxs("div", {
+									className: "flex items-center justify-end gap-2 px-4 py-2 align-middle font-semibold text-lt-fg",
+									role: "columnheader",
+									children: [
+										hasDedicatedFilters && /* @__PURE__ */ jsx(FilterMenu, {
+											filters: filterDefinitions,
+											values: tableFilters,
+											processing,
+											onChange: setTableFilter,
+											onSearch: searchFilterOptions
+										}),
+										hasToggleableColumns && /* @__PURE__ */ jsx(ColumnVisibilityMenu, {
+											columns: toggleableColumns,
+											isVisible,
+											visibleColumnCount: visibleColumns.length,
+											hasHidden,
+											onToggle: setColumnVisible,
+											onReset: resetVisibility,
+											processing
+										}),
+										hasActions && /* @__PURE__ */ jsx("span", {
+											className: "sr-only",
+											children: node.props?.actionsLabel ?? t("table.actions", "Actions")
+										})
+									]
+								})
+							]
+						}), hasFilters && /* @__PURE__ */ jsxs("div", {
+							className: "hidden min-w-full border-t border-lt-border md:grid md:grid-cols-[var(--lattice-table-columns)]",
+							role: "row",
+							children: [
+								hasExpandable && /* @__PURE__ */ jsx("div", {
+									className: "px-2 py-2",
+									role: "cell"
+								}),
+								hasBulkActions && /* @__PURE__ */ jsx("div", {
+									className: "px-4 py-2",
+									role: "cell"
+								}),
+								visibleColumns.map((column) => /* @__PURE__ */ jsx("div", {
+									className: "min-w-0 px-2 py-2",
+									role: "cell",
+									children: column.props.filter != null && /* @__PURE__ */ jsx(ColumnFilterControl, {
+										column,
+										clauses: filterEntries.filter((entry) => entry.clause.field === column.key),
+										processing,
+										onAdd: addFilter,
+										onUpdate: updateFilter,
+										onRemove: removeFilter,
+										onReplace: replaceColumnFilters,
+										onSearch: (query, signal) => searchFilterOptions(`column:${column.key}`, query, signal)
+									})
+								}, column.key)),
+								hasTrailingUtility && /* @__PURE__ */ jsx("div", {
+									className: "px-4 py-2",
+									role: "cell"
+								})
+							]
+						})]
+					}), /* @__PURE__ */ jsx("div", {
+						role: "rowgroup",
+						children: !hasLoaded ? /* @__PURE__ */ jsx("div", {
+							className: "p-4 text-lt-muted-fg",
+							role: "row",
+							children: /* @__PURE__ */ jsx("div", {
+								role: "cell",
+								children: t("table.loading", "Loading rows...")
+							})
+						}) : rowEntries.length === 0 ? /* @__PURE__ */ jsx("div", {
+							"data-slot": "table-empty",
+							className: "p-8 text-center text-lt-muted-fg",
+							role: "row",
+							children: /* @__PURE__ */ jsx("div", {
+								role: "cell",
+								children: node.props?.emptyLabel ?? t("table.empty", "No results")
+							})
+						}) : rowEntries.map(({ row, actions, detail, key }) => {
+							const expanded = detail != null && isExpanded(key);
+							const detailId = `${nodeIdentity(node) ?? "table"}-row-detail-${key}`;
+							return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs("div", {
+								"data-slot": "table-row",
+								className: `grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)] ${striped ? "odd:bg-lt-muted/30" : ""}`,
+								role: "row",
+								children: [
+									hasExpandable && /* @__PURE__ */ jsx("div", {
+										className: "flex items-center px-2 py-lt-cell-y",
+										role: "cell",
+										children: detail && /* @__PURE__ */ jsx("button", {
+											type: "button",
+											"data-test": `row-expand-${key}`,
+											"aria-expanded": expanded,
+											"aria-controls": detailId,
+											"aria-label": t("table.row-detail.toggle", "Toggle detail"),
+											className: "inline-flex size-6 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg",
+											onClick: () => toggleRow(key),
+											children: /* @__PURE__ */ jsx(Icon, {
+												name: "chevron-down",
+												"aria-hidden": "true",
+												className: cn("size-lt-icon-md transition-transform", !expanded && "-rotate-90")
+											})
+										})
+									}),
+									hasBulkActions && /* @__PURE__ */ jsx("div", {
+										className: "flex items-center px-lt-cell-x py-lt-cell-y",
+										role: "cell",
+										children: /* @__PURE__ */ jsx(Checkbox, {
+											"aria-label": t("table.select-row", "Select row {{key}}", { key }),
+											"data-test": `select-row-${key}`,
+											checked: selection.isSelected(key),
+											onCheckedChange: () => selection.toggle(key)
+										})
+									}),
+									visibleColumns.map((column) => /* @__PURE__ */ jsxs("div", {
+										"data-slot": "table-cell",
+										className: cn("grid min-w-0 gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y align-middle", alignText(column.props.align), alignJustifyItems(column.props.align)),
+										role: "cell",
+										children: [/* @__PURE__ */ jsx("span", {
+											"aria-hidden": "true",
+											className: "text-xs font-medium text-lt-muted-fg md:hidden",
+											children: column.props.label
+										}), /* @__PURE__ */ jsx("div", {
+											"data-slot": "table-cell-content",
+											className: "min-w-0 max-w-full overflow-hidden truncate",
+											children: /* @__PURE__ */ jsx(ColumnCell, {
+												column,
+												row
+											})
+										})]
+									}, column.key)),
+									hasTrailingUtility && /* @__PURE__ */ jsx("div", {
+										className: cn("items-center justify-start gap-2 px-lt-cell-x py-lt-cell-y md:justify-end", actions.length > 0 ? "flex" : "hidden md:flex"),
+										role: "cell",
+										children: actions.map((action, actionIndex) => /* @__PURE__ */ jsx(RenderNode, { node: action }, action.key ?? action.id ?? actionIndex))
+									})
+								]
+							}), expanded && detail && /* @__PURE__ */ jsx("div", {
+								id: detailId,
+								role: "region",
+								"data-slot": "table-row-detail",
+								className: "border-b border-lt-border bg-lt-muted/20 px-lt-cell-x py-lt-cell-y",
+								children: /* @__PURE__ */ jsx(Renderer, { nodes: [detail] })
+							})] }, key);
+						})
+					})]
+				}),
+				hasLoaded && /* @__PURE__ */ jsx(TablePagination, {
+					pagination,
+					currentPage,
+					processing,
+					mode,
+					hasNextPage,
+					visiblePages,
+					infiniteLoaderRef,
+					perPageOptions,
+					perPageValue: mode === "infinite" ? "infinite" : query.perPage,
+					onPerPage: setPerPage,
+					onPage: goToPage,
+					onLoadMore: loadMore
+				})
+			]
+		})]
+	});
+};
+//#endregion
+export { TableComponent as default };
+
+//# sourceMappingURL=table.js.map

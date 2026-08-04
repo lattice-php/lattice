@@ -33,7 +33,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build && oxlint --fix dist/*.d.ts dist/**/*.d.ts && oxfmt --write \"dist/**/*.d.ts\"",
+    "build": "vite build",
     "build:plugin": "npm run build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"

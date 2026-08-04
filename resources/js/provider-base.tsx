@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ActionInteractionProvider } from "./action/components/action-trigger-provider";
+import { ActionInteractionProvider } from "@lattice-php/action";
 import type { Registry } from "@lattice-php/core/registry";
 import { RegistryContext } from "@lattice-php/core/registry-context";
 import { useFlashEffects } from "./effects/use-flash-effects";
