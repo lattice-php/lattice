@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Application;
+use Lattice\Lattice\Actions\ActionsServiceProvider;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\CoreServiceProvider;
 use Lattice\Lattice\Forms\FormsServiceProvider;
@@ -15,6 +16,7 @@ it('loads domain providers through the umbrella provider', function (): void {
     expect(app()->getProvider(CoreServiceProvider::class))->not->toBeNull()
         ->and(app()->getProvider(UiServiceProvider::class))->not->toBeNull()
         ->and(app()->getProvider(FormsServiceProvider::class))->not->toBeNull()
+        ->and(app()->getProvider(ActionsServiceProvider::class))->not->toBeNull()
         ->and(app()->getProvider(TablesServiceProvider::class))->not->toBeNull();
 });
 
@@ -36,6 +38,7 @@ it('loads each domain provider with its package dependencies', function (): void
             CoreServiceProvider::class => [],
             UiServiceProvider::class => ['component', 'effect'],
             FormsServiceProvider::class => ['component', 'effect', 'editor-extension'],
+            ActionsServiceProvider::class => ['component', 'effect', 'editor-extension'],
             TablesServiceProvider::class => ['component', 'effect', 'editor-extension', 'column', 'filter'],
         ] as $provider => $expectedCategories) {
             $application = new Application;

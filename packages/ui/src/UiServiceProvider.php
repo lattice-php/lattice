@@ -8,6 +8,7 @@ use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Core\CoreServiceProvider;
 use Lattice\Lattice\Effects\Attributes\AsEffect;
 use Lattice\Lattice\Effects\Effect;
+use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Support\TypeScript\WireFamilies;
 use Lattice\Lattice\Support\TypeScript\WireFamily;
@@ -21,6 +22,7 @@ final class UiServiceProvider extends ServiceProvider
         $this->app->register(CoreServiceProvider::class);
 
         $this->app->singleton(SlotRegistry::class);
+        $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
 
         $families = $this->app->make(WireFamilies::class);

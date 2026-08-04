@@ -1,0 +1,37 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/action",
+    "description": "Action definitions, results, and components for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/routing": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "lattice-php/core": "self.version",
+        "lattice-php/form": "self.version",
+        "lattice-php/ui": "self.version",
+        "symfony/http-foundation": "^7.0 || ^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Lattice\\Actions\\": "src/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "discover": [
+                "src"
+            ]
+        },
+        "laravel": {
+            "providers": [
+                "Lattice\\Lattice\\Actions\\ActionsServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
