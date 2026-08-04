@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ActionForm, runAction } from "@lattice-php/lattice/action";
-import { apiFetch } from "@lattice-php/lattice/core/api";
+import { apiFetch } from "@lattice-php/core/api";
 import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
 import { Button } from "@lattice-php/lattice/ui/button";
 import { ConfirmDialog } from "@lattice-php/ui/confirm-dialog";

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { clearRemoteTokenCache } from "@lattice-php/lattice/core/api";
+import { clearRemoteTokenCache } from "@lattice-php/core/api";
 import { createRemoteNdjsonChatTransport, ndjsonChatTransport } from "./transport";
 import type { ChatFrame } from "@lattice-php/lattice/chat/types";
 

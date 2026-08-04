@@ -1,6 +1,10 @@
 import "@testing-library/jest-dom/vitest";
+import { setRequestHeaderProvider } from "@lattice-php/core/headers";
+import { localeHeader } from "@lattice-php/ui/i18n/locale";
 import { cleanup, configure } from "@testing-library/react";
 import { afterEach } from "vitest";
+
+setRequestHeaderProvider(localeHeader);
 
 // The default 1000ms waitFor timeout flakes under CI's coverage-instrumented,
 // parallel load — async event→fetch→re-render chains occasionally need longer.

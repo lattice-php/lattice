@@ -1,16 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Lattice\Core\Http;
 
 use Illuminate\Http\Request;
 
-/**
- * The envelope every component sub-request travels in: `_sub` names the
- * type, `_target` the addressed field or filter, `_q` the user's query.
- * Reserved keys are underscore-prefixed so they cannot collide with field
- * names, and every endpoint parses the same shape.
- */
 final readonly class SubRequest
 {
     private function __construct(

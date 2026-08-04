@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { buildColumnGridTemplate, columnWidthTrack, maxColumnWidthPx } from "./column-sizing";
-
 describe("column sizing", () => {
   it("maps width tokens to stable grid tracks", () => {
     expect(columnWidthTrack("xs")).toBe("minmax(4rem, 0.35fr)");

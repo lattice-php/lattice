@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Actions\Contracts;
 
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Http\SubRequest;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\SignedUpload;
 use Lattice\Lattice\Forms\ResolveResponse;
-use Lattice\Lattice\Http\SubRequest;
 
 /**
  * An action definition that drives an embedded form: it validates the submission

@@ -1,5 +1,6 @@
 export type * from "./types";
 
+export * from "./api";
 export { CollapsedContext, useCollapsed } from "./collapsed-context";
 export {
   clearRefreshedRefs,
@@ -10,6 +11,7 @@ export {
 } from "./component-ref";
 export { LATTICE_EVENT } from "./event-names";
 export type { ReloadComponentEvent } from "./event-names";
+export * from "./headers";
 export {
   dataBindings,
   isRecord,
@@ -50,3 +52,4 @@ export {
   testIdentity,
 } from "./test-id";
 export { useWindowEvent } from "./hooks/use-window-event";
+export * from "./upload";

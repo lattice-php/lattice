@@ -1,4 +1,4 @@
-import { apiJson } from "@lattice-php/lattice/core/api";
+import { apiJson } from "@lattice-php/core/api";
 import type { NotificationList, UnreadCount } from "./types";
 
 export function fetchNotifications(endpoint: string, page = 1): Promise<NotificationList> {

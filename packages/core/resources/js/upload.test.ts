@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { requestSignedUpload, xhrTransfer } from "./upload";
-
 type Progress = { lengthComputable: boolean; loaded: number; total: number };
 
 class FakeUploadRequest {

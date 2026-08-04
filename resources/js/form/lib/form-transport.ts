@@ -4,7 +4,7 @@
  * request shape lives here once.
  */
 
-import { apiFetch } from "@lattice-php/lattice/core/api";
+import { apiFetch } from "@lattice-php/core/api";
 
 export const FORM_DEBOUNCE_MS = 250;
 

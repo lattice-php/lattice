@@ -24,11 +24,19 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./api": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./event-names": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
     "./hooks/use-window-event": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./headers": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
@@ -57,6 +65,10 @@
       "import": "./dist/index.js"
     },
     "./types": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./upload": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },

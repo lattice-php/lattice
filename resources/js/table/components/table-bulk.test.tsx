@@ -25,7 +25,7 @@ const apiFetch = vi.hoisted(() =>
   ),
 );
 
-vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
+vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),

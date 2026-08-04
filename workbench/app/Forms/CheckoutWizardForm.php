@@ -5,6 +5,7 @@ namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsForm;
+use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\TextInput;
@@ -73,6 +74,6 @@ class CheckoutWizardForm extends FormDefinition
     {
         $this->validate($request);
 
-        return $this->toast(__('workbench.pages.wizard.submitted'))->back();
+        return Effects::respond()->toast(__('workbench.pages.wizard.submitted'))->back();
     }
 }

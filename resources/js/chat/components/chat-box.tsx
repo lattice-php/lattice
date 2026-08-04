@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { apiFetch, remoteJson } from "@lattice-php/lattice/core/api";
+import { apiFetch, remoteJson } from "@lattice-php/core/api";
 import { testIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";

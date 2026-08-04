@@ -1,4 +1,4 @@
-import { apiFetch, remoteFetch, type RemoteAccess } from "@lattice-php/lattice/core/api";
+import { apiFetch, remoteFetch, type RemoteAccess } from "@lattice-php/core/api";
 import type { ChatFrame, ChatTransportRequest } from "@lattice-php/lattice/chat/types";
 
 function parseFrame(line: string): ChatFrame | null {

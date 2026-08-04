@@ -16,11 +16,6 @@ export type SignedUploadRequest = {
   values?: Record<string, unknown>;
 };
 
-/**
- * XHR rather than fetch because only XHR reports upload progress. A transport
- * failure leaves `status` at 0, which `new Response` rejects as out of range, so
- * it is mapped to 500 — otherwise the promise never settles and the upload hangs.
- */
 export function xhrTransfer({
   url,
   method,

@@ -11,7 +11,7 @@ const apiFetch = vi.hoisted(() =>
   vi.fn<() => Promise<Response>>(() => new Promise<Response>(() => {})),
 );
 
-vi.mock("@lattice-php/lattice/core/api", () => ({ apiFetch }));
+vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
 
 const createObjectURL = vi.fn<(file: File) => string>((file) => `blob:${file.name}`);
 const revokeObjectURL = vi.fn<(url: string) => void>();

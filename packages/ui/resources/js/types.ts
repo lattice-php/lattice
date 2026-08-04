@@ -23,6 +23,7 @@ export type Color = {
 };
 
 export type DateTimeStyle = "full" | "long" | "medium" | "short";
+export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type Side = "start" | "end";
 

@@ -6,9 +6,9 @@ namespace Lattice\Lattice\Http\Controllers\Concerns;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
+use Lattice\Lattice\Core\Http\SubRequest;
+use Lattice\Lattice\Core\Http\SubRequestType;
 use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Http\SubRequest;
-use Lattice\Lattice\Http\SubRequestType;
 use Symfony\Component\HttpFoundation\Response;
 
 trait HandlesFormSubRequests
