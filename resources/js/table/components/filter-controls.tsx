@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
 import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
-import type { Node, Option } from "@lattice-php/lattice/core/types";
+import { Renderer } from "@lattice-php/core/renderer";
+import type { Node, Option } from "@lattice-php/core/types";
 import {
   FieldCommitOverrideProvider,
   FormProvider,

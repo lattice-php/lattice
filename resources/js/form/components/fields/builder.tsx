@@ -1,4 +1,4 @@
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/lattice/i18n";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import { useFormContext } from "@lattice-php/lattice/form/hooks/context";

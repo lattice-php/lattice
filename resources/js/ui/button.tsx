@@ -4,8 +4,8 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { Icon, IconRenderer } from "@lattice-php/lattice/icons";
-import { nodeIdentity } from "@lattice-php/lattice/core/test-id";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { nodeIdentity } from "@lattice-php/core/test-id";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "./click-behavior";
 import type { Emphasis, Variant } from "@lattice-php/lattice/types/generated";
 

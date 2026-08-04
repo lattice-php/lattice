@@ -2,7 +2,7 @@ import { Icon } from "@lattice-php/lattice/icons";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useT } from "@lattice-php/lattice/i18n";
-import type { Option } from "@lattice-php/lattice/core/types";
+import type { Option } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useDebouncedCallback } from "@lattice-php/lattice/lib/use-debounced-callback";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";

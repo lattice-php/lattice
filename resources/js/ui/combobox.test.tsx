@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { Option } from "@lattice-php/lattice/core/types";
+import type { Option } from "@lattice-php/core/types";
 import { Combobox } from "./combobox";
 
 const OPTIONS: Option[] = [

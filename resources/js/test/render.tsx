@@ -1,7 +1,7 @@
 import { render, type RenderOptions, type RenderResult } from "@testing-library/react";
 import type { ReactElement } from "react";
-import type { Registry } from "@lattice-php/lattice/core/registry";
-import { RegistryContext } from "@lattice-php/lattice/core/registry-context";
+import type { Registry } from "@lattice-php/core/registry";
+import { RegistryContext } from "@lattice-php/core/registry-context";
 
 /**
  * Renders `ui` with `registry` available to <Renderer>/<RenderNode>, mirroring

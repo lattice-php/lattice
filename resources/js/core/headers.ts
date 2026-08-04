@@ -1,5 +1,5 @@
 import { localeHeader } from "@lattice-php/lattice/i18n/locale";
-import { withRefHeader } from "./component-ref";
+import { withRefHeader } from "@lattice-php/core/component-ref";
 
 export function withHeaders(
   componentRef = "",

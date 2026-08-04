@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice-php/core/types";
 import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
 import { FormProvider } from "@lattice-php/lattice/form/hooks/context";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";

@@ -4,6 +4,7 @@ includes:
 
 parameters:
     paths:
+        - packages/core/src
         - src
         - tests
         - workbench/app

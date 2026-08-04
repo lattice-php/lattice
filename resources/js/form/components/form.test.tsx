@@ -1,8 +1,8 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { clearRefreshedRefs } from "@lattice-php/lattice/core/component-ref";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
+import { clearRefreshedRefs } from "@lattice-php/core/component-ref";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import ButtonComponent from "@lattice-php/lattice/ui/button";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";

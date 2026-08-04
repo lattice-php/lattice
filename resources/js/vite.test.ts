@@ -70,6 +70,7 @@ describe("lattice Vite helper", () => {
         server: {
           deps: {
             inline: [
+              "@lattice-php/core",
               "@lattice-php/lattice",
               /[/\\]lattice[/\\]dist[/\\]/,
               /[/\\]lattice[/\\]node_modules[/\\]@radix-ui[/\\]/,
@@ -89,6 +90,7 @@ describe("lattice Vite helper", () => {
     expect(latticeConfig({ appRoot, source: true })).toMatchObject({
       resolve: {
         alias: {
+          "@lattice-php/core": path.resolve(root, "packages/core/resources/js"),
           "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
           "@lattice-php/lattice": path.resolve(root, "resources/js"),
         },

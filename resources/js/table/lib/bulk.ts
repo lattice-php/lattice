@@ -1,5 +1,5 @@
 import type { Method } from "@inertiajs/core";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import type { Action, Emphasis, Variant } from "@lattice-php/lattice/types/generated";
 import type { ActionNode } from "@lattice-php/lattice/table/types";
 import { actionLabel } from "@lattice-php/lattice/action/lib/action-label";

@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { AffixGroup } from "@lattice-php/lattice/ui/affix-group";
 import { CopyButton } from "@lattice-php/lattice/ui/copyable-text";
 import { Input } from "@lattice-php/lattice/ui/input";

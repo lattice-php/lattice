@@ -89,7 +89,7 @@ php artisan lattice:typescript
 It scans `config('lattice.discover')`, reads the discovered component, field, and column classes, and
 writes the declaration file configured at `config('lattice.typescript.output')`
 (`resources/js/lattice/generated.d.ts` by default). The generated file augments the configured module
-(`@lattice-php/lattice` by default), so `node.props` and `column.props` stay typed on the client.
+(`@lattice-php/core` by default), so `node.props` and `column.props` stay typed on the client.
 
 `lattice:typescript` only needs `spatie/laravel-typescript-transformer` when your app defines custom
 PHP wire types; it no-ops otherwise. Install it as a dev dependency in applications that generate

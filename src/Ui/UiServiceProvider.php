@@ -11,6 +11,7 @@ use Lattice\Lattice\Effects\Effect;
 use Lattice\Lattice\Effects\EffectFlasher;
 use Lattice\Lattice\Effects\EffectRegistry;
 use Lattice\Lattice\Facades\Lattice;
+use Lattice\Lattice\LatticeRegistry;
 use Lattice\Lattice\Support\Evaluation\Evaluator;
 use Lattice\Lattice\Theme\ThemeRenderer;
 use Lattice\Lattice\Ui\Components\Component;
@@ -22,6 +23,7 @@ final class UiServiceProvider extends ServiceProvider
     {
         $this->app->register(CoreServiceProvider::class);
 
+        $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(SlotRegistry::class);
         $this->app->singleton(ThemeRenderer::class);
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));

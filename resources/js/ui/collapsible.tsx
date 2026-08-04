@@ -1,9 +1,9 @@
 import { Icon } from "@lattice-php/lattice/icons";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { Renderer } from "@lattice-php/core/renderer";
 import { InfoTooltip } from "./info-tooltip";
-import { nodeIdentity, prefixedTestId } from "@lattice-php/lattice/core/test-id";
-import { toNodes } from "@lattice-php/lattice/core/nodes";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { nodeIdentity, prefixedTestId } from "@lattice-php/core/test-id";
+import { toNodes } from "@lattice-php/core/nodes";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useCollapsibleState } from "./use-collapsible-state";
 

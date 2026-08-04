@@ -2,7 +2,7 @@ import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import { Provider } from "@lattice-php/lattice/provider";
-import { extendRegistry } from "@lattice-php/lattice/core/registry";
+import { extendRegistry } from "@lattice-php/core/registry";
 import { registry as defaultRegistry } from "@lattice-php/lattice/registry";
 import { effect } from "@lattice-php/lattice/test/effect-fixture";
 import { useEffectDispatcher } from "./use-effect-dispatcher";

@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/core/registry";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";

@@ -1,8 +1,4 @@
-import {
-  eagerComponent,
-  type ComponentRegistryFor,
-  type Plugin,
-} from "@lattice-php/lattice/core/registry";
+import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import ChatBoxComponent from "./components/chat-box";
 import { TextPart } from "./parts/text";
 import type { ChatNodeType } from "@lattice-php/lattice/types/generated";

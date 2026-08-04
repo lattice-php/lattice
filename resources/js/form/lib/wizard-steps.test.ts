@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import {
   firstErroredStep,
   stepFieldNames,

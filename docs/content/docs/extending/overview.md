@@ -65,7 +65,7 @@ After adding custom props to a PHP class, run:
 php artisan lattice:typescript
 ```
 
-This scans the paths listed in `config/lattice.php` under `discover`, reads public properties, and writes `resources/js/lattice/generated.d.ts`. That file augments `ComponentProps` (for fields and components) and `ColumnProps` (for columns) in the `@lattice-php/lattice` module, giving you typed `node.props` and `column.props` in the renderer.
+This scans the paths listed in `config/lattice.php` under `discover`, reads public properties, and writes `resources/js/lattice/generated.d.ts`. That file augments `ComponentProps` (for fields and components) and `ColumnProps` (for columns) in the `@lattice-php/core` module, giving you typed `node.props` and `column.props` in the renderer.
 
 Without running `lattice:typescript` the props fall back to a loose `Record<string, unknown>` — the renderer still works, types are just not narrowed.
 

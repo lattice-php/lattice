@@ -1,6 +1,6 @@
 import { usePage } from "@inertiajs/react";
 import type { ReactNode } from "react";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { Renderer } from "@lattice-php/core/renderer";
 import type { PagePayload } from "@lattice-php/lattice/core/types";
 import { OutletContext } from "@lattice-php/lattice/layout/hooks/context";
 

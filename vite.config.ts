@@ -245,7 +245,15 @@ export default defineConfig(({ mode }) => {
                 "resources/js/test-support.ts",
                 "resources/js/standalone/**",
               ],
-              compilerOptions: { rootDir: sourceRoot },
+              compilerOptions: {
+                rootDir: sourceRoot,
+                paths: {
+                  "@lattice-php/core": ["packages/core/dist/index.d.ts"],
+                  "@lattice-php/core/*": ["packages/core/dist/index.d.ts"],
+                  "@lattice-php/lattice": ["resources/js/index.ts"],
+                  "@lattice-php/lattice/*": ["resources/js/*"],
+                },
+              },
               outDirs: "dist",
               beforeWriteFile: (filePath, content) => ({
                 filePath,
@@ -282,6 +290,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
+        "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
         "@lattice-php/lattice": sourceRoot,
       },
     },
@@ -326,6 +335,7 @@ export default defineConfig(({ mode }) => {
               rollupOptions: {
                 external: [
                   /^node:/,
+                  /^@lattice-php\/core($|\/)/,
                   /^react($|\/)/,
                   /^react-dom($|\/)/,
                   /^@atlaskit\//,

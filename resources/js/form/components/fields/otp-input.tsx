@@ -1,4 +1,4 @@
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { InputOTP } from "@lattice-php/lattice/ui/input-otp";
 import { SimpleField } from "./simple-field";
 

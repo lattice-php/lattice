@@ -1,4 +1,4 @@
-import { createRegistry } from "@lattice-php/lattice/core/registry";
+import { createRegistry } from "@lattice-php/core/registry";
 import type {
   ActionNodeType,
   ChatNodeType,

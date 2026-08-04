@@ -82,6 +82,6 @@ return [
 
     'typescript' => [
         'output' => resource_path('js/lattice/generated.d.ts'),
-        'module' => '@lattice-php/lattice',
+        'module' => '@lattice-php/core',
     ],
 ];

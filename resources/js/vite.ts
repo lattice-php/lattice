@@ -196,6 +196,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
       ...(options.source
         ? {
             alias: {
+              "@lattice-php/core": path.resolve(root, "packages/core/resources/js"),
               "@lattice-php/lattice/css": path.resolve(root, "resources/css/lattice.css"),
               "@lattice-php/lattice": path.resolve(root, "resources/js"),
             },
@@ -214,6 +215,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
       server: {
         deps: {
           inline: [
+            "@lattice-php/core",
             "@lattice-php/lattice",
             /[/\\]lattice[/\\]dist[/\\]/,
             /[/\\]lattice[/\\]node_modules[/\\]@radix-ui[/\\]/,

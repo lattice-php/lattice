@@ -1,10 +1,10 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/lattice/core/registry";
-import { Renderer } from "@lattice-php/lattice/core/renderer";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
+import { Renderer } from "@lattice-php/core/renderer";
 import { jsonResponse } from "@lattice-php/lattice/test/http";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import NotificationsComponent from "./notifications";
 
 vi.mock("@inertiajs/react", async () =>

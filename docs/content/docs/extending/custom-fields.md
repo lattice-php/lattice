@@ -146,10 +146,10 @@ Passing `registry` is what makes your field render. Without it, `createLatticeAp
 php artisan lattice:typescript
 ```
 
-This writes `resources/js/lattice/generated.d.ts`, which augments the `ComponentProps` interface in `@lattice-php/lattice`:
+This writes `resources/js/lattice/generated.d.ts`, which augments the `ComponentProps` interface in `@lattice-php/core`:
 
 ```ts
-declare module "@lattice-php/lattice" {
+declare module "@lattice-php/core" {
   interface ComponentProps {
     "field.color-picker": {
       swatches: string | null;

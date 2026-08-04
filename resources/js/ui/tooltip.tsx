@@ -1,6 +1,6 @@
-import { Renderer } from "@lattice-php/lattice/core/renderer";
-import { toNodes } from "@lattice-php/lattice/core/nodes";
-import type { RendererComponent } from "@lattice-php/lattice/core/types";
+import { Renderer } from "@lattice-php/core/renderer";
+import { toNodes } from "@lattice-php/core/nodes";
+import type { RendererComponent } from "@lattice-php/core/types";
 import { InfoTooltip } from "./info-tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 

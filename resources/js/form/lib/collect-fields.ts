@@ -1,4 +1,4 @@
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { walkFields } from "./field-props";
 
 export type CollectedFields = {

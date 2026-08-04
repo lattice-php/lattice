@@ -48,12 +48,32 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run versions:check
+
       # `files` includes dist-standalone, but `npm pack` silently skips missing
       # entries — without this gate a tag whose asset commit never landed would
       # publish a package with no standalone assets.
       - run: npm run verify:standalone
 
-      # The prepack hook builds dist/ and runs the build guardrail before publish.
-      - run: npm publish --access public --provenance
+      - run: npm publish --workspaces --include-workspace-root --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  split-composer:
+    needs: release-please
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: danharrin/monorepo-split-github-action@v2.4.0
+        with:
+          package_directory: packages/core
+          repository_organization: lattice-php
+          repository_name: core
+          tag: ${{ needs.release-please.outputs.tag_name }}
+          user_email: github-actions[bot]@users.noreply.github.com
+          user_name: github-actions[bot]
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}

@@ -8,7 +8,7 @@ import type {
   TableQuery,
 } from "@lattice-php/lattice/table/types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
-import type { Node } from "@lattice-php/lattice/core/types";
+import type { Node } from "@lattice-php/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { TableColumn } from "@lattice-php/lattice/table/types";
 import TableComponent from "./table";

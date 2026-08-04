@@ -28,7 +28,6 @@ use Lattice\Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Lattice\Console\Commands\TypeScriptCommand;
-use Lattice\Lattice\Core\CoreServiceProvider;
 use Lattice\Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
@@ -40,6 +39,8 @@ use Lattice\Lattice\Http\PageRegistry;
 use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Lattice\Support\Frontend\StandaloneAssets;
+use Lattice\Lattice\Support\TypeScript\AugmentProfile;
+use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Tables\TablesServiceProvider;
 use Lattice\Lattice\Theme\ThemeRenderer;
 use Lattice\Lattice\Ui\UiServiceProvider;
@@ -70,10 +71,11 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->register(CoreServiceProvider::class);
         $this->app->register(UiServiceProvider::class);
         $this->app->register(FormsServiceProvider::class);
         $this->app->register(TablesServiceProvider::class);
+
+        $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
 
         if ($this->app->runningInConsole()) {
             $this->commands(MakeDefinitionCommand::all());

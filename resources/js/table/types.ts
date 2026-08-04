@@ -1,4 +1,4 @@
-import type { NodeUnionOf } from "@lattice-php/lattice/core/types";
+import type { NodeUnionOf } from "@lattice-php/core/types";
 import type {
   ActionNodeType,
   ColumnFilter,

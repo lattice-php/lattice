@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import type { Node, RendererComponent } from "@lattice-php/lattice/core/types";
+import type { Node, RendererComponent } from "@lattice-php/core/types";
 import type { WizardStep } from "@lattice-php/lattice/types/generated";
 import { cn } from "@lattice-php/lattice/lib/utils";
 import { useT } from "@lattice-php/lattice/i18n";

@@ -23,14 +23,17 @@ final readonly class WireTypeDiscovery
     public function __construct(private LatticeRegistry $lattice) {}
 
     /**
+     * @param  string|list<string>  $paths
      * @param  list<string>  $ignoreDirectories  paths skipped entirely (e.g. test scaffolding
      *                                           that can never be a wire type) so they're
      *                                           never autoloaded during the walk
      */
-    public function discover(string $path, array $ignoreDirectories = []): WireTypeManifest
+    public function discover(string|array $paths, array $ignoreDirectories = []): WireTypeManifest
     {
-        if (! is_dir($path)) {
-            return new WireTypeManifest([], [], [], []);
+        $classes = [];
+
+        foreach ((array) $paths as $path) {
+            $classes = [...$classes, ...ClassWalker::all($path, $ignoreDirectories)];
         }
 
         $enums = [];
@@ -38,7 +41,7 @@ final readonly class WireTypeDiscovery
         $components = [];
         $families = [];
 
-        foreach (ClassWalker::all($path, $ignoreDirectories) as $class) {
+        foreach (array_unique($classes) as $class) {
             try {
                 $abstract = new ReflectionClass($class)->isAbstract();
             } catch (\Throwable) {
