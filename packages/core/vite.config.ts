@@ -16,7 +16,7 @@ function libraryEntries(): string[] {
 
 function withExplicitExtensions(content: string): string {
   return content.replace(
-    /(\bfrom\s*)(["'])(\.\.?(?:\/[^"']+)?)\2/g,
+    /(\bfrom\s*|\bimport\()(["'])(\.\.?(?:\/[^"']+)?)\2/g,
     (match, prefix: string, quote: string, specifier: string) =>
       /\.[a-z]+$/i.test(specifier) ? match : `${prefix}${quote}${specifier}.js${quote}`,
   );

@@ -1,0 +1,28 @@
+import { Option } from '@lattice-php/core/generated';
+import { PerPageOption } from '../lib/payload.js';
+import { FilterClause, TableColumn, TableNode, TableSort, TableQuery } from '../types.js';
+export declare function useTable(node: TableNode): {
+    columns: TableColumn[];
+    rows: import('../types.js').TableRow[];
+    pagination: import('@lattice-php/core/generated').TablePagination;
+    query: TableQuery;
+    filters: FilterClause[];
+    tableFilters: Record<string, Record<string, unknown>>;
+    search: string;
+    addFilter: (clause: FilterClause) => void;
+    updateFilter: (index: number, clause: FilterClause) => void;
+    removeFilter: (index: number) => void;
+    replaceColumnFilters: (field: string, clauses: FilterClause[]) => void;
+    setTableFilter: (key: string, value: unknown) => void;
+    resetFilters: () => void;
+    setSearch: (search: string) => void;
+    searchFilterOptions: (searchKey: string, search: string, signal?: AbortSignal) => Promise<Option[]>;
+    processing: boolean;
+    hasLoaded: boolean;
+    infiniteLoaderRef: import('react').RefObject<HTMLDivElement | null>;
+    sort: (column: TableColumn) => void;
+    clearSort: (sort: TableSort) => void;
+    goToPage: (page: number) => void;
+    setPerPage: (option: PerPageOption) => void;
+    loadMore: () => void;
+};

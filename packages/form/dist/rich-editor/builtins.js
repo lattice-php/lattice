@@ -1,8 +1,8 @@
 import { seedRichEditorExtension } from "./registry.js";
 import { ToolbarIconButton } from "./toolbar-button.js";
 import { useState } from "react";
-import { jsx, jsxs } from "react/jsx-runtime";
 import { useT } from "@lattice-php/ui/i18n";
+import { jsx, jsxs } from "react/jsx-runtime";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@lattice-php/ui/dropdown-menu";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";

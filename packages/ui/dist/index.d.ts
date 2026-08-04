@@ -1,4 +1,5 @@
 export * from './button.js';
+export * from './badge.js';
 export * from './checkbox.js';
 export * from './color-picker.js';
 export * from './combobox.js';
@@ -27,6 +28,8 @@ export * from './textarea.js';
 export * from './types.js';
 export * from './use-collapsible-state.js';
 export * from './format/date-time.js';
+export * from './format/number.js';
+export * from './format/numeric.js';
 export * from './lib/color.js';
 export * from './lib/is-truthy.js';
 export * from './lib/listeners.js';

@@ -1,4 +1,5 @@
 export * from "./button";
+export * from "./badge";
 export * from "./checkbox";
 export * from "./color-picker";
 export * from "./combobox";
@@ -27,6 +28,8 @@ export * from "./textarea";
 export * from "./types";
 export * from "./use-collapsible-state";
 export * from "./format/date-time";
+export * from "./format/number";
+export * from "./format/numeric";
 export * from "./lib/color";
 export * from "./lib/is-truthy";
 export * from "./lib/listeners";

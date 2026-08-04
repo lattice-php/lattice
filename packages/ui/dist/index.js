@@ -3,6 +3,7 @@ import { cn } from "./lib/utils.js";
 import { Icon, SpriteProvider, useSprite } from "./icons/sprite.js";
 import { IconRenderer, IconRendererProvider } from "./icons/icon-renderer.js";
 import { AffixGroup } from "./affix-group.js";
+import { Badge } from "./badge.js";
 import { Button, buttonVariants } from "./button.js";
 import { Checkbox } from "./checkbox.js";
 import { FOCUS_RING, controlSurface } from "./control.js";
@@ -41,6 +42,8 @@ import { Skeleton } from "./skeleton.js";
 import { Textarea } from "./textarea.js";
 import { use_persistent_state_exports } from "./lib/use-persistent-state.js";
 import { useCollapsibleState } from "./use-collapsible-state.js";
+import { numericValue } from "./format/numeric.js";
+import { formatNumber } from "./format/number.js";
 import { coerceColor, colorValue, namedColor, toneProps } from "./lib/color.js";
 import { isTruthy } from "./lib/is-truthy.js";
 import { useLayoutEffect } from "./lib/use-layout-effect.js";
@@ -51,6 +54,7 @@ export * from "@lattice-php/core/lib/use-persistent-state";
 //#region resources/js/index.ts
 var js_exports = /* @__PURE__ */ __exportAll({
 	AffixGroup: () => AffixGroup,
+	Badge: () => Badge,
 	Button: () => Button,
 	Checkbox: () => Checkbox,
 	ColorPicker: () => ColorPicker,
@@ -106,6 +110,7 @@ var js_exports = /* @__PURE__ */ __exportAll({
 	currentTimezone: () => currentTimezone,
 	enableBackend: () => enableBackend,
 	formatDateValue: () => formatDateValue,
+	formatNumber: () => formatNumber,
 	i18n: () => i18n,
 	i18nConfigFromPageProps: () => i18nConfigFromPageProps,
 	iconButtonVariants: () => iconButtonVariants,
@@ -114,6 +119,7 @@ var js_exports = /* @__PURE__ */ __exportAll({
 	localeHeader: () => locale_exports.localeHeader,
 	namedColor: () => namedColor,
 	normalizeHex: () => normalizeHex,
+	numericValue: () => numericValue,
 	preciseDateTime: () => preciseDateTime,
 	resolveText: () => resolveText,
 	resolveTranslatable: () => resolveTranslatable,
@@ -139,6 +145,6 @@ var currentLocale = locale_exports.currentLocale;
 var localeHeader = locale_exports.localeHeader;
 var setLocale = locale_exports.setLocale;
 var useLocale = locale_exports.useLocale;
-export { AffixGroup, Button, Checkbox, ColorPicker, Combobox, ConfirmDialog, CopyButton, CopyableText, DateTime, Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, FOCUS_RING, Icon, IconButton, IconRenderer, IconRendererProvider, InfoTooltip, Input, InputError, InputOTP, Label, LocaleReload, NativeSelect, POPOVER_SURFACE, PasswordInput, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewableImage, SegmentedPills, Skeleton, Spinner, SpriteProvider, TextLink, Textarea, buttonVariants, cn, coerceColor, colorValue, configureI18n, configureI18nFromPageProps, controlSurface, copyToClipboard, currentLocale, currentTimezone, enableBackend, formatDateValue, i18n, i18nConfigFromPageProps, iconButtonVariants, isTranslatable, isTruthy, localeHeader, namedColor, normalizeHex, preciseDateTime, resolveText, resolveTranslatable, setLocale, setTimezone, toDate, toneProps, translate, useCollapsibleState, useDebouncedCallback, useLayoutEffect, useLocale, useLocaleOptions, useMediaQuery, useSprite, useT, useTimezone };
+export { AffixGroup, Badge, Button, Checkbox, ColorPicker, Combobox, ConfirmDialog, CopyButton, CopyableText, DateTime, Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, FOCUS_RING, Icon, IconButton, IconRenderer, IconRendererProvider, InfoTooltip, Input, InputError, InputOTP, Label, LocaleReload, NativeSelect, POPOVER_SURFACE, PasswordInput, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewableImage, SegmentedPills, Skeleton, Spinner, SpriteProvider, TextLink, Textarea, buttonVariants, cn, coerceColor, colorValue, configureI18n, configureI18nFromPageProps, controlSurface, copyToClipboard, currentLocale, currentTimezone, enableBackend, formatDateValue, formatNumber, i18n, i18nConfigFromPageProps, iconButtonVariants, isTranslatable, isTruthy, localeHeader, namedColor, normalizeHex, numericValue, preciseDateTime, resolveText, resolveTranslatable, setLocale, setTimezone, toDate, toneProps, translate, useCollapsibleState, useDebouncedCallback, useLayoutEffect, useLocale, useLocaleOptions, useMediaQuery, useSprite, useT, useTimezone };
 
 //# sourceMappingURL=index.js.map

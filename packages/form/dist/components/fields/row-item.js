@@ -1,11 +1,11 @@
 import { buildRowActions } from "./row-action-menu.js";
 import { RowActions } from "./row-actions.js";
 import { memo } from "react";
-import { jsx, jsxs } from "react/jsx-runtime";
+import { RenderNode } from "@lattice-php/core/renderer";
 import { useT } from "@lattice-php/ui/i18n";
+import { jsx, jsxs } from "react/jsx-runtime";
 import { Icon } from "@lattice-php/ui/icons";
 import { nodeKey } from "@lattice-php/core/nodes";
-import { RenderNode } from "@lattice-php/core/renderer";
 import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 //#region resources/js/components/fields/row-item.tsx
 function RowButton({ label, testId, onClick, children }) {

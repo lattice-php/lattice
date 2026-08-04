@@ -4,7 +4,7 @@ export type Emphasis = "solid" | "outline" | "ghost" | "link";
 export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 declare const buttonVariants: (props?: ({
     emphasis?: "link" | "solid" | "outline" | "ghost" | null | undefined;
-    variant?: "primary" | "secondary" | "success" | "info" | "warning" | "danger" | null | undefined;
+    variant?: "primary" | "success" | "info" | "warning" | "danger" | "secondary" | null | undefined;
     size?: "icon" | "sm" | "md" | "lg" | null | undefined;
 } & import('class-variance-authority/types').ClassProp) | undefined) => string;
 declare function Button({ className, variant, emphasis, size, asChild, icon, children, ...props }: React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & {

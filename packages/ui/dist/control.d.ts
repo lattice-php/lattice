@@ -6,5 +6,5 @@ export declare const FOCUS_RING = "focus-visible:border-lt-ring focus-visible:ri
  * border, focus ring, invalid, and disabled treatment are unified.
  */
 export declare const controlSurface: (props?: ({
-    density?: "comfortable" | "compact" | null | undefined;
+    density?: "compact" | "comfortable" | null | undefined;
 } & import('class-variance-authority/types').ClassProp) | undefined) => string;

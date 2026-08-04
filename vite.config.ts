@@ -294,6 +294,7 @@ export default defineConfig(({ mode }) => {
         "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
         ...(!isLibrary && {
           "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
+          "@lattice-php/table": path.resolve(import.meta.dirname, "packages/table/resources/js"),
         }),
         "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
         "@lattice-php/lattice": sourceRoot,
@@ -349,6 +350,7 @@ export default defineConfig(({ mode }) => {
                   /^@inertiajs\//,
                   /^@internationalized\/date($|\/)/,
                   /^@lattice-php\/form($|\/)/,
+                  /^@lattice-php\/table($|\/)/,
                   /^@lattice-php\/vite-svg-sprite($|\/)/,
                   /^@lezer\//,
                   /^@radix-ui\//,

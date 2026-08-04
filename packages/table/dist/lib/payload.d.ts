@@ -1,0 +1,11 @@
+import { Node } from '@lattice-php/core/types';
+import { TableColumn, TablePagination, TableRow, TableQuery } from '../types.js';
+export declare function getColumns(value: unknown): TableColumn[];
+export declare function getRows(value: unknown): TableRow[];
+export declare function getPagination(value: unknown): TablePagination;
+export declare function getQuery(value: unknown): TableQuery;
+export type PerPageOption = number | "infinite";
+export declare function getPerPageOptions(value: unknown): PerPageOption[];
+export declare function getRowKey(row: TableRow, index: number): string;
+export declare function getRowActions(row: TableRow): Node[];
+export declare function getRowDetail(row: TableRow): Node | null;
