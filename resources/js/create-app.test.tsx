@@ -22,6 +22,7 @@ vi.mock("@inertiajs/react", async () =>
 vi.mock("./i18n/page-props", () => ({ configureI18nFromPageProps }));
 
 import { useAppearance } from "./appearance";
+import { createRegistry } from "./core/registry";
 import { createLatticeApp } from "./create-app";
 import { pageComponentName } from "./inertia";
 import Page from "./page";
@@ -96,7 +97,7 @@ describe("createLatticeApp", () => {
 
   it("wraps the app in the Provider so toasts use Lattice's own Toaster", () => {
     const sprite = { href: "/sprite.svg" };
-    const registry = { columns: {}, components: {}, effects: {} };
+    const registry = createRegistry();
 
     createLatticeApp({ registry, sprite });
 

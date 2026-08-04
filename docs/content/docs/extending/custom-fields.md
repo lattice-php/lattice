@@ -108,7 +108,6 @@ export const registry = extendRegistry(packageRegistry, {
   components: {
     "field.color-picker": eagerComponent(ColorPickerComponent),
   },
-  columns: {},
 } satisfies Plugin);
 ```
 

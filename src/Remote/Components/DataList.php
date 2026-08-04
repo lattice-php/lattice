@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Remote\Components;
 
 use Lattice\Lattice\Attributes\AsRemoteComponent;
+use Lattice\Lattice\Core\Contracts\ContainerComponent;
 use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 
 #[AsRemoteComponent('data-list')]
-final class DataList extends RemoteComponent
+final class DataList extends RemoteComponent implements ContainerComponent
 {
     use HasChildSchema;
 

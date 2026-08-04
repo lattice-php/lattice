@@ -8,7 +8,10 @@ import { useEffectDispatcher } from "./use-effect-dispatcher";
 describe("useEffectDispatcher", () => {
   it("dispatches through handlers merged from the registry", () => {
     const confetti = vi.fn<() => void>();
-    const registry = createRegistry({ name: "test", effects: { confetti } });
+    const registry = createRegistry({
+      name: "test",
+      extensions: { effects: { confetti } },
+    });
 
     const wrapper = ({ children }: { children: ReactNode }) => (
       <Provider registry={registry} toaster={false}>

@@ -4,8 +4,10 @@ import { StatusBadgeCell } from "./columns/status-badge";
 
 export const appColumns = {
   name: "workbench",
-  columns: {
-    "column.status-badge": StatusBadgeCell,
+  extensions: {
+    "table.columns": {
+      "column.status-badge": StatusBadgeCell,
+    },
   },
   components: {
     "echo-status": lazyComponent(() => import("./components/EchoStatus")),

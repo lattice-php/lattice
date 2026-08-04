@@ -6,6 +6,7 @@ import type {
   EffectPropsOf,
 } from "@lattice-php/lattice/types/generated";
 import { LATTICE_EVENT } from "@lattice-php/lattice/core/event-names";
+import { useExtensionRegistry } from "@lattice-php/lattice/core/registry-context";
 import { setLocale } from "@lattice-php/lattice/i18n/locale";
 
 export type { EffectOf, EffectProps, EffectPropsOf };
@@ -13,6 +14,12 @@ export type { EffectOf, EffectProps, EffectPropsOf };
 export type EffectHandler<TType extends string = string> = (effect: EffectOf<TType>) => void;
 
 export type EffectHandlerRegistry = Record<string, EffectHandler>;
+
+export const EFFECT_HANDLER_REGISTRY_EXTENSION = "effects";
+
+export function useEffectHandlerRegistry(): EffectHandlerRegistry {
+  return useExtensionRegistry<EffectHandlerRegistry>(EFFECT_HANDLER_REGISTRY_EXTENSION);
+}
 
 export type EffectHandlerRegistryFor<TTypes extends keyof EffectPropsMap & string> = Record<
   TTypes,

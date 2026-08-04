@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react";
-import { useEffectHandlerRegistry } from "@lattice-php/lattice/core/registry-context";
 import { dispatchEffects } from "./dispatch";
 import type { ActionEffect } from "./dispatch";
-import { builtinEffectHandlers, mergeEffectHandlers } from "./registry";
+import { builtinEffectHandlers, mergeEffectHandlers, useEffectHandlerRegistry } from "./registry";
 
 /**
  * Returns a dispatcher bound to the built-in handlers plus any consumer handlers

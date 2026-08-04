@@ -6,8 +6,11 @@ use Lattice\Lattice\Actions\ActionRegistry;
 use Lattice\Lattice\Actions\BulkActionDefinition;
 use Lattice\Lattice\Actions\BulkActionRegistry;
 use Lattice\Lattice\Actions\FormActionDefinition;
+use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Definition;
 use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Lattice\Core\PageMetadata;
+use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\FormDefinition;
 use Lattice\Lattice\Forms\FormRegistry;
 use Lattice\Lattice\Fragments\FragmentDefinition;
@@ -23,6 +26,21 @@ use Lattice\Lattice\Tables\Filters\Filter;
 use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Lattice\Tables\TableDefinition;
 use Lattice\Lattice\Tables\TableRegistry;
+
+const CORE_FORBIDDEN_NAMESPACES = [
+    'Lattice\\Lattice\\Actions',
+    'Lattice\\Lattice\\Forms',
+    'Lattice\\Lattice\\Tables',
+    'Lattice\\Lattice\\Fragments',
+    'Lattice\\Lattice\\Layouts',
+    'Lattice\\Lattice\\Ui',
+    'Lattice\\Lattice\\Chat',
+    'Lattice\\Lattice\\Notifications',
+    'Lattice\\Lattice\\Realtime',
+    'Lattice\\Lattice\\Remote',
+    'Lattice\\Lattice\\Effects',
+    'Lattice\\Lattice\\I18n',
+];
 
 /*
  * Layering.
@@ -83,14 +101,36 @@ arch('layouts depend on no feature domain other than actions')
         'Lattice\Lattice\Fragments',
     ]);
 
-arch('core does not depend on the feature domains other than actions')
+arch('core does not depend on feature or ui domains')
     ->expect('Lattice\Lattice\Core')
-    ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
-    ]);
+    ->not->toUse(CORE_FORBIDDEN_NAMESPACES)
+    ->ignoring([PageMetadata::class, PageSchema::class]);
+
+it('shared source does not reference feature or ui namespaces in strings', function (string $directory): void {
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/src/'.$directory));
+    $violations = [];
+
+    foreach ($files as $file) {
+        if ($file->getExtension() !== 'php') {
+            continue;
+        }
+
+        // Their public types stay compatible until the package-extraction release.
+        if ($directory === 'Core' && in_array($file->getFilename(), ['PageMetadata.php', 'PageSchema.php'], true)) {
+            continue;
+        }
+
+        $contents = (string) file_get_contents($file->getPathname());
+
+        foreach (CORE_FORBIDDEN_NAMESPACES as $namespace) {
+            if (str_contains($contents, $namespace)) {
+                $violations[] = $file->getFilename().': '.$namespace;
+            }
+        }
+    }
+
+    expect($violations)->toBe([]);
+})->with(['Core', 'Support/TypeScript']);
 
 arch('core does not depend upward on the orchestration or tooling layers')
     ->expect('Lattice\Lattice\Core')
@@ -140,28 +180,24 @@ arch('attributes depend on no feature domain or higher layer')
         'Lattice\Lattice\Tables',
         'Lattice\Lattice\Fragments',
         'Lattice\Lattice\Layouts',
+        'Lattice\Lattice\Ui',
         'Lattice\Lattice\Http',
         'Lattice\Lattice\Console',
         'Lattice\Lattice\Facades',
-    ]);
+    ])
+    ->ignoring(AsPage::class);
 
 /*
- * The Support utilities (Evaluation, Discovery) are part of the shared base and
- * stay free of the feature domains. Support\Testing and Support\TypeScript are
- * tooling that intentionally consumes the domains, so they are not constrained.
+ * The Support utilities are part of the shared base and stay free of the feature
+ * domains. Support\Testing intentionally consumes the domains.
  */
 arch('the support utilities do not depend on the feature domains')
     ->expect([
         'Lattice\Lattice\Support\Evaluation',
         'Lattice\Lattice\Support\Discovery',
+        'Lattice\Lattice\Support\TypeScript',
     ])
-    ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
-    ]);
+    ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
 
 /*
  * Cross-boundary contracts live in a `Contracts` namespace and are interfaces.

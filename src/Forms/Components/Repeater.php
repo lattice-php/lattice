@@ -5,6 +5,7 @@ namespace Lattice\Lattice\Forms\Components;
 
 use Closure;
 use Illuminate\Http\Request;
+use Lattice\Lattice\Core\Contracts\ContainerComponent;
 use Lattice\Lattice\Facades\Evaluate;
 use Lattice\Lattice\Forms\Attributes\AsField;
 use Lattice\Lattice\Forms\Components\Concerns\HasRowActions;
@@ -16,7 +17,7 @@ use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
 use Stringable;
 
 #[AsField(FieldType::Repeater)]
-class Repeater extends RowsField
+class Repeater extends RowsField implements ContainerComponent
 {
     use HasChildSchema;
     use HasRowActions;

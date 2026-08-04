@@ -32,7 +32,7 @@ abstract class DefinitionRegistry
      * configured and then sealed. Registries supply only the construction
      * closures so this sequence cannot drift between them.
      *
-     * @template TComponent of \Lattice\Lattice\Ui\Components\Component&Contracts\InteractiveComponent
+     * @template TComponent of Contracts\CanBeHidden&Contracts\InteractiveComponent
      *
      * @param  class-string<TDefinition>  $definitionClass
      * @param  callable(string): TComponent  $component

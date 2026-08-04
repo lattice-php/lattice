@@ -28,7 +28,7 @@ final class MakeColumnCommand extends Command
             $type,
             ColumnType::wireType($type),
             'Cell',
-            blockKey: 'columns',
+            blockKey: '"table.columns"',
             entryWrapper: null,
         );
     }

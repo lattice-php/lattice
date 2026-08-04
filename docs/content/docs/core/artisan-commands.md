@@ -49,11 +49,11 @@ found under either layout are registered the same way — no config change neede
 These commands create both the PHP class and the React renderer, then append the registration to
 `resources/js/registry.ts`.
 
-| Command                                  | PHP file                | React file                              | Registry block |
-| ---------------------------------------- | ----------------------- | --------------------------------------- | -------------- |
-| `php artisan lattice:field ColorPicker`  | `app/Ui/Forms/Fields`   | `resources/js/fields/color-picker.tsx`  | `components`   |
-| `php artisan lattice:component Rating`   | `app/Ui/Components`     | `resources/js/components/rating.tsx`    | `components`   |
-| `php artisan lattice:column StatusBadge` | `app/Ui/Tables/Columns` | `resources/js/columns/status-badge.tsx` | `columns`      |
+| Command                                  | PHP file                | React file                              | Registry                      |
+| ---------------------------------------- | ----------------------- | --------------------------------------- | ----------------------------- |
+| `php artisan lattice:field ColorPicker`  | `app/Ui/Forms/Fields`   | `resources/js/fields/color-picker.tsx`  | `components`                  |
+| `php artisan lattice:component Rating`   | `app/Ui/Components`     | `resources/js/components/rating.tsx`    | `components`                  |
+| `php artisan lattice:column StatusBadge` | `app/Ui/Tables/Columns` | `resources/js/columns/status-badge.tsx` | `extensions["table.columns"]` |
 
 The PHP class follows the same `App\Ui` default and separator escape hatch as
 the definition generators; the React file and registry entry are keyed by the

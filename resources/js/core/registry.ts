@@ -1,8 +1,6 @@
 import { lazy } from "react";
 import type { LazyExoticComponent } from "react";
 import type { RendererComponent, RendererComponentModule } from "./types";
-import type { EffectHandlerRegistry } from "@lattice-php/lattice/effects/registry";
-import type { ColumnRegistry } from "@lattice-php/lattice/table/registry";
 import type { ComponentPropsMap } from "@lattice-php/lattice/types/generated";
 import { isRecord } from "./materialize";
 
@@ -26,6 +24,10 @@ export type ComponentRegistryFor<TTypes extends keyof ComponentPropsMap & string
   ComponentRegistration
 >;
 
+export type ExtensionRegistry = Record<string, (...args: never[]) => unknown>;
+
+export type ExtensionRegistries = Record<string, ExtensionRegistry>;
+
 export type PluginI18n = {
   /** i18next namespace the plugin's components translate under. */
   namespace: string;
@@ -34,16 +36,23 @@ export type PluginI18n = {
 export type Plugin = {
   name: string;
   components?: ComponentRegistry;
-  columns?: ColumnRegistry;
-  effects?: EffectHandlerRegistry;
+  columns?: ExtensionRegistry;
+  effects?: ExtensionRegistry;
+  extensions?: ExtensionRegistries;
   i18n?: PluginI18n;
 };
 
 export type Registry = {
   components: ComponentRegistry;
-  columns: ColumnRegistry;
-  effects: EffectHandlerRegistry;
+  columns: ExtensionRegistry;
+  effects: ExtensionRegistry;
+  extensions?: ExtensionRegistries;
 };
+
+type CompleteRegistry = Registry & { extensions: ExtensionRegistries };
+
+const LEGACY_COLUMN_EXTENSION = "table.columns";
+const LEGACY_EFFECT_EXTENSION = "effects";
 
 export function eagerComponent<TType extends string>(
   component: RendererComponent<TType>,
@@ -90,6 +99,16 @@ function functionRegistryIsValid(registry: unknown): boolean {
   );
 }
 
+function extensionRegistriesAreValid(registries: unknown): boolean {
+  return (
+    registries === undefined ||
+    (isRecord(registries) &&
+      Object.values(registries).every(
+        (registry) => isRecord(registry) && functionRegistryIsValid(registry),
+      ))
+  );
+}
+
 function pluginFromModule(module: unknown, url: string): Plugin {
   const plugin = isRecord(module) ? module.default : undefined;
 
@@ -100,6 +119,7 @@ function pluginFromModule(module: unknown, url: string): Plugin {
     !componentRegistryIsValid(plugin.components) ||
     !functionRegistryIsValid(plugin.columns) ||
     !functionRegistryIsValid(plugin.effects) ||
+    !extensionRegistriesAreValid(plugin.extensions) ||
     (plugin.i18n !== undefined &&
       (!isRecord(plugin.i18n) ||
         typeof plugin.i18n.namespace !== "string" ||
@@ -118,23 +138,66 @@ export function loadPluginModules(
   return Promise.all(urls.map(async (url) => pluginFromModule(await load(url), url)));
 }
 
-export function createRegistry(...plugins: Plugin[]): Registry {
-  return plugins.reduce<Registry>(
-    (registry, plugin) => ({
-      components: { ...registry.components, ...plugin.components },
-      columns: { ...registry.columns, ...plugin.columns },
-      effects: { ...registry.effects, ...plugin.effects },
-    }),
-    { components: {}, columns: {}, effects: {} },
+function mergeExtensions(
+  ...registries: Array<ExtensionRegistries | undefined>
+): ExtensionRegistries {
+  const merged: ExtensionRegistries = {};
+
+  for (const registriesByName of registries) {
+    for (const [name, registry] of Object.entries(registriesByName ?? {})) {
+      merged[name] = { ...merged[name], ...registry };
+    }
+  }
+
+  return merged;
+}
+
+function legacyExtensions(
+  columns: ExtensionRegistry | undefined,
+  effects: ExtensionRegistry | undefined,
+): ExtensionRegistries {
+  return {
+    [LEGACY_COLUMN_EXTENSION]: columns ?? {},
+    [LEGACY_EFFECT_EXTENSION]: effects ?? {},
+  };
+}
+
+function registryWithAliases(
+  components: ComponentRegistry,
+  extensions: ExtensionRegistries,
+): CompleteRegistry {
+  return {
+    components,
+    columns: extensions[LEGACY_COLUMN_EXTENSION] ?? {},
+    effects: extensions[LEGACY_EFFECT_EXTENSION] ?? {},
+    extensions,
+  };
+}
+
+export function createRegistry(...plugins: Plugin[]): CompleteRegistry {
+  return plugins.reduce<CompleteRegistry>(
+    (registry, plugin) =>
+      registryWithAliases(
+        { ...registry.components, ...plugin.components },
+        mergeExtensions(
+          registry.extensions,
+          legacyExtensions(plugin.columns, plugin.effects),
+          plugin.extensions,
+        ),
+      ),
+    registryWithAliases({}, {}),
   );
 }
 
-export function extendRegistry(registry: Registry, ...plugins: Plugin[]): Registry {
+export function extendRegistry(registry: Registry, ...plugins: Plugin[]): CompleteRegistry {
   const merged = createRegistry(...plugins);
 
-  return {
-    components: { ...registry.components, ...merged.components },
-    columns: { ...registry.columns, ...merged.columns },
-    effects: { ...registry.effects, ...merged.effects },
-  };
+  return registryWithAliases(
+    { ...registry.components, ...merged.components },
+    mergeExtensions(
+      legacyExtensions(registry.columns, registry.effects),
+      registry.extensions,
+      merged.extensions,
+    ),
+  );
 }
