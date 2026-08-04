@@ -50,7 +50,7 @@
         "barryvdh/laravel-ide-helper": "^3.7",
         "fruitcake/laravel-debugbar": "^4.3",
         "larastan/larastan": "^3.0",
-        "laravel/boost": "^2.4",
+        "laravel/boost": "^2.5",
         "laravel/pint": "^1.16",
         "laravel/reverb": "^1.10",
         "lattice-php/signature-example": "@dev",
