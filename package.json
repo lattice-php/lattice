@@ -2,27 +2,32 @@
   "name": "@lattice-php/lattice",
   "version": "0.38.0",
   "description": "Server-driven React components for Laravel and Inertia.",
-  "license": "MIT",
-  "author": "Manuel Christlieb <manuel@christlieb.eu>",
-  "type": "module",
-  "workspaces": [
-    "docs",
-    "packages/*"
+  "keywords": [
+    "inertia",
+    "laravel",
+    "react",
+    "server-driven-ui"
   ],
   "homepage": "https://latticephp.com",
+  "bugs": {
+    "url": "https://github.com/lattice-php/lattice/issues"
+  },
+  "license": "MIT",
+  "author": "Manuel Christlieb <manuel@christlieb.eu>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lattice-php/lattice.git"
   },
-  "bugs": {
-    "url": "https://github.com/lattice-php/lattice/issues"
-  },
-  "keywords": [
-    "laravel",
-    "inertia",
-    "react",
-    "server-driven-ui"
+  "workspaces": [
+    "docs",
+    "packages/*"
   ],
+  "files": [
+    "dist",
+    "dist-standalone",
+    "resources/icons"
+  ],
+  "type": "module",
   "sideEffects": [
     "**/*.css"
   ],
@@ -257,11 +262,6 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "dist-standalone",
-    "resources/icons"
-  ],
   "publishConfig": {
     "access": "public"
   },
@@ -280,15 +280,17 @@
     "boost:refresh": "php vendor/bin/testbench boost:update --no-interaction",
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
-    "check": "npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:plugins && npm run build:lib && npm run check:package",
+    "check": "npm run versions:check && npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:plugins && npm run build:lib && npm run check:package",
     "build:plugins": "npm run build:plugin --workspaces --if-present && git diff --exit-code -- packages/*/dist",
-    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css --ignore-rules internal-resolution-error && publint packages/core --strict && attw --pack packages/core --profile esm-only && publint packages/ui --strict && attw --pack packages/ui --profile esm-only --exclude-entrypoints ./css && publint packages/form --strict && attw --pack packages/form --profile esm-only && publint packages/action --strict && attw --pack packages/action --profile esm-only && publint packages/table --strict && attw --pack packages/table --profile esm-only && publint packages/tree --strict && attw --pack packages/tree --profile esm-only",
+    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css --ignore-rules internal-resolution-error && publint packages/core --strict && attw --pack packages/core --profile esm-only && publint packages/ui --strict && attw --pack packages/ui --profile esm-only --exclude-entrypoints ./css && publint packages/form --strict && attw --pack packages/form --profile esm-only && publint packages/action --strict && attw --pack packages/action --profile esm-only && publint packages/table --strict && attw --pack packages/table --profile esm-only && publint packages/tree --strict && attw --pack packages/tree --profile esm-only && publint packages/media --strict && attw --pack packages/media --profile esm-only",
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "npm run build:lib && tsc --noEmit -p docs/tsconfig.json",
     "docs:test": "vitest run --project jsdom docs",
     "lint": "oxlint resources/js workbench/resources/js packages/*/resources/js",
     "lint:fix": "oxlint resources/js workbench/resources/js packages/*/resources/js --fix",
     "lint:github": "oxlint resources/js workbench/resources/js packages/*/resources/js --format=github",
+    "versions:check": "node .github/scripts/sync-package-versions.mjs --check",
+    "versions:sync": "node .github/scripts/sync-package-versions.mjs",
     "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "analyze": "SONDA=1 vite build && mkdir -p docs/public && cp docs/generated/bundle-report.html docs/public/bundle-report.html",
@@ -297,11 +299,6 @@
     "docs:preview": "npm run preview -w docs"
   },
   "dependencies": {
-    "@lattice-php/action": "0.38.0",
-    "@lattice-php/core": "0.38.0",
-    "@lattice-php/form": "0.38.0",
-    "@lattice-php/table": "0.38.0",
-    "@lattice-php/ui": "0.38.0",
     "@atlaskit/pragmatic-drag-and-drop": "^2.0.1",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
@@ -314,6 +311,11 @@
     "@codemirror/state": "^6.7.1",
     "@codemirror/view": "^6.43.7",
     "@internationalized/date": "^3.12.2",
+    "@lattice-php/action": "0.38.0",
+    "@lattice-php/core": "0.38.0",
+    "@lattice-php/form": "0.38.0",
+    "@lattice-php/table": "0.38.0",
+    "@lattice-php/ui": "0.38.0",
     "@lattice-php/vite-svg-sprite": "^0.3.0",
     "@lezer/highlight": "^1.2.3",
     "@radix-ui/react-toast": "^1.2.16",
@@ -329,21 +331,6 @@
     "@zag-js/date-picker": "^1.41.2",
     "@zag-js/react": "^1.41.2",
     "recharts": "^3.8.1"
-  },
-  "peerDependencies": {
-    "@inertiajs/react": "^3.0.0",
-    "@laravel/echo-react": "^2.0.0",
-    "pusher-js": "^8.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@laravel/echo-react": {
-      "optional": true
-    },
-    "pusher-js": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
@@ -381,5 +368,20 @@
     "vite-plugin-dts": "^5.0.3",
     "vitest": "^4.1.8",
     "vitest-browser-react": "^2.2.0"
+  },
+  "peerDependencies": {
+    "@inertiajs/react": "^3.0.0",
+    "@laravel/echo-react": "^2.0.0",
+    "pusher-js": "^8.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@laravel/echo-react": {
+      "optional": true
+    },
+    "pusher-js": {
+      "optional": true
+    }
   }
 }

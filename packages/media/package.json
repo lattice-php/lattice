@@ -1,0 +1,52 @@
+{
+  "name": "@lattice-php/media",
+  "version": "0.38.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lattice-php/lattice.git",
+    "directory": "packages/media"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build --mode plugin && vite build --mode standalone",
+    "build:plugin": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lattice-php/action": "0.38.0",
+    "@lattice-php/core": "0.38.0",
+    "@lattice-php/form": "0.38.0",
+    "@lattice-php/table": "0.38.0",
+    "@lattice-php/ui": "0.38.0"
+  },
+  "peerDependencies": {
+    "@inertiajs/core": "^3.0.0",
+    "@inertiajs/react": "^3.0.0",
+    "@tiptap/core": "^3.26.0",
+    "@tiptap/react": "^3.26.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

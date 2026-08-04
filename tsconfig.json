@@ -15,6 +15,8 @@
       "@lattice-php/action/*": ["./packages/action/resources/js/*"],
       "@lattice-php/core": ["./packages/core/resources/js/index.ts"],
       "@lattice-php/core/*": ["./packages/core/resources/js/*"],
+      "@lattice-php/media": ["./packages/media/resources/js/index.ts"],
+      "@lattice-php/media/*": ["./packages/media/resources/js/*"],
       "@lattice-php/table": ["./packages/table/resources/js/index.ts"],
       "@lattice-php/table/*": ["./packages/table/resources/js/*"],
       "@lattice-php/ui": ["./packages/ui/resources/js/index.ts"],
