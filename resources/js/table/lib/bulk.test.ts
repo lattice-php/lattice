@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { Node } from "@lattice-php/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { getBulkActions } from "./bulk";
 import type { ActionNode } from "@lattice-php/lattice/table/types";
@@ -20,6 +21,15 @@ describe("getBulkActions", () => {
     }) as ActionNode;
 
     expect(getBulkActions([group])).toEqual([]);
+  });
+
+  it("skips non-action components", () => {
+    const component = fakeNode({
+      type: "custom.bulk",
+      props: { endpoint: "/bulk/custom", label: "Custom" },
+    }) as Node;
+
+    expect(getBulkActions([component])).toEqual([]);
   });
 
   it("skips actions without an endpoint", () => {

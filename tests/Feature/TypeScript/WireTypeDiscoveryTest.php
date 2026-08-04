@@ -23,6 +23,7 @@ it('classifies the src tree into enums, value objects, components and effects', 
     $manifest = app(WireTypeDiscovery::class)->discoverMany([
         $root.'/src',
         $root.'/packages/core/src',
+        $root.'/packages/table/src',
         $root.'/packages/ui/src',
     ]);
 
@@ -110,6 +111,7 @@ it('splits #[TypeScript]-marked classes into enums and value objects', function 
     $manifest = app(WireTypeDiscovery::class)->discoverMany([
         $root.'/src',
         $root.'/packages/core/src',
+        $root.'/packages/table/src',
         $root.'/packages/ui/src',
     ]);
 

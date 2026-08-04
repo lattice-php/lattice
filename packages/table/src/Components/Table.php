@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables\Components;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsComponent;
 use Lattice\Lattice\Attributes\SerializationHook;
 use Lattice\Lattice\Core\Contracts\InteractiveComponent;
@@ -45,7 +44,7 @@ class Table extends Component implements InteractiveComponent
     public ?string $layout = null;
 
     /**
-     * @var array<int, Action>
+     * @var array<int, Component>
      */
     public array $bulkActions = [];
 
@@ -169,7 +168,7 @@ class Table extends Component implements InteractiveComponent
     }
 
     /**
-     * @param  array<int, Action>  $actions
+     * @param  array<int, Component>  $actions
      */
     public function bulkActions(array $actions): static
     {

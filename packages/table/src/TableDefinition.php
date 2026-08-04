@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Lattice\Tables;
 
-use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Fragments\Components\Fragment;
 use Lattice\Lattice\Tables\Columns\Column;
 use Lattice\Lattice\Tables\Contracts\TableSource;
 use Lattice\Lattice\Tables\Enums\PaginationType;
@@ -97,19 +95,15 @@ abstract class TableDefinition extends Definition
     }
 
     /**
-     * The lazy detail fragment revealed when this row is expanded, or null when
-     * the row does not expand. Return `Fragment::lazy(...)` so the detail loads
-     * over AJAX on open.
-     *
      * @param  array<string, mixed>  $row
      */
-    public function rowDetail(array $row): ?Fragment
+    public function rowDetail(array $row): ?Component
     {
         return null;
     }
 
     /**
-     * @return array<int, Action>
+     * @return array<int, Component>
      */
     public function bulkActions(): array
     {

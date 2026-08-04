@@ -26,7 +26,7 @@ final class TablesServiceProvider extends ServiceProvider
         $this->app->singleton(TableRegistry::class);
 
         $families = $this->app->make(WireFamilies::class);
-        $families->registerSource(dirname(__DIR__));
+        $families->registerSource(__DIR__);
         $families->register(new WireFamily('column', AsColumn::class, Column::class, marker: true));
         $families->register(new WireFamily('filter', AsFilter::class, Filter::class, marker: true));
     }

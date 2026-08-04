@@ -112,10 +112,10 @@ test('a discovered route-less page registers no route, while a routed sibling st
 });
 
 test('the class walker returns classes under a path and an empty list for a missing path', function (): void {
-    expect(ClassWalker::classes(dirname(__DIR__, 3).'/src/Tables/Columns'))->toContain(BadgeColumn::class)
+    expect(ClassWalker::classes(dirname(__DIR__, 3).'/packages/table/src/Columns'))->toContain(BadgeColumn::class)
         ->and(ClassWalker::classes('/no/such/path'))->toBe([]);
 });
 
 test('the class walker includes enums via all()', function (): void {
-    expect(ClassWalker::all(dirname(__DIR__, 3).'/src/Tables/Enums'))->toContain(ColumnType::class);
+    expect(ClassWalker::all(dirname(__DIR__, 3).'/packages/table/src/Enums'))->toContain(ColumnType::class);
 });

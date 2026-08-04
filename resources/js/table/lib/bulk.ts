@@ -18,13 +18,16 @@ export type BulkAction = {
   modalWidth: Action["modalWidth"];
 };
 
-export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] {
+type BulkActionNode = Extract<ActionNode, { type: "action" | "action.bulk" }>;
+
+export function getBulkActions(actions: Node[] | undefined): BulkAction[] {
   return (actions ?? []).flatMap((node): BulkAction[] => {
-    if (node.type === "action.group") {
+    if (node.type !== "action" && node.type !== "action.bulk") {
       return [];
     }
 
-    const props = node.props;
+    const action = node as BulkActionNode;
+    const props = action.props;
 
     if (!props.endpoint) {
       return [];
@@ -32,8 +35,8 @@ export function getBulkActions(actions: ActionNode[] | undefined): BulkAction[] 
 
     return [
       {
-        id: node.id ?? "",
-        label: actionLabel(node),
+        id: action.id ?? "",
+        label: actionLabel(action),
         method: props.method ?? "post",
         endpoint: props.endpoint,
         ref: props.ref ?? "",

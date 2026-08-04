@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Lattice\Lattice\Tables;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Lattice\Attributes\AsTable;
 use Lattice\Lattice\Attributes\DefinitionAttribute;
+use Lattice\Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Lattice\Core\DefinitionRegistry;
 use Lattice\Lattice\Core\Option;
 use Lattice\Lattice\Forms\Components\Select;
@@ -18,6 +18,7 @@ use Lattice\Lattice\Tables\Components\Table as TableComponent;
 use Lattice\Lattice\Tables\Contracts\Filterable;
 use Lattice\Lattice\Tables\Contracts\Searchable;
 use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -165,12 +166,12 @@ final class TableRegistry extends DefinitionRegistry
 
     /**
      * @param  array<string, mixed>  $context
-     * @return array<int, ActionComponent>
+     * @return array<int, Component>
      */
     private function bulkActions(TableDefinition $definition, string $key, array $context): array
     {
         return array_map(
-            fn (ActionComponent $action): ActionComponent => $action->context([...$context, 'table' => $key]),
+            fn (Component&InteractiveComponent $action): Component => $action->context([...$context, 'table' => $key]),
             $this->renderableComponents($definition->bulkActions()),
         );
     }
