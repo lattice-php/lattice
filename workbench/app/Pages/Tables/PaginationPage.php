@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Pages\Tables;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
@@ -12,6 +11,7 @@ use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\Gap;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 use Workbench\App\Tables\UsersInfiniteTable;
 use Workbench\App\Tables\UsersNoneTable;

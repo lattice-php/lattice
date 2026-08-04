@@ -21,8 +21,8 @@ vi.mock("@inertiajs/react", async () =>
   }),
 );
 
-vi.mock("@lattice-php/lattice/icons", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@lattice-php/lattice/icons")>();
+vi.mock("@lattice-php/ui/icons", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@lattice-php/ui/icons")>();
 
   return {
     ...actual,

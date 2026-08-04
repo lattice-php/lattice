@@ -11,10 +11,10 @@ import {
   type Registry,
 } from "@lattice-php/core/registry";
 import { setDefaultRegistry } from "@lattice-php/core/registry-context";
-import type { SpriteValue } from "./icons/sprite";
-import { DEFAULT_NAMESPACE, holdI18nInit } from "./i18n/instance";
-import { LocaleReload } from "./i18n/locale-reload";
-import { i18nConfigFromPageProps } from "./i18n/shared-props";
+import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
+import { DEFAULT_NAMESPACE, holdI18nInit } from "@lattice-php/ui/i18n/instance";
+import { LocaleReload } from "@lattice-php/ui/i18n/locale-reload";
+import { i18nConfigFromPageProps } from "@lattice-php/ui/i18n/shared-props";
 import {
   createLayoutResolver,
   createPageResolver,
@@ -187,7 +187,7 @@ export function createLatticeApp({
         // i18next backend; the disabled-config call still stores the timezone.
         if (i18nEnabled && i18nConfigFromPageProps(page.props) !== undefined) {
           pending.push(
-            import("./i18n/page-props").then((module) =>
+            import("@lattice-php/ui/i18n/page-props").then((module) =>
               module.configureI18nFromPageProps(page.props, i18nOptions),
             ),
           );

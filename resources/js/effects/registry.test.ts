@@ -13,7 +13,7 @@ vi.mock("@inertiajs/react", async () =>
 );
 
 const setLocale = vi.hoisted(() => vi.fn<(locale: string) => void>());
-vi.mock("@lattice-php/lattice/i18n/locale", () => ({ setLocale }));
+vi.mock("@lattice-php/ui/i18n/locale", () => ({ setLocale }));
 
 afterEach(() => {
   router.reload.mockReset();

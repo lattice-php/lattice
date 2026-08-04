@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Forms\Components\Repeater;
 use Lattice\Lattice\Forms\Components\RowTemplate;
 use Lattice\Lattice\Forms\Components\TextInput;
@@ -11,6 +10,7 @@ use Lattice\Lattice\Ui\Components\Component;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Lattice\Ui\PageSchema;
 
 final class SchemaEntryStub implements SchemaEntry
 {

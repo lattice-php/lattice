@@ -9,6 +9,8 @@ return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/packages/core/src',
         __DIR__.'/src',
+        __DIR__.'/packages/core/src',
+        __DIR__.'/packages/ui/src',
         __DIR__.'/tests',
         __DIR__.'/workbench/app',
         __DIR__.'/workbench/routes',

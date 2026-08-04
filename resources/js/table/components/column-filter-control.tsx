@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Button } from "@lattice-php/lattice/ui/button";
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
-import { NativeSelect } from "@lattice-php/lattice/ui/native-select";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
-import { useT } from "@lattice-php/lattice/i18n";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { NativeSelect } from "@lattice-php/ui/native-select";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+import { useT } from "@lattice-php/ui/i18n";
 import type {
   ColumnFilterOption,
   FilterType,

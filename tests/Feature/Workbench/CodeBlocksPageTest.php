@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Pages\Components\CodeBlocksPage;
 
 test('the workbench code blocks page renders JSON and PHP examples', function (): void {

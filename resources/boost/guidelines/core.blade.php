@@ -14,7 +14,7 @@ A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its 
 @verbatim
 <code-snippet name="A page and its route" lang="php">
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Ui\Components\Heading;

@@ -1,8 +1,8 @@
-import { Checkbox } from "@lattice-php/lattice/ui/checkbox";
+import { Checkbox } from "@lattice-php/ui/checkbox";
 import type { ToggleableColumn } from "@lattice-php/lattice/table/hooks/use-column-visibility";
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
-import { useT } from "@lattice-php/lattice/i18n";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { useT } from "@lattice-php/ui/i18n";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
 
 export function ColumnVisibilityMenu({
   columns,

@@ -27,7 +27,7 @@ import TooltipComponent from "./tooltip";
 
 type UiComponentType = UiNodeType | FragmentNodeType;
 
-export const uiComponents = {
+export const uiComponents: Plugin = {
   components: {
     avatar: eagerComponent(AvatarComponent),
     badge: eagerComponent(BadgeComponent),
@@ -56,4 +56,4 @@ export const uiComponents = {
     tooltip: eagerComponent(TooltipComponent),
   } satisfies ComponentRegistryFor<UiComponentType>,
   name: "lattice/ui",
-} satisfies Plugin;
+};

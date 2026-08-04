@@ -6,15 +6,15 @@ import type { Editor } from "@tiptap/core";
 import type { StarterKitOptions } from "@tiptap/starter-kit";
 import { useState } from "react";
 import type { EditorExtensionPropsMap } from "@lattice-php/lattice/types/generated";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useT } from "@lattice-php/lattice/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@lattice-php/lattice/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/lattice/ui/popover";
+} from "@lattice-php/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
 import type { RichEditorExtensionRegistryFor, ToolbarButton } from "./registry";
 import { ToolbarIconButton } from "./toolbar-button";
 

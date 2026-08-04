@@ -1,10 +1,10 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Combobox } from "@lattice-php/lattice/ui/combobox";
-import { controlSurface } from "@lattice-php/lattice/ui/control";
-import { coerceColor, colorValue } from "@lattice-php/lattice/lib/color";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useT } from "@lattice-php/lattice/i18n";
+import { Combobox } from "@lattice-php/ui/combobox";
+import { controlSurface } from "@lattice-php/ui/control";
+import { coerceColor, colorValue } from "@lattice-php/ui/lib/color";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
 import { Renderer } from "@lattice-php/core/renderer";
 import { materializeSchema } from "@lattice-php/core/materialize";
 import type { Node, Option, RendererComponent } from "@lattice-php/core/types";

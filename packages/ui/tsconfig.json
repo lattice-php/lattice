@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "types": ["node", "vite/client"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@lattice-php/ui": ["./resources/js/index.ts"],
+      "@lattice-php/ui/*": ["./resources/js/*"]
+    }
+  },
+  "include": ["resources/js"]
+}

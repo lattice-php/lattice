@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Lattice\Lattice\Core\Breadcrumb;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\PageSchema;
 
 test('a title set on the schema wins over the title method', function (): void {
     $page = new class extends Page

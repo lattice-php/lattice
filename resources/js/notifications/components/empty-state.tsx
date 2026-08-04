@@ -1,5 +1,5 @@
-import { Icon } from "@lattice-php/lattice/icons";
-import { useT } from "@lattice-php/lattice/i18n";
+import { Icon } from "@lattice-php/ui/icons";
+import { useT } from "@lattice-php/ui/i18n";
 
 export function EmptyState() {
   const { t } = useT("lattice");

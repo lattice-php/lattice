@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { usePersistentState } from "@lattice-php/lattice/lib/use-persistent-state";
+import { usePersistentState } from "@lattice-php/ui/lib/use-persistent-state";
 
 export type ToggleableColumn = {
   key: string;

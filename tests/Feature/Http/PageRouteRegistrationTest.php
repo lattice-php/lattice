@@ -5,13 +5,13 @@ declare(strict_types=1);
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Http\Page as BasePage;
 use Lattice\Lattice\LatticeServiceProvider;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\PageContainer;
 use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Ui\PageSchema;
 
 #[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
 abstract class RegBasePage extends BasePage {}

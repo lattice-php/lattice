@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useLayoutEffect } from "@lattice-php/lattice/lib/use-layout-effect";
+import { useLayoutEffect } from "@lattice-php/ui/lib/use-layout-effect";
 import { useFieldScope } from "@lattice-php/lattice/form/hooks/field-scope";
 import { useFormValue, useSetFormValue } from "@lattice-php/lattice/form/hooks/values";
 import {

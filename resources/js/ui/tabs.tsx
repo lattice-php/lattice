@@ -11,9 +11,9 @@ import {
 import type { KeyboardEvent, ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
 import type { Tab } from "@lattice-php/lattice/types/generated";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { pillClassName } from "./pill";
-import { useT } from "@lattice-php/lattice/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { pillClassName } from "@lattice-php/ui/pill";
+import { useT } from "@lattice-php/ui/i18n";
 
 type TabsContextValue = {
   activeValue: string;

@@ -1,10 +1,10 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import type { ReactNode } from "react";
 import { memo } from "react";
 import type { Node } from "@lattice-php/core/types";
 import { nodeKey } from "@lattice-php/core/nodes";
 import { RenderNode } from "@lattice-php/core/renderer";
-import { useT } from "@lattice-php/lattice/i18n";
+import { useT } from "@lattice-php/ui/i18n";
 import type { RowAction as WireRowAction } from "@lattice-php/lattice/types/generated";
 import { FieldScopeProvider } from "@lattice-php/lattice/form/hooks/field-scope";
 import { buildRowActions } from "./row-action-menu";

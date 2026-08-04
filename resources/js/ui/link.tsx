@@ -1,9 +1,9 @@
 import { Link } from "@inertiajs/react";
 import type { ComponentProps } from "react";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { IconRenderer } from "@lattice-php/lattice/icons";
+import { IconRenderer } from "@lattice-php/ui/icons";
 import type { Affix } from "@lattice-php/lattice/types/generated";
 import { actionMenuItemClassName, useActionMenu } from "./action-menu-context";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "./click-behavior";

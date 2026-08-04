@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsLayout;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Exceptions\UnknownComponent;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Layouts\Components\Outlet;
@@ -14,6 +13,7 @@ use Lattice\Lattice\Layouts\LayoutRegistry;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Lattice\Ui\PageSchema;
 use Lattice\Lattice\Ui\Slot;
 
 #[AsLayout('app')]

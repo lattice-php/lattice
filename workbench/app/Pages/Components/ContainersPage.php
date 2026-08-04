@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Workbench\App\Pages\Components;
 
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Ui\Components\Badge;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Card;
@@ -19,6 +18,7 @@ use Lattice\Lattice\Ui\Components\Tooltip;
 use Lattice\Lattice\Ui\Enums\Emphasis;
 use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\StackDirection;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
 #[AsPage(route: '/components/containers')]

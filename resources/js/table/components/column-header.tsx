@@ -1,8 +1,8 @@
-import { Icon } from "@lattice-php/lattice/icons";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { Icon } from "@lattice-php/ui/icons";
+import { cn } from "@lattice-php/ui/lib/utils";
 import type { HTMLAttributes } from "react";
 import { alignJustify, alignText } from "@lattice-php/lattice/table/lib/align";
-import { useT } from "@lattice-php/lattice/i18n";
+import { useT } from "@lattice-php/ui/i18n";
 import { getColumnAriaSort, getColumnSort } from "@lattice-php/lattice/table/lib/query";
 import type { TableColumn, TableSort, TableQuery } from "@lattice-php/lattice/table/types";
 

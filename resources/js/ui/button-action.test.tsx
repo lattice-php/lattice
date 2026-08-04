@@ -63,6 +63,22 @@ describe("button action trigger", () => {
     });
   });
 
+  it("rejects a nested component that is not an action", () => {
+    const node = fakeNode({
+      id: "broken",
+      type: "button",
+      props: {
+        action: fakeNode({ id: "card", type: "card", props: {} }),
+        buttonType: "button",
+        label: "Broken",
+      },
+    });
+
+    expect(() => renderActionButton(node)).toThrow(
+      "Clickable action nodes must have type [action] or [action.bulk].",
+    );
+  });
+
   it("confirms before dispatching when the action requires confirmation", async () => {
     const node = actionButton({
       confirmation: {

@@ -10,7 +10,7 @@ export {
 export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
 export { initializeAppearance, updateAppearance, useAppearance } from "./appearance";
-export { copyToClipboard } from "./ui/copyable-text";
+export { copyToClipboard } from "@lattice-php/ui/copyable-text";
 export {
   createLatticeApp,
   type CreateLatticeAppI18nOptions,

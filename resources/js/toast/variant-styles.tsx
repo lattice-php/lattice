@@ -1,4 +1,4 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import type { ReactNode } from "react";
 import type { Variant } from "@lattice-php/lattice/types/generated";
 

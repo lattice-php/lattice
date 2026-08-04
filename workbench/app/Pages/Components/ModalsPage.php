@@ -5,7 +5,6 @@ namespace Workbench\App\Pages\Components;
 
 use Lattice\Lattice\Actions\Components\Action;
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Effects;
 use Lattice\Lattice\Ui\Components\Button;
 use Lattice\Lattice\Ui\Components\Heading;
@@ -16,6 +15,7 @@ use Lattice\Lattice\Ui\Enums\Gap;
 use Lattice\Lattice\Ui\Enums\ModalWidth;
 use Lattice\Lattice\Ui\Enums\Side;
 use Lattice\Lattice\Ui\Enums\StackDirection;
+use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Actions\SubmitFeedbackAction;
 use Workbench\App\Pages\WorkbenchPage;
 

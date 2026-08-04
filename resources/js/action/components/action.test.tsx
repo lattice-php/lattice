@@ -2,8 +2,8 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { IconRendererProvider } from "@lattice-php/lattice/icons";
-import type { IconRendererFunction } from "@lattice-php/lattice/icons";
+import { IconRendererProvider } from "@lattice-php/ui/icons";
+import type { IconRendererFunction } from "@lattice-php/ui/icons";
 import { ActionMenuProvider } from "@lattice-php/lattice/ui/action-menu-context";
 import ActionComponent from "./action";
 

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Forms\Components\Form;
 use Lattice\Lattice\Http\Page;
@@ -15,6 +14,7 @@ use Lattice\Lattice\Ui\Components\Tab;
 use Lattice\Lattice\Ui\Components\Tabs;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Lattice\Ui\PageSchema;
 
 test('lattice facade resolves the registry', function (): void {
     expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class));

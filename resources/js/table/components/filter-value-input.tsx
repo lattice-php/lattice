@@ -1,10 +1,10 @@
-import { Icon } from "@lattice-php/lattice/icons";
+import { Icon } from "@lattice-php/ui/icons";
 import { useEffect, useState } from "react";
-import { IconButton } from "@lattice-php/lattice/ui/icon-button";
-import { Input } from "@lattice-php/lattice/ui/input";
-import { NativeSelect } from "@lattice-php/lattice/ui/native-select";
-import { cn } from "@lattice-php/lattice/lib/utils";
-import { useT } from "@lattice-php/lattice/i18n";
+import { IconButton } from "@lattice-php/ui/icon-button";
+import { Input } from "@lattice-php/ui/input";
+import { NativeSelect } from "@lattice-php/ui/native-select";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { useT } from "@lattice-php/ui/i18n";
 import type { FilterType } from "@lattice-php/lattice/types/generated";
 
 export function FilterValueInput({

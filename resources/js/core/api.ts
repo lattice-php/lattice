@@ -8,7 +8,7 @@
 
 import { latestRef, storeRefreshedRef } from "@lattice-php/core/component-ref";
 import { withHeaders } from "./headers";
-import { localeHeader } from "@lattice-php/lattice/i18n/locale";
+import { localeHeader } from "@lattice-php/ui/i18n/locale";
 import type {
   BrowserToken as GeneratedBrowserToken,
   RemoteAccess as GeneratedRemoteAccess,

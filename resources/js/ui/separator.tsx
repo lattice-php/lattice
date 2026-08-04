@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/core/types";
-import { cn } from "@lattice-php/lattice/lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 
 const SeparatorComponent: RendererComponent<"separator"> = ({ node }) => {
   const horizontal = node.props.orientation === "horizontal";

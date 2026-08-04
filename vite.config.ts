@@ -165,7 +165,10 @@ function stylesheet(): Plugin {
   return {
     name: "lattice:stylesheet",
     generateBundle() {
-      const css = readFileSync(path.join(sourceRoot, "../css/lattice.css"), "utf8");
+      const css = readFileSync(
+        path.resolve(import.meta.dirname, "packages/ui/resources/css/lattice.css"),
+        "utf8",
+      );
 
       this.emitFile({
         type: "asset",
@@ -203,7 +206,7 @@ export default defineConfig(({ mode }) => {
               // Generate an importable IconName union + augment <Icon name>.
               dts: {
                 file: "workbench/resources/js/sprite-icons.ts",
-                augmentModule: "@lattice-php/lattice",
+                augmentModule: "@lattice-php/ui",
                 augmentInterface: "KnownIcons",
               },
             }),
@@ -213,7 +216,7 @@ export default defineConfig(({ mode }) => {
               name: "lattice:icon-enum",
               buildStart() {
                 writePhpEnum([...latticeIcons].sort(), {
-                  file: "src/Ui/Enums/Icon.php",
+                  file: "packages/ui/src/Enums/Icon.php",
                   namespace: "Lattice\\Lattice\\Ui\\Enums",
                   enum: "Icon",
                 });
@@ -236,6 +239,7 @@ export default defineConfig(({ mode }) => {
         ? [
             dts({
               tsconfigPath: path.resolve(import.meta.dirname, "tsconfig.json"),
+              aliasesExclude: [/^@lattice-php\/(?:core|ui)(?:\/|$)/],
               include: ["resources/js"],
               copyDtsFiles: true,
               exclude: [
@@ -291,6 +295,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
+        "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
         "@lattice-php/lattice": sourceRoot,
       },
     },
@@ -336,6 +341,7 @@ export default defineConfig(({ mode }) => {
                 external: [
                   /^node:/,
                   /^@lattice-php\/core($|\/)/,
+                  /^@lattice-php\/ui($|\/)/,
                   /^react($|\/)/,
                   /^react-dom($|\/)/,
                   /^@atlaskit\//,

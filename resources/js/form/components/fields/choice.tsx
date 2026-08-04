@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { Option, RendererComponent } from "@lattice-php/core/types";
-import { SegmentedPills } from "@lattice-php/lattice/ui/segmented-pills";
+import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
 import { FormFieldFrame } from "@lattice-php/lattice/form/components/base/field";
 import { useControlledField } from "@lattice-php/lattice/form/hooks/use-controlled-field";
 import { useResolvedNode } from "@lattice-php/lattice/form/hooks/resolved-nodes";
