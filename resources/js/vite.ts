@@ -202,6 +202,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
               ),
               "@lattice-php/lattice": path.resolve(root, "resources/js"),
               "@lattice-php/core": path.resolve(root, "packages/core/resources/js"),
+              "@lattice-php/form": path.resolve(root, "packages/form/resources/js"),
               "@lattice-php/ui/css": path.resolve(root, "packages/ui/resources/css/lattice.css"),
               "@lattice-php/ui": path.resolve(root, "packages/ui/resources/js"),
             },
@@ -222,6 +223,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
           inline: [
             "@lattice-php/lattice",
             "@lattice-php/core",
+            "@lattice-php/form",
             "@lattice-php/ui",
             /[/\\]lattice[/\\]dist[/\\]/,
             /[/\\]lattice[/\\]node_modules[/\\]@radix-ui[/\\]/,
