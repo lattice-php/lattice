@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.40.0](https://github.com/lattice-php/lattice/compare/0.39.0...0.40.0) (2026-08-05)
+
+
+### Bug Fixes
+
+* ship per-package readmes in the split repos ([14492e0](https://github.com/lattice-php/lattice/commit/14492e017e19951aeee14ded3949da8495c592bc))
+* ship per-package readmes in the split repos ([256a6b1](https://github.com/lattice-php/lattice/commit/256a6b16188956f1dd4ca95624cf3dba7f064f69))
+
 ## [0.39.0](https://github.com/lattice-php/lattice/compare/0.38.0...0.39.0) (2026-08-05)
 
 
