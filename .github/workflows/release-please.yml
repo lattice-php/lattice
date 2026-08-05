@@ -77,6 +77,8 @@ jobs:
             repository: framework
           - directory: packages/table
             repository: table
+          - directory: packages/tree
+            repository: tree
           - directory: packages/ui
             repository: ui
     steps:

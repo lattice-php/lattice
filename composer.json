@@ -28,6 +28,7 @@
         "laravel/reverb": "^1.10",
         "lattice-php/lattice": "@dev",
         "lattice-php/signature-example": "@dev",
+        "lattice-php/tree": "@dev",
         "league/flysystem-aws-s3-v3": "^3.34",
         "orchestra/testbench": "^10.0 || ^11.0",
         "pestphp/pest": "^5.0",
