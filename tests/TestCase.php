@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\LatticeServiceProvider;
 use Lattice\Support\Testing\InteractsWithLatticeComponents;
+use Lattice\Tree\Tree;
+use Lattice\Tree\TreeServiceProvider;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -57,12 +59,22 @@ abstract class TestCase extends BaseTestCase
         $app['config']->set('inertia.testing.ensure_pages_exist', false);
     }
 
+    /**
+     * @param  \Closure(): Tree  $build
+     * @return array<string, mixed>
+     */
+    public function sealTree(\Closure $build): array
+    {
+        return $this->sealLatticeComponent($build);
+    }
+
     /** @return array<int, class-string> */
     protected function getPackageProviders($app): array
     {
         return [
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
+            TreeServiceProvider::class,
             I18NextServiceProvider::class,
             WorkbenchServiceProvider::class,
         ];

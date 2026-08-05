@@ -8,6 +8,7 @@ parameters:
         - packages/core/src
         - packages/form/src
         - packages/framework/src
+        - packages/tree/src
         - packages/ui/src
         - tests
         - workbench/app

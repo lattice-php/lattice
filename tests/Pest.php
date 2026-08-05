@@ -9,6 +9,7 @@ require_once __DIR__.'/Support/Browser.php';
 require_once __DIR__.'/Support/DocsFixtures.php';
 require_once __DIR__.'/Support/Scaffolding.php';
 require_once __DIR__.'/Support/TestFixtures.php';
+require_once __DIR__.'/Support/TreeFixtures.php';
 
 uses(TestCase::class)->in('Feature');
 uses(BrowserTestCase::class)->in('Browser');

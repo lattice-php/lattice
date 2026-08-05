@@ -1,0 +1,36 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/tree",
+    "description": "Hierarchical tree component with lazy loading, keyboard navigation, and drag-and-drop for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/database": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/routing": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "lattice-php/action": "self.version",
+        "lattice-php/core": "self.version",
+        "lattice-php/ui": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Tree\\": "src/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "plugin": "resources/js/plugin.ts",
+            "discover": ["src"]
+        },
+        "laravel": {
+            "providers": [
+                "Lattice\\Tree\\TreeServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

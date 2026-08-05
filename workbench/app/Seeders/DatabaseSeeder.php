@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Factories\GroupFactory;
+use Workbench\App\Models\Category;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\Tag;
@@ -15,6 +16,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $electronics = Category::factory()->create(['name' => 'Electronics']);
+        $laptops = Category::factory()->childOf($electronics)->create(['name' => 'Laptops']);
+        Category::factory()->childOf($laptops)->create(['name' => 'Ultrabooks']);
+        Category::factory()->childOf($electronics)->create(['name' => 'Phones']);
+        $clothing = Category::factory()->create(['name' => 'Clothing']);
+        Category::factory()->childOf($clothing)->create(['name' => 'Men']);
+        Category::factory()->childOf($clothing)->create(['name' => 'Women']);
+        Category::factory()->create(['name' => 'Books']);
+
         UserFactory::new()->create([
             'name' => 'Workbench User',
             'email' => 'workbench@example.com',

@@ -11,6 +11,7 @@ return RectorConfig::configure()
         __DIR__.'/packages/core/src',
         __DIR__.'/packages/form/src',
         __DIR__.'/packages/framework/src',
+        __DIR__.'/packages/tree/src',
         __DIR__.'/packages/ui/src',
         __DIR__.'/tests',
         __DIR__.'/workbench/app',
