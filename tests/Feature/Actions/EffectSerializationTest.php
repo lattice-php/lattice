@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Route;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Actions\Components\ActionGroup;
-use Lattice\Effects\Builtin\Callout;
-use Lattice\Effects\Builtin\Toast;
 use Lattice\Facades\Effects;
-use Lattice\I18n\Values\Translatable;
+use Lattice\Ui\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\Toast;
 use Lattice\Ui\Enums\HttpMethod;
 use Lattice\Ui\Enums\Variant;
+use Lattice\Ui\I18n\Values\Translatable;
 
 test('a toast serializes its lifetime, dismissibility and link', function (): void {
     $wire = wire(Effects::toast(

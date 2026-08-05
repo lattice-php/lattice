@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\BooleanColumn;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Columns\IconColumn;

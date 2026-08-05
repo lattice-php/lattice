@@ -13,7 +13,7 @@ import {
 } from "@lattice-php/core/registry";
 import { setDefaultRegistry } from "@lattice-php/core/registry-context";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
-import { DEFAULT_NAMESPACE, holdI18nInit } from "@lattice-php/ui/i18n/instance";
+import { DEFAULT_NAMESPACE, holdI18nInit, UI_NAMESPACE } from "@lattice-php/ui/i18n/instance";
 import { LocaleReload } from "@lattice-php/ui/i18n/locale-reload";
 import { localeHeader } from "@lattice-php/ui/i18n/locale";
 import { i18nConfigFromPageProps } from "@lattice-php/ui/i18n/shared-props";
@@ -83,12 +83,8 @@ function withPluginNamespaces(
   options: CreateLatticeAppI18nOptions,
   entries: PluginI18n[],
 ): CreateLatticeAppI18nOptions {
-  if (entries.length === 0) {
-    return options;
-  }
-
   const namespaces = new Set([
-    ...(options.namespaces ?? [DEFAULT_NAMESPACE]),
+    ...(options.namespaces ?? [DEFAULT_NAMESPACE, UI_NAMESPACE]),
     ...entries.map((entry) => entry.namespace),
   ]);
 

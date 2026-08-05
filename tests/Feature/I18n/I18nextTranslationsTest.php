@@ -65,6 +65,10 @@ it('serves the bundled English lattice namespace from the package lang dir', fun
         ->assertJsonPath('form.editor.bold', 'Bold')
         ->assertJsonPath('table.pagination.next', 'Next')
         ->assertJsonPath('table.operators.eq', 'equals');
+
+    getJson('/locales/en/lattice-ui.json')
+        ->assertOk()
+        ->assertJsonPath('common.loading', 'Loading');
 });
 
 it('serves the lattice namespace from the package lang dir as nested i18next JSON', function (): void {

@@ -1,4 +1,4 @@
-import { useT } from "./i18n";
+import { UI_NAMESPACE, useT } from "./i18n";
 import { type ReactNode, useState } from "react";
 import { Button } from "./button";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "./dialog";
@@ -22,7 +22,7 @@ export function PreviewableImage({
   className,
   testId,
 }: PreviewableImageProps): ReactNode {
-  const { t } = useT("lattice");
+  const { t } = useT(UI_NAMESPACE);
   const [open, setOpen] = useState(false);
 
   const image = (

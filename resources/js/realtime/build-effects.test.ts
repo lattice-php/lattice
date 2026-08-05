@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { EffectOf } from "@lattice-php/lattice/effects/registry";
+import type { EffectOf } from "@lattice-php/ui/effects/registry";
 import { buildEffects } from "./build-effects";
 
 const t = vi.fn<(key: string, defaultValue?: string, options?: Record<string, unknown>) => string>(

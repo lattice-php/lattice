@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Lattice\Effects\Builtin\Callout;
-use Lattice\Effects\EffectFlasher;
 use Lattice\Facades\Effects;
 use Lattice\Http\LatticeResponse;
+use Lattice\Ui\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\EffectFlasher;
 use Lattice\Ui\Enums\Variant;
 
 beforeEach(function (): void {

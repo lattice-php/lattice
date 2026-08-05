@@ -5,7 +5,7 @@ import { Provider } from "@lattice-php/lattice/provider";
 import { extendRegistry } from "@lattice-php/core/registry";
 import { registry as defaultRegistry } from "@lattice-php/lattice/registry";
 import { effect } from "@lattice-php/lattice/test/effect-fixture";
-import { useEffectDispatcher } from "./use-effect-dispatcher";
+import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 
 describe("custom effect end to end", () => {
   it("a consumer plugin handler receives its effect, built-ins still work", () => {

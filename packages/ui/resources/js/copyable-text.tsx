@@ -1,4 +1,4 @@
-import { useT } from "./i18n";
+import { UI_NAMESPACE, useT } from "./i18n";
 import { type ReactNode, useEffect, useState } from "react";
 import { Button } from "./button";
 import { IconButton } from "./icon-button";
@@ -34,7 +34,7 @@ export function CopyButton({
   iconOnly = false,
   children,
 }: CopyButtonProps): ReactNode {
-  const { t } = useT("lattice");
+  const { t } = useT(UI_NAMESPACE);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {

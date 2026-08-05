@@ -5,7 +5,7 @@ namespace Lattice\Tests\Fixtures\Discovery;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
-use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Enums\HttpMethod;

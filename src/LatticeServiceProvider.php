@@ -35,8 +35,6 @@ use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\LatticeRegistry;
-use Lattice\Effects\EffectFlasher;
-use Lattice\Effects\EffectRegistry;
 use Lattice\Form\FormServiceProvider;
 use Lattice\Fragments\FragmentRegistry;
 use Lattice\Http\Middleware\SetLocale;
@@ -100,8 +98,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(ActionRegistry::class);
         $this->app->singleton(BulkActionRegistry::class);
         $this->app->singleton('lattice.actions.component', fn (): callable => fn (string $actionClass, array $context): Action => Action::use($actionClass, $context));
-        $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
-        $this->app->scoped(EffectFlasher::class);
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);
         $this->app->singleton(StandaloneAssets::class);
@@ -131,13 +127,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
     {
         EncryptCookies::except(['locale', 'appearance']);
 
-        // Serve Lattice's built-in chrome translations under the `lattice`
-        // namespace so consumers get them (and i18next /locales/{lng}/lattice.json)
-        // without copying any files. Each lang group is its own file so the
-        // i18next keys stay un-prefixed (e.g. `editor.bold`, not `lattice.editor.bold`).
-        // Registered on the loader (not loadTranslationsFrom) for the reason
-        // documented on LatticeRegistry::translations(); resolved directly to
-        // keep the registry graph out of the boot path.
         $this->app->make('translation.loader')->addNamespace(self::$name, __DIR__.'/../lang');
 
         $this->callAfterResolving(Kernel::class, function (Kernel $kernel): void {

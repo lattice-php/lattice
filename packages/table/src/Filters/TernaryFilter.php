@@ -35,9 +35,9 @@ final class TernaryFilter extends Filter
     {
         parent::__construct($key);
 
-        $this->trueLabel = __('lattice::common.yes');
-        $this->falseLabel = __('lattice::common.no');
-        $this->placeholder = __('lattice::common.all');
+        $this->trueLabel = __('lattice-ui::common.yes');
+        $this->falseLabel = __('lattice-ui::common.no');
+        $this->placeholder = __('lattice-ui::common.all');
     }
 
     public function trueLabel(string $label): static

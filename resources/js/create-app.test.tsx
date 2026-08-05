@@ -163,7 +163,9 @@ describe("createLatticeApp", () => {
     resolveConfigure();
     await waitFor(() => expect(screen.getByTestId("app")).toBeInTheDocument());
 
-    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {});
+    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
+      namespaces: ["lattice", "lattice-ui"],
+    });
   });
 
   it("passes the configured namespaces to the i18n bootstrap", async () => {
@@ -198,7 +200,7 @@ describe("createLatticeApp", () => {
     await waitFor(() => expect(screen.getByTestId("app")).toBeInTheDocument());
 
     expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
-      namespaces: ["lattice", "tree"],
+      namespaces: ["lattice", "lattice-ui", "tree"],
     });
   });
 
@@ -326,7 +328,9 @@ describe("createLatticeApp", () => {
     expect(screen.getByTestId("app")).toHaveTextContent("hello");
     expect(onRecoverableError).not.toHaveBeenCalled();
     expect(consoleError).not.toHaveBeenCalled();
-    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {});
+    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
+      namespaces: ["lattice", "lattice-ui"],
+    });
 
     resolveConfigure();
     await act(async () => {});

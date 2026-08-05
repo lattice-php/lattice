@@ -50,7 +50,7 @@ class ArchiveProductAction extends ActionDefinition
 | Effect | What it does |
 | --- | --- |
 | `->toast($message, $variant?)` | Show a toast. `$message` first, then an optional `Variant` (`Success` default, or `Error`/`Warning`/`Info`). |
-| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Effects\Builtin\Callout`). |
+| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Ui\Effects\Builtin\Callout`). |
 | `->reloadComponent($id)` | Re-fetch one component — pass a `#[AsTable]`/component id so only it refreshes. |
 | `->reloadPage()` | Reload the current page's props. |
 | `->to($url)` / `->toRoute($name, $params?)` / `->back()` | Navigate to a URL, a named route, or back. |
@@ -67,7 +67,7 @@ return ActionResult::success()->toast('Saved.')->reloadComponent('app.products')
 `Callout::make(string $message, Variant $variant = Variant::Info)` builds a persistent banner. Chain `->title()`, `->dismissible()`, `->link()`, or `->action()` to configure it:
 
 ```php
-use Lattice\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\Callout;
 use Lattice\Ui\Enums\Variant;
 
 return ActionResult::success()
@@ -85,7 +85,7 @@ The callout renders in the layout slot `Callouts::make()` (placed between the he
 `Effects::flash()` (facade `Lattice\Facades\Effects`) delivers any effect(s) with the next Inertia response — no `ActionResult` needed. Use from controllers, listeners, middleware, or anywhere a redirect is returned:
 
 ```php
-use Lattice\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\Callout;
 use Lattice\Facades\Effects;
 use Lattice\Ui\Enums\Variant;
 

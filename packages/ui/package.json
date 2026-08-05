@@ -34,7 +34,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "resources/icons"
   ],
   "publishConfig": {
     "access": "public"
@@ -59,6 +60,7 @@
     "i18next-http-backend": "^4.0.0",
     "input-otp": "^1.4.2",
     "react-colorful": "^5.8.0",
+    "recharts": "^3.8.1",
     "tailwind-merge": "^3.0.1"
   },
   "peerDependencies": {

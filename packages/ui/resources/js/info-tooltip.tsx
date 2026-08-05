@@ -1,9 +1,9 @@
 import { Icon } from "./icons";
-import { useT } from "./i18n";
+import { UI_NAMESPACE, useT } from "./i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export function InfoTooltip({ content }: { content?: string | null }) {
-  const { t } = useT("lattice");
+  const { t } = useT(UI_NAMESPACE);
 
   if (!content) {
     return null;

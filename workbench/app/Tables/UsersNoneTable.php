@@ -5,7 +5,7 @@ namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
-use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Enums\PaginationType;
 use Lattice\Table\TableQuery;
 

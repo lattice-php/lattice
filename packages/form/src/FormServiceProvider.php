@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Lattice\Form;
 
 use Illuminate\Support\ServiceProvider;
-use Lattice\Core\Attributes\AsForm;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\LatticeRegistry;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
 use Lattice\Form\RichEditor\EditorExtension;
 use Lattice\Form\RichEditor\EditorExtensionRegistry;

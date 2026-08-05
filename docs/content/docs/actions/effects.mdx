@@ -74,7 +74,7 @@ Build a `Callout` value object and pass it to `->callout()`:
 
 ```php
 use Lattice\Ui\Enums\Variant;
-use Lattice\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\Callout;
 
 return ActionResult::success()
     ->callout(
@@ -211,7 +211,7 @@ response — no `ActionResult` needed. Use it from a controller, before returnin
 event listener, or in middleware — anywhere outside an action:
 
 ```php
-use Lattice\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\Callout;
 use Lattice\Ui\Enums\Variant;
 use Lattice\Facades\Effects;
 

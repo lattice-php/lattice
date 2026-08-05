@@ -84,6 +84,6 @@ component SSR-safe:
 
 - Don't touch `window`, `document`, or other browser globals during render — move that work into an
   effect, or guard it with `typeof window === "undefined"`.
-- Import `useLayoutEffect` from `@lattice-php/lattice/lib/use-layout-effect` instead of `react`.
+- Import `useLayoutEffect` from `@lattice-php/ui/lib/use-layout-effect` instead of `react`.
   It is the same hook in the browser and substitutes `useEffect` on the server, where React's own
   `useLayoutEffect` warns.

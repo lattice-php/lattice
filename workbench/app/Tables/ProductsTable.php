@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Lattice\Actions\Components\Action;
 use Lattice\Actions\Components\ActionGroup;
 use Lattice\Actions\Components\BulkAction;
-use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\BooleanColumn;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Columns\ImageColumn;

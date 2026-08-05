@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Lattice\Actions\Components\Action;
-use Lattice\Core\Attributes\AsTable;
 use Lattice\Core\Enums\Op;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
 use Lattice\Table\Columns\StackColumn;
 use Lattice\Table\Columns\TextColumn;

@@ -6,11 +6,11 @@ namespace Lattice\Actions;
 use BackedEnum;
 use Lattice\Core\Attributes\TypeScript;
 use Lattice\Core\Support\Wire;
-use Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Facades\Effects;
-use Lattice\I18n\Values\Translatable;
+use Lattice\Ui\Effects\Concerns\QueuesEffects;
 use Lattice\Ui\Effects\Effect;
 use Lattice\Ui\Enums\Variant;
+use Lattice\Ui\I18n\Values\Translatable;
 use Symfony\Component\HttpFoundation\Response;
 
 #[TypeScript]

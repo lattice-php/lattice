@@ -7,8 +7,8 @@ use Lattice\Chat\Enums\ChatRole;
 use Lattice\Core\Option;
 use Lattice\Core\Support\Wire;
 use Lattice\Facades\Effects;
-use Lattice\I18n\Values\Translatable;
 use Lattice\Table\Filters\TernaryFilter;
+use Lattice\Ui\I18n\Values\Translatable;
 
 enum PureWireEnum
 {

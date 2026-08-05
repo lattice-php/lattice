@@ -1,4 +1,5 @@
 export * from "./affix-group";
+export * from "./action-menu-context";
 export * from "./badge";
 export * from "./button";
 export * from "./checkbox";
@@ -7,6 +8,27 @@ export * from "./column-sizing";
 export * from "./combobox";
 export * from "./confirm-dialog";
 export * from "./control";
+export {
+  ActionTrigger,
+  ActionTriggerProvider,
+  useActionTrigger,
+  useClickBehavior,
+} from "./click-behavior";
+export type { ActionTriggerRenderer, ClickBehavior, TriggerState } from "./click-behavior";
+export {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./components/card";
+export { CodeBlock } from "./components/code-block";
+export type {
+  CodeBlockLanguage,
+  CodeBlockLanguageLoader,
+  CodeBlockProps,
+} from "./components/code-block";
 export * from "./copyable-text";
 export * from "./dialog";
 export * from "./dropdown-menu";
@@ -38,6 +60,10 @@ export * from "./effects/dispatch";
 export * from "./effects/registry";
 export * from "./effects/run-action";
 export * from "./effects/use-effect-dispatcher";
+export * from "./effects/use-flash-effects";
+export * from "./format/format-context";
+export * from "./format/value";
+export { uiComponents } from "./plugin";
 export * from "./lib/color";
 export * from "./lib/is-truthy";
 export * from "./lib/listeners";

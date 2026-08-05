@@ -6,7 +6,7 @@ export {
   ActionMenuProvider,
   actionMenuItemClassName,
   useActionMenu,
-} from "@lattice-php/lattice/ui/action-menu-context";
+} from "@lattice-php/ui/action-menu-context";
 export { useAction } from "./hooks/use-action";
 export { runAction } from "./lib/run-action";
 export { actionComponents } from "./plugin";

@@ -6,9 +6,13 @@ export {
   isActionEffect,
   dispatchEffects,
   dispatchActionError,
-} from "./effects/dispatch";
-export { useEffectDispatcher } from "./effects/use-effect-dispatcher";
-export { builtinEffectHandlers, effectHandler, mergeEffectHandlers } from "./effects/registry";
+} from "@lattice-php/ui/effects/dispatch";
+export { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
+export {
+  builtinEffectHandlers,
+  effectHandler,
+  mergeEffectHandlers,
+} from "@lattice-php/ui/effects/registry";
 export { initializeAppearance, updateAppearance, useAppearance } from "./appearance";
 export { copyToClipboard } from "@lattice-php/ui/copyable-text";
 export {
@@ -17,7 +21,7 @@ export {
   type CreateLatticeAppOptions,
 } from "./create-app";
 export { EventBridge } from "./event-bridge";
-export { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "./icons";
+export { Icon, IconRenderer, IconRendererProvider, SpriteProvider } from "@lattice-php/ui/icons";
 export {
   createLayoutResolver,
   createPageResolver,
@@ -56,7 +60,7 @@ export { Renderer } from "@lattice-php/core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "@lattice-php/core/component-ref";
 export { withHeaders } from "@lattice-php/core/headers";
 export { LATTICE_EVENT } from "@lattice-php/core/event-names";
-export type { Emphasis } from "./ui/button";
+export type { Emphasis } from "@lattice-php/ui/button";
 export type { ReloadComponentEvent } from "@lattice-php/core/event-names";
 export type {
   ComponentProps,
@@ -74,11 +78,15 @@ export type {
   RendererComponentProps,
   Schema,
   UnknownComponent,
-} from "./core/types";
+} from "./types";
 export { RealtimeListeners } from "./realtime/listeners";
 export type { ChannelVisibility, DateFormat, Listen, NumberFormat } from "./types/generated";
-export { columnCell } from "./table/registry";
-export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./table/registry";
+export { columnCell } from "@lattice-php/table/registry";
+export type {
+  ColumnCellArgs,
+  ColumnCellComponent,
+  ColumnRegistry,
+} from "@lattice-php/table/registry";
 export type {
   ColumnNode,
   ColumnProps,
@@ -86,16 +94,16 @@ export type {
   FilterNode,
   FilterProps,
   FilterPropsOf,
-} from "./table/types";
+} from "@lattice-php/table/types";
 export type { Method } from "@inertiajs/core";
-export type { ActionEffect, ActionResponse } from "./effects/dispatch";
+export type { ActionEffect, ActionResponse } from "@lattice-php/ui/effects/dispatch";
 export type {
   EffectHandler,
   EffectHandlerRegistry,
   EffectOf,
   EffectProps,
   EffectPropsOf,
-} from "./effects/registry";
+} from "@lattice-php/ui/effects/registry";
 export type {
   EditorExtensionPayloadOf,
   EditorExtensionProps,
@@ -103,7 +111,7 @@ export type {
   ToolbarButton,
   ToolbarControl,
   ToolbarItem,
-} from "./form/rich-editor/registry";
+} from "@lattice-php/form/rich-editor/registry";
 export type { Appearance, ResolvedAppearance, UseAppearanceReturn } from "./appearance";
 export type { Callout, ToastMessage, Variant } from "./toast";
 export type {
@@ -112,4 +120,4 @@ export type {
   IconRendererProps,
   KnownIcons,
   SpriteValue,
-} from "./icons";
+} from "@lattice-php/ui/icons";

@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Core\Attributes\AsForm;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\Repeater;
 use Lattice\Form\Components\Select;

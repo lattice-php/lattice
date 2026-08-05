@@ -1,7 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import { Fragment } from "react";
 import type { RendererComponent } from "@lattice-php/core/types";
-import type { PagePayload } from "@lattice-php/lattice/core/types";
+import type { PagePayload } from "@lattice-php/lattice/types";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import { useT } from "@lattice-php/ui/i18n";
 

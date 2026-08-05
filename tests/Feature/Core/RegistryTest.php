@@ -142,11 +142,11 @@ test('interaction endpoints re-run authorization for every interaction', functio
 use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
 use Lattice\Core\Attributes\AsAction;
-use Lattice\Core\Attributes\AsForm;
 use Lattice\Core\Attributes\AsFragment;
-use Lattice\Core\Attributes\AsTable;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\FormDefinition;
 use Lattice\Fragments\FragmentDefinition;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Contracts\TableSource;

@@ -2,7 +2,7 @@
 import sprite from "virtual:svg-sprite";
 import { Renderer, registry } from "@lattice-php/lattice";
 import { RegistryContext } from "@lattice-php/core";
-import { SpriteProvider } from "@lattice-php/lattice/icons";
+import { SpriteProvider } from "@lattice-php/ui/icons";
 import { FormValuesProvider } from "@lattice-php/form";
 import type { Node } from "@lattice-php/core";
 

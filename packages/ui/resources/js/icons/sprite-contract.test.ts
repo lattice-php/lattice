@@ -7,7 +7,8 @@ import { describe, expect, it } from "vitest";
 // rendering a blank glyph at runtime.
 const repoRoot = resolve(import.meta.dirname, "../../../../..");
 const jsRoot = join(repoRoot, "resources/js");
-const iconsDir = join(repoRoot, "resources/icons");
+const packagesRoot = join(repoRoot, "packages");
+const iconsDir = join(repoRoot, "packages/ui/resources/icons");
 
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir, { recursive: true, encoding: "utf8" })
@@ -25,7 +26,7 @@ describe("sprite contract", () => {
   it("ships an SVG for every icon name internal components reference", () => {
     const referenced = new Set<string>();
 
-    for (const file of sourceFiles(jsRoot)) {
+    for (const file of [...sourceFiles(jsRoot), ...sourceFiles(packagesRoot)]) {
       const source = readFileSync(file, "utf8");
 
       for (const match of source.matchAll(/<Icon\s+name="([a-z0-9-]+)"/g)) {

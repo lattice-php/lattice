@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
-use Lattice\Core\Attributes\AsForm;
 use Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Core\Option;
 use Lattice\EloquentOptions;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\HiddenInput;
 use Lattice\Form\Components\Repeater;

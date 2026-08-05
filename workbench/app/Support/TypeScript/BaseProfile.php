@@ -66,6 +66,9 @@ final readonly class BaseProfile implements TypeScriptProfile
         $tableOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput.'/table'
             : $packageRoot.'/packages/table/resources/js';
+        $uiOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
+            ? $configuredOutput.'/ui'
+            : $packageRoot.'/packages/ui/resources/js';
 
         $manifest = $this->discovery->discover($sources);
 
@@ -175,6 +178,49 @@ final readonly class BaseProfile implements TypeScriptProfile
                     .'import type { ColumnNode, FilterNode } from "./types";'.PHP_EOL.PHP_EOL,
             ),
             $tableOutputDirectory,
+            new OxfmtFormatter,
+        );
+
+        $uiEffects = array_flip($manifest->family('effect'));
+        $uiEnums = array_values(array_filter(
+            $manifest->enums,
+            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Ui\\')
+                || $class === ColorKind::class,
+        ));
+        $uiValueObjects = array_values(array_unique([
+            ...array_filter(
+                $manifest->valueObjects,
+                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Ui\\'),
+            ),
+            ...array_values($uiEffects),
+            Affix::class,
+            Color::class,
+            Option::class,
+        ]));
+        $uiNodes = ['UiNode' => $this->buildBucket($discovered, 'Ui')];
+
+        $generator->generate(
+            $sources,
+            [
+                new HttpMethodTransformer,
+                new EnumTransformer($uiEnums),
+                new ValueObjectTransformer($uiValueObjects, $markerRefs),
+                new ComponentTransformer($this->componentClasses($uiNodes), $markerRefs),
+            ],
+            [
+                new NodesProvider(
+                    [],
+                    null,
+                    $uiNodes,
+                    $this->lattice,
+                    familyProps: ['effect' => $uiEffects],
+                ),
+            ],
+            new NodeModuleWriter(
+                'generated.ts',
+                'import type { Node } from "@lattice-php/core";'.PHP_EOL.PHP_EOL,
+            ),
+            $uiOutputDirectory,
             new OxfmtFormatter,
         );
 

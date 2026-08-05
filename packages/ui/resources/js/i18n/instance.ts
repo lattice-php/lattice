@@ -5,6 +5,7 @@ import { registerDateTimeFormatter } from "./date-time-formatter";
 import { currentLocale, subscribeLocale, useLocale } from "./locale";
 
 export const DEFAULT_NAMESPACE = "lattice";
+export const UI_NAMESPACE = "lattice-ui";
 
 type TranslationFunction = (
   key: string,

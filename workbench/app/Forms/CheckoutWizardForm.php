@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
-use Lattice\Core\Attributes\AsForm;
 use Lattice\Facades\Effects;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\Repeater;
 use Lattice\Form\Components\TextInput;

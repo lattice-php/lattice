@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Core\Attributes\AsTable;
 use Lattice\Core\Contracts\OptionSource;
 use Lattice\Core\Enums\Op;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\ColumnFilterOption;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Components\Table;

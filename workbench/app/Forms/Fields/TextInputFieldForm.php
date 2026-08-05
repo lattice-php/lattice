@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Forms\Fields;
 
 use Illuminate\Http\Request;
-use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormDefinition;

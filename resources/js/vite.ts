@@ -341,7 +341,7 @@ export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOption
 
   return {
     ...spriteOptions,
-    iconDirs: [path.resolve(root, "resources/icons"), ...dirs],
+    iconDirs: [path.resolve(root, "../ui/resources/icons"), ...dirs],
     ...(dts === false ? {} : { dts: { ...defaultTypes, ...dts } }),
   };
 }

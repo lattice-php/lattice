@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Lattice\Table;
 
 use Illuminate\Http\Request;
-use Lattice\Core\Attributes\AsTable;
 use Lattice\Core\Attributes\DefinitionAttribute;
 use Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Core\DefinitionRegistry;
@@ -13,6 +12,7 @@ use Lattice\Core\Option;
 use Lattice\Form\Components\Select;
 use Lattice\Form\FormData;
 use Lattice\Form\FormSchemaWalker;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Components\Table as TableComponent;
 use Lattice\Table\Contracts\Filterable;

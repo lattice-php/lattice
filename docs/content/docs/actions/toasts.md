@@ -50,7 +50,7 @@ Both paths accept a `Toast` effect. Build one explicitly to set a lifetime, cont
 dismissal, or attach an action, then pass it to `->toast()` (or `Effects::toast()`):
 
 ```php
-use Lattice\Effects\Builtin\Toast;
+use Lattice\Ui\Effects\Builtin\Toast;
 
 return ActionResult::success()->toast(
     Toast::make('Product archived.', Variant::Success)

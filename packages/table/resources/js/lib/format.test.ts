@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ColumnNode, ColumnPropsOf, TableRow } from "@lattice-php/lattice/table/types";
+import type { ColumnNode, ColumnPropsOf, TableRow } from "@lattice-php/table/types";
 import { formatCell, resolveLink } from "./format";
 
 function textColumn(props: Partial<ColumnPropsOf<"column.text">> = {}): ColumnNode<"column.text"> {

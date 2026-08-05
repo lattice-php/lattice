@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
 use Lattice\Http\I18nConfig;
-use Lattice\I18n\Contracts\HasTimezonePreference;
+use Lattice\Ui\I18n\Contracts\HasTimezonePreference;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SetLocale
