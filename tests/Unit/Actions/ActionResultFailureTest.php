@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Actions\ActionResult;
+use Lattice\Actions\ActionResult;
 
 test('success results carry a 200 status and no effects', function (): void {
     $result = ActionResult::success();

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Support\TypeScript;
 
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpPropertyNode;

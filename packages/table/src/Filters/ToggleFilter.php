@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Filters;
+namespace Lattice\Table\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Facades\Evaluate;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Attributes\AsFilter;
-use Lattice\Lattice\Tables\Enums\FilterControl;
+use Lattice\Facades\Evaluate;
+use Lattice\Form\FormData;
+use Lattice\Table\Attributes\AsFilter;
+use Lattice\Table\Enums\FilterControl;
 
 /**
  * A simple on/off filter. Add a schema to a custom Filter subclass when the

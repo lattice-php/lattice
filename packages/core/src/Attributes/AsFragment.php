@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Attributes;
+namespace Lattice\Core\Attributes;
 
 use Attribute;
 

@@ -65,9 +65,9 @@ reusable row schema for each one. Configure the source, the audience it is for, 
 and the remote service's data endpoint:
 
 ```php
-use Lattice\Lattice\Remote\Components\DataList;
-use Lattice\Lattice\Ui\Components\Card;
-use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Remote\Components\DataList;
+use Lattice\Ui\Components\Card;
+use Lattice\Ui\Components\Text;
 
 DataList::make('todos')
     ->source('workbench.todos')
@@ -97,7 +97,7 @@ A chat box can also read from a remote source. There is **no** `remote.chat-box`
 `source()`/`audience()` on it:
 
 ```php
-use Lattice\Lattice\Chat\Components\ChatBox;
+use Lattice\Chat\Components\ChatBox;
 
 ChatBox::make('assistant')
     ->source('workbench.todos')
@@ -116,9 +116,9 @@ request:
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Remote\BrowserToken;
-use Lattice\Lattice\Remote\RemoteSourceDefinition;
+use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Remote\BrowserToken;
+use Lattice\Remote\RemoteSourceDefinition;
 
 #[AsRemoteSource('workbench.todos')]
 final class TodoSource extends RemoteSourceDefinition
@@ -140,7 +140,7 @@ Sources are [discovered](/introduction/configuration/#discovery) like every othe
 can register them explicitly:
 
 ```php
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Facades\Lattice;
 
 Lattice::remoteSources([\App\Remote\TodoSource::class]);
 
@@ -162,7 +162,7 @@ A source can also hand the consumer an entire **schema manifest** to render, not
 nodes from `schema()`:
 
 ```php
-use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
+use Lattice\Remote\RemoteSchemaEndpoint;
 
 public function schemaEndpoint(Request $request): RemoteSchemaEndpoint
 {

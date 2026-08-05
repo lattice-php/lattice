@@ -4,15 +4,15 @@ declare(strict_types=1);
 namespace Workbench\App\Actions;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Ui\Components\Link;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Concerns\ResolvesContextModels;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Ui\Components\Link;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
 
 #[AsAction('workbench.products.archive')]

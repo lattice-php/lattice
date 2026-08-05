@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers;
+namespace Lattice\Http\Controllers;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Forms\FormRegistry;
-use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
-use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
+use Lattice\Core\Concerns\InteractsWithComponents;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Form\FormRegistry;
+use Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
+use Lattice\Http\Controllers\Concerns\HandlesPrecognition;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class FormController

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Columns\BadgeColumn;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Columns\BadgeColumn;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Enums\ColumnType;
+use Lattice\Tests\Fixtures\TypeScript\SampleColumn;
 
 it('hydrates a built-in column type from the #[AsColumn] enum', function (): void {
     expect(BadgeColumn::make('status')->jsonSerialize()['type'])->toBe('column.badge');

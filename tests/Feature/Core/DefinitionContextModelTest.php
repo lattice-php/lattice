@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Http\Page;
-use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchContextModelAction;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Concerns\ResolvesContextModels;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Http\Page;
+use Lattice\Tests\Fixtures\Workbench\WorkbenchContextModelAction;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Models\Product;
 
 use function Pest\Laravel\get;

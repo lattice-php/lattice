@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Table\Enums\PaginationType;
 
 /**
  * The table's pagination metadata as a single, closed wire shape: every producer

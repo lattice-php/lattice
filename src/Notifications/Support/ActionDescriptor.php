@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Notifications\Support;
+namespace Lattice\Notifications\Support;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Link;
+use Lattice\Actions\Components\Action;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Link;
 
 final class ActionDescriptor
 {

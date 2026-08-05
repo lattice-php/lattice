@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components\Concerns;
+namespace Lattice\Ui\Components\Concerns;
 
 trait HasDataBindings
 {

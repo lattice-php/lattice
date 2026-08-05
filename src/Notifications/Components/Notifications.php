@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Notifications\Components;
+namespace Lattice\Notifications\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Notifications\NotificationChannel;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Notifications\NotificationChannel;
+use Lattice\Ui\Components\Component;
 
 #[AsComponent('notifications')]
 class Notifications extends Component

@@ -3,19 +3,19 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages\Components;
 
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Modal;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\ModalWidth;
-use Lattice\Lattice\Ui\Enums\Side;
-use Lattice\Lattice\Ui\Enums\StackDirection;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Facades\Effects;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Modal;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\ModalWidth;
+use Lattice\Ui\Enums\Side;
+use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Actions\SubmitFeedbackAction;
 use Workbench\App\Pages\WorkbenchPage;
 

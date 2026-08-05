@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Enums;
+namespace Lattice\Ui\Enums;
 
 enum HttpMethod: string
 {

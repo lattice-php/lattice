@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
 use InvalidArgumentException;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\WireEnvelope;
-use Lattice\Lattice\Core\Contracts\CanBeHidden;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Concerns\HasDataBindings;
-use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
-use Lattice\Lattice\Ui\Concerns\GatesRendering;
-use Lattice\Lattice\Ui\Contracts\Renderable;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
-use Lattice\Lattice\Ui\Enums\Breakpoint;
+use Lattice\Core\Attributes\WireEnvelope;
+use Lattice\Core\Contracts\CanBeHidden;
+use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Concerns\HasDataBindings;
+use Lattice\Ui\Components\Concerns\SerializesWireNode;
+use Lattice\Ui\Concerns\GatesRendering;
+use Lattice\Ui\Contracts\Renderable;
+use Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Ui\Enums\Breakpoint;
 
 /**
  * @phpstan-consistent-constructor

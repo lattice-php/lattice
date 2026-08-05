@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing;
+namespace Lattice\Support\Testing;
 
 use Pest\Browser\Playwright\Playwright;
 

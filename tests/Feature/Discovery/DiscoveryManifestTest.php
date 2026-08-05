@@ -3,23 +3,23 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Attributes\AsLayout;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\LatticeServiceProvider;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
-use Lattice\Lattice\Tables\Columns\BadgeColumn;
-use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredEmbeddedPage;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Attributes\AsBulkAction;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Core\Attributes\AsLayout;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Core\Discovery\DiscoveryKinds;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Support\Discovery\ClassWalker;
+use Lattice\LatticeServiceProvider;
+use Lattice\Table\Columns\BadgeColumn;
+use Lattice\Table\Enums\ColumnType;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredEmbeddedPage;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 
 test('the service provider registers every built-in component group', function (): void {
     expect(DiscoveryKinds::components())->toMatchArray([
@@ -80,7 +80,7 @@ test('the manifest round-trips through the cached file', function (): void {
     }
 });
 
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
+use Lattice\Form\Components\Form as FormComponent;
 
 test('registries resolve discovered definitions from the manifest', function (): void {
     discoverFixtures();

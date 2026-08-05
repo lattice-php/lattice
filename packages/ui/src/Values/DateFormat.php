@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Values;
+namespace Lattice\Ui\Values;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Ui\Enums\DateTimeStyle;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Ui\Enums\DateTimeStyle;
 
 #[TypeScript]
 final class DateFormat

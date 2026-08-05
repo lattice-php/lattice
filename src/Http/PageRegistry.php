@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Http;
 
-use Lattice\Lattice\Core\Contracts\PageContract;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Core\PageMetadata;
-use Lattice\Lattice\Core\PageMetadataResolver;
+use Lattice\Core\Contracts\PageContract;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\PageMetadata;
+use Lattice\Core\PageMetadataResolver;
 use ReflectionClass;
 
 final class PageRegistry

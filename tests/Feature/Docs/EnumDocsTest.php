@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Ui\Enums\Icon;
 
 /**
  * The enums reference page renders its case lists from this generated file
@@ -15,11 +15,11 @@ function generateEnumReference(): array
 {
     $root = dirname(__DIR__, 3);
     $sources = [
-        [$root.'/src', 'Lattice\\Lattice\\', '*/Enums/*.php'],
-        [$root.'/packages/core/src', 'Lattice\\Lattice\\', '*/Enums/*.php'],
-        [$root.'/packages/form/src', 'Lattice\\Lattice\\Forms\\', 'Enums/*.php'],
-        [$root.'/packages/table/src', 'Lattice\\Lattice\\Tables\\', 'Enums/*.php'],
-        [$root.'/packages/ui/src', 'Lattice\\Lattice\\Ui\\', 'Enums/*.php'],
+        [$root.'/src', 'Lattice\\', '*/Enums/*.php'],
+        [$root.'/packages/core/src', 'Lattice\\Core\\', 'Enums/*.php'],
+        [$root.'/packages/form/src', 'Lattice\\Form\\', 'Enums/*.php'],
+        [$root.'/packages/table/src', 'Lattice\\Table\\', 'Enums/*.php'],
+        [$root.'/packages/ui/src', 'Lattice\\Ui\\', 'Enums/*.php'],
     ];
 
     $enums = [];

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchContextAction;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Tests\Fixtures\Workbench\WorkbenchContextAction;
 
 beforeEach(function (): void {
     Lattice::actions([WorkbenchContextAction::class]);

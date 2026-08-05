@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Tables\Columns\BooleanColumn;
-use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
-use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Core\Enums\Op;
+use Lattice\Table\Columns\BooleanColumn;
+use Lattice\Table\Columns\ColumnFilterOption;
+use Lattice\Table\Columns\TextColumn;
 
 enum ColumnFilterStatus: string
 {

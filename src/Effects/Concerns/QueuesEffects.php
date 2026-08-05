@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Effects\Concerns;
+namespace Lattice\Effects\Concerns;
 
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Facades\Effects;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Enums\Variant;
 
 trait QueuesEffects
 {

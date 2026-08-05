@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Notifications\Notification;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Notifications\Notification;
 use Workbench\App\Actions\MarkNotificationSeenAction;
 
 use function Pest\Laravel\actingAs;

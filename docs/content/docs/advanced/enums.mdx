@@ -14,7 +14,7 @@ behind the code.
 
 ## Layout & spacing
 
-`Lattice\Lattice\Ui\Enums` — the vocabulary for arranging components, used by `Stack` and the other
+`Lattice\Ui\Enums` — the vocabulary for arranging components, used by `Stack` and the other
 layout primitives.
 
 <EnumTable
@@ -38,31 +38,31 @@ layout primitives.
 
 ## Pages
 
-`Lattice\Lattice\Ui\Enums` — how a [page](/core/pages/) frames itself and which
+`Lattice\Core\Enums` — how a [page](/core/pages/) frames itself and which
 [layout](/core/layouts/) it renders into.
 
 <EnumTable enums={["PageLayout", "PageContainer"]} />
 
 ## Text & sizing
 
-Sizing lives in `Lattice\Lattice\Ui\Enums`; the color vocabulary lives in
-`Lattice\Lattice\Core\Enums` and backs the `Color` value object.
+Sizing lives in `Lattice\Ui\Enums`; the color vocabulary lives in
+`Lattice\Core\Enums` and backs the `Color` value object.
 
 <EnumTable enums={["Size", "ColorName", "ColorKind"]} showNamespace />
 
-The icon names a `Lattice\Lattice\Ui\Enums\Icon` accepts are the enum's own cases — one per bundled
+The icon names a `Lattice\Ui\Enums\Icon` accepts are the enum's own cases — one per bundled
 SVG. The [Icons](/core/icons/) page covers where they come from and how to add your own.
 
 ## Code blocks
 
-`Lattice\Lattice\Ui\Enums\CodeBlockLanguage` — the built-in syntax languages accepted by a
+`Lattice\Ui\Enums\CodeBlockLanguage` — the built-in syntax languages accepted by a
 `CodeBlock` component.
 
 <EnumTable enums={["CodeBlockLanguage"]} />
 
 ## Buttons & feedback
 
-`Lattice\Lattice\Ui\Enums`
+`Lattice\Ui\Enums`
 
 <EnumTable enums={["Variant", "Emphasis", "ButtonType"]} />
 
@@ -70,20 +70,20 @@ SVG. The [Icons](/core/icons/) page covers where they come from and how to add y
 
 ## HTTP
 
-`Lattice\Lattice\Ui\Enums\HttpMethod` — the request method used by links, forms, and actions.
+`Lattice\Ui\Enums\HttpMethod` — the request method used by links, forms, and actions.
 
 <EnumTable enums={["HttpMethod"]} />
 
 ## Operators
 
-`Lattice\Lattice\Core\Enums\Op` — the shared comparison vocabulary used by both
+`Lattice\Core\Enums\Op` — the shared comparison vocabulary used by both
 [form conditions](/forms/conditional-fields/#operators) and [table filters](/tables/filtering/).
 
 <EnumTable enums={["Op"]} />
 
 ## Tables
 
-`Lattice\Lattice\Tables\Enums` — column types, alignment, width, filtering, and pagination for
+`Lattice\Table\Enums` — column types, alignment, width, filtering, and pagination for
 [tables](/tables/overview/).
 
 <EnumTable
@@ -106,32 +106,32 @@ fields, plus the field-type vocabulary.
 
 ## Formatting
 
-`Lattice\Lattice\Ui\Enums` — date/time and number formatting options shared by UI components and
+`Lattice\Ui\Enums` — date/time and number formatting options shared by UI components and
 tables.
 
 <EnumTable enums={["DateTimeStyle", "NumberFormatUnit"]} />
 
 ## Charts
 
-`Lattice\Lattice\Ui\Enums` — the series shapes a `Chart` component can render.
+`Lattice\Ui\Enums` — the series shapes a `Chart` component can render.
 
 <EnumTable enums={["ChartSeriesType"]} />
 
 ## Progress
 
-`Lattice\Lattice\Ui\Enums` — the bar and circle variants of the
+`Lattice\Ui\Enums` — the bar and circle variants of the
 [progress component](/components/progress/).
 
 <EnumTable enums={["ProgressShape"]} />
 
 ## Chat
 
-`Lattice\Lattice\Chat\Enums` — the message roles and part kinds used by the chat components.
+`Lattice\Chat\Enums` — the message roles and part kinds used by the chat components.
 
 <EnumTable enums={["ChatRole", "ChatPartType"]} />
 
 ## Realtime
 
-`Lattice\Lattice\Realtime\Enums` — the broadcast channel visibility a page listener subscribes to.
+`Lattice\Realtime\Enums` — the broadcast channel visibility a page listener subscribes to.
 
 <EnumTable enums={["ChannelVisibility"]} />

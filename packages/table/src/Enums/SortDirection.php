@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Enums;
+namespace Lattice\Table\Enums;
 
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 #[TypeScript]
 enum SortDirection: string

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Tables\Enums\SortDirection;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Table\Enums\SortDirection;
 
 #[TypeScript]
 final readonly class TableSort

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns;
+namespace Lattice\Table\Columns;
 
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Enums\ColumnType;
+use Lattice\Ui\Enums\NumberFormatUnit;
 
 #[AsColumn(ColumnType::Number)]
 final class NumberColumn extends NumericColumn

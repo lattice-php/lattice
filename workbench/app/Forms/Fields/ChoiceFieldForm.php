@@ -5,10 +5,10 @@ namespace Workbench\App\Forms\Fields;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\Choice;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('workbench.fields.choice.form')]

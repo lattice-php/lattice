@@ -4,13 +4,13 @@ declare(strict_types=1);
 namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Tables\Columns\BooleanColumn;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\IconColumn;
-use Lattice\Lattice\Tables\Columns\ImageColumn;
-use Lattice\Lattice\Tables\Columns\StackColumn;
-use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Columns\BooleanColumn;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Columns\IconColumn;
+use Lattice\Table\Columns\ImageColumn;
+use Lattice\Table\Columns\StackColumn;
+use Lattice\Ui\Components\Text;
 use Workbench\App\Models\Product;
 
 #[AsTable('workbench.demo.visual-columns')]

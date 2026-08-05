@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\RichEditor;
+namespace Lattice\Form\RichEditor;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Lattice\Lattice\Forms\RichContent;
+use Lattice\Form\RichContent;
 
 /**
  * Decodes a submitted rich-editor document and runs each active extension's

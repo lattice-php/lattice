@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Workbench\App\Fragments;
 
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\SalesOrderLine;
 

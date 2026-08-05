@@ -2,15 +2,15 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\Components\Wizard;
-use Lattice\Lattice\Forms\Components\WizardStep;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Ui\Components\Section;
-use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\Components\Wizard;
+use Lattice\Form\Components\WizardStep;
+use Lattice\Form\FormDefinition;
+use Lattice\Ui\Components\Section;
+use Lattice\Ui\Components\Text;
 use Symfony\Component\HttpFoundation\Response;
 
 test('wizard steps serialize their identity and default the label from the name', function (): void {

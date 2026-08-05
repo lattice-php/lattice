@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Ui\Enums\ModalWidth;
-use Lattice\Lattice\Ui\Enums\Side;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Ui\Enums\ModalWidth;
+use Lattice\Ui\Enums\Side;
 
 #[AsComponent('modal')]
 class Modal extends ContainerComponent implements InteractiveComponent

@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Workbench\App\Remote;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Remote\BrowserToken;
-use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
-use Lattice\Lattice\Remote\RemoteSourceDefinition;
+use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Remote\BrowserToken;
+use Lattice\Remote\RemoteSchemaEndpoint;
+use Lattice\Remote\RemoteSourceDefinition;
 
 #[AsRemoteSource('workbench.todos')]
 final class WorkbenchTodoSource extends RemoteSourceDefinition

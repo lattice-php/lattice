@@ -24,7 +24,7 @@ The cached discovery manifest (`php artisan lattice:discover-cache`) is written 
 Instead of (or in addition to) discovery, register definition classes at runtime through the `Lattice` facade — useful from a service provider:
 
 ```php
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Facades\Lattice;
 
 Lattice::forms([\App\Forms\ContactForm::class]);
 Lattice::tables([\App\Tables\UsersTable::class]);

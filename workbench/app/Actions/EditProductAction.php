@@ -5,16 +5,16 @@ namespace Workbench\App\Actions;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Forms\Components\FileUpload;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action;
+use Lattice\Actions\FormActionDefinition;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Concerns\ResolvesContextModels;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Form\Components\FileUpload;
+use Lattice\Form\Components\Form;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\Enums\Variant;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 

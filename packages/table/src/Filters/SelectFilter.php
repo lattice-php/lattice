@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Filters;
+namespace Lattice\Table\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Attributes\AsFilter;
-use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
-use Lattice\Lattice\Tables\Enums\FilterControl;
-use Lattice\Lattice\Ui\Concerns\HasOptions;
-use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
+use Lattice\Core\Contracts\OptionSource;
+use Lattice\Core\Option;
+use Lattice\Form\Components\Select;
+use Lattice\Form\FormData;
+use Lattice\Table\Attributes\AsFilter;
+use Lattice\Table\Concerns\ResolvesFilterOptions;
+use Lattice\Table\Enums\FilterControl;
+use Lattice\Ui\Concerns\HasOptions;
+use Lattice\Ui\Concerns\HasPlaceholder;
 
 /**
  * A dropdown filter. Single by default ({@see Builder::where}); `multiple()`

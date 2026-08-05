@@ -1,23 +1,23 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Remote\Components\DataList;
-use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
-use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleColumn;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedA;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedB;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleEditorExtension;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
-use Lattice\Lattice\Tests\Fixtures\TypeScript\Unloadable\LoadableSibling;
-use Lattice\Lattice\Ui\Components\Card;
-use Lattice\Lattice\Ui\Enums\Align;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Option;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Remote\Components\DataList;
+use Lattice\Support\TypeScript\DiscoveredComponent;
+use Lattice\Support\TypeScript\WireTypeDiscovery;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Tests\Fixtures\TypeScript\SampleColumn;
+use Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedA;
+use Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedB;
+use Lattice\Tests\Fixtures\TypeScript\SampleEditorExtension;
+use Lattice\Tests\Fixtures\TypeScript\SampleUnattributed;
+use Lattice\Tests\Fixtures\TypeScript\Unloadable\LoadableSibling;
+use Lattice\Ui\Components\Card;
+use Lattice\Ui\Enums\Align;
+use Lattice\Ui\Enums\Variant;
 use Spatie\Attributes\Attributes;
 
 it('classifies the src tree into enums, value objects, components and effects', function (): void {

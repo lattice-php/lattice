@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\PasswordInput;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\PasswordInput;
 
 describe('docs fixtures', function (): void {
     it('matches the password input examples fixture', function (): void {

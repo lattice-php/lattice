@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions\Components;
+namespace Lattice\Actions\Components;
 
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionRegistry;
-use Lattice\Lattice\Actions\Confirmation;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\IsInteractive;
-use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
-use Lattice\Lattice\Ui\Concerns\HasHttpMethod;
-use Lattice\Lattice\Ui\Concerns\HasIcon;
-use Lattice\Lattice\Ui\Concerns\HasLabel;
-use Lattice\Lattice\Ui\Concerns\HasVariant;
-use Lattice\Lattice\Ui\Enums\ModalWidth;
-use Lattice\Lattice\Ui\Enums\Side;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionRegistry;
+use Lattice\Actions\Confirmation;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Form\Components\Field;
+use Lattice\Form\Components\Form;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\IsInteractive;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Ui\Concerns\HasHttpMethod;
+use Lattice\Ui\Concerns\HasIcon;
+use Lattice\Ui\Concerns\HasLabel;
+use Lattice\Ui\Concerns\HasVariant;
+use Lattice\Ui\Enums\ModalWidth;
+use Lattice\Ui\Enums\Side;
 
 #[AsComponent('action')]
 class Action extends Component implements InteractiveComponent

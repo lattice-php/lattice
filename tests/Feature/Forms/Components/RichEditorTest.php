@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\RichEditor;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Details;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Heading;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Italic;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Link;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Table;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\RichEditor;
+use Lattice\Form\RichEditor\Extensions\Bold;
+use Lattice\Form\RichEditor\Extensions\Details;
+use Lattice\Form\RichEditor\Extensions\Heading;
+use Lattice\Form\RichEditor\Extensions\Italic;
+use Lattice\Form\RichEditor\Extensions\Link;
+use Lattice\Form\RichEditor\Extensions\Table;
 
 afterEach(function (): void {
     RichEditor::defaultExtensionsUsing(null);

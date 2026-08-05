@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\PasswordInput;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\PasswordInput;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Justify;
 
 test('forms serialize schema children like pages', function (): void {
     expect(wire(Form::make('profile-form')->schema([

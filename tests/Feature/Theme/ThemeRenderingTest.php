@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Blade;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Theme\Theme;
-use Lattice\Lattice\Theme\ThemeRenderer;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Theme\Theme;
+use Lattice\Theme\ThemeRenderer;
 
 it('renders nothing when no theme is registered', function (): void {
     expect(new ThemeRenderer()->style())->toBe('');

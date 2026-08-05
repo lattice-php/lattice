@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\Artisan;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\Discovery\DiscoveryManifest;
 
 afterEach(function (): void {
     app(DiscoveryManifest::class)->clear();

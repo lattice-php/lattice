@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Toggle;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Toggle;
 
 it('serializes the shared focus options', function (): void {
     $node = wire(Toggle::make('published', 'Published')->autoFocus()->tabIndex(3));

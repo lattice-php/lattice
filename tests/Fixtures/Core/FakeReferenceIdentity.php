@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Core;
+namespace Lattice\Tests\Fixtures\Core;
 
-use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
-use Lattice\Lattice\Core\Values\ReferenceIdentity;
+use Lattice\Core\Contracts\ResolvesReferenceIdentity;
+use Lattice\Core\Values\ReferenceIdentity;
 
 /**
  * A mutable, in-memory reference identity for tests: bind it and reassign

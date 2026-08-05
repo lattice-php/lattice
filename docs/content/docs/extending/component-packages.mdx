@@ -36,8 +36,8 @@ php artisan lattice:component Signature --package=packages/acme-signature
 **2. The PHP component, carrying its wire `type`:**
 
 ```php
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\Component;
 
 #[AsComponent('signature')]
 final class Signature extends Component
@@ -199,7 +199,7 @@ const Signature: RendererComponent<"signature"> = ({ node }) => {
 `createLatticeApp` merges every plugin's namespace into the [i18n bootstrap](/core/i18n/), so when the app enables the translation backend the namespace loads from `/locales/{lng}/acme-signature.json` like any other — serve the package's lang files by registering them in the package's service provider:
 
 ```php
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Facades\Lattice;
 
 Lattice::translations('acme-signature', __DIR__.'/../lang');
 ```
@@ -237,14 +237,14 @@ the dependency and republishes it under its export map, the same way core owns i
 
 ## Testing the package
 
-Extend `Lattice\Lattice\Support\Testing\PackageTestCase` instead of hand-writing a Testbench
+Extend `Lattice\Support\Testing\PackageTestCase` instead of hand-writing a Testbench
 `TestCase`: it boots Inertia and Lattice around the package's own providers on an in-memory sqlite
 app, applies the package's config overrides before boot, pulls in the
 [Lattice component assertions](/testing/overview/), and wires the conventional `workbench/` view and
 migration paths when they exist:
 
 ```php
-use Lattice\Lattice\Support\Testing\PackageTestCase;
+use Lattice\Support\Testing\PackageTestCase;
 
 abstract class TestCase extends PackageTestCase
 {

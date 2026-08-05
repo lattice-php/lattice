@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 
 it('serializes declarative conditions into props', function (): void {
     $props = wire(TextInput::make('company', 'Company')

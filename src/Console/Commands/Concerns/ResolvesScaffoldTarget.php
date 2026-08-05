@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Console\Commands\Concerns;
+namespace Lattice\Console\Commands\Concerns;
 
 trait ResolvesScaffoldTarget
 {

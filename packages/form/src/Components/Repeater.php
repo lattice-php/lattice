@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Closure;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Contracts\ContainerComponent;
-use Lattice\Lattice\Facades\Evaluate;
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Components\Concerns\HasRowActions;
-use Lattice\Lattice\Forms\Components\Concerns\HasRowLayout;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
+use Lattice\Core\Contracts\ContainerComponent;
+use Lattice\Facades\Evaluate;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Components\Concerns\HasRowActions;
+use Lattice\Form\Components\Concerns\HasRowLayout;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Form\FormData;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Concerns\HasChildSchema;
 use Stringable;
 
 #[AsField(FieldType::Repeater)]

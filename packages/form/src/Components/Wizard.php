@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
-use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Enums\Orientation;
 use LogicException;
 
 #[AsComponent('wizard')]

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components\Concerns;
+namespace Lattice\Ui\Components\Concerns;
 
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Core\Contracts\SignsComponentReferences;
 use LogicException;
 
 /**

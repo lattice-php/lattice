@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Theme\Theme;
+use Lattice\Theme\Theme;
 
 it('defines every builder colour token in both stylesheet scopes', function (): void {
     $css = file_get_contents(dirname(__DIR__, 3).'/packages/ui/resources/css/lattice.css');

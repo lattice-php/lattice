@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Http\Page;
-use Lattice\Lattice\Realtime\Listen;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Http\Page;
+use Lattice\Realtime\Listen;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
 
 test('pages serialize declared listeners when realtime is enabled', function (): void {
     config()->set('lattice.realtime.enabled', true);

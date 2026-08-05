@@ -26,8 +26,8 @@ To show a toast after a controller redirect, from a listener, middleware, or any
 is not available, use `Effects::flash()`:
 
 ```php
-use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Facades\Effects;
+use Lattice\Ui\Enums\Variant;
+use Lattice\Facades\Effects;
 
 public function handle(Request $request): Response
 {
@@ -50,7 +50,7 @@ Both paths accept a `Toast` effect. Build one explicitly to set a lifetime, cont
 dismissal, or attach an action, then pass it to `->toast()` (or `Effects::toast()`):
 
 ```php
-use Lattice\Lattice\Effects\Builtin\Toast;
+use Lattice\Effects\Builtin\Toast;
 
 return ActionResult::success()->toast(
     Toast::make('Product archived.', Variant::Success)

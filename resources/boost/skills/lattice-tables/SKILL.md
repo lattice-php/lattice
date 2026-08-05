@@ -13,11 +13,11 @@ For a database-backed table, extend `EloquentTableDefinition` and implement `col
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Tables\Columns\NumberColumn;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Columns\NumberColumn;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Table\TableQuery;
 
 /** @extends EloquentTableDefinition<Product> */
 #[AsTable('app.products')]
@@ -45,7 +45,7 @@ class ProductsTable extends EloquentTableDefinition
 
 ## Columns
 
-Columns live in `Lattice\Lattice\Tables\Columns`. `Column::make('key')` reads `$row['key']`; the label defaults to the humanized key (override with `->label()`).
+Columns live in `Lattice\Table\Columns`. `Column::make('key')` reads `$row['key']`; the label defaults to the humanized key (override with `->label()`).
 
 - **`TextColumn`** — `->date()`, `->time()`, `->dateTime()` (style: `full|long|medium|short`, e.g. `->dateTime(DateTimeStyle::Short)`), `->copyable()`, `->link('/products/{value}')` (`{value}` is substituted; pass `external: true` for outbound).
 - **`NumberColumn`** — right-aligns and formats the value as a number; `->decimals(2)` fixes fraction digits (`->decimals(0, 2)` for a range); `->unit(NumberFormatUnit::Percent)` adds a locale-correct unit (percent, kilogram, byte, …). Filters as a number.
@@ -90,8 +90,8 @@ A table only *attaches* actions and their context; the action classes themselves
 - **Row actions** — return components from `actions(array $row)`: `Action::use(...)->context([...])` scoped to the record, plus plain `Link::make()->href(...)`.
 
   ```php
-  use Lattice\Lattice\Actions\Components\Action;
-  use Lattice\Lattice\Ui\Components\Link;
+  use Lattice\Actions\Components\Action;
+  use Lattice\Ui\Components\Link;
 
   public function actions(array $row): array
   {
@@ -105,7 +105,7 @@ A table only *attaches* actions and their context; the action classes themselves
 - **Bulk actions** — return `BulkAction::use(...)` from `bulkActions()`.
 
   ```php
-  use Lattice\Lattice\Actions\Components\BulkAction;
+  use Lattice\Actions\Components\BulkAction;
 
   public function bulkActions(): array
   {

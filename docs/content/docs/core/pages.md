@@ -3,17 +3,17 @@ title: Pages
 description: The entry point of a Lattice screen — a PHP class that builds a component tree and renders through Inertia.
 ---
 
-A page is the entry point of a Lattice screen. It extends `Lattice\Lattice\Http\Page`, declares its
+A page is the entry point of a Lattice screen. It extends `Lattice\Http\Page`, declares its
 route with a `#[AsPage]` attribute, and builds its UI in `render()`. Lattice discovers the class,
 registers a route for it, and renders it through Inertia — you write no controller and no Inertia page
 component of your own.
 
 ```php
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Http\Page;
-use Lattice\Lattice\Tables\Components\Table;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Ui\Components\Heading;
+use Lattice\Core\PageSchema;
+use Lattice\Http\Page;
+use Lattice\Table\Components\Table;
 
 #[AsPage(route: '/products')]
 class ProductsPage extends Page
@@ -58,8 +58,8 @@ A page can expose part of its component tree to other modules without owning the
 a named `Slot` wherever contributions should appear and pass any context their factories need:
 
 ```php
-use Lattice\Lattice\Ui\Components\Tabs;
-use Lattice\Lattice\Ui\Slot;
+use Lattice\Ui\Components\Tabs;
+use Lattice\Ui\Slot;
 
 Tabs::make('project-settings-tabs')->schema([
     Slot::make('project.settings.tabs')->context([
@@ -71,8 +71,8 @@ Tabs::make('project-settings-tabs')->schema([
 Register each contribution from the module's service provider:
 
 ```php
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Ui\Components\Tab;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Ui\Components\Tab;
 
 Lattice::extend(
     'project.settings.tabs',
@@ -136,8 +136,8 @@ too.
 | `can`        | Abilities the current user must pass before the page renders — a string or an array. See [Authorization](/core/authorization/).                                      |
 
 ```php
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Core\Enums\PageContainer;
+use Lattice\Core\Enums\PageLayout;
 
 #[AsPage(
     route: '/products',
@@ -189,7 +189,7 @@ carrying `#[AsPage]` and registers a route for each one. Register pages that liv
 explicitly:
 
 ```php
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Facades\Lattice;
 
 Lattice::pages([
     ProductsPage::class,
@@ -208,7 +208,7 @@ A page can also have no route at all and be rendered by returning it from your o
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Http\Page;
+use Lattice\Http\Page;
 
 class ProductEmbedController
 {
@@ -224,8 +224,8 @@ The page itself needs no `#[AsPage]` attribute — a plain `Page` subclass works
 attribute is present:
 
 ```php
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Core\PageSchema;
+use Lattice\Core\Enums\PageLayout;
 
 class ProductEmbedPage extends Page
 {
@@ -257,7 +257,7 @@ for a link to another page, `Breadcrumb::toPage()`, which resolves the label and
 page class so the trail can't drift out of sync with a renamed route:
 
 ```php
-use Lattice\Lattice\Core\Breadcrumb;
+use Lattice\Core\Breadcrumb;
 
 public function breadcrumbs(): array
 {

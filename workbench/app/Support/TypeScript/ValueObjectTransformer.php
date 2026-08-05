@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\WireType;
-use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
-use Lattice\Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
-use Lattice\Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
-use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
-use Lattice\Lattice\Support\TypeScript\SortsPropertiesByName;
+use Lattice\Core\Attributes\WireType;
+use Lattice\Support\TypeScript\AllowsListedClasses;
+use Lattice\Support\TypeScript\MarkerRewriteClassPropertyProcessor;
+use Lattice\Support\TypeScript\MixedToUnknownClassPropertyProcessor;
+use Lattice\Support\TypeScript\NodeTypeReference;
+use Lattice\Support\TypeScript\SortsPropertiesByName;
 use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;

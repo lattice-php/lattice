@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Enums;
+namespace Lattice\Ui\Enums;
 
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 #[TypeScript]
 enum Variant: string

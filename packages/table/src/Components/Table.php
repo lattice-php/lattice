@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Components;
+namespace Lattice\Table\Components;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableRegistry;
-use Lattice\Lattice\Tables\TableResult;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\IsInteractive;
-use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Enums\PaginationType;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableRegistry;
+use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\IsInteractive;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 #[AsComponent('table')]
 class Table extends Component implements InteractiveComponent

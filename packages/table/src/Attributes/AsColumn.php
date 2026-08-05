@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Attributes;
+namespace Lattice\Table\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Attributes\AsWireNode;
-use Lattice\Lattice\Tables\Enums\ColumnType;
+use Lattice\Core\Attributes\AsWireNode;
+use Lattice\Table\Enums\ColumnType;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 readonly class AsColumn extends AsWireNode

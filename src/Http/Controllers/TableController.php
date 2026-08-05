@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers;
+namespace Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Core\Http\SubRequest;
-use Lattice\Lattice\Core\Http\SubRequestType;
-use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Core\Concerns\InteractsWithComponents;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Http\SubRequest;
+use Lattice\Core\Http\SubRequestType;
+use Lattice\Table\TableRegistry;
 
 final readonly class TableController
 {

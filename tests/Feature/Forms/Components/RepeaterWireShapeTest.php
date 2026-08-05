@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\RowAction;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\RowAction;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 
 it('serialises a repeater with its row-template schema and props', function (): void {
     $repeater = Repeater::make('items', 'Line items')

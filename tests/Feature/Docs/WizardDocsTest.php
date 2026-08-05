@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Wizard;
-use Lattice\Lattice\Forms\Components\WizardStep;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Wizard;
+use Lattice\Form\Components\WizardStep;
+use Lattice\Ui\Components\Text;
 
 describe('docs fixtures', function (): void {
     it('matches the wizard example fixture', function (): void {

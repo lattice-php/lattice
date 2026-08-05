@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Form;
 
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Validator;
-use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Form\Components\Field;
 
 /**
  * Single-pass validation for a list of form fields: resolves dependencies,

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Remote\Components;
+namespace Lattice\Remote\Components;
 
-use Lattice\Lattice\Attributes\AsRemoteComponent;
-use Lattice\Lattice\Core\Contracts\ContainerComponent;
-use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
+use Lattice\Core\Attributes\AsRemoteComponent;
+use Lattice\Core\Contracts\ContainerComponent;
+use Lattice\Ui\Components\Concerns\HasChildSchema;
 
 #[AsRemoteComponent('data-list')]
 final class DataList extends RemoteComponent implements ContainerComponent

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Form\Components\Choice;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 function stubDefinition(): FormDefinition

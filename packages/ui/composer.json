@@ -13,17 +13,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Lattice\\Lattice\\Ui\\": "src/"
-        },
-        "classmap": [
-            "src/Effects/Attributes/AsEffect.php",
-            "src/Effects/Effect.php"
-        ]
+            "Lattice\\Ui\\": "src/"
+        }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Lattice\\Lattice\\Ui\\UiServiceProvider"
+                "Lattice\\Ui\\UiServiceProvider"
             ]
         }
     },

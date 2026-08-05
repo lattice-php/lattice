@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Core\Http\SubRequest;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\RowsField;
+use Lattice\Core\Contracts\OptionSource;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\Http\SubRequest;
+use Lattice\Core\Option;
+use Lattice\Form\Components\RowsField;
 
 /**
  * Spreadable request-plus-envelope pair for calling sub-request methods

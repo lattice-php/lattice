@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Filters\SelectFilter;
+use Lattice\Form\FormData;
+use Lattice\Table\Filters\SelectFilter;
 use Workbench\App\Models\Product;
 
 test('select filter serializes its wire shape', function (): void {

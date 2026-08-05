@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns;
+namespace Lattice\Table\Columns;
 
-use Lattice\Lattice\Core\Contracts\ContainerComponent;
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
-use Lattice\Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Core\Contracts\ContainerComponent;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Enums\ColumnType;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Concerns\HasChildSchema;
+use Lattice\Ui\Enums\ColumnWidth;
 
 #[AsColumn(ColumnType::Stack)]
 final class StackColumn extends Column implements ContainerComponent

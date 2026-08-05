@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Support\Evaluation\EvaluationContext;
-use Lattice\Lattice\Support\Evaluation\Evaluator;
-use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
+use Lattice\Core\Support\Evaluation\EvaluationContext;
+use Lattice\Core\Support\Evaluation\Evaluator;
+use Lattice\Core\Support\Evaluation\UnresolvableEvaluationParameter;
 
 interface PingableStub {}
 

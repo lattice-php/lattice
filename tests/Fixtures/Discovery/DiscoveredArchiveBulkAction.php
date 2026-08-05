@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Tests\Fixtures\Discovery;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsBulkAction;
+use Lattice\Ui\Enums\HttpMethod;
 
 #[AsBulkAction('fixtures.archive')]
 class DiscoveredArchiveBulkAction extends BulkActionDefinition

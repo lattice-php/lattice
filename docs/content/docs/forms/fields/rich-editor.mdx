@@ -27,7 +27,7 @@ server enforces the configured set the same way a `Choice` field validates its o
 a clean document array you can store as-is and render later by wrapping it in `RichContent`:
 
 ```php
-use Lattice\Lattice\Forms\RichContent;
+use Lattice\Form\RichContent;
 
 $html = RichContent::make($document)->toHtml();
 ```
@@ -42,7 +42,7 @@ sanitizes the output, so it is safe to render directly. `toText()` returns a pla
 ## Extensions
 
 Which editor features are active — and their toolbar order — is controlled from PHP. Every feature
-is an extension class under `Lattice\Lattice\Forms\RichEditor\Extensions`; a field without
+is an extension class under `Lattice\Form\RichEditor\Extensions`; a field without
 configuration ships the full [default set](#default-extensions). `->extensions()` replaces it:
 
 <ComponentExample
@@ -116,9 +116,9 @@ a client definition that maps that type to [Tiptap](https://tiptap.dev) behavior
 On the PHP side, extend `EditorExtension` and register the class in a service provider:
 
 ```php
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Form\RichEditor\EditorExtension;
+use Lattice\Form\RichEditor\EditorExtensionRegistry;
 
 #[AsEditorExtension('mention')]
 class Mention extends EditorExtension
@@ -214,9 +214,9 @@ label pulled from wherever those labels live:
 
 ```php
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Forms\RichContent;
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Form\RichContent;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Form\RichEditor\EditorExtension;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 #[AsEditorExtension('callout')]
@@ -340,7 +340,7 @@ the usual way to display a stored document outside the context of the `RichEdito
 produced it (an index page, an email, an API response):
 
 ```php
-use Lattice\Lattice\Forms\RichContent;
+use Lattice\Form\RichContent;
 
 $html = RichContent::make($storedDocument)->toHtml();
 ```

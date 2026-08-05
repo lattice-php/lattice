@@ -2,18 +2,18 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredArchiveBulkAction;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Services\ComponentReferenceSigner;
+use Lattice\Form\Components\Form;
+use Lattice\Fragments\Components\Fragment as FragmentComponent;
+use Lattice\Table\Components\Table;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredArchiveBulkAction;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredPanelFragment;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredPingAction;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
 
 use function Pest\Laravel\patch;
 use function Pest\Laravel\postJson;
@@ -139,22 +139,22 @@ test('interaction endpoints re-run authorization for every interaction', functio
         ->assertForbidden();
 });
 
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Tables\CallbackTableSource;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Contracts\TableSource;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableResult;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Form\FormDefinition;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Table\CallbackTableSource;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Contracts\TableSource;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsAction('workbench.denied')]

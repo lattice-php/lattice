@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\DB;
-use Lattice\Lattice\Notifications\Notification;
+use Lattice\Notifications\Notification;
 
 use function Pest\Laravel\artisan;
 

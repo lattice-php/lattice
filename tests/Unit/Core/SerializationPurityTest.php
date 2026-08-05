@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Form\Components\TextInput;
+use Lattice\Table\Columns\TextColumn;
 
 it('serializes a column without mutating it and yields identical output twice', function (): void {
     $column = TextColumn::make('name')->sortable();

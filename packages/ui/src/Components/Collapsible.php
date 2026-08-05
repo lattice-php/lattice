@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Concerns\HasTooltip;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Concerns\HasTooltip;
+use Lattice\Ui\Contracts\SchemaEntry;
 
 #[AsComponent('collapsible')]
 class Collapsible extends ContainerComponent

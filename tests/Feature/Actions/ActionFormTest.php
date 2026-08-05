@@ -2,22 +2,22 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\Components\Wizard;
-use Lattice\Lattice\Forms\Components\WizardStep;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Actions\FormActionDefinition;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\Select;
+use Lattice\Form\Components\Textarea;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\Components\Wizard;
+use Lattice\Form\Components\WizardStep;
+use Lattice\Form\FormData;
+use Lattice\Form\FormDefinition;
+use Lattice\Ui\Enums\HttpMethod;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\postJson;

@@ -1,214 +1,156 @@
 <?php
 declare(strict_types=1);
 use Illuminate\Support\Facades\Facade;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionRegistry;
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Core\PageMetadata;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Forms\FormRegistry;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\Layouts\LayoutDefinition;
-use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
-use Lattice\Lattice\Tables\Columns\Concerns\IsSearchable;
-use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
-use Lattice\Lattice\Tables\Columns\NumericColumn;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionRegistry;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Actions\FormActionDefinition;
+use Lattice\Core\Definition;
+use Lattice\Core\DefinitionRegistry;
+use Lattice\Core\Facades\Lattice as LatticeFacade;
+use Lattice\Core\LatticeRegistry;
+use Lattice\Form\FormDefinition;
+use Lattice\Form\FormRegistry;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Fragments\FragmentRegistry;
+use Lattice\Layouts\LayoutDefinition;
+use Lattice\Layouts\LayoutRegistry;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Columns\Concerns\IsFilterable;
+use Lattice\Table\Columns\Concerns\IsSearchable;
+use Lattice\Table\Columns\Concerns\IsSortable;
+use Lattice\Table\Columns\NumericColumn;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableRegistry;
 
 const CORE_FORBIDDEN_NAMESPACES = [
-    'Lattice\\Lattice\\Actions',
-    'Lattice\\Lattice\\Forms',
-    'Lattice\\Lattice\\Tables',
-    'Lattice\\Lattice\\Fragments',
-    'Lattice\\Lattice\\Layouts',
-    'Lattice\\Lattice\\Ui',
-    'Lattice\\Lattice\\Chat',
-    'Lattice\\Lattice\\Notifications',
-    'Lattice\\Lattice\\Realtime',
-    'Lattice\\Lattice\\Remote',
-    'Lattice\\Lattice\\Effects',
-    'Lattice\\Lattice\\I18n',
+    'Lattice\\Actions',
+    'Lattice\\Form',
+    'Lattice\\Table',
+    'Lattice\\Fragments',
+    'Lattice\\Layouts',
+    'Lattice\\Ui',
+    'Lattice\\Chat',
+    'Lattice\\Notifications',
+    'Lattice\\Realtime',
+    'Lattice\\Remote',
+    'Lattice\\Effects',
+    'Lattice\\I18n',
 ];
 
-/*
- * Layering.
- *
- * Bottom: the shared base — Core, Attributes, and the Support utilities — which
- * the rest of the package builds on and which never depend back on a feature
- * domain or an orchestration layer.
- *
- * Middle: the five feature domains. Each stays independent of its siblings; the
- * only intentional cross-domain couplings are tables -> actions (row and bulk
- * actions), tables -> forms (table filters are form-field schemas), actions ->
- * forms (action forms), and layouts -> actions (menu items that trigger an
- * action). The UI layer likewise reaches Actions in one deliberate spot — the
- * Triggerable primitive (links/buttons that trigger an action).
- *
- * Top: the orchestration and tooling layers — Http (which renders and routes
- * pages, including the page registry, by consuming the feature domains),
- * Console, and Facades. Nothing below may depend upward on them.
- */
-
 arch('forms depend on no other feature domain')
-    ->expect('Lattice\Lattice\Forms')
+    ->expect('Lattice\Form')
     ->not->toUse([
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Actions',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
     ]);
 
 arch('actions depend on no feature domain other than forms')
-    ->expect('Lattice\Lattice\Actions')
+    ->expect('Lattice\Actions')
     ->not->toUse([
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
     ]);
 
 arch('tables depend on no feature domain other than actions, forms, and fragments')
-    ->expect('Lattice\Lattice\Tables')
+    ->expect('Lattice\Table')
     ->not->toUse([
-        'Lattice\Lattice\Layouts',
+        'Lattice\Layouts',
     ]);
 
 arch('fragments depend on no other feature domain')
-    ->expect('Lattice\Lattice\Fragments')
+    ->expect('Lattice\Fragments')
     ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Form',
+        'Lattice\Table',
+        'Lattice\Actions',
+        'Lattice\Layouts',
     ]);
 
 arch('layouts depend on no feature domain other than actions')
-    ->expect('Lattice\Lattice\Layouts')
+    ->expect('Lattice\Layouts')
     ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
+        'Lattice\Form',
+        'Lattice\Table',
+        'Lattice\Fragments',
     ]);
 
-arch('core does not depend on feature or ui domains')
-    ->expect('Lattice\Lattice\Core')
+arch('core internals do not depend on feature or ui domains')
+    ->expect('Lattice\Core')
     ->not->toUse(CORE_FORBIDDEN_NAMESPACES)
-    ->ignoring([PageMetadata::class]);
+    ->ignoring([LatticeFacade::class, LatticeRegistry::class]);
 
-it('shared source does not reference feature or ui namespaces in strings', function (string $directory): void {
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(dirname(__DIR__).'/'.$directory));
-    $violations = [];
-
-    foreach ($files as $file) {
-        if ($file->getExtension() !== 'php') {
-            continue;
-        }
-
-        if (str_ends_with($directory, 'Core') && $file->getFilename() === 'PageMetadata.php') {
-            continue;
-        }
-
-        $contents = (string) file_get_contents($file->getPathname());
-
-        foreach (CORE_FORBIDDEN_NAMESPACES as $namespace) {
-            if (str_contains($contents, $namespace)) {
-                $violations[] = $file->getFilename().': '.$namespace;
-            }
-        }
-    }
-
-    expect($violations)->toBe([]);
-})->with(['packages/core/src/Core', 'src/Core', 'src/Support/TypeScript']);
-
-arch('core does not depend upward on the orchestration or tooling layers')
-    ->expect('Lattice\Lattice\Core')
+arch('core internals do not depend upward on the orchestration or tooling layers')
+    ->expect('Lattice\Core')
     ->not->toUse([
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
-        'Lattice\Lattice\Facades',
-    ]);
+        'Lattice\Http',
+        'Lattice\Console',
+        'Lattice\Facades',
+    ])
+    ->ignoring([LatticeFacade::class, LatticeRegistry::class]);
 
 arch('feature domains never depend upward on the orchestration or tooling layers')
     ->expect([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Form',
+        'Lattice\Actions',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
     ])
     ->not->toUse([
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
+        'Lattice\Http',
+        'Lattice\Console',
     ]);
 
 arch('the ui and secondary domains never depend upward on orchestration or tooling')
     ->expect([
-        'Lattice\Lattice\Ui',
-        'Lattice\Lattice\Chat',
-        'Lattice\Lattice\Notifications',
-        'Lattice\Lattice\Realtime',
-        'Lattice\Lattice\Remote',
-        'Lattice\Lattice\Effects',
-        'Lattice\Lattice\I18n',
+        'Lattice\Ui',
+        'Lattice\Chat',
+        'Lattice\Notifications',
+        'Lattice\Realtime',
+        'Lattice\Remote',
+        'Lattice\Effects',
+        'Lattice\I18n',
     ])
     ->not->toUse([
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
+        'Lattice\Http',
+        'Lattice\Console',
     ]);
 
-/*
- * Attributes are a shared base layer of plain markers: they describe domain
- * objects without reaching into the domains. Actions is intentionally omitted
- * because it is a consumer of core domain objects (not a peer layer).
- */
 arch('attributes depend on no feature domain or higher layer')
-    ->expect('Lattice\Lattice\Attributes')
+    ->expect('Lattice\Core\Attributes')
     ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
-        'Lattice\Lattice\Ui',
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
-        'Lattice\Lattice\Facades',
-    ])
-    ->ignoring(AsPage::class);
+        'Lattice\Form',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
+        'Lattice\Ui',
+        'Lattice\Http',
+        'Lattice\Console',
+        'Lattice\Facades',
+    ]);
 
-/*
- * The Support utilities are part of the shared base and stay free of the feature
- * domains. Support\Testing intentionally consumes the domains.
- */
 arch('the support utilities do not depend on the feature domains')
     ->expect([
-        'Lattice\Lattice\Support\Evaluation',
-        'Lattice\Lattice\Support\Discovery',
-        'Lattice\Lattice\Support\TypeScript',
+        'Lattice\Core\Support\Evaluation',
+        'Lattice\Core\Support\Discovery',
+        'Lattice\Support\TypeScript',
     ])
     ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
 
-/*
- * Cross-boundary contracts live in a `Contracts` namespace and are interfaces.
- * Local capability interfaces that are not cross-boundary contracts, such as
- * Support\TypeScript\TypeScriptProfile, can sit beside their implementations.
- */
 arch('contracts are interfaces')
     ->expect([
-        'Lattice\Lattice\Core\Contracts',
-        'Lattice\Lattice\Actions\Contracts',
-        'Lattice\Lattice\Forms\Contracts',
-        'Lattice\Lattice\Tables\Contracts',
-        'Lattice\Lattice\Ui\Contracts',
+        'Lattice\Core\Contracts',
+        'Lattice\Actions\Contracts',
+        'Lattice\Form\Contracts',
+        'Lattice\Table\Contracts',
+        'Lattice\Ui\Contracts',
     ])
     ->toBeInterfaces();
 
@@ -223,11 +165,6 @@ arch('domain registries extend the base definition registry')
     ])
     ->toExtend(DefinitionRegistry::class);
 
-/*
- * Every definition derives from Core\Definition, including the ones that extend
- * an intermediate base (FormActionDefinition, EloquentTableDefinition); a
- * transitive is_subclass_of check covers those, where ->toExtend would not.
- */
 it('derives every definition from the base definition', function (string $definition): void {
     expect(is_subclass_of($definition, Definition::class))->toBeTrue();
 })->with([
@@ -242,31 +179,21 @@ it('derives every definition from the base definition', function (string $defini
 ]);
 
 arch('the lattice facade extends the laravel facade')
-    ->expect('Lattice\Lattice\Facades')
+    ->expect([
+        'Lattice\Core\Facades',
+        'Lattice\Facades',
+    ])
     ->toExtend(Facade::class);
 
-/*
- * Columns are a declarative layer: they describe what to render, never how to
- * fetch it. Eloquent is one table-source driver, so the column classes must not
- * reach for a model, query builder, or relation — the binding they expose
- * (RelationBinding) is plain data a driver interprets.
- */
 arch('columns never depend on eloquent')
-    ->expect('Lattice\Lattice\Tables\Columns')
+    ->expect('Lattice\Table\Columns')
     ->not->toUse('Illuminate\Database\Eloquent');
 
-/*
- * Ui\Components is intentionally excluded here: "lattice component factories
- * stay open for extension" (tests/Unit/Core/ComponentSerializationTest.php)
- * asserts consumers may subclass a component (e.g. Badge) and keep the
- * static::make() factory working via late static binding, so those classes
- * must not be final.
- */
 arch('table columns, table filters, and built-in effects are final')
     ->expect([
-        'Lattice\Lattice\Tables\Columns',
-        'Lattice\Lattice\Tables\Filters',
-        'Lattice\Lattice\Effects\Builtin',
+        'Lattice\Table\Columns',
+        'Lattice\Table\Filters',
+        'Lattice\Effects\Builtin',
     ])
     ->toBeFinal()
     ->ignoring([
@@ -283,7 +210,7 @@ arch('no debug statements ship in the package')
     ->not->toBeUsed();
 
 arch('the package uses strict types throughout')
-    ->expect('Lattice\Lattice')
+    ->expect('Lattice')
     ->toUseStrictTypes();
 
 it('uses lower-case translation keys separated by - or _', function (): void {

@@ -1,31 +1,31 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Avatar;
-use Lattice\Lattice\Ui\Components\Badge;
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Components\Card;
-use Lattice\Lattice\Ui\Components\Grid;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Image;
-use Lattice\Lattice\Ui\Components\Progress;
-use Lattice\Lattice\Ui\Components\RawBlock;
-use Lattice\Lattice\Ui\Components\Section;
-use Lattice\Lattice\Ui\Components\SegmentedControl;
-use Lattice\Lattice\Ui\Components\Separator;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Tab;
-use Lattice\Lattice\Ui\Components\Tabs;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Components\Tooltip;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\Orientation;
-use Lattice\Lattice\Ui\Enums\Size;
-use Lattice\Lattice\Ui\Enums\StackDirection;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Color;
+use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Avatar;
+use Lattice\Ui\Components\Badge;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Card;
+use Lattice\Ui\Components\Grid;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Image;
+use Lattice\Ui\Components\Progress;
+use Lattice\Ui\Components\RawBlock;
+use Lattice\Ui\Components\Section;
+use Lattice\Ui\Components\SegmentedControl;
+use Lattice\Ui\Components\Separator;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Tab;
+use Lattice\Ui\Components\Tabs;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Components\Tooltip;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Orientation;
+use Lattice\Ui\Enums\Size;
+use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\Enums\Variant;
 
 it('serializes a card tooltip', function (): void {
     $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Ui\Concerns\HasPlaceholder;
 
 #[AsField(FieldType::ColorPicker)]
 class ColorPicker extends Field

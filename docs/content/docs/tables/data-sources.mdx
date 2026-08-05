@@ -13,7 +13,7 @@ how to back a table with anything else.
 ## The contract
 
 ```php
-namespace Lattice\Lattice\Tables\Contracts;
+namespace Lattice\Table\Contracts;
 
 interface TableSource
 {
@@ -58,10 +58,10 @@ For a one-off source, `CallbackTableSource` takes the three methods as closures 
 first unless the table has bulk actions:
 
 ```php
-use Lattice\Lattice\Tables\CallbackTableSource;
-use Lattice\Lattice\Tables\Contracts\TableSource;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableResult;
+use Lattice\Table\CallbackTableSource;
+use Lattice\Table\Contracts\TableSource;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
 
 public function source(): TableSource
 {

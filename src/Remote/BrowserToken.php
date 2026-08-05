@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Remote;
+namespace Lattice\Remote;
 
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 #[TypeScript]
 final readonly class BrowserToken

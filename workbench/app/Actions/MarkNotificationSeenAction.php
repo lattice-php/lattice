@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace Workbench\App\Actions;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\AsAction;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Attributes\AsAction;
 
 #[AsAction('mark-notification-seen')]
 class MarkNotificationSeenAction extends ActionDefinition

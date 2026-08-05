@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Builder;
-use Lattice\Lattice\Forms\Components\RowTemplate;
-use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Form\Components\Builder;
+use Lattice\Form\Components\RowTemplate;
+use Lattice\Form\Components\Textarea;
+use Lattice\Form\Components\TextInput;
 
 it('serialises a builder with its blocks and props', function (): void {
     $wire = wire(

@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Actions\Components\ActionGroup;
-use Lattice\Lattice\Actions\Components\BulkAction;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\Enums\Icon;
-use Lattice\Lattice\Ui\Enums\ModalWidth;
-use Lattice\Lattice\Ui\Enums\Orientation;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\Components\Action;
+use Lattice\Actions\Components\ActionGroup;
+use Lattice\Actions\Components\BulkAction;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Components\Textarea;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\Enums\Icon;
+use Lattice\Ui\Enums\ModalWidth;
+use Lattice\Ui\Enums\Orientation;
+use Lattice\Ui\Enums\Variant;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Models\Product;

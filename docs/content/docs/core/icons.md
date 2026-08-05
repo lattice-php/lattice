@@ -125,7 +125,7 @@ the stale SVG by hand when you no longer want it in the sprite.
 Anywhere a component takes an icon you can pass a plain string or a backed enum:
 
 ```php
-use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Ui\Enums\Icon;
 
 // by name
 Action::make('app.send')->icon('send');
@@ -134,7 +134,7 @@ Action::make('app.send')->icon('send');
 Action::make('app.send')->icon(Icon::Send);
 ```
 
-`Lattice\Lattice\Ui\Enums\Icon` covers Lattice's own icon set. For your full set (Lattice's plus your
+`Lattice\Ui\Enums\Icon` covers Lattice's own icon set. For your full set (Lattice's plus your
 own), generate an enum — see below.
 
 ## As a component
@@ -143,9 +143,9 @@ own), generate an enum — see below.
 same renderer as `->icon()`, with structured `size`/`color` plus a raw `class` escape hatch:
 
 ```php
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Ui\Components\Icon;
-use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Core\Color;
+use Lattice\Ui\Components\Icon;
+use Lattice\Ui\Enums\Size;
 
 Stack::make()->schema([
     Icon::make('house'),                                       // size defaults to Md

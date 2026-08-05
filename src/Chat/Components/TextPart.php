@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Chat\Components;
+namespace Lattice\Chat\Components;
 
-use Lattice\Lattice\Chat\Attributes\AsChatPart;
-use Lattice\Lattice\Chat\ChatPart;
-use Lattice\Lattice\Chat\Enums\ChatPartType;
+use Lattice\Chat\Attributes\AsChatPart;
+use Lattice\Chat\ChatPart;
+use Lattice\Chat\Enums\ChatPartType;
 
 #[AsChatPart(ChatPartType::Text)]
 final class TextPart extends ChatPart

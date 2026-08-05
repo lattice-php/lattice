@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Effects\Builtin;
+namespace Lattice\Effects\Builtin;
 
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Link;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Link;
+use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\Enums\Variant;
 
 /**
  * A toast notification: a message and variant plus optional lifetime, a close

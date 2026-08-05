@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Forms\Conditions\ConditionEvaluator;
+use Lattice\Core\Enums\Op;
+use Lattice\Form\Conditions\ConditionEvaluator;
 
 it('evaluates every operator identically to the client', function (string $operator, mixed $actual, mixed $expected, bool $result): void {
     $evaluator = new ConditionEvaluator;

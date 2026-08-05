@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Tests\Fixtures\Discovery;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\FormDefinition;
+use Lattice\Ui\Enums\HttpMethod;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('fixtures.profile')]

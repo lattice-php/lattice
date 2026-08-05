@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support;
+namespace Lattice\Core\Support;
 
 use BackedEnum;
 use JsonException;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Sources\Eloquent;
+namespace Lattice\Table\Sources\Eloquent;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Lattice\Lattice\Tables\RelationBinding;
+use Lattice\Table\RelationBinding;
 
 /**
  * The Eloquent resolution of a to-one {@see RelationBinding} (e.g. the dotted

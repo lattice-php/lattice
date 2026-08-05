@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Chat;
+namespace Lattice\Chat;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Chat\Enums\ChatRole;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Ui\Components\Component;
 
 #[TypeScript]
 final readonly class ChatMessage

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorName;
-use Lattice\Lattice\Ui\Values\ChartSeries;
-use Lattice\Lattice\Ui\Values\DateFormat;
-use Lattice\Lattice\Ui\Values\NumberFormat;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorName;
+use Lattice\Ui\Values\ChartSeries;
+use Lattice\Ui\Values\DateFormat;
+use Lattice\Ui\Values\NumberFormat;
 
 #[AsComponent('chart')]
 class Chart extends Component

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Support\Testing\ComponentNode;
+use Lattice\Support\Testing\ComponentNode;
 
 /**
  * @param  array<string, mixed>  $data

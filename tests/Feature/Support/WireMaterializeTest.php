@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Chat\ChatMessage;
-use Lattice\Lattice\Chat\ChatPart;
-use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Tables\Filters\TernaryFilter;
+use Lattice\Chat\ChatMessage;
+use Lattice\Chat\ChatPart;
+use Lattice\Chat\Enums\ChatRole;
+use Lattice\Core\Option;
+use Lattice\Core\Support\Wire;
+use Lattice\Facades\Effects;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Table\Filters\TernaryFilter;
 
 enum PureWireEnum
 {

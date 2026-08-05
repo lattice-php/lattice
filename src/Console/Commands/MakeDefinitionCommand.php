@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Console\Commands;
+namespace Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Lattice\Lattice\Console\Commands\Concerns\ResolvesScaffoldTarget;
+use Lattice\Console\Commands\Concerns\ResolvesScaffoldTarget;
 
 /**
  * The PHP-only definition generators (page, form, table, action, …): one

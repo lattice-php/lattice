@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Tables\Columns\BooleanColumn;
-use Lattice\Lattice\Tables\Columns\ImageColumn;
-use Lattice\Lattice\Tables\Columns\MoneyColumn;
-use Lattice\Lattice\Tables\Columns\NumberColumn;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Ui\Enums\DateTimeStyle;
+use Lattice\Table\Columns\BooleanColumn;
+use Lattice\Table\Columns\ImageColumn;
+use Lattice\Table\Columns\MoneyColumn;
+use Lattice\Table\Columns\NumberColumn;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Ui\Enums\DateTimeStyle;
 
 it('reflects a column\'s public properties into the full props shape', function (): void {
     expect(wire(TextColumn::make('name'))['props'])->toMatchArray([

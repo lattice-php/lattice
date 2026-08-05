@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support;
+namespace Lattice\Core\Support;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 /**
  * A prefix or suffix attached to a field or menu item. Holds either an icon

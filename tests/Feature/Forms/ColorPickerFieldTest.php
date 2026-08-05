@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\ColorPicker;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Form\Components\ColorPicker;
+use Lattice\Form\Components\Form;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 function colorPickerDefinition(): FormDefinition

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Lattice\Lattice\Support\TypeScript\AllowsListedClasses;
+use Lattice\Support\TypeScript\AllowsListedClasses;
 use Spatie\TypeScriptTransformer\Data\TransformationContext;
 use Spatie\TypeScriptTransformer\PhpNodes\PhpClassNode;
 use Spatie\TypeScriptTransformer\Transformed\Transformed;

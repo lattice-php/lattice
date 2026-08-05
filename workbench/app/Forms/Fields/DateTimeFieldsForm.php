@@ -4,15 +4,15 @@ declare(strict_types=1);
 namespace Workbench\App\Forms\Fields;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\DateInput;
-use Lattice\Lattice\Forms\Components\DateTimeInput;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\Components\TimeInput;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Ui\Components\Tab;
-use Lattice\Lattice\Ui\Components\Tabs;
-use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\DateInput;
+use Lattice\Form\Components\DateTimeInput;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\TimeInput;
+use Lattice\Form\FormDefinition;
+use Lattice\Ui\Components\Tab;
+use Lattice\Ui\Components\Tabs;
+use Lattice\Ui\Enums\Orientation;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('workbench.fields.date-time.form')]

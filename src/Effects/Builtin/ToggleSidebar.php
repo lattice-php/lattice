@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Effects\Builtin;
+namespace Lattice\Effects\Builtin;
 
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Effect;
 
 /**
  * Toggles a sidebar entirely on the client: it collapses the icon rail on

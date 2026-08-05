@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\Filters\SelectFilter;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Core\Contracts\OptionSource;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Table\Columns\ColumnFilterOption;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\Table;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\Filters\SelectFilter;
+use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Table\TableQuery;
 use Workbench\App\Models\Product;
 
 function peopleOptionSource(): OptionSource

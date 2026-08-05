@@ -33,8 +33,8 @@ are posted to the [action endpoint](/advanced/security/) and validated server-si
 "reject with a reason", "assign a category", and the like.
 
 ```php
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\Components\Textarea;
+use Lattice\Form\Components\Select;
+use Lattice\Form\Components\Textarea;
 
 public function definition(Action $action): Action
 {
@@ -75,7 +75,7 @@ full-height sheet docked to a viewport edge, and `->modalWidth()` adjusts its wi
 scale the [Modal component](/components/modals/) uses:
 
 ```php
-use Lattice\Lattice\Ui\Enums\ModalWidth;
+use Lattice\Ui\Enums\ModalWidth;
 
 public function definition(Action $action): Action
 {
@@ -106,8 +106,8 @@ itself needs the request — to prefill from the record being acted on, or to va
 extend `FormActionDefinition` instead and build it in `formSchema()`:
 
 ```php
-use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Actions\FormActionDefinition;
+use Lattice\Form\Components\Form;
 use Illuminate\Http\Request;
 
 #[AsAction('products.edit')]

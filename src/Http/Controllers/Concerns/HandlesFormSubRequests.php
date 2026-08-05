@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers\Concerns;
+namespace Lattice\Http\Controllers\Concerns;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
-use Lattice\Lattice\Core\Http\SubRequest;
-use Lattice\Lattice\Core\Http\SubRequestType;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Actions\Contracts\InteractsWithForm;
+use Lattice\Core\Http\SubRequest;
+use Lattice\Core\Http\SubRequestType;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 trait HandlesFormSubRequests

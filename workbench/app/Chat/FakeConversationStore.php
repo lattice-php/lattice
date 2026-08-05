@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Workbench\App\Chat;
 
 use Illuminate\Contracts\Session\Session;
-use Lattice\Lattice\Chat\ChatMessage;
-use Lattice\Lattice\Chat\ChatPart;
-use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Chat\ChatMessage;
+use Lattice\Chat\ChatPart;
+use Lattice\Chat\Enums\ChatRole;
+use Lattice\Core\Support\Wire;
 
 final readonly class FakeConversationStore
 {

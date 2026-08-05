@@ -41,8 +41,7 @@
         "lattice-php/table": "self.version",
         "lattice-php/ui": "self.version",
         "spatie/laravel-package-tools": "^1.16 || ^2.0",
-        "spatie/php-attribute-reader": "^1.1",
-        "spatie/php-structure-discoverer": "^2.4"
+        "spatie/php-attribute-reader": "^1.1"
     },
     "require-dev": {
         "bambamboole/extended-faker": "^0.8.0",
@@ -68,7 +67,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lattice\\Lattice\\": "src/"
+            "Lattice\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -76,7 +75,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Lattice\\Lattice\\Tests\\": "tests/",
+            "Lattice\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -129,7 +128,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lattice\\Lattice\\LatticeServiceProvider"
+                "Lattice\\LatticeServiceProvider"
             ]
         }
     },

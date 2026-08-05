@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
-use Lattice\Lattice\LatticeServiceProvider;
+use Lattice\LatticeServiceProvider;
 
 use function Pest\Laravel\artisan;
 

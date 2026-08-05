@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Workbench;
+namespace Lattice\Tests\Fixtures\Workbench;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\Enums\Variant;
 
 #[AsAction('workbench.ping')]
 class WorkbenchPingAction extends ActionDefinition

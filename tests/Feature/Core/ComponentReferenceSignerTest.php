@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Contracts\ResolvesReferenceIdentity;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Core\Values\ReferenceIdentity;
-use Lattice\Lattice\Tests\Fixtures\Core\FakeReferenceIdentity;
+use Lattice\Core\Contracts\ResolvesReferenceIdentity;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Values\ReferenceIdentity;
+use Lattice\Tests\Fixtures\Core\FakeReferenceIdentity;
 
 function signer(): SignsComponentReferences
 {

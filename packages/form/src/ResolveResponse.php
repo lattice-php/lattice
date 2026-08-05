@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Form;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Form\Components\Field;
 
 #[TypeScript]
 final readonly class ResolveResponse

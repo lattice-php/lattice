@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Checkbox;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Checkbox;
 
 it('serializes the shared focus options', function (): void {
     $node = wire(Checkbox::make('terms', 'Accept terms')->autoFocus()->tabIndex(3));

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\ColorPicker;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\ColorPicker;
 
 it('serializes with the default palette', function (): void {
     $node = wire(ColorPicker::make('color', 'Tag color')->placeholder('Pick a color'));

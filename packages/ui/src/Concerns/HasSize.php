@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Concerns;
+namespace Lattice\Ui\Concerns;
 
-use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Ui\Enums\Size;
 
 trait HasSize
 {

@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Core\Contracts\OptionSource;
+use Lattice\Core\Option;
+use Lattice\Form\Components\Select;
+use Lattice\Form\FormData;
 
 /** An in-memory option source — proves the Select talks only to the contract, never Eloquent. */
 function arrayOptionSource(): OptionSource

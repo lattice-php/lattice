@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Support\TypeScript\AugmentProfile;
-use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
-use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Support\TypeScript\AugmentProfile;
+use Lattice\Support\TypeScript\TypeScriptGenerator;
+use Lattice\Support\TypeScript\TypeScriptProfile;
 
 use function Pest\Laravel\artisan;
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing;
+namespace Lattice\Support\Testing;
 
 use Illuminate\Http\Response;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
 use JsonSerializable;
-use Lattice\Lattice\Support\Testing\Assertions\ComponentAssertions;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Support\Testing\Assertions\ComponentAssertions;
 
 trait AssertsLatticeComponents
 {

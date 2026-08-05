@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Support\TypeScript;
 
 final readonly class DiscoveredComponent
 {

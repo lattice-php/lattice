@@ -3,10 +3,10 @@
 namespace {{ namespace }};
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Http\LatticeResponse;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\Form;
+use Lattice\Form\FormDefinition;
+use Lattice\Http\LatticeResponse;
 
 #[AsForm('{{ key }}')]
 class {{ class }} extends FormDefinition

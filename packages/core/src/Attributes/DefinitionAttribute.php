@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Attributes;
+namespace Lattice\Core\Attributes;
 
-use Lattice\Lattice\Core\Contracts\DeclaresGate;
-use Lattice\Lattice\Core\Definition;
+use Lattice\Core\Contracts\DeclaresGate;
+use Lattice\Core\Definition;
 
 /**
  * Base for the marker attributes that identify a Lattice definition — Form,

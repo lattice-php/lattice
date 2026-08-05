@@ -2,14 +2,14 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Http\Controllers\ActionController;
-use Lattice\Lattice\Http\Controllers\BulkActionController;
-use Lattice\Lattice\Http\Controllers\FormController;
-use Lattice\Lattice\Http\Controllers\FragmentController;
-use Lattice\Lattice\Http\Controllers\NotificationController;
-use Lattice\Lattice\Http\Controllers\RefRefreshController;
-use Lattice\Lattice\Http\Controllers\RemoteSourceTokenController;
-use Lattice\Lattice\Http\Controllers\TableController;
+use Lattice\Http\Controllers\ActionController;
+use Lattice\Http\Controllers\BulkActionController;
+use Lattice\Http\Controllers\FormController;
+use Lattice\Http\Controllers\FragmentController;
+use Lattice\Http\Controllers\NotificationController;
+use Lattice\Http\Controllers\RefRefreshController;
+use Lattice\Http\Controllers\RemoteSourceTokenController;
+use Lattice\Http\Controllers\TableController;
 
 Route::middleware(config('lattice.forms.middleware'))
     ->match(['post', 'put', 'patch', 'delete'], 'lattice/forms/{form}', FormController::class)

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Support\Evaluation\EvaluationContext;
+use Lattice\Core\Support\Evaluation\EvaluationContext;
 
 it('adds named utilities immutably', function (): void {
     $base = new EvaluationContext;

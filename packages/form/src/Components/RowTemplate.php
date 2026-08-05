@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Illuminate\Support\Str;
 use JsonSerializable;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Concerns\HasChildSchema;
 
 /**
  * A typed row template for a TypedRowsField: the schema of child Fields a row

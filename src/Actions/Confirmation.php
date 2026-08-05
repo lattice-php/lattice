@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions;
+namespace Lattice\Actions;
 
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\TypeScript;
 
 /**
  * The confirmation dialog an action shows before it runs. Built by {@see Action::confirm()}

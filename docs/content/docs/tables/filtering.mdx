@@ -39,14 +39,14 @@ TextColumn::make('created_at')->date()->filterable(); // date filter
 
 ### Filter types and operators
 
-Operators are the shared [`Op`](/advanced/enums/#operators) enum (`Lattice\Lattice\Core\Enums\Op`) — the
+Operators are the shared [`Op`](/advanced/enums/#operators) enum (`Lattice\Core\Enums\Op`) — the
 same vocabulary used by [form conditions](/forms/conditional-fields/#operators). Each `FilterType`
 offers a sensible default set and a default operator (text defaults to `contains`, the rest to `=`).
 
 Narrow the offered operators, or change the default, by passing arguments to `->filterable()`:
 
 ```php
-use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Core\Enums\Op;
 
 // Only allow exact / negated matches, defaulting to "equals":
 TextColumn::make('sku')->filterable(Op::Equals, [Op::Equals, Op::NotEquals]);
@@ -64,7 +64,7 @@ dedicated [`SelectFilter`](#dedicated-filters). A single selection matches with 
 `multiple: true` to match any of the chosen values with `in`.
 
 ```php
-use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Table\Columns\TextColumn;
 
 // associative value => label
 TextColumn::make('status')->filterOptions([
@@ -90,7 +90,7 @@ same source the [`Select` field](/forms/fields/select/) uses, so forms and table
 same way:
 
 ```php
-use Lattice\Lattice\Core\EloquentOptions;
+use Lattice\EloquentOptions;
 
 TextColumn::make('author_id')
     ->label('Author')
@@ -106,8 +106,8 @@ default. This keeps the request in the standard column-filter clause format, so 
 uses the same operator pipeline:
 
 ```php
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
+use Lattice\Core\Enums\Op;
+use Lattice\Table\Columns\ColumnFilterOption;
 
 BooleanColumn::make('verified')->filterOptions([
     ColumnFilterOption::clause('Yes', 'yes', Op::Equals, 'true'),
@@ -134,10 +134,10 @@ logic, and isn't tied to a column. Declare them by overriding `filters()`:
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Tables\Filters\DateRangeFilter;
-use Lattice\Lattice\Tables\Filters\SelectFilter;
-use Lattice\Lattice\Tables\Filters\TernaryFilter;
-use Lattice\Lattice\Tables\Filters\ToggleFilter;
+use Lattice\Table\Filters\DateRangeFilter;
+use Lattice\Table\Filters\SelectFilter;
+use Lattice\Table\Filters\TernaryFilter;
+use Lattice\Table\Filters\ToggleFilter;
 
 public function filters(): array
 {
@@ -179,7 +179,7 @@ lookup is a search sub-request to the table endpoint with a namespaced `_target`
 filter — so filter keys and dot-keyed relation columns can never collide:
 
 ```php
-use Lattice\Lattice\Core\EloquentOptions;
+use Lattice\EloquentOptions;
 
 SelectFilter::make('author')
     ->optionsFrom(EloquentOptions::make(Author::class)->label('name'))
@@ -194,10 +194,10 @@ rules before `apply()` receives the sanitized `FormData`.
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Forms\Components\NumberInput;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Attributes\AsFilter;
-use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Form\Components\NumberInput;
+use Lattice\Form\FormData;
+use Lattice\Table\Attributes\AsFilter;
+use Lattice\Table\Filters\Filter;
 
 #[AsFilter('filter.price-band')]
 final class PriceBandFilter extends Filter

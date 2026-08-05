@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Effects\EffectFlasher;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Http\LatticeResponse;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Effects\EffectFlasher;
+use Lattice\Facades\Effects;
+use Lattice\Http\LatticeResponse;
+use Lattice\Ui\Enums\Variant;
 
 beforeEach(function (): void {
     app()->forgetScopedInstances();

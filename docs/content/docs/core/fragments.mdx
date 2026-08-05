@@ -42,10 +42,10 @@ Extend `FragmentDefinition` and build its `schema()`, the same way a page does. 
 attribute registers it.
 
 ```php
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Ui\Components\Text;
+use Lattice\Core\PageSchema;
+use Lattice\Fragments\FragmentDefinition;
 
 #[AsFragment('app.two-factor-setup')]
 class TwoFactorSetupFragment extends FragmentDefinition
@@ -63,7 +63,7 @@ Render it with `Fragment::lazy()`, passing the definition class. The page ships 
 fragment fetches its own schema from its endpoint when it mounts.
 
 ```php
-use Lattice\Lattice\Fragments\Components\Fragment;
+use Lattice\Fragments\Components\Fragment;
 
 Fragment::lazy(TwoFactorSetupFragment::class);
 ```

@@ -4,9 +4,9 @@ declare(strict_types=1);
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\DateTimeInput;
-use Lattice\Lattice\Forms\FieldValidator;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\DateTimeInput;
+use Lattice\Form\FieldValidator;
 
 it('serializes a datetime input', function (): void {
     $node = wire(DateTimeInput::make('starts_at', 'Starts at')

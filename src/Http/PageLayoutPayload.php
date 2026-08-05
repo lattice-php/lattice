@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Http;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Ui\Components\Component;
 
 /**
  * A page's resolved layout: the layout key plus its rendered component tree,

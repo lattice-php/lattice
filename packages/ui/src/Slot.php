@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui;
+namespace Lattice\Ui;
 
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Contracts\SchemaEntry;
 
 final class Slot implements SchemaEntry
 {

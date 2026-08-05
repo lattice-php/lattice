@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Textarea;
 
 it('serializes a textarea', function (): void {
     $node = wire(Textarea::make('bio', 'Bio')->rows(4)->placeholder('Tell us about yourself'));

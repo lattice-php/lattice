@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\Components\Field;
+use Lattice\Form\FormData;
 
 function makeField(string $name = 'price', string $label = 'Price'): Field
 {

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Theme;
+namespace Lattice\Theme;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorKind;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorKind;
 
 /**
  * A brand colour and its companions — foreground, hover, active — as one

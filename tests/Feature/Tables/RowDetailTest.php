@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Table\Components\Table;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Fragments\SalesOrderLinesFragment;
 use Workbench\App\Models\BusinessPartner;
 use Workbench\App\Models\Product;

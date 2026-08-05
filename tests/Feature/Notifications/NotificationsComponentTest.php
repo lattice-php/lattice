@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Notifications\Components\Notifications;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Notifications\Components\Notifications;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\actingAs;

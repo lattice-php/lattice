@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Choice;
 
 it('serializes the shared focus options', function (): void {
     $node = wire(Choice::make('plan', 'Plan')->autoFocus()->tabIndex(2));

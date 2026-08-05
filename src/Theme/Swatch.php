@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Theme;
+namespace Lattice\Theme;
 
-use Lattice\Lattice\Core\Color;
+use Lattice\Core\Color;
 
 /**
  * Curated brand-colour presets: a tuned base for light mode, a lighter

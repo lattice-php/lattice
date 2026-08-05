@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages\Fields;
 
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Form\Components\Form;
+use Lattice\Form\FormDefinition;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
 abstract class FieldPage extends WorkbenchPage

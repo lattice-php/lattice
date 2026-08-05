@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns;
+namespace Lattice\Table\Columns;
 
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\WireEnvelope;
-use Lattice\Lattice\Tables\Contracts\Filterable;
-use Lattice\Lattice\Tables\Contracts\Sortable;
-use Lattice\Lattice\Tables\Enums\ColumnAlign;
-use Lattice\Lattice\Tables\RelationBinding;
-use Lattice\Lattice\Ui\Components\Concerns\SerializesWireNode;
-use Lattice\Lattice\Ui\Concerns\GatesRendering;
-use Lattice\Lattice\Ui\Concerns\HasLabel;
-use Lattice\Lattice\Ui\Contracts\Renderable;
-use Lattice\Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Core\Attributes\WireEnvelope;
+use Lattice\Table\Contracts\Filterable;
+use Lattice\Table\Contracts\Sortable;
+use Lattice\Table\Enums\ColumnAlign;
+use Lattice\Table\RelationBinding;
+use Lattice\Ui\Components\Concerns\SerializesWireNode;
+use Lattice\Ui\Concerns\GatesRendering;
+use Lattice\Ui\Concerns\HasLabel;
+use Lattice\Ui\Contracts\Renderable;
+use Lattice\Ui\Enums\ColumnWidth;
 
 /**
  * @phpstan-consistent-constructor

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Form;
 
-use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Form\Components\Field;
 
 final readonly class FormFieldInstance
 {

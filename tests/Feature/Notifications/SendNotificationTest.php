@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Notifications\LatticeNotification;
-use Lattice\Lattice\Notifications\Notification;
+use Lattice\Notifications\LatticeNotification;
+use Lattice\Notifications\Notification;
 
 test('send persists a lattice payload to the native notifications table', function (): void {
     $user = workbenchTestUser();

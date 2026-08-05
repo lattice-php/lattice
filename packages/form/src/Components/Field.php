@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Closure;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Facades\Evaluate;
-use Lattice\Lattice\Forms\Conditions\Condition;
-use Lattice\Lattice\Forms\Conditions\ConditionSet;
-use Lattice\Lattice\Forms\Conditions\FieldConditions;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Support\Evaluation\EvaluationContext;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Concerns\HasLabel;
-use Lattice\Lattice\Ui\Concerns\HasTooltip;
-use Lattice\Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\Support\Evaluation\EvaluationContext;
+use Lattice\Facades\Evaluate;
+use Lattice\Form\Conditions\Condition;
+use Lattice\Form\Conditions\ConditionSet;
+use Lattice\Form\Conditions\FieldConditions;
+use Lattice\Form\FormData;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Concerns\HasLabel;
+use Lattice\Ui\Concerns\HasTooltip;
+use Lattice\Ui\Enums\ColumnWidth;
 
 abstract class Field extends Component
 {

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Tests\Fixtures\Discovery;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Remote\BrowserToken;
-use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
-use Lattice\Lattice\Remote\RemoteSourceDefinition;
+use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Remote\BrowserToken;
+use Lattice\Remote\RemoteSchemaEndpoint;
+use Lattice\Remote\RemoteSourceDefinition;
 
 #[AsRemoteSource('fixtures.remote-crm')]
 final class RemoteSchemaSource extends RemoteSourceDefinition

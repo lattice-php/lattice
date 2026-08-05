@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Components\Concerns\HasMinMax;
-use Lattice\Lattice\Forms\Components\Concerns\HasStep;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Forms\Rules\TimeString;
-use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
-use Lattice\Lattice\Ui\Concerns\HasTabIndex;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Components\Concerns\HasMinMax;
+use Lattice\Form\Components\Concerns\HasStep;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Form\Rules\TimeString;
+use Lattice\Ui\Concerns\HasAutoFocus;
+use Lattice\Ui\Concerns\HasTabIndex;
 
 #[AsField(FieldType::TimeInput)]
 class TimeInput extends Field

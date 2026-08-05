@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Concerns;
+namespace Lattice\Ui\Concerns;
 
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorName;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorName;
 
 trait HasColor
 {

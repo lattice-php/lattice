@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Form;
 
 use Generator;
 use Illuminate\Support\Arr;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
+use Lattice\Form\Components\Field;
+use Lattice\Form\Contracts\ProvidesRowFields;
 
 final class FormSchemaWalker
 {

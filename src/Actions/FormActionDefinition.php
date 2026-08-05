@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions;
+namespace Lattice\Actions;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Form\Components\Form;
 
 /**
  * An action whose form is built per request and rendered lazily in a modal. The

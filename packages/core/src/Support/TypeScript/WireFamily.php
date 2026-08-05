@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Core\Support\TypeScript;
 
 use Illuminate\Support\Str;
-use Lattice\Lattice\Attributes\WireType;
+use Lattice\Core\Attributes\WireType;
 
 /**
  * One wire-type family contributed by a package provider.

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Ui\Components\Concerns\SealsReferences;
+use Lattice\Ui\Components\Concerns\SealsReferences;
 
 trait IsInteractive
 {

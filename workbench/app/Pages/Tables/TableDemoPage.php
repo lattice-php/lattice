@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages\Tables;
 
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Table\Components\Table;
+use Lattice\Table\TableDefinition;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
 abstract class TableDemoPage extends WorkbenchPage

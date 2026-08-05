@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests;
+namespace Lattice\Tests;
 
 use Bambamboole\LaravelI18Next\I18NextServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
-use Lattice\Lattice\LatticeServiceProvider;
-use Lattice\Lattice\Support\Testing\InteractsWithLatticeComponents;
+use Lattice\LatticeServiceProvider;
+use Lattice\Support\Testing\InteractsWithLatticeComponents;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as BaseTestCase;

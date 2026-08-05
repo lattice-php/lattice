@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages;
 
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Breadcrumb;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Core\Breadcrumb;
+use Lattice\Form\Components\Form;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\Product;
 

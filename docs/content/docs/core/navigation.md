@@ -32,7 +32,7 @@ links to — a renamed route updates the link with no extra work.
 A menu item can submit with a non-GET method — useful for a logout link — by setting `->method()`:
 
 ```php
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\Enums\HttpMethod;
 
 MenuItem::make('Log out')->href(route('logout', absolute: false))->icon('log-out')->method(HttpMethod::Post);
 ```
@@ -44,9 +44,9 @@ A `Button` can dispatch effects on the client when clicked — no request to the
 the toggle button can live anywhere (here, in the `Topbar`):
 
 ```php
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Facades\Effects;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Facades\Effects;
 
 Button::make('Toggle sidebar', 'sidebar-toggle')
     ->icon('panel-left')
@@ -63,11 +63,11 @@ toast, reset a form) without a round-trip.
 without nesting them in the sidebar tree:
 
 ```php
-use Lattice\Lattice\Ui\Components\Icon;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Placement;
-use Lattice\Lattice\Layouts\Components\Dropdown;
-use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\Icon;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Placement;
+use Lattice\Layouts\Components\Dropdown;
+use Lattice\Layouts\Components\MenuItem;
 
 Dropdown::make('account-menu')
     ->placement(Placement::Bottom)
@@ -87,7 +87,7 @@ Dropdown::make('account-menu')
 team glyph, or badge when a dedicated Lattice component would be too specific:
 
 ```php
-use Lattice\Lattice\Ui\Components\RawBlock;
+use Lattice\Ui\Components\RawBlock;
 
 RawBlock::make('avatar')->blade('components.avatar', [
     'name' => $user->name,
@@ -107,12 +107,12 @@ Build user menus from the same dropdown shell. The avatar, identity text, and me
 server-driven, so there is no dedicated frontend component:
 
 ```php
-use Lattice\Lattice\Ui\Components\RawBlock;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Placement;
-use Lattice\Lattice\Layouts\Components\Dropdown;
-use Lattice\Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\RawBlock;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Placement;
+use Lattice\Layouts\Components\Dropdown;
+use Lattice\Layouts\Components\MenuItem;
 
 $user = $request->user();
 
@@ -143,7 +143,7 @@ reads whatever the active page returns from `Page::breadcrumbs()`, so drop it on
 header bar is the usual spot) and every page fills it in:
 
 ```php
-use Lattice\Lattice\Layouts\Components\Breadcrumbs;
+use Lattice\Layouts\Components\Breadcrumbs;
 
 Stack::make('app-main')->width(Width::Fill)->schema([
     Breadcrumbs::make(),
@@ -158,16 +158,16 @@ full-height `Stack` with `->justify(Justify::Between)`. A column `Stack` lays ou
 giving it a `justify` switches it to a flex column so the space distributes:
 
 ```php
-use Lattice\Lattice\Ui\Enums\Justify;
-use Lattice\Lattice\Ui\Enums\Placement;
-use Lattice\Lattice\Ui\Enums\Width;
-use Lattice\Lattice\Ui\Components\RawBlock;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Layouts\Components\Dropdown;
-use Lattice\Lattice\Layouts\Components\Menu;
-use Lattice\Lattice\Layouts\Components\MenuItem;
-use Lattice\Lattice\Layouts\Components\Sidebar;
+use Lattice\Ui\Enums\Justify;
+use Lattice\Ui\Enums\Placement;
+use Lattice\Ui\Enums\Width;
+use Lattice\Ui\Components\RawBlock;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Layouts\Components\Dropdown;
+use Lattice\Layouts\Components\Menu;
+use Lattice\Layouts\Components\MenuItem;
+use Lattice\Layouts\Components\Sidebar;
 
 Sidebar::make('app-sidebar')->collapsible()->items([
     Stack::make('sidebar-body')->width(Width::Fill)->justify(Justify::Between)->schema([

@@ -31,7 +31,7 @@ Apply `InteractsWithLatticeComponents` once in your base `TestCase`. It bundles
 helpers:
 
 ```php
-use Lattice\Lattice\Support\Testing\InteractsWithLatticeComponents;
+use Lattice\Support\Testing\InteractsWithLatticeComponents;
 
 abstract class TestCase extends \Tests\TestCase
 {
@@ -42,7 +42,7 @@ abstract class TestCase extends \Tests\TestCase
 …or per file in Pest:
 
 ```php
-uses(Lattice\Lattice\Support\Testing\InteractsWithLatticeComponents::class);
+uses(Lattice\Support\Testing\InteractsWithLatticeComponents::class);
 ```
 
 :::note
@@ -57,8 +57,8 @@ They produce the same fluent assertions; pick the one that fits the test.
 **Against a component you build in the test** — fast, no HTTP:
 
 ```php
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\TextInput;
 
 $form = Form::make('product')->action('/products')->schema([
     TextInput::make('name', 'Name'),
@@ -92,8 +92,8 @@ From the root you navigate to a component, then assert on it. Pass a closure to 
 group of assertions and keep chaining from the root; omit it to get the node back directly.
 
 ```php
-use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
-use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
+use Lattice\Support\Testing\Assertions\FormAssertions;
+use Lattice\Support\Testing\Assertions\FieldAssertions;
 
 $this->assertLatticeComponent($form)
     ->form('product', fn (FormAssertions $form) => $form
@@ -121,8 +121,8 @@ Anywhere a `type` is accepted you may pass the component class instead of its wi
 resolves to the declared type, so a rename or typo is caught by the compiler:
 
 ```php
-use Lattice\Lattice\Layouts\Components\MenuItem;
-use Lattice\Lattice\Layouts\Components\Topbar;
+use Lattice\Layouts\Components\MenuItem;
+use Lattice\Layouts\Components\Topbar;
 
 $this->assertLatticeLayout($this->get('/'))
     ->component(Topbar::class, tap: fn ($topbar) => $topbar->assertProp('sticky', true))
@@ -178,7 +178,7 @@ Field assertions: `assertVisibleWhen($state)` / `assertHiddenWhen($state)`,
 you pass:
 
 ```php
-use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Core\Enums\Op;
 
 $field = TextInput::make('sku')->visibleWhen('type', 'physical');
 
@@ -196,10 +196,10 @@ wins, otherwise the field's own `->value()` — matching the bound-edit runtime 
 ## Tables and filters
 
 ```php
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Tables\Enums\FilterType;
-use Lattice\Lattice\Support\Testing\Assertions\TableAssertions;
-use Lattice\Lattice\Support\Testing\Assertions\FilterAssertions;
+use Lattice\Core\Enums\Op;
+use Lattice\Table\Enums\FilterType;
+use Lattice\Support\Testing\Assertions\TableAssertions;
+use Lattice\Support\Testing\Assertions\FilterAssertions;
 
 $this->assertLatticePage($this->get('/products'))
     ->table('products', fn (TableAssertions $table) => $table
@@ -216,8 +216,8 @@ $this->assertLatticePage($this->get('/products'))
 ## Actions
 
 ```php
-use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Support\Testing\Assertions\ActionAssertions;
+use Lattice\Ui\Enums\Variant;
+use Lattice\Support\Testing\Assertions\ActionAssertions;
 
 $this->assertLatticeComponent($action)
     ->action('archive', fn (ActionAssertions $action) => $action
@@ -258,7 +258,7 @@ Action responses also provide typed assertions for [effects](/actions/effects/),
 independent of wire discriminators and payload structure:
 
 ```php
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Ui\Enums\Variant;
 
 $this->callAction(SaveProfile::class, ['name' => 'Taylor'])
     ->assertOk()

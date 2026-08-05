@@ -1,6 +1,6 @@
 # Closure Utility Injection
 
-- Consumer closures are evaluated via the `Evaluate` facade (`Lattice\Lattice\Facades\Evaluate`),
+- Consumer closures are evaluated via the `Evaluate` facade (`Lattice\Facades\Evaluate`),
   which resolves parameters by **name** (context utilities) and by **type** (Laravel container DI).
   Non-closures pass through unchanged.
 - Form-field utilities: `$state` (full `FormData`), `$get($key, $default)` (read any field),

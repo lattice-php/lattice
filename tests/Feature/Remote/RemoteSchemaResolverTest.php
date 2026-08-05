@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Http;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Remote\InvalidRemoteSchema;
-use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
-use Lattice\Lattice\Tests\Fixtures\Discovery\RemoteSchemaSource;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Remote\InvalidRemoteSchema;
+use Lattice\Remote\RemoteSchemaEndpoint;
+use Lattice\Tests\Fixtures\Discovery\RemoteSchemaSource;
 
 afterEach(function (): void {
     RemoteSchemaSource::reset();

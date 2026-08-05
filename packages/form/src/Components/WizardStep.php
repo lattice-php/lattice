@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Illuminate\Support\Str;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\ContainerComponent;
 
 #[AsComponent('wizard-step')]
 class WizardStep extends ContainerComponent

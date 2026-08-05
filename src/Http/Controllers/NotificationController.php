@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers;
+namespace Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Notifications\NotificationItem;
-use Lattice\Lattice\Notifications\NotificationList;
-use Lattice\Lattice\Notifications\Support\ActionDescriptor;
-use Lattice\Lattice\Notifications\UnreadCount;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Notifications\NotificationItem;
+use Lattice\Notifications\NotificationList;
+use Lattice\Notifications\Support\ActionDescriptor;
+use Lattice\Notifications\UnreadCount;
+use Lattice\Ui\Enums\Variant;
 
 final class NotificationController
 {

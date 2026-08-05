@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing\Assertions;
+namespace Lattice\Support\Testing\Assertions;
 
-use Lattice\Lattice\Support\Testing\ComponentNode;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Support\Testing\ComponentNode;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Variant;
 use PHPUnit\Framework\Assert;
 
 final readonly class ActionAssertions

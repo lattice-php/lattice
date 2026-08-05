@@ -5,13 +5,13 @@ namespace Workbench\App\Actions;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsBulkAction;
+use Lattice\Form\Components\Textarea;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
 
 #[AsBulkAction('workbench.products.reject-selected')]

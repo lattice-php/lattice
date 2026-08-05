@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Http;
 
 use BackedEnum;
 use Closure;
 use Illuminate\Contracts\Support\Responsable;
-use Lattice\Lattice\Effects\Concerns\QueuesEffects;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Effects\Concerns\QueuesEffects;
+use Lattice\Facades\Effects;
+use Lattice\Ui\Effects\Effect;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Notifications\Notification;
+use Lattice\Notifications\Notification;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\deleteJson;

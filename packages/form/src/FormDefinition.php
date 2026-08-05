@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Form;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
+use Lattice\Core\Definition;
+use Lattice\Form\Components\Field;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Concerns\ResolvesFormFields;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class FormDefinition extends Definition

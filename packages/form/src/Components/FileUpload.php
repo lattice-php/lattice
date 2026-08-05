@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Closure;
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -9,12 +9,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\Rules\FileUploadItem;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Form\FormData;
+use Lattice\Form\Rules\FileUploadItem;
+use Lattice\Ui\Enums\HttpMethod;
 use RuntimeException;
 use Throwable;
 

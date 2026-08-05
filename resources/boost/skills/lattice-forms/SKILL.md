@@ -13,10 +13,10 @@ Extend `FormDefinition` and implement `definition()` (build the schema) and `han
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('app.profile.form')]
@@ -44,7 +44,7 @@ The schema accepts fields and layout containers (`Card`, `Grid`, `Stack`) in any
 
 ## Fields
 
-Built-in fields live in `Lattice\Lattice\Forms\Components`: `TextInput`, `Textarea`, `Select`, `Choice`, `Checkbox`, `DateInput`, `NumberInput`, `PasswordInput`, `HiddenInput`, `RichEditor`, `Repeater`. Create one with `Field::make('name', 'Label')` (label optional).
+Built-in fields live in `Lattice\Form\Components`: `TextInput`, `Textarea`, `Select`, `Choice`, `Checkbox`, `DateInput`, `NumberInput`, `PasswordInput`, `HiddenInput`, `RichEditor`, `Repeater`. Create one with `Field::make('name', 'Label')` (label optional).
 
 Options shared by **every** field (they extend the base `Field`):
 
@@ -63,8 +63,8 @@ Options shared by **every** field (they extend the base `Field`):
 `Select` (a dropdown) and `Choice` (inline radio-style, for a handful of options) are populated the same way — `->options([...])` of label/value pairs built with the field's own `option()` helper, or `->enum()` from a backed enum:
 
 ```php
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Form\Components\Choice;
+use Lattice\Form\Components\Select;
 
 Select::make('status', 'Status')
     ->placeholder('Pick a status')
@@ -119,7 +119,7 @@ TextInput::make('coupon')->readOnlyWhen('plan', 'enterprise');
 TextInput::make('coupon')->disabledWhen('billing', 'invoice');
 ```
 
-Pass an array to match any value (`->visibleWhen('country', ['DE', 'AT', 'CH'])`), or an operator string / `Lattice\Lattice\Core\Enums\Op` case as the middle argument (`->requiredWhen('age', '<', 18)`). Operators include `=`, `!=`, `>`, `<`, `contains`, `starts_with`, `in`, `empty`, `before`/`after`. Conditions are evaluated on the client **and** re-checked on the server.
+Pass an array to match any value (`->visibleWhen('country', ['DE', 'AT', 'CH'])`), or an operator string / `Lattice\Core\Enums\Op` case as the middle argument (`->requiredWhen('age', '<', 18)`). Operators include `=`, `!=`, `>`, `<`, `contains`, `starts_with`, `in`, `empty`, `before`/`after`. Conditions are evaluated on the client **and** re-checked on the server.
 
 Compute a value from the form data instead of typing it:
 
@@ -142,8 +142,8 @@ TextInput::make('total', 'Total')->dependsOn(
 Render with `Form::use(MyForm::class)` inside a page's component tree, configured fluently:
 
 ```php
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Form\Components\Form;
 
 Form::use(ProfileForm::class)
     ->method(HttpMethod::Patch)   // post by default

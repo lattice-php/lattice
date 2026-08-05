@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\RichEditor;
+namespace Lattice\Tests\Fixtures\RichEditor;
 
 use Tiptap\Core\Node;
 use Tiptap\Utils\HTML;

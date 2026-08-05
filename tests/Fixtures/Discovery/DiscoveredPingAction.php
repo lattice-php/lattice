@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Tests\Fixtures\Discovery;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Ui\Enums\HttpMethod;
 
 #[AsAction('fixtures.ping')]
 class DiscoveredPingAction extends ActionDefinition

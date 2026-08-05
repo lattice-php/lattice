@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
 use Closure;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Tables\Contracts\TableSource;
+use Lattice\Table\Contracts\TableSource;
 
 /**
  * A table source defined by closures, for tables that build their own result

@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Tests\Fixtures\Discovery;
 
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
 
 #[AsFragment('fixtures.panel')]
 class DiscoveredPanelFragment extends FragmentDefinition

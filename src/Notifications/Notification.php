@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Notifications;
+namespace Lattice\Notifications;
 
 use BackedEnum;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Notifications\Support\ActionDescriptor;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Support\Wire;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Notifications\Support\ActionDescriptor;
+use Lattice\Ui\Enums\Variant;
 
 final class Notification
 {

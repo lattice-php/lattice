@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Form;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

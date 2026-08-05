@@ -3,22 +3,22 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages\Components;
 
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Ui\Components\Badge;
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Components\Card;
-use Lattice\Lattice\Ui\Components\Collapsible;
-use Lattice\Lattice\Ui\Components\Grid;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Section;
-use Lattice\Lattice\Ui\Components\Separator;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Components\Tooltip;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\StackDirection;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Ui\Components\Badge;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Card;
+use Lattice\Ui\Components\Collapsible;
+use Lattice\Ui\Components\Grid;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Section;
+use Lattice\Ui\Components\Separator;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Components\Tooltip;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
 #[AsPage(route: '/components/containers')]

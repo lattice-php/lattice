@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions\Contracts;
+namespace Lattice\Actions\Contracts;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Http\SubRequest;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\SignedUpload;
-use Lattice\Lattice\Forms\ResolveResponse;
+use Lattice\Core\Http\SubRequest;
+use Lattice\Core\Option;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\SignedUpload;
+use Lattice\Form\ResolveResponse;
 
 /**
  * An action definition that drives an embedded form: it validates the submission

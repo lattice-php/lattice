@@ -4,18 +4,18 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\Components\Wizard;
-use Lattice\Lattice\Forms\Components\WizardStep;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Http\LatticeResponse;
-use Lattice\Lattice\Ui\Components\Grid;
-use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Facades\Effects;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\Components\Wizard;
+use Lattice\Form\Components\WizardStep;
+use Lattice\Form\FormData;
+use Lattice\Form\FormDefinition;
+use Lattice\Http\LatticeResponse;
+use Lattice\Ui\Components\Grid;
+use Lattice\Ui\Components\Text;
 
 #[AsForm('workbench.checkout-wizard')]
 class CheckoutWizardForm extends FormDefinition

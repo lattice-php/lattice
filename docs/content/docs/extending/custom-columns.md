@@ -41,8 +41,8 @@ is no `toData()` and no separate props class to maintain.
 
 namespace App\Tables\Columns;
 
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Columns\Column;
 
 #[AsColumn(type: 'status-badge')]
 class StatusBadge extends Column
@@ -200,11 +200,11 @@ declare module "@lattice-php/core" {
 ```php
 use App\Tables\Columns\StatusBadge;
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Table\TableQuery;
 
 /**
  * @extends EloquentTableDefinition<\App\Models\User>

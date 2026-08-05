@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
-use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Contracts\TableSource;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Definition;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Contracts\TableSource;
+use Lattice\Table\Enums\PaginationType;
+use Lattice\Table\Filters\Filter;
+use Lattice\Ui\Components\Component;
 
 abstract class TableDefinition extends Definition
 {

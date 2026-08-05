@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Theme\Swatch;
-use Lattice\Lattice\Theme\Theme;
+use Lattice\Core\Color;
+use Lattice\Theme\Swatch;
+use Lattice\Theme\Theme;
 
 it('emits only the configured tokens into the :root block', function (): void {
     $css = Theme::make()->primary('#6366f1')->radius('0.75rem')->toCss();

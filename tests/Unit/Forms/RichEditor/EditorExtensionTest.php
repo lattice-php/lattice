@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Form\RichEditor\EditorExtension;
 
 #[AsEditorExtension('plain')]
 final class PlainSampleExtension extends EditorExtension {}

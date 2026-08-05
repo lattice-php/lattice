@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support;
+namespace Lattice\Core\Support;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Attributes\WireType;
+use Lattice\Core\Attributes\WireType;
 
 /**
  * A wire type → class-string registry for one value-object family (effects,

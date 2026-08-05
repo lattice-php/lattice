@@ -14,15 +14,15 @@ under a key, and `Outlet::make()` marks where the page's content appears:
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsLayout;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Enums\Width;
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Layouts\Components\Menu;
-use Lattice\Lattice\Layouts\Components\MenuItem;
-use Lattice\Lattice\Layouts\Components\Outlet;
-use Lattice\Lattice\Layouts\Components\Sidebar;
-use Lattice\Lattice\Layouts\LayoutDefinition;
+use Lattice\Core\Attributes\AsLayout;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Enums\Width;
+use Lattice\Core\PageSchema;
+use Lattice\Layouts\Components\Menu;
+use Lattice\Layouts\Components\MenuItem;
+use Lattice\Layouts\Components\Outlet;
+use Lattice\Layouts\Components\Sidebar;
+use Lattice\Layouts\LayoutDefinition;
 
 #[AsLayout('app')]
 final class AppLayout extends LayoutDefinition
@@ -62,7 +62,7 @@ mechanism in layouts. They are useful when a module needs to contribute navigati
 replacing the application layout:
 
 ```php
-use Lattice\Lattice\Ui\Slot;
+use Lattice\Ui\Slot;
 
 Stack::make('app-shell')->schema([
     Sidebar::make('app-sidebar')->items([
@@ -95,7 +95,7 @@ appearance switcher. Call `->sticky()` to keep it pinned to the top of the viewp
 scrolls, and `->items([...])` to fill it:
 
 ```php
-use Lattice\Lattice\Layouts\Components\Topbar;
+use Lattice\Layouts\Components\Topbar;
 
 Topbar::make('app-topbar')->sticky()->items([
     Menu::make('topbar-settings')->items([
@@ -111,7 +111,7 @@ the shell — the persistent banners an action or a redirect can raise. Place it
 the header bar and the `Outlet`:
 
 ```php
-use Lattice\Lattice\Layouts\Components\Callouts;
+use Lattice\Layouts\Components\Callouts;
 
 Stack::make('app-main')->width(Width::Fill)->schema([
     Callouts::make(),
@@ -128,8 +128,8 @@ method. Pass a [`PageLayout`](/advanced/enums/#pages) for the common shells, or 
 `#[AsLayout]` key:
 
 ```php
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Core\Enums\PageContainer;
+use Lattice\Core\Enums\PageLayout;
 
 #[AsPage(route: '/products', layout: PageLayout::App, container: PageContainer::Default)]
 class ProductsPage extends Page {}
@@ -150,7 +150,7 @@ Layouts are discovered from the paths in `config('lattice.discover')` just like 
 definitions. Register a layout that lives elsewhere explicitly:
 
 ```php
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Facades\Lattice;
 
 Lattice::layouts([AppLayout::class]);
 ```

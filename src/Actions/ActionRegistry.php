@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions;
+namespace Lattice\Actions;
 
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\DefinitionRegistry;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Attributes\DefinitionAttribute;
+use Lattice\Core\DefinitionRegistry;
 
 /**
  * @extends DefinitionRegistry<ActionDefinition>

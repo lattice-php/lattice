@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Chat\Components;
+namespace Lattice\Chat\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Remote\Components\RemoteComponent;
-use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Remote\Components\RemoteComponent;
+use Lattice\Ui\Concerns\HasPlaceholder;
 
 /**
  * A streaming chat box. Same-origin by default; call source()/audience() to

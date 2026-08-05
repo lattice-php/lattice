@@ -10,7 +10,7 @@ env:
   - AWS_USE_PATH_STYLE_ENDPOINT=true
 
 providers:
-  - Lattice\Lattice\LatticeServiceProvider
+  - Lattice\LatticeServiceProvider
   - Inertia\ServiceProvider
   - Workbench\App\Providers\WorkbenchServiceProvider
 

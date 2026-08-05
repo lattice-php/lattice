@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Testing\AssertableInertia;
-use Lattice\Lattice\Http\Page;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Http\Page;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;

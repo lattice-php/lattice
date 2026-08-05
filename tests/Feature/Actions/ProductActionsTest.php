@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Storage;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Services\ComponentReferenceSigner;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Actions\EditProductAction;

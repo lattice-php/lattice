@@ -7,23 +7,23 @@ This guide builds a single page from PHP and registers a route for it. It assume
 
 ## Define a page
 
-A page extends `Lattice\Lattice\Http\Page`. It returns a `title()` and builds its UI in `render()` by populating the `PageSchema` with components.
+A page extends `Lattice\Http\Page`. It returns a `title()` and builds its UI in `render()` by populating the `PageSchema` with components.
 
 ```php
 <?php
 
 namespace App\Pages;
 
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Ui\Components\Card;
-use Lattice\Lattice\Ui\Components\Grid;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\PageLayout;
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Http\Page as BasePage;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Ui\Components\Card;
+use Lattice\Ui\Components\Grid;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\PageSchema;
+use Lattice\Http\Page as BasePage;
 
 #[AsPage(route: '/dashboard', layout: PageLayout::None, middleware: ['web'])]
 final class DashboardPage extends BasePage
@@ -64,9 +64,9 @@ Visit `/dashboard` and the page renders through Inertia — no route file entry,
 Rather than repeating `layout:` and `middleware:` on every page, declare a shared base page and inherit from it:
 
 ```php
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Ui\Enums\PageLayout;
-use Lattice\Lattice\Http\Page as BasePage;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Core\Enums\PageLayout;
+use Lattice\Http\Page as BasePage;
 
 #[AsPage(layout: PageLayout::App, middleware: ['web'])]
 abstract class AppPage extends BasePage {}

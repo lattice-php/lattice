@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Contracts;
+namespace Lattice\Table\Contracts;
 
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableResult;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
 
 /**
  * Where a table's rows come from. Lattice ships an Eloquent source; implement

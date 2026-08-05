@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\NumberInput;
-use Lattice\Lattice\Forms\Components\PasswordInput;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Support\Affix;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Enums\Icon;
+use Lattice\Core\Support\Affix;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Choice;
+use Lattice\Form\Components\NumberInput;
+use Lattice\Form\Components\PasswordInput;
+use Lattice\Form\Components\TextInput;
+use Lattice\Ui\Enums\Icon;
 
 it('serializes a text input', function (): void {
     $node = wire(TextInput::make('name', 'Team name')->placeholder('My team')->required());

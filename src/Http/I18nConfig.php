@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Http;
 
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 #[TypeScript]
 final readonly class I18nConfig

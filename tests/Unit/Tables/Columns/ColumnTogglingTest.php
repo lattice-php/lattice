@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Tables\Columns\StackColumn;
-use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Table\Columns\StackColumn;
+use Lattice\Table\Columns\TextColumn;
 
 it('is not toggleable by default', function (): void {
     expect(wire(TextColumn::make('name'))['props'])

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui;
+namespace Lattice\Ui;
 
-use Lattice\Lattice\Core\Breadcrumb;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
-use Lattice\Lattice\Ui\Concerns\ResolvesSchemaEntries;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Core\Breadcrumb;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Ui\Concerns\ResolvesSchemaEntries;
+use Lattice\Ui\Contracts\SchemaEntry;
 
 final class PageSchema
 {

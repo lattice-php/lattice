@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Concerns;
+namespace Lattice\Form\Concerns;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Core\Http\SubRequest;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\Components\FileUpload;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\Components\SignedUpload;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\FormSchemaWalker;
-use Lattice\Lattice\Forms\ResolveResponse;
+use Lattice\Core\Http\SubRequest;
+use Lattice\Core\Option;
+use Lattice\Form\Components\Field;
+use Lattice\Form\Components\FileUpload;
+use Lattice\Form\Components\Select;
+use Lattice\Form\Components\SignedUpload;
+use Lattice\Form\FormData;
+use Lattice\Form\FormSchemaWalker;
+use Lattice\Form\ResolveResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

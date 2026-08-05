@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui;
+namespace Lattice\Ui;
 
 use Closure;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Support\Evaluation\EvaluationContext;
-use Lattice\Lattice\Support\Evaluation\Evaluator;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Support\Evaluation\EvaluationContext;
+use Lattice\Core\Support\Evaluation\Evaluator;
+use Lattice\Ui\Components\Component;
 use UnexpectedValueException;
 
 final class SlotRegistry

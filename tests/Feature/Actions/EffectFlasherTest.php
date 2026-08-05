@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 use Inertia\Inertia;
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\EffectFlasher;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Effects\EffectFlasher;
+use Lattice\Facades\Effects;
+use Lattice\Ui\Enums\Variant;
 
 test('effects accumulate across multiple flash calls', function (): void {
     Effects::flash(Effects::toast(Toast::make('Saved.', Variant::Success)));

@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions\Components;
+namespace Lattice\Actions\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
-use Lattice\Lattice\Ui\Components\IsInteractive;
-use Lattice\Lattice\Ui\Concerns\HasLabel;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
-use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Components\IsInteractive;
+use Lattice\Ui\Concerns\HasLabel;
+use Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Ui\Enums\Orientation;
 
 #[AsComponent('action.group')]
 class ActionGroup extends ContainerComponent implements InteractiveComponent

@@ -1,35 +1,35 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Closure;
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Forms\RichContent;
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Blockquote;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
-use Lattice\Lattice\Forms\RichEditor\Extensions\BulletList;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Code;
-use Lattice\Lattice\Forms\RichEditor\Extensions\CodeBlock;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Details;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Emoji;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Heading;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Highlight;
-use Lattice\Lattice\Forms\RichEditor\Extensions\HorizontalRule;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Italic;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Link;
-use Lattice\Lattice\Forms\RichEditor\Extensions\OrderedList;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Strike;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Table;
-use Lattice\Lattice\Forms\RichEditor\Extensions\TextAlign;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Underline;
-use Lattice\Lattice\Forms\RichEditor\ValidatesEditorDocument;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Form\RichContent;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Form\RichEditor\EditorExtension;
+use Lattice\Form\RichEditor\EditorExtensionRegistry;
+use Lattice\Form\RichEditor\Extensions\Blockquote;
+use Lattice\Form\RichEditor\Extensions\Bold;
+use Lattice\Form\RichEditor\Extensions\BulletList;
+use Lattice\Form\RichEditor\Extensions\Code;
+use Lattice\Form\RichEditor\Extensions\CodeBlock;
+use Lattice\Form\RichEditor\Extensions\Details;
+use Lattice\Form\RichEditor\Extensions\Emoji;
+use Lattice\Form\RichEditor\Extensions\Heading;
+use Lattice\Form\RichEditor\Extensions\Highlight;
+use Lattice\Form\RichEditor\Extensions\HorizontalRule;
+use Lattice\Form\RichEditor\Extensions\Italic;
+use Lattice\Form\RichEditor\Extensions\Link;
+use Lattice\Form\RichEditor\Extensions\OrderedList;
+use Lattice\Form\RichEditor\Extensions\Strike;
+use Lattice\Form\RichEditor\Extensions\Table;
+use Lattice\Form\RichEditor\Extensions\TextAlign;
+use Lattice\Form\RichEditor\Extensions\Underline;
+use Lattice\Form\RichEditor\ValidatesEditorDocument;
+use Lattice\Ui\Concerns\HasPlaceholder;
 
 #[AsField(FieldType::RichEditor)]
 class RichEditor extends Field

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice;
+namespace Lattice;
 
 use BackedEnum;
 use Illuminate\Contracts\Http\Kernel;
@@ -12,41 +12,41 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
-use Lattice\Lattice\Actions\ActionRegistry;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Attributes\AsLayout;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Console\Commands\DiscoverCacheCommand;
-use Lattice\Lattice\Console\Commands\DiscoverClearCommand;
-use Lattice\Lattice\Console\Commands\MakeColumnCommand;
-use Lattice\Lattice\Console\Commands\MakeComponentCommand;
-use Lattice\Lattice\Console\Commands\MakeDefinitionCommand;
-use Lattice\Lattice\Console\Commands\MakeFieldCommand;
-use Lattice\Lattice\Console\Commands\PruneNotificationsCommand;
-use Lattice\Lattice\Console\Commands\PublishAssetsCommand;
-use Lattice\Lattice\Console\Commands\TypeScriptCommand;
-use Lattice\Lattice\Core\Discovery\ComponentPackages;
-use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Effects\EffectFlasher;
-use Lattice\Lattice\Effects\EffectRegistry;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\FormsServiceProvider;
-use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\Http\Middleware\SetLocale;
-use Lattice\Lattice\Http\PageRegistry;
-use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Lattice\Support\Frontend\StandaloneAssets;
-use Lattice\Lattice\Support\TypeScript\AugmentProfile;
-use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Tables\TablesServiceProvider;
-use Lattice\Lattice\Theme\ThemeRenderer;
-use Lattice\Lattice\Ui\UiServiceProvider;
+use Lattice\Actions\ActionRegistry;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Actions\Components\Action;
+use Lattice\Console\Commands\DiscoverCacheCommand;
+use Lattice\Console\Commands\DiscoverClearCommand;
+use Lattice\Console\Commands\MakeColumnCommand;
+use Lattice\Console\Commands\MakeComponentCommand;
+use Lattice\Console\Commands\MakeDefinitionCommand;
+use Lattice\Console\Commands\MakeFieldCommand;
+use Lattice\Console\Commands\PruneNotificationsCommand;
+use Lattice\Console\Commands\PublishAssetsCommand;
+use Lattice\Console\Commands\TypeScriptCommand;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Attributes\AsBulkAction;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Core\Attributes\AsLayout;
+use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Core\Discovery\ComponentPackages;
+use Lattice\Core\Discovery\DiscoveryKinds;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Effects\EffectFlasher;
+use Lattice\Effects\EffectRegistry;
+use Lattice\Form\FormServiceProvider;
+use Lattice\Fragments\FragmentRegistry;
+use Lattice\Http\Middleware\SetLocale;
+use Lattice\Http\PageRegistry;
+use Lattice\Layouts\LayoutRegistry;
+use Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Support\Frontend\StandaloneAssets;
+use Lattice\Support\TypeScript\AugmentProfile;
+use Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Table\TableServiceProvider;
+use Lattice\Theme\ThemeRenderer;
+use Lattice\Ui\UiServiceProvider;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -75,8 +75,8 @@ final class LatticeServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->app->register(UiServiceProvider::class);
-        $this->app->register(FormsServiceProvider::class);
-        $this->app->register(TablesServiceProvider::class);
+        $this->app->register(FormServiceProvider::class);
+        $this->app->register(TableServiceProvider::class);
         Lattice::wireSource(__DIR__);
 
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);

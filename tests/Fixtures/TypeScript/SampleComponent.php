@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
+namespace Lattice\Tests\Fixtures\TypeScript;
 
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\ContainerComponent;
 
 #[AsComponent('sample.widget')]
 class SampleComponent extends ContainerComponent

@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Layouts\Components;
+namespace Lattice\Layouts\Components;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\PageRoute;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
-use Lattice\Lattice\Ui\Concerns\HasAffixes;
-use Lattice\Lattice\Ui\Concerns\HasIcon;
-use Lattice\Lattice\Ui\Concerns\Triggerable;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\PageRoute;
+use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Concerns\HasAffixes;
+use Lattice\Ui\Concerns\HasIcon;
+use Lattice\Ui\Concerns\Triggerable;
+use Lattice\Ui\Contracts\SchemaEntry;
 
 /**
  * A single menu entry. Renders an Inertia link when it has an href, triggers a

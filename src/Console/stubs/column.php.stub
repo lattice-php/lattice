@@ -2,8 +2,8 @@
 
 namespace {{ namespace }};
 
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Columns\Column;
 
 #[AsColumn(type: '{{ type }}')]
 class {{ class }} extends Column

@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Components\Form;
 use Workbench\App\Forms\BusinessPartnerForm;
 use Workbench\App\Models\Address;
 use Workbench\App\Models\BusinessPartner;

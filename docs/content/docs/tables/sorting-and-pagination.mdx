@@ -44,7 +44,7 @@ Override `pagination()` to choose how rows are paged, and `perPage()` for the pa
 | `PaginationType::None`     | Returns every row, no pagination.                     |
 
 ```php
-use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Table\Enums\PaginationType;
 
 public function pagination(): PaginationType
 {
@@ -69,7 +69,7 @@ fixed page sizes; `PaginationType::Infinite` lets the user switch the table to i
 the fly — and back to numbered pages.
 
 ```php
-use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Table\Enums\PaginationType;
 
 public function perPageOptions(): array
 {

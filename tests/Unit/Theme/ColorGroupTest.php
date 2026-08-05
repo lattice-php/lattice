@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Theme\ColorGroup;
-use Lattice\Lattice\Theme\Swatch;
-use Lattice\Lattice\Theme\Theme;
+use Lattice\Core\Color;
+use Lattice\Theme\ColorGroup;
+use Lattice\Theme\Swatch;
+use Lattice\Theme\Theme;
 
 it('builds a group from a string base and fills slots through withers', function (): void {
     $group = ColorGroup::make('#4f46e5')

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components\Concerns;
+namespace Lattice\Form\Components\Concerns;
 
-use Lattice\Lattice\Forms\Components\RowAction;
-use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Form\Components\RowAction;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 trait HasRowActions
 {

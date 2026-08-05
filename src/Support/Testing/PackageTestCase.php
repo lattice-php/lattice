@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing;
+namespace Lattice\Support\Testing;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\ServiceProvider;
 use Inertia\ServiceProvider as InertiaServiceProvider;
-use Lattice\Lattice\LatticeServiceProvider;
+use Lattice\LatticeServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 use function Orchestra\Testbench\package_path;

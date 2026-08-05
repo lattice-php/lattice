@@ -13,7 +13,7 @@ it('scaffolds a component class with the AsComponent attribute and registers it'
         $php = File::get(app_path('Ui/Components/Rating.php'));
         expect($php)
             ->toContain('namespace App\\Ui\\Components;')
-            ->toContain('use Lattice\\Lattice\\Attributes\\AsComponent;')
+            ->toContain('use Lattice\\Core\\Attributes\\AsComponent;')
             ->toContain("#[AsComponent('rating')]")
             ->toContain('class Rating extends Component');
 

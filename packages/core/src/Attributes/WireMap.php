@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Attributes;
+namespace Lattice\Core\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
 
 /**
  * Marks an array wire prop as a map (`Record<…, X>` on the TS side) so it

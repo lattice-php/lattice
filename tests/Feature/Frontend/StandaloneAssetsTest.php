@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Support\Frontend\StandaloneAssets;
-use Lattice\Lattice\Theme\Theme;
-use Lattice\Lattice\Theme\ThemeRenderer;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Support\Frontend\StandaloneAssets;
+use Lattice\Theme\Theme;
+use Lattice\Theme\ThemeRenderer;
 
 beforeEach(function (): void {
     $this->publicPath = sys_get_temp_dir().'/lattice-directives-public-'.uniqid();

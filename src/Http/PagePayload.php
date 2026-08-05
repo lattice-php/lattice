@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Http;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Breadcrumb;
-use Lattice\Lattice\Realtime\Listen;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Breadcrumb;
+use Lattice\Realtime\Listen;
+use Lattice\Ui\Components\Component;
 
 /**
  * The `lattice` prop the server hydrates onto every Inertia page render. Holds

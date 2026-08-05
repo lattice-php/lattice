@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Concerns;
+namespace Lattice\Ui\Concerns;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Effects\Effect;
 
 /**
  * The shared click surface for clickable components (Link, Button, MenuItem): a

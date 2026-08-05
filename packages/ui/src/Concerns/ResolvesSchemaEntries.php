@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Concerns;
+namespace Lattice\Ui\Concerns;
 
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Contracts\SchemaEntry;
 
 trait ResolvesSchemaEntries
 {

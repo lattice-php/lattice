@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Lattice\SignatureExample\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\Component;
 
 #[AsComponent('signature')]
 final class Signature extends Component

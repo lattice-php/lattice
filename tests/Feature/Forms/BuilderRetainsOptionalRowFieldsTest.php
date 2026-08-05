@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Builder;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\RowTemplate;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FieldValidator;
+use Lattice\Form\Components\Builder;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\RowTemplate;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FieldValidator;
 
 it('retains a builder row field that declares no validation rules', function (): void {
     $field = Builder::make('items')

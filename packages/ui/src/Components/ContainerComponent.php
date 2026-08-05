@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Core\Contracts\ContainerComponent as ContainerComponentContract;
-use Lattice\Lattice\Ui\Components\Concerns\HasChildSchema;
+use Lattice\Core\Contracts\ContainerComponent as ContainerComponentContract;
+use Lattice\Ui\Components\Concerns\HasChildSchema;
 
 abstract class ContainerComponent extends Component implements ContainerComponentContract
 {

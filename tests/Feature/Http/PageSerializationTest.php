@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Breadcrumb;
-use Lattice\Lattice\Http\Page;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Core\Breadcrumb;
+use Lattice\Core\Enums\PageContainer;
+use Lattice\Core\Enums\PageLayout;
+use Lattice\Http\Page;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
 
 test('pages serialize layout and container metadata', function (): void {
     $defaultPage = new class extends Page

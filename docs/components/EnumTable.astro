@@ -30,7 +30,7 @@ for (const entry of Object.values(registry)) {
 }
 
 const shortNamespace = (namespace: string) =>
-  namespace.replace(/^Lattice\\Lattice\\/, "");
+  namespace.replace(/^Lattice\\/, "");
 
 const rows = enums.map((key) => {
   const entry = registry[key] ?? byShortName.get(key);

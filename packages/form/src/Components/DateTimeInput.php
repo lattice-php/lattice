@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Components\Concerns\HasMinMax;
-use Lattice\Lattice\Forms\Components\Concerns\HasStep;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\Rules\DateTimeWithTimezone;
-use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
-use Lattice\Lattice\Ui\Concerns\HasTabIndex;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Components\Concerns\HasMinMax;
+use Lattice\Form\Components\Concerns\HasStep;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Form\FormData;
+use Lattice\Form\Rules\DateTimeWithTimezone;
+use Lattice\Ui\Concerns\HasAutoFocus;
+use Lattice\Ui\Concerns\HasTabIndex;
 
 #[AsField(FieldType::DateTimeInput)]
 class DateTimeInput extends Field

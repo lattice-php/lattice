@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Facades;
+namespace Lattice\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lattice\Lattice\Support\Evaluation\Evaluator;
+use Lattice\Core\Support\Evaluation\Evaluator;
 
 /**
- * @method static \Lattice\Lattice\Support\Evaluation\EvaluationContext context()
- * @method static mixed resolve(mixed $value, \Lattice\Lattice\Support\Evaluation\EvaluationContext $context)
+ * @method static \Lattice\Core\Support\Evaluation\EvaluationContext context()
+ * @method static mixed resolve(mixed $value, \Lattice\Core\Support\Evaluation\EvaluationContext $context)
  *
  * @see Evaluator
  */

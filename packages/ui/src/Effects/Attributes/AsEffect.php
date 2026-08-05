@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Effects\Attributes;
+namespace Lattice\Ui\Effects\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Attributes\WireType;
+use Lattice\Core\Attributes\WireType;
 
 /**
  * Marks an effect value object and declares its wire type — the discriminant

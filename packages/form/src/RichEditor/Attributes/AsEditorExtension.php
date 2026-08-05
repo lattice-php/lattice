@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\RichEditor\Attributes;
+namespace Lattice\Form\RichEditor\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Attributes\WireType;
+use Lattice\Core\Attributes\WireType;
 
 /**
  * Marks a rich-editor extension value object and declares its wire type — the
