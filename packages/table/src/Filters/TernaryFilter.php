@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Lattice\Facades\Evaluate;
+use Lattice\Core\Facades\Evaluate;
 use Lattice\Form\Components\Select;
 use Lattice\Form\FormData;
 use Lattice\Table\Attributes\AsFilter;

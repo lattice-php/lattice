@@ -3,31 +3,13 @@ declare(strict_types=1);
 
 namespace Lattice\Core;
 
+use BadMethodCallException;
 use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Lattice\Actions\ActionDefinition;
-use Lattice\Actions\ActionRegistry;
-use Lattice\Actions\BulkActionDefinition;
-use Lattice\Actions\BulkActionRegistry;
 use Lattice\Core\Attributes\WireType;
-use Lattice\Core\Contracts\PageContract;
 use Lattice\Core\Support\TypeScript\WireFamily;
-use Lattice\Form\FormDefinition;
-use Lattice\Form\FormRegistry;
-use Lattice\Fragments\FragmentDefinition;
-use Lattice\Fragments\FragmentRegistry;
-use Lattice\Http\PageRegistry;
-use Lattice\Layouts\LayoutDefinition;
-use Lattice\Layouts\LayoutRegistry;
-use Lattice\Remote\RemoteSourceDefinition;
-use Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Table\TableDefinition;
-use Lattice\Table\TableRegistry;
-use Lattice\Theme\Theme;
-use Lattice\Theme\ThemeRenderer;
-use Lattice\Ui\SlotRegistry;
 
 final class LatticeRegistry
 {
@@ -37,7 +19,29 @@ final class LatticeRegistry
     /** @var array<string, string> */
     private array $wireSources = [];
 
+    /** @var array<string, Closure> */
+    private array $capabilities = [];
+
     public function __construct(private readonly Container $container) {}
+
+    public function registerCapability(string $name, Closure $capability): void
+    {
+        if (isset($this->capabilities[$name])) {
+            throw new InvalidArgumentException(sprintf('Lattice capability [%s] is already registered.', $name));
+        }
+
+        $this->capabilities[$name] = $capability;
+    }
+
+    /** @param list<mixed> $arguments */
+    public function __call(string $name, array $arguments): mixed
+    {
+        if (! isset($this->capabilities[$name])) {
+            throw new BadMethodCallException(sprintf('Lattice capability [%s] is not registered.', $name));
+        }
+
+        return ($this->capabilities[$name])(...$arguments);
+    }
 
     /**
      * Register a package's lang directory under a namespace, visible to both
@@ -48,88 +52,6 @@ final class LatticeRegistry
     public function translations(string $namespace, string $path): void
     {
         $this->container->make('translation.loader')->addNamespace($namespace, $path);
-    }
-
-    /**
-     * @param  class-string<FormDefinition>|array<int, class-string<FormDefinition>>  $forms
-     */
-    public function forms(string|array $forms): void
-    {
-        $this->container->make(FormRegistry::class)->register($forms);
-    }
-
-    /**
-     * @param  class-string<TableDefinition>|array<int, class-string<TableDefinition>>  $tables
-     */
-    public function tables(string|array $tables): void
-    {
-        $this->container->make(TableRegistry::class)->register($tables);
-    }
-
-    /**
-     * @param  class-string<FragmentDefinition>|array<int, class-string<FragmentDefinition>>  $fragments
-     */
-    public function fragments(string|array $fragments): void
-    {
-        $this->container->make(FragmentRegistry::class)->register($fragments);
-    }
-
-    /**
-     * @param  class-string<ActionDefinition>|array<int, class-string<ActionDefinition>>  $actions
-     */
-    public function actions(string|array $actions): void
-    {
-        $this->container->make(ActionRegistry::class)->register($actions);
-    }
-
-    /**
-     * @param  class-string<BulkActionDefinition>|array<int, class-string<BulkActionDefinition>>  $bulkActions
-     */
-    public function bulkActions(string|array $bulkActions): void
-    {
-        $this->container->make(BulkActionRegistry::class)->register($bulkActions);
-    }
-
-    /**
-     * @param  class-string<LayoutDefinition>|array<int, class-string<LayoutDefinition>>  $layouts
-     */
-    public function layouts(string|array $layouts): void
-    {
-        $this->container->make(LayoutRegistry::class)->register($layouts);
-    }
-
-    /**
-     * @param  class-string<PageContract>|array<int, class-string<PageContract>>  $pages
-     */
-    public function pages(string|array $pages): void
-    {
-        $this->container->make(PageRegistry::class)->register($pages);
-    }
-
-    /**
-     * @param  class-string<RemoteSourceDefinition>|array<int, class-string<RemoteSourceDefinition>>  $remoteSources
-     */
-    public function remoteSources(string|array $remoteSources): void
-    {
-        $this->container->make(RemoteSourceRegistry::class)->register($remoteSources);
-    }
-
-    /**
-     * @param  callable(string, Container): ?RemoteSourceDefinition  $resolver
-     */
-    public function remoteSourceResolver(callable $resolver): void
-    {
-        $this->container->make(RemoteSourceRegistry::class)->resolveUsing($resolver);
-    }
-
-    public function extend(string $name, Closure $factory, int $priority = 0): void
-    {
-        $this->container->make(SlotRegistry::class)->extend($name, $factory, $priority);
-    }
-
-    public function theme(Theme|Closure $theme): void
-    {
-        $this->container->make(ThemeRenderer::class)->register($theme);
     }
 
     /**
@@ -184,20 +106,5 @@ final class LatticeRegistry
         }
 
         throw new InvalidArgumentException(sprintf('No wire family is registered for [%s].', $attribute::class));
-    }
-
-    public function layoutRegistry(): LayoutRegistry
-    {
-        return $this->container->make(LayoutRegistry::class);
-    }
-
-    public function pageRegistry(): PageRegistry
-    {
-        return $this->container->make(PageRegistry::class);
-    }
-
-    public function remoteSourceRegistry(): RemoteSourceRegistry
-    {
-        return $this->container->make(RemoteSourceRegistry::class);
     }
 }

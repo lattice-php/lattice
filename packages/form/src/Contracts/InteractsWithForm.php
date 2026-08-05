@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Actions\Contracts;
+namespace Lattice\Form\Contracts;
 
 use Illuminate\Http\Request;
 use Lattice\Core\Http\SubRequest;
@@ -10,23 +10,14 @@ use Lattice\Form\Components\Form;
 use Lattice\Form\Components\SignedUpload;
 use Lattice\Form\ResolveResponse;
 
-/**
- * An action definition that drives an embedded form: it validates the submission
- * and answers the form sub-requests (lazy schema, option search, field resolution)
- * the modal makes against the action endpoint.
- */
 interface InteractsWithForm
 {
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public function validate(Request $request): array;
 
     public function resolveFormSchema(Request $request): ?Form;
 
-    /**
-     * @return array{options: list<Option>}
-     */
+    /** @return array{options: list<Option>} */
     public function searchOptions(Request $request, SubRequest $sub): array;
 
     public function resolveFields(Request $request): ResolveResponse;

@@ -15,6 +15,7 @@
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
+            <file>tests/StandalonePackagesTest.php</file>
         </testsuite>
         <testsuite name="Browser">
             <directory>tests/Browser</directory>

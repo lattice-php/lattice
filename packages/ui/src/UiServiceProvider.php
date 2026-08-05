@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace Lattice\Ui;
 
+use Closure;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\CoreServiceProvider;
-use Lattice\Core\Facades\Lattice;
+use Lattice\Core\LatticeRegistry;
 use Lattice\Core\Support\Evaluation\Evaluator;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Effects\Attributes\AsEffect;
@@ -22,8 +23,10 @@ final class UiServiceProvider extends ServiceProvider
         $this->app->singleton(SlotRegistry::class);
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
 
-        Lattice::wireSource(__DIR__);
-        Lattice::wireFamily('component', AsComponent::class, Component::class, marker: true);
-        Lattice::wireFamily('effect', AsEffect::class, Effect::class);
+        $lattice = $this->app->make(LatticeRegistry::class);
+        $lattice->registerCapability('extend', fn (string $name, Closure $factory, int $priority = 0) => $this->app->make(SlotRegistry::class)->extend($name, $factory, $priority));
+        $lattice->wireSource(__DIR__);
+        $lattice->wireFamily('component', AsComponent::class, Component::class, marker: true);
+        $lattice->wireFamily('effect', AsEffect::class, Effect::class);
     }
 }

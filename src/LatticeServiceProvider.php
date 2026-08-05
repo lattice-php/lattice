@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice;
 
 use BackedEnum;
+use Closure;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Console\AboutCommand;
@@ -33,6 +34,7 @@ use Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\LatticeRegistry;
 use Lattice\Effects\EffectFlasher;
 use Lattice\Effects\EffectRegistry;
 use Lattice\Form\FormServiceProvider;
@@ -45,6 +47,7 @@ use Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Table\TableServiceProvider;
+use Lattice\Theme\Theme;
 use Lattice\Theme\ThemeRenderer;
 use Lattice\Ui\UiServiceProvider;
 use Spatie\LaravelPackageTools\Package;
@@ -77,7 +80,8 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->register(UiServiceProvider::class);
         $this->app->register(FormServiceProvider::class);
         $this->app->register(TableServiceProvider::class);
-        Lattice::wireSource(__DIR__);
+        $lattice = $this->app->make(LatticeRegistry::class);
+        $lattice->wireSource(__DIR__);
 
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
 
@@ -102,6 +106,19 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(RemoteSourceRegistry::class);
         $this->app->singleton(StandaloneAssets::class);
         $this->app->singleton(ThemeRenderer::class);
+
+        $lattice->registerCapability('fragments', fn (string|array $fragments) => $this->app->make(FragmentRegistry::class)->register($fragments));
+        $lattice->registerCapability('actions', fn (string|array $actions) => $this->app->make(ActionRegistry::class)->register($actions));
+        $lattice->registerCapability('bulkActions', fn (string|array $bulkActions) => $this->app->make(BulkActionRegistry::class)->register($bulkActions));
+        $lattice->registerCapability('layouts', fn (string|array $layouts) => $this->app->make(LayoutRegistry::class)->register($layouts));
+        $lattice->registerCapability('layoutRegistry', fn (): LayoutRegistry => $this->app->make(LayoutRegistry::class));
+        $lattice->registerCapability('pages', fn (string|array $pages) => $this->app->make(PageRegistry::class)->register($pages));
+        $lattice->registerCapability('pageRegistry', fn (): PageRegistry => $this->app->make(PageRegistry::class));
+        $lattice->registerCapability('remoteSources', fn (string|array $sources) => $this->app->make(RemoteSourceRegistry::class)->register($sources));
+        $lattice->registerCapability('remoteSourceResolver', fn (callable $resolver) => $this->app->make(RemoteSourceRegistry::class)->resolveUsing($resolver));
+        $lattice->registerCapability('remoteSourceRegistry', fn (): RemoteSourceRegistry => $this->app->make(RemoteSourceRegistry::class));
+        $lattice->registerCapability('theme', fn (Theme|Closure $theme) => $this->app->make(ThemeRenderer::class)->register($theme));
+
         if (! ResponseFactory::hasMacro('toRoute')) {
             ResponseFactory::macro(
                 'toRoute',
