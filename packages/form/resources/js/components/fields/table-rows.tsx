@@ -1,0 +1,298 @@
+import type { Node } from "@lattice-php/core";
+import { nodeKey } from "@lattice-php/core/nodes";
+import { RenderNode } from "@lattice-php/core/renderer";
+import { DEFAULT_COLUMN_WIDTH, type SizableColumn } from "@lattice-php/ui/column-sizing";
+import { useColumnResizing } from "@lattice-php/ui/use-column-resizing";
+import { Icon } from "@lattice-php/ui/icons";
+import { useT } from "@lattice-php/ui/i18n";
+import type { ColumnWidth } from "@lattice-php/ui/types";
+import { memo, useMemo } from "react";
+import { useMediaQuery } from "@lattice-php/ui/lib/use-media-query";
+import type { RowAction as WireRowAction } from "@lattice-php/form/generated";
+import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
+import { TableCellProvider } from "@lattice-php/form/hooks/row-layout-context";
+import { buildRowActions } from "./row-action-menu";
+import { RowActions } from "./row-actions";
+import { RowButton, RowItem } from "./row-item";
+import type { RepeaterRow } from "./repeater-rows";
+
+const rowControlTrack = "3rem";
+const rowActionTrack = "3rem";
+const rowControlTracks = [rowControlTrack];
+const rowActionTracks = [rowActionTrack];
+const tableViewportQuery = "(min-width: 768px)";
+
+export type TableColumn = { name: string; label: string; columnWidth: ColumnWidth };
+
+function useTableViewport(): boolean {
+  return useMediaQuery(tableViewportQuery, true);
+}
+
+type TableRowModel = {
+  key: string;
+  index: number;
+  row: RepeaterRow;
+  template: Node[];
+  span: boolean;
+  heading?: string;
+};
+
+export function columnsFromSchema(nodes: Node[]): TableColumn[] {
+  return nodes.map((node) => {
+    const props = node.props as {
+      name: unknown;
+      label?: unknown;
+      columnWidth?: ColumnWidth | null;
+    };
+    return {
+      name: String(props.name),
+      label: String(props.label ?? props.name),
+      columnWidth: props.columnWidth ?? DEFAULT_COLUMN_WIDTH,
+    };
+  });
+}
+
+type TableRowItemProps = {
+  base: string;
+  index: number;
+  row: RepeaterRow;
+  template: Node[];
+  span: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+  columnCount: number;
+  flipKey: string;
+  reorderable: boolean;
+  removable: boolean;
+  rowActions: WireRowAction[] | null;
+  onField: (index: number, field: string, value: unknown) => void;
+  onMove: (index: number, delta: number) => void;
+  onRemove: (index: number) => void;
+  onDuplicate: (index: number) => void;
+  registerRow?: (key: string, el: HTMLElement | null) => void;
+};
+
+const TableRowItem = memo(function TableRowItem({
+  base,
+  index,
+  row,
+  template,
+  span,
+  isFirst,
+  isLast,
+  columnCount,
+  flipKey,
+  reorderable,
+  removable,
+  rowActions,
+  onField,
+  onMove,
+  onRemove,
+  onDuplicate,
+  registerRow,
+}: TableRowItemProps) {
+  const { t } = useT("lattice");
+
+  return (
+    <div
+      ref={(el) => registerRow?.(flipKey, el)}
+      data-flip-key={flipKey}
+      data-test={`table-row-${base}-${index}`}
+      className="grid grid-cols-[var(--lattice-table-columns)] items-start gap-x-3"
+    >
+      <div className="flex items-center gap-1 [&_svg]:size-lt-icon-sm">
+        {reorderable && !isFirst && (
+          <RowButton
+            label="Move up"
+            testId={`table-${base}-up-${index}`}
+            onClick={() => onMove(index, -1)}
+          >
+            <Icon name="arrow-up" />
+          </RowButton>
+        )}
+        {reorderable && !isLast && (
+          <RowButton
+            label="Move down"
+            testId={`table-${base}-down-${index}`}
+            onClick={() => onMove(index, 1)}
+          >
+            <Icon name="arrow-down" />
+          </RowButton>
+        )}
+      </div>
+
+      <FieldScopeProvider
+        base={base}
+        index={index}
+        row={row}
+        onChange={(field, value) => onField(index, field, value)}
+      >
+        <TableCellProvider>
+          {span ? (
+            <div
+              data-test={`table-row-${base}-${index}-span`}
+              className="flex flex-col gap-2"
+              style={{ gridColumn: `span ${columnCount}` }}
+            >
+              {template.map((child, childIndex) => (
+                <RenderNode key={nodeKey(child, childIndex)} node={child} />
+              ))}
+            </div>
+          ) : (
+            template.map((child, childIndex) => (
+              <div key={nodeKey(child, childIndex)}>
+                <RenderNode node={child} />
+              </div>
+            ))
+          )}
+        </TableCellProvider>
+      </FieldScopeProvider>
+
+      <div className="flex items-center">
+        <RowActions
+          actions={buildRowActions(rowActions, { index, removable, onRemove, onDuplicate, t })}
+        />
+      </div>
+    </div>
+  );
+});
+
+export function TableRows({
+  base,
+  columns,
+  rows,
+  reorderable,
+  removable,
+  rowActions,
+  onField,
+  onMove,
+  onRemove,
+  onDuplicate,
+  registerRow,
+  resizableColumns = false,
+  resizeIndicator = false,
+}: {
+  base: string;
+  columns: TableColumn[];
+  rows: TableRowModel[];
+  reorderable: boolean;
+  removable: (index: number) => boolean;
+  rowActions: WireRowAction[] | null;
+  onField: (index: number, field: string, value: unknown) => void;
+  onMove: (index: number, delta: number) => void;
+  onRemove: (index: number) => void;
+  onDuplicate: (index: number) => void;
+  registerRow?: (key: string, el: HTMLElement | null) => void;
+  resizableColumns?: boolean;
+  resizeIndicator?: boolean;
+}) {
+  const { t } = useT("lattice");
+  const isTableViewport = useTableViewport();
+  const sizingColumns = useMemo<SizableColumn[]>(
+    () =>
+      columns.map((column) => ({
+        key: column.name,
+        label: column.label,
+        width: column.columnWidth,
+      })),
+    [columns],
+  );
+  const { getResizeHandleProps, gridTemplateColumns, hasOverrides, resizeRootRef, resetColumns } =
+    useColumnResizing({
+      columns: sizingColumns,
+      enabled: resizableColumns,
+      columnGapPx: 12,
+      leadingTracks: rowControlTracks,
+      showIndicator: resizeIndicator,
+      storageKey: resizableColumns ? `lattice:table-columns:form:${base}` : undefined,
+      trailingTracks: rowActionTracks,
+    });
+
+  if (!isTableViewport) {
+    return (
+      <div className="flex flex-col gap-3">
+        {rows.map((row) => (
+          <div key={row.key} ref={(el) => registerRow?.(row.key, el)} data-flip-key={row.key}>
+            <RowItem
+              base={base}
+              index={row.index}
+              row={row.row}
+              template={row.template}
+              heading={row.heading ?? `#${row.index + 1}`}
+              reorderable={reorderable}
+              isFirst={row.index === 0}
+              isLast={row.index === rows.length - 1}
+              removable={removable(row.index)}
+              rowActions={rowActions}
+              onField={onField}
+              onRemove={onRemove}
+              onMove={onMove}
+              onDuplicate={onDuplicate}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      {hasOverrides && (
+        <button
+          aria-label={t("table.reset-column-widths", "Reset column widths")}
+          className="absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
+          data-test="table-reset-columns"
+          onClick={resetColumns}
+          title={t("table.reset-column-widths", "Reset column widths")}
+          type="button"
+        >
+          <Icon name="rotate-ccw" className="size-lt-icon-sm" />
+        </button>
+      )}
+      <div className="overflow-x-auto">
+        <div
+          ref={resizeRootRef}
+          className="flex min-w-max flex-col gap-2"
+          style={{ "--lattice-table-columns": gridTemplateColumns } as never}
+        >
+          <div className="grid grid-cols-[var(--lattice-table-columns)] items-center gap-x-3">
+            <div />
+            {columns.map((column, index) => (
+              <div
+                key={column.name}
+                className="relative min-w-0 pr-3 text-xs font-medium text-lt-muted-fg"
+              >
+                {column.label}
+                {resizableColumns && <div {...getResizeHandleProps(sizingColumns[index])} />}
+              </div>
+            ))}
+            <div />
+          </div>
+
+          {rows.map((row) => (
+            <TableRowItem
+              key={row.key}
+              base={base}
+              index={row.index}
+              row={row.row}
+              template={row.template}
+              span={row.span}
+              isFirst={row.index === 0}
+              isLast={row.index === rows.length - 1}
+              columnCount={columns.length}
+              flipKey={row.key}
+              reorderable={reorderable}
+              removable={removable(row.index)}
+              rowActions={rowActions}
+              onField={onField}
+              onMove={onMove}
+              onRemove={onRemove}
+              onDuplicate={onDuplicate}
+              registerRow={registerRow}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

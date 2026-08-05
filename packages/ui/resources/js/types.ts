@@ -27,6 +27,11 @@ export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type Side = "start" | "end";
 
+export type Affix = {
+  readonly icon: string | null;
+  readonly text: string | null;
+};
+
 export type I18nConfig = {
   readonly enabled: boolean;
   readonly locales: string[];

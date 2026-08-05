@@ -13,6 +13,8 @@
     "paths": {
       "@lattice-php/core": ["./packages/core/resources/js/index.ts"],
       "@lattice-php/core/*": ["./packages/core/resources/js/*"],
+      "@lattice-php/form": ["./packages/form/resources/js/index.ts"],
+      "@lattice-php/form/*": ["./packages/form/resources/js/*"],
       "@lattice-php/ui": ["./packages/ui/resources/js/index.ts"],
       "@lattice-php/ui/*": ["./packages/ui/resources/js/*"],
       "@lattice-php/lattice": ["./resources/js/index.ts"],

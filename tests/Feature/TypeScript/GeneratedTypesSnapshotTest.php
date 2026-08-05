@@ -15,6 +15,8 @@ it('keeps the committed generated.ts in sync with the transformer', function ():
         artisan('lattice:typescript')->assertSuccessful();
 
         expect(file_get_contents($output.'/generated.ts'))->toBe(file_get_contents($committed));
+        expect(file_get_contents($output.'/form/generated.ts'))
+            ->toBe(file_get_contents(dirname(__DIR__, 3).'/packages/form/resources/js/generated.ts'));
     } finally {
         File::deleteDirectory($output);
     }
