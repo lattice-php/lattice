@@ -20,7 +20,7 @@ use Lattice\Lattice\Tables\Components\Table;
 use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Core\Enums\PageLayout;
 
 #[AsPage(route: '/products', layout: PageLayout::App, middleware: ['web'])]
 final class ProductsPage extends BasePage

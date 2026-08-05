@@ -6,8 +6,8 @@ namespace Lattice\Lattice\Attributes;
 
 use Attribute;
 use Lattice\Lattice\Core\Contracts\DeclaresGate;
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class AsPage implements DeclaresGate

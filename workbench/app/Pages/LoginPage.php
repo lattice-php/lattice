@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Lattice\Attributes\AsPage;
+use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Forms\Components\Form as FormComponent;
 use Lattice\Lattice\Forms\Components\PasswordInput;
 use Lattice\Lattice\Forms\Components\TextInput;
@@ -14,8 +16,6 @@ use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\Align;
 use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
 use Lattice\Lattice\Ui\Enums\Width;
 use Lattice\Lattice\Ui\PageSchema;
 use Workbench\App\Support\Logo;

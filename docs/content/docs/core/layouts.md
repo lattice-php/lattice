@@ -128,8 +128,8 @@ method. Pass a [`PageLayout`](/advanced/enums/#pages) for the common shells, or 
 `#[AsLayout]` key:
 
 ```php
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
 
 #[AsPage(route: '/products', layout: PageLayout::App, container: PageContainer::Default)]
 class ProductsPage extends Page {}

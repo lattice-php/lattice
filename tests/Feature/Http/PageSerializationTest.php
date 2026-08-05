@@ -4,10 +4,10 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Lattice\Attributes\AsPage;
 use Lattice\Lattice\Core\Breadcrumb;
+use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Http\Page;
 use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
 use Lattice\Lattice\Ui\PageSchema;
 
 test('pages serialize layout and container metadata', function (): void {

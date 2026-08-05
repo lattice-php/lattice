@@ -26,9 +26,7 @@
             "src/LatticeRegistry.php",
             "src/Support/Affix.php",
             "src/Support/Wire.php",
-            "src/Support/WireTypeRegistry.php",
-            "src/Ui/Enums/PageContainer.php",
-            "src/Ui/Enums/PageLayout.php"
+            "src/Support/WireTypeRegistry.php"
         ]
     },
     "extra": {

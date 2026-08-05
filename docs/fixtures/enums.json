@@ -173,6 +173,38 @@
         "name": "Op",
         "namespace": "Lattice\\Lattice\\Core\\Enums"
     },
+    "Lattice\\Lattice\\Core\\Enums\\PageContainer": {
+        "cases": [
+            {
+                "name": "Centered",
+                "value": "centered"
+            },
+            {
+                "name": "Default",
+                "value": "default"
+            }
+        ],
+        "name": "PageContainer",
+        "namespace": "Lattice\\Lattice\\Core\\Enums"
+    },
+    "Lattice\\Lattice\\Core\\Enums\\PageLayout": {
+        "cases": [
+            {
+                "name": "App",
+                "value": "app"
+            },
+            {
+                "name": "Auth",
+                "value": "auth"
+            },
+            {
+                "name": "None",
+                "value": "none"
+            }
+        ],
+        "name": "PageLayout",
+        "namespace": "Lattice\\Lattice\\Core\\Enums"
+    },
     "Lattice\\Lattice\\Forms\\Enums\\FieldType": {
         "cases": [
             {
@@ -859,38 +891,6 @@
             }
         ],
         "name": "Orientation",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
-    },
-    "Lattice\\Lattice\\Ui\\Enums\\PageContainer": {
-        "cases": [
-            {
-                "name": "Centered",
-                "value": "centered"
-            },
-            {
-                "name": "Default",
-                "value": "default"
-            }
-        ],
-        "name": "PageContainer",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
-    },
-    "Lattice\\Lattice\\Ui\\Enums\\PageLayout": {
-        "cases": [
-            {
-                "name": "App",
-                "value": "app"
-            },
-            {
-                "name": "Auth",
-                "value": "auth"
-            },
-            {
-                "name": "None",
-                "value": "none"
-            }
-        ],
-        "name": "PageLayout",
         "namespace": "Lattice\\Lattice\\Ui\\Enums"
     },
     "Lattice\\Lattice\\Ui\\Enums\\Placement": {

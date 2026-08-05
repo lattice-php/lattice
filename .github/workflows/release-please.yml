@@ -63,6 +63,7 @@ jobs:
     needs: release-please
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         package:
           - directory: packages/core

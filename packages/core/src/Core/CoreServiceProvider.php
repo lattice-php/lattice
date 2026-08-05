@@ -9,12 +9,14 @@ use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Lattice\Core\Services\RequestReferenceIdentity;
+use Lattice\Lattice\LatticeRegistry;
 
 final class CoreServiceProvider extends ServiceProvider
 {
     #[\Override]
     public function register(): void
     {
+        $this->app->singleton(LatticeRegistry::class);
         $this->app->singleton(ResolvesReferenceIdentity::class, RequestReferenceIdentity::class);
         $this->app->singleton(ComponentReferenceSigner::class);
         $this->app->alias(ComponentReferenceSigner::class, SignsComponentReferences::class);

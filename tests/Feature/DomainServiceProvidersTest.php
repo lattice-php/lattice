@@ -53,9 +53,11 @@ it('loads each domain provider with its package dependencies', function (): void
             Lattice::clearResolvedInstance();
             $application->register($provider);
 
-            $categories = $application->make(LatticeRegistry::class)->wireFamilies()->keys()->all();
+            $registry = $application->make(LatticeRegistry::class);
+            $categories = $registry->wireFamilies()->keys()->all();
 
-            expect($categories)->toBe($expectedCategories);
+            expect($categories)->toBe($expectedCategories)
+                ->and($application->make(LatticeRegistry::class))->toBe($registry);
         }
     } finally {
         Application::setInstance($testApplication);

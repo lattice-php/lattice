@@ -21,7 +21,7 @@ use Lattice\Lattice\Ui\Components\Heading;
 use Lattice\Lattice\Ui\Components\Stack;
 use Lattice\Lattice\Ui\Components\Text;
 use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Core\PageSchema;
 use Lattice\Lattice\Http\Page as BasePage;
 
@@ -65,7 +65,7 @@ Rather than repeating `layout:` and `middleware:` on every page, declare a share
 
 ```php
 use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Core\Enums\PageLayout;
 use Lattice\Lattice\Http\Page as BasePage;
 
 #[AsPage(layout: PageLayout::App, middleware: ['web'])]

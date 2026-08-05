@@ -136,8 +136,8 @@ too.
 | `can`        | Abilities the current user must pass before the page renders — a string or an array. See [Authorization](/core/authorization/).                                      |
 
 ```php
-use Lattice\Lattice\Ui\Enums\PageContainer;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Core\Enums\PageContainer;
+use Lattice\Lattice\Core\Enums\PageLayout;
 
 #[AsPage(
     route: '/products',
@@ -225,7 +225,7 @@ attribute is present:
 
 ```php
 use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Ui\Enums\PageLayout;
+use Lattice\Lattice\Core\Enums\PageLayout;
 
 class ProductEmbedPage extends Page
 {
