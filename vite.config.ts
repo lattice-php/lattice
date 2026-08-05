@@ -18,8 +18,8 @@ const sourceRoot = path.resolve(import.meta.dirname, "resources/js");
 const isVitest = process.env.VITEST !== undefined;
 
 // The lucide icons Lattice's built-in components rely on. The sprite plugin
-// idempotently vendors these into resources/icons (committed) at build time, so
-// consumers can point at vendor/lattice-php/lattice/resources/icons without
+// idempotently vendors these into packages/ui/resources/icons at build time, so
+// consumers can use the icon set shipped by lattice-php/ui without
 // installing lucide-static. Keep sorted and grouped by origin.
 const latticeIcons = [
   // Server-driven defaults (names components emit / consumers commonly use)
@@ -135,7 +135,9 @@ function standaloneSprite(): Plugin {
   return {
     name: "lattice:standalone-sprite",
     generateBundle() {
-      const sprite = buildSprite([path.resolve(import.meta.dirname, "resources/icons")]);
+      const sprite = buildSprite([
+        path.resolve(import.meta.dirname, "packages/ui/resources/icons"),
+      ]);
 
       this.emitFile({ type: "asset", fileName: "sprite.svg", source: sprite.source });
     },
@@ -196,11 +198,15 @@ export default defineConfig(({ mode }) => {
       ...(isVitest || isLibrary || isStandalone
         ? []
         : [
-            // Lattice's lucide icons (vendored into resources/icons) + the
+            // Lattice's lucide icons + the
             // workbench's custom icons compile into one sprite.
             svgSprite({
               include: [
-                { from: "lucide-static/icons", names: latticeIcons, outDir: "resources/icons" },
+                {
+                  from: "lucide-static/icons",
+                  names: latticeIcons,
+                  outDir: "packages/ui/resources/icons",
+                },
               ],
               iconDirs: ["workbench/resources/icons"],
               // Generate an importable IconName union + augment <Icon name>.

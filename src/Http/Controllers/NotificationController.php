@@ -6,12 +6,12 @@ namespace Lattice\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
-use Lattice\I18n\Values\Translatable;
 use Lattice\Notifications\NotificationItem;
 use Lattice\Notifications\NotificationList;
 use Lattice\Notifications\Support\ActionDescriptor;
 use Lattice\Notifications\UnreadCount;
 use Lattice\Ui\Enums\Variant;
+use Lattice\Ui\I18n\Values\Translatable;
 
 final class NotificationController
 {

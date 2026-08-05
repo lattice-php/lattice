@@ -29,7 +29,7 @@ class Modal extends ContainerComponent implements InteractiveComponent
     {
         parent::__construct($key);
 
-        $this->closeLabel = __('lattice::common.close');
+        $this->closeLabel = __('lattice-ui::common.close');
     }
 
     public static function make(string $id): static

@@ -13,7 +13,7 @@ For a database-backed table, extend `EloquentTableDefinition` and implement `col
 
 ```php
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;

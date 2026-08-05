@@ -15,5 +15,6 @@
       "@lattice-php/ui/*": ["./resources/js/*"]
     }
   },
-  "include": ["resources/js"]
+  "include": ["resources/js"],
+  "exclude": ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*"]
 }

@@ -8,6 +8,7 @@
         "php": "^8.4",
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "inertiajs/inertia-laravel": "^2.0 || ^3.0",
         "lattice-php/core": "self.version",
         "spatie/php-attribute-reader": "^1.1"
     },

@@ -227,7 +227,7 @@ export default defineConfig({
     cacheDir: path.join(docsDir, `node_modules/.vite-${viteCacheSuffix}`),
     plugins: [
       tailwindcss(),
-      svgSprite({ iconDirs: [path.join(repoRoot, "resources/icons")] }),
+      svgSprite({ iconDirs: [path.join(repoRoot, "packages/ui/resources/icons")] }),
     ],
     resolve: {
       alias: {

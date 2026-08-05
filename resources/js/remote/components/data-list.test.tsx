@@ -5,7 +5,7 @@ import { createRegistry } from "@lattice-php/core/registry";
 import { actionComponents } from "@lattice-php/lattice/action";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { uiComponents } from "@lattice-php/lattice/ui/plugin";
+import { uiComponents } from "@lattice-php/ui";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataList } from "./data-list";
 

@@ -5,7 +5,7 @@ import { setLocale } from "@lattice-php/ui/i18n/locale";
 import { createLayoutResolver, createPageResolver, withVisitHeaders } from "./inertia";
 import { SchemaLayout } from "./layout";
 import Page from "./page";
-import type { PagePayload } from "./core/types";
+import type { PagePayload } from "./types";
 
 afterEach(() => {
   localStorage.clear();

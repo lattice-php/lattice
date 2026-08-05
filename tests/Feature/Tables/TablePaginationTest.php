@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
-use Lattice\Core\Attributes\AsTable;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Components\Table;
 use Lattice\Table\Enums\PaginationType;

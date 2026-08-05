@@ -6,7 +6,7 @@ namespace Workbench\App\Forms\Fields;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\FileUpload;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\Repeater;

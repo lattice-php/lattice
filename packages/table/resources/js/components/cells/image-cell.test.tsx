@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { ColumnPropsOf, TableColumn } from "@lattice-php/lattice/table/types";
+import type { ColumnPropsOf, TableColumn } from "@lattice-php/table/types";
 import { ImageCell } from "./image-cell";
 
 function column(props: Record<string, unknown> = {}): TableColumn {

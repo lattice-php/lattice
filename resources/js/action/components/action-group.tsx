@@ -1,5 +1,5 @@
 import { Icon } from "@lattice-php/ui/icons";
-import { Button } from "@lattice-php/lattice/ui/button";
+import { Button } from "@lattice-php/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
-import { ActionMenuProvider } from "@lattice-php/lattice/ui/action-menu-context";
+import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
 
 const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
   const { t } = useT("lattice");

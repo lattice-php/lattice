@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { actionComponents } from "./action/plugin";
 import { chatComponents } from "./chat/plugin";
-import { formComponents } from "./form/plugin";
+import { formComponents } from "@lattice-php/form";
 import { notificationsComponents } from "./notifications/plugin";
 import { registry } from "./registry";
-import { tableComponents } from "./table/plugin";
-import { uiComponents } from "./ui/plugin";
+import { tableComponents } from "@lattice-php/table";
+import { uiComponents } from "@lattice-php/ui";
 
 describe("lattice component registry", () => {
   it("registers every domain's components eagerly", () => {

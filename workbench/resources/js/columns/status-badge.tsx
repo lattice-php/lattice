@@ -1,5 +1,5 @@
 import type { ColumnCellComponent } from "@lattice-php/lattice";
-import { useT } from "@lattice-php/lattice/i18n";
+import { useT } from "@lattice-php/ui/i18n";
 import { WORKBENCH_I18N_NAMESPACE } from "../i18n";
 
 const colorClasses: Record<string, string> = {

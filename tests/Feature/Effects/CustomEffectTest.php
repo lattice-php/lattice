@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use Lattice\Actions\ActionResult;
-use Lattice\Effects\EffectRegistry;
 use Lattice\Ui\Effects\Attributes\AsEffect;
 use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Effects\EffectRegistry;
 
 #[AsEffect('confetti')]
 final class ConfettiEffect extends Effect

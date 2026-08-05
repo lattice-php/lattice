@@ -200,7 +200,7 @@ declare module "@lattice-php/core" {
 ```php
 use App\Tables\Columns\StatusBadge;
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;

@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Lattice\Table;
 
 use Illuminate\Support\ServiceProvider;
-use Lattice\Core\Attributes\AsTable;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\LatticeRegistry;
 use Lattice\Form\FormServiceProvider;
 use Lattice\Table\Attributes\AsColumn;
 use Lattice\Table\Attributes\AsFilter;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Filters\Filter;
 

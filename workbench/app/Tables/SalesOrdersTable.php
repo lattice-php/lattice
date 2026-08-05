@@ -5,9 +5,9 @@ namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Lattice\Core\Attributes\AsTable;
 use Lattice\Core\Enums\Op;
 use Lattice\Fragments\Components\Fragment;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\TextColumn;

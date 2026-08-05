@@ -17,5 +17,5 @@ export function Provider({ registry = defaultRegistry, ...props }: ProviderProps
 }
 
 export { useComponentRegistry } from "@lattice-php/core/registry-context";
-export { useEffectHandlerRegistry } from "./effects/registry";
-export { useColumnRegistry } from "./table/registry";
+export { useEffectHandlerRegistry } from "@lattice-php/ui/effects/registry";
+export { useColumnRegistry } from "@lattice-php/table/registry";

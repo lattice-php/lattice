@@ -7,8 +7,8 @@ use BackedEnum;
 use Closure;
 use Illuminate\Contracts\Support\Responsable;
 use Lattice\Core\Support\Wire;
-use Lattice\Effects\Concerns\QueuesEffects;
 use Lattice\Facades\Effects;
+use Lattice\Ui\Effects\Concerns\QueuesEffects;
 use Lattice\Ui\Effects\Effect;
 use Symfony\Component\HttpFoundation\Response;
 

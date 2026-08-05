@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildEndpoint } from "./query";
-import type { TableQuery } from "@lattice-php/lattice/table/types";
+import type { TableQuery } from "@lattice-php/table/types";
 
 function query(overrides: Partial<TableQuery>): TableQuery {
   return {

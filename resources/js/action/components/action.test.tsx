@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { IconRendererProvider } from "@lattice-php/ui/icons";
 import type { IconRendererFunction } from "@lattice-php/ui/icons";
-import { ActionMenuProvider } from "@lattice-php/lattice/ui/action-menu-context";
+import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
 import ActionComponent from "./action";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());

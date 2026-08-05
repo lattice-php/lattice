@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Tests\Fixtures\Discovery;
 
-use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Contracts\TableSource;

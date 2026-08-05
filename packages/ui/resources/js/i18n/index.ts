@@ -1,4 +1,4 @@
-export { i18n, useT, translate } from "./instance";
+export { i18n, UI_NAMESPACE, useT, translate } from "./instance";
 export { configureI18n, enableBackend } from "./backend";
 export { currentLocale, localeHeader, setLocale, useLocale } from "./locale";
 export { LocaleReload } from "./locale-reload";

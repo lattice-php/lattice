@@ -1,8 +1,8 @@
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { TableNode, TableResult, TableQuery } from "@lattice-php/lattice/table/types";
-import type { TableColumn } from "@lattice-php/lattice/table/types";
+import type { TableNode, TableResult, TableQuery } from "@lattice-php/table/types";
+import type { TableColumn } from "@lattice-php/table/types";
 import TableComponent from "./table";
 
 const storageKey = "lattice:table-columns:browser.products";

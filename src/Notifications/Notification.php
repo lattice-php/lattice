@@ -6,9 +6,9 @@ namespace Lattice\Notifications;
 
 use BackedEnum;
 use Lattice\Core\Support\Wire;
-use Lattice\I18n\Values\Translatable;
 use Lattice\Notifications\Support\ActionDescriptor;
 use Lattice\Ui\Enums\Variant;
+use Lattice\Ui\I18n\Values\Translatable;
 
 final class Notification
 {

@@ -6,11 +6,7 @@ import type { RendererComponent, Schema } from "@lattice-php/core/types";
 import { Icon, IconRenderer } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import type { Affix } from "@lattice-php/lattice/types/generated";
-import {
-  ActionTrigger,
-  type TriggerState,
-  useClickBehavior,
-} from "@lattice-php/lattice/ui/click-behavior";
+import { ActionTrigger, type TriggerState, useClickBehavior } from "@lattice-php/ui/click-behavior";
 import { useSidebarCollapsed } from "@lattice-php/lattice/layout/hooks/context";
 import { Popover } from "./popover";
 

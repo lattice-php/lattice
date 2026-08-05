@@ -1,6 +1,6 @@
 import { useEcho, useEchoPresence, useEchoPublic } from "@laravel/echo-react";
 import { useCallback } from "react";
-import { useEffectDispatcher } from "@lattice-php/lattice/effects/use-effect-dispatcher";
+import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { useT } from "@lattice-php/ui/i18n";
 import { buildEffects } from "./build-effects";
 import type { Listen } from "@lattice-php/lattice/types/generated";

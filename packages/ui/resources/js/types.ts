@@ -1,4 +1,26 @@
-export type ColorKind = "named" | "css";
+import type { NodeUnionOf } from "@lattice-php/core";
+import type { ComponentPropsMap, UiNodeType } from "./generated";
+
+declare module "@lattice-php/core" {
+  interface ComponentProps extends ComponentPropsMap {}
+}
+
+export type {
+  Affix,
+  Color,
+  ColorKind,
+  ColumnWidth,
+  ComponentPropsMap,
+  DateTimeStyle,
+  ModalWidth,
+  NumberFormat,
+  NumberFormatUnit,
+  Side,
+  Translatable,
+  UiNodeType,
+} from "./generated";
+
+export type UiNode = NodeUnionOf<UiNodeType>;
 
 export type ColorName =
   | "default"
@@ -16,58 +38,10 @@ export type ColorName =
   | "blue"
   | "purple";
 
-export type Color = {
-  readonly dark: string | null;
-  readonly kind: ColorKind;
-  readonly value: string;
-};
-
-export type NumberFormatUnit =
-  | "percent"
-  | "kilogram"
-  | "gram"
-  | "kilometer"
-  | "meter"
-  | "byte"
-  | "kilobyte"
-  | "megabyte"
-  | "gigabyte"
-  | "millisecond"
-  | "second"
-  | "minute"
-  | "hour"
-  | "celsius"
-  | "fahrenheit";
-
-export type NumberFormat = {
-  currency: string | null;
-  kind: string;
-  maximumFractionDigits: number | null;
-  minimumFractionDigits: number | null;
-  notation: string;
-  unit: NumberFormatUnit | null;
-};
-
-export type DateTimeStyle = "full" | "long" | "medium" | "short";
-export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
-export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
-export type Side = "start" | "end";
-
-export type Affix = {
-  readonly icon: string | null;
-  readonly text: string | null;
-};
-
 export type I18nConfig = {
   readonly enabled: boolean;
   readonly locales: string[];
   readonly preloadLocales: string[];
   readonly saveMissing: boolean;
   readonly timezone: string | null;
-};
-
-export type Translatable = {
-  key: string;
-  payload: Record<string, string>;
-  replacements: Record<string, string | number | boolean>;
 };

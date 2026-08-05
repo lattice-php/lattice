@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Effects\Builtin\Toast;
-use Lattice\Effects\EffectRegistry;
 use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Builtin\Toast;
 use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Effects\EffectRegistry;
 
 #[AsEffect('toast')]
 final class ConflictingToastEffect extends Effect {}

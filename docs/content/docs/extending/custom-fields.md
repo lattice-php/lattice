@@ -165,7 +165,7 @@ After running this command, `node.props.swatches` is typed in your renderer.
 ```php
 use App\Forms\Fields\ColorPicker;
 use Illuminate\Http\Request;
-use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;

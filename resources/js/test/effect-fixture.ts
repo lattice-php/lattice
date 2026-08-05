@@ -1,5 +1,5 @@
 import type { EffectPropsMap } from "@lattice-php/lattice/types/generated";
-import type { EffectOf, EffectPropsOf } from "@lattice-php/lattice/effects/registry";
+import type { EffectOf, EffectPropsOf } from "@lattice-php/ui/effects/registry";
 
 export function effect<K extends keyof EffectPropsMap & string>(
   type: K,

@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Inertia\Inertia;
-use Lattice\Effects\Builtin\Callout;
-use Lattice\Effects\Builtin\Toast;
-use Lattice\Effects\EffectFlasher;
 use Lattice\Facades\Effects;
+use Lattice\Ui\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\Toast;
+use Lattice\Ui\Effects\EffectFlasher;
 use Lattice\Ui\Enums\Variant;
 
 test('effects accumulate across multiple flash calls', function (): void {

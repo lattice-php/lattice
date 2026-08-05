@@ -1,16 +1,11 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@lattice-php/lattice/provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type {
-  TableNode,
-  TablePagination,
-  TableResult,
-  TableQuery,
-} from "@lattice-php/lattice/table/types";
+import type { TableNode, TablePagination, TableResult, TableQuery } from "@lattice-php/table/types";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
 import type { Node } from "@lattice-php/core/types";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { TableColumn } from "@lattice-php/lattice/table/types";
+import type { TableColumn } from "@lattice-php/table/types";
 import TableComponent from "./table";
 
 function col(partial: {

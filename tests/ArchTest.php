@@ -37,8 +37,6 @@ const CORE_FORBIDDEN_NAMESPACES = [
     'Lattice\\Notifications',
     'Lattice\\Realtime',
     'Lattice\\Remote',
-    'Lattice\\Effects',
-    'Lattice\\I18n',
 ];
 
 arch('forms depend on no other feature domain')
@@ -115,8 +113,6 @@ arch('the ui and secondary domains never depend upward on orchestration or tooli
         'Lattice\Notifications',
         'Lattice\Realtime',
         'Lattice\Remote',
-        'Lattice\Effects',
-        'Lattice\I18n',
     ])
     ->not->toUse([
         'Lattice\Http',
@@ -193,7 +189,7 @@ arch('table columns, table filters, and built-in effects are final')
     ->expect([
         'Lattice\Table\Columns',
         'Lattice\Table\Filters',
-        'Lattice\Effects\Builtin',
+        'Lattice\Ui\Effects\Builtin',
     ])
     ->toBeFinal()
     ->ignoring([
