@@ -22,6 +22,8 @@
       "@lattice-php/lattice/*": ["./framework/resources/js/*"],
       "@lattice-php/table": ["./table/resources/js/index.ts"],
       "@lattice-php/table/*": ["./table/resources/js/*"],
+      "@lattice-php/tree": ["./tree/resources/js/index.ts"],
+      "@lattice-php/tree/*": ["./tree/resources/js/*"],
       "@lattice-php/ui": ["./ui/resources/js/index.ts"],
       "@lattice-php/ui/*": ["./ui/resources/js/*"]
     }

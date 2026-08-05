@@ -11,5 +11,6 @@ export const workspaceAliases: Record<string, string> = {
   "@lattice-php/form": path.resolve(import.meta.dirname, "form/resources/js"),
   "@lattice-php/lattice": path.resolve(import.meta.dirname, "framework/resources/js"),
   "@lattice-php/table": path.resolve(import.meta.dirname, "table/resources/js"),
+  "@lattice-php/tree": path.resolve(import.meta.dirname, "tree/resources/js"),
   "@lattice-php/ui": path.resolve(import.meta.dirname, "ui/resources/js"),
 };

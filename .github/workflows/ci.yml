@@ -182,6 +182,42 @@ jobs:
       - name: Icons are up to date
         run: git diff --exit-code -- packages/ui/resources/icons packages/ui/src/Enums/Icon.php workbench/resources/js/sprite-icons.ts
 
+  package-install:
+    name: Package installs standalone (${{ matrix.package }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [action, core, form, framework, table, tree, ui]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      # Each package must be installable on its own — the monorepo's shared
+      # vendor dir masks missing dependency declarations, and an unresolvable
+      # manifest only surfaces after the split repos are tagged. Siblings come
+      # from path repositories with a stamped version so `self.version`
+      # constraints resolve against the PR's state, not yesterday's release.
+      - name: Install the package standalone
+        working-directory: packages/${{ matrix.package }}
+        run: |
+          for manifest in ../*/composer.json; do
+            jq '.version = "0.99.0"' "$manifest" > "$manifest.tmp" && mv "$manifest.tmp" "$manifest"
+          done
+          composer config repositories.siblings '{"type":"path","url":"../*","options":{"symlink":true}}'
+          composer update --no-interaction --no-progress --prefer-dist
+
+      - name: Provider class is autoloadable
+        working-directory: packages/${{ matrix.package }}
+        run: |
+          provider=$(jq -r '.extra.laravel.providers[0]' composer.json)
+          php -r "require 'vendor/autoload.php'; exit(class_exists('$provider') ? 0 : 1);"
+
   php-static:
     name: PHP Static (pint, phpstan, rector)
     runs-on: ubuntu-latest
