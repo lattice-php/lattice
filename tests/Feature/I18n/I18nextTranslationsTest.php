@@ -13,9 +13,9 @@ use function Pest\Laravel\postJson;
 use function Pest\Laravel\withoutVite;
 
 afterEach(function (): void {
-    File::deleteDirectory(package_path('lang/zz'));
+    File::deleteDirectory(package_path('packages/framework/lang/zz'));
     File::deleteDirectory(package_path('workbench/lang/zz'));
-    File::delete(package_path('lang/zz.json'));
+    File::delete(package_path('packages/framework/lang/zz.json'));
 });
 
 it('shares the i18n config to the frontend as a once prop', function (): void {
@@ -132,7 +132,7 @@ it('keeps workbench translation keys aligned between English and German', functi
 it('dumps missing lattice keys into the package lang dir, never vendor', function (): void {
     postJson('/locales/add/zz/lattice', ['form.editor.demo' => 'form.editor.demo'])->assertOk();
 
-    $file = package_path('lang/zz/form.php');
+    $file = package_path('packages/framework/lang/zz/form.php');
 
     expect($file)->toBeReadableFile()
         ->and(str_contains($file, '/vendor/'))->toBeFalse()
@@ -144,7 +144,7 @@ it('dumps missing lattice keys into the package lang dir, never vendor', functio
 it('dumps namespace-less keys to a JSON file in the package lang dir', function (): void {
     postJson('/locales/add/zz/translation', ['Save changes' => 'Save changes'])->assertOk();
 
-    $file = package_path('lang/zz.json');
+    $file = package_path('packages/framework/lang/zz.json');
 
     expect($file)->toBeReadableFile()
         ->and(str_contains($file, '/vendor/'))->toBeFalse();

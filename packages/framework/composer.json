@@ -1,0 +1,58 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/lattice",
+    "description": "Server-driven React components for Laravel and Inertia.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "inertia",
+        "react",
+        "server-driven-ui"
+    ],
+    "homepage": "https://latticephp.com",
+    "support": {
+        "issues": "https://github.com/lattice-php/lattice/issues",
+        "source": "https://github.com/lattice-php/lattice",
+        "docs": "https://latticephp.com"
+    },
+    "authors": [
+        {
+            "name": "Manuel Christlieb",
+            "email": "manuel@christlieb.eu"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "inertiajs/inertia-laravel": "^3.0",
+        "lattice-php/core": "self.version",
+        "lattice-php/form": "self.version",
+        "lattice-php/table": "self.version",
+        "lattice-php/ui": "self.version",
+        "spatie/laravel-package-tools": "^1.16 || ^2.0",
+        "spatie/php-attribute-reader": "^1.1"
+    },
+    "suggest": {
+        "spatie/laravel-typescript-transformer": "Only needed to run `php artisan lattice:typescript` when your app defines custom PHP wire types (components, fields, columns, filters, effects)"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lattice\\LatticeServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

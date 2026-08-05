@@ -14,7 +14,7 @@ function withPublishedJsScaffold(Closure $callback): mixed
         $publishGroups = ServiceProvider::$publishGroups;
 
         $paths = [
-            dirname(__DIR__, 3).'/stubs/registry.ts' => resource_path('js/registry.ts'),
+            dirname(__DIR__, 3).'/packages/framework/stubs/registry.ts' => resource_path('js/registry.ts'),
         ];
 
         ServiceProvider::$publishes[LatticeServiceProvider::class] = $paths;

@@ -196,16 +196,13 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
       ...(options.source
         ? {
             alias: {
-              "@lattice-php/lattice/css": path.resolve(
-                root,
-                "packages/ui/resources/css/lattice.css",
-              ),
+              "@lattice-php/lattice/css": path.resolve(root, "../ui/resources/css/lattice.css"),
               "@lattice-php/lattice": path.resolve(root, "resources/js"),
-              "@lattice-php/core": path.resolve(root, "packages/core/resources/js"),
-              "@lattice-php/form": path.resolve(root, "packages/form/resources/js"),
-              "@lattice-php/table": path.resolve(root, "packages/table/resources/js"),
-              "@lattice-php/ui/css": path.resolve(root, "packages/ui/resources/css/lattice.css"),
-              "@lattice-php/ui": path.resolve(root, "packages/ui/resources/js"),
+              "@lattice-php/core": path.resolve(root, "../core/resources/js"),
+              "@lattice-php/form": path.resolve(root, "../form/resources/js"),
+              "@lattice-php/table": path.resolve(root, "../table/resources/js"),
+              "@lattice-php/ui/css": path.resolve(root, "../ui/resources/css/lattice.css"),
+              "@lattice-php/ui": path.resolve(root, "../ui/resources/js"),
             },
           }
         : {}),

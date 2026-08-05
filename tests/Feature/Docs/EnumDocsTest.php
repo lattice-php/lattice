@@ -15,7 +15,7 @@ function generateEnumReference(): array
 {
     $root = dirname(__DIR__, 3);
     $sources = [
-        [$root.'/src', 'Lattice\\', '*/Enums/*.php'],
+        [$root.'/packages/framework/src', 'Lattice\\', '*/Enums/*.php'],
         [$root.'/packages/core/src', 'Lattice\\Core\\', 'Enums/*.php'],
         [$root.'/packages/form/src', 'Lattice\\Form\\', 'Enums/*.php'],
         [$root.'/packages/table/src', 'Lattice\\Table\\', 'Enums/*.php'],

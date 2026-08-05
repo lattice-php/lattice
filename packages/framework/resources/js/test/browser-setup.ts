@@ -1,4 +1,4 @@
-import "../../../workbench/resources/css/app.css";
+import "../../../../../workbench/resources/css/app.css";
 import { afterEach } from "vitest";
 
 (

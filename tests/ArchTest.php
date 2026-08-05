@@ -227,7 +227,7 @@ it('uses lower-case translation keys separated by - or _', function (): void {
         }
     };
 
-    foreach ([$root.'/lang', $root.'/workbench/lang'] as $directory) {
+    foreach ([...glob($root.'/packages/*/lang') ?: [], $root.'/workbench/lang'] as $directory) {
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS));
 
         foreach ($files as $file) {

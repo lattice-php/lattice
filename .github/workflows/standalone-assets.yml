@@ -37,10 +37,10 @@ jobs:
 
       - name: Commit refreshed standalone assets
         run: |
-          if [ -n "$(git status --porcelain package.json package-lock.json packages dist-standalone)" ]; then
+          if [ -n "$(git status --porcelain package.json package-lock.json packages)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add package.json package-lock.json packages/*/package.json dist-standalone
+            git add package.json package-lock.json packages/*/package.json packages/framework/dist-standalone
             git commit -m "chore: build standalone assets"
             git push
           fi

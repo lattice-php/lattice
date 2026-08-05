@@ -23,7 +23,7 @@ use Spatie\Attributes\Attributes;
 it('classifies the src tree into enums, value objects, components and effects', function (): void {
     $root = dirname(__DIR__, 3);
     $manifest = app(WireTypeDiscovery::class)->discover([
-        $root.'/src',
+        $root.'/packages/framework/src',
         $root.'/packages/core/src',
         $root.'/packages/table/src',
         $root.'/packages/ui/src',
@@ -112,7 +112,7 @@ it('discovers columns without treating them as components', function (): void {
 it('splits #[TypeScript]-marked classes into enums and value objects', function (): void {
     $root = dirname(__DIR__, 3);
     $manifest = app(WireTypeDiscovery::class)->discover([
-        $root.'/src',
+        $root.'/packages/framework/src',
         $root.'/packages/core/src',
         $root.'/packages/table/src',
         $root.'/packages/ui/src',
@@ -179,7 +179,7 @@ it('does not classify an editor extension as a value object', function (): void 
 });
 
 it('classifies AsRemoteComponent with correct precedence in components', function (): void {
-    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/src');
+    $manifest = app(WireTypeDiscovery::class)->discover(dirname(__DIR__, 3).'/packages/framework/src');
 
     $dataList = collect($manifest->components)->firstWhere('class', DataList::class);
 

@@ -1,7 +1,8 @@
 {
-  "name": "@lattice-php/lattice",
+  "name": "@lattice-php/monorepo",
   "version": "0.38.0",
-  "description": "Server-driven React components for Laravel and Inertia.",
+  "private": true,
+  "description": "Development monorepo for the Lattice packages.",
   "license": "MIT",
   "author": "Manuel Christlieb <manuel@christlieb.eu>",
   "type": "module",
@@ -17,118 +18,14 @@
   "bugs": {
     "url": "https://github.com/lattice-php/lattice/issues"
   },
-  "keywords": [
-    "laravel",
-    "inertia",
-    "react",
-    "server-driven-ui"
-  ],
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./css": "./dist/lattice.css",
-    "./action": {
-      "types": "./dist/action/index.d.ts",
-      "import": "./dist/action/index.js"
-    },
-    "./action/lib/run-action": {
-      "types": "./dist/action/lib/run-action.d.ts",
-      "import": "./dist/action/lib/run-action.js"
-    },
-    "./appearance": {
-      "types": "./dist/appearance/index.d.ts",
-      "import": "./dist/appearance/index.js"
-    },
-    "./chat": {
-      "types": "./dist/chat/index.d.ts",
-      "import": "./dist/chat/index.js"
-    },
-    "./dnd": {
-      "types": "./dist/dnd/index.d.ts",
-      "import": "./dist/dnd/index.js"
-    },
-    "./inertia": {
-      "types": "./dist/inertia.d.ts",
-      "import": "./dist/inertia.js"
-    },
-    "./layout": {
-      "types": "./dist/layout/index.d.ts",
-      "import": "./dist/layout/index.js"
-    },
-    "./notifications": {
-      "types": "./dist/notifications/index.d.ts",
-      "import": "./dist/notifications/index.js"
-    },
-    "./page": {
-      "types": "./dist/page.d.ts",
-      "import": "./dist/page.js"
-    },
-    "./provider": {
-      "types": "./dist/provider.d.ts",
-      "import": "./dist/provider.js"
-    },
-    "./registry": {
-      "types": "./dist/registry.d.ts",
-      "import": "./dist/registry.js"
-    },
-    "./runtime": {
-      "types": "./dist/runtime.d.ts",
-      "import": "./dist/runtime.js"
-    },
-    "./remote": {
-      "types": "./dist/remote/index.d.ts",
-      "import": "./dist/remote/index.js"
-    },
-    "./ssr": {
-      "types": "./dist/ssr.d.ts",
-      "import": "./dist/ssr.js"
-    },
-    "./toast": {
-      "types": "./dist/toast/index.d.ts",
-      "import": "./dist/toast/index.js"
-    },
-    "./types": {
-      "types": "./dist/types/index.d.ts"
-    },
-    "./types/generated": {
-      "types": "./dist/types/generated.d.ts"
-    },
-    "./svg-sprite-client": {
-      "types": "./dist/svg-sprite-client.d.ts"
-    },
-    "./vite": {
-      "types": "./dist/vite.d.ts",
-      "import": "./dist/vite.js"
-    },
-    "./vite-client": {
-      "types": "./dist/vite-client.d.ts"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist",
-    "dist-standalone"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "postinstall": "[ -n \"$CI\" ] || test ! -f vendor/bin/testbench || npm run boost:refresh",
     "dev": "vite",
     "build": "vite build",
-    "build:lib": "npm run build --workspace @lattice-php/core && npm run build --workspace @lattice-php/ui && npm run build --workspace @lattice-php/form && npm run build --workspace @lattice-php/table && vite build --mode lib",
-    "build:lib:watch": "vite build --mode lib --watch",
-    "build:standalone": "vite build --mode standalone",
-    "verify:standalone": "node -e \"const fs = require('fs'); if (!fs.existsSync('./dist-standalone/manifest.json')) { console.error('dist-standalone/manifest.json is missing; run npm run build:standalone.'); process.exit(1); } const m = require('./dist-standalone/manifest.json'); const pkg = require('./package.json'); if (m.version !== pkg.version) { console.error('dist-standalone manifest ' + m.version + ' != package ' + pkg.version + '; run npm run build:standalone.'); process.exit(1); }\"",
-    "prepack": "npm run build:lib",
+    "build:lib": "npm run build --workspace @lattice-php/core && npm run build --workspace @lattice-php/ui && npm run build --workspace @lattice-php/form && npm run build --workspace @lattice-php/table && npm run build --workspace @lattice-php/lattice",
+    "build:lib:watch": "npm run build --workspace @lattice-php/lattice -- --watch",
+    "build:standalone": "npm run build:standalone --workspace @lattice-php/lattice",
+    "verify:standalone": "node -e \"const fs = require('fs'); if (!fs.existsSync('./packages/framework/dist-standalone/manifest.json')) { console.error('packages/framework/dist-standalone/manifest.json is missing; run npm run build:standalone.'); process.exit(1); } const m = require('./packages/framework/dist-standalone/manifest.json'); const pkg = require('./packages/framework/package.json'); if (m.version !== pkg.version) { console.error('dist-standalone manifest ' + m.version + ' != package ' + pkg.version + '; run npm run build:standalone.'); process.exit(1); }\"",
     "test": "vitest run",
     "test:browser": "vitest run --project browser",
     "test:coverage": "vitest run --coverage",
@@ -136,56 +33,21 @@
     "typecheck": "tsc --noEmit",
     "type-coverage": "type-coverage --project tsconfig.json --at-least 99.5",
     "check": "npm run versions:check && npm run lint && npm run format:check && npm run typecheck && npm run type-coverage && npm run test && npm run build:lib && npm run check:package",
-    "check:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./css --ignore-rules internal-resolution-error && publint packages/core --strict && attw --pack packages/core --profile esm-only && publint packages/ui --strict && attw --pack packages/ui --profile esm-only --exclude-entrypoints ./css && publint packages/form --strict && attw --pack packages/form --profile esm-only --ignore-rules internal-resolution-error && publint packages/table --strict && attw --pack packages/table --profile esm-only --ignore-rules internal-resolution-error",
+    "check:package": "publint packages/framework --strict && attw --pack packages/framework --profile esm-only --exclude-entrypoints ./css --ignore-rules internal-resolution-error && publint packages/core --strict && attw --pack packages/core --profile esm-only && publint packages/ui --strict && attw --pack packages/ui --profile esm-only --exclude-entrypoints ./css && publint packages/form --strict && attw --pack packages/form --profile esm-only --ignore-rules internal-resolution-error && publint packages/table --strict && attw --pack packages/table --profile esm-only --ignore-rules internal-resolution-error",
     "fix": "npm run lint:fix && npm run format",
     "docs:typecheck": "npm run build:lib && tsc --noEmit -p docs/tsconfig.json",
     "docs:test": "vitest run --project jsdom docs",
-    "lint": "oxlint resources/js workbench/resources/js packages/*/resources/js",
-    "lint:fix": "oxlint resources/js workbench/resources/js packages/*/resources/js --fix",
-    "lint:github": "oxlint resources/js workbench/resources/js packages/*/resources/js --format=github",
+    "lint": "oxlint workbench/resources/js packages/*/resources/js",
+    "lint:fix": "oxlint workbench/resources/js packages/*/resources/js --fix",
+    "lint:github": "oxlint workbench/resources/js packages/*/resources/js --format=github",
     "versions:check": "node .github/scripts/sync-package-versions.mjs --check",
     "versions:sync": "node .github/scripts/sync-package-versions.mjs",
-    "format": "oxfmt --write \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
-    "format:check": "oxfmt --check \"resources/js/**/*.{ts,tsx}\" \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
+    "format": "oxfmt --write \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
+    "format:check": "oxfmt --check \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "analyze": "SONDA=1 vite build && mkdir -p docs/public && cp docs/generated/bundle-report.html docs/public/bundle-report.html",
     "docs:dev": "npm run build:lib && npm run dev -w docs",
     "docs:build": "npm run build:lib && npm run analyze && npm run build -w docs",
     "docs:preview": "npm run preview -w docs"
-  },
-  "dependencies": {
-    "@lattice-php/core": "0.38.0",
-    "@lattice-php/form": "0.38.0",
-    "@lattice-php/table": "0.38.0",
-    "@lattice-php/ui": "0.38.0",
-    "@atlaskit/pragmatic-drag-and-drop": "^2.0.1",
-    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
-    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
-    "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.0.0",
-    "@codemirror/lang-javascript": "^6.2.5",
-    "@codemirror/lang-json": "^6.0.2",
-    "@codemirror/lang-php": "^6.0.2",
-    "@codemirror/language": "^6.12.4",
-    "@codemirror/legacy-modes": "^6.5.3",
-    "@codemirror/state": "^6.7.1",
-    "@codemirror/view": "^6.43.7",
-    "@lattice-php/vite-svg-sprite": "^0.3.0",
-    "@lezer/highlight": "^1.2.3",
-    "@radix-ui/react-toast": "^1.2.16"
-  },
-  "peerDependencies": {
-    "@inertiajs/react": "^3.0.0",
-    "@laravel/echo-react": "^2.0.0",
-    "pusher-js": "^8.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@laravel/echo-react": {
-      "optional": true
-    },
-    "pusher-js": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",

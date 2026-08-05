@@ -44,9 +44,9 @@
 /renovate.json export-ignore
 /.mcp.json export-ignore
 /solo.yml export-ignore
-/dist-standalone/** linguist-generated=true
+/packages/framework/dist-standalone/** linguist-generated=true
 
 # Keep frontend tests out of the Composer distribution
-/resources/js/test/** export-ignore
+/packages/framework/resources/js/test/** export-ignore
 *.test.ts export-ignore
 *.test.tsx export-ignore

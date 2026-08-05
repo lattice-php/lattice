@@ -55,12 +55,13 @@ jobs:
       # publish a package with no standalone assets.
       - run: npm run verify:standalone
 
-      - run: npm publish --workspaces --include-workspace-root --access public --provenance
+      - run: npm publish --workspaces --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   split-composer:
     needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -70,6 +71,8 @@ jobs:
             repository: core
           - directory: packages/form
             repository: form
+          - directory: packages/framework
+            repository: framework
           - directory: packages/table
             repository: table
           - directory: packages/ui

@@ -51,7 +51,7 @@ abstract class TestCase extends BaseTestCase
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite.database', $database);
         $app['config']->set('inertia.pages.paths', [
-            dirname(__DIR__).'/resources/js/pages',
+            dirname(__DIR__).'/packages/framework/resources/js/pages',
             dirname(__DIR__).'/workbench/resources/js/Pages',
         ]);
         $app['config']->set('inertia.testing.ensure_pages_exist', false);

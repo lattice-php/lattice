@@ -43,6 +43,9 @@ final readonly class OxfmtFormatter implements Formatter
         foreach (array_unique([
             base_path('node_modules/.bin/oxfmt'),
             dirname(__DIR__, 3).'/node_modules/.bin/oxfmt',
+            // In the monorepo, node_modules is hoisted to the workspace root
+            // two levels above the package checkout.
+            dirname(__DIR__, 5).'/node_modules/.bin/oxfmt',
         ]) as $binary) {
             if (is_file($binary)) {
                 return $binary;

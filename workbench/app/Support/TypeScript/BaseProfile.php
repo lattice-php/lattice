@@ -59,7 +59,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         $configuredOutput = config('lattice.typescript.base_output');
         $outputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput
-            : $packageRoot.'/resources/js/types';
+            : $packageRoot.'/packages/framework/resources/js/types';
         $formOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput.'/form'
             : $packageRoot.'/packages/form/resources/js';
@@ -275,7 +275,7 @@ final readonly class BaseProfile implements TypeScriptProfile
     private function sources(string $packageRoot): array
     {
         return [
-            $packageRoot.'/src',
+            $packageRoot.'/packages/framework/src',
             $packageRoot.'/packages/core/src',
             $packageRoot.'/packages/form/src',
             $packageRoot.'/packages/table/src',
