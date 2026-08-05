@@ -6,7 +6,7 @@ namespace Lattice\Form\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Lattice\Core\Contracts\ContainerComponent;
-use Lattice\Facades\Evaluate;
+use Lattice\Core\Facades\Evaluate;
 use Lattice\Form\Attributes\AsField;
 use Lattice\Form\Components\Concerns\HasRowActions;
 use Lattice\Form\Components\Concerns\HasRowLayout;

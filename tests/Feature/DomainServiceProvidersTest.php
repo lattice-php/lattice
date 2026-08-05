@@ -37,6 +37,17 @@ it('rejects duplicate wire family categories', function (): void {
         ->toThrow(InvalidArgumentException::class, 'Wire family [fixture] is already registered.');
 });
 
+it('dispatches registered package capabilities and rejects invalid access', function (): void {
+    $registry = app(LatticeRegistry::class);
+    $registry->registerCapability('fixture', fn (string $value): string => "fixture:{$value}");
+
+    expect($registry->__call('fixture', ['value']))->toBe('fixture:value')
+        ->and(fn () => $registry->registerCapability('fixture', fn (): null => null))
+        ->toThrow(InvalidArgumentException::class, 'Lattice capability [fixture] is already registered.')
+        ->and(fn () => $registry->__call('missingCapability', []))
+        ->toThrow(BadMethodCallException::class, 'Lattice capability [missingCapability] is not registered.');
+});
+
 it('loads each domain provider with its package dependencies', function (): void {
     $testApplication = Application::getInstance();
     $testFacadeApplication = Facade::getFacadeApplication();

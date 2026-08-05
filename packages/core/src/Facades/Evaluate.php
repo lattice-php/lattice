@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Facades;
+namespace Lattice\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Lattice\Core\Support\Evaluation\Evaluator;

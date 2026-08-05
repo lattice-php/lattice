@@ -8,11 +8,13 @@
         "php": "^8.4",
         "illuminate/filesystem": "^11.0 || ^12.0 || ^13.0",
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/routing": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
         "illuminate/validation": "^11.0 || ^12.0 || ^13.0",
         "lattice-php/core": "self.version",
         "lattice-php/ui": "self.version",
         "nesbot/carbon": "^2.72 || ^3.0",
+        "symfony/http-foundation": "^7.0 || ^8.0",
         "symfony/html-sanitizer": "^7.0 || ^8.0",
         "ueberdosis/tiptap-php": "^2.1"
     },

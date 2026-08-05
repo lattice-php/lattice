@@ -6,7 +6,7 @@ namespace Lattice\Table;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Core\Attributes\AsTable;
 use Lattice\Core\Discovery\DiscoveryKinds;
-use Lattice\Core\Facades\Lattice;
+use Lattice\Core\LatticeRegistry;
 use Lattice\Form\FormServiceProvider;
 use Lattice\Table\Attributes\AsColumn;
 use Lattice\Table\Attributes\AsFilter;
@@ -24,8 +24,15 @@ final class TableServiceProvider extends ServiceProvider
 
         $this->app->singleton(TableRegistry::class);
 
-        Lattice::wireSource(dirname(__DIR__));
-        Lattice::wireFamily('column', AsColumn::class, Column::class, marker: true);
-        Lattice::wireFamily('filter', AsFilter::class, Filter::class, marker: true);
+        $lattice = $this->app->make(LatticeRegistry::class);
+        $lattice->registerCapability('tables', fn (string|array $tables) => $this->app->make(TableRegistry::class)->register($tables));
+        $lattice->wireSource(dirname(__DIR__));
+        $lattice->wireFamily('column', AsColumn::class, Column::class, marker: true);
+        $lattice->wireFamily('filter', AsFilter::class, Filter::class, marker: true);
+    }
+
+    public function boot(): void
+    {
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
     }
 }

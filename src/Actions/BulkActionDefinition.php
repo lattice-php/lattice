@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Actions\Components\Action;
 use Lattice\Actions\Concerns\InteractsWithActionForm;
-use Lattice\Actions\Contracts\InteractsWithForm;
 use Lattice\Core\Definition;
+use Lattice\Form\Contracts\InteractsWithForm;
 
 abstract class BulkActionDefinition extends Definition implements InteractsWithForm
 {

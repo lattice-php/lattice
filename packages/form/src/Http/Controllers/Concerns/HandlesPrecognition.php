@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Http\Controllers\Concerns;
+namespace Lattice\Form\Http\Controllers\Concerns;
 
 use Closure;
 use Illuminate\Http\JsonResponse;
@@ -18,10 +18,6 @@ trait HandlesPrecognition
         }
     }
 
-    /**
-     * Run the given validation closure and translate the outcome into a
-     * precognition response: 204 on success, 422 with the errors otherwise.
-     */
     protected function validatePrecognitive(Request $request, Closure $validate): Response
     {
         try {
