@@ -67,6 +67,8 @@ jobs:
       fail-fast: false
       matrix:
         package:
+          - directory: packages/action
+            repository: action
           - directory: packages/core
             repository: core
           - directory: packages/form

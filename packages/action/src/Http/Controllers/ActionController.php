@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Http\Controllers;
+namespace Lattice\Actions\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Lattice\Actions\ActionRegistry;

@@ -6,7 +6,7 @@ import { formComponents } from "@lattice-php/form";
 import { useFormContext } from "@lattice-php/form/toolkit";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
-import { actionComponents } from "@lattice-php/lattice/action/plugin";
+import { actionComponents } from "@lattice-php/action/plugin";
 
 type ValidateFieldsOptions = { onSuccess?: () => void; onValidationError?: () => void };
 

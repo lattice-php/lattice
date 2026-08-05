@@ -2,7 +2,7 @@ import { screen, waitFor } from "@testing-library/react";
 import type { Node } from "@lattice-php/core/types";
 import { clearRemoteTokenCache } from "@lattice-php/core/api";
 import { createRegistry } from "@lattice-php/core/registry";
-import { actionComponents } from "@lattice-php/lattice/action";
+import { actionComponents } from "@lattice-php/action";
 import { renderWithRegistry } from "@lattice-php/lattice/test/render";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import { uiComponents } from "@lattice-php/ui";

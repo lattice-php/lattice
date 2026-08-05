@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "@lattice-php/action": path.resolve(import.meta.dirname, "../action/resources/js"),
       "@lattice-php/core": path.resolve(import.meta.dirname, "../core/resources/js"),
       "@lattice-php/form": path.resolve(import.meta.dirname, "../form/resources/js"),
       "@lattice-php/table": path.resolve(import.meta.dirname, "../table/resources/js"),

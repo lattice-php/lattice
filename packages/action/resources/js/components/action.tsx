@@ -4,8 +4,8 @@ import { prefixedTestId } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { IconRenderer } from "@lattice-php/ui/icons";
 import { actionMenuItemClassName, useActionMenu } from "@lattice-php/ui/action-menu-context";
-import { useAction } from "@lattice-php/lattice/action/hooks/use-action";
-import { actionLabel } from "@lattice-php/lattice/action/lib/action-label";
+import { useAction } from "@lattice-php/action/hooks/use-action";
+import { actionLabel } from "@lattice-php/action/lib/action-label";
 
 const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";

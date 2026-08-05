@@ -11,25 +11,18 @@
     "types": ["node", "vite/client"],
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "paths": {
-      "@lattice-php/action": ["../action/resources/js/index.ts"],
-      "@lattice-php/action/*": ["../action/resources/js/*"],
       "@lattice-php/core": ["../core/resources/js/index.ts"],
       "@lattice-php/core/*": ["../core/resources/js/*"],
       "@lattice-php/form": ["../form/resources/js/index.ts"],
       "@lattice-php/form/*": ["../form/resources/js/*"],
-      "@lattice-php/lattice": ["./resources/js/index.ts"],
-      "@lattice-php/lattice/*": ["./resources/js/*"],
-      "@lattice-php/table": ["../table/resources/js/index.ts"],
-      "@lattice-php/table/*": ["../table/resources/js/*"],
+      "@lattice-php/lattice": ["../framework/resources/js/index.ts"],
+      "@lattice-php/lattice/*": ["../framework/resources/js/*"],
+      "@lattice-php/action": ["./resources/js/index.ts"],
+      "@lattice-php/action/*": ["./resources/js/*"],
       "@lattice-php/ui": ["../ui/resources/js/index.ts"],
       "@lattice-php/ui/*": ["../ui/resources/js/*"]
     }
   },
   "include": ["resources/js"],
-  "exclude": [
-    "resources/js/**/*.test.*",
-    "resources/js/**/*.test-d.*",
-    "resources/js/test/**",
-    "resources/js/test-support.ts"
-  ]
+  "exclude": ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*"]
 }

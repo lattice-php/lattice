@@ -1,5 +1,5 @@
 import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
-import type { ActionNodeType } from "@lattice-php/lattice/types/generated";
+import type { ActionNodeType } from "./generated";
 import ActionComponent from "./components/action";
 import ActionGroupComponent from "./components/action-group";
 

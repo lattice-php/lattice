@@ -71,6 +71,7 @@ describe("lattice Vite helper", () => {
           deps: {
             inline: [
               "@lattice-php/lattice",
+              "@lattice-php/action",
               "@lattice-php/core",
               "@lattice-php/form",
               "@lattice-php/table",

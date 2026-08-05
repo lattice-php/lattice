@@ -113,7 +113,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
     {
         $byCategory = ['component' => [], 'column' => [], 'filter' => []];
 
-        foreach ($this->discovery->discover(dirname(__DIR__, 2), [dirname(__DIR__).'/Testing'])->components as $component) {
+        foreach ($this->discovery->discover($this->lattice->wireSources(), [dirname(__DIR__).'/Testing'])->components as $component) {
             $byCategory[$component->category][$component->class] = $component->type;
         }
 

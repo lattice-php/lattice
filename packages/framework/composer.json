@@ -27,6 +27,7 @@
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
         "inertiajs/inertia-laravel": "^3.0",
+        "lattice-php/action": "self.version",
         "lattice-php/core": "self.version",
         "lattice-php/form": "self.version",
         "lattice-php/table": "self.version",

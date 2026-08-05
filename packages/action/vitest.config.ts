@@ -6,11 +6,11 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@lattice-php/action": path.resolve(import.meta.dirname, "../action/resources/js"),
       "@lattice-php/core": path.resolve(import.meta.dirname, "../core/resources/js"),
       "@lattice-php/form": path.resolve(import.meta.dirname, "../form/resources/js"),
       "@lattice-php/lattice": path.resolve(import.meta.dirname, "../framework/resources/js"),
-      "@lattice-php/ui": path.resolve(import.meta.dirname, "resources/js"),
+      "@lattice-php/action": path.resolve(import.meta.dirname, "resources/js"),
+      "@lattice-php/ui": path.resolve(import.meta.dirname, "../ui/resources/js"),
     },
   },
   test: {

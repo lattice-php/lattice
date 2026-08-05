@@ -13,9 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Inertia\ResponseFactory;
-use Lattice\Actions\ActionRegistry;
-use Lattice\Actions\BulkActionRegistry;
-use Lattice\Actions\Components\Action;
+use Lattice\Actions\ActionServiceProvider;
 use Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Console\Commands\DiscoverClearCommand;
 use Lattice\Console\Commands\MakeColumnCommand;
@@ -25,8 +23,6 @@ use Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Console\Commands\TypeScriptCommand;
-use Lattice\Core\Attributes\AsAction;
-use Lattice\Core\Attributes\AsBulkAction;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\AsLayout;
 use Lattice\Core\Attributes\AsRemoteSource;
@@ -78,6 +74,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->register(UiServiceProvider::class);
         $this->app->register(FormServiceProvider::class);
         $this->app->register(TableServiceProvider::class);
+        $this->app->register(ActionServiceProvider::class);
         $lattice = $this->app->make(LatticeRegistry::class);
         $lattice->wireSource(__DIR__);
 
@@ -87,25 +84,18 @@ final class LatticeServiceProvider extends PackageServiceProvider
             $this->commands(MakeDefinitionCommand::all());
         }
 
-        DiscoveryKinds::register('actions', AsAction::class);
-        DiscoveryKinds::register('bulk-actions', AsBulkAction::class);
         DiscoveryKinds::register('fragments', AsFragment::class);
         DiscoveryKinds::register('remote-sources', AsRemoteSource::class);
         DiscoveryKinds::register('layouts', AsLayout::class);
 
         $this->app->singleton(FragmentRegistry::class);
         $this->app->singleton(LayoutRegistry::class);
-        $this->app->singleton(ActionRegistry::class);
-        $this->app->singleton(BulkActionRegistry::class);
-        $this->app->singleton('lattice.actions.component', fn (): callable => fn (string $actionClass, array $context): Action => Action::use($actionClass, $context));
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);
         $this->app->singleton(StandaloneAssets::class);
         $this->app->singleton(ThemeRenderer::class);
 
         $lattice->registerCapability('fragments', fn (string|array $fragments) => $this->app->make(FragmentRegistry::class)->register($fragments));
-        $lattice->registerCapability('actions', fn (string|array $actions) => $this->app->make(ActionRegistry::class)->register($actions));
-        $lattice->registerCapability('bulkActions', fn (string|array $bulkActions) => $this->app->make(BulkActionRegistry::class)->register($bulkActions));
         $lattice->registerCapability('layouts', fn (string|array $layouts) => $this->app->make(LayoutRegistry::class)->register($layouts));
         $lattice->registerCapability('layoutRegistry', fn (): LayoutRegistry => $this->app->make(LayoutRegistry::class));
         $lattice->registerCapability('pages', fn (string|array $pages) => $this->app->make(PageRegistry::class)->register($pages));
