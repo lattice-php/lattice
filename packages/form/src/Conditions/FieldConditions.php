@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Conditions;
+namespace Lattice\Form\Conditions;
 
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 /**
  * The four condition intents a field declares, as the value object that

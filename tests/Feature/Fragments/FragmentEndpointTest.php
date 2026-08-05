@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Fragments\Components\Fragment as FragmentComponent;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
 
 use function Pest\Laravel\getJson;
 

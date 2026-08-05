@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Concerns;
+namespace Lattice\Ui\Concerns;
 
 use BackedEnum;
-use Lattice\Lattice\Support\Affix;
+use Lattice\Core\Support\Affix;
 
 trait HasAffixes
 {

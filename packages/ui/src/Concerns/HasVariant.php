@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Concerns;
+namespace Lattice\Ui\Concerns;
 
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Variant;
 
 trait HasVariant
 {

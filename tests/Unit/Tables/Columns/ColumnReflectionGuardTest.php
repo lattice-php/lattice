@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Tables\Columns\BadgeColumn;
-use Lattice\Lattice\Tables\Columns\BooleanColumn;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\IconColumn;
-use Lattice\Lattice\Tables\Columns\ImageColumn;
-use Lattice\Lattice\Tables\Columns\MoneyColumn;
-use Lattice\Lattice\Tables\Columns\NumberColumn;
-use Lattice\Lattice\Tables\Columns\StackColumn;
-use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Table\Columns\BadgeColumn;
+use Lattice\Table\Columns\BooleanColumn;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Columns\IconColumn;
+use Lattice\Table\Columns\ImageColumn;
+use Lattice\Table\Columns\MoneyColumn;
+use Lattice\Table\Columns\NumberColumn;
+use Lattice\Table\Columns\StackColumn;
+use Lattice\Table\Columns\TextColumn;
 
 /**
  * Columns reflect their public properties into the wire props, so any public

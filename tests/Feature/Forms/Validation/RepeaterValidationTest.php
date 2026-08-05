@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FieldValidator;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FieldValidator;
 
 function repeaterField(): Repeater
 {

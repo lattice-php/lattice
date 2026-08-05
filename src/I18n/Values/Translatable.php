@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\I18n\Values;
+namespace Lattice\I18n\Values;
 
 use DateTimeInterface;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Support\Wire;
 use stdClass;
 
 /**

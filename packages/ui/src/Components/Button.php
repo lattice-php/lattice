@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Concerns\HasIcon;
-use Lattice\Lattice\Ui\Concerns\HasVariant;
-use Lattice\Lattice\Ui\Concerns\Triggerable;
-use Lattice\Lattice\Ui\Enums\ButtonType;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Concerns\HasIcon;
+use Lattice\Ui\Concerns\HasVariant;
+use Lattice\Ui\Concerns\Triggerable;
+use Lattice\Ui\Enums\ButtonType;
 
 #[AsComponent('button')]
 class Button extends Component

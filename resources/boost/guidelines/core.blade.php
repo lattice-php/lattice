@@ -9,18 +9,18 @@ Lattice (`lattice-php/lattice`) is a server-driven UI layer for Laravel apps run
 
 ### Building a page
 
-A page extends `Lattice\Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. Annotate it with `#[AsPage(route: '…')]`; Lattice discovers the page and registers its route automatically — no controller, route file entry, or Inertia page component to write by hand.
+A page extends `Lattice\Http\Page`, returns a `title()`, and builds its UI in `render()`. Annotate it with `#[AsPage(route: '…')]`; Lattice discovers the page and registers its route automatically — no controller, route file entry, or Inertia page component to write by hand.
 
 @verbatim
 <code-snippet name="A page and its route" lang="php">
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Ui\PageSchema;
-use Lattice\Lattice\Http\Page as BasePage;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Ui\PageSchema;
+use Lattice\Http\Page as BasePage;
+use Lattice\Table\Components\Table;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Core\Enums\PageLayout;
 
 #[AsPage(route: '/products', layout: PageLayout::App, middleware: ['web'])]
 final class ProductsPage extends BasePage
@@ -50,7 +50,7 @@ Drop a form or a table into the tree with `Form::use(MyForm::class)` and `Table:
 
 ### Building blocks
 
-- **Components** — layout/visual builders in `Lattice\Lattice\Ui\Components`: `Card`, `Grid`, `Stack`, `Heading`, `Text`, `Tabs`, `Badge`, `Link`, `Button`. Composed into the page tree.
+- **Components** — layout/visual builders in `Lattice\Ui\Components`: `Card`, `Grid`, `Stack`, `Heading`, `Text`, `Tabs`, `Badge`, `Link`, `Button`. Composed into the page tree.
 - **Forms** — `FormDefinition` classes with fields + server-side (and live, Precognition) validation. **Reach for the `lattice-forms` skill.**
 - **Tables** — `EloquentTableDefinition` classes with columns, sorting, filtering, pagination, and row/bulk actions. **Reach for the `lattice-tables` skill.**
 - **Actions** — `ActionDefinition` / `BulkActionDefinition` that run on the server and return effects (toast, redirect, refresh, modal) via `ActionResult`. **Reach for the `lattice-actions` skill.**

@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Composer\InstalledVersions;
-use Lattice\Lattice\Core\Discovery\ComponentPackages;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
+use Lattice\Core\Discovery\ComponentPackages;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Support\TypeScript\WireTypeDiscovery;
 
 it('resolves discover roots from packages that declare extra.lattice.discover', function (): void {
     $roots = ComponentPackages::fromInstalled(

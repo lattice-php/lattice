@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Builder;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\RowTemplate;
-use Lattice\Lattice\Forms\Components\Select;
+use Lattice\Core\Option;
+use Lattice\Form\Components\Builder;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\RowTemplate;
+use Lattice\Form\Components\Select;
 
 /**
  * @return array<int, array{label: string, value: string, data: array<string, mixed>|null}>

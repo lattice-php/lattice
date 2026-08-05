@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Attributes;
+namespace Lattice\Core\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Core\Contracts\DeclaresGate;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Contracts\DeclaresGate;
+use Lattice\Core\Enums\PageContainer;
+use Lattice\Core\Enums\PageLayout;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class AsPage implements DeclaresGate

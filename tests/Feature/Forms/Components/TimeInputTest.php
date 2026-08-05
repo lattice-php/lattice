@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\TimeInput;
-use Lattice\Lattice\Forms\FieldValidator;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\TimeInput;
+use Lattice\Form\FieldValidator;
 
 it('serializes a time input', function (): void {
     $node = wire(TimeInput::make('starts_at', 'Start time')->min('08:00')->max('18:00')->step(900));

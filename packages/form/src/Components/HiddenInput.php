@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Enums\FieldType;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Enums\FieldType;
 
 #[AsField(FieldType::HiddenInput)]
 class HiddenInput extends Field {}

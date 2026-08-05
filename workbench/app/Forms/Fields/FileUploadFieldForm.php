@@ -6,14 +6,14 @@ namespace Workbench\App\Forms\Fields;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\FileUpload;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Ui\Components\Tab;
-use Lattice\Lattice\Ui\Components\Tabs;
-use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\FileUpload;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\FormDefinition;
+use Lattice\Ui\Components\Tab;
+use Lattice\Ui\Components\Tabs;
+use Lattice\Ui\Enums\Orientation;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('workbench.fields.file-upload.form')]

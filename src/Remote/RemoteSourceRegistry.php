@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Remote;
+namespace Lattice\Remote;
 
 use Illuminate\Contracts\Container\Container;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Core\Exceptions\UnknownComponent;
+use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Core\Attributes\DefinitionAttribute;
+use Lattice\Core\DefinitionRegistry;
+use Lattice\Core\Exceptions\UnknownComponent;
 
 /**
  * @extends DefinitionRegistry<RemoteSourceDefinition>

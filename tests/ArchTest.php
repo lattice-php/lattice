@@ -1,152 +1,156 @@
 <?php
 declare(strict_types=1);
 use Illuminate\Support\Facades\Facade;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionRegistry;
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Actions\FormActionDefinition;
-use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Forms\FormRegistry;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\Layouts\LayoutDefinition;
-use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
-use Lattice\Lattice\Tables\Columns\Concerns\IsSearchable;
-use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
-use Lattice\Lattice\Tables\Columns\NumericColumn;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionRegistry;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Actions\FormActionDefinition;
+use Lattice\Core\Definition;
+use Lattice\Core\DefinitionRegistry;
+use Lattice\Core\Facades\Lattice as LatticeFacade;
+use Lattice\Core\LatticeRegistry;
+use Lattice\Form\FormDefinition;
+use Lattice\Form\FormRegistry;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Fragments\FragmentRegistry;
+use Lattice\Layouts\LayoutDefinition;
+use Lattice\Layouts\LayoutRegistry;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Columns\Concerns\IsFilterable;
+use Lattice\Table\Columns\Concerns\IsSearchable;
+use Lattice\Table\Columns\Concerns\IsSortable;
+use Lattice\Table\Columns\NumericColumn;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableRegistry;
 
 const CORE_FORBIDDEN_NAMESPACES = [
-    'Lattice\\Lattice\\Actions',
-    'Lattice\\Lattice\\Forms',
-    'Lattice\\Lattice\\Tables',
-    'Lattice\\Lattice\\Fragments',
-    'Lattice\\Lattice\\Layouts',
-    'Lattice\\Lattice\\Ui',
-    'Lattice\\Lattice\\Chat',
-    'Lattice\\Lattice\\Notifications',
-    'Lattice\\Lattice\\Realtime',
-    'Lattice\\Lattice\\Remote',
-    'Lattice\\Lattice\\Effects',
-    'Lattice\\Lattice\\I18n',
+    'Lattice\\Actions',
+    'Lattice\\Form',
+    'Lattice\\Table',
+    'Lattice\\Fragments',
+    'Lattice\\Layouts',
+    'Lattice\\Ui',
+    'Lattice\\Chat',
+    'Lattice\\Notifications',
+    'Lattice\\Realtime',
+    'Lattice\\Remote',
+    'Lattice\\Effects',
+    'Lattice\\I18n',
 ];
 
 arch('forms depend on no other feature domain')
-    ->expect('Lattice\Lattice\Forms')
+    ->expect('Lattice\Form')
     ->not->toUse([
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Actions',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
     ]);
 
 arch('actions depend on no feature domain other than forms')
-    ->expect('Lattice\Lattice\Actions')
+    ->expect('Lattice\Actions')
     ->not->toUse([
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
     ]);
 
 arch('tables depend on no feature domain other than actions, forms, and fragments')
-    ->expect('Lattice\Lattice\Tables')
+    ->expect('Lattice\Table')
     ->not->toUse([
-        'Lattice\Lattice\Layouts',
+        'Lattice\Layouts',
     ]);
 
 arch('fragments depend on no other feature domain')
-    ->expect('Lattice\Lattice\Fragments')
+    ->expect('Lattice\Fragments')
     ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Form',
+        'Lattice\Table',
+        'Lattice\Actions',
+        'Lattice\Layouts',
     ]);
 
 arch('layouts depend on no feature domain other than actions')
-    ->expect('Lattice\Lattice\Layouts')
+    ->expect('Lattice\Layouts')
     ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
+        'Lattice\Form',
+        'Lattice\Table',
+        'Lattice\Fragments',
     ]);
 
-arch('core does not depend on feature or ui domains')
-    ->expect('Lattice\Lattice\Core')
-    ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
+arch('core internals do not depend on feature or ui domains')
+    ->expect('Lattice\Core')
+    ->not->toUse(CORE_FORBIDDEN_NAMESPACES)
+    ->ignoring([LatticeFacade::class, LatticeRegistry::class]);
 
-arch('core does not depend upward on the orchestration or tooling layers')
-    ->expect('Lattice\Lattice\Core')
+arch('core internals do not depend upward on the orchestration or tooling layers')
+    ->expect('Lattice\Core')
     ->not->toUse([
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
-        'Lattice\Lattice\Facades',
-    ]);
+        'Lattice\Http',
+        'Lattice\Console',
+        'Lattice\Facades',
+    ])
+    ->ignoring([LatticeFacade::class, LatticeRegistry::class]);
 
 arch('feature domains never depend upward on the orchestration or tooling layers')
     ->expect([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Actions',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
+        'Lattice\Form',
+        'Lattice\Actions',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
     ])
     ->not->toUse([
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
+        'Lattice\Http',
+        'Lattice\Console',
     ]);
 
 arch('the ui and secondary domains never depend upward on orchestration or tooling')
     ->expect([
-        'Lattice\Lattice\Ui',
-        'Lattice\Lattice\Chat',
-        'Lattice\Lattice\Notifications',
-        'Lattice\Lattice\Realtime',
-        'Lattice\Lattice\Remote',
-        'Lattice\Lattice\Effects',
-        'Lattice\Lattice\I18n',
+        'Lattice\Ui',
+        'Lattice\Chat',
+        'Lattice\Notifications',
+        'Lattice\Realtime',
+        'Lattice\Remote',
+        'Lattice\Effects',
+        'Lattice\I18n',
     ])
     ->not->toUse([
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
+        'Lattice\Http',
+        'Lattice\Console',
     ]);
 
 arch('attributes depend on no feature domain or higher layer')
-    ->expect('Lattice\Lattice\Attributes')
+    ->expect('Lattice\Core\Attributes')
     ->not->toUse([
-        'Lattice\Lattice\Forms',
-        'Lattice\Lattice\Tables',
-        'Lattice\Lattice\Fragments',
-        'Lattice\Lattice\Layouts',
-        'Lattice\Lattice\Ui',
-        'Lattice\Lattice\Http',
-        'Lattice\Lattice\Console',
-        'Lattice\Lattice\Facades',
+        'Lattice\Form',
+        'Lattice\Table',
+        'Lattice\Fragments',
+        'Lattice\Layouts',
+        'Lattice\Ui',
+        'Lattice\Http',
+        'Lattice\Console',
+        'Lattice\Facades',
     ]);
 
 arch('the support utilities do not depend on the feature domains')
     ->expect([
-        'Lattice\Lattice\Support\Evaluation',
-        'Lattice\Lattice\Support\Discovery',
-        'Lattice\Lattice\Support\TypeScript',
+        'Lattice\Core\Support\Evaluation',
+        'Lattice\Core\Support\Discovery',
+        'Lattice\Support\TypeScript',
     ])
     ->not->toUse(CORE_FORBIDDEN_NAMESPACES);
 
 arch('contracts are interfaces')
     ->expect([
-        'Lattice\Lattice\Core\Contracts',
-        'Lattice\Lattice\Actions\Contracts',
-        'Lattice\Lattice\Forms\Contracts',
-        'Lattice\Lattice\Tables\Contracts',
-        'Lattice\Lattice\Ui\Contracts',
+        'Lattice\Core\Contracts',
+        'Lattice\Actions\Contracts',
+        'Lattice\Form\Contracts',
+        'Lattice\Table\Contracts',
+        'Lattice\Ui\Contracts',
     ])
     ->toBeInterfaces();
 
@@ -175,18 +179,21 @@ it('derives every definition from the base definition', function (string $defini
 ]);
 
 arch('the lattice facade extends the laravel facade')
-    ->expect('Lattice\Lattice\Facades')
+    ->expect([
+        'Lattice\Core\Facades',
+        'Lattice\Facades',
+    ])
     ->toExtend(Facade::class);
 
 arch('columns never depend on eloquent')
-    ->expect('Lattice\Lattice\Tables\Columns')
+    ->expect('Lattice\Table\Columns')
     ->not->toUse('Illuminate\Database\Eloquent');
 
 arch('table columns, table filters, and built-in effects are final')
     ->expect([
-        'Lattice\Lattice\Tables\Columns',
-        'Lattice\Lattice\Tables\Filters',
-        'Lattice\Lattice\Effects\Builtin',
+        'Lattice\Table\Columns',
+        'Lattice\Table\Filters',
+        'Lattice\Effects\Builtin',
     ])
     ->toBeFinal()
     ->ignoring([
@@ -203,7 +210,7 @@ arch('no debug statements ship in the package')
     ->not->toBeUsed();
 
 arch('the package uses strict types throughout')
-    ->expect('Lattice\Lattice')
+    ->expect('Lattice')
     ->toUseStrictTypes();
 
 it('uses lower-case translation keys separated by - or _', function (): void {

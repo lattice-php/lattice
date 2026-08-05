@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Support\Evaluation\UnresolvableEvaluationParameter;
+use Lattice\Core\Support\Evaluation\UnresolvableEvaluationParameter;
+use Lattice\Form\Components\Field;
+use Lattice\Form\Components\Select;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 
 it('injects named utilities into rule closures', function (): void {
     $field = TextInput::make('email')->rules(fn ($get): array => $get('strict') ? ['email'] : []);

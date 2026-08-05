@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Notifications\Notification;
+use Lattice\Notifications\Notification;
 
 test('actions serialize as descriptors, never as signed nodes', function (): void {
     $actions = Notification::make()

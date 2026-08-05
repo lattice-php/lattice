@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Contracts\HasLabel;
-use Lattice\Lattice\Forms\Components\Choice;
+use Lattice\Core\Contracts\HasLabel;
+use Lattice\Form\Components\Choice;
 
 enum PlainStatus: string
 {

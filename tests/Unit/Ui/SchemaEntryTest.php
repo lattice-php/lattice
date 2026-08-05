@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\RowTemplate;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Tables\Columns\StackColumn;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\RowTemplate;
+use Lattice\Form\Components\TextInput;
+use Lattice\Table\Columns\StackColumn;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Ui\PageSchema;
 
 final class SchemaEntryStub implements SchemaEntry
 {

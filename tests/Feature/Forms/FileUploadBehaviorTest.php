@@ -5,11 +5,11 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Forms\Components\FileUpload;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\Rules\FileUploadItem;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Form\Components\FileUpload;
+use Lattice\Form\FormData;
+use Lattice\Form\Rules\FileUploadItem;
+use Lattice\Ui\Enums\HttpMethod;
 
 function fileData(): FormData
 {

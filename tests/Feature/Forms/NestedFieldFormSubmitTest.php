@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Form\Components\Form;
 use Workbench\App\Forms\Fields\BuilderFieldForm;
 use Workbench\App\Forms\Fields\RepeaterFieldForm;
 

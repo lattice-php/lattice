@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorKind;
-use Lattice\Lattice\Core\Enums\ColorName;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorKind;
+use Lattice\Core\Enums\ColorName;
 
 it('builds named colors from shortcuts', function (): void {
     $color = Color::success();

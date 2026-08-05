@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns;
+namespace Lattice\Table\Columns;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Tables\Enums\FilterControl;
-use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\Option;
+use Lattice\Table\Enums\FilterControl;
+use Lattice\Table\Enums\FilterType;
 
 /**
  * The wire shape of a column's filter capability. Built by a Filterable column

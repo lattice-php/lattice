@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions;
+namespace Lattice\Actions;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Actions\Concerns\InteractsWithActionForm;
-use Lattice\Lattice\Actions\Contracts\InteractsWithForm;
-use Lattice\Lattice\Core\Definition;
+use Lattice\Actions\Components\Action;
+use Lattice\Actions\Concerns\InteractsWithActionForm;
+use Lattice\Actions\Contracts\InteractsWithForm;
+use Lattice\Core\Definition;
 
 abstract class ActionDefinition extends Definition implements InteractsWithForm
 {

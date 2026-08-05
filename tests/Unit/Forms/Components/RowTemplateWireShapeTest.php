@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\RowTemplate;
-use Lattice\Lattice\Forms\Components\TextInput;
+use Lattice\Form\Components\RowTemplate;
+use Lattice\Form\Components\TextInput;
 
 it('serialises a block as type + label + schema', function (): void {
     $wire = wire(

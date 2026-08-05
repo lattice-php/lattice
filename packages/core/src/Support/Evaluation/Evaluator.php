@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Evaluation;
+namespace Lattice\Core\Support\Evaluation;
 
 use Closure;
 use Illuminate\Contracts\Container\BindingResolutionException;

@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Validator;
-use Lattice\Lattice\Forms\Components\RichEditor;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\RichContent;
-use Lattice\Lattice\Forms\RichEditor\EditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtensionRegistry;
-use Lattice\Lattice\Tests\Fixtures\RichEditor\CalloutExtension;
+use Lattice\Form\Components\RichEditor;
+use Lattice\Form\FormData;
+use Lattice\Form\RichContent;
+use Lattice\Form\RichEditor\EditorExtension;
+use Lattice\Form\RichEditor\EditorExtensionRegistry;
+use Lattice\Tests\Fixtures\RichEditor\CalloutExtension;
 
 /**
  * @return array<string, mixed>

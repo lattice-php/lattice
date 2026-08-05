@@ -2,19 +2,19 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsLayout;
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Exceptions\UnknownComponent;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Http\Page;
-use Lattice\Lattice\Layouts\Components\Outlet;
-use Lattice\Lattice\Layouts\LayoutDefinition;
-use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Ui\Components\Heading;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\PageSchema;
-use Lattice\Lattice\Ui\Slot;
+use Lattice\Core\Attributes\AsLayout;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Core\Exceptions\UnknownComponent;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Http\Page;
+use Lattice\Layouts\Components\Outlet;
+use Lattice\Layouts\LayoutDefinition;
+use Lattice\Layouts\LayoutRegistry;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
+use Lattice\Ui\Slot;
 
 #[AsLayout('app')]
 final class WorkbenchAppLayout extends LayoutDefinition

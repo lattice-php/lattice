@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Contracts\CanBeHidden;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\IsInteractive;
+use Lattice\Core\Contracts\CanBeHidden;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\IsInteractive;
 
 function makeInteractiveComponent(?string $endpoint = null): Component
 {

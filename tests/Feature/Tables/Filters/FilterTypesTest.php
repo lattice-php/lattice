@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Filters\DateRangeFilter;
-use Lattice\Lattice\Tables\Filters\SelectFilter;
-use Lattice\Lattice\Tables\Filters\TernaryFilter;
-use Lattice\Lattice\Tables\Filters\ToggleFilter;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Form\FormData;
+use Lattice\Table\Filters\DateRangeFilter;
+use Lattice\Table\Filters\SelectFilter;
+use Lattice\Table\Filters\TernaryFilter;
+use Lattice\Table\Filters\ToggleFilter;
+use Lattice\Table\TableQuery;
 use Workbench\App\Models\Product;
 
 test('ternary filter serializes its wire shape', function (): void {

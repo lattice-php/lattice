@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Lattice\Lattice\Forms\Rules\FileUploadItem;
+use Lattice\Form\Rules\FileUploadItem;
 
 function fileRuleFails(FileUploadItem $rule, mixed $value): bool
 {

@@ -23,7 +23,7 @@ TextColumn::make('team')->label('Team');`}
 can be searchable, filterable, both, or neither:
 
 ```php
-use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Table\Columns\TextColumn;
 
 TextColumn::make('name')->searchable();
 TextColumn::make('email')->searchable()->filterable();  // both

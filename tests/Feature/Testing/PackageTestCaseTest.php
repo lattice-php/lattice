@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Inertia\ServiceProvider as InertiaServiceProvider;
-use Lattice\Lattice\LatticeServiceProvider;
-use Lattice\Lattice\Support\Testing\PackageTestCase;
+use Lattice\LatticeServiceProvider;
+use Lattice\Support\Testing\PackageTestCase;
 use Workbench\App\Providers\WorkbenchServiceProvider;
 
 use function Orchestra\Testbench\package_path;

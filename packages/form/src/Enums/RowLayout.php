@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Enums;
+namespace Lattice\Form\Enums;
 
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 #[TypeScript]
 enum RowLayout: string

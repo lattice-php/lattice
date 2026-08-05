@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\WireMap;
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Attributes\WireMap;
+use Lattice\Facades\Effects;
+use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Enums\Variant;
 
 #[AsEffect('test.enum-effect')]
 final class EnumPayloadEffect extends Effect

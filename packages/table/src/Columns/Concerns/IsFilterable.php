@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns\Concerns;
+namespace Lattice\Table\Columns\Concerns;
 
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
-use Lattice\Lattice\Tables\Concerns\ResolvesFilterOptions;
-use Lattice\Lattice\Tables\Enums\FilterControl;
-use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Core\Contracts\OptionSource;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\Option;
+use Lattice\Table\Columns\ColumnFilterOption;
+use Lattice\Table\Concerns\ResolvesFilterOptions;
+use Lattice\Table\Enums\FilterControl;
+use Lattice\Table\Enums\FilterType;
 use UnitEnum;
 
 trait IsFilterable

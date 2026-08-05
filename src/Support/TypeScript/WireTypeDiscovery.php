@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\AsWireNode;
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Contracts\ContainerComponent;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\LatticeRegistry;
-use Lattice\Lattice\Support\Discovery\ClassWalker;
+use Lattice\Core\Attributes\AsWireNode;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Contracts\ContainerComponent;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Core\LatticeRegistry;
+use Lattice\Core\Support\Discovery\ClassWalker;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
 

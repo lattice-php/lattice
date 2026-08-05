@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Table\TableQuery;
 use Workbench\App\Models\Product;
 
 /**

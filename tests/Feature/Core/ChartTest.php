@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Chart;
-use Lattice\Lattice\Ui\Enums\DateTimeStyle;
-use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
-use Lattice\Lattice\Ui\Values\ChartSeries;
-use Lattice\Lattice\Ui\Values\DateFormat;
-use Lattice\Lattice\Ui\Values\NumberFormat;
+use Lattice\Core\Color;
+use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Chart;
+use Lattice\Ui\Enums\DateTimeStyle;
+use Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Ui\Values\ChartSeries;
+use Lattice\Ui\Values\DateFormat;
+use Lattice\Ui\Values\NumberFormat;
 
 it('coerces series colors to tagged color values', function (): void {
     expect(wire(ChartSeries::line('revenue', color: '#2563eb'))['color'])

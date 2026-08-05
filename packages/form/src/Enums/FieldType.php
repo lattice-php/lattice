@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Enums;
+namespace Lattice\Form\Enums;
 
-use Lattice\Lattice\Core\Enums\Concerns\HasPrefixedWireType;
+use Lattice\Core\Enums\Concerns\HasPrefixedWireType;
 
 enum FieldType: string
 {

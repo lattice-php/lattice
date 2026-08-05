@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Attributes\WireMap;
-use Lattice\Lattice\Ui\Enums\Breakpoint;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Attributes\WireMap;
+use Lattice\Ui\Enums\Breakpoint;
 
 #[AsComponent('grid')]
 class Grid extends ContainerComponent

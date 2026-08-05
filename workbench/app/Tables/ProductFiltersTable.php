@@ -4,15 +4,15 @@ declare(strict_types=1);
 namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Tables\Columns\BooleanColumn;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Filters\DateRangeFilter;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\Filters\SelectFilter;
-use Lattice\Lattice\Tables\Filters\TernaryFilter;
-use Lattice\Lattice\Tables\Filters\ToggleFilter;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Columns\BooleanColumn;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Filters\DateRangeFilter;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\Filters\SelectFilter;
+use Lattice\Table\Filters\TernaryFilter;
+use Lattice\Table\Filters\ToggleFilter;
 use Workbench\App\Models\Product;
 
 #[AsTable('workbench.demo.filters')]

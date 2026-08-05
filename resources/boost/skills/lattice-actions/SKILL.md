@@ -13,12 +13,12 @@ Extend `ActionDefinition` with `definition()` (describe the trigger) and `handle
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Ui\Enums\ButtonVariant;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Ui\Enums\ButtonVariant;
+use Lattice\Ui\Enums\Variant;
 
 #[AsAction('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
@@ -50,7 +50,7 @@ class ArchiveProductAction extends ActionDefinition
 | Effect | What it does |
 | --- | --- |
 | `->toast($message, $variant?)` | Show a toast. `$message` first, then an optional `Variant` (`Success` default, or `Error`/`Warning`/`Info`). |
-| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Lattice\Effects\Builtin\Callout`). |
+| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Effects\Builtin\Callout`). |
 | `->reloadComponent($id)` | Re-fetch one component — pass a `#[AsTable]`/component id so only it refreshes. |
 | `->reloadPage()` | Reload the current page's props. |
 | `->to($url)` / `->toRoute($name, $params?)` / `->back()` | Navigate to a URL, a named route, or back. |
@@ -67,8 +67,8 @@ return ActionResult::success()->toast('Saved.')->reloadComponent('app.products')
 `Callout::make(string $message, Variant $variant = Variant::Info)` builds a persistent banner. Chain `->title()`, `->dismissible()`, `->link()`, or `->action()` to configure it:
 
 ```php
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Ui\Enums\Variant;
 
 return ActionResult::success()
     ->callout(
@@ -82,12 +82,12 @@ The callout renders in the layout slot `Callouts::make()` (placed between the he
 
 ## Flashing effects from outside an action
 
-`Effects::flash()` (facade `Lattice\Lattice\Facades\Effects`) delivers any effect(s) with the next Inertia response — no `ActionResult` needed. Use from controllers, listeners, middleware, or anywhere a redirect is returned:
+`Effects::flash()` (facade `Lattice\Facades\Effects`) delivers any effect(s) with the next Inertia response — no `ActionResult` needed. Use from controllers, listeners, middleware, or anywhere a redirect is returned:
 
 ```php
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Facades\Effects;
+use Lattice\Ui\Enums\Variant;
 
 Effects::flash(
     Effects::toast('Settings saved.', Variant::Success),
@@ -107,7 +107,7 @@ Reference an action anywhere a component is accepted with `Action::use(...)`, pa
 Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
 ```
 
-`handle()` reads it back with `$this->context($request, 'product_id')`. The context is **signed** into the action's reference, so it cannot be tampered with on the way back. Group related triggers behind one button with `ActionGroup::make('row')->actions([...])` (`Lattice\Lattice\Actions\Components\ActionGroup`).
+`handle()` reads it back with `$this->context($request, 'product_id')`. The context is **signed** into the action's reference, so it cannot be tampered with on the way back. Group related triggers behind one button with `ActionGroup::make('row')->actions([...])` (`Lattice\Actions\Components\ActionGroup`).
 
 ## Confirmation and input forms
 
@@ -134,10 +134,10 @@ A bulk action runs over a table selection. Extend `BulkActionDefinition`; `handl
 
 ```php
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsBulkAction;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsBulkAction;
 
 #[AsBulkAction('app.products.archive-selected')]
 class ArchiveSelectedProductsAction extends BulkActionDefinition
@@ -161,14 +161,14 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
 ## Placing actions
 
 - **On a table row:** return them from the table's `actions(array $row)` — `Action::use(...)->context(['product_id' => $row['id']])` (and plain `Link::make('Edit')->href(...)`).
-- **On a table selection:** return `BulkAction::use(...)` (component `Lattice\Lattice\Actions\Components\BulkAction`) from the table's `bulkActions()`.
+- **On a table selection:** return `BulkAction::use(...)` (component `Lattice\Actions\Components\BulkAction`) from the table's `bulkActions()`.
 - **Anywhere in a page tree:** `Action::use(...)` is a component like any other.
 
 See the **`lattice-tables`** skill for the table wiring.
 
 ## Common mistakes
 
-- **Confusing the attribute and the component** — `#[AsAction]`/`#[AsBulkAction]` live in `Lattice\Lattice\Attributes`; `Action::use()`/`BulkAction::use()` are components in `Lattice\Lattice\Actions\Components`.
+- **Confusing the attribute and the component** — `#[AsAction]`/`#[AsBulkAction]` live in `Lattice\Core\Attributes`; `Action::use()`/`BulkAction::use()` are components in `Lattice\Actions\Components`.
 - **`reloadComponent()` with the wrong id** — pass the target component's `#[AsTable]`/component id, not the action's id.
 - **Reading context off the raw request** — use `$this->context($request, $key)`; it is the signed, trusted copy.
 - **No `#[AsAction('id')]` / `#[AsBulkAction('id')]`** → the action is not discovered and has no endpoint.

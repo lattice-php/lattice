@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Effects;
+namespace Lattice\Ui\Effects;
 
 use JsonSerializable;
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
+use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Concerns\SerializesToWire;
+use Lattice\Ui\Effects\Attributes\AsEffect;
 
 /**
  * A value object that serializes to `{ type, props }`; the wire `type` is the

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Concerns;
+namespace Lattice\Table\Concerns;
 
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Option;
+use Lattice\Core\Contracts\OptionSource;
+use Lattice\Core\Option;
 
 /**
  * Shared option resolution for select-style filters (the dedicated SelectFilter

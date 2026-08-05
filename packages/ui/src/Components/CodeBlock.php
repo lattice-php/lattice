@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
-use Lattice\Lattice\Ui\Concerns\HasCopyable;
-use Lattice\Lattice\Ui\Enums\CodeBlockLanguage;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\Concerns\HasPrimaryBinding;
+use Lattice\Ui\Concerns\HasCopyable;
+use Lattice\Ui\Enums\CodeBlockLanguage;
 
 #[AsComponent('code-block')]
 class CodeBlock extends Component

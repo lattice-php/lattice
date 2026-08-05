@@ -14,11 +14,11 @@ attribute registers it.
 ```php
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsBulkAction;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsBulkAction;
+use Lattice\Ui\Enums\Variant;
 
 #[AsBulkAction('app.products.archive-selected')]
 class ArchiveSelectedProductsAction extends BulkActionDefinition
@@ -50,7 +50,7 @@ all apply. `handle()` returns an [`ActionResult`](/actions/effects/) like any ac
 Return bulk actions from a table's `bulkActions()`:
 
 ```php
-use Lattice\Lattice\Actions\Components\BulkAction;
+use Lattice\Actions\Components\BulkAction;
 
 public function bulkActions(): array
 {

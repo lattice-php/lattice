@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\FieldValidator;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\Components\Field;
+use Lattice\Form\FieldValidator;
+use Lattice\Form\FormData;
 
 it('merges a field nestedRules into the validator and validates them', function (): void {
     $field = new class extends Field

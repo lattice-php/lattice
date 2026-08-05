@@ -1,22 +1,23 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Effects;
+namespace Lattice\Effects;
 
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Effects\Builtin\CloseModal;
-use Lattice\Lattice\Effects\Builtin\Download;
-use Lattice\Lattice\Effects\Builtin\LocaleChange;
-use Lattice\Lattice\Effects\Builtin\OpenModal;
-use Lattice\Lattice\Effects\Builtin\Redirect;
-use Lattice\Lattice\Effects\Builtin\ReloadComponent;
-use Lattice\Lattice\Effects\Builtin\ReloadPage;
-use Lattice\Lattice\Effects\Builtin\ResetForm;
-use Lattice\Lattice\Effects\Builtin\RetractCallout;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Builtin\ToggleSidebar;
-use Lattice\Lattice\Support\WireTypeRegistry;
+use Lattice\Core\Support\WireTypeRegistry;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Effects\Builtin\CloseModal;
+use Lattice\Effects\Builtin\Download;
+use Lattice\Effects\Builtin\LocaleChange;
+use Lattice\Effects\Builtin\OpenModal;
+use Lattice\Effects\Builtin\Redirect;
+use Lattice\Effects\Builtin\ReloadComponent;
+use Lattice\Effects\Builtin\ReloadPage;
+use Lattice\Effects\Builtin\ResetForm;
+use Lattice\Effects\Builtin\RetractCallout;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Effects\Builtin\ToggleSidebar;
+use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Effect;
 
 /**
  * The single source of truth for effect value objects: wire type → class-string.

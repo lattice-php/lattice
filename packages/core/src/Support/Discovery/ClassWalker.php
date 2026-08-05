@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Discovery;
+namespace Lattice\Core\Support\Discovery;
 
 use Spatie\StructureDiscoverer\Discover;
 use Symfony\Component\Finder\Finder;

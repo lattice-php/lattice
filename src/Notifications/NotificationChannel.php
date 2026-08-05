@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Notifications;
+namespace Lattice\Notifications;
 
 final class NotificationChannel
 {

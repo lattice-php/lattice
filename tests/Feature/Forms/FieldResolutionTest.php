@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Components\Choice;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Form\FormData;
 
 it('serializes dependsOn keys and the any-change marker', function (): void {
     $optionsProps = wire(Choice::make('state', 'State')

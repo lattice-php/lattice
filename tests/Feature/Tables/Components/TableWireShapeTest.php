@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Tables\Columns\NumberColumn;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableRegistry;
-use Lattice\Lattice\Tables\TableResult;
-use Lattice\Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Table\Columns\NumberColumn;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\Table;
+use Lattice\Table\Enums\PaginationType;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableRegistry;
+use Lattice\Table\TableResult;
+use Lattice\Ui\Enums\ColumnWidth;
 use Workbench\App\Tables\ProductsTable;
 
 it('serializes the table component wire shape', function (): void {

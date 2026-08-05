@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
-use Lattice\Lattice\Ui\Concerns\HasColor;
-use Lattice\Lattice\Ui\Concerns\HasCopyable;
-use Lattice\Lattice\Ui\Concerns\HasSize;
-use Lattice\Lattice\Ui\Enums\Align;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\Concerns\HasPrimaryBinding;
+use Lattice\Ui\Concerns\HasColor;
+use Lattice\Ui\Concerns\HasCopyable;
+use Lattice\Ui\Concerns\HasSize;
+use Lattice\Ui\Enums\Align;
 
 #[AsComponent('text')]
 class Text extends Component

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Support\TypeScript;
 
-use Lattice\Lattice\LatticeRegistry;
+use Lattice\Core\LatticeRegistry;
 use Spatie\TypeScriptTransformer\Actions\ResolveImportsAndResolvedReferenceMapAction;
 use Spatie\TypeScriptTransformer\Collections\TransformedCollection;
 use Spatie\TypeScriptTransformer\Data\ModuleImportResolvedReference;

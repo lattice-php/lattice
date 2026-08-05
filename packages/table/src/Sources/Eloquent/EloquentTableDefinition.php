@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Sources\Eloquent;
+namespace Lattice\Table\Sources\Eloquent;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Lattice\Lattice\Tables\Contracts\TableSource;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Table\Contracts\TableSource;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableQuery;
 
 /**
  * @template TModel of Model

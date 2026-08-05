@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Core\PageSchema;
+use Lattice\Fragments\FragmentDefinition;
 
 #[AsFragment('{{ key }}')]
 class {{ class }} extends FragmentDefinition

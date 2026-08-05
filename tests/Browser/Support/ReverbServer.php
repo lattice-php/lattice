@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Browser\Support;
+namespace Lattice\Tests\Browser\Support;
 
 use Pest\Browser\Support\Port;
 use RuntimeException;

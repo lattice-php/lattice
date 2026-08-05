@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Layouts\Components;
+namespace Lattice\Layouts\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Contracts\SchemaEntry;
 
 /**
  * A fixed-width navigation column rendered alongside the page content in a

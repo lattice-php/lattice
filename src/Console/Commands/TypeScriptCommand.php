@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Console\Commands;
+namespace Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
-use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Support\TypeScript\TypeScriptGenerator;
+use Lattice\Support\TypeScript\TypeScriptProfile;
 use Spatie\TypeScriptTransformer\TypeScriptTransformer;
 
 final class TypeScriptCommand extends Command

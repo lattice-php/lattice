@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Filesystem\Filesystem;
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
-use Lattice\Lattice\Core\PageMetadataResolver;
-use Lattice\Lattice\Http\Page as BasePage;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\Enums\PageContainer;
+use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\PageMetadataResolver;
+use Lattice\Http\Page as BasePage;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 
 #[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
 abstract class ResolverBasePage extends BasePage {}

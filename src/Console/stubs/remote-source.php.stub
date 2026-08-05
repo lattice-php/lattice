@@ -3,8 +3,8 @@
 namespace {{ namespace }};
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsRemoteSource;
-use Lattice\Lattice\Remote\RemoteSourceDefinition;
+use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Remote\RemoteSourceDefinition;
 
 #[AsRemoteSource('{{ key }}')]
 class {{ class }} extends RemoteSourceDefinition

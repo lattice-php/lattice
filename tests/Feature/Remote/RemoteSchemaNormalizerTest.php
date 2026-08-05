@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Remote\RemoteSchemaNormalizer;
+use Lattice\Remote\RemoteSchemaNormalizer;
 
 test('remote schema manifest normalizes to serializable component nodes', function (): void {
     $nodes = app(RemoteSchemaNormalizer::class)->normalize([

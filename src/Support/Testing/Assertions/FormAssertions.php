@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing\Assertions;
+namespace Lattice\Support\Testing\Assertions;
 
 use Closure;
-use Lattice\Lattice\Support\Testing\ComponentNode;
+use Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
 final readonly class FormAssertions

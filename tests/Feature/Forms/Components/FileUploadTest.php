@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\FileUpload;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\FileUpload;
 
 describe('docs fixtures', function (): void {
     it('matches the file upload example fixture', function (): void {

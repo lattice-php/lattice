@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\Sources\Eloquent\EloquentTableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\Table;
+use Lattice\Table\Enums\PaginationType;
+use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
+use Lattice\Table\TableQuery;
 use Orchestra\Testbench\Factories\UserFactory;
 
 test('eloquent tables can use infinite pagination metadata', function (): void {

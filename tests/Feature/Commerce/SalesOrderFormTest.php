@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Facades\Lattice;
 use Workbench\App\Enums\SalesOrderStatus;
 use Workbench\App\Forms\SalesOrderForm;
 use Workbench\App\Models\Address;

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Contracts;
+namespace Lattice\Ui\Contracts;
 
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Component;
 
 interface SchemaEntry
 {

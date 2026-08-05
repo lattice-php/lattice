@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Chat;
+namespace Lattice\Chat;
 
-use Lattice\Lattice\Chat\Components\TextPart;
-use Lattice\Lattice\Chat\Components\ToolCallPart;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Chat\Components\TextPart;
+use Lattice\Chat\Components\ToolCallPart;
+use Lattice\Ui\Components\Component;
 
 /**
  * A chat part is a component: it serializes to a `{type, props}` node and renders

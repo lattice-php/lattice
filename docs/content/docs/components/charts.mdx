@@ -290,7 +290,7 @@ When the series aren't known ahead of time, build `ChartSeries` value objects
 mirror the fluent methods:
 
 ```php
-use Lattice\Lattice\Ui\Values\ChartSeries;
+use Lattice\Ui\Values\ChartSeries;
 
 $series = collect($metrics)
     ->map(fn (string $key): ChartSeries => ChartSeries::line($key, ucfirst($key)))

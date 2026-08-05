@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Values;
+namespace Lattice\Ui\Values;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorName;
-use Lattice\Lattice\Ui\Enums\ChartSeriesType;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorName;
+use Lattice\Ui\Enums\ChartSeriesType;
 
 #[TypeScript]
 final readonly class ChartSeries

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Support\TypeScript;
 
-use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Core\Attributes\AsComponent;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
 use Spatie\TypeScriptTransformer\TypeScriptNodes\TypeScriptGeneric;

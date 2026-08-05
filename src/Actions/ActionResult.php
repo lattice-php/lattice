@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions;
+namespace Lattice\Actions;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Effects\Concerns\QueuesEffects;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Support\Wire;
+use Lattice\Effects\Concerns\QueuesEffects;
+use Lattice\Facades\Effects;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Enums\Variant;
 use Symfony\Component\HttpFoundation\Response;
 
 #[TypeScript]

@@ -17,10 +17,10 @@ be discovered and addressed by its own endpoint.
 
 ```php
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('app.profile.form')]
@@ -53,8 +53,8 @@ The schema accepts fields and layout containers (`Card`, `Grid`, `Stack`) in any
 Render a form on a page with `Form::use()`, passing the definition class. Configure it fluently:
 
 ```php
-use Lattice\Lattice\Ui\Enums\HttpMethod;
-use Lattice\Lattice\Forms\Components\Form;
+use Lattice\Ui\Enums\HttpMethod;
+use Lattice\Form\Components\Form;
 
 Form::use(ProfileForm::class)
     ->method(HttpMethod::Patch)
@@ -171,9 +171,9 @@ renders inside a bordered surface bar. Use `->submitJustify()`, `->submitVariant
 to adjust its alignment and button style:
 
 ```php
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Justify;
+use Lattice\Form\Components\Form;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Justify;
 
 Form::use(ProfileForm::class)
     ->submitLabel('Save changes')
@@ -186,7 +186,7 @@ A button marked `->submit()` keeps the managed submit button's spinner, disabled
 and error-summary tooltip — the others render as plain buttons:
 
 ```php
-use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Button;
 
 $form->submitButtons(
     Button::make('Cancel'),
@@ -202,8 +202,8 @@ To take over placement entirely — render the button somewhere other than the f
 [`Button`](/components/buttons/) with `->submit()` in the schema yourself:
 
 ```php
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Enums\Emphasis;
 
 Button::make('Create account')->submit();
 ```

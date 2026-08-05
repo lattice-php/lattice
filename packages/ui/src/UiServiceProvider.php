@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui;
+namespace Lattice\Ui;
 
 use Illuminate\Support\ServiceProvider;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\CoreServiceProvider;
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Support\Evaluation\Evaluator;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\CoreServiceProvider;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Support\Evaluation\Evaluator;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Effect;
 
 final class UiServiceProvider extends ServiceProvider
 {

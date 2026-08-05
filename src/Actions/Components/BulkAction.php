@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions\Components;
+namespace Lattice\Actions\Components;
 
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Attributes\AsComponent;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Core\Attributes\AsComponent;
 
 #[AsComponent('action.bulk')]
 class BulkAction extends Action

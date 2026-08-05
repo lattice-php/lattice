@@ -2,15 +2,15 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\Components\Wizard;
-use Lattice\Lattice\Forms\Components\WizardStep;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\Select;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\Components\Wizard;
+use Lattice\Form\Components\WizardStep;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\postJson;

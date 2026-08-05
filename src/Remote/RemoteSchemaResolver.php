@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Remote;
+namespace Lattice\Remote;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use JsonException;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Ui\Components\Component;
 
 final readonly class RemoteSchemaResolver
 {

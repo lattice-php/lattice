@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Core\Enums\Op;
+use Lattice\Table\Enums\FilterType;
 
 /**
  * Builds the SQL for a table filter operator. The Tables-side counterpart to

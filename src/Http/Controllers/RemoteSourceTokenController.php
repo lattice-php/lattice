@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers;
+namespace Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Authorization;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Core\Authorization;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Remote\RemoteSourceRegistry;
 
 final readonly class RemoteSourceTokenController
 {

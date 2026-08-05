@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\RichEditor;
+namespace Lattice\Form\RichEditor;
 
 use JsonSerializable;
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Concerns\SerializesToWire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Ui\Components\Concerns\SerializesToWire;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 use Tiptap\Core\Extension;
 

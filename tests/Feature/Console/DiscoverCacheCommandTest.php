@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 
 use function Pest\Laravel\artisan;
 

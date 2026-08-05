@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Attributes;
+namespace Lattice\Form\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Forms\Enums\FieldType;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Form\Enums\FieldType;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 readonly class AsField extends AsComponent

@@ -7,7 +7,7 @@ Many Lattice APIs accept a closure where a static value would be too limiting: d
 rules, computed field values, dependent fields, searchable selects, row labels, and table filters all
 use the same evaluator.
 
-Closures are resolved through the `Lattice\Lattice\Facades\Evaluate` facade. Non-closure values pass
+Closures are resolved through the `Lattice\Facades\Evaluate` facade. Non-closure values pass
 through unchanged, so an API can accept `Closure|T` and resolve both forms consistently.
 
 ## Resolution order
@@ -111,7 +111,7 @@ When adding a new Lattice extension point, accept `Closure|T` and resolve it at 
 needed:
 
 ```php
-use Lattice\Lattice\Facades\Evaluate;
+use Lattice\Facades\Evaluate;
 
 $resolved = Evaluate::resolve(
     $value,

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers;
+namespace Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Fragments\FragmentRegistry;
+use Lattice\Core\Concerns\InteractsWithComponents;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Fragments\FragmentRegistry;
 
 final readonly class FragmentController
 {

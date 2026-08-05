@@ -9,7 +9,7 @@ opens** — nothing is fetched for collapsed rows — so the detail can be as ri
 weighing down the table payload.
 
 ```php
-use Lattice\Lattice\Fragments\Components\Fragment;
+use Lattice\Fragments\Components\Fragment;
 
 public function rowDetail(array $row): ?Fragment
 {
@@ -25,9 +25,9 @@ The detail lives in its own [`#[AsFragment]`](/core/fragments/) class, authored 
 independently of the table. It reads the row context you passed to `Fragment::lazy()`:
 
 ```php
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Fragments\FragmentDefinition;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Core\PageSchema;
+use Lattice\Fragments\FragmentDefinition;
 
 #[AsFragment('order-lines')]
 final class OrderLinesFragment extends FragmentDefinition

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
+use Lattice\Support\TypeScript\OxfmtFormatter;
 
 it('uses the consumer oxfmt binary before the package fallback', function (): void {
     $nodeModules = base_path('node_modules');

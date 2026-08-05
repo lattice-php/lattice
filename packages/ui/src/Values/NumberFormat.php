@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Values;
+namespace Lattice\Ui\Values;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Ui\Enums\NumberFormatUnit;
 
 #[TypeScript]
 final class NumberFormat

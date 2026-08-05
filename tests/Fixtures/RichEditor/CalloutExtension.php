@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\RichEditor;
+namespace Lattice\Tests\Fixtures\RichEditor;
 
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
-use Lattice\Lattice\Forms\RichEditor\EditorExtension;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Form\RichEditor\EditorExtension;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
 #[AsEditorExtension('callout')]

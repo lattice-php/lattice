@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers;
+namespace Lattice\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Core\Authorization;
-use Lattice\Lattice\Core\Concerns\InteractsWithComponents;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Core\Exceptions\UnknownComponent;
-use Lattice\Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
-use Lattice\Lattice\Http\Controllers\Concerns\HandlesPrecognition;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableRegistry;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Core\Authorization;
+use Lattice\Core\Concerns\InteractsWithComponents;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Exceptions\UnknownComponent;
+use Lattice\Http\Controllers\Concerns\HandlesFormSubRequests;
+use Lattice\Http\Controllers\Concerns\HandlesPrecognition;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableRegistry;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class BulkActionController

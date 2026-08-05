@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Support\TypeScript\AugmentProfile;
-use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Support\TypeScript\AugmentProfile;
+use Lattice\Support\TypeScript\TypeScriptProfile;
 
 use function Pest\Laravel\artisan;
 

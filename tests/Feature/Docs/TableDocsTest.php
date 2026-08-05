@@ -1,23 +1,23 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Tables\Columns\BadgeColumn;
-use Lattice\Lattice\Tables\Columns\BooleanColumn;
-use Lattice\Lattice\Tables\Columns\IconColumn;
-use Lattice\Lattice\Tables\Columns\ImageColumn;
-use Lattice\Lattice\Tables\Columns\MoneyColumn;
-use Lattice\Lattice\Tables\Columns\NumberColumn;
-use Lattice\Lattice\Tables\Columns\StackColumn;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableResult;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Icon;
-use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
-use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Core\Color;
+use Lattice\Core\Support\Wire;
+use Lattice\Table\Columns\BadgeColumn;
+use Lattice\Table\Columns\BooleanColumn;
+use Lattice\Table\Columns\IconColumn;
+use Lattice\Table\Columns\ImageColumn;
+use Lattice\Table\Columns\MoneyColumn;
+use Lattice\Table\Columns\NumberColumn;
+use Lattice\Table\Columns\StackColumn;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\Table;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Icon;
+use Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Ui\Enums\Size;
 
 describe('docs fixtures', function (): void {
     it('matches the overview table example fixture', function (): void {

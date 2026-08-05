@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\RichEditor;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Forms\RichContent;
-use Lattice\Lattice\Forms\RichEditor\EditorExtension;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Italic;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\RichEditor;
+use Lattice\Form\FormDefinition;
+use Lattice\Form\RichContent;
+use Lattice\Form\RichEditor\EditorExtension;
+use Lattice\Form\RichEditor\Extensions\Bold;
+use Lattice\Form\RichEditor\Extensions\Italic;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

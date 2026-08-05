@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Tests\Browser\Support\ReverbServer;
+use Lattice\Tests\Browser\Support\ReverbServer;
 use Workbench\App\Events\OrderShipped;
 
 function bootReverb(): void

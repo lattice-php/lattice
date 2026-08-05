@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Conditions;
+namespace Lattice\Form\Conditions;
 
-use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Core\Enums\Op;
 
 /**
  * Evaluates an Op against a pair of values in memory. The server-side

@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\Textarea;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Layouts\Components\Menu;
-use Lattice\Lattice\Layouts\Components\MenuItem;
-use Lattice\Lattice\Layouts\Components\Topbar;
-use Lattice\Lattice\Support\Testing\Assertions\ActionAssertions;
-use Lattice\Lattice\Support\Testing\Assertions\FieldAssertions;
-use Lattice\Lattice\Support\Testing\Assertions\FilterAssertions;
-use Lattice\Lattice\Support\Testing\Assertions\FormAssertions;
-use Lattice\Lattice\Support\Testing\Assertions\TableAssertions;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Tables\Enums\FilterType;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableResult;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Enums\Side;
-use Lattice\Lattice\Ui\Enums\StackDirection;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Enums\Op;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\Textarea;
+use Lattice\Form\Components\TextInput;
+use Lattice\Layouts\Components\Menu;
+use Lattice\Layouts\Components\MenuItem;
+use Lattice\Layouts\Components\Topbar;
+use Lattice\Support\Testing\Assertions\ActionAssertions;
+use Lattice\Support\Testing\Assertions\FieldAssertions;
+use Lattice\Support\Testing\Assertions\FilterAssertions;
+use Lattice\Support\Testing\Assertions\FormAssertions;
+use Lattice\Support\Testing\Assertions\TableAssertions;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\Table;
+use Lattice\Table\Enums\FilterType;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Enums\Side;
+use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\Enums\Variant;
 use PHPUnit\Framework\AssertionFailedError;
 
 use function Pest\Laravel\withoutVite;
@@ -60,7 +60,7 @@ it('asserts field visibility, conditions and initial value', function (): void {
         ]);
 
     $this->assertLatticeComponent($form)
-        ->form('create', fn (FormAssertions $form): FieldAssertions|\Lattice\Lattice\Support\Testing\Assertions\FormAssertions => $form
+        ->form('create', fn (FormAssertions $form): FieldAssertions|\Lattice\Support\Testing\Assertions\FormAssertions => $form
             ->assertSubmitsTo('/products')
             ->assertHasField('email')
             ->assertMissingField('nope')
@@ -83,7 +83,7 @@ it('asserts table filters, columns and operators', function (): void {
         ->result(TableResult::make([]), TableQuery::empty());
 
     $this->assertLatticeComponent($table)
-        ->table('products', fn (TableAssertions $table): FilterAssertions|\Lattice\Lattice\Support\Testing\Assertions\TableAssertions => $table
+        ->table('products', fn (TableAssertions $table): FilterAssertions|\Lattice\Support\Testing\Assertions\TableAssertions => $table
             ->assertHasColumn('name')
             ->assertHasFilter('name')
             ->assertMissingFilter('price')
@@ -123,7 +123,7 @@ it('asserts field required, optional, disabled, enabled and read-only flags', fu
     ]);
 
     $this->assertLatticeComponent($form)
-        ->form('flags', fn (FormAssertions $f): FieldAssertions|\Lattice\Lattice\Support\Testing\Assertions\FormAssertions => $f
+        ->form('flags', fn (FormAssertions $f): FieldAssertions|\Lattice\Support\Testing\Assertions\FormAssertions => $f
             ->field('plain', fn (FieldAssertions $x): FieldAssertions => $x->assertOptional()->assertEnabled())
             ->field('req', fn (FieldAssertions $x): FieldAssertions => $x->assertRequired())
             ->field('ro', fn (FieldAssertions $x): FieldAssertions => $x->assertReadOnly())

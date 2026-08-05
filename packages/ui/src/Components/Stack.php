@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Ui\Enums\Align;
-use Lattice\Lattice\Ui\Enums\Gap;
-use Lattice\Lattice\Ui\Enums\Height;
-use Lattice\Lattice\Ui\Enums\Justify;
-use Lattice\Lattice\Ui\Enums\Side;
-use Lattice\Lattice\Ui\Enums\StackDirection;
-use Lattice\Lattice\Ui\Enums\Width;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Enums\Align;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Height;
+use Lattice\Ui\Enums\Justify;
+use Lattice\Ui\Enums\Side;
+use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\Enums\Width;
 
 #[AsComponent('stack')]
 class Stack extends ContainerComponent

@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Discovery;
+namespace Lattice\Tests\Fixtures\Discovery;
 
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Tables\CallbackTableSource;
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Contracts\TableSource;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableResult;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\CallbackTableSource;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Contracts\TableSource;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
 
 #[AsTable('fixtures.users')]
 class DiscoveredUsersTable extends TableDefinition

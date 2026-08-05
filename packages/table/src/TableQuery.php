@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JsonSerializable;
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Contracts\Filterable;
-use Lattice\Lattice\Tables\Contracts\Sortable;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\Filters\FilterIndicator;
-use Lattice\Lattice\Tables\Filters\FilterValueValidator;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\Support\Wire;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Contracts\Filterable;
+use Lattice\Table\Contracts\Sortable;
+use Lattice\Table\Enums\PaginationType;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\Filters\FilterIndicator;
+use Lattice\Table\Filters\FilterValueValidator;
 use stdClass;
 
 #[TypeScript]

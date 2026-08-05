@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Table\TableQuery;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\Tag;
 use Workbench\App\Tables\ProductsTable;

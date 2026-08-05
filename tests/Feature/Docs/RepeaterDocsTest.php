@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\RowAction;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\RowAction;
+use Lattice\Form\Components\TextInput;
 
 describe('docs fixtures', function (): void {
     it('matches the repeater example fixture', function (): void {

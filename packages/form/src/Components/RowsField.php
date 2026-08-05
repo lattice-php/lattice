@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\Contracts\ProvidesRowFields;
+use Lattice\Form\FormData;
 use LogicException;
 
 /**

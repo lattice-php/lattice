@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Forms\Conditions\ConditionEvaluator;
+use Lattice\Core\Enums\Op;
+use Lattice\Form\Conditions\ConditionEvaluator;
 
 it('evaluates operators', function (mixed $actual, Op $op, mixed $expected, bool $result): void {
     expect((new ConditionEvaluator)->evaluate($op, $actual, $expected))->toBe($result);

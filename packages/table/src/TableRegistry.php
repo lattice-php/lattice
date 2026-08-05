@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Core\Http\SubRequest;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\FormSchemaWalker;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Components\Table as TableComponent;
-use Lattice\Lattice\Tables\Contracts\Filterable;
-use Lattice\Lattice\Tables\Contracts\Searchable;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Core\Attributes\DefinitionAttribute;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Core\DefinitionRegistry;
+use Lattice\Core\Http\SubRequest;
+use Lattice\Core\Option;
+use Lattice\Form\Components\Select;
+use Lattice\Form\FormData;
+use Lattice\Form\FormSchemaWalker;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Components\Table as TableComponent;
+use Lattice\Table\Contracts\Filterable;
+use Lattice\Table\Contracts\Searchable;
+use Lattice\Table\Filters\Filter;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

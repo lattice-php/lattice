@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Filters;
+namespace Lattice\Table\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Forms\Components\DateInput;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Attributes\AsFilter;
-use Lattice\Lattice\Tables\Enums\FilterControl;
+use Lattice\Form\Components\DateInput;
+use Lattice\Form\FormData;
+use Lattice\Table\Attributes\AsFilter;
+use Lattice\Table\Enums\FilterControl;
 
 /**
  * A from/until date-range filter. Each bound is optional; a present bound adds an

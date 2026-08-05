@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
+namespace Lattice\Tests\Fixtures\TypeScript;
 
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Columns\Column;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Columns\Column;
 
 #[AsColumn(type: 'rating')]
 class SampleColumn extends Column

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
 
 it('returns the wire type declared by the attribute', function (): void {
     expect(new AsEditorExtension('heading')->wireType())->toBe('heading');

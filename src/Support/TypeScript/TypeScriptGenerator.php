@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
 use Spatie\TypeScriptTransformer\Formatters\Formatter;

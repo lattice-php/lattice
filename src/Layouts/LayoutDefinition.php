@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Layouts;
+namespace Lattice\Layouts;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Definition;
+use Lattice\Ui\PageSchema;
 
 abstract class LayoutDefinition extends Definition
 {

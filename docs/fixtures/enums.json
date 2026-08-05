@@ -1,5 +1,5 @@
 {
-    "Lattice\\Lattice\\Chat\\Enums\\ChatPartType": {
+    "Lattice\\Chat\\Enums\\ChatPartType": {
         "cases": [
             {
                 "name": "Text",
@@ -11,9 +11,9 @@
             }
         ],
         "name": "ChatPartType",
-        "namespace": "Lattice\\Lattice\\Chat\\Enums"
+        "namespace": "Lattice\\Chat\\Enums"
     },
-    "Lattice\\Lattice\\Chat\\Enums\\ChatRole": {
+    "Lattice\\Chat\\Enums\\ChatRole": {
         "cases": [
             {
                 "name": "User",
@@ -29,9 +29,9 @@
             }
         ],
         "name": "ChatRole",
-        "namespace": "Lattice\\Lattice\\Chat\\Enums"
+        "namespace": "Lattice\\Chat\\Enums"
     },
-    "Lattice\\Lattice\\Core\\Enums\\ColorKind": {
+    "Lattice\\Core\\Enums\\ColorKind": {
         "cases": [
             {
                 "name": "Named",
@@ -43,9 +43,9 @@
             }
         ],
         "name": "ColorKind",
-        "namespace": "Lattice\\Lattice\\Core\\Enums"
+        "namespace": "Lattice\\Core\\Enums"
     },
-    "Lattice\\Lattice\\Core\\Enums\\ColorName": {
+    "Lattice\\Core\\Enums\\ColorName": {
         "cases": [
             {
                 "name": "Default",
@@ -105,9 +105,9 @@
             }
         ],
         "name": "ColorName",
-        "namespace": "Lattice\\Lattice\\Core\\Enums"
+        "namespace": "Lattice\\Core\\Enums"
     },
-    "Lattice\\Lattice\\Core\\Enums\\Op": {
+    "Lattice\\Core\\Enums\\Op": {
         "cases": [
             {
                 "name": "Contains",
@@ -171,9 +171,9 @@
             }
         ],
         "name": "Op",
-        "namespace": "Lattice\\Lattice\\Core\\Enums"
+        "namespace": "Lattice\\Core\\Enums"
     },
-    "Lattice\\Lattice\\Core\\Enums\\PageContainer": {
+    "Lattice\\Core\\Enums\\PageContainer": {
         "cases": [
             {
                 "name": "Centered",
@@ -185,9 +185,9 @@
             }
         ],
         "name": "PageContainer",
-        "namespace": "Lattice\\Lattice\\Core\\Enums"
+        "namespace": "Lattice\\Core\\Enums"
     },
-    "Lattice\\Lattice\\Core\\Enums\\PageLayout": {
+    "Lattice\\Core\\Enums\\PageLayout": {
         "cases": [
             {
                 "name": "App",
@@ -203,9 +203,9 @@
             }
         ],
         "name": "PageLayout",
-        "namespace": "Lattice\\Lattice\\Core\\Enums"
+        "namespace": "Lattice\\Core\\Enums"
     },
-    "Lattice\\Lattice\\Forms\\Enums\\FieldType": {
+    "Lattice\\Form\\Enums\\FieldType": {
         "cases": [
             {
                 "name": "Builder",
@@ -281,9 +281,9 @@
             }
         ],
         "name": "FieldType",
-        "namespace": "Lattice\\Lattice\\Forms\\Enums"
+        "namespace": "Lattice\\Form\\Enums"
     },
-    "Lattice\\Lattice\\Forms\\Enums\\RowActionType": {
+    "Lattice\\Form\\Enums\\RowActionType": {
         "cases": [
             {
                 "name": "Duplicate",
@@ -295,9 +295,9 @@
             }
         ],
         "name": "RowActionType",
-        "namespace": "Lattice\\Lattice\\Forms\\Enums"
+        "namespace": "Lattice\\Form\\Enums"
     },
-    "Lattice\\Lattice\\Forms\\Enums\\RowLayout": {
+    "Lattice\\Form\\Enums\\RowLayout": {
         "cases": [
             {
                 "name": "Stack",
@@ -309,9 +309,9 @@
             }
         ],
         "name": "RowLayout",
-        "namespace": "Lattice\\Lattice\\Forms\\Enums"
+        "namespace": "Lattice\\Form\\Enums"
     },
-    "Lattice\\Lattice\\Realtime\\Enums\\ChannelVisibility": {
+    "Lattice\\Realtime\\Enums\\ChannelVisibility": {
         "cases": [
             {
                 "name": "Public",
@@ -327,9 +327,9 @@
             }
         ],
         "name": "ChannelVisibility",
-        "namespace": "Lattice\\Lattice\\Realtime\\Enums"
+        "namespace": "Lattice\\Realtime\\Enums"
     },
-    "Lattice\\Lattice\\Tables\\Enums\\ColumnAlign": {
+    "Lattice\\Table\\Enums\\ColumnAlign": {
         "cases": [
             {
                 "name": "Start",
@@ -345,9 +345,9 @@
             }
         ],
         "name": "ColumnAlign",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums"
+        "namespace": "Lattice\\Table\\Enums"
     },
-    "Lattice\\Lattice\\Tables\\Enums\\ColumnType": {
+    "Lattice\\Table\\Enums\\ColumnType": {
         "cases": [
             {
                 "name": "Text",
@@ -383,9 +383,9 @@
             }
         ],
         "name": "ColumnType",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums"
+        "namespace": "Lattice\\Table\\Enums"
     },
-    "Lattice\\Lattice\\Tables\\Enums\\FilterControl": {
+    "Lattice\\Table\\Enums\\FilterControl": {
         "cases": [
             {
                 "name": "Select",
@@ -405,9 +405,9 @@
             }
         ],
         "name": "FilterControl",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums"
+        "namespace": "Lattice\\Table\\Enums"
     },
-    "Lattice\\Lattice\\Tables\\Enums\\FilterType": {
+    "Lattice\\Table\\Enums\\FilterType": {
         "cases": [
             {
                 "name": "Text",
@@ -427,9 +427,9 @@
             }
         ],
         "name": "FilterType",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums"
+        "namespace": "Lattice\\Table\\Enums"
     },
-    "Lattice\\Lattice\\Tables\\Enums\\PaginationType": {
+    "Lattice\\Table\\Enums\\PaginationType": {
         "cases": [
             {
                 "name": "None",
@@ -449,9 +449,9 @@
             }
         ],
         "name": "PaginationType",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums"
+        "namespace": "Lattice\\Table\\Enums"
     },
-    "Lattice\\Lattice\\Tables\\Enums\\SortDirection": {
+    "Lattice\\Table\\Enums\\SortDirection": {
         "cases": [
             {
                 "name": "Asc",
@@ -463,9 +463,9 @@
             }
         ],
         "name": "SortDirection",
-        "namespace": "Lattice\\Lattice\\Tables\\Enums"
+        "namespace": "Lattice\\Table\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Align": {
+    "Lattice\\Ui\\Enums\\Align": {
         "cases": [
             {
                 "name": "Center",
@@ -485,9 +485,9 @@
             }
         ],
         "name": "Align",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Breakpoint": {
+    "Lattice\\Ui\\Enums\\Breakpoint": {
         "cases": [
             {
                 "name": "Default",
@@ -515,9 +515,9 @@
             }
         ],
         "name": "Breakpoint",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ButtonType": {
+    "Lattice\\Ui\\Enums\\ButtonType": {
         "cases": [
             {
                 "name": "Button",
@@ -533,9 +533,9 @@
             }
         ],
         "name": "ButtonType",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ChartSeriesType": {
+    "Lattice\\Ui\\Enums\\ChartSeriesType": {
         "cases": [
             {
                 "name": "Area",
@@ -563,9 +563,9 @@
             }
         ],
         "name": "ChartSeriesType",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\CodeBlockLanguage": {
+    "Lattice\\Ui\\Enums\\CodeBlockLanguage": {
         "cases": [
             {
                 "name": "Text",
@@ -589,9 +589,9 @@
             }
         ],
         "name": "CodeBlockLanguage",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ColumnWidth": {
+    "Lattice\\Ui\\Enums\\ColumnWidth": {
         "cases": [
             {
                 "name": "Xs",
@@ -615,9 +615,9 @@
             }
         ],
         "name": "ColumnWidth",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\DateTimeStyle": {
+    "Lattice\\Ui\\Enums\\DateTimeStyle": {
         "cases": [
             {
                 "name": "Full",
@@ -637,9 +637,9 @@
             }
         ],
         "name": "DateTimeStyle",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Emphasis": {
+    "Lattice\\Ui\\Enums\\Emphasis": {
         "cases": [
             {
                 "name": "Solid",
@@ -659,9 +659,9 @@
             }
         ],
         "name": "Emphasis",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\FloatingPlacement": {
+    "Lattice\\Ui\\Enums\\FloatingPlacement": {
         "cases": [
             {
                 "name": "BottomEnd",
@@ -681,9 +681,9 @@
             }
         ],
         "name": "FloatingPlacement",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Gap": {
+    "Lattice\\Ui\\Enums\\Gap": {
         "cases": [
             {
                 "name": "None",
@@ -711,9 +711,9 @@
             }
         ],
         "name": "Gap",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Height": {
+    "Lattice\\Ui\\Enums\\Height": {
         "cases": [
             {
                 "name": "Full",
@@ -725,9 +725,9 @@
             }
         ],
         "name": "Height",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\HttpMethod": {
+    "Lattice\\Ui\\Enums\\HttpMethod": {
         "cases": [
             {
                 "name": "Get",
@@ -751,9 +751,9 @@
             }
         ],
         "name": "HttpMethod",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Justify": {
+    "Lattice\\Ui\\Enums\\Justify": {
         "cases": [
             {
                 "name": "Start",
@@ -781,9 +781,9 @@
             }
         ],
         "name": "Justify",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ModalWidth": {
+    "Lattice\\Ui\\Enums\\ModalWidth": {
         "cases": [
             {
                 "name": "Sm",
@@ -811,9 +811,9 @@
             }
         ],
         "name": "ModalWidth",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\NumberFormatUnit": {
+    "Lattice\\Ui\\Enums\\NumberFormatUnit": {
         "cases": [
             {
                 "name": "Percent",
@@ -877,9 +877,9 @@
             }
         ],
         "name": "NumberFormatUnit",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Orientation": {
+    "Lattice\\Ui\\Enums\\Orientation": {
         "cases": [
             {
                 "name": "Horizontal",
@@ -891,9 +891,9 @@
             }
         ],
         "name": "Orientation",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Placement": {
+    "Lattice\\Ui\\Enums\\Placement": {
         "cases": [
             {
                 "name": "Top",
@@ -909,9 +909,9 @@
             }
         ],
         "name": "Placement",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\ProgressShape": {
+    "Lattice\\Ui\\Enums\\ProgressShape": {
         "cases": [
             {
                 "name": "Bar",
@@ -923,9 +923,9 @@
             }
         ],
         "name": "ProgressShape",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Side": {
+    "Lattice\\Ui\\Enums\\Side": {
         "cases": [
             {
                 "name": "Start",
@@ -937,9 +937,9 @@
             }
         ],
         "name": "Side",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Size": {
+    "Lattice\\Ui\\Enums\\Size": {
         "cases": [
             {
                 "name": "Xs",
@@ -975,9 +975,9 @@
             }
         ],
         "name": "Size",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\StackDirection": {
+    "Lattice\\Ui\\Enums\\StackDirection": {
         "cases": [
             {
                 "name": "Row",
@@ -989,9 +989,9 @@
             }
         ],
         "name": "StackDirection",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\TabsAlignment": {
+    "Lattice\\Ui\\Enums\\TabsAlignment": {
         "cases": [
             {
                 "name": "Start",
@@ -1011,9 +1011,9 @@
             }
         ],
         "name": "TabsAlignment",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Variant": {
+    "Lattice\\Ui\\Enums\\Variant": {
         "cases": [
             {
                 "name": "Primary",
@@ -1041,9 +1041,9 @@
             }
         ],
         "name": "Variant",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Lattice\\Ui\\Enums\\Width": {
+    "Lattice\\Ui\\Enums\\Width": {
         "cases": [
             {
                 "name": "Full",
@@ -1071,6 +1071,6 @@
             }
         ],
         "name": "Width",
-        "namespace": "Lattice\\Lattice\\Ui\\Enums"
+        "namespace": "Lattice\\Ui\\Enums"
     }
 }

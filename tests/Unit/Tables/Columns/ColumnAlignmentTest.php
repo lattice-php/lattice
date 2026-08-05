@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Tables\Columns\TextColumn;
-use Lattice\Lattice\Tables\Enums\ColumnAlign;
+use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Enums\ColumnAlign;
 
 it('defaults a column to start alignment', function (): void {
     expect(wire(TextColumn::make('name'))['props']['align'])->toBe('start');

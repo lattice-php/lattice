@@ -106,8 +106,8 @@ Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
 ```
 
 ```php
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Core\Concerns\ResolvesContextModels;
 
 class ArchiveProductAction extends ActionDefinition
 {

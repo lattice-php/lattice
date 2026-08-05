@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Fragments\Components;
+namespace Lattice\Fragments\Components;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
-use Lattice\Lattice\Ui\Components\IsInteractive;
-use Lattice\Lattice\Ui\Concerns\HasSize;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Fragments\FragmentRegistry;
+use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Components\IsInteractive;
+use Lattice\Ui\Concerns\HasSize;
 
 #[AsComponent('fragment')]
 class Fragment extends ContainerComponent implements InteractiveComponent

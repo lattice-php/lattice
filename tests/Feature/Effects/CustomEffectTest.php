@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Effects\EffectRegistry;
+use Lattice\Actions\ActionResult;
+use Lattice\Effects\EffectRegistry;
+use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Effect;
 
 #[AsEffect('confetti')]
 final class ConfettiEffect extends Effect

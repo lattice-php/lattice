@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

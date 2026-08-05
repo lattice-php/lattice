@@ -5,9 +5,9 @@ namespace Workbench\App\Tables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
-use Lattice\Lattice\Attributes\AsTable;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Core\Attributes\AsTable;
+use Lattice\Table\Enums\PaginationType;
+use Lattice\Table\TableQuery;
 
 #[AsTable('workbench.users.none')]
 final class UsersNoneTable extends BaseUsersTable

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Forms\Conditions\ConditionEvaluator;
+use Lattice\Core\Enums\Op;
+use Lattice\Form\Conditions\ConditionEvaluator;
 
 it('coerces condition booleans identically to the client', function (mixed $actual, bool $expected, bool $result): void {
     $evaluator = new ConditionEvaluator;

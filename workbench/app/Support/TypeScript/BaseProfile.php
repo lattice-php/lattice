@@ -4,32 +4,32 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Illuminate\Support\Str;
-use Lattice\Lattice\Attributes\WireEnvelope;
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorKind;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\LatticeRegistry;
-use Lattice\Lattice\Support\Affix;
-use Lattice\Lattice\Support\TypeScript\ComponentTransformer;
-use Lattice\Lattice\Support\TypeScript\DiscoveredComponent;
-use Lattice\Lattice\Support\TypeScript\NodeModuleWriter;
-use Lattice\Lattice\Support\TypeScript\NodeTypeReference;
-use Lattice\Lattice\Support\TypeScript\OxfmtFormatter;
-use Lattice\Lattice\Support\TypeScript\TypeScriptGenerator;
-use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Lattice\Support\TypeScript\WireTypeDiscovery;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Components\Table as TableComponent;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Ui\Enums\ColumnWidth;
-use Lattice\Lattice\Ui\Enums\DateTimeStyle;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Justify;
-use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
-use Lattice\Lattice\Ui\Enums\Orientation;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Attributes\WireEnvelope;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorKind;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\LatticeRegistry;
+use Lattice\Core\Option;
+use Lattice\Core\Support\Affix;
+use Lattice\Form\Components\Form;
+use Lattice\Support\TypeScript\ComponentTransformer;
+use Lattice\Support\TypeScript\DiscoveredComponent;
+use Lattice\Support\TypeScript\NodeModuleWriter;
+use Lattice\Support\TypeScript\NodeTypeReference;
+use Lattice\Support\TypeScript\OxfmtFormatter;
+use Lattice\Support\TypeScript\TypeScriptGenerator;
+use Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Support\TypeScript\WireTypeDiscovery;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Components\Table as TableComponent;
+use Lattice\Table\Filters\Filter;
+use Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Ui\Enums\DateTimeStyle;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Justify;
+use Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Ui\Enums\Orientation;
+use Lattice\Ui\Enums\Variant;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript module
@@ -133,18 +133,18 @@ final readonly class BaseProfile implements TypeScriptProfile
 
         $tableEnums = array_values(array_filter(
             $manifest->enums,
-            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Tables\\')
+            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Table\\')
                 || in_array($class, [ColorKind::class, Op::class, ColumnWidth::class, DateTimeStyle::class, NumberFormatUnit::class], true),
         ));
         $tableValueObjects = array_values(array_unique([
             ...array_filter(
                 $manifest->valueObjects,
-                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Tables\\'),
+                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Table\\'),
             ),
             Color::class,
             Option::class,
         ]));
-        $tableNodes = ['TableNode' => $this->buildBucket($discovered, 'Tables')];
+        $tableNodes = ['TableNode' => $this->buildBucket($discovered, 'Table')];
 
         $generator->generate(
             $sources,
@@ -181,13 +181,13 @@ final readonly class BaseProfile implements TypeScriptProfile
         $editorExtensions = array_flip($manifest->family('editor-extension'));
         $formEnums = array_values(array_filter(
             $manifest->enums,
-            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Forms\\')
+            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Form\\')
                 || in_array($class, [Op::class, ColumnWidth::class, Emphasis::class, Justify::class, Orientation::class, Variant::class], true),
         ));
         $formValueObjects = array_values(array_unique([
             ...array_filter(
                 $manifest->valueObjects,
-                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Lattice\\Forms\\'),
+                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Form\\'),
             ),
             ...array_values($editorExtensions),
             Affix::class,
@@ -279,7 +279,7 @@ final readonly class BaseProfile implements TypeScriptProfile
     {
         $fields = array_filter(
             $discovered,
-            fn (DiscoveredComponent $dc): bool => $dc->domain === 'Forms' && $dc->class !== Form::class,
+            fn (DiscoveredComponent $dc): bool => $dc->domain === 'Form' && $dc->class !== Form::class,
         );
 
         usort($fields, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
@@ -303,7 +303,7 @@ final readonly class BaseProfile implements TypeScriptProfile
                 $discovered,
                 static fn (DiscoveredComponent $dc): bool => $dc->category === 'component'
                     && $dc->domain !== ''
-                    && $dc->domain !== 'Forms',
+                    && $dc->domain !== 'Form',
             ),
         )));
 

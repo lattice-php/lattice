@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Forms\Conditions\Condition;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Core\Enums\Op;
+use Lattice\Form\Conditions\Condition;
+use Lattice\Form\FormData;
 
 it('matches against form data', function (): void {
     $condition = new Condition('type', Op::Equals, 'business');

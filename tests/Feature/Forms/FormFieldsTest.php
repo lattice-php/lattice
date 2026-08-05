@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Ui\Components\Stack;
+use Lattice\Form\Components\Choice;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\TextInput;
+use Lattice\Ui\Components\Stack;
 
 it('flattens fields including nested containers', function (): void {
     $form = Form::make('demo')->schema([

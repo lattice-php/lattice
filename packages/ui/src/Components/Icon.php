@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Concerns\HasPrimaryBinding;
-use Lattice\Lattice\Ui\Concerns\HasColor;
-use Lattice\Lattice\Ui\Concerns\HasSize;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Concerns\HasPrimaryBinding;
+use Lattice\Ui\Concerns\HasColor;
+use Lattice\Ui\Concerns\HasSize;
 
 #[AsComponent('icon')]
 class Icon extends Component

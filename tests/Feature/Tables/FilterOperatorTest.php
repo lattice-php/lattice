@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Tables\Enums\FilterType;
-use Lattice\Lattice\Tables\FilterApplier;
+use Lattice\Core\Enums\Op;
+use Lattice\Table\Enums\FilterType;
+use Lattice\Table\FilterApplier;
 use Workbench\App\Models\Product;
 
 it('builds a whereIn clause for the in operator', function (): void {

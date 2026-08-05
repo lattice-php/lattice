@@ -4,12 +4,12 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\FileUpload;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\FormDefinition;
+use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Components\FileUpload;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Forms\Fields\FileUploadFieldForm;
 

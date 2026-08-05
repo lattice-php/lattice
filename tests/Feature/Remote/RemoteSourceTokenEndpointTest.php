@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Services\ComponentReferenceSigner;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DemoCrmSource;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Services\ComponentReferenceSigner;
+use Lattice\Tests\Fixtures\Discovery\DemoCrmSource;
 
 test('source definitions can be registered explicitly', function (): void {
     Lattice::remoteSources([DemoCrmSource::class]);

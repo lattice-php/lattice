@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components;
+namespace Lattice\Ui\Components;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Ui\Enums\Orientation;
-use Lattice\Lattice\Ui\Enums\TabsAlignment;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Ui\Enums\Orientation;
+use Lattice\Ui\Enums\TabsAlignment;
 
 #[AsComponent('tabs')]
 class Tabs extends ContainerComponent

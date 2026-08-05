@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Contracts;
+namespace Lattice\Table\Contracts;
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Tables\Columns\ColumnFilterOption;
-use Lattice\Lattice\Tables\Enums\FilterControl;
-use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Core\Enums\Op;
+use Lattice\Core\Option;
+use Lattice\Table\Columns\ColumnFilterOption;
+use Lattice\Table\Enums\FilterControl;
+use Lattice\Table\Enums\FilterType;
 
 interface Filterable
 {

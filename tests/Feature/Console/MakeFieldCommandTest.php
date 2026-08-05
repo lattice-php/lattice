@@ -12,7 +12,7 @@ it('scaffolds a field PHP class, a tsx renderer, registers it and derives the ty
         $php = File::get(app_path('Ui/Forms/Fields/ColorPicker.php'));
         expect($php)
             ->toContain('namespace App\\Ui\\Forms\\Fields;')
-            ->toContain('use Lattice\\Lattice\\Forms\\Attributes\\AsField;')
+            ->toContain('use Lattice\\Form\\Attributes\\AsField;')
             ->toContain("#[AsField(type: 'color-picker')]")
             ->toContain('class ColorPicker extends Field');
 

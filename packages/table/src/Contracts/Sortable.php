@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Contracts;
+namespace Lattice\Table\Contracts;
 
 interface Sortable
 {

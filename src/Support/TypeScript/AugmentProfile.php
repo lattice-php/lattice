@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\TypeScript;
+namespace Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Attributes\WireEnvelope;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\LatticeRegistry;
+use Lattice\Core\Attributes\WireEnvelope;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\LatticeRegistry;
 
 /**
  * Default profile: discovers an app's own wire-typed classes — components,

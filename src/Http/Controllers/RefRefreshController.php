@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers;
+namespace Lattice\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Contracts\SignsComponentReferences;
 
 final readonly class RefRefreshController
 {

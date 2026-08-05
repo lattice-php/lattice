@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns;
+namespace Lattice\Table\Columns;
 
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Enums\ColumnType;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Enums\ColumnType;
 
 /**
  * A numeric column rendered as currency on the client. The currency code is

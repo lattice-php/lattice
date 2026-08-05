@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Contracts;
+namespace Lattice\Form\Contracts;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\Components\Field;
+use Lattice\Form\FormData;
 
 /**
  * @api Consumed by the form walker/validator; implemented by RowsField.

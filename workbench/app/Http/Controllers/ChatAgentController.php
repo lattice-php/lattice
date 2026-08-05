@@ -6,11 +6,11 @@ namespace Workbench\App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Lattice\Lattice\Chat\ChatMessage;
-use Lattice\Lattice\Chat\ChatPart;
-use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Chat\ChatMessage;
+use Lattice\Chat\ChatPart;
+use Lattice\Chat\Enums\ChatRole;
+use Lattice\Core\Support\Wire;
+use Lattice\Remote\RemoteSourceRegistry;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
 

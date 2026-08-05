@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Slot;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Slot;
 
 interface SlotContextContract {}
 

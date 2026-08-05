@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Concerns;
+namespace Lattice\Ui\Concerns;
 
-use Lattice\Lattice\Ui\Contracts\Renderable;
+use Lattice\Ui\Contracts\Renderable;
 
 trait FiltersRenderableComponents
 {

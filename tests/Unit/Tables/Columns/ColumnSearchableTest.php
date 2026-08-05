@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Tables\Columns\TextColumn;
+use Lattice\Table\Columns\TextColumn;
 
 it('is not searchable by default', function (): void {
     expect(TextColumn::make('name')->isSearchable())->toBeFalse();

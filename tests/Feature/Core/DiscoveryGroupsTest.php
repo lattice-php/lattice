@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Discovery\DiscoveryKinds;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Tests\Fixtures\Discovery\AsWidget;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredWidget;
+use Lattice\Core\Discovery\DiscoveryKinds;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Tests\Fixtures\Discovery\AsWidget;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredWidget;
 
 afterEach(function (): void {
     DiscoveryKinds::flush();

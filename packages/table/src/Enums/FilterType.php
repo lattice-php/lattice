@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Enums;
+namespace Lattice\Table\Enums;
 
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Core\Enums\Op;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Enums\Op;
 
 #[TypeScript]
 enum FilterType: string

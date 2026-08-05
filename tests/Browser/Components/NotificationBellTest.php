@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Notifications\Notification;
+use Lattice\Notifications\Notification;
 
 it('shows the bell, opens the panel, and marks notifications read', function (): void {
     $user = workbenchTestUser();

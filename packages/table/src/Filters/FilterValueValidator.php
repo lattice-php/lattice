@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Filters;
+namespace Lattice\Table\Filters;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\FieldValidator;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\FormSchemaWalker;
+use Lattice\Form\Components\Field;
+use Lattice\Form\Components\Select;
+use Lattice\Form\FieldValidator;
+use Lattice\Form\FormData;
+use Lattice\Form\FormSchemaWalker;
 
 final readonly class FilterValueValidator
 {

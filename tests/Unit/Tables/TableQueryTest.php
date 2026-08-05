@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Tables\TableQuery;
+use Lattice\Table\TableQuery;
 
 it('parses the q param into a trimmed search term', function (): void {
     $query = TableQuery::fromRequest(new Request(['q' => '  acme  ']), [], 'demo');

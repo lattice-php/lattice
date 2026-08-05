@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\Remote;
+namespace Lattice\Tests\Fixtures\Remote;
 
-use Lattice\Lattice\Remote\RemoteSchemaEndpoint;
+use Lattice\Remote\RemoteSchemaEndpoint;
 
 final class DynamicExternalAppStore
 {

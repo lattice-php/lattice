@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Eloquent\Builder;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Attributes\AsFilter;
-use Lattice\Lattice\Tables\Filters\Filter;
+use Lattice\Form\FormData;
+use Lattice\Table\Attributes\AsFilter;
+use Lattice\Table\Filters\Filter;
 
 #[AsFilter('rating-slider')]
 class CustomControlFilter extends Filter

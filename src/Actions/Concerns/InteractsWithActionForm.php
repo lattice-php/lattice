@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Actions\Concerns;
+namespace Lattice\Actions\Concerns;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Forms\Components\Field;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Forms\Concerns\ResolvesFormFields;
-use Lattice\Lattice\Forms\FieldValidator;
+use Lattice\Actions\Components\Action;
+use Lattice\Form\Components\Field;
+use Lattice\Form\Components\Form;
+use Lattice\Form\Concerns\ResolvesFormFields;
+use Lattice\Form\FieldValidator;
 
 /**
  * Validation, searchable options, and computed-field resolution for an action's

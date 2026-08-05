@@ -4,16 +4,16 @@ declare(strict_types=1);
 namespace Workbench\App\Forms\Fields;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\Components\RichEditor;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Italic;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Link;
-use Lattice\Lattice\Ui\Components\Tab;
-use Lattice\Lattice\Ui\Components\Tabs;
-use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\RichEditor;
+use Lattice\Form\FormDefinition;
+use Lattice\Form\RichEditor\Extensions\Bold;
+use Lattice\Form\RichEditor\Extensions\Italic;
+use Lattice\Form\RichEditor\Extensions\Link;
+use Lattice\Ui\Components\Tab;
+use Lattice\Ui\Components\Tabs;
+use Lattice\Ui\Enums\Orientation;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('workbench.fields.rich-editor.form')]

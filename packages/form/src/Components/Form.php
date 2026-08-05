@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Contracts\InteractiveComponent;
-use Lattice\Lattice\Forms\Contracts\ProvidesRowFields;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Forms\FormRegistry;
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\ContainerComponent;
-use Lattice\Lattice\Ui\Components\IsInteractive;
-use Lattice\Lattice\Ui\Concerns\HasHttpMethod;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Justify;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Form\Contracts\ProvidesRowFields;
+use Lattice\Form\FormData;
+use Lattice\Form\FormDefinition;
+use Lattice\Form\FormRegistry;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Components\IsInteractive;
+use Lattice\Ui\Concerns\HasHttpMethod;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Justify;
+use Lattice\Ui\Enums\Variant;
 use LogicException;
 
 #[AsComponent('form')]

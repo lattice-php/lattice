@@ -27,7 +27,7 @@ NumberColumn::make('conversion')->label('Conversion')
   formatted text — what you want when pasting into a spreadsheet.
 
 ```php
-use Lattice\Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Ui\Enums\NumberFormatUnit;
 
 NumberColumn::make('weight')->unit(NumberFormatUnit::Kilogram)->decimals(1);
 NumberColumn::make('downloads')->compact();

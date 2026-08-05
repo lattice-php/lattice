@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Sources\Eloquent;
+namespace Lattice\Table\Sources\Eloquent;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Tables\Columns\Column;
-use Lattice\Lattice\Tables\Contracts\Filterable;
-use Lattice\Lattice\Tables\Contracts\Searchable;
-use Lattice\Lattice\Tables\Contracts\TableSource;
-use Lattice\Lattice\Tables\Enums\FilterType;
-use Lattice\Lattice\Tables\Enums\PaginationType;
-use Lattice\Lattice\Tables\FilterApplier;
-use Lattice\Lattice\Tables\Filters\Filter;
-use Lattice\Lattice\Tables\RelationBinding;
-use Lattice\Lattice\Tables\TableQuery;
-use Lattice\Lattice\Tables\TableResult;
+use Lattice\Core\Enums\Op;
+use Lattice\Form\FormData;
+use Lattice\Table\Columns\Column;
+use Lattice\Table\Contracts\Filterable;
+use Lattice\Table\Contracts\Searchable;
+use Lattice\Table\Contracts\TableSource;
+use Lattice\Table\Enums\FilterType;
+use Lattice\Table\Enums\PaginationType;
+use Lattice\Table\FilterApplier;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\RelationBinding;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
 
 /**
  * The built-in Eloquent table source. Applies a TableQuery's filters and sorts

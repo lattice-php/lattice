@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Fragments;
+namespace Lattice\Fragments;
 
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Fragments\Components\Fragment as FragmentComponent;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Core\Attributes\DefinitionAttribute;
+use Lattice\Core\DefinitionRegistry;
+use Lattice\Fragments\Components\Fragment as FragmentComponent;
+use Lattice\Ui\PageSchema;
 
 /**
  * @extends DefinitionRegistry<FragmentDefinition>

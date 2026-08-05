@@ -5,10 +5,10 @@ namespace Workbench\App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Chat\ChatMessage;
-use Lattice\Lattice\Chat\ChatPart;
-use Lattice\Lattice\Chat\Enums\ChatRole;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Chat\ChatMessage;
+use Lattice\Chat\ChatPart;
+use Lattice\Chat\Enums\ChatRole;
+use Lattice\Core\Support\Wire;
 
 final readonly class FakeRemoteChatHistoryController
 {

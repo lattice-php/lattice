@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Remote\Components;
+namespace Lattice\Remote\Components;
 
-use Lattice\Lattice\Remote\RemoteAccess;
-use Lattice\Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Components\Concerns\SealsReferences;
+use Lattice\Remote\RemoteAccess;
+use Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Concerns\SealsReferences;
 use LogicException;
 
 abstract class RemoteComponent extends Component

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing\Assertions;
+namespace Lattice\Support\Testing\Assertions;
 
 use Closure;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Support\Testing\ComponentNode;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Support\Testing\ComponentNode;
+use Lattice\Ui\Components\Component;
 use PHPUnit\Framework\Assert;
 
 final readonly class ComponentAssertions

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http;
+namespace Lattice\Http;
 
 use BackedEnum;
 use BadMethodCallException;
@@ -9,16 +9,16 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Lattice\Lattice\Core\Authorization;
-use Lattice\Lattice\Core\Breadcrumb;
-use Lattice\Lattice\Core\Contracts\PageContract;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
-use Lattice\Lattice\Core\PageMetadata;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Realtime\Listen;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Authorization;
+use Lattice\Core\Breadcrumb;
+use Lattice\Core\Contracts\PageContract;
+use Lattice\Core\Enums\PageContainer;
+use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Core\PageMetadata;
+use Lattice\Core\Support\Wire;
+use Lattice\Realtime\Listen;
+use Lattice\Ui\PageSchema;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use UnexpectedValueException;
 

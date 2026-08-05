@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Layouts;
+namespace Lattice\Layouts;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsLayout;
-use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsLayout;
+use Lattice\Core\Attributes\DefinitionAttribute;
+use Lattice\Core\DefinitionRegistry;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\PageSchema;
 
 /**
  * @extends DefinitionRegistry<LayoutDefinition>

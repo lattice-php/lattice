@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Forms\Enums\RowActionType;
-use Lattice\Lattice\Ui\Concerns\GatesRendering;
-use Lattice\Lattice\Ui\Concerns\HasIcon;
-use Lattice\Lattice\Ui\Concerns\HasLabel;
-use Lattice\Lattice\Ui\Contracts\Renderable;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Form\Enums\RowActionType;
+use Lattice\Ui\Concerns\GatesRendering;
+use Lattice\Ui\Concerns\HasIcon;
+use Lattice\Ui\Concerns\HasLabel;
+use Lattice\Ui\Contracts\Renderable;
 
 /**
  * A per-row action declared on a Repeater or Builder. The built-in types map to

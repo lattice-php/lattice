@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Core\Contracts\OptionSource;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Facades\Evaluate;
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
-use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
-use Lattice\Lattice\Ui\Concerns\HasOptions;
-use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
-use Lattice\Lattice\Ui\Concerns\HasTabIndex;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Core\Contracts\OptionSource;
+use Lattice\Core\Option;
+use Lattice\Facades\Evaluate;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Form\FormData;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Ui\Concerns\HasAutoFocus;
+use Lattice\Ui\Concerns\HasOptions;
+use Lattice\Ui\Concerns\HasPlaceholder;
+use Lattice\Ui\Concerns\HasTabIndex;
 
 #[AsField(FieldType::Select)]
 class Select extends Field

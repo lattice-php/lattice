@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components\Concerns;
+namespace Lattice\Ui\Components\Concerns;
 
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Ui\Components\Component;
-use Lattice\Lattice\Ui\Concerns\FiltersRenderableComponents;
-use Lattice\Lattice\Ui\Concerns\ResolvesSchemaEntries;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Lattice\Ui\Concerns\ResolvesSchemaEntries;
+use Lattice\Ui\Contracts\SchemaEntry;
 
 trait HasChildSchema
 {

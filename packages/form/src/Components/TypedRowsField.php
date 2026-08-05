@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Lattice\Lattice\Attributes\SerializationHook;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Form\FormData;
 
 /**
  * Rows discriminated by their reserved `type` key: each row validates and

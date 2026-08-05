@@ -10,7 +10,7 @@ opened, and it is driven from the server: an [action](/actions/overview/) return
 `close-modal` [effect](/actions/effects/) targeting the modal's `$id`.
 
 ```php
-use Lattice\Lattice\Ui\Components\Modal;
+use Lattice\Ui\Components\Modal;
 
 Modal::make('invite-member')
     ->title('Invite a member')
@@ -23,8 +23,8 @@ Modal::make('invite-member')
 The dialog's `$id` is how effects find it:
 
 ```php
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Ui\Components\Button;
+use Lattice\Facades\Effects;
+use Lattice\Ui\Components\Button;
 
 Button::make('Invite')
     ->effects(Effects::openModal('invite-member'));
@@ -46,8 +46,8 @@ centered window — the pattern for quick previews and edits alongside a table. 
 the trailing one; pass a `Side` to dock it to the leading edge.
 
 ```php
-use Lattice\Lattice\Ui\Enums\ModalWidth;
-use Lattice\Lattice\Ui\Enums\Side;
+use Lattice\Ui\Enums\ModalWidth;
+use Lattice\Ui\Enums\Side;
 
 Modal::make('order-preview')
     ->title('Order #1042')

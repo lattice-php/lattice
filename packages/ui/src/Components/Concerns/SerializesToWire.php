@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Ui\Components\Concerns;
+namespace Lattice\Ui\Components\Concerns;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes\WireMap;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Attributes\WireMap;
+use Lattice\Core\Support\Wire;
 use ReflectionClass;
 use ReflectionProperty;
 

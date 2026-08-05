@@ -67,7 +67,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lattice\\Lattice\\": "src/"
+            "Lattice\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -75,7 +75,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Lattice\\Lattice\\Tests\\": "tests/",
+            "Lattice\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -128,7 +128,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Lattice\\Lattice\\LatticeServiceProvider"
+                "Lattice\\LatticeServiceProvider"
             ]
         }
     },

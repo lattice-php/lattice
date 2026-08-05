@@ -47,13 +47,13 @@ icon, variant, confirmation), and `handle()` runs the work and returns an `Actio
 ```php
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Attributes\AsAction;
-use Lattice\Lattice\Core\Concerns\ResolvesContextModels;
-use Lattice\Lattice\Ui\Enums\Emphasis;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Concerns\ResolvesContextModels;
+use Lattice\Ui\Enums\Emphasis;
+use Lattice\Ui\Enums\Variant;
 
 #[AsAction('app.products.archive')]
 class ArchiveProductAction extends ActionDefinition
@@ -102,7 +102,7 @@ context is signed into the action's reference, so it can't be tampered with on t
 Group related actions behind a single trigger with `ActionGroup`:
 
 ```php
-use Lattice\Lattice\Actions\Components\ActionGroup;
+use Lattice\Actions\Components\ActionGroup;
 
 ActionGroup::make('row-actions')->actions([
     Action::use(EditProductAction::class)->context(['product_id' => $row['id']]),
@@ -113,7 +113,7 @@ ActionGroup::make('row-actions')->actions([
 Render the same group inline when the actions should stay visible:
 
 ```php
-use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Ui\Enums\Orientation;
 
 ActionGroup::make('locale-switcher')
     ->label('Language')

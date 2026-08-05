@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Core\Option;
+use Lattice\Form\Components\Select;
+use Lattice\Form\FormData;
 
 it('injects the search string and form utilities into search resolvers', function (): void {
     $field = Select::make('user')->searchable(

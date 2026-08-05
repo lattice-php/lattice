@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Attributes\AsPage;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Lattice\Core\Enums\PageContainer;
-use Lattice\Lattice\Core\Enums\PageLayout;
-use Lattice\Lattice\Core\PageMetadata;
-use Lattice\Lattice\Http\Page as BasePage;
-use Lattice\Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\Enums\PageContainer;
+use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\PageMetadata;
+use Lattice\Http\Page as BasePage;
+use Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 
 #[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
 abstract class FixtureBasePage extends BasePage {}

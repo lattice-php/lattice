@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Sources\Eloquent;
+namespace Lattice\Table\Sources\Eloquent;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;

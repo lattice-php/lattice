@@ -4,17 +4,17 @@ declare(strict_types=1);
 namespace Workbench\App\Forms;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Forms\Components\Choice;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
-use Lattice\Lattice\Forms\Components\NumberInput;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Ui\Components\Grid;
-use Lattice\Lattice\Ui\Components\Tab;
-use Lattice\Lattice\Ui\Components\Tabs;
-use Lattice\Lattice\Ui\Enums\Orientation;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Form\Components\Choice;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\NumberInput;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
+use Lattice\Form\FormDefinition;
+use Lattice\Ui\Components\Grid;
+use Lattice\Ui\Components\Tab;
+use Lattice\Ui\Components\Tabs;
+use Lattice\Ui\Enums\Orientation;
 use Symfony\Component\HttpFoundation\Response;
 
 #[AsForm('workbench.dependent.form')]

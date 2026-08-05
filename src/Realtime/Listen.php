@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Realtime;
+namespace Lattice\Realtime;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Realtime\Enums\ChannelVisibility;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Facades\Effects;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Realtime\Enums\ChannelVisibility;
+use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Enums\Variant;
 
 /**
  * Declares a websocket listener for a page: a channel, the broadcast event

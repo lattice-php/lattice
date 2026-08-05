@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Chat\Attributes;
+namespace Lattice\Chat\Attributes;
 
 use Attribute;
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Chat\Enums\ChatPartType;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Chat\Enums\ChatPartType;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Support\Wire;
 
 /**
  * Marks a chat-part component and declares its wire type — the PHP↔JS

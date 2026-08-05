@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables;
+namespace Lattice\Table;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Tables\Enums\PaginationType;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Table\Enums\PaginationType;
 
 #[TypeScript]
 final readonly class TableResult

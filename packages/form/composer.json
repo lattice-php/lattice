@@ -18,13 +18,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Lattice\\Lattice\\Forms\\": "src/"
+            "Lattice\\Form\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Lattice\\Lattice\\Forms\\FormsServiceProvider"
+                "Lattice\\Form\\FormServiceProvider"
             ]
         }
     },

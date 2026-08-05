@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Effects;
+namespace Lattice\Effects;
 
 use Inertia\Inertia;
-use Lattice\Lattice\Http\LatticeResponse;
+use Lattice\Http\LatticeResponse;
+use Lattice\Ui\Effects\Effect;
 
 /**
  * Accumulates effects across a request and flashes them, as a single array,

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Frontend;
+namespace Lattice\Support\Frontend;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
-use Lattice\Lattice\Theme\ThemeRenderer;
+use Lattice\Theme\ThemeRenderer;
 use RuntimeException;
 
 final class StandaloneAssets

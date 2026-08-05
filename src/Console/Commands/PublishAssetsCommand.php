@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Console\Commands;
+namespace Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Lattice\Lattice\Core\Discovery\ComponentPackages;
+use Lattice\Core\Discovery\ComponentPackages;
 
 final class PublishAssetsCommand extends Command
 {

@@ -1,27 +1,27 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\RichEditor;
+namespace Lattice\Form\RichEditor;
 
-use Lattice\Lattice\Forms\RichEditor\Attributes\AsEditorExtension;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Blockquote;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Bold;
-use Lattice\Lattice\Forms\RichEditor\Extensions\BulletList;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Code;
-use Lattice\Lattice\Forms\RichEditor\Extensions\CodeBlock;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Details;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Emoji;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Heading;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Highlight;
-use Lattice\Lattice\Forms\RichEditor\Extensions\HorizontalRule;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Italic;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Link;
-use Lattice\Lattice\Forms\RichEditor\Extensions\OrderedList;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Strike;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Table;
-use Lattice\Lattice\Forms\RichEditor\Extensions\TextAlign;
-use Lattice\Lattice\Forms\RichEditor\Extensions\Underline;
-use Lattice\Lattice\Support\WireTypeRegistry;
+use Lattice\Core\Support\WireTypeRegistry;
+use Lattice\Form\RichEditor\Attributes\AsEditorExtension;
+use Lattice\Form\RichEditor\Extensions\Blockquote;
+use Lattice\Form\RichEditor\Extensions\Bold;
+use Lattice\Form\RichEditor\Extensions\BulletList;
+use Lattice\Form\RichEditor\Extensions\Code;
+use Lattice\Form\RichEditor\Extensions\CodeBlock;
+use Lattice\Form\RichEditor\Extensions\Details;
+use Lattice\Form\RichEditor\Extensions\Emoji;
+use Lattice\Form\RichEditor\Extensions\Heading;
+use Lattice\Form\RichEditor\Extensions\Highlight;
+use Lattice\Form\RichEditor\Extensions\HorizontalRule;
+use Lattice\Form\RichEditor\Extensions\Italic;
+use Lattice\Form\RichEditor\Extensions\Link;
+use Lattice\Form\RichEditor\Extensions\OrderedList;
+use Lattice\Form\RichEditor\Extensions\Strike;
+use Lattice\Form\RichEditor\Extensions\Table;
+use Lattice\Form\RichEditor\Extensions\TextAlign;
+use Lattice\Form\RichEditor\Extensions\Underline;
 
 /**
  * The single source of truth for rich-editor extensions: wire type → class-string.

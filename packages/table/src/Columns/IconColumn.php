@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns;
+namespace Lattice\Table\Columns;
 
 use BackedEnum;
-use Lattice\Lattice\Attributes\WireMap;
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorName;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Tables\Attributes\AsColumn;
-use Lattice\Lattice\Tables\Enums\ColumnType;
-use Lattice\Lattice\Ui\Concerns\HasIcon;
+use Lattice\Core\Attributes\WireMap;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorName;
+use Lattice\Core\Support\Wire;
+use Lattice\Table\Attributes\AsColumn;
+use Lattice\Table\Enums\ColumnType;
+use Lattice\Ui\Concerns\HasIcon;
 
 #[AsColumn(ColumnType::Icon)]
 final class IconColumn extends Column

@@ -17,13 +17,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Lattice\\Lattice\\Tables\\": "src/"
+            "Lattice\\Table\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Lattice\\Lattice\\Tables\\TablesServiceProvider"
+                "Lattice\\Table\\TableServiceProvider"
             ]
         }
     },

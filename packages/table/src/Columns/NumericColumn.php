@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns;
+namespace Lattice\Table\Columns;
 
-use Lattice\Lattice\Tables\Columns\Concerns\IsFilterable;
-use Lattice\Lattice\Tables\Columns\Concerns\IsSortable;
-use Lattice\Lattice\Tables\Contracts\Filterable;
-use Lattice\Lattice\Tables\Contracts\Sortable;
-use Lattice\Lattice\Tables\Enums\ColumnAlign;
-use Lattice\Lattice\Tables\Enums\FilterType;
-use Lattice\Lattice\Ui\Concerns\HasCopyable;
+use Lattice\Table\Columns\Concerns\IsFilterable;
+use Lattice\Table\Columns\Concerns\IsSortable;
+use Lattice\Table\Contracts\Filterable;
+use Lattice\Table\Contracts\Sortable;
+use Lattice\Table\Enums\ColumnAlign;
+use Lattice\Table\Enums\FilterType;
+use Lattice\Ui\Concerns\HasCopyable;
 
 abstract class NumericColumn extends Column implements Filterable, Sortable
 {

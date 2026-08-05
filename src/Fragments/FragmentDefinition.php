@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Fragments;
+namespace Lattice\Fragments;
 
-use Lattice\Lattice\Core\Definition;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Definition;
+use Lattice\Ui\PageSchema;
 
 abstract class FragmentDefinition extends Definition
 {

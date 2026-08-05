@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Layouts\Components\Outlet;
-use Lattice\Lattice\Tables\Filters\TernaryFilter;
-use Lattice\Lattice\Ui\Components\Link;
+use Lattice\Layouts\Components\Outlet;
+use Lattice\Table\Filters\TernaryFilter;
+use Lattice\Ui\Components\Link;
 
 it('encodes an empty node props map as a JSON object', function (): void {
     expect(wireJson(Outlet::make()))->toContain('"props":{}');

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Workbench\App\Fragments;
 
-use Lattice\Lattice\Attributes\AsFragment;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Ui\Components\Chart;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Attributes\AsFragment;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Ui\Components\Chart;
+use Lattice\Ui\PageSchema;
 
 #[AsFragment('workbench.order-volume-chart')]
 final class OrderVolumeChartFragment extends FragmentDefinition

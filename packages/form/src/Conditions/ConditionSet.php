@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Conditions;
+namespace Lattice\Form\Conditions;
 
 use JsonSerializable;
-use Lattice\Lattice\Forms\FormData;
+use Lattice\Form\FormData;
 
 final class ConditionSet implements JsonSerializable
 {

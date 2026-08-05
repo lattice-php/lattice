@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Workbench\App\Pages\Fields;
 
 use Illuminate\Support\Facades\Storage;
-use Lattice\Lattice\Attributes\AsPage;
+use Lattice\Core\Attributes\AsPage;
 use Workbench\App\Forms\Fields\FileUploadFieldForm;
 
 #[AsPage(route: '/form/fields/file-upload')]

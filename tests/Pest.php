@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Lattice\Lattice\Tests\BrowserTestCase;
-use Lattice\Lattice\Tests\TestCase;
+use Lattice\Tests\BrowserTestCase;
+use Lattice\Tests\TestCase;
 
 require_once __DIR__.'/Support/Browser.php';
 require_once __DIR__.'/Support/DocsFixtures.php';

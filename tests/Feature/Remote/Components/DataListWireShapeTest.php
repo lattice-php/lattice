@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Chat\Components\ChatBox;
-use Lattice\Lattice\Remote\Components\DataList;
-use Lattice\Lattice\Ui\Components\Card;
-use Lattice\Lattice\Ui\Components\Text;
+use Lattice\Chat\Components\ChatBox;
+use Lattice\Remote\Components\DataList;
+use Lattice\Ui\Components\Card;
+use Lattice\Ui\Components\Text;
 
 test('data list component serializes remote access with a signed ref', function (): void {
     $node = wire(

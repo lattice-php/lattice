@@ -59,7 +59,7 @@ string renders as **text**. To use an icon that isn't an `Icon` case — for exa
 sprite name — reach for the explicit `Affix` value object:
 
 ```php
-use Lattice\Lattice\Support\Affix;
+use Lattice\Core\Support\Affix;
 
 TextInput::make('search', 'Search')->prefix(Affix::icon('custom-glyph'));
 TextInput::make('weight', 'Weight')->suffix(Affix::text('kg'));

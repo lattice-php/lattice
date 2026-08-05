@@ -1,33 +1,33 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice;
+namespace Lattice\Core;
 
 use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Lattice\Lattice\Actions\ActionDefinition;
-use Lattice\Lattice\Actions\ActionRegistry;
-use Lattice\Lattice\Actions\BulkActionDefinition;
-use Lattice\Lattice\Actions\BulkActionRegistry;
-use Lattice\Lattice\Attributes\WireType;
-use Lattice\Lattice\Core\Contracts\PageContract;
-use Lattice\Lattice\Forms\FormDefinition;
-use Lattice\Lattice\Forms\FormRegistry;
-use Lattice\Lattice\Fragments\FragmentDefinition;
-use Lattice\Lattice\Fragments\FragmentRegistry;
-use Lattice\Lattice\Http\PageRegistry;
-use Lattice\Lattice\Layouts\LayoutDefinition;
-use Lattice\Lattice\Layouts\LayoutRegistry;
-use Lattice\Lattice\Remote\RemoteSourceDefinition;
-use Lattice\Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Lattice\Support\TypeScript\WireFamily;
-use Lattice\Lattice\Tables\TableDefinition;
-use Lattice\Lattice\Tables\TableRegistry;
-use Lattice\Lattice\Theme\Theme;
-use Lattice\Lattice\Theme\ThemeRenderer;
-use Lattice\Lattice\Ui\SlotRegistry;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionRegistry;
+use Lattice\Actions\BulkActionDefinition;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Core\Attributes\WireType;
+use Lattice\Core\Contracts\PageContract;
+use Lattice\Core\Support\TypeScript\WireFamily;
+use Lattice\Form\FormDefinition;
+use Lattice\Form\FormRegistry;
+use Lattice\Fragments\FragmentDefinition;
+use Lattice\Fragments\FragmentRegistry;
+use Lattice\Http\PageRegistry;
+use Lattice\Layouts\LayoutDefinition;
+use Lattice\Layouts\LayoutRegistry;
+use Lattice\Remote\RemoteSourceDefinition;
+use Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Table\TableDefinition;
+use Lattice\Table\TableRegistry;
+use Lattice\Theme\Theme;
+use Lattice\Theme\ThemeRenderer;
+use Lattice\Ui\SlotRegistry;
 
 final class LatticeRegistry
 {

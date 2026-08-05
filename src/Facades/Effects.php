@@ -1,26 +1,26 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Facades;
+namespace Lattice\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Lattice\Lattice\Effects\Builtin\CloseModal;
-use Lattice\Lattice\Effects\Builtin\Download;
-use Lattice\Lattice\Effects\Builtin\LocaleChange;
-use Lattice\Lattice\Effects\Builtin\OpenModal;
-use Lattice\Lattice\Effects\Builtin\Redirect;
-use Lattice\Lattice\Effects\Builtin\ReloadComponent;
-use Lattice\Lattice\Effects\Builtin\ReloadPage;
-use Lattice\Lattice\Effects\Builtin\ResetForm;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Builtin\ToggleSidebar;
-use Lattice\Lattice\Effects\EffectFlasher;
-use Lattice\Lattice\I18n\Values\Translatable;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Effects\Builtin\CloseModal;
+use Lattice\Effects\Builtin\Download;
+use Lattice\Effects\Builtin\LocaleChange;
+use Lattice\Effects\Builtin\OpenModal;
+use Lattice\Effects\Builtin\Redirect;
+use Lattice\Effects\Builtin\ReloadComponent;
+use Lattice\Effects\Builtin\ReloadPage;
+use Lattice\Effects\Builtin\ResetForm;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Effects\Builtin\ToggleSidebar;
+use Lattice\Effects\EffectFlasher;
+use Lattice\I18n\Values\Translatable;
+use Lattice\Ui\Enums\Variant;
 
 /**
- * @method static void flash(\Lattice\Lattice\Effects\Effect ...$effects)
- * @method static \Lattice\Lattice\Http\LatticeResponse respond()
+ * @method static void flash(\Lattice\Ui\Effects\Effect ...$effects)
+ * @method static \Lattice\Http\LatticeResponse respond()
  *
  * @see EffectFlasher
  */

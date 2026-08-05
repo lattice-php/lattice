@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing\Assertions;
+namespace Lattice\Support\Testing\Assertions;
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Forms\Conditions\Condition;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Support\Testing\ComponentNode;
+use Lattice\Core\Enums\Op;
+use Lattice\Form\Conditions\Condition;
+use Lattice\Form\FormData;
+use Lattice\Support\Testing\ComponentNode;
 use PHPUnit\Framework\Assert;
 
 final readonly class FieldAssertions

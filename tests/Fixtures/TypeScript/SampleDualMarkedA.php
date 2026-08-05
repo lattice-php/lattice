@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests\Fixtures\TypeScript;
+namespace Lattice\Tests\Fixtures\TypeScript;
 
-use Lattice\Lattice\Attributes\AsComponent;
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Ui\Components\Component;
 
 #[TypeScript]
 #[AsComponent('sample.dual-a')]

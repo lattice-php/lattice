@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Chat\Components;
+namespace Lattice\Chat\Components;
 
-use Lattice\Lattice\Attributes\WireMap;
-use Lattice\Lattice\Chat\Attributes\AsChatPart;
-use Lattice\Lattice\Chat\ChatPart;
-use Lattice\Lattice\Chat\Enums\ChatPartType;
+use Lattice\Chat\Attributes\AsChatPart;
+use Lattice\Chat\ChatPart;
+use Lattice\Chat\Enums\ChatPartType;
+use Lattice\Core\Attributes\WireMap;
 
 #[AsChatPart(ChatPartType::ToolCall)]
 final class ToolCallPart extends ChatPart

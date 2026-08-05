@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Theme;
+namespace Lattice\Theme;
 
 use Closure;
 use InvalidArgumentException;
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Enums\ColorKind;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorKind;
 
 /**
  * An immutable builder for the `--lt-*` design-token overrides a Lattice app

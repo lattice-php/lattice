@@ -17,7 +17,7 @@ Override `listeners()` on a [page](/core/pages/) and return one or more `Listen`
 names a channel, the broadcast event(s) to react to, and the effects to dispatch:
 
 ```php
-use Lattice\Lattice\Realtime\Listen;
+use Lattice\Realtime\Listen;
 
 protected function listeners(): array
 {

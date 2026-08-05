@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Layouts\Components\MenuItem;
-use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
-use Lattice\Lattice\Ui\Components\Button;
-use Lattice\Lattice\Ui\Components\Link;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Facades\Effects;
+use Lattice\Layouts\Components\MenuItem;
+use Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Link;
 
 use function Pest\Laravel\postJson;
 

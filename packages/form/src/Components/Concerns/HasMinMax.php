@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components\Concerns;
+namespace Lattice\Form\Components\Concerns;
 
 trait HasMinMax
 {

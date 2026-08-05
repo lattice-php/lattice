@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components\Concerns;
+namespace Lattice\Form\Components\Concerns;
 
-use Lattice\Lattice\Forms\Enums\RowLayout;
+use Lattice\Form\Enums\RowLayout;
 
 trait HasRowLayout
 {

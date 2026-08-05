@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Console\Commands;
+namespace Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lattice\Lattice\Core\Discovery\DiscoveryManifest;
+use Lattice\Core\Discovery\DiscoveryManifest;
 
 final class DiscoverClearCommand extends Command
 {

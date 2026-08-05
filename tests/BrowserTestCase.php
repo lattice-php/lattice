@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tests;
+namespace Lattice\Tests;
 
-use Lattice\Lattice\Support\Testing\ChecksWorkbenchAssets;
+use Lattice\Support\Testing\ChecksWorkbenchAssets;
 use Pest\Browser\Api\ArrayablePendingAwaitablePage;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Playwright\Playwright;

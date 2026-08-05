@@ -13,8 +13,8 @@ Override `actions()` to return the components shown in each row's action column.
 data, so you can build links and actions scoped to that record:
 
 ```php
-use Lattice\Lattice\Actions\Components\Action;
-use Lattice\Lattice\Ui\Components\Link;
+use Lattice\Actions\Components\Action;
+use Lattice\Ui\Components\Link;
 
 public function actions(array $row): array
 {
@@ -40,7 +40,7 @@ selected, the table shows a bulk action bar; running an action passes the select
 handler.
 
 ```php
-use Lattice\Lattice\Actions\Components\BulkAction;
+use Lattice\Actions\Components\BulkAction;
 
 public function bulkActions(): array
 {

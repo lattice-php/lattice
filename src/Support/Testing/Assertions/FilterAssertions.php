@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing\Assertions;
+namespace Lattice\Support\Testing\Assertions;
 
-use Lattice\Lattice\Core\Enums\Op;
-use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Core\Enums\Op;
+use Lattice\Table\Enums\FilterType;
 use PHPUnit\Framework\Assert;
 
 final readonly class FilterAssertions

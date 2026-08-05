@@ -22,8 +22,8 @@ Build a `Theme` in PHP and register it with the `Lattice` facade, typically in a
 provider's `boot()` method:
 
 ```php
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Theme\Theme;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Theme\Theme;
 
 Lattice::theme(
     Theme::make()
@@ -59,7 +59,7 @@ colour, `Color::hex(...)->dark(...)` is shorter â€” the counterpart lands in the
 automatically:
 
 ```php
-use Lattice\Lattice\Core\Color;
+use Lattice\Core\Color;
 
 Theme::make()->primary(Color::hex('#6366f1')->dark('#818cf8'));
 ```
@@ -70,7 +70,7 @@ Theme::make()->primary(Color::hex('#6366f1')->dark('#818cf8'));
 a complete brand colour in one argument:
 
 ```php
-use Lattice\Lattice\Theme\Swatch;
+use Lattice\Theme\Swatch;
 
 Theme::make()->primary(Swatch::Indigo);
 ```
@@ -84,7 +84,7 @@ A `ColorGroup` carries a base colour and its companions as one portable value â€
 once and reuse it, or store it per tenant and rebuild it from an array:
 
 ```php
-use Lattice\Lattice\Theme\ColorGroup;
+use Lattice\Theme\ColorGroup;
 
 $brand = ColorGroup::make(Color::hex('#4f46e5')->dark('#818cf8'))
     ->foreground('#ffffff')

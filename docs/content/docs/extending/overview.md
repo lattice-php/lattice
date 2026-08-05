@@ -12,8 +12,8 @@ attribute, and the client uses that type to find the matching implementation. Us
 form fields, `#[AsComponent]` for regular UI components, and `#[AsColumn]` for table columns.
 
 ```php
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Components\Field;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Components\Field;
 
 #[AsField(type: 'color-picker')]
 class ColorPickerField extends Field {}
@@ -33,11 +33,11 @@ That string — `"field.color-picker"` — is the only coupling between the PHP 
 
 ## Three extension points
 
-| Kind         | PHP base class                            | Registry                      |
-| ------------ | ----------------------------------------- | ----------------------------- |
-| Form field   | `Lattice\Lattice\Forms\Components\Field`  | `components`                  |
-| UI component | `Lattice\Lattice\Ui\Components\Component` | `components`                  |
-| Table column | `Lattice\Lattice\Tables\Columns\Column`   | `extensions["table.columns"]` |
+| Kind         | PHP base class                    | Registry                      |
+| ------------ | --------------------------------- | ----------------------------- |
+| Form field   | `Lattice\Form\Components\Field`   | `components`                  |
+| UI component | `Lattice\Ui\Components\Component` | `components`                  |
+| Table column | `Lattice\Table\Columns\Column`    | `extensions["table.columns"]` |
 
 All three register in one plugin object. Form fields and UI components are complete nodes, so the core
 renderer resolves them through `components`. A table column only contributes a cell renderer to the

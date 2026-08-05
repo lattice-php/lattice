@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Columns\Concerns;
+namespace Lattice\Table\Columns\Concerns;
 
 trait IsSearchable
 {

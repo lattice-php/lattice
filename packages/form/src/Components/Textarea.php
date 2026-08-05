@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
-use Lattice\Lattice\Forms\Attributes\AsField;
-use Lattice\Lattice\Forms\Enums\FieldType;
-use Lattice\Lattice\Ui\Concerns\HasAutoFocus;
-use Lattice\Lattice\Ui\Concerns\HasPlaceholder;
-use Lattice\Lattice\Ui\Concerns\HasTabIndex;
+use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Enums\FieldType;
+use Lattice\Ui\Concerns\HasAutoFocus;
+use Lattice\Ui\Concerns\HasPlaceholder;
+use Lattice\Ui\Concerns\HasTabIndex;
 
 #[AsField(FieldType::Textarea)]
 class Textarea extends Field

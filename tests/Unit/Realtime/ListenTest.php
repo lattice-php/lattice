@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Realtime\Listen;
+use Lattice\Realtime\Listen;
 
 test('it serializes channel, visibility, events and a toast effect', function (): void {
     $listen = Listen::private('orders')

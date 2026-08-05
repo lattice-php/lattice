@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Components;
+namespace Lattice\Form\Components;
 
-use Lattice\Lattice\Attributes\TypeScript;
-use Lattice\Lattice\Ui\Enums\HttpMethod;
+use Lattice\Core\Attributes\TypeScript;
+use Lattice\Ui\Enums\HttpMethod;
 
 #[TypeScript]
 final readonly class SignedUpload

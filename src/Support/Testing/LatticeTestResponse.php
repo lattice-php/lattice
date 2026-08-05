@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Support\Testing;
+namespace Lattice\Support\Testing;
 
 use BackedEnum;
 use Illuminate\Testing\TestResponse;
-use Lattice\Lattice\Effects\Builtin\OpenModal;
-use Lattice\Lattice\Effects\Builtin\Redirect;
-use Lattice\Lattice\Effects\Builtin\ReloadComponent;
-use Lattice\Lattice\Effects\Builtin\ReloadPage;
-use Lattice\Lattice\Effects\Builtin\Toast;
-use Lattice\Lattice\Effects\Effect;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Core\Support\Wire;
+use Lattice\Effects\Builtin\OpenModal;
+use Lattice\Effects\Builtin\Redirect;
+use Lattice\Effects\Builtin\ReloadComponent;
+use Lattice\Effects\Builtin\ReloadPage;
+use Lattice\Effects\Builtin\Toast;
+use Lattice\Ui\Effects\Effect;
+use Lattice\Ui\Enums\Variant;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Response;
 

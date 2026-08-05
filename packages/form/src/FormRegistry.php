@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms;
+namespace Lattice\Form;
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Attributes\AsForm;
-use Lattice\Lattice\Attributes\DefinitionAttribute;
-use Lattice\Lattice\Core\DefinitionRegistry;
-use Lattice\Lattice\Forms\Components\Form as FormComponent;
+use Lattice\Core\Attributes\AsForm;
+use Lattice\Core\Attributes\DefinitionAttribute;
+use Lattice\Core\DefinitionRegistry;
+use Lattice\Form\Components\Form as FormComponent;
 
 /**
  * @extends DefinitionRegistry<FormDefinition>

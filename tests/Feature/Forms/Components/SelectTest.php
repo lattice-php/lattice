@@ -2,15 +2,15 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Core\Color;
-use Lattice\Lattice\Core\Option;
-use Lattice\Lattice\Forms\Components\Select;
-use Lattice\Lattice\Forms\FormData;
-use Lattice\Lattice\Support\Wire;
-use Lattice\Lattice\Ui\Components\Badge;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Enums\Size;
+use Lattice\Core\Color;
+use Lattice\Core\Option;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\Select;
+use Lattice\Form\FormData;
+use Lattice\Ui\Components\Badge;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Size;
 
 it('serializes static options without search flags', function (): void {
     $field = Select::make('plan', 'Plan')->options([

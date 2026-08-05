@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Http\Controllers\Concerns;
+namespace Lattice\Http\Controllers\Concerns;
 
 use Closure;
 use Illuminate\Http\JsonResponse;

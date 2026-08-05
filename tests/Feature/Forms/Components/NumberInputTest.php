@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Forms\Components\NumberInput;
-use Lattice\Lattice\Support\Wire;
+use Lattice\Core\Support\Wire;
+use Lattice\Form\Components\NumberInput;
 
 it('serializes a number input', function (): void {
     $node = wire(NumberInput::make('qty', 'Qty')->min(0)->max(100)->step(1));

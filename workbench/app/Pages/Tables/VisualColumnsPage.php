@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Pages\Tables;
 
-use Lattice\Lattice\Attributes\AsPage;
+use Lattice\Core\Attributes\AsPage;
 use Workbench\App\Tables\VisualColumnsTable;
 
 #[AsPage(route: '/tables/columns/visual')]

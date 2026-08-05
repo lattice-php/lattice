@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Facades\Lattice;
+use Lattice\Core\Facades\Lattice;
 use Workbench\App\Forms\GroupForm;
 use Workbench\App\Models\Group;
 

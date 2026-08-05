@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Rules;
+namespace Lattice\Form\Rules;
 
 use Carbon\CarbonImmutable;
 use Closure;

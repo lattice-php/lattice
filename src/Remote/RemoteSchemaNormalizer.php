@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Remote;
+namespace Lattice\Remote;
 
 use InvalidArgumentException;
-use Lattice\Lattice\Remote\Components\RemoteNode;
-use Lattice\Lattice\Ui\Components\Component;
+use Lattice\Remote\Components\RemoteNode;
+use Lattice\Ui\Components\Component;
 
 final class RemoteSchemaNormalizer
 {

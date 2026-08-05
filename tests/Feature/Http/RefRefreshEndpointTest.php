@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Contracts\SignsComponentReferences;
 
 it('exchanges an expired ref for a fresh one that unseals again', function (): void {
     $signer = app(SignsComponentReferences::class);

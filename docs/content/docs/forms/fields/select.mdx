@@ -99,7 +99,7 @@ Backing a select with an Eloquent model is the common case, so `->optionsFrom()`
 `EloquentOptions` is the shipped source:
 
 ```php
-use Lattice\Lattice\Core\EloquentOptions;
+use Lattice\EloquentOptions;
 
 Select::make('author_id', 'Author')
     ->optionsFrom(EloquentOptions::make(User::class)->label('name'));

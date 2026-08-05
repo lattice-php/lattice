@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Console\Commands;
+namespace Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
-use Lattice\Lattice\Console\Commands\Concerns\GeneratesComponentPair;
-use Lattice\Lattice\Tables\Enums\ColumnType;
+use Lattice\Console\Commands\Concerns\GeneratesComponentPair;
+use Lattice\Table\Enums\ColumnType;
 
 final class MakeColumnCommand extends Command
 {

@@ -2,13 +2,13 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Actions\ActionResult;
-use Lattice\Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Lattice\Facades\Effects;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchFailingAction;
-use Lattice\Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
-use Lattice\Lattice\Ui\Enums\Variant;
+use Lattice\Actions\ActionResult;
+use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Facades\Effects;
+use Lattice\Tests\Fixtures\Workbench\WorkbenchFailingAction;
+use Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
+use Lattice\Ui\Enums\Variant;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Models\User;
 

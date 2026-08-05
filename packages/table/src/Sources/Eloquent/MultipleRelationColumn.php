@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Tables\Sources\Eloquent;
+namespace Lattice\Table\Sources\Eloquent;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Lattice\Lattice\Tables\RelationBinding;
+use Lattice\Table\RelationBinding;
 
 /**
  * The Eloquent resolution of a to-many {@see RelationBinding} (`tags`), reading a

@@ -3,18 +3,18 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Lattice\Facades\Lattice;
-use Lattice\Lattice\Forms\Components\Form;
-use Lattice\Lattice\Http\Page;
-use Lattice\Lattice\LatticeRegistry;
-use Lattice\Lattice\Tables\Components\Table;
-use Lattice\Lattice\Ui\Components\Modal;
-use Lattice\Lattice\Ui\Components\Stack;
-use Lattice\Lattice\Ui\Components\Tab;
-use Lattice\Lattice\Ui\Components\Tabs;
-use Lattice\Lattice\Ui\Components\Text;
-use Lattice\Lattice\Ui\Contracts\SchemaEntry;
-use Lattice\Lattice\Ui\PageSchema;
+use Lattice\Core\Facades\Lattice;
+use Lattice\Core\LatticeRegistry;
+use Lattice\Form\Components\Form;
+use Lattice\Http\Page;
+use Lattice\Table\Components\Table;
+use Lattice\Ui\Components\Modal;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Tab;
+use Lattice\Ui\Components\Tabs;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Contracts\SchemaEntry;
+use Lattice\Ui\PageSchema;
 
 test('lattice facade resolves the registry', function (): void {
     expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class));

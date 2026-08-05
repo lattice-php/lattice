@@ -73,8 +73,8 @@ layout does not clear it; a keyed callout follows the lifetime described below i
 Build a `Callout` value object and pass it to `->callout()`:
 
 ```php
-use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Effects\Builtin\Callout;
+use Lattice\Ui\Enums\Variant;
+use Lattice\Effects\Builtin\Callout;
 
 return ActionResult::success()
     ->callout(
@@ -151,9 +151,9 @@ A callout only renders where the `Callouts` layout slot is placed. Add `Callouts
 layout's `schema()`, typically between the header bar and `Outlet::make()`:
 
 ```php
-use Lattice\Lattice\Core\PageSchema;
-use Lattice\Lattice\Layouts\Components\Callouts;
-use Lattice\Lattice\Layouts\Components\Outlet;
+use Lattice\Core\PageSchema;
+use Lattice\Layouts\Components\Callouts;
+use Lattice\Layouts\Components\Outlet;
 
 public function schema(PageSchema $schema, Request $request): PageSchema
 {
@@ -211,9 +211,9 @@ response — no `ActionResult` needed. Use it from a controller, before returnin
 event listener, or in middleware — anywhere outside an action:
 
 ```php
-use Lattice\Lattice\Effects\Builtin\Callout;
-use Lattice\Lattice\Ui\Enums\Variant;
-use Lattice\Lattice\Facades\Effects;
+use Lattice\Effects\Builtin\Callout;
+use Lattice\Ui\Enums\Variant;
+use Lattice\Facades\Effects;
 
 // Flash a callout after a controller redirect
 Effects::flash(
@@ -276,8 +276,8 @@ On the server, an effect is a readonly value object marked with `#[AsEffect]`, w
 arguments become the wire `props`:
 
 ```php
-use Lattice\Lattice\Effects\Attributes\AsEffect;
-use Lattice\Lattice\Effects\Effect;
+use Lattice\Ui\Effects\Attributes\AsEffect;
+use Lattice\Ui\Effects\Effect;
 
 #[AsEffect('confetti')]
 final class ConfettiEffect extends Effect

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Chat\Enums;
+namespace Lattice\Chat\Enums;
 
 enum ChatPartType: string
 {

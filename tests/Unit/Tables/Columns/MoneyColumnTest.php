@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Lattice\Tables\Columns\MoneyColumn;
-use Lattice\Lattice\Tables\Enums\FilterType;
+use Lattice\Table\Columns\MoneyColumn;
+use Lattice\Table\Enums\FilterType;
 
 it('serializes a static-currency money column', function (): void {
     $data = wire(MoneyColumn::make('total')->currency('EUR'));

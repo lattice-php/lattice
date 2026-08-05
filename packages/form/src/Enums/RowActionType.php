@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Lattice\Forms\Enums;
+namespace Lattice\Form\Enums;
 
-use Lattice\Lattice\Attributes\TypeScript;
+use Lattice\Core\Attributes\TypeScript;
 
 // Reordering is a separate affordance (`reorderable`), so there are no move cases here.
 #[TypeScript]

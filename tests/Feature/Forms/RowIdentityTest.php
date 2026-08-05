@@ -4,12 +4,12 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Lattice\Lattice\Forms\Components\Builder;
-use Lattice\Lattice\Forms\Components\Repeater;
-use Lattice\Lattice\Forms\Components\RowsField;
-use Lattice\Lattice\Forms\Components\RowTemplate;
-use Lattice\Lattice\Forms\Components\TextInput;
-use Lattice\Lattice\Forms\FieldValidator;
+use Lattice\Form\Components\Builder;
+use Lattice\Form\Components\Repeater;
+use Lattice\Form\Components\RowsField;
+use Lattice\Form\Components\RowTemplate;
+use Lattice\Form\Components\TextInput;
+use Lattice\Form\FieldValidator;
 
 it('mints a uuid rowId for every validated row', function (): void {
     $field = Repeater::make('items')->schema([TextInput::make('title')]);
