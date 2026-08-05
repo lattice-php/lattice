@@ -1,0 +1,162 @@
+{
+  "name": "@lattice-php/lattice",
+  "version": "0.38.0",
+  "description": "Server-driven React components for Laravel and Inertia.",
+  "license": "MIT",
+  "author": "Manuel Christlieb <manuel@christlieb.eu>",
+  "type": "module",
+  "homepage": "https://latticephp.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lattice-php/lattice.git",
+    "directory": "packages/framework"
+  },
+  "bugs": {
+    "url": "https://github.com/lattice-php/lattice/issues"
+  },
+  "keywords": [
+    "laravel",
+    "inertia",
+    "react",
+    "server-driven-ui"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./css": "./dist/lattice.css",
+    "./action": {
+      "types": "./dist/action/index.d.ts",
+      "import": "./dist/action/index.js"
+    },
+    "./action/lib/run-action": {
+      "types": "./dist/action/lib/run-action.d.ts",
+      "import": "./dist/action/lib/run-action.js"
+    },
+    "./appearance": {
+      "types": "./dist/appearance/index.d.ts",
+      "import": "./dist/appearance/index.js"
+    },
+    "./chat": {
+      "types": "./dist/chat/index.d.ts",
+      "import": "./dist/chat/index.js"
+    },
+    "./dnd": {
+      "types": "./dist/dnd/index.d.ts",
+      "import": "./dist/dnd/index.js"
+    },
+    "./inertia": {
+      "types": "./dist/inertia.d.ts",
+      "import": "./dist/inertia.js"
+    },
+    "./layout": {
+      "types": "./dist/layout/index.d.ts",
+      "import": "./dist/layout/index.js"
+    },
+    "./notifications": {
+      "types": "./dist/notifications/index.d.ts",
+      "import": "./dist/notifications/index.js"
+    },
+    "./page": {
+      "types": "./dist/page.d.ts",
+      "import": "./dist/page.js"
+    },
+    "./provider": {
+      "types": "./dist/provider.d.ts",
+      "import": "./dist/provider.js"
+    },
+    "./registry": {
+      "types": "./dist/registry.d.ts",
+      "import": "./dist/registry.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.js"
+    },
+    "./remote": {
+      "types": "./dist/remote/index.d.ts",
+      "import": "./dist/remote/index.js"
+    },
+    "./ssr": {
+      "types": "./dist/ssr.d.ts",
+      "import": "./dist/ssr.js"
+    },
+    "./toast": {
+      "types": "./dist/toast/index.d.ts",
+      "import": "./dist/toast/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts"
+    },
+    "./types/generated": {
+      "types": "./dist/types/generated.d.ts"
+    },
+    "./svg-sprite-client": {
+      "types": "./dist/svg-sprite-client.d.ts"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    },
+    "./vite-client": {
+      "types": "./dist/vite-client.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "dist-standalone"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:standalone": "vite build --mode standalone",
+    "prepack": "npm run build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lattice-php/core": "0.38.0",
+    "@lattice-php/form": "0.38.0",
+    "@lattice-php/table": "0.38.0",
+    "@lattice-php/ui": "0.38.0",
+    "@atlaskit/pragmatic-drag-and-drop": "^2.0.1",
+    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
+    "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.0.0",
+    "@codemirror/lang-javascript": "^6.2.5",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-php": "^6.0.2",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/legacy-modes": "^6.5.3",
+    "@codemirror/state": "^6.7.1",
+    "@codemirror/view": "^6.43.7",
+    "@lattice-php/vite-svg-sprite": "^0.3.0",
+    "@lezer/highlight": "^1.2.3",
+    "@radix-ui/react-toast": "^1.2.16"
+  },
+  "peerDependencies": {
+    "@inertiajs/react": "^3.0.0",
+    "@laravel/echo-react": "^2.0.0",
+    "pusher-js": "^8.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@laravel/echo-react": {
+      "optional": true
+    },
+    "pusher-js": {
+      "optional": true
+    }
+  }
+}

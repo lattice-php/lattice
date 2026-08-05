@@ -52,7 +52,7 @@ jobs:
 
       - run: |
           mkdir -p coverage_vitest
-          npm run test:coverage -- --project jsdom resources/js --reporter=default --reporter=junit --outputFile.junit=coverage_vitest/junit.xml
+          npm run test:coverage -- --project jsdom --reporter=default --reporter=junit --outputFile.junit=coverage_vitest/junit.xml
 
       - name: Upload Vitest coverage to Codecov
         if: ${{ !cancelled() }}
@@ -180,7 +180,7 @@ jobs:
         run: npm run build
 
       - name: Icons are up to date
-        run: git diff --exit-code -- resources/icons src/Ui/Enums/Icon.php workbench/resources/js/sprite-icons.ts
+        run: git diff --exit-code -- packages/ui/resources/icons packages/ui/src/Enums/Icon.php workbench/resources/js/sprite-icons.ts
 
   php-static:
     name: PHP Static (pint, phpstan, rector)

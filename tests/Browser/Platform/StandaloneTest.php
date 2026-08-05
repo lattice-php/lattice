@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 it('boots a server-driven page through the published standalone bundle', function (): void {
-    if (! is_dir(dirname(__DIR__, 3).'/dist-standalone')) {
+    if (! is_dir(dirname(__DIR__, 3).'/packages/framework/dist-standalone')) {
         $this->markTestSkipped('dist-standalone is missing — run `npm run build:standalone` first.');
     }
 
@@ -18,7 +18,7 @@ it('boots a server-driven page through the published standalone bundle', functio
 })->group('serial');
 
 it('loads a Composer component through the standalone bundle', function (): void {
-    if (! is_dir(dirname(__DIR__, 3).'/dist-standalone')) {
+    if (! is_dir(dirname(__DIR__, 3).'/packages/framework/dist-standalone')) {
         $this->markTestSkipped('dist-standalone is missing — run `npm run build:standalone` first.');
     }
 

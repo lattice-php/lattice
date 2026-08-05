@@ -7,14 +7,16 @@ export default defineConfig({
   resolve: {
     alias: {
       "@lattice-php/core": path.resolve(import.meta.dirname, "../core/resources/js"),
-      "@lattice-php/lattice": path.resolve(import.meta.dirname, "../framework/resources/js"),
-      "@lattice-php/ui": path.resolve(import.meta.dirname, "resources/js"),
+      "@lattice-php/form": path.resolve(import.meta.dirname, "../form/resources/js"),
+      "@lattice-php/table": path.resolve(import.meta.dirname, "../table/resources/js"),
+      "@lattice-php/ui": path.resolve(import.meta.dirname, "../ui/resources/js"),
+      "@lattice-php/lattice": path.resolve(import.meta.dirname, "resources/js"),
     },
   },
   test: {
     environment: "jsdom",
     include: ["resources/js/**/*.test.{ts,tsx}"],
     exclude: ["resources/js/**/*.browser.test.{ts,tsx}"],
-    setupFiles: ["resources/js/test-setup.ts"],
+    setupFiles: ["resources/js/test/setup.ts"],
   },
 });

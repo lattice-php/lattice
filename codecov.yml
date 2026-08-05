@@ -16,7 +16,6 @@ coverage:
           - vitest-browser
         paths:
           - packages/
-          - resources/js
     patch:
       default:
         target: 80%
@@ -29,17 +28,14 @@ coverage:
           - vitest-browser
         paths:
           - packages/
-          - resources/js
 
 flags:
   vitest:
     paths:
       - packages/
-      - resources/js
   vitest-browser:
     paths:
       - packages/
-      - resources/js
 
 comment:
   after_n_builds: 4

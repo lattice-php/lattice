@@ -1,5 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "../../../packages/ui/resources/css/lattice.css";
+@import "../../../../ui/resources/css/lattice.css";
 
 @source "../";

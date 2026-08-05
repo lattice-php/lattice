@@ -40,7 +40,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
     config(['i18next.save_missing.enabled' => true]);
 
     $this->actingAs(workbenchTestUser());
-    $file = package_path('lang/en/form.php');
+    $file = package_path('packages/framework/lang/en/form.php');
     $original = File::get($file);
     $translations = require $file;
 

@@ -80,7 +80,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         // Point lang_path() at the package's lang/ dir so saveMissing dumps land in
         // the package, not the workbench or the read-only Testbench skeleton in vendor.
         $skeletonLangPath = $this->app->langPath();
-        $this->app->useLangPath(package_path('lang'));
+        $this->app->useLangPath(package_path('packages/framework/lang'));
 
         $this->callAfterResolving('translation.loader', function ($loader) use ($skeletonLangPath): void {
             $loader->addPath($skeletonLangPath);

@@ -53,7 +53,7 @@ function withScaffoldWorkspace(Closure $callback): mixed
 function withRegistryScaffold(Closure $callback): mixed
 {
     return withScaffoldWorkspace(function () use ($callback): mixed {
-        File::put(resource_path('js/registry.ts'), File::get(dirname(__DIR__, 2).'/stubs/registry.ts'));
+        File::put(resource_path('js/registry.ts'), File::get(dirname(__DIR__, 2).'/packages/framework/stubs/registry.ts'));
 
         return $callback();
     });

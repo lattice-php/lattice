@@ -17,7 +17,7 @@ function ssrServer(): Promise<ViteDevServer> {
     server: { middlewareMode: true },
     plugins: lattice({
       appRoot,
-      root: appRoot,
+      root: path.resolve(appRoot, "packages/framework"),
       source: true,
       icons: { dts: false },
       typescript: false,
@@ -31,7 +31,7 @@ describe("lattice Vite helper under SSR", () => {
 
     try {
       const entry = await server.ssrLoadModule(
-        path.resolve(process.cwd(), "resources/js/test/ssr-entry.tsx"),
+        path.resolve(process.cwd(), "packages/framework/resources/js/test/ssr-entry.tsx"),
       );
 
       expect(entry.createLatticeApp).toBeTypeOf("function");

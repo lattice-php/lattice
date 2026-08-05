@@ -93,10 +93,10 @@ describe("lattice Vite helper", () => {
     expect(latticeConfig({ appRoot, source: true })).toMatchObject({
       resolve: {
         alias: {
-          "@lattice-php/lattice/css": path.resolve(root, "packages/ui/resources/css/lattice.css"),
+          "@lattice-php/lattice/css": path.resolve(root, "../ui/resources/css/lattice.css"),
           "@lattice-php/lattice": path.resolve(root, "resources/js"),
-          "@lattice-php/ui/css": path.resolve(root, "packages/ui/resources/css/lattice.css"),
-          "@lattice-php/ui": path.resolve(root, "packages/ui/resources/js"),
+          "@lattice-php/ui/css": path.resolve(root, "../ui/resources/css/lattice.css"),
+          "@lattice-php/ui": path.resolve(root, "../ui/resources/js"),
         },
         dedupe: ["@inertiajs/react", "react", "react-dom"],
       },
@@ -302,7 +302,7 @@ describe("lattice Vite helper", () => {
 
   it("keeps package exports explicit and internal test helpers private", () => {
     const packageJson = JSON.parse(
-      readFileSync(path.resolve(process.cwd(), "package.json"), "utf8"),
+      readFileSync(path.resolve(process.cwd(), "packages/framework/package.json"), "utf8"),
     ) as PackageJson;
 
     expect(packageJson.exports).not.toHaveProperty("./*");

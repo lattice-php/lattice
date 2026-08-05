@@ -24,7 +24,6 @@
     <source>
         <include>
             <directory>packages</directory>
-            <directory>src</directory>
         </include>
     </source>
     <php>

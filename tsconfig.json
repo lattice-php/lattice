@@ -19,17 +19,14 @@
       "@lattice-php/table/*": ["./packages/table/resources/js/*"],
       "@lattice-php/ui": ["./packages/ui/resources/js/index.ts"],
       "@lattice-php/ui/*": ["./packages/ui/resources/js/*"],
-      "@lattice-php/lattice": ["./resources/js/index.ts"],
-      "@lattice-php/lattice/*": ["./resources/js/*"]
+      "@lattice-php/lattice": ["./packages/framework/resources/js/index.ts"],
+      "@lattice-php/lattice/*": ["./packages/framework/resources/js/*"]
     },
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext"
   },
   "include": [
-    "resources/js/**/*.d.ts",
-    "resources/js/**/*.ts",
-    "resources/js/**/*.tsx",
     "workbench/resources/js/**/*.ts",
     "workbench/resources/js/**/*.tsx",
     "packages/*/resources/js/**/*.ts",
