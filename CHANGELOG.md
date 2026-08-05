@@ -1,5 +1,54 @@
 # Changelog
 
+## [0.39.0](https://github.com/lattice-php/lattice/compare/0.38.0...0.39.0) (2026-08-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* normalize core and ui package ownership
+* extract ui package
+* extract publishable core package
+
+### Features
+
+* extract form package ([1b4e762](https://github.com/lattice-php/lattice/commit/1b4e7621e50539a7be59fb655fa431abebf316b7))
+* extract form package ([835bfc7](https://github.com/lattice-php/lattice/commit/835bfc7b1718a820c7fe2e62ec86fc926b8dbe2f))
+* extract table package ([523a4de](https://github.com/lattice-php/lattice/commit/523a4decec86b1a21394aa8520619d5ca3fbe097))
+* support runtime standalone plugins ([a454831](https://github.com/lattice-php/lattice/commit/a4548314fb63e2cc48609e989c2ed3116d093cea))
+* support runtime standalone plugins ([ec530bf](https://github.com/lattice-php/lattice/commit/ec530bf85b8deee29030b6aa77546ec193ba8a56))
+
+
+### Bug Fixes
+
+* avoid core package self-imports ([bfbfee1](https://github.com/lattice-php/lattice/commit/bfbfee134d6e31fcfa3ecfa08f3f096fd0ad6859))
+* include packages in coverage ([9752bb0](https://github.com/lattice-php/lattice/commit/9752bb0c7c038ac008667ed09ae4d9bc116462b9))
+* repoint browser i18n test at the framework lang dir ([8a9d567](https://github.com/lattice-php/lattice/commit/8a9d5675d8432b4ec93bb6bb1a1927ec3e6f190e))
+* report monorepo coverage ([2342a1b](https://github.com/lattice-php/lattice/commit/2342a1b93f90a161239bede067ca39cba88f1d41))
+* resolve form source imports in vite ([35b9129](https://github.com/lattice-php/lattice/commit/35b9129917960e37de74dde3f9560d6d9e4bd4e7))
+* split ui composer package on release ([fadbc09](https://github.com/lattice-php/lattice/commit/fadbc090d8184630fb3c2a542045020a00108a7b))
+* support boost roster v1 ([f4f6071](https://github.com/lattice-php/lattice/commit/f4f60710f5193c32d5cb314641734ebe7da74e34))
+
+
+### Refactoring
+
+* align components and extensions ([9365300](https://github.com/lattice-php/lattice/commit/9365300e79f0b4652656e8fa12b5ae43e36da808))
+* align monorepo package boundaries ([4191411](https://github.com/lattice-php/lattice/commit/41914114875bc9213abd6a0e291731d110c63e1e))
+* align monorepo package boundaries ([489dc6a](https://github.com/lattice-php/lattice/commit/489dc6aa60e95b3461a67e9ef7991a4fed47aa33))
+* align package namespaces ([d58eb9d](https://github.com/lattice-php/lattice/commit/d58eb9df017078b4c810250ea0502a5101a6d8fe))
+* complete ui package ownership ([2ce5751](https://github.com/lattice-php/lattice/commit/2ce57516de26bc0278a76b4f743ad2cb6ed93b0d))
+* expose plugin loading from core ([83e208b](https://github.com/lattice-php/lattice/commit/83e208b99deea2f569716dc344e63484fb3449bb))
+* expose wire families as collection ([7ac7006](https://github.com/lattice-php/lattice/commit/7ac70061089df292d60186571c265cb03c474182))
+* extract publishable core package ([ac953e9](https://github.com/lattice-php/lattice/commit/ac953e94016a802b94e4884266bfe51361f3209c))
+* extract ui package ([019584e](https://github.com/lattice-php/lattice/commit/019584ec2e917d8607bb67f1a1b86a1c84979d6e))
+* make domain packages standalone ([6ee7b00](https://github.com/lattice-php/lattice/commit/6ee7b0078ec6afbd64fd9fc9721c0ef5656b509d))
+* make domain packages standalone ([d0e68c9](https://github.com/lattice-php/lattice/commit/d0e68c98d9e4cd1a4f61cac5eb1c95d0c7c88f09))
+* move the umbrella package into packages/framework ([b45bb52](https://github.com/lattice-php/lattice/commit/b45bb52ce3934da25b32e0cb8b80f9f64641e451))
+* move the umbrella package into packages/framework ([c55f468](https://github.com/lattice-php/lattice/commit/c55f4685c84062a8be2e7104956d2367ab56966d))
+* normalize core and ui package ownership ([fdb0be0](https://github.com/lattice-php/lattice/commit/fdb0be0b57eb9f96970a912e56a35cdfc5923bf7))
+* prepare package boundaries ([7bed21d](https://github.com/lattice-php/lattice/commit/7bed21d00d988a77ec1edf750c1aeb858515cdfe))
+* prepare package boundaries ([b47e8eb](https://github.com/lattice-php/lattice/commit/b47e8eb74cf778e71e36f67b1499a4a8b0f106ac))
+* register wire families through facade ([a87f1ea](https://github.com/lattice-php/lattice/commit/a87f1ea1504db14f0a6d98fa720ce3696f5eb494))
+
 ## [0.38.0](https://github.com/lattice-php/lattice/compare/0.37.0...0.38.0) (2026-08-03)
 
 
