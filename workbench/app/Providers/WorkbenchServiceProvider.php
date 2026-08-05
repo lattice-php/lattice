@@ -13,7 +13,8 @@ use Inertia\Middleware as InertiaMiddleware;
 use Laravel\Boost\Install\GuidelineComposer;
 use Laravel\Boost\Install\SkillComposer;
 use Laravel\Boost\Support\Config;
-use Laravel\Roster\Roster;
+use Laravel\Roster\ProjectManager;
+use Laravel\Roster\ProjectScan;
 use Lattice\Lattice\Facades\Lattice;
 use Lattice\Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Lattice\Theme\Swatch;
@@ -158,19 +159,18 @@ class WorkbenchServiceProvider extends ServiceProvider
 
     private function pointBoostAtPackageRoot(): void
     {
-        if (! class_exists(Roster::class)) {
-            return;
-        }
-
-        $this->app->singleton(Roster::class, fn (): Roster => Roster::scan(package_path()));
+        $this->app->singleton(ProjectManager::class, fn (): ProjectManager => new class extends ProjectManager
+        {
+            #[\Override]
+            public function scan(?string $basePath = null): ProjectScan
+            {
+                return parent::scan($basePath ?? package_path());
+            }
+        });
     }
 
     private function redirectBoostSkillsToPackageRoot(): void
     {
-        if (! class_exists(Roster::class)) {
-            return;
-        }
-
         $skeleton = ltrim(str_replace(package_path(), '', base_path()), '/');
         $upToPackageRoot = str_repeat('../', substr_count($skeleton, '/') + 1);
 

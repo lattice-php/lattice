@@ -22,6 +22,32 @@ export type Color = {
   readonly value: string;
 };
 
+export type NumberFormatUnit =
+  | "percent"
+  | "kilogram"
+  | "gram"
+  | "kilometer"
+  | "meter"
+  | "byte"
+  | "kilobyte"
+  | "megabyte"
+  | "gigabyte"
+  | "millisecond"
+  | "second"
+  | "minute"
+  | "hour"
+  | "celsius"
+  | "fahrenheit";
+
+export type NumberFormat = {
+  currency: string | null;
+  kind: string;
+  maximumFractionDigits: number | null;
+  minimumFractionDigits: number | null;
+  notation: string;
+  unit: NumberFormatUnit | null;
+};
+
 export type DateTimeStyle = "full" | "long" | "medium" | "short";
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";

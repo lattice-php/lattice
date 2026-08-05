@@ -55,6 +55,7 @@ jobs:
         with:
           php-version: "8.4"
           coverage: pcov
+          ini-values: pcov.directory=.
           tools: composer:v2
 
       - uses: actions/setup-node@v6

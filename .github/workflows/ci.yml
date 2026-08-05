@@ -236,6 +236,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: ${{ matrix.coverage }}
+          ini-values: pcov.directory=.
           tools: composer:v2
 
       - name: Resolve composer cache directory

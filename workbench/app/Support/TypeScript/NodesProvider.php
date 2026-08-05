@@ -34,13 +34,13 @@ final readonly class NodesProvider implements TransformedProvider
 
     /**
      * @param  array<class-string, string>  $formFields  Form field components keyed by class-string, valued by wire type.
-     * @param  class-string  $formClass
+     * @param  class-string|null  $formClass
      * @param  array<string, array<class-string, ComponentSpec>>  $domainNodes  Node-alias name (e.g. 'CoreNode') to its components, in emission order.
      * @param  array<string, array<string, class-string>>  $familyProps  Family category => (wire type => props class-string) for every non-component family.
      */
     public function __construct(
         private array $formFields,
-        private string $formClass,
+        private ?string $formClass,
         private array $domainNodes,
         private LatticeRegistry $lattice,
         private string $formType = 'form',
@@ -54,10 +54,12 @@ final readonly class NodesProvider implements TransformedProvider
     {
         $formFieldTypes = array_values($this->formFields);
 
-        $transformed = [
-            $this->alias('FormFieldNodeType', $this->typeUnion($formFieldTypes)),
-            $this->alias('FormNodeType', $this->typeUnion([...$formFieldTypes, $this->formType])),
-        ];
+        $transformed = [];
+
+        if ($this->formClass !== null) {
+            $transformed[] = $this->alias('FormFieldNodeType', $this->typeUnion($formFieldTypes));
+            $transformed[] = $this->alias('FormNodeType', $this->typeUnion([...$formFieldTypes, $this->formType]));
+        }
 
         foreach ($this->domainNodes as $nodeName => $components) {
             $types = array_map(static fn (array $spec): string => $spec['type'], array_values($components));
@@ -172,7 +174,9 @@ final readonly class NodesProvider implements TransformedProvider
             $map[$type] = $class;
         }
 
-        $map[$this->formType] = $this->formClass;
+        if ($this->formClass !== null) {
+            $map[$this->formType] = $this->formClass;
+        }
 
         foreach ($this->domainNodes as $components) {
             foreach ($components as $class => $spec) {

@@ -239,7 +239,7 @@ export default defineConfig(({ mode }) => {
         ? [
             dts({
               tsconfigPath: path.resolve(import.meta.dirname, "tsconfig.json"),
-              aliasesExclude: [/^@lattice-php\/(?:core|form|ui)(?:\/|$)/],
+              aliasesExclude: [/^@lattice-php\/(?:core|form|table|ui)(?:\/|$)/],
               include: ["resources/js"],
               copyDtsFiles: true,
               exclude: [
@@ -256,6 +256,8 @@ export default defineConfig(({ mode }) => {
                   "@lattice-php/core/*": ["packages/core/dist/index.d.ts"],
                   "@lattice-php/form": ["packages/form/dist/index.d.ts"],
                   "@lattice-php/form/*": ["packages/form/dist/*"],
+                  "@lattice-php/table": ["packages/table/dist/index.d.ts"],
+                  "@lattice-php/table/*": ["packages/table/dist/*"],
                   "@lattice-php/lattice": ["resources/js/index.ts"],
                   "@lattice-php/lattice/*": ["resources/js/*"],
                 },
@@ -298,6 +300,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
         "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
+        "@lattice-php/table": path.resolve(import.meta.dirname, "packages/table/resources/js"),
         "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
         "@lattice-php/lattice": sourceRoot,
       },
@@ -345,6 +348,7 @@ export default defineConfig(({ mode }) => {
                   /^node:/,
                   /^@lattice-php\/core($|\/)/,
                   /^@lattice-php\/form($|\/)/,
+                  /^@lattice-php\/table($|\/)/,
                   /^@lattice-php\/ui($|\/)/,
                   /^react($|\/)/,
                   /^react-dom($|\/)/,
@@ -395,6 +399,9 @@ export default defineConfig(({ mode }) => {
             // back into the whole tree unless node_modules is restored here.
             exclude: ["**/node_modules/**", "**/*.browser.test.{ts,tsx}"],
             setupFiles: ["resources/js/test/setup.ts"],
+            coverage: {
+              include: ["resources/js/**/*.{ts,tsx}", "packages/*/resources/js/**/*.{ts,tsx}"],
+            },
           },
         },
         {
@@ -426,8 +433,12 @@ export default defineConfig(({ mode }) => {
         provider: "v8",
         reportsDirectory: "coverage_vitest",
         reporter: ["text", "lcov"],
-        include: ["resources/js/**/*.{ts,tsx}"],
         exclude: [
+          "packages/*/resources/js/**/*.d.ts",
+          "packages/*/resources/js/**/*.test.{ts,tsx}",
+          "packages/*/resources/js/**/*.test-d.{ts,tsx}",
+          "packages/*/resources/js/generated.ts",
+          "packages/*/resources/js/test-setup.ts",
           "resources/js/**/*.d.ts",
           "resources/js/**/*.test.{ts,tsx}",
           "resources/js/**/*.test-d.{ts,tsx}",

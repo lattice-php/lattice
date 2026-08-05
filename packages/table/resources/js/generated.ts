@@ -1,0 +1,301 @@
+import type { Node } from "@lattice-php/core";
+import type { ColumnNode, FilterNode } from "./types";
+
+export type BadgeColumn = {
+  align: ColumnAlign;
+  colors: Record<string | number, Color> | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type BooleanColumn = {
+  align: ColumnAlign;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type Color = {
+  readonly dark: string | null;
+  readonly kind: ColorKind;
+  readonly value: string;
+};
+export type ColorKind = "named" | "css";
+export type Column = {
+  align: ColumnAlign;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type ColumnAlign = "start" | "center" | "end";
+export type ColumnFilter = {
+  readonly clauseOptions: ColumnFilterOption[];
+  readonly control: FilterControl | null;
+  readonly defaultOperator: Op;
+  readonly multiple: boolean;
+  readonly operators: Op[];
+  readonly options: Option[];
+  readonly searchable: boolean;
+  readonly type: FilterType;
+};
+export type ColumnFilterOption = {
+  readonly clauses: ColumnFilterOptionClause[];
+  readonly label: string;
+  readonly value: string;
+};
+export type ColumnFilterOptionClause = {
+  readonly operator: Op;
+  readonly value: string;
+};
+export type ColumnNodeType =
+  | "column.badge"
+  | "column.boolean"
+  | "column.icon"
+  | "column.image"
+  | "column.money"
+  | "column.number"
+  | "column.stack"
+  | "column.text";
+export type ColumnPropsMap = {
+  "column.badge": BadgeColumn;
+  "column.boolean": BooleanColumn;
+  "column.icon": IconColumn;
+  "column.image": ImageColumn;
+  "column.money": MoneyColumn;
+  "column.number": NumberColumn;
+  "column.stack": StackColumn;
+  "column.text": TextColumn;
+};
+export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
+export type ComponentPropsMap = {
+  table: Table;
+};
+export type DateRangeFilter = {
+  label: string | null;
+};
+export type DateTimeStyle = "full" | "long" | "medium" | "short";
+export type Filter = {
+  label: string | null;
+};
+export type FilterClause = {
+  readonly field: string;
+  readonly operator: Op;
+  readonly value: string;
+};
+export type FilterControl =
+  | "filter.select"
+  | "filter.ternary"
+  | "filter.date-range"
+  | "filter.toggle";
+export type FilterIndicator = {
+  readonly filter: string;
+  readonly label: string;
+  readonly value: string;
+};
+export type FilterNodeType =
+  | "filter.date-range"
+  | "filter.select"
+  | "filter.ternary"
+  | "filter.toggle";
+export type FilterPropsMap = {
+  "filter.date-range": DateRangeFilter;
+  "filter.select": SelectFilter;
+  "filter.ternary": TernaryFilter;
+  "filter.toggle": ToggleFilter;
+};
+export type FilterType = "text" | "number" | "date" | "boolean";
+export type HttpMethod = import("@inertiajs/core").Method;
+export type IconColumn = {
+  align: ColumnAlign;
+  colors: Record<string | number, Color> | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  icon: string | null;
+  icons: Record<string | number, string> | null;
+  label: string | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type ImageColumn = {
+  align: ColumnAlign;
+  circular: boolean;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  previewable: boolean;
+  size: number | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type MoneyColumn = {
+  align: ColumnAlign;
+  copyable: boolean;
+  currency: string | null;
+  currencyField: string | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  maximumFractionDigits: number | null;
+  minimumFractionDigits: number | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type NodeType = "table";
+export type NumberColumn = {
+  align: ColumnAlign;
+  compact: boolean;
+  copyable: boolean;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  maximumFractionDigits: number | null;
+  minimumFractionDigits: number | null;
+  sortable: boolean;
+  toggleable: boolean;
+  unit: NumberFormatUnit | null;
+  width: ColumnWidth;
+};
+export type NumberFormatUnit =
+  | "percent"
+  | "kilogram"
+  | "gram"
+  | "kilometer"
+  | "meter"
+  | "byte"
+  | "kilobyte"
+  | "megabyte"
+  | "gigabyte"
+  | "millisecond"
+  | "second"
+  | "minute"
+  | "hour"
+  | "celsius"
+  | "fahrenheit";
+export type Op =
+  | "contains"
+  | "starts_with"
+  | "ends_with"
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "in"
+  | "not_in"
+  | "before"
+  | "after"
+  | "empty"
+  | "filled";
+export type Option = {
+  readonly data: Record<string, unknown> | null;
+  readonly label: string;
+  readonly value: string;
+};
+export type PaginationType = "none" | "simple" | "table" | "infinite";
+export type SelectFilter = {
+  label: string | null;
+  multiple: boolean;
+  options: Option[];
+  placeholder: string | null;
+  searchable: boolean;
+};
+export type SortDirection = "asc" | "desc";
+export type StackColumn = {
+  align: ColumnAlign;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type Table = {
+  actionsLabel: string | null;
+  bulkActions: Node[];
+  columns: ColumnNode[];
+  emptyLabel: string | null;
+  endpoint: string | null;
+  filters: FilterNode[];
+  layout: string | null;
+  lazy: boolean;
+  perPageOptions: (number | string)[];
+  ref: string | null;
+  resizableColumns: boolean;
+  resizeIndicator: boolean;
+  searchable: boolean;
+  striped: boolean;
+};
+export type TableNodeType = "table";
+export type TablePagination = {
+  readonly currentPage: number | null;
+  readonly from: number | null;
+  readonly hasMore: boolean;
+  readonly lastPage: number | null;
+  readonly mode: PaginationType;
+  readonly nextPage: number | null;
+  readonly perPage: number | null;
+  readonly to: number | null;
+  readonly total: number | null;
+};
+export type TableQuery = {
+  readonly filters: FilterClause[];
+  readonly mode: PaginationType | null;
+  readonly page: number;
+  readonly perPage: number;
+  readonly search: string;
+  readonly sorts: TableSort[];
+  readonly tableFilterIndicators: FilterIndicator[];
+  readonly tableFilters: Record<string, Record<string, unknown>>;
+};
+export type TableResult = {
+  readonly data: Record<string, unknown>[];
+  readonly pagination: TablePagination | null;
+  readonly query: TableQuery;
+};
+export type TableSort = {
+  readonly direction: SortDirection;
+  readonly key: string;
+};
+export type TernaryFilter = {
+  falseLabel: string;
+  label: string | null;
+  placeholder: string;
+  trueLabel: string;
+};
+export type TextColumn = {
+  align: ColumnAlign;
+  badge: {
+    colorKey: string;
+  } | null;
+  copyable: boolean;
+  date: {
+    dateStyle: DateTimeStyle | null;
+    timeStyle: DateTimeStyle | null;
+  } | null;
+  filter: ColumnFilter | null;
+  hiddenByDefault: boolean;
+  label: string | null;
+  link: {
+    href: string | null;
+    external: boolean;
+  } | null;
+  multiple: string | null;
+  sortable: boolean;
+  toggleable: boolean;
+  width: ColumnWidth;
+};
+export type ToggleFilter = {
+  label: string | null;
+};
