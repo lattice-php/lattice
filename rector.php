@@ -7,12 +7,7 @@ use Rector\TypeDeclaration\Rector\FunctionLike\AddClosureParamTypeForArrayMapRec
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__.'/packages/action/src',
-        __DIR__.'/packages/core/src',
-        __DIR__.'/packages/form/src',
-        __DIR__.'/packages/framework/src',
-        __DIR__.'/packages/tree/src',
-        __DIR__.'/packages/ui/src',
+        __DIR__.'/packages',
         __DIR__.'/tests',
         __DIR__.'/workbench/app',
         __DIR__.'/workbench/routes',

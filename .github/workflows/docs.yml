@@ -10,7 +10,7 @@ on:
     branches: [main]
     paths:
       - "docs/**"
-      - "resources/**"
+      - "packages/*/resources/**"
       - "workbench/resources/**"
       - "vite.config.ts"
       - "tsconfig.json"
@@ -42,7 +42,7 @@ jobs:
           filters: |
             docs:
               - "docs/**"
-              - "resources/**"
+              - "packages/*/resources/**"
               - "workbench/resources/**"
               - "vite.config.ts"
               - "tsconfig.json"

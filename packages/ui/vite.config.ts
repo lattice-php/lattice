@@ -51,6 +51,13 @@ export default defineConfig({
         "resources/js/**/*.test-d.*",
         "resources/js/test-setup.ts",
       ],
+      compilerOptions: {
+        paths: {
+          "@lattice-php/ui": [path.join(sourceRoot, "index.ts")],
+          "@lattice-php/ui/*": [path.join(sourceRoot, "*")],
+        },
+        rootDir: sourceRoot,
+      },
       beforeWriteFile: (filePath, content) => ({
         filePath,
         content: withExplicitExtensions(content),

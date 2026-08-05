@@ -4,14 +4,12 @@ includes:
 
 parameters:
     paths:
-        - packages/action/src
-        - packages/core/src
-        - packages/form/src
-        - packages/framework/src
-        - packages/tree/src
-        - packages/ui/src
+        - packages
         - tests
         - workbench/app
     excludePaths:
+        # The framework's publishable config file — larastan's env-outside-config
+        # rule keys on a root config/ dir, which packaged configs don't live in.
+        - packages/framework/config/lattice.php
         - tests/Fixtures/TypeScript/Unloadable/BrokenExtendsMissingClass.php
     level: 6

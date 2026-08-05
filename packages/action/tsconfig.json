@@ -1,28 +1,10 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "verbatimModuleSyntax": true,
-    "types": ["node", "vite/client"],
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "paths": {
-      "@lattice-php/core": ["../core/resources/js/index.ts"],
-      "@lattice-php/core/*": ["../core/resources/js/*"],
-      "@lattice-php/form": ["../form/resources/js/index.ts"],
-      "@lattice-php/form/*": ["../form/resources/js/*"],
-      "@lattice-php/lattice": ["../framework/resources/js/index.ts"],
-      "@lattice-php/lattice/*": ["../framework/resources/js/*"],
-      "@lattice-php/action": ["./resources/js/index.ts"],
-      "@lattice-php/action/*": ["./resources/js/*"],
-      "@lattice-php/ui": ["../ui/resources/js/index.ts"],
-      "@lattice-php/ui/*": ["../ui/resources/js/*"]
-    }
-  },
-  "include": ["resources/js"],
-  "exclude": ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*"]
+  "extends": "../tsconfig.base.json",
+  "include": [
+    "resources/js"
+  ],
+  "exclude": [
+    "resources/js/**/*.test.*",
+    "resources/js/**/*.test-d.*"
+  ]
 }
