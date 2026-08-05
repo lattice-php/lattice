@@ -189,6 +189,13 @@ export default defineConfig({
           ],
         },
         {
+          label: "Packages",
+          collapsed: true,
+          items: [
+            { label: "Tree", link: "/packages/tree/" },
+          ],
+        },
+        {
           label: "Theming",
           collapsed: true,
           items: [
