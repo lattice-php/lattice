@@ -118,7 +118,7 @@ export default defineConfig(({ mode }) => {
         : [
             dts({
               tsconfigPath: path.resolve(import.meta.dirname, "tsconfig.json"),
-              aliasesExclude: [/^@lattice-php\/(?:core|form|table|ui)(?:\/|$)/],
+              aliasesExclude: [/^@lattice-php\/(?:action|core|form|table|ui)(?:\/|$)/],
               include: ["resources/js"],
               copyDtsFiles: true,
               exclude: [
@@ -131,6 +131,8 @@ export default defineConfig(({ mode }) => {
               compilerOptions: {
                 rootDir: sourceRoot,
                 paths: {
+                  "@lattice-php/action": ["../action/dist/index.d.ts"],
+                  "@lattice-php/action/*": ["../action/dist/*"],
                   "@lattice-php/core": ["../core/dist/index.d.ts"],
                   "@lattice-php/core/*": ["../core/dist/index.d.ts"],
                   "@lattice-php/form": ["../form/dist/index.d.ts"],
@@ -152,6 +154,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
+        "@lattice-php/action": path.resolve(import.meta.dirname, "../action/resources/js"),
         "@lattice-php/core": path.resolve(import.meta.dirname, "../core/resources/js"),
         "@lattice-php/form": path.resolve(import.meta.dirname, "../form/resources/js"),
         "@lattice-php/table": path.resolve(import.meta.dirname, "../table/resources/js"),
@@ -199,6 +202,7 @@ export default defineConfig(({ mode }) => {
             rollupOptions: {
               external: [
                 /^node:/,
+                /^@lattice-php\/action($|\/)/,
                 /^@lattice-php\/core($|\/)/,
                 /^@lattice-php\/form($|\/)/,
                 /^@lattice-php\/table($|\/)/,

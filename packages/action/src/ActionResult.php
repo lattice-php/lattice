@@ -6,7 +6,7 @@ namespace Lattice\Actions;
 use BackedEnum;
 use Lattice\Core\Attributes\TypeScript;
 use Lattice\Core\Support\Wire;
-use Lattice\Facades\Effects;
+use Lattice\Ui\Effects\Builtin\Redirect;
 use Lattice\Ui\Effects\Concerns\QueuesEffects;
 use Lattice\Ui\Effects\Effect;
 use Lattice\Ui\Enums\Variant;
@@ -58,7 +58,7 @@ final readonly class ActionResult
 
     public function to(string $url): static
     {
-        return $this->effect(Effects::redirect($url));
+        return $this->effect(new Redirect($url));
     }
 
     /**
@@ -68,11 +68,11 @@ final readonly class ActionResult
     {
         $name = Wire::scalar($route);
 
-        return $this->effect(Effects::redirect(to_route($name, $parameters)->getTargetUrl()));
+        return $this->effect(new Redirect(to_route($name, $parameters)->getTargetUrl()));
     }
 
     public function back(): static
     {
-        return $this->effect(Effects::redirect(redirect()->back()->getTargetUrl()));
+        return $this->effect(new Redirect(redirect()->back()->getTargetUrl()));
     }
 }

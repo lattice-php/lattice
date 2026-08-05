@@ -32,14 +32,6 @@
       "import": "./dist/index.js"
     },
     "./css": "./dist/lattice.css",
-    "./action": {
-      "types": "./dist/action/index.d.ts",
-      "import": "./dist/action/index.js"
-    },
-    "./action/lib/run-action": {
-      "types": "./dist/action/lib/run-action.d.ts",
-      "import": "./dist/action/lib/run-action.js"
-    },
     "./appearance": {
       "types": "./dist/appearance/index.d.ts",
       "import": "./dist/appearance/index.js"
@@ -125,10 +117,12 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@lattice-php/action": "0.40.0",
     "@lattice-php/core": "0.40.0",
     "@lattice-php/form": "0.40.0",
     "@lattice-php/table": "0.40.0",
     "@lattice-php/ui": "0.40.0",
+    "@lattice-php/vite-svg-sprite": "^0.3.0",
     "@atlaskit/pragmatic-drag-and-drop": "^2.0.1",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
@@ -140,7 +134,6 @@
     "@codemirror/legacy-modes": "^6.5.3",
     "@codemirror/state": "^6.7.1",
     "@codemirror/view": "^6.43.7",
-    "@lattice-php/vite-svg-sprite": "^0.3.0",
     "@lezer/highlight": "^1.2.3",
     "@radix-ui/react-toast": "^1.2.16"
   },

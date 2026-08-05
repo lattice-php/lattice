@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Facade;
+use Lattice\Actions\ActionServiceProvider;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\CoreServiceProvider;
 use Lattice\Core\Facades\Lattice;
@@ -17,7 +18,8 @@ it('loads domain providers through the umbrella provider', function (): void {
     expect(app()->getProvider(CoreServiceProvider::class))->not->toBeNull()
         ->and(app()->getProvider(UiServiceProvider::class))->not->toBeNull()
         ->and(app()->getProvider(FormServiceProvider::class))->not->toBeNull()
-        ->and(app()->getProvider(TableServiceProvider::class))->not->toBeNull();
+        ->and(app()->getProvider(TableServiceProvider::class))->not->toBeNull()
+        ->and(app()->getProvider(ActionServiceProvider::class))->not->toBeNull();
 });
 
 it('registers wire families through the Lattice facade', function (): void {
@@ -58,6 +60,7 @@ it('loads each domain provider with its package dependencies', function (): void
             UiServiceProvider::class => ['component', 'effect'],
             FormServiceProvider::class => ['component', 'effect', 'editor-extension'],
             TableServiceProvider::class => ['component', 'effect', 'editor-extension', 'column', 'filter'],
+            ActionServiceProvider::class => ['component', 'effect', 'editor-extension'],
         ] as $provider => $expectedCategories) {
             $application = new Application;
             Facade::setFacadeApplication($application);

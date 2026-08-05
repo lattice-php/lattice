@@ -198,6 +198,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
             alias: {
               "@lattice-php/lattice/css": path.resolve(root, "../ui/resources/css/lattice.css"),
               "@lattice-php/lattice": path.resolve(root, "resources/js"),
+              "@lattice-php/action": path.resolve(root, "../action/resources/js"),
               "@lattice-php/core": path.resolve(root, "../core/resources/js"),
               "@lattice-php/form": path.resolve(root, "../form/resources/js"),
               "@lattice-php/table": path.resolve(root, "../table/resources/js"),
@@ -220,6 +221,7 @@ export function latticeConfig(options: LatticeViteOptions = {}): ConfigWithTest 
         deps: {
           inline: [
             "@lattice-php/lattice",
+            "@lattice-php/action",
             "@lattice-php/core",
             "@lattice-php/form",
             "@lattice-php/table",

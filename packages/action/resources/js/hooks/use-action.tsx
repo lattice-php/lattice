@@ -8,9 +8,9 @@ import { withHeaders } from "@lattice-php/core/headers";
 import type { Node } from "@lattice-php/core/types";
 import { translate } from "@lattice-php/ui/i18n";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import { runAction } from "@lattice-php/lattice/action/lib/run-action";
-import { ActionForm, useLazyActionForm } from "@lattice-php/lattice/action/components/action-form";
-import { actionLabel } from "@lattice-php/lattice/action/lib/action-label";
+import { runAction } from "@lattice-php/action/lib/run-action";
+import { ActionForm, useLazyActionForm } from "@lattice-php/action/components/action-form";
+import { actionLabel } from "@lattice-php/action/lib/action-label";
 
 type UseAction = {
   /** Whether the action request is in flight. */

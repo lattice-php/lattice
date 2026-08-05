@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ActionInteractionProvider } from "@lattice-php/lattice/action";
+import { ActionInteractionProvider } from "@lattice-php/action";
 import { fakeNode } from "@lattice-php/lattice/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import LinkComponent from "./link";

@@ -169,6 +169,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      "@lattice-php/action": path.resolve(import.meta.dirname, "packages/action/resources/js"),
       "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
       "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
       "@lattice-php/table": path.resolve(import.meta.dirname, "packages/table/resources/js"),

@@ -27,8 +27,10 @@ use Lattice\Ui\Enums\ColumnWidth;
 use Lattice\Ui\Enums\DateTimeStyle;
 use Lattice\Ui\Enums\Emphasis;
 use Lattice\Ui\Enums\Justify;
+use Lattice\Ui\Enums\ModalWidth;
 use Lattice\Ui\Enums\NumberFormatUnit;
 use Lattice\Ui\Enums\Orientation;
+use Lattice\Ui\Enums\Side;
 use Lattice\Ui\Enums\Variant;
 
 /**
@@ -66,6 +68,9 @@ final readonly class BaseProfile implements TypeScriptProfile
         $tableOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput.'/table'
             : $packageRoot.'/packages/table/resources/js';
+        $actionOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
+            ? $configuredOutput.'/action'
+            : $packageRoot.'/packages/action/resources/js';
         $uiOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
             ? $configuredOutput.'/ui'
             : $packageRoot.'/packages/ui/resources/js';
@@ -181,6 +186,47 @@ final readonly class BaseProfile implements TypeScriptProfile
             new OxfmtFormatter,
         );
 
+        $actionEnums = array_values(array_unique([
+            ...array_filter(
+                $manifest->enums,
+                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Actions\\'),
+            ),
+            Emphasis::class,
+            ModalWidth::class,
+            Orientation::class,
+            Side::class,
+            Variant::class,
+        ]));
+        $actionValueObjects = array_values(array_filter(
+            $manifest->valueObjects,
+            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Actions\\'),
+        ));
+        $actionNodes = ['ActionNode' => $this->buildBucket($discovered, 'Actions')];
+
+        $generator->generate(
+            $sources,
+            [
+                new HttpMethodTransformer,
+                new EnumTransformer($actionEnums),
+                new ValueObjectTransformer($actionValueObjects, $markerRefs),
+                new ComponentTransformer($this->componentClasses($actionNodes), $markerRefs),
+            ],
+            [
+                new NodesProvider(
+                    [],
+                    null,
+                    $actionNodes,
+                    $this->lattice,
+                ),
+            ],
+            new NodeModuleWriter(
+                'generated.ts',
+                'import type { Node } from "@lattice-php/core";'.PHP_EOL.PHP_EOL,
+            ),
+            $actionOutputDirectory,
+            new OxfmtFormatter,
+        );
+
         $uiEffects = array_flip($manifest->family('effect'));
         $uiEnums = array_values(array_filter(
             $manifest->enums,
@@ -276,6 +322,7 @@ final readonly class BaseProfile implements TypeScriptProfile
     {
         return [
             $packageRoot.'/packages/framework/src',
+            $packageRoot.'/packages/action/src',
             $packageRoot.'/packages/core/src',
             $packageRoot.'/packages/form/src',
             $packageRoot.'/packages/table/src',
