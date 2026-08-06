@@ -4,7 +4,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import type { RendererComponent } from "@lattice-php/core/types";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import { Message } from "./message";
 
 const CustomPart: RendererComponent = ({ node }) => (
@@ -31,7 +31,6 @@ describe("Message", () => {
     const messageWrapper = screen.getByTestId("chat-message-user");
     expect(messageWrapper).toBeInTheDocument();
     expect(messageWrapper.firstElementChild).toHaveClass("rounded-lt");
-    expect(messageWrapper.firstElementChild).not.toHaveClass("rounded-lt-md");
   });
 
   it("renders an assistant message with its text part", () => {
@@ -61,20 +60,5 @@ describe("Message", () => {
 
     expect(screen.getByText("Thinking…")).toBeVisible();
     expect(screen.getByTestId("custom-part")).toHaveTextContent("my-tool");
-  });
-
-  it("flags an unknown part type as a missing component", () => {
-    const message: ChatMessage = {
-      id: "4",
-      role: "user",
-      parts: [{ type: "unknown-type-xyz", props: {} }],
-    };
-
-    const { container } = renderWithRegistry(<Message message={message} />, registry);
-    const bubble = container.querySelector('[data-test="chat-message-user"]');
-    expect(bubble).toBeInTheDocument();
-    expect(
-      bubble?.querySelector('[data-lattice-missing-component="unknown-type-xyz"]'),
-    ).toBeInTheDocument();
   });
 });

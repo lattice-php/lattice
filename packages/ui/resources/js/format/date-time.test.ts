@@ -18,28 +18,15 @@ describe("toDate", () => {
     expect(toDate(date)).toBe(date);
   });
 
-  it("returns null for an unparseable string", () => {
-    expect(toDate("not-a-date")).toBeNull();
-  });
-
-  it("returns null for an invalid Date instance", () => {
-    expect(toDate(new Date("not-a-date"))).toBeNull();
-  });
-
-  it("returns null for null", () => {
-    expect(toDate(null)).toBeNull();
-  });
-
-  it("returns null for undefined", () => {
-    expect(toDate(undefined)).toBeNull();
-  });
-
-  it("returns null for a plain object", () => {
-    expect(toDate({})).toBeNull();
-  });
-
-  it("returns null for a boolean", () => {
-    expect(toDate(true)).toBeNull();
+  it.each([
+    ["an unparseable string", "not-a-date"],
+    ["an invalid Date instance", new Date("not-a-date")],
+    ["null", null],
+    ["undefined", undefined],
+    ["a plain object", {}],
+    ["a boolean", true],
+  ])("returns null for %s", (_label, value) => {
+    expect(toDate(value)).toBeNull();
   });
 });
 
@@ -62,33 +49,20 @@ describe("preciseDateTime", () => {
     );
   });
 
-  it("returns an empty string for an invalid value", () => {
-    expect(preciseDateTime("not-a-date", { timeZone: "UTC" })).toBe("");
-  });
-
-  it("returns an empty string for an invalid Date instance", () => {
-    expect(preciseDateTime(new Date("not-a-date"), { timeZone: "UTC" })).toBe("");
-  });
-
-  it("returns an empty string for null, undefined, and an empty string", () => {
-    expect(preciseDateTime(null, { timeZone: "UTC" })).toBe("");
-    expect(preciseDateTime(undefined, { timeZone: "UTC" })).toBe("");
-    expect(preciseDateTime("", { timeZone: "UTC" })).toBe("");
-  });
-
-  it("returns an empty string for an object or a boolean", () => {
-    expect(preciseDateTime({}, { timeZone: "UTC" })).toBe("");
-    expect(preciseDateTime(true, { timeZone: "UTC" })).toBe("");
+  it.each([
+    ["an unparseable string", "not-a-date"],
+    ["an invalid Date instance", new Date("not-a-date")],
+    ["null", null],
+    ["undefined", undefined],
+    ["an empty string", ""],
+    ["a plain object", {}],
+    ["a boolean", true],
+  ])("returns an empty string for %s", (_label, value) => {
+    expect(preciseDateTime(value, { timeZone: "UTC" })).toBe("");
   });
 });
 
 describe("formatDateValue", () => {
-  it("returns the raw value when the date cannot be parsed", () => {
-    expect(formatDateValue("not-a-date", { dateStyle: "medium", timeStyle: null })).toBe(
-      "not-a-date",
-    );
-  });
-
   it("applies only the styles that are configured", () => {
     const dateOnly = formatDateValue(
       "2026-06-18T00:30:00Z",
@@ -139,27 +113,15 @@ describe("formatDateValue", () => {
     expect(formatted).not.toBe(String(timestamp));
   });
 
-  it("returns the raw value for an invalid Date instance", () => {
-    const invalid = new Date("not-a-date");
-
-    expect(formatDateValue(invalid, { dateStyle: "medium", timeStyle: null })).toBe(
-      String(invalid),
-    );
-  });
-
-  it("degrades to an empty string for null, undefined, and an empty string", () => {
-    const config = { dateStyle: "medium" as const, timeStyle: null };
-
-    expect(formatDateValue(null, config)).toBe("");
-    expect(formatDateValue(undefined, config)).toBe("");
-    expect(formatDateValue("", config)).toBe("");
-  });
-
-  it("degrades to String(value) for an object or a boolean", () => {
-    const config = { dateStyle: "medium" as const, timeStyle: null };
-
-    expect(formatDateValue({}, config)).toBe("[object Object]");
-    expect(formatDateValue(true, config)).toBe("true");
-    expect(formatDateValue(false, config)).toBe("false");
+  it.each([
+    ["an unparseable string", "not-a-date", "not-a-date"],
+    ["an invalid Date instance", new Date("not-a-date"), String(new Date("not-a-date"))],
+    ["null", null, ""],
+    ["undefined", undefined, ""],
+    ["an empty string", "", ""],
+    ["a plain object", {}, "[object Object]"],
+    ["a boolean", true, "true"],
+  ])("degrades %s to its raw representation", (_label, value, expected) => {
+    expect(formatDateValue(value, { dateStyle: "medium", timeStyle: null })).toBe(expected);
   });
 });

@@ -113,8 +113,7 @@
     "build": "vite build",
     "build:standalone": "vite build --mode standalone",
     "prepack": "npm run build",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@lattice-php/action": "0.40.0",

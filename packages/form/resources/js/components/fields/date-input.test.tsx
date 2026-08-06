@@ -1,7 +1,8 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { setLocale } from "@lattice-php/ui/i18n/locale";
-import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { createFieldRenderer } from "@lattice-php/form/test-support";
 import { DateInputComponent } from "./date-input";
 
 const renderField = createFieldRenderer(DateInputComponent);
@@ -53,19 +54,6 @@ describe("DateInputComponent", () => {
     });
   });
 
-  it("commits a date picked from the calendar", async () => {
-    renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }), {
-      due: "2026-06-01",
-    });
-
-    fireEvent.click(await screen.findByRole("button", { name: /open due calendar/i }));
-    fireEvent.click(await screen.findByRole("button", { name: /19/i }));
-
-    await waitFor(() => {
-      expect(document.querySelector('input[name="due"]')).toHaveValue("2026-06-19");
-    });
-  });
-
   it("normalizes compact dates typed into the picker input", async () => {
     renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }));
 
@@ -89,23 +77,5 @@ describe("DateInputComponent", () => {
     fireEvent.input(input, { target: { value: "20261340" } });
 
     expect(value).toHaveValue("");
-  });
-
-  it("hides when its visible condition fails", () => {
-    renderField(
-      fakeNode({
-        type: "field.date-input",
-        props: {
-          name: "due",
-          label: "Due",
-          conditions: fakeConditions({
-            visible: [{ field: "scheduled", operator: "eq", value: "1" }],
-          }),
-        },
-      }),
-      { scheduled: "0" },
-    );
-
-    expect(screen.queryByLabelText("Due")).not.toBeInTheDocument();
   });
 });

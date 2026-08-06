@@ -2,13 +2,13 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
-import { jsonResponse } from "@lattice-php/lattice/test/http";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { jsonResponse } from "@lattice-php/core/test-support";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import NotificationsComponent from "./notifications";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 vi.mock("./notifications-echo", () => ({ NotificationsEcho: () => null }));
 
@@ -58,6 +58,5 @@ describe("NotificationsComponent", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /notifications/i }));
     expect(await screen.findByText("Order shipped")).toBeInTheDocument();
-    expect(screen.getByRole("dialog")).not.toHaveAttribute("aria-describedby");
   });
 });

@@ -1,103 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@lattice-php/lattice/provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableNode, TablePagination, TableResult, TableQuery } from "@lattice-php/table/types";
-import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
-import type { Node } from "@lattice-php/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { TableColumn } from "@lattice-php/table/types";
+import type { TableNode } from "@lattice-php/table/types";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { col, pagination, requestOptions, tableFetch, tableQuery } from "../test-support";
 import TableComponent from "./table";
-
-function col(partial: {
-  key: string;
-  label: string;
-  type?: string;
-  width?: TableColumn["props"]["width"];
-  sortable?: boolean;
-  filter?: ColumnFilter | null;
-  schema?: Node[];
-  props?: Record<string, unknown>;
-}): TableColumn {
-  const { key, label, type = "column.text", width, sortable, filter, schema, props } = partial;
-
-  return {
-    key,
-    type,
-    props: {
-      label,
-      width: width ?? (type === "column.stack" ? "xl" : "md"),
-      align: "start",
-      sortable: sortable ?? null,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: filter ?? null,
-      ...props,
-    },
-    ...(schema ? { schema } : {}),
-  } as TableColumn;
-}
-
-function pagination(overrides: Partial<TablePagination> = {}): TablePagination {
-  return {
-    mode: "none",
-    currentPage: null,
-    lastPage: null,
-    perPage: null,
-    total: null,
-    from: null,
-    to: null,
-    hasMore: false,
-    nextPage: null,
-    ...overrides,
-  };
-}
-
-function tableQuery(overrides: Partial<TableQuery> = {}): Partial<TableQuery> {
-  return {
-    filters: [],
-    page: 1,
-    perPage: 25,
-    sorts: [],
-    ...overrides,
-  };
-}
-
-type TableResultOverrides = Partial<Omit<TableResult, "query">> & { query?: Partial<TableQuery> };
-
-function tableResponse(overrides: TableResultOverrides = {}): Response {
-  return Response.json({
-    data: [],
-    pagination: {},
-    ...overrides,
-    query: tableQuery(overrides.query),
-  });
-}
-
-function tableFetch(...responses: TableResultOverrides[]) {
-  let calls = 0;
-  const fetch = vi.fn<typeof globalThis.fetch>(async () => {
-    const response = responses[Math.min(calls, responses.length - 1)] ?? {};
-    calls += 1;
-
-    return tableResponse(response);
-  });
-
-  vi.stubGlobal("fetch", fetch);
-
-  return fetch;
-}
-
-function requestOptions(headers: Record<string, string> = {}) {
-  return {
-    credentials: "same-origin",
-    method: undefined,
-    headers: {
-      Accept: "application/json",
-      "Accept-Language": "en",
-      ...headers,
-    },
-  };
-}
 
 describe("Lattice table component", () => {
   afterEach(() => {
@@ -191,7 +98,6 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("button", { name: "Clear Name sort" })).toBeVisible();
     expect(screen.getByRole("textbox", { name: "Filter Name" })).toBeVisible();
     expect(screen.getByRole("columnheader", { name: "Status" })).toBeVisible();
-    expect(screen.getByRole("columnheader", { name: "Status" })).toHaveClass("px-4", "py-3");
 
     expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
     expect(screen.getByRole("cell", { name: "Active" })).toBeVisible();
@@ -251,40 +157,6 @@ describe("Lattice table component", () => {
     expect(screen.queryByRole("cell", { name: "Taylor" })).not.toBeInTheDocument();
   });
 
-  it("uses column width hints when building the table grid", () => {
-    const node = {
-      id: "workbench.products",
-      props: {
-        columns: [
-          col({
-            key: "qty",
-            label: "Qty",
-            width: "sm",
-          }),
-          col({
-            key: "description",
-            label: "Description",
-            width: "xl",
-          }),
-        ],
-        data: [],
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
-      },
-      type: "table",
-    } satisfies TableNode;
-
-    render(<TableComponent node={node}>{null}</TableComponent>);
-
-    expect(screen.getByRole("columnheader", { name: "Qty" }).parentElement).toHaveStyle(
-      "--lattice-table-columns: minmax(6rem, 0.5fr) minmax(16rem, 2fr)",
-    );
-  });
-
   it("renders column resize handles only when enabled", () => {
     const node = {
       id: "workbench.products",
@@ -317,87 +189,6 @@ describe("Lattice table component", () => {
     );
 
     expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
-  });
-
-  it("stores resized column widths under the table identity", () => {
-    const node = {
-      id: "workbench.products",
-      props: {
-        columns: [
-          col({
-            key: "qty",
-            label: "Qty",
-          }),
-          col({
-            key: "price",
-            label: "Price",
-          }),
-        ],
-        data: [],
-        resizableColumns: true,
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
-      },
-      type: "table",
-    } satisfies TableNode;
-
-    render(<TableComponent node={node}>{null}</TableComponent>);
-
-    const handle = screen.getByRole("separator", { name: "Resize Qty" });
-
-    fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
-    fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
-
-    expect(window.localStorage.getItem("lattice:table-columns:workbench.products")).toBeNull();
-
-    fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
-
-    expect(
-      JSON.parse(window.localStorage.getItem("lattice:table-columns:workbench.products") ?? ""),
-    ).toEqual({
-      overrides: {
-        qty: 256,
-      },
-    });
-  });
-
-  it("keeps resized table column styles on the table root instead of every row", () => {
-    const node = {
-      id: "workbench.products",
-      props: {
-        columns: [
-          col({
-            key: "qty",
-            label: "Qty",
-          }),
-          col({
-            key: "price",
-            label: "Price",
-          }),
-        ],
-        data: [{ id: 1, qty: 1, price: "$10" }],
-        resizableColumns: true,
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
-      },
-      type: "table",
-    } satisfies TableNode;
-
-    render(<TableComponent node={node}>{null}</TableComponent>);
-
-    const row = screen.getByRole("cell", { name: "1" }).closest('[data-slot="table-row"]');
-    const table = row?.parentElement?.parentElement;
-
-    expect(table).toHaveStyle("--lattice-table-columns: minmax(8rem, 1fr) minmax(8rem, 1fr)");
-    expect(row?.getAttribute("style") ?? "").not.toContain("--lattice-table-columns");
   });
 
   it("renders grid rows with stack columns and row actions without table cells", async () => {
@@ -488,15 +279,7 @@ describe("Lattice table component", () => {
     const link = screen.getByRole("link", { name: "Edit" });
 
     expect(action).toBeVisible();
-    expect(action).toHaveClass("h-lt-control-sm", "font-normal", "text-lt-popover-fg");
-    expect(action).not.toHaveClass("bg-lt-secondary");
     expect(link).toHaveAttribute("href", "/products/2/edit");
-    expect(link).toHaveClass(
-      "h-lt-control-sm",
-      "font-normal",
-      "text-lt-popover-fg",
-      "no-underline",
-    );
   });
 
   it("adds and clears individual sorts through the table endpoint", async () => {

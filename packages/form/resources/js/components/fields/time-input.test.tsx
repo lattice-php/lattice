@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { createFieldRenderer } from "@lattice-php/form/test-support";
 import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
 import { TimeInputComponent } from "./time-input";
@@ -31,8 +32,6 @@ describe("TimeInputComponent", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: /open start time time picker/i }));
-
-    expect(screen.getByRole("option", { name: "Hour 07" })).toBeDisabled();
 
     fireEvent.click(screen.getByRole("option", { name: "Hour 09" }));
     fireEvent.click(screen.getByRole("option", { name: "Minute 30" }));

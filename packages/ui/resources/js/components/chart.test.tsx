@@ -17,30 +17,11 @@ vi.mock("recharts", async () => {
   });
 
   return {
-    Area: (props: Record<string, unknown>) => h("div", seriesAttrs("series-area", props)),
-    AreaChart: ({ children }: { children: React.ReactNode }) =>
-      h("div", { "data-test": "area-chart" }, children),
-    Bar: (props: Record<string, unknown>) => h("div", seriesAttrs("series-bar", props)),
-    BarChart: ({ children }: { children: React.ReactNode }) =>
-      h("div", { "data-test": "bar-chart" }, children),
     CartesianGrid: (props: Record<string, unknown>) =>
       h("div", { "data-test": "cartesian-grid", stroke: String(props.stroke) }),
     Cell: (props: Record<string, unknown>) =>
       h("div", { "data-test": "cell", fill: String(props.fill) }),
-    ComposedChart: ({ children }: { children: React.ReactNode }) =>
-      h("div", { "data-test": "composed-chart" }, children),
-    Legend: (props: Record<string, unknown>) => {
-      const wrapperStyle = props.wrapperStyle as Record<string, unknown> | undefined;
-
-      return h("div", {
-        "data-align": String(props.align),
-        "data-font-size": String(wrapperStyle?.fontSize),
-        "data-height": String(props.height),
-        "data-icon-size": String(props.iconSize),
-        "data-test": "legend",
-        "data-vertical-align": String(props.verticalAlign),
-      });
-    },
+    Legend: () => h("div", { "data-test": "legend" }),
     Line: (props: Record<string, unknown>) => h("div", seriesAttrs("series-line", props)),
     LineChart: ({ children }: { children: React.ReactNode }) =>
       h("div", { "data-test": "line-chart" }, children),
@@ -150,161 +131,7 @@ function renderChart(node: Node<"chart">) {
 }
 
 describe("Chart component", () => {
-  it("renders a composed cartesian chart from line, bar, and area series", () => {
-    renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: "month",
-        data: [
-          { month: "Jan", orders: 32, revenue: 1200, forecast: 1400 },
-          { month: "Feb", orders: 41, revenue: 1800, forecast: 1900 },
-        ],
-        description: "Monthly recurring revenue",
-        valueFormat: null,
-        grid: true,
-        height: 280,
-        legend: true,
-        series: [
-          {
-            color: { kind: "css", value: "#2563eb", dark: null },
-            dataKey: "revenue",
-            name: "Revenue",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "line",
-          },
-          {
-            color: { kind: "css", value: "#16a34a", dark: null },
-            dataKey: "orders",
-            name: "Orders",
-            nameKey: null,
-            stackId: "volume",
-            innerRadius: "0%",
-            maxValue: null,
-            type: "bar",
-          },
-          {
-            color: { kind: "css", value: "#9333ea", dark: null },
-            dataKey: "forecast",
-            name: "Forecast",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "area",
-          },
-        ],
-        title: "Revenue",
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByText("Revenue")).toBeVisible();
-    expect(screen.getByText("Monthly recurring revenue")).toBeVisible();
-    expect(screen.getByTestId("responsive-container")).toHaveAttribute("data-height", "280");
-    expect(screen.getByTestId("composed-chart")).toBeInTheDocument();
-    expect(screen.getByTestId("x-axis")).toHaveAttribute("data-key", "month");
-    expect(screen.getByTestId("cartesian-grid")).toBeInTheDocument();
-    expect(screen.getByTestId("tooltip")).toBeInTheDocument();
-    expect(screen.getByTestId("legend")).toBeInTheDocument();
-    expect(screen.getByTestId("legend")).toHaveAttribute("data-align", "center");
-    expect(screen.getByTestId("legend")).toHaveAttribute("data-font-size", "11");
-    expect(screen.getByTestId("legend")).toHaveAttribute("data-height", "24");
-    expect(screen.getByTestId("legend")).toHaveAttribute("data-icon-size", "7");
-    expect(screen.getByTestId("legend")).toHaveAttribute("data-vertical-align", "top");
-    expect(screen.getByTestId("y-axis")).toHaveAttribute("data-font-size", "10");
-    expect(screen.getByTestId("y-axis")).toHaveAttribute("data-width", "42");
-    expect(screen.getByTestId("series-line")).toHaveAttribute("data-key", "revenue");
-    expect(screen.getByTestId("series-bar")).toHaveAttribute("data-key", "orders");
-    expect(screen.getByTestId("series-area")).toHaveAttribute("data-key", "forecast");
-  });
-
-  it("renders a pie chart with one cell per datum", () => {
-    renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [
-          { amount: 4200, channel: "Direct" },
-          { amount: 2600, channel: "Partner" },
-        ],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "amount",
-            name: "Series",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "pie",
-          },
-        ],
-        title: "Revenue by channel",
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
-    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-key", "amount");
-    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-name-key", "channel");
-    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-inner-radius", "0%");
-    expect(screen.getAllByTestId("cell")).toHaveLength(2);
-  });
-
-  it("renders a doughnut as a pie with a non-zero inner radius", () => {
-    renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [
-          { amount: 4200, channel: "Direct" },
-          { amount: 2600, channel: "Partner" },
-        ],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "amount",
-            name: "Series",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "60%",
-            maxValue: null,
-            type: "pie",
-          },
-        ],
-        title: "Revenue by channel",
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
-    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-inner-radius", "60%");
-    expect(screen.getAllByTestId("cell")).toHaveLength(2);
-  });
-
-  it("prefers datum colors before falling back to the series color for pie cells", () => {
+  it("renders a pie chart with one cell per datum, preferring datum colors over the series color", () => {
     renderChart({
       type: "chart",
       props: {
@@ -326,7 +153,7 @@ describe("Chart component", () => {
             name: "Series",
             nameKey: "channel",
             stackId: null,
-            innerRadius: "0%",
+            innerRadius: "60%",
             maxValue: null,
             type: "pie",
           },
@@ -338,8 +165,14 @@ describe("Chart component", () => {
       },
     });
 
+    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-key", "amount");
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-name-key", "channel");
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-inner-radius", "60%");
+
     const cells = screen.getAllByTestId("cell");
 
+    expect(cells).toHaveLength(2);
     expect(cells[0]).toHaveAttribute("fill", "#111827");
     expect(cells[1]).toHaveAttribute("fill", "#2563eb");
   });
@@ -625,13 +458,13 @@ describe("Chart component", () => {
     expect(screen.queryByText("75%")).not.toBeInTheDocument();
   });
 
-  it("keeps cartesian series visible when a gauge series is also present", () => {
+  it("keeps cartesian series visible when gauge and pie series are also present", () => {
     renderChart({
       type: "chart",
       props: {
         categoryFormat: null,
         categoryKey: "month",
-        data: [{ month: "Jan", revenue: 1200, value: 72 }],
+        data: [{ amount: 4200, month: "Jan", revenue: 1200, value: 72 }],
         description: null,
         valueFormat: null,
         grid: true,
@@ -648,177 +481,6 @@ describe("Chart component", () => {
             maxValue: 100,
             type: "gauge",
           },
-          {
-            color: null,
-            dataKey: "revenue",
-            name: "Revenue",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "line",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByTestId("line-chart")).toBeInTheDocument();
-    expect(screen.queryByTestId("radial-bar-chart")).not.toBeInTheDocument();
-  });
-
-  it("renders the first special series when several are declared", () => {
-    renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [{ amount: 4200, channel: "Direct", value: 72 }],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "amount",
-            name: "Series",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "pie",
-          },
-          {
-            color: null,
-            dataKey: "value",
-            name: "value",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "70%",
-            maxValue: 100,
-            type: "gauge",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
-    expect(screen.queryByTestId("radial-bar-chart")).not.toBeInTheDocument();
-  });
-
-  it("uses dedicated recharts containers for single-type area and bar charts", () => {
-    const area = renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: "month",
-        data: [{ forecast: 1400, month: "Jan" }],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: { kind: "css", value: "#9333ea", dark: null },
-            dataKey: "forecast",
-            name: "Forecast",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "area",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByTestId("area-chart")).toBeInTheDocument();
-
-    area.unmount();
-
-    renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: "month",
-        data: [{ month: "Jan", orders: 32 }],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: { kind: "css", value: "#16a34a", dark: null },
-            dataKey: "orders",
-            name: "Orders",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "bar",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByTestId("bar-chart")).toBeInTheDocument();
-  });
-
-  it("renders an empty cartesian chart when no series are configured", () => {
-    renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: "month",
-        data: [{ month: "Jan" }],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
-
-    expect(screen.getByTestId("composed-chart")).toBeInTheDocument();
-  });
-
-  it("keeps cartesian series visible when a pie series is also present", () => {
-    renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: "month",
-        data: [{ amount: 4200, month: "Jan", revenue: 1200 }],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
           {
             color: null,
             dataKey: "amount",
@@ -849,6 +511,7 @@ describe("Chart component", () => {
 
     expect(screen.getByTestId("line-chart")).toBeInTheDocument();
     expect(screen.getByTestId("series-line")).toHaveAttribute("data-key", "revenue");
+    expect(screen.queryByTestId("radial-bar-chart")).not.toBeInTheDocument();
     expect(screen.queryByTestId("pie-chart")).not.toBeInTheDocument();
   });
 

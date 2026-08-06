@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node, RendererComponent } from "@lattice-php/core";
-import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeFormContext } from "@lattice-php/form/test-support";
 import { FormProvider } from "@lattice-php/form/hooks/context";
 import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
@@ -341,28 +342,27 @@ describe("SelectComponent creatable", () => {
     ).toHaveLength(1);
   });
 
-  it("closes the popover after committing a tag in a single-select", () => {
-    renderStaticSelect(
+  it("closes the popover after committing a tag in a single-select but keeps it open in a multiple select", () => {
+    const single = renderStaticSelect(
       { creatable: true, options: [{ label: "Red", value: "red" }] },
       { color: "" },
     );
 
     fireEvent.click(screen.getByTestId("select-color"));
-    const input = screen.getByTestId("select-color-search");
+    let input = screen.getByTestId("select-color-search");
     fireEvent.change(input, { target: { value: "Red" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
     expect(screen.queryByTestId("select-color-search")).not.toBeInTheDocument();
-  });
 
-  it("keeps the popover open after committing a tag in a multiple select", () => {
+    single.unmount();
     renderStaticSelect(
       { multiple: true, creatable: true, options: [{ label: "Red", value: "red" }] },
       { color: [] },
     );
 
     fireEvent.click(screen.getByTestId("select-color"));
-    const input = screen.getByTestId("select-color-search");
+    input = screen.getByTestId("select-color-search");
     fireEvent.change(input, { target: { value: "Red" } });
     fireEvent.keyDown(input, { key: "Enter" });
 

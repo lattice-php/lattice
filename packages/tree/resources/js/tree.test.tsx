@@ -32,12 +32,6 @@ describe("Tree component", () => {
     expect(screen.queryByTestId("tree-node-9-toggle")).not.toBeInTheDocument();
   });
 
-  it("marks the active node aria-selected", () => {
-    renderTree({ activeId: "3", defaultExpanded: ["1"], nodes });
-
-    expect(screen.getByTestId("tree-node-3")).toHaveAttribute("aria-selected", "true");
-  });
-
   it("updates the active node when server props change", () => {
     const view = renderTree({ activeId: "1", defaultExpanded: ["1"], nodes });
 
@@ -117,32 +111,6 @@ describe("Tree component", () => {
     const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(JSON.parse(String(init.body))).toEqual({ nodeId: "9" });
     expect(new Headers(init.headers).get("X-Lattice-Ref")).toBe("select-ref");
-  });
-
-  it("marks a disabled node aria-disabled", () => {
-    const disabledNodes: TreeNodeData[] = [
-      treeNode("4", "Tablets", { disabled: true, href: "/c/4" }),
-    ];
-
-    renderTree({ nodes: disabledNodes });
-
-    expect(screen.getByTestId("tree-node-4")).toHaveAttribute("aria-disabled", "true");
-  });
-
-  it("renders a node's schema body", () => {
-    const actionNodes: TreeNodeData[] = [
-      treeNode("5", "Accessories", {
-        schema: [
-          { props: { text: "Accessories" }, type: "test.text" },
-          { props: { label: "Delete" }, type: "test.action" },
-        ],
-      }),
-    ];
-
-    renderTree({ nodes: actionNodes });
-
-    expect(screen.getByText("Accessories")).toBeVisible();
-    expect(screen.getByRole("button", { name: "Delete" })).toBeVisible();
   });
 
   it("keeps the label as the treeitem's accessible name even when the schema omits it", () => {

@@ -29,29 +29,17 @@ function renderCell(value: unknown) {
 }
 
 describe("BooleanCell", () => {
-  it("renders a check for truthy values", () => {
-    const { container } = renderCell(true);
+  it.each([true, 1, "1", "true"])("treats %s as truthy", (value) => {
+    const { container } = renderCell(value);
 
     expect(screen.getByRole("img")).toHaveAttribute("aria-label", "Yes");
     expect(container.querySelector("use")).toHaveAttribute("href", "#check");
   });
 
-  it("renders a cross for falsy values", () => {
-    const { container } = renderCell(false);
+  it.each([false, 0, "0", "", null, undefined])("treats %s as falsy", (value) => {
+    const { container } = renderCell(value);
 
     expect(screen.getByRole("img")).toHaveAttribute("aria-label", "No");
-    expect(container.querySelector("use")).toHaveAttribute("href", "#x");
-  });
-
-  it.each([1, "1", "true"])("treats %s as truthy", (value) => {
-    const { container } = renderCell(value);
-
-    expect(container.querySelector("use")).toHaveAttribute("href", "#check");
-  });
-
-  it.each([0, "0", "", null, undefined])("treats %s as falsy", (value) => {
-    const { container } = renderCell(value);
-
     expect(container.querySelector("use")).toHaveAttribute("href", "#x");
   });
 });

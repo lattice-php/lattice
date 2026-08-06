@@ -6,7 +6,7 @@ import type { PagePayload } from "@lattice-php/lattice";
 import SchemaLayout from "./schema-layout";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 const mockedUsePage = vi.mocked(usePage);
@@ -36,8 +36,8 @@ function renderLayout(lattice: PagePayload) {
 }
 
 describe("SchemaLayout", () => {
-  it("renders the layout schema and the page at the outlet", () => {
-    renderLayout(
+  it("renders the layout schema around the page, and the page standalone without a layout", () => {
+    const { unmount } = renderLayout(
       payload({
         layout: {
           key: "app",
@@ -48,11 +48,11 @@ describe("SchemaLayout", () => {
 
     expect(screen.getByText("Sidebar")).toBeVisible();
     expect(screen.getByText("Page body")).toBeVisible();
-  });
 
-  it("renders the page standalone when there is no layout", () => {
+    unmount();
     renderLayout(payload({ layout: null }));
 
     expect(screen.getByText("Page body")).toBeVisible();
+    expect(screen.queryByText("Sidebar")).not.toBeInTheDocument();
   });
 });

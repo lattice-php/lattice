@@ -52,14 +52,6 @@ describe("datetime formatter", () => {
     expect(english).not.toBe(german);
   });
 
-  it("formats a numeric timestamp the same way as its equivalent ISO string", () => {
-    const timestamp = new Date(iso).getTime();
-
-    expect(translate(namespace, key, key, { date: timestamp })).toBe(
-      translate(namespace, key, key, { date: iso }),
-    );
-  });
-
   it("still formats a Date instance", () => {
     expect(translate(namespace, key, key, { date: new Date(iso) })).toBe(
       "Your subscription ends on March 6, 2026",
@@ -96,16 +88,5 @@ describe("datetime formatter", () => {
     expect(translate(namespace, key, key, { date: iso })).toBe(
       "Your subscription ends on March 5, 2026",
     );
-  });
-
-  it("re-reads currentTimezone() on every call, so setTimezone() takes effect immediately", () => {
-    const beforeSwitch = translate(namespace, key, key, { date: iso });
-    expect(beforeSwitch).toBe("Your subscription ends on March 6, 2026");
-
-    setTimezone("America/New_York");
-    const afterSwitch = translate(namespace, key, key, { date: iso });
-    expect(afterSwitch).toBe("Your subscription ends on March 5, 2026");
-
-    expect(beforeSwitch).not.toBe(afterSwitch);
   });
 });

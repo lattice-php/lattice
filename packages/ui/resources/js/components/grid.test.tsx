@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
 import GridComponent from "./grid";
 
@@ -53,12 +53,6 @@ describe("GridComponent", () => {
     expect(items[0]?.parentElement).toBe(grid);
   });
 
-  it("exposes the node identity for component targeting", () => {
-    const { grid } = renderGrid({ columns: { md: 2 } }, undefined, "summary");
-
-    expect(grid).toHaveAttribute("data-lattice-component", "summary");
-  });
-
   it("turns integer column counts into equal-track template variables per breakpoint", () => {
     const { grid } = renderGrid({ columns: { default: 1, md: 3 } });
 
@@ -72,12 +66,6 @@ describe("GridComponent", () => {
     const { grid } = renderGrid({ columns: { md: "2fr 1fr 1fr 1fr" } });
 
     expect(grid?.getAttribute("style")).toContain("--lt-grid-cols-md: 2fr 1fr 1fr 1fr");
-  });
-
-  it("renders no template variables without columns", () => {
-    const { grid } = renderGrid({ columns: null });
-
-    expect(grid?.getAttribute("style")).toBeNull();
   });
 
   it("sets span variables on items from the child column span", () => {

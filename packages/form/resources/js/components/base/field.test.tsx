@@ -1,12 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { FormFieldFrame as PublicFormFieldFrame } from "@lattice-php/form";
 import { TableCellProvider } from "@lattice-php/form/hooks/row-layout-context";
 import { FormFieldFrame } from "./field";
-
-it("is exported from the form entry point", () => {
-  expect(PublicFormFieldFrame).toBe(FormFieldFrame);
-});
 
 it("connects a standalone control to its label, helper text, and error", () => {
   render(
@@ -48,18 +43,16 @@ it("keeps a visually-hidden accessible label inside a table cell", () => {
   expect(screen.getByText("Qty")).toHaveClass("sr-only");
 });
 
-it("renders a tooltip trigger when a tooltip is provided", () => {
-  render(
+it("renders a tooltip trigger only when a tooltip is provided", () => {
+  const { rerender } = render(
     <FormFieldFrame id="qty" label="Qty" tooltip="How many units">
       {(controlProps) => <input {...controlProps} />}
     </FormFieldFrame>,
   );
 
   expect(screen.getByRole("button", { name: "More information" })).toBeInTheDocument();
-});
 
-it("renders no tooltip trigger when no tooltip is provided", () => {
-  render(
+  rerender(
     <FormFieldFrame id="qty" label="Qty">
       {(controlProps) => <input {...controlProps} />}
     </FormFieldFrame>,

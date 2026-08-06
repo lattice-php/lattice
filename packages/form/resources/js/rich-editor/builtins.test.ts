@@ -37,7 +37,7 @@ describe("built-in definitions", () => {
     warn.mockRestore();
   });
 
-  it("assembles the default StarterKit with the previously hardcoded features", () => {
+  it("assembles the default StarterKit extensions", () => {
     const options = assembleStarterKitOptions(
       resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions),
     );
@@ -64,7 +64,7 @@ describe("built-in definitions", () => {
     expect(options.link).toEqual({ openOnClick: true, protocols: ["https", "mailto"] });
   });
 
-  it("renders the default toolbar in the previously hardcoded group order", () => {
+  it("renders the default toolbar group order", () => {
     const entries = assembleToolbar(
       resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions),
     );

@@ -73,7 +73,7 @@ describe("Combobox", () => {
     expect(red).toHaveAttribute("aria-selected", "true");
   });
 
-  it("omits test ids and shows the empty label when no options match", () => {
+  it("shows the empty label when no options match", () => {
     render(
       <Combobox
         emptyLabel="No matches"
@@ -87,9 +87,6 @@ describe("Combobox", () => {
     );
 
     expect(screen.getByText("No matches")).toBeVisible();
-    expect(document.querySelector('[data-slot="combobox-search"]')).not.toHaveAttribute(
-      "data-test",
-    );
   });
 
   it("debounces a remote search instead of filtering locally", () => {

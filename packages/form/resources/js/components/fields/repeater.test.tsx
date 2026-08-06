@@ -1,17 +1,16 @@
 import { expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 
 vi.mock("@lattice-php/core/renderer", async () => {
-  const { RenderNode } = await import("@lattice-php/lattice/test/form-renderer-probe");
+  const { RenderNode } = await import("@lattice-php/form/test/form-renderer-probe");
 
   return { RenderNode };
 });
 
-import { FormProvider } from "@lattice-php/form/hooks/context";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
-import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
+import { renderCounts } from "@lattice-php/form/test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
-import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { renderWithForm as wrap } from "@lattice-php/form/test-support";
 
 const repeaterNode = fakeNode({
   id: "r",
@@ -27,18 +26,6 @@ const repeaterNode = fakeNode({
   },
   schema: [{ id: "c", type: "field.text-input", props: { name: "name", label: "Name" } }],
 });
-
-function wrap(
-  ui: React.ReactNode,
-  initial: Record<string, unknown> = {},
-  errors: Record<string, string> = {},
-) {
-  return render(
-    <FormProvider value={fakeFormContext({ errors })}>
-      <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>
-    </FormProvider>,
-  );
-}
 
 it("renders defaultItems rows, each scoping its children", () => {
   wrap(<RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>);

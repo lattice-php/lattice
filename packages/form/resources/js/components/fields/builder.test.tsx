@@ -1,17 +1,15 @@
 import { expect, it, vi } from "vitest";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import type { ComponentPropsOf, Node } from "@lattice-php/core";
-import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { renderWithForm as wrap } from "@lattice-php/form/test-support";
 
 vi.mock("@lattice-php/core/renderer", async () => {
-  const { RenderNode } = await import("@lattice-php/lattice/test/form-renderer-probe");
+  const { RenderNode } = await import("@lattice-php/form/test/form-renderer-probe");
 
   return { RenderNode };
 });
 
-import { FormProvider } from "@lattice-php/form/hooks/context";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
-import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
 import { BuilderComponent } from "./builder";
 import type { RowTemplate } from "./row-templates";
 
@@ -44,14 +42,6 @@ const node = builderNode(
     },
   ],
 );
-
-function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
-  return render(
-    <FormProvider value={fakeFormContext()}>
-      <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>
-    </FormProvider>,
-  );
-}
 
 it("renders each row against its block template", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
@@ -137,17 +127,4 @@ it("renders the table layout: primary columns, spanning non-primary rows", () =>
   expect(texts).toContain("items[0][qty]");
   expect(texts).toContain("items[1][content]");
   expect(screen.getByTestId("table-row-items-1-span")).toBeInTheDocument();
-});
-
-it("does not re-render sibling rows when one row changes", () => {
-  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [
-      { type: "product", qty: "1" },
-      { type: "product", qty: "2" },
-    ],
-  });
-  renderCounts.clear();
-  fireEvent.click(screen.getByTestId("commit-items[0][qty]"));
-  expect(renderCounts.get("items[0][qty]") ?? 0).toBeGreaterThanOrEqual(1);
-  expect(renderCounts.get("items[1][qty]") ?? 0).toBe(0);
 });

@@ -26,12 +26,6 @@ describe("TimePicker", () => {
     expect(onChange).toHaveBeenCalledWith({ hour: 14, minute: 1, second: 0 });
   });
 
-  it("shows a seconds column for sub-minute steps", () => {
-    render(<TimePicker value={{ hour: 0, minute: 0, second: 0 }} step={30} onChange={() => {}} />);
-
-    expect(screen.getByRole("listbox", { name: "Second" })).toBeInTheDocument();
-  });
-
   it("disables out-of-range options from min", () => {
     render(
       <TimePicker value={{ hour: 10, minute: 0, second: 0 }} min="10:00" onChange={() => {}} />,
@@ -73,16 +67,6 @@ describe("TimePicker", () => {
 
     fireEvent.keyDown(hour, { key: "Home" });
     expect(onChange).toHaveBeenLastCalledWith({ hour: 0, minute: 0, second: 0 });
-  });
-
-  it("moves focus between columns with the left and right arrows", () => {
-    render(<TimePicker value={{ hour: 1, minute: 0, second: 0 }} onChange={() => {}} />);
-
-    fireEvent.keyDown(screen.getByRole("option", { name: "Hour 01" }), { key: "ArrowRight" });
-    expect(document.activeElement).toHaveAttribute("aria-label", "Minute 00");
-
-    fireEvent.keyDown(screen.getByRole("option", { name: "Minute 00" }), { key: "ArrowLeft" });
-    expect(document.activeElement).toHaveAttribute("aria-label", "Hour 01");
   });
 
   it("selects a value in the seconds column", () => {

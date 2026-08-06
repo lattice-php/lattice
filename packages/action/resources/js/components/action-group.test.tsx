@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import ActionGroupComponent from "./action-group";
 
 describe("Lattice action group component", () => {
@@ -50,10 +50,7 @@ describe("Lattice action group component", () => {
       </ActionGroupComponent>,
     );
 
-    const group = screen.getByRole("group", { name: "Language" });
-
-    expect(group).toHaveClass("inline-flex");
-    expect(group).toHaveClass("flex-row");
+    expect(screen.getByRole("group", { name: "Language" })).toBeVisible();
     expect(screen.queryByRole("button", { name: "Language" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "English" })).toBeVisible();
     expect(screen.getByRole("button", { name: "German" })).toBeVisible();

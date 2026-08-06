@@ -1,9 +1,8 @@
 import { expect, it } from "vitest";
 import type { Node } from "@lattice-php/core";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import {
   collectPrefillTargets,
-  getPath,
   pathsToClear,
   pruneOverrides,
   seededOverrides,
@@ -105,12 +104,6 @@ it("collects targets recursively through nested row collections", () => {
       refreshOn: ["customer"],
     },
   ]);
-});
-
-it("reads nested row paths", () => {
-  const values: Record<string, unknown> = { items: [{ type: "product", price: 1 }] };
-
-  expect(getPath(values, "items.0.price")).toBe(1);
 });
 
 it("clears targets whose resetOn dependency changed", () => {

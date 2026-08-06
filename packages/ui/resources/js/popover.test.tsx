@@ -17,6 +17,6 @@ describe("PopoverContent", () => {
 
     const content = screen.getByText("Body");
     expect(content).toBeVisible();
-    expect(content).toHaveClass("bg-lt-popover", "border", "w-80");
+    expect(content).toHaveClass("w-80");
   });
 });

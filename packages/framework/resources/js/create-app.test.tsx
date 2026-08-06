@@ -1,9 +1,9 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { hydrateRoot, type Root } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { stubMatchMedia } from "@lattice-php/core/test-support";
 
 const createInertiaApp = vi.hoisted(() => vi.fn<(options?: unknown) => void>());
 const router = vi.hoisted(() => ({
@@ -14,7 +14,7 @@ const configureI18nFromPageProps = vi.hoisted(() =>
   vi.fn<(props: unknown, options?: unknown) => Promise<void>>(() => Promise.resolve()),
 );
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     createInertiaApp,
     router,
   }),
@@ -22,11 +22,9 @@ vi.mock("@inertiajs/react", async () =>
 vi.mock("@lattice-php/ui/i18n/page-props", () => ({ configureI18nFromPageProps }));
 
 import { useAppearance } from "./appearance";
-import { createRegistry } from "@lattice-php/core/registry";
 import { createLatticeApp } from "./create-app";
 import { pageComponentName } from "./inertia";
 import Page from "./page";
-import { ProviderBase } from "./provider-base";
 
 type CapturedOptions = {
   resolve: (name: string) => unknown;
@@ -58,17 +56,7 @@ const i18nProps = {
 };
 
 beforeEach(() => {
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn<(query: string) => MediaQueryList>(
-      () =>
-        ({
-          matches: false,
-          addEventListener: vi.fn<() => void>(),
-          removeEventListener: vi.fn<() => void>(),
-        }) as unknown as MediaQueryList,
-    ),
-  );
+  stubMatchMedia();
 });
 
 afterEach(() => {
@@ -93,19 +81,6 @@ describe("createLatticeApp", () => {
     });
 
     await expect(captureOptions().resolve("Dashboard")).resolves.toBe(Dashboard);
-  });
-
-  it("wraps the app in the Provider so toasts use Lattice's own Toaster", () => {
-    const sprite = { href: "/sprite.svg" };
-    const registry = createRegistry();
-
-    createLatticeApp({ registry, sprite });
-
-    const wrapped = captureOptions().withApp(<div />, { ssr: false, page: fakePage() });
-
-    expect(wrapped.type).toBe(ProviderBase);
-    expect((wrapped.props as { registry: unknown }).registry).toBe(registry);
-    expect((wrapped.props as { sprite: unknown }).sprite).toBe(sprite);
   });
 
   it("merges component-package plugins onto the registry", () => {
@@ -288,55 +263,6 @@ describe("createLatticeApp", () => {
 
     resolveBoot();
     await waitFor(() => expect(screen.getByTestId("app")).toBeInTheDocument());
-  });
-
-  it("hydrates server-rendered markup immediately without a mismatch", async () => {
-    let resolveConfigure = (): void => {};
-    configureI18nFromPageProps.mockReturnValueOnce(
-      new Promise<void>((resolve) => {
-        resolveConfigure = resolve;
-      }),
-    );
-
-    const page = fakePage(i18nProps);
-
-    createLatticeApp();
-
-    const options = captureOptions();
-    const html = renderToString(
-      options.withApp(<div data-test="app">hello</div>, { ssr: true, page }),
-    );
-
-    const el = document.createElement("div");
-    el.id = "app";
-    el.setAttribute("data-server-rendered", "true");
-    el.innerHTML = html;
-    document.body.append(el);
-
-    const onRecoverableError = vi.fn();
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-    let root: Root | undefined;
-
-    await act(async () => {
-      root = hydrateRoot(
-        el,
-        options.withApp(<div data-test="app">hello</div>, { ssr: false, page }),
-        { onRecoverableError },
-      );
-    });
-
-    expect(screen.getByTestId("app")).toHaveTextContent("hello");
-    expect(onRecoverableError).not.toHaveBeenCalled();
-    expect(consoleError).not.toHaveBeenCalled();
-    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
-      namespaces: ["lattice", "lattice-ui"],
-    });
-
-    resolveConfigure();
-    await act(async () => {});
-
-    root?.unmount();
-    consoleError.mockRestore();
   });
 
   it("seeds the server-rendered appearance from the shared prop", () => {

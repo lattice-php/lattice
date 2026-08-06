@@ -1,4 +1,4 @@
-import { page } from "vitest/browser";
+import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { describe, expect, it, vi } from "vitest";
 import type { TimeValue } from "./time-picker-columns";
@@ -30,17 +30,15 @@ describe("TimePicker in a browser", () => {
     const screen = await render(
       <TimePicker value={{ hour: 1, minute: 0, second: 0 }} onChange={onChange} />,
     );
-    const hour = screen.getByRole("option", { name: "Hour 01" }).element();
+    const hour = screen.getByRole("option", { name: "Hour 01" });
 
-    hour.focus();
-    hour.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowRight" }));
+    await hour.click();
+    await userEvent.keyboard("{ArrowRight}");
 
-    expect(document.activeElement?.getAttribute("aria-label")).toBe("Minute 00");
+    await expect.element(screen.getByRole("option", { name: "Minute 00" })).toHaveFocus();
 
-    document.activeElement?.dispatchEvent(
-      new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }),
-    );
+    await userEvent.keyboard("{ArrowDown}");
 
-    expect(onChange).toHaveBeenLastCalledWith({ hour: 1, minute: 1, second: 0 });
+    await expect.poll(() => onChange.mock.lastCall).toEqual([{ hour: 1, minute: 1, second: 0 }]);
   });
 });

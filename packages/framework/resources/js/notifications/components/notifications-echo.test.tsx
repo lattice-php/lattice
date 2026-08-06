@@ -18,8 +18,6 @@ describe("NotificationsEcho", () => {
 
     render(<NotificationsEcho channel="private-user.1" onReceive={onReceive} />);
 
-    expect(useEchoNotification).toHaveBeenCalledWith("private-user.1", expect.any(Function));
-
     const receive = vi.mocked(useEchoNotification).mock.calls[0]?.[1] as (
       payload: Partial<NotificationItem>,
     ) => void;

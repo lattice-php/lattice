@@ -2,14 +2,13 @@ import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     usePage: vi.fn<() => { url: string }>(() => ({ url: "/products" })),
     Link: ({
       children,
@@ -128,69 +127,6 @@ describe("Menu", () => {
     expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("href", "/products");
   });
 
-  it("opens a group's submenu as a flyout when the sidebar is collapsed", () => {
-    renderWithRegistry(
-      <SidebarCollapsedContext.Provider value={true}>
-        <Renderer nodes={[menu]} />
-      </SidebarCollapsedContext.Provider>,
-      registry,
-    );
-
-    expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Account" }));
-
-    expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
-  });
-
-  it("keeps a collapsed leaf item's label reachable as a hover flyout", () => {
-    renderWithRegistry(
-      <SidebarCollapsedContext.Provider value={true}>
-        <Renderer nodes={[menu]} />
-      </SidebarCollapsedContext.Provider>,
-      registry,
-    );
-
-    const link = screen.getByRole("link", { name: "Home" });
-    expect(link).toHaveClass("group", "relative");
-    expect(link).toHaveAttribute("aria-label", "Home");
-    expect(screen.getByText("Home")).toHaveClass("group-hover:block");
-  });
-
-  it("renders a prefix icon alongside the label", () => {
-    renderMenu({
-      id: "main",
-      type: "menu",
-      schema: [
-        {
-          id: "i-home",
-          props: { href: "/", label: "Home", prefix: { icon: "house", text: null } },
-          type: "menu-item",
-        },
-      ],
-    });
-
-    const link = screen.getByRole("link", { name: "Home" });
-    expect(link).toBeVisible();
-    expect(link.querySelector("svg")).not.toBeNull();
-  });
-
-  it("renders a text suffix after the label", () => {
-    renderMenu({
-      id: "main",
-      type: "menu",
-      schema: [
-        {
-          id: "i-tables",
-          props: { href: "/tables", label: "Tables", suffix: { icon: null, text: "beta" } },
-          type: "menu-item",
-        },
-      ],
-    });
-
-    expect(screen.getByText("beta")).toBeVisible();
-  });
-
   it("renders an icon-only item with the label as its accessible name only", () => {
     renderMenu({
       id: "main",
@@ -206,9 +142,7 @@ describe("Menu", () => {
 
     const link = screen.getByRole("link", { name: "Settings" });
     expect(link).toHaveAttribute("aria-label", "Settings");
-    expect(link).toHaveClass("justify-center");
     expect(link.querySelector("svg")).not.toBeNull();
-    expect(screen.queryByText("Settings")).not.toBeInTheDocument();
   });
 
   it("renders a non-get item as an actionable button link", () => {

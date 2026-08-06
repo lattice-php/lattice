@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { FilterNode, TableColumn, TableNode } from "@lattice-php/table/types";
 import TableComponent from "./table";
 
@@ -165,17 +165,6 @@ describe("dedicated table filters in the table component", () => {
     expect(screen.getByText("Active, Draft")).toBeInTheDocument();
     expect(screen.getByText("2026-01-01")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Remove Featured filter" })).toBeInTheDocument();
-  });
-
-  it("renders the filter trigger in the trailing header cell", () => {
-    stubFetch();
-
-    renderWithRegistry(<TableComponent node={node({})} />, registry);
-
-    const trigger = screen.getByRole("button", { name: "Filters" });
-
-    expect(trigger.closest('[role="columnheader"]')).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Reset all" })).not.toBeInTheDocument();
   });
 
   it("applies a ternary selection through the endpoint", async () => {

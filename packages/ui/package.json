@@ -44,8 +44,7 @@
     "build": "vite build",
     "build:plugin": "npm run build",
     "prepack": "npm run build",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@lattice-php/core": "0.40.0",
@@ -67,5 +66,8 @@
     "@inertiajs/react": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "vitest-browser-react": "^2.2.0"
   }
 }

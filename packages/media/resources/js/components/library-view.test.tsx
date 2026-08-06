@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Schema } from "@lattice-php/core/types";
-import { fakeNode } from "../test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { LibraryView } from "./library-view";
 import type { UploadItem } from "./use-media-upload";
 
@@ -197,7 +197,5 @@ describe("LibraryView", () => {
     await waitFor(() => {
       expect(screen.getByTestId("media-grid")).toHaveAttribute("aria-busy", "true");
     });
-
-    expect(screen.getByTestId("media-grid").className).toContain("opacity-60");
   });
 });

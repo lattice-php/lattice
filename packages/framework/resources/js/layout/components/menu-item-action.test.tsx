@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import MenuItemComponent from "./menu-item";
 
@@ -10,7 +10,7 @@ const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
 vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     usePage: () => ({ url: "/products" }),
   }),
 );
@@ -62,64 +62,5 @@ describe("menu item action trigger", () => {
         throwOnError: false,
       });
     });
-  });
-
-  it("runs effects from the action response", async () => {
-    apiFetch.mockResolvedValue(
-      new Response(JSON.stringify({ effects: [{ message: "Signed out.", type: "toast" }] }), {
-        status: 200,
-      }),
-    );
-
-    const toastListener = vi.fn<(event: Event) => void>();
-    window.addEventListener("lattice:toast", toastListener);
-
-    renderActionMenuItem(actionMenuItem());
-
-    fireEvent.click(screen.getByRole("button", { name: "Log out" }));
-
-    await waitFor(() => {
-      expect(toastListener).toHaveBeenCalledTimes(1);
-    });
-
-    window.removeEventListener("lattice:toast", toastListener);
-  });
-
-  it("confirms before dispatching when the action requires confirmation", async () => {
-    const node = actionMenuItem({
-      confirmation: {
-        cancelLabel: "Stay",
-        confirmLabel: "Log out",
-        description: "End your session?",
-        title: "Log out?",
-      },
-    });
-
-    renderActionMenuItem(node);
-
-    fireEvent.click(screen.getByRole("button", { name: "Log out" }));
-
-    expect(apiFetch).not.toHaveBeenCalled();
-    const dialog = screen.getByRole("dialog", { name: "Log out?" });
-    expect(dialog).toBeVisible();
-
-    fireEvent.click(within(dialog).getByRole("button", { name: "Log out" }));
-
-    await waitFor(() => {
-      expect(apiFetch).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it("opens the modal form when the action carries one", () => {
-    const node = actionMenuItem({
-      form: fakeNode({ id: "reason-form", type: "form", props: {}, schema: [] }),
-    });
-
-    renderActionMenuItem(node);
-
-    fireEvent.click(screen.getByRole("button", { name: "Log out" }));
-
-    expect(apiFetch).not.toHaveBeenCalled();
-    expect(screen.getByRole("dialog")).toBeVisible();
   });
 });

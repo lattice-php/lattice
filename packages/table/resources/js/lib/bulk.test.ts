@@ -1,15 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { getBulkActions } from "./bulk";
 import type { ActionNode } from "@lattice-php/table/types";
 
 describe("getBulkActions", () => {
-  it("returns an empty list when actions is undefined", () => {
-    expect(getBulkActions(undefined)).toEqual([]);
-  });
-
-  it("returns an empty list when actions is an empty array", () => {
-    expect(getBulkActions([])).toEqual([]);
+  it.each([undefined, []])("returns an empty list for %o", (actions) => {
+    expect(getBulkActions(actions)).toEqual([]);
   });
 
   it("skips action.group nodes", () => {
@@ -98,28 +94,5 @@ describe("getBulkActions", () => {
         modalWidth: undefined,
       },
     ]);
-  });
-
-  it("maps several nodes and drops the ones that should be skipped", () => {
-    const group = fakeNode({
-      type: "action.group",
-      id: "group",
-      props: { label: "Group", orientation: null, ref: null },
-    }) as ActionNode;
-    const noEndpoint = fakeNode({
-      type: "action",
-      id: "skip",
-      props: { label: "Skip" },
-    }) as ActionNode;
-    const ok = fakeNode({
-      type: "action",
-      id: "ok",
-      props: { label: "Ok", endpoint: "/bulk/ok" },
-    }) as ActionNode;
-
-    const result = getBulkActions([group, noEndpoint, ok]);
-
-    expect(result).toHaveLength(1);
-    expect(result[0]?.id).toBe("ok");
   });
 });

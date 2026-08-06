@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Renderer } from "@lattice-php/core/renderer";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import SidebarComponent from "./sidebar";
 
@@ -31,7 +31,6 @@ describe("Sidebar", () => {
   it("renders an aside with no built-in toggle button", () => {
     renderSidebar({ collapsible: false, rememberState: false });
 
-    expect(screen.getByRole("complementary")).toHaveClass("fixed", "md:sticky", "md:w-64");
     expect(screen.getByRole("complementary")).toHaveAttribute("data-collapsed", "false");
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
@@ -39,11 +38,8 @@ describe("Sidebar", () => {
   it("collapses to the icon rail when a toggle event targets it", () => {
     renderSidebar({ collapsible: true, rememberState: false });
 
-    expect(screen.getByRole("complementary")).toHaveClass("md:w-64");
-
     dispatchToggle();
 
-    expect(screen.getByRole("complementary")).toHaveClass("md:w-16", "md:overflow-visible");
     expect(screen.getByRole("complementary")).toHaveAttribute("data-collapsed", "true");
   });
 
@@ -67,7 +63,7 @@ describe("Sidebar", () => {
     unmount();
     renderSidebar({ collapsible: true, rememberState: true });
 
-    expect(screen.getByRole("complementary")).toHaveClass("md:w-16");
+    expect(screen.getByRole("complementary")).toHaveAttribute("data-collapsed", "true");
   });
 
   it("does not persist the collapsed state when rememberState is off", () => {

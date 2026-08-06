@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { IconRendererProvider } from "@lattice-php/ui/icons";
 import type { IconRendererFunction } from "@lattice-php/ui/icons";
 import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
@@ -12,7 +12,7 @@ const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
 vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 describe("Lattice action component", () => {
@@ -132,15 +132,12 @@ describe("Lattice action component", () => {
       </IconRendererProvider>,
     );
 
-    expect(iconRenderer).toHaveBeenCalledWith({
-      className: "size-lt-icon-md",
-      icon: "custom.spark",
-    });
+    expect(iconRenderer).toHaveBeenCalledWith(expect.objectContaining({ icon: "custom.spark" }));
     expect(screen.getByTestId("action-icon")).toHaveTextContent("custom.spark");
     expect(screen.getByRole("button", { name: "custom.sparkSend test email" })).toBeVisible();
   });
 
-  it("uses a compact spinner inside action menus", async () => {
+  it("shows a spinner while a menu action is pending", async () => {
     apiFetch.mockReturnValue(new Promise<Response>(() => {}));
 
     const node = fakeNode({
@@ -161,7 +158,7 @@ describe("Lattice action component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Archive" }));
 
     await waitFor(() => {
-      expect(screen.getByRole("status", { name: "Loading" })).toHaveClass("size-lt-icon-sm");
+      expect(screen.getByRole("status", { name: "Loading" })).toBeVisible();
     });
   });
 

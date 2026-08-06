@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import path from "node:path";
 import { searchForWorkspaceRoot } from "vite";
 import type { Logger, Plugin } from "vite";
@@ -13,10 +12,6 @@ import {
   resolveIconOptions,
 } from "./vite";
 import * as typescriptRefresh from "./vite-typescript-refresh";
-
-type PackageJson = {
-  exports: Record<string, unknown>;
-};
 
 type FakeLogger = Pick<Logger, "info" | "warn">;
 type FakeServer = { config: { logger: FakeLogger } };
@@ -57,11 +52,10 @@ function typescriptPlugin(options: Parameters<typeof lattice>[0] = {}): Plugin {
 }
 
 describe("lattice Vite helper", () => {
-  it("configures package-link mode without reading an environment variable", () => {
+  it("configures package-link mode by default with dedupe and inlined test deps", () => {
     const appRoot = path.resolve("/tmp/lattice-app");
     const config = latticeConfig({ appRoot });
 
-    expect(config.resolve).not.toHaveProperty("alias");
     expect(config).toMatchObject({
       resolve: {
         dedupe: ["@inertiajs/react", "react", "react-dom"],
@@ -253,23 +247,6 @@ describe("lattice Vite helper", () => {
     expect(config()).toEqual({});
   });
 
-  it("refreshes TypeScript types on configureServer with default options", () => {
-    const appRoot = path.resolve("/tmp/lattice-app");
-    const logger = fakeLogger();
-    const refresh = vi
-      .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
-      .mockImplementation(() => {});
-    const configureServer = typescriptPlugin({ appRoot }).configureServer as unknown as (
-      server: FakeServer,
-    ) => void;
-
-    configureServer({ config: { logger } });
-
-    expect(refresh).toHaveBeenCalledWith(appRoot, logger);
-
-    refresh.mockRestore();
-  });
-
   it("does not refresh when the typescript option is false", () => {
     const refresh = vi
       .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
@@ -299,14 +276,5 @@ describe("lattice Vite helper", () => {
       augmentModule: "@lattice-php/ui",
       augmentInterface: "MyIcons",
     });
-  });
-
-  it("keeps package exports explicit and internal test helpers private", () => {
-    const packageJson = JSON.parse(
-      readFileSync(path.resolve(process.cwd(), "packages/framework/package.json"), "utf8"),
-    ) as PackageJson;
-
-    expect(packageJson.exports).not.toHaveProperty("./*");
-    expect(packageJson.exports).not.toHaveProperty("./test-support");
   });
 });

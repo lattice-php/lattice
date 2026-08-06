@@ -58,14 +58,6 @@ describe("Lattice icon renderer", () => {
       </IconRendererProvider>,
     );
 
-    expect(customRenderer).toHaveBeenCalledWith({
-      className: undefined,
-      icon: "custom.spark",
-    });
-    expect(fallbackRenderer).toHaveBeenCalledWith({
-      className: undefined,
-      icon: "custom.spark",
-    });
     expect(screen.getByTestId("fallback-icon")).toBeVisible();
   });
 

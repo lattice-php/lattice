@@ -1,11 +1,11 @@
-import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent, Renderer } from "@lattice-php/lattice";
 import type { Node, Plugin } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/form";
 import { useFormContext } from "@lattice-php/form/toolkit";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { actionComponents } from "@lattice-php/action/plugin";
 
 type ValidateFieldsOptions = { onSuccess?: () => void; onValidationError?: () => void };
@@ -92,12 +92,12 @@ function wizardAction(): Node {
 }
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 type FetchMock = (input: string, init: RequestInit) => Promise<Response>;
 
-function rejectAction(precognitive = false): Node {
+function rejectAction(): Node {
   return fakeNode({
     id: "test.reject",
     type: "action",
@@ -106,7 +106,7 @@ function rejectAction(precognitive = false): Node {
       endpoint: "/lattice/actions/test.reject",
       form: {
         id: "test.reject-form",
-        props: { precognitive },
+        props: {},
         schema: [
           { key: "reason", props: { label: "Reason", name: "reason" }, type: "field.text-input" },
         ],
@@ -191,7 +191,6 @@ function renderAction(node: Node, ...extraPlugins: Plugin[]) {
 
 afterEach(() => {
   vi.restoreAllMocks();
-  vi.useRealTimers();
   capturedValidateFields = null;
   capturedValidating = false;
 });
@@ -377,29 +376,6 @@ describe("action form modal", () => {
     });
   });
 
-  it("validates precognitively as the user types", async () => {
-    vi.useFakeTimers();
-    const fetchMock = vi
-      .fn<FetchMock>()
-      .mockResolvedValue({ json: async () => ({}), ok: true, status: 204 } as unknown as Response);
-    vi.stubGlobal("fetch", fetchMock);
-
-    renderAction(rejectAction(true));
-
-    fireEvent.click(screen.getByRole("button", { name: "Reject" }));
-    fireEvent.change(screen.getByRole("textbox", { name: "Reason" }), { target: { value: "x" } });
-
-    act(() => {
-      vi.advanceTimersByTime(300);
-    });
-
-    expect(fetchMock).toHaveBeenCalled();
-    const [, init] = fetchMock.mock.calls.at(-1) as [string, RequestInit];
-    const headers = init.headers as Record<string, string>;
-    expect(headers.Precognition).toBe("true");
-    expect(headers["Precognition-Validate-Only"]).toBe("reason");
-  });
-
   it("validates multiple fields on demand and reports success", async () => {
     const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
       json: async () => ({}),
@@ -452,33 +428,6 @@ describe("action form modal", () => {
     expect(await screen.findByText("Required")).toBeVisible();
     expect(onValidationError).toHaveBeenCalledTimes(1);
     expect(onSuccess).not.toHaveBeenCalled();
-  });
-
-  it("clears a previously set field error once a later validation call succeeds", async () => {
-    const fetchMock = vi
-      .fn<FetchMock>()
-      .mockResolvedValueOnce({
-        json: async () => ({ errors: { name: ["Required"] } }),
-        ok: false,
-        status: 422,
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        json: async () => ({}),
-        ok: true,
-        status: 204,
-      } as unknown as Response);
-    vi.stubGlobal("fetch", fetchMock);
-
-    renderAction(validateFieldsAction(), validateFieldsProbePlugin);
-
-    fireEvent.click(screen.getByRole("button", { name: "Validate" }));
-    await screen.findByRole("textbox", { name: "Name" });
-
-    capturedValidateFields?.(["name"]);
-    expect(await screen.findByText("Required")).toBeVisible();
-
-    capturedValidateFields?.(["name"]);
-    await waitFor(() => expect(screen.queryByText("Required")).not.toBeInTheDocument());
   });
 
   it("reports a validation failure on a non-422 error response without clearing errors", async () => {

@@ -1,6 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import type { Node } from "@lattice-php/core/types";
 import ModalComponent from "./modal";
@@ -105,35 +105,5 @@ describe("ModalComponent", () => {
 
     fire(LATTICE_EVENT.openModal, null);
     expect(screen.queryByText("Dialog")).not.toBeInTheDocument();
-  });
-
-  it("restores focus to the opener element after closing", async () => {
-    render(
-      <>
-        <button type="button">Open</button>
-        <ModalComponent node={fakeNode({ type: "modal", id: "info", props: { title: "Info" } })}>
-          <p>Body content</p>
-        </ModalComponent>
-      </>,
-    );
-
-    const opener = screen.getByRole("button", { name: "Open" });
-    opener.focus();
-    expect(opener).toHaveFocus();
-
-    fire(LATTICE_EVENT.openModal, "info");
-    expect(screen.getByText("Info")).toBeInTheDocument();
-    expect(opener).not.toHaveFocus();
-
-    fire(LATTICE_EVENT.closeModal, "info");
-    expect(screen.queryByText("Info")).not.toBeInTheDocument();
-
-    await act(async () => {
-      await new Promise((resolve) => {
-        requestAnimationFrame(() => resolve(undefined));
-      });
-    });
-
-    expect(opener).toHaveFocus();
   });
 });

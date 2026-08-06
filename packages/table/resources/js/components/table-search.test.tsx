@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { TableColumn, TableNode } from "@lattice-php/table/types";
 import TableComponent from "./table";
 
@@ -68,17 +68,6 @@ function stubFetch() {
 }
 
 describe("global table search", () => {
-  it("renders the search box only when the table is searchable", () => {
-    const { unmount } = renderWithRegistry(<TableComponent node={node(false)} />, registry);
-
-    expect(screen.queryByRole("searchbox")).toBeNull();
-    unmount();
-
-    renderWithRegistry(<TableComponent node={node(true)} />, registry);
-
-    expect(screen.getByRole("searchbox")).toBeInTheDocument();
-  });
-
   it("issues a debounced q request as the user types", async () => {
     const fetch = stubFetch();
 

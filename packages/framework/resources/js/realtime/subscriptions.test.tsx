@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { effect } from "@lattice-php/lattice/test/effect-fixture";
+import { effect } from "@lattice-php/ui/test/effect-fixture";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Listen } from "@lattice-php/lattice/types/generated";
 

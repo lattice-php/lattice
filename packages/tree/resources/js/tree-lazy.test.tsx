@@ -1,14 +1,8 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { jsonResponse } from "@lattice-php/core/test-support";
 import { fakeNode, renderWithRegistry, testRegistry, treeNode } from "./test-support";
 import TreeComponent, { type TreeNodeData } from "./tree";
-
-function jsonResponse(body: unknown): Response {
-  return new Response(JSON.stringify(body), {
-    headers: { "Content-Type": "application/json" },
-    status: 200,
-  });
-}
 
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -171,12 +165,5 @@ describe("lazy tree", () => {
     const [url] = fetchMock.mock.calls[0] as [string];
     expect(url).toBe("/lattice/trees/categories?parent=");
     expect(screen.getByTestId("tree-node-electronics")).toHaveAttribute("tabindex", "0");
-  });
-
-  it("shows no chevron for hasChildren nodes without an endpoint", () => {
-    renderLazyTree({ endpoint: null, lazy: false, nodes: roots, ref: null });
-
-    expect(screen.queryByTestId("tree-node-electronics-toggle")).not.toBeInTheDocument();
-    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

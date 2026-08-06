@@ -1,3 +1,4 @@
+import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { SizableColumn } from "@lattice-php/ui/column-sizing";
@@ -30,11 +31,15 @@ function Harness() {
     >
       <div style={{ width: "48px" }} />
       {columns.map((column) => (
-        <div key={column.key} data-test={`cell-${column.key}`} style={{ minWidth: 0 }}>
+        <div
+          key={column.key}
+          data-test={`cell-${column.key}`}
+          style={{ height: "32px", minWidth: 0, position: "relative" }}
+        >
           <div {...getResizeHandleProps(column)} />
         </div>
       ))}
-      <div style={{ width: "48px" }} />
+      <div data-test="trailing" style={{ width: "48px" }} />
     </div>
   );
 }
@@ -46,14 +51,9 @@ describe("useColumnResizing in a browser", () => {
 
   it("caps a dragged column to the rendered grid width without mocked geometry", async () => {
     const screen = await render(<Harness />);
-    const handle = screen.getByRole("separator", { name: "Resize Qty" }).element();
+    const handle = screen.getByRole("separator", { name: "Resize Qty" });
 
-    handle.dispatchEvent(
-      new PointerEvent("pointerdown", { bubbles: true, clientX: 100, pointerId: 1 }),
-    );
-    handle.dispatchEvent(
-      new PointerEvent("pointermove", { bubbles: true, clientX: 800, pointerId: 1 }),
-    );
+    await userEvent.dragAndDrop(handle, screen.getByTestId("trailing"));
 
     const grid = screen.getByTestId("grid").element();
 

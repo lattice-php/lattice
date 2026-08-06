@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { jsonResponse } from "@lattice-php/lattice/test/http";
+import { jsonResponse } from "@lattice-php/core/test-support";
 import { markReadIn, prependIncoming, removeIn, useNotifications } from "./store";
 import type { NotificationItem } from "./types";
 

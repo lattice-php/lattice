@@ -4,7 +4,7 @@ import type { ActionResponse } from "@lattice-php/ui/effects/dispatch";
 import type { EffectHandler } from "@lattice-php/ui/effects/registry";
 import { createRegistry } from "@lattice-php/core/registry";
 import { Provider } from "@lattice-php/lattice/provider";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { BulkBar } from "./bulk-bar";
 import type { BulkAction } from "@lattice-php/table/lib/bulk";
 
@@ -23,7 +23,7 @@ const router = vi.hoisted(() => ({
 }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ router }),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({ router }),
 );
 
 type ActionFormProps = {

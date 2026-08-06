@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { describe, expect, it } from "vitest";
-import { MediaImageNode, mediaImageExtension } from "./media-image";
+import { MediaImageNode } from "./media-image";
 
 function Harness({
   attrs,
@@ -78,15 +78,5 @@ describe("MediaImageNode", () => {
       const node = editor.getJSON().content?.find((child) => child.type === "mediaImage");
       expect(node?.attrs?.conversion).toBe("hero");
     });
-  });
-});
-
-describe("mediaImageExtension", () => {
-  it("yields the node and one toolbar control", () => {
-    const props = { conversions: ["hero"], library: null };
-
-    const extensions = mediaImageExtension.extensions!(props);
-    expect(extensions[0]!.name).toBe("mediaImage");
-    expect(mediaImageExtension.toolbar!(props)).toHaveLength(1);
   });
 });

@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/core";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { FieldScopeProvider } from "./field-scope";
 import { useDependentField } from "./use-dependent-field";
 import { FormValuesProvider, useSetFormValue } from "./values";

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildColumnGridTemplate, columnWidthTrack, maxColumnWidthPx } from "./column-sizing";
+import { buildColumnGridTemplate, columnWidthTrack } from "./column-sizing";
 describe("column sizing", () => {
   it("maps width tokens to stable grid tracks", () => {
     expect(columnWidthTrack("xs")).toBe("minmax(4rem, 0.35fr)");
@@ -17,9 +17,5 @@ describe("column sizing", () => {
         trailingTracks: ["3rem"],
       }),
     ).toBe("3rem minmax(4rem, 0.35fr) minmax(16rem, 2fr) 3rem");
-  });
-
-  it("exposes a maximum width for resize handles", () => {
-    expect(maxColumnWidthPx).toBe(1024);
   });
 });

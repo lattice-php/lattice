@@ -2,7 +2,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { FilterNode, TableColumn } from "@lattice-php/table/types";
 import { registry } from "@lattice-php/lattice/registry";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import { FilterBar, FilterMenu } from "./filter-bar";
 
 const selectFilter: FilterNode = {
@@ -99,8 +99,6 @@ describe("FilterBar", () => {
   it("emits a value when a select option is chosen", () => {
     const { onChange } = renderMenu();
 
-    expect(screen.queryByRole("combobox", { name: "Status" })).not.toBeInTheDocument();
-
     fireEvent.click(screen.getByRole("button", { name: "Filters" }));
     fireEvent.click(screen.getByRole("button", { name: "Status" }));
     fireEvent.click(screen.getByRole("option", { name: "Active" }));
@@ -143,22 +141,14 @@ describe("FilterBar", () => {
     expect(onRemoveClause).toHaveBeenCalledWith(0);
   });
 
-  it("shows column and dedicated chips side by side with one reset", () => {
+  it("renders one reset for column and dedicated chips combined", () => {
     renderBar({
       clauses: [{ field: "name", operator: "contains", value: "Ada" }],
       columnsByKey: new Map([["name", nameColumn]]),
       indicators: [{ filter: "status", label: "Status", value: "Active" }],
     });
 
-    expect(screen.getByRole("button", { name: "Remove Name filter" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Remove Status filter" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Reset all" })).toHaveLength(1);
-  });
-
-  it("renders nothing while no filter is active", () => {
-    renderBar();
-
-    expect(screen.queryByRole("button", { name: "Reset all" })).not.toBeInTheDocument();
   });
 
   it("resets all filters", () => {

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { Node } from "@lattice-php/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import CardComponent from "./card";
 
 function renderCard(props: Node<"card">["props"]) {
@@ -10,13 +10,6 @@ function renderCard(props: Node<"card">["props"]) {
 }
 
 describe("CardComponent tooltip", () => {
-  it("renders no info trigger when there is no tooltip", () => {
-    renderCard({ title: "Plan", description: null, tooltip: null });
-
-    expect(screen.getByText("Plan")).toBeVisible();
-    expect(screen.queryByRole("button", { name: "More information" })).not.toBeInTheDocument();
-  });
-
   it("reveals the tooltip content next to the title on click", () => {
     renderCard({ title: "Plan", description: null, tooltip: "Billed monthly." });
 

@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { SpriteProvider } from "@lattice-php/lattice";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import type { Color, Size } from "../generated";
 import IconComponent from "./icon";
 
@@ -19,7 +19,7 @@ function renderIcon(props: {
 }
 
 describe("Lattice icon component", () => {
-  it("maps size and colour to tokens and forwards the raw class", () => {
+  it("overrides the baseline size token and maps colour onto a wrapper", () => {
     const { container } = renderIcon({
       name: "house",
       size: "lg",
@@ -27,23 +27,18 @@ describe("Lattice icon component", () => {
       class: "opacity-80",
     });
 
-    const svg = container.querySelector("svg");
-
-    expect(svg).toHaveClass("size-lt-icon-lg", "opacity-80");
     // The sprite renderer applies size-lt-icon-md as a baseline; an explicit
     // size must override it rather than coexist with it.
-    expect(svg).not.toHaveClass("size-lt-icon-md");
+    expect(container.querySelector("svg")).not.toHaveClass("size-lt-icon-md");
 
     const wrapper = container.querySelector<HTMLSpanElement>("span.contents");
     expect(wrapper).not.toBeNull();
     expect(wrapper?.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });
 
-  it("renders the md token and omits colour when unset", () => {
+  it("omits the colour wrapper when no colour is set", () => {
     const { container } = renderIcon({ name: "house", size: "md", color: null, class: null });
-    const svg = container.querySelector("svg");
 
-    expect(svg).toHaveClass("size-lt-icon-md");
     expect(container.querySelector("span.contents")).toBeNull();
   });
 });

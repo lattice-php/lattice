@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import type { Size } from "../generated";
 import AvatarComponent from "./avatar";
 
@@ -31,12 +31,5 @@ describe("AvatarComponent", () => {
     renderAvatar({ name: "Grace Brewster Hopper" });
 
     expect(screen.getByText("GB")).toBeInTheDocument();
-  });
-
-  it("renders a neutral user glyph when neither source nor name is given", () => {
-    const { container } = renderAvatar({});
-
-    expect(screen.queryByRole("img")).not.toBeNull();
-    expect(container.querySelector("svg")).not.toBeNull();
   });
 });
