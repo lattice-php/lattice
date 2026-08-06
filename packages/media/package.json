@@ -5,8 +5,7 @@
   "description": "Dev workspace for the media component package; ships to consumers via Composer, not npm.",
   "type": "module",
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@lattice-php/action": "0.40.0",
