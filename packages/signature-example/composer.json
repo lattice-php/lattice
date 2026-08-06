@@ -11,6 +11,7 @@
     "extra": {
         "lattice": {
             "plugin": "resources/js/plugin.ts",
+            "css": "resources/css/signature-example.css",
             "standalone": "dist/plugin.js",
             "discover": ["src"]
         }
