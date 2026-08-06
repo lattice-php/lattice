@@ -6,7 +6,7 @@ Hierarchical tree component for [Lattice](https://latticephp.com) — hierarchy 
 composer require lattice-php/tree
 ```
 
-Composer is the only install — the package ships its React renderer as source and Lattice's Vite plugin compiles it into your app's bundle.
+Composer is the only install — the package ships its React renderer as source and Lattice's Vite plugin compiles it into your app's bundle. No-build apps use the precompiled standalone module instead: run `php artisan lattice:assets` after installation.
 
 Documentation: [latticephp.com/packages/tree](https://latticephp.com/packages/tree/)
 

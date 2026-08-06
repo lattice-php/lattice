@@ -5,6 +5,7 @@
   "description": "Dev workspace for the media component package; ships to consumers via Composer, not npm.",
   "type": "module",
   "scripts": {
+    "build:standalone": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

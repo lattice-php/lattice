@@ -19,6 +19,8 @@ That is the whole integration: the package ships its React renderer as source, a
 `lattice()` Vite plugin compiles it into your app's bundle via `virtual:lattice/plugins`
 (see [Component packages](/extending/component-packages/)). The PHP classes are picked up by
 Lattice's discovery and TypeScript generation automatically.
+[No-build apps](/introduction/no-build/) use the precompiled module the package also ships:
+run `php artisan lattice:assets` after installation.
 
 :::note
 There is no npm package — Composer is the only install.

@@ -184,6 +184,7 @@ export default defineConfig(({ mode }) => {
                 lattice: path.resolve(sourceRoot, "standalone/main.tsx"),
                 runtime: path.resolve(sourceRoot, "runtime.ts"),
                 react: path.resolve(sourceRoot, "standalone/react.ts"),
+                "react-dom": path.resolve(sourceRoot, "standalone/react-dom.ts"),
                 "jsx-runtime": path.resolve(sourceRoot, "standalone/jsx-runtime.ts"),
               },
               output: {

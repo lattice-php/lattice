@@ -48,7 +48,11 @@ it('publishes standalone modules from discovered component packages', function (
     $manifest = json_decode(File::get(public_path('vendor/lattice/manifest.json')), true);
 
     expect(File::exists(public_path('vendor/lattice/plugins/lattice-php/signature-example.js')))->toBeTrue()
-        ->and($manifest['plugins'])->toBe(['plugins/lattice-php/signature-example.js'])
+        ->and($manifest['plugins'])->toBe([
+            'plugins/lattice-php/media.js',
+            'plugins/lattice-php/signature-example.js',
+            'plugins/lattice-php/tree.js',
+        ])
         ->and($manifest['files']['plugins/lattice-php/signature-example.js'])->toBeString();
 });
 
