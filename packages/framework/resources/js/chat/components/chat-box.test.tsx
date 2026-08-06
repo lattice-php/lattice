@@ -133,6 +133,56 @@ describe("ChatBox component", () => {
     });
   });
 
+  it("surfaces a stream error frame to the user", async () => {
+    const fetchMock = vi.fn<(url: string, init?: RequestInit) => Promise<Response>>(
+      async (_url, init) => {
+        if ((init?.method ?? "GET") === "POST") {
+          return streamResponse(['{"type":"error","message":"Model unavailable"}\n']);
+        }
+
+        return historyResponse();
+      },
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderChatBox();
+    await screen.findByText("Hi");
+
+    fireEvent.change(screen.getByTestId("chat-input"), { target: { value: "Hello" } });
+    fireEvent.click(screen.getByTestId("chat-send"));
+
+    expect(await screen.findByText("Model unavailable")).toBeVisible();
+  });
+
+  it("disables the input while streaming and re-enables it when the stream completes", async () => {
+    let controller!: ReadableStreamDefaultController<Uint8Array>;
+    const body = new ReadableStream<Uint8Array>({
+      start(c) {
+        controller = c;
+      },
+    });
+    const fetchMock = vi.fn<(url: string, init?: RequestInit) => Promise<Response>>(
+      async (_url, init) =>
+        (init?.method ?? "GET") === "POST"
+          ? ({ ok: true, status: 200, body } as unknown as Response)
+          : historyResponse(),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    renderChatBox();
+    await screen.findByText("Hi");
+
+    fireEvent.change(screen.getByTestId("chat-input"), { target: { value: "Hello" } });
+    fireEvent.click(screen.getByTestId("chat-send"));
+
+    await waitFor(() => expect(screen.getByTestId("chat-input")).toBeDisabled());
+
+    controller.enqueue(new TextEncoder().encode('{"type":"done"}\n'));
+    controller.close();
+
+    await waitFor(() => expect(screen.getByTestId("chat-input")).not.toBeDisabled());
+  });
+
   it("loads history with a scoped browser token when remote access is configured", async () => {
     document.cookie = "XSRF-TOKEN=test-token";
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
