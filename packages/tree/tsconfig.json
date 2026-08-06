@@ -1,10 +1,15 @@
 {
-  "extends": "../tsconfig.base.json",
-  "include": [
-    "resources/js"
-  ],
-  "exclude": [
-    "resources/js/**/*.test.*",
-    "resources/js/**/*.test-d.*"
-  ]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+  },
+  "include": ["resources/js"],
+  "exclude": ["resources/js/**/*.test.*", "resources/js/**/*.test-d.*"]
 }
