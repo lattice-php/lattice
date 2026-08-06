@@ -141,11 +141,11 @@ export default defineConfig({
             ],
           }),
           inertia({ ssr: "workbench/resources/js/ssr.tsx" }),
-          // The workbench acts as a Lattice consumer: auto-discover component
-          // packages installed via Composer and expose them as
-          // `virtual:lattice/plugins` (external apps get this from `lattice()`).
-          componentPackagesPlugin(componentPackages),
         ]),
+    // The workbench acts as a Lattice consumer: auto-discover component
+    // packages installed via Composer and expose them as
+    // `virtual:lattice/plugins` (external apps get this from `lattice()`).
+    componentPackagesPlugin(componentPackages),
     react(),
     tailwindcss(),
     ...(isSonda
