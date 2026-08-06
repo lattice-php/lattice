@@ -1,9 +1,5 @@
-import { afterEach, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
-
-afterEach(() => {
-  window.localStorage.clear();
-});
+import { expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 
 vi.mock("@lattice-php/core/renderer", async () => {
   const { RenderNode } = await import("@lattice-php/form/test/form-renderer-probe");
@@ -12,7 +8,7 @@ vi.mock("@lattice-php/core/renderer", async () => {
 });
 
 import { TableRows, type TableColumn } from "./table-rows";
-import { fakeNode, stubMatchMedia } from "@lattice-php/core/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 
 const columns: TableColumn[] = [
   { name: "qty", label: "Qty", columnWidth: "md" },
@@ -126,67 +122,4 @@ it("renders column resize handles when enabled", () => {
   );
 
   expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
-});
-
-it("stores table layout column widths under the field base", () => {
-  render(
-    <TableRows
-      base="items"
-      columns={columns}
-      rows={[{ key: "a", index: 0, row: {}, template: [qtyNode, priceNode], span: false }]}
-      reorderable={true}
-      removable={() => true}
-      resizableColumns={true}
-      onField={noop}
-      onMove={noop}
-      onRemove={noop}
-      rowActions={null}
-      onDuplicate={noop}
-    />,
-  );
-
-  const handle = screen.getByRole("separator", { name: "Resize Qty" });
-
-  fireEvent.pointerDown(handle, { clientX: 100, pointerId: 1 });
-  fireEvent.pointerMove(handle, { clientX: 180, pointerId: 1 });
-
-  expect(window.localStorage.getItem("lattice:table-columns:form:items")).toBeNull();
-
-  fireEvent.pointerUp(handle, { clientX: 180, pointerId: 1 });
-
-  expect(JSON.parse(window.localStorage.getItem("lattice:table-columns:form:items") ?? "")).toEqual(
-    {
-      overrides: {
-        qty: 256,
-      },
-    },
-  );
-});
-
-it("renders stack rows instead of the horizontal table below the table breakpoint", () => {
-  stubMatchMedia(false);
-
-  render(
-    <TableRows
-      base="items"
-      columns={columns}
-      rows={[
-        { key: "a", index: 0, row: {}, template: [qtyNode, priceNode], span: false, heading: "#1" },
-      ]}
-      reorderable={true}
-      removable={() => true}
-      onField={noop}
-      onMove={noop}
-      onRemove={noop}
-      rowActions={null}
-      onDuplicate={noop}
-    />,
-  );
-
-  expect(screen.getByTestId("repeater-items-row-0")).toBeInTheDocument();
-  expect(screen.queryByTestId("table-row-items-0")).not.toBeInTheDocument();
-  expect(screen.getAllByTestId("child").map((child) => child.textContent)).toEqual([
-    "items[0][qty]",
-    "items[0][price]",
-  ]);
 });

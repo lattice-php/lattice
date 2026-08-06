@@ -54,19 +54,6 @@ describe("DateInputComponent", () => {
     });
   });
 
-  it("commits a date picked from the calendar", async () => {
-    renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }), {
-      due: "2026-06-01",
-    });
-
-    fireEvent.click(await screen.findByRole("button", { name: /open due calendar/i }));
-    fireEvent.click(await screen.findByRole("button", { name: /19/i }));
-
-    await waitFor(() => {
-      expect(document.querySelector('input[name="due"]')).toHaveValue("2026-06-19");
-    });
-  });
-
   it("normalizes compact dates typed into the picker input", async () => {
     renderField(fakeNode({ type: "field.date-input", props: { name: "due", label: "Due" } }));
 

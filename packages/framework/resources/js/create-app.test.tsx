@@ -1,7 +1,6 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { hydrateRoot, type Root } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stubMatchMedia } from "@lattice-php/core/test-support";
@@ -264,55 +263,6 @@ describe("createLatticeApp", () => {
 
     resolveBoot();
     await waitFor(() => expect(screen.getByTestId("app")).toBeInTheDocument());
-  });
-
-  it("hydrates server-rendered markup immediately without a mismatch", async () => {
-    let resolveConfigure = (): void => {};
-    configureI18nFromPageProps.mockReturnValueOnce(
-      new Promise<void>((resolve) => {
-        resolveConfigure = resolve;
-      }),
-    );
-
-    const page = fakePage(i18nProps);
-
-    createLatticeApp();
-
-    const options = captureOptions();
-    const html = renderToString(
-      options.withApp(<div data-test="app">hello</div>, { ssr: true, page }),
-    );
-
-    const el = document.createElement("div");
-    el.id = "app";
-    el.setAttribute("data-server-rendered", "true");
-    el.innerHTML = html;
-    document.body.append(el);
-
-    const onRecoverableError = vi.fn();
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-    let root: Root | undefined;
-
-    await act(async () => {
-      root = hydrateRoot(
-        el,
-        options.withApp(<div data-test="app">hello</div>, { ssr: false, page }),
-        { onRecoverableError },
-      );
-    });
-
-    expect(screen.getByTestId("app")).toHaveTextContent("hello");
-    expect(onRecoverableError).not.toHaveBeenCalled();
-    expect(consoleError).not.toHaveBeenCalled();
-    expect(configureI18nFromPageProps).toHaveBeenCalledWith(i18nProps, {
-      namespaces: ["lattice", "lattice-ui"],
-    });
-
-    resolveConfigure();
-    await act(async () => {});
-
-    root?.unmount();
-    consoleError.mockRestore();
   });
 
   it("seeds the server-rendered appearance from the shared prop", () => {

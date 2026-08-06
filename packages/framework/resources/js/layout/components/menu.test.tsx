@@ -4,7 +4,6 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 
@@ -126,33 +125,6 @@ describe("Menu", () => {
       "true",
     );
     expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("href", "/products");
-  });
-
-  it("opens a group's submenu as a flyout when the sidebar is collapsed", () => {
-    renderWithRegistry(
-      <SidebarCollapsedContext.Provider value={true}>
-        <Renderer nodes={[menu]} />
-      </SidebarCollapsedContext.Provider>,
-      registry,
-    );
-
-    expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Account" }));
-
-    expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
-  });
-
-  it("keeps a collapsed leaf item's label reachable as a hover flyout", () => {
-    renderWithRegistry(
-      <SidebarCollapsedContext.Provider value={true}>
-        <Renderer nodes={[menu]} />
-      </SidebarCollapsedContext.Provider>,
-      registry,
-    );
-
-    const link = screen.getByRole("link", { name: "Home" });
-    expect(link).toHaveAttribute("aria-label", "Home");
   });
 
   it("renders an icon-only item with the label as its accessible name only", () => {

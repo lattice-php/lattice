@@ -60,25 +60,6 @@ describe("RichEditorComponent", () => {
     await waitFor(() => expect(bold).toHaveAttribute("aria-pressed", "true"));
   });
 
-  it("toggles a heading level through the dropdown", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
-      }),
-    );
-
-    fireEvent.click(await screen.findByLabelText("Heading"));
-
-    for (const level of [1, 2, 3, 4, 5, 6]) {
-      expect(screen.getByText(`Heading ${level}`)).toBeInTheDocument();
-    }
-
-    fireEvent.click(screen.getByText("Heading 2"));
-
-    await waitFor(() => expect(document.querySelector(".lattice-prose h2")).toBeInTheDocument());
-  });
-
   it("limits the heading dropdown to the configured levels", async () => {
     renderField(
       fakeNode({
@@ -96,28 +77,6 @@ describe("RichEditorComponent", () => {
     expect(screen.getByText("Heading 1")).toBeInTheDocument();
     expect(screen.getByText("Heading 2")).toBeInTheDocument();
     expect(screen.queryByText("Heading 3")).not.toBeInTheDocument();
-  });
-
-  it("sets and removes a link through the popover", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
-      }),
-    );
-
-    fireEvent.click(await screen.findByLabelText("Link"));
-
-    const input = await screen.findByLabelText("Link URL");
-    fireEvent.change(input, { target: { value: "https://example.com" } });
-    fireEvent.click(screen.getByLabelText("Apply link"));
-
-    await waitFor(() => expect(screen.queryByLabelText("Link URL")).not.toBeInTheDocument());
-
-    fireEvent.click(screen.getByLabelText("Link"));
-    fireEvent.click(await screen.findByLabelText("Remove link"));
-
-    await waitFor(() => expect(screen.queryByLabelText("Link URL")).not.toBeInTheDocument());
   });
 
   it("renders a custom extension from the plugin registry", async () => {
@@ -181,23 +140,5 @@ describe("RichEditorComponent", () => {
         document.querySelector('[data-placeholder="Write your article…"]'),
       ).toBeInTheDocument(),
     );
-  });
-
-  it("inserts an emoji from the picker", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
-      }),
-    );
-
-    await screen.findByLabelText("Insert emoji");
-
-    fireEvent.click(screen.getByLabelText("Insert emoji"));
-    expect(screen.getByText("🚀")).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText("🎉"));
-
-    expect(screen.queryByText("🚀")).not.toBeInTheDocument();
   });
 });

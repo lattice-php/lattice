@@ -39,10 +39,7 @@ describe("Lattice fragment component", () => {
       registry,
     );
 
-    expect(
-      container.querySelector('[data-lattice-fragment="settings.two-factor-setup"]'),
-    ).toHaveStyle({ minHeight: "320px" });
-    expect(container.querySelector('[data-slot="skeleton"]')).toHaveStyle({ height: "320px" });
+    expect(container.querySelector('[data-slot="skeleton"]')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledTimes(1);

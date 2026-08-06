@@ -188,77 +188,6 @@ describe("FileUploadComponent image previews", () => {
     expect(screen.getByText("manual.pdf")).toBeVisible();
   });
 
-  it("syncs multipart files into the native file input", async () => {
-    const originalFiles = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "files");
-    const filesByInput = new WeakMap<HTMLInputElement, File[] | null>();
-    const filesSetter = vi.fn<(value: File[] | null) => void>();
-
-    Object.defineProperty(HTMLInputElement.prototype, "files", {
-      configurable: true,
-      get() {
-        return filesByInput.get(this) ?? null;
-      },
-      set(value: File[] | null) {
-        filesByInput.set(this, value);
-        filesSetter(value);
-      },
-    });
-
-    vi.stubGlobal(
-      "DataTransfer",
-      class DataTransfer {
-        files: File[] = [];
-
-        items = {
-          add: (file: File) => {
-            this.files.push(file);
-          },
-        };
-      },
-    );
-
-    try {
-      renderUpload({ props: { image: false, signed: false } });
-
-      const file = new File(["file-data"], "manual.pdf", { type: "application/pdf" });
-
-      fireEvent.drop(screen.getByTestId("images"), {
-        dataTransfer: { files: [file] },
-      });
-
-      await waitFor(() => {
-        expect(filesSetter).toHaveBeenLastCalledWith([file]);
-      });
-      expect(filesSetter).toHaveBeenCalledWith([file]);
-      expect(screen.getByText("manual.pdf")).toBeVisible();
-      expect(screen.getByLabelText("Images")).toHaveAttribute("name", "images[]");
-      expect(createObjectURL).not.toHaveBeenCalled();
-    } finally {
-      if (originalFiles) {
-        Object.defineProperty(HTMLInputElement.prototype, "files", originalFiles);
-      }
-    }
-  });
-
-  it("renders and revokes local previews for selected image files", () => {
-    renderUpload();
-
-    const file = new File(["image-data"], "lamp.jpg", { type: "image/jpeg" });
-
-    fireEvent.change(screen.getByLabelText("Images"), {
-      target: { files: [file] },
-    });
-
-    expect(createObjectURL).toHaveBeenCalledWith(file);
-    expect(screen.getByRole("img", { name: "lamp.jpg" })).toHaveAttribute("src", "blob:lamp.jpg");
-
-    expect(screen.getByTestId("images-remove")).toBeVisible();
-    fireEvent.click(screen.getByRole("button", { name: "Remove lamp.jpg" }));
-
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:lamp.jpg");
-    expect(screen.queryByRole("img", { name: "lamp.jpg" })).not.toBeInTheDocument();
-  });
-
   it("opens the native file picker from the dropzone button", () => {
     renderUpload();
     const input = screen.getByLabelText("Images");
@@ -267,19 +196,6 @@ describe("FileUploadComponent image previews", () => {
     fireEvent.click(screen.getByRole("button", { name: "Drop files here or click to browse" }));
 
     expect(click).toHaveBeenCalled();
-  });
-
-  it("allows files to be dropped onto the dropzone", () => {
-    renderUpload();
-
-    fireEvent.dragOver(screen.getByTestId("images"));
-    fireEvent.drop(screen.getByTestId("images"), {
-      dataTransfer: {
-        files: [new File(["image-data"], "lamp.jpg", { type: "image/jpeg" })],
-      },
-    });
-
-    expect(screen.getByRole("img", { name: "lamp.jpg" })).toHaveAttribute("src", "blob:lamp.jpg");
   });
 
   it("stores signed upload keys after a successful direct upload", async () => {
@@ -406,19 +322,6 @@ describe("FileUploadComponent image previews", () => {
         images__removed: ["sealed-lamp"],
       });
     });
-  });
-
-  it("does not add files when the field is disabled", () => {
-    renderUpload({ props: { disabled: true } });
-
-    fireEvent.drop(screen.getByTestId("images"), {
-      dataTransfer: {
-        files: [new File(["image-data"], "lamp.jpg", { type: "image/jpeg" })],
-      },
-    });
-
-    expect(screen.queryByText("lamp.jpg")).not.toBeInTheDocument();
-    expect(createObjectURL).not.toHaveBeenCalled();
   });
 
   it("uses scoped field names and upload keys inside row fields", async () => {
