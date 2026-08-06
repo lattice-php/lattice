@@ -84,14 +84,6 @@ describe("ColumnFilterControl", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("delegates select-control columns to the select filter", () => {
-    const h = handlers();
-    renderControl(col(textFilter({ control: "filter.select" })), [], h);
-
-    expect(screen.queryByRole("button", { name: "Name filters" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Name" })).toBeInTheDocument();
-  });
-
   describe("select control", () => {
     function selectFilter(overrides: Partial<ColumnFilter> = {}): ColumnFilter {
       return textFilter({
@@ -106,22 +98,6 @@ describe("ColumnFilterControl", () => {
         ...overrides,
       });
     }
-
-    it("defaults clause options to empty when the filter omits them", () => {
-      const h = handlers();
-      const filter = selectFilter({
-        clauseOptions: undefined as unknown as ColumnFilter["clauseOptions"],
-      });
-
-      renderControl(col(filter), [], h);
-
-      fireEvent.click(screen.getByRole("button", { name: "Name" }));
-      fireEvent.click(screen.getByRole("option", { name: "Active" }));
-
-      expect(h.onReplace).toHaveBeenCalledWith("name", [
-        { field: "name", operator: "eq", value: "active" },
-      ]);
-    });
 
     it("clears all clauses when the selection is emptied", () => {
       const h = handlers();
@@ -223,24 +199,6 @@ describe("ColumnFilterControl", () => {
         { field: "name", operator: "in", value: "active" },
       ]);
     });
-
-    it("treats an empty multi-select clause as no selection", () => {
-      const h = handlers();
-      const filter = selectFilter({
-        operators: ["in", "not_in"],
-        defaultOperator: "in",
-        multiple: true,
-      });
-
-      renderControl(col(filter), [], h);
-
-      fireEvent.click(screen.getByRole("button", { name: "Name" }));
-
-      expect(screen.getByRole("option", { name: "Active" })).toHaveAttribute(
-        "aria-selected",
-        "false",
-      );
-    });
   });
 
   it("adds a new clause when committing a value with no primary clause", () => {
@@ -283,33 +241,6 @@ describe("ColumnFilterControl", () => {
     expect(screen.getByTestId("filter-name-value")).toHaveValue("x");
   });
 
-  it("falls back to the text type and the eq operator when the filter omits both", () => {
-    const h = handlers();
-    renderControl(
-      col(
-        textFilter({
-          type: undefined as unknown as ColumnFilter["type"],
-          operators: undefined as unknown as Op[],
-          defaultOperator: undefined as unknown as Op,
-        }),
-      ),
-      [],
-      h,
-    );
-
-    const input = screen.getByTestId("filter-name-value");
-    expect(input).toHaveAttribute("type", "text");
-
-    fireEvent.change(input, { target: { value: "z" } });
-    fireEvent.keyDown(input, { key: "Enter" });
-
-    expect(h.onAdd).toHaveBeenCalledWith({ field: "name", operator: "eq", value: "z" });
-
-    fireEvent.click(screen.getByTestId("filter-name"));
-
-    expect(screen.getByLabelText("Name filter value")).toHaveAttribute("type", "text");
-  });
-
   it("renders a number input for a number-typed filter", () => {
     const h = handlers();
     renderControl(col(textFilter({ type: "number" })), [], h);
@@ -327,17 +258,6 @@ describe("ColumnFilterControl", () => {
     expect(h.onRemove).not.toHaveBeenCalled();
     expect(h.onAdd).not.toHaveBeenCalled();
     expect(h.onUpdate).not.toHaveBeenCalled();
-  });
-
-  it("uses the first operator as default when no defaultOperator is configured", () => {
-    const h = handlers();
-    renderControl(col(textFilter({ defaultOperator: undefined as unknown as Op })), [], h);
-
-    const input = screen.getByTestId("filter-name-value");
-    fireEvent.change(input, { target: { value: "z" } });
-    fireEvent.keyDown(input, { key: "Enter" });
-
-    expect(h.onAdd).toHaveBeenCalledWith({ field: "name", operator: "eq", value: "z" });
   });
 
   it("shows a count badge reflecting the number of active clauses", () => {

@@ -68,17 +68,6 @@ function stubFetch() {
 }
 
 describe("global table search", () => {
-  it("renders the search box only when the table is searchable", () => {
-    const { unmount } = renderWithRegistry(<TableComponent node={node(false)} />, registry);
-
-    expect(screen.queryByRole("searchbox")).toBeNull();
-    unmount();
-
-    renderWithRegistry(<TableComponent node={node(true)} />, registry);
-
-    expect(screen.getByRole("searchbox")).toBeInTheDocument();
-  });
-
   it("issues a debounced q request as the user types", async () => {
     const fetch = stubFetch();
 

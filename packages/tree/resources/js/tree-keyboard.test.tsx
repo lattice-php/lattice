@@ -352,12 +352,12 @@ describe("Tree keyboard navigation", () => {
     await vi.waitFor(() => expect(item("b")).toHaveAttribute("aria-level", "2"));
     expect(item("a")).toHaveAttribute("aria-expanded", "true");
     await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
-    await new Promise((resolve) => setTimeout(resolve, 0));
 
-    fireEvent.keyDown(item("b"), { ctrlKey: true, key: "ArrowLeft", shiftKey: true });
-
-    await vi.waitFor(() => expect(item("b")).toHaveAttribute("aria-level", "1"));
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => {
+      fireEvent.keyDown(item("b"), { ctrlKey: true, key: "ArrowLeft", shiftKey: true });
+      expect(item("b")).toHaveAttribute("aria-level", "1");
+    });
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
     expect(JSON.parse(String((fetchMock.mock.calls[0] as [string, RequestInit])[1].body))).toEqual({
       nodeId: "b",
       parentId: "a",

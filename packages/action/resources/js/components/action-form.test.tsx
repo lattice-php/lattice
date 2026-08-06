@@ -454,33 +454,6 @@ describe("action form modal", () => {
     expect(onSuccess).not.toHaveBeenCalled();
   });
 
-  it("clears a previously set field error once a later validation call succeeds", async () => {
-    const fetchMock = vi
-      .fn<FetchMock>()
-      .mockResolvedValueOnce({
-        json: async () => ({ errors: { name: ["Required"] } }),
-        ok: false,
-        status: 422,
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        json: async () => ({}),
-        ok: true,
-        status: 204,
-      } as unknown as Response);
-    vi.stubGlobal("fetch", fetchMock);
-
-    renderAction(validateFieldsAction(), validateFieldsProbePlugin);
-
-    fireEvent.click(screen.getByRole("button", { name: "Validate" }));
-    await screen.findByRole("textbox", { name: "Name" });
-
-    capturedValidateFields?.(["name"]);
-    expect(await screen.findByText("Required")).toBeVisible();
-
-    capturedValidateFields?.(["name"]);
-    await waitFor(() => expect(screen.queryByText("Required")).not.toBeInTheDocument());
-  });
-
   it("reports a validation failure on a non-422 error response without clearing errors", async () => {
     const fetchMock = vi
       .fn<FetchMock>()

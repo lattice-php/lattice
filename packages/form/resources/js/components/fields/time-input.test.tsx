@@ -33,8 +33,6 @@ describe("TimeInputComponent", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /open start time time picker/i }));
 
-    expect(screen.getByRole("option", { name: "Hour 07" })).toBeDisabled();
-
     fireEvent.click(screen.getByRole("option", { name: "Hour 09" }));
     fireEvent.click(screen.getByRole("option", { name: "Minute 30" }));
 

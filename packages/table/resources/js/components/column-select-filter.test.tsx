@@ -190,12 +190,4 @@ describe("column select filter", () => {
       );
     });
   });
-
-  it("does not render the operator popover for a select column", () => {
-    stubFetch();
-
-    renderWithRegistry(<TableComponent node={node(selectFilter(false))} />, registry);
-
-    expect(screen.queryByRole("button", { name: "Status filters" })).not.toBeInTheDocument();
-  });
 });

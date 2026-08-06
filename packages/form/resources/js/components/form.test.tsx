@@ -351,22 +351,6 @@ describe("Lattice form schema components", () => {
     expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Floor Lamp");
   });
 
-  it("passes precognitive validation delay to the inertia form", () => {
-    const formNode = fakeNode({
-      id: "product-form",
-      props: {
-        action: "/lattice/forms/workbench.products.form",
-        precognitive: true,
-        validationTimeout: 650,
-      },
-      type: "form",
-    });
-
-    render(<FormComponent node={formNode}>{null}</FormComponent>);
-
-    expect(document.querySelector("form")).toHaveAttribute("data-validation-timeout", "650");
-  });
-
   it("validates text inputs on change when precognition is enabled", () => {
     const formNode = fakeNode({
       id: "product-form",

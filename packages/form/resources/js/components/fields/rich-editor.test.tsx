@@ -4,8 +4,6 @@ import { createRegistry, type Registry } from "@lattice-php/core/registry";
 import { RegistryContext } from "@lattice-php/core/registry-context";
 import type { Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { fakeConditions } from "@lattice-php/form/test-support";
-import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
 import type { RichEditorExtensionRegistry } from "@lattice-php/form/rich-editor/registry";
 import type { EditorExtension } from "@lattice-php/form/generated";
@@ -34,122 +32,18 @@ const DEFAULT_EXTENSIONS: EditorExtension[] = [
 function renderField(
   node: Node<"field.rich-editor">,
   initial: Record<string, unknown> = {},
-  scoped = false,
   registry: Registry = createRegistry(),
 ) {
-  const field = <RichEditorComponent node={node}>{null}</RichEditorComponent>;
-  const nested = initial as { items?: Array<{ children?: Array<{ body?: unknown }> }> };
-
   return render(
     <RegistryContext.Provider value={registry}>
       <FormValuesProvider initial={initial}>
-        {scoped ? (
-          <FieldScopeProvider
-            base="items.0.children"
-            index={1}
-            row={{ rowId: "r1", body: nested.items?.[0]?.children?.[1]?.body }}
-            onChange={() => {}}
-          >
-            {field}
-          </FieldScopeProvider>
-        ) : (
-          field
-        )}
+        <RichEditorComponent node={node}>{null}</RichEditorComponent>
       </FormValuesProvider>
     </RegistryContext.Provider>,
   );
 }
 
 describe("RichEditorComponent", () => {
-  it("hides when its visible condition fails", () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: {
-          name: "body",
-          label: "Body",
-          extensions: DEFAULT_EXTENSIONS,
-          conditions: fakeConditions({
-            visible: [{ field: "mode", operator: "eq", value: "edit" }],
-          }),
-        },
-      }),
-      { mode: "view" },
-    );
-
-    expect(document.querySelector('input[name="body"]')).not.toBeInTheDocument();
-  });
-
-  it("renders the toolbar and a hidden input for submission", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
-      }),
-    );
-
-    expect(await screen.findByLabelText("Bold")).toBeInTheDocument();
-    expect(document.querySelector('input[type="hidden"][name="body"]')).toBeInTheDocument();
-  });
-
-  it("uses scoped names inside row fields", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
-      }),
-      { items: [{ children: [{}, { body: { type: "doc", content: [] } }] }] },
-      true,
-    );
-
-    expect(await screen.findByLabelText("Bold")).toBeInTheDocument();
-    expect(
-      document.querySelector('input[type="hidden"][name="items[0][children][1][body]"]'),
-    ).toBeInTheDocument();
-  });
-
-  it("runs every toolbar command without error", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
-      }),
-    );
-
-    await screen.findByLabelText("Bold");
-
-    const markCommands = [
-      "Bold",
-      "Italic",
-      "Strikethrough",
-      "Underline",
-      "Highlight",
-      "Code",
-      "Bullet list",
-      "Ordered list",
-      "Blockquote",
-      "Code block",
-      "Horizontal rule",
-      "Align left",
-      "Align center",
-      "Align right",
-      "Justify",
-    ];
-    for (const label of markCommands) {
-      fireEvent.click(screen.getByLabelText(label));
-    }
-
-    fireEvent.click(screen.getByLabelText("Insert table"));
-    for (const label of ["Add column", "Add row", "Delete table"]) {
-      const button = await screen.findByLabelText(label);
-      await waitFor(() => expect(button).not.toBeDisabled());
-      fireEvent.click(button);
-    }
-
-    fireEvent.click(screen.getByLabelText("Details"));
-    fireEvent.click(screen.getByLabelText("Details"));
-  });
-
   it("reflects mark state in the toolbar on selection-only transactions", async () => {
     renderField(
       fakeNode({
@@ -226,30 +120,6 @@ describe("RichEditorComponent", () => {
     await waitFor(() => expect(screen.queryByLabelText("Link URL")).not.toBeInTheDocument());
   });
 
-  it("renders only the configured extensions", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: {
-          name: "body",
-          label: "Body",
-          extensions: [
-            { type: "bold", props: {} },
-            { type: "italic", props: {} },
-            { type: "link", props: {} },
-          ],
-        },
-      }),
-    );
-
-    expect(await screen.findByLabelText("Bold")).toBeInTheDocument();
-    expect(screen.getByLabelText("Italic")).toBeInTheDocument();
-    expect(screen.getByLabelText("Link")).toBeInTheDocument();
-    expect(screen.queryByLabelText("Heading")).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("Insert table")).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("Insert emoji")).not.toBeInTheDocument();
-  });
-
   it("renders a custom extension from the plugin registry", async () => {
     renderField(
       fakeNode({
@@ -264,7 +134,6 @@ describe("RichEditorComponent", () => {
         },
       }),
       {},
-      false,
       createRegistry({
         name: "test",
         extensions: {

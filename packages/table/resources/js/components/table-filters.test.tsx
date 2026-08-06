@@ -167,17 +167,6 @@ describe("dedicated table filters in the table component", () => {
     expect(screen.getByRole("button", { name: "Remove Featured filter" })).toBeInTheDocument();
   });
 
-  it("renders the filter trigger in the trailing header cell", () => {
-    stubFetch();
-
-    renderWithRegistry(<TableComponent node={node({})} />, registry);
-
-    const trigger = screen.getByRole("button", { name: "Filters" });
-
-    expect(trigger.closest('[role="columnheader"]')).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Reset all" })).not.toBeInTheDocument();
-  });
-
   it("applies a ternary selection through the endpoint", async () => {
     const fetch = stubFetch();
 

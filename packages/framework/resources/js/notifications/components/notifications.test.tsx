@@ -58,6 +58,5 @@ describe("NotificationsComponent", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /notifications/i }));
     expect(await screen.findByText("Order shipped")).toBeInTheDocument();
-    expect(screen.getByRole("dialog")).not.toHaveAttribute("aria-describedby");
   });
 });

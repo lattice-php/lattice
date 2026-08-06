@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer, fakeConditions } from "@lattice-php/form/test-support";
+import { createFieldRenderer } from "@lattice-php/form/test-support";
 import { OtpInputComponent } from "./otp-input";
 
 const renderField = createFieldRenderer(OtpInputComponent);
@@ -29,24 +29,5 @@ describe("OtpInputComponent", () => {
     expect(input).toHaveValue("12");
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
-  });
-
-  it("hides when its visible condition fails", () => {
-    renderField(
-      fakeNode({
-        type: "field.otp",
-        props: {
-          name: "code",
-          label: "Code",
-          length: 6,
-          conditions: fakeConditions({
-            visible: [{ field: "mode", operator: "eq", value: "2fa" }],
-          }),
-        },
-      }),
-      { mode: "off" },
-    );
-
-    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
 });

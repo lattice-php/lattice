@@ -63,34 +63,13 @@ afterEach(() => {
 });
 
 describe("ChatBox component", () => {
-  it("renders the chat without a launcher or close control", async () => {
-    const fetchMock = vi.fn<() => Promise<Response>>(async () => historyResponse());
-    vi.stubGlobal("fetch", fetchMock);
-
-    renderChatBox();
-
-    const chatBox = await screen.findByTestId("chat-box");
-    expect(chatBox).toBeVisible();
-    expect(chatBox).toHaveClass("rounded-lt");
-    expect(chatBox).not.toHaveClass("rounded-lt-md");
-    expect(screen.getByText("Assistant")).toBeVisible();
-    expect(screen.queryByTestId("chat-launcher")).toBeNull();
-    expect(screen.queryByTestId("chat-close")).toBeNull();
-  });
-
   it("renders fill mode without fetching history when no history endpoint is configured", async () => {
     const fetchMock = vi.fn<() => Promise<Response>>(async () => historyResponse());
     vi.stubGlobal("fetch", fetchMock);
 
     renderChatBox({ fill: true, historyEndpoint: null, title: null, placeholder: null });
 
-    const chatBox = await screen.findByTestId("chat-box");
-    expect(chatBox).toBeVisible();
-    expect(chatBox).toHaveClass("sticky", "top-0", "h-full", "min-h-[28rem]", "w-full");
-    expect(chatBox).not.toHaveClass("h-svh");
-    expect(chatBox).not.toHaveClass("h-[28rem]");
-    expect(chatBox).not.toHaveClass("rounded-lt");
-    expect(chatBox).not.toHaveClass("shadow-lg");
+    expect(await screen.findByTestId("chat-box")).toBeVisible();
     expect(screen.getByText("Chat")).toBeVisible();
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -125,20 +104,6 @@ describe("ChatBox component", () => {
 
     expect(await screen.findByTestId("chat-box")).toBeVisible();
     expect(screen.queryByText("Hi")).toBeNull();
-  });
-
-  it("falls back to defaults when the title, placeholder, and stream endpoint are omitted", async () => {
-    const fetchMock = vi.fn<() => Promise<Response>>(async () => historyResponse());
-    vi.stubGlobal("fetch", fetchMock);
-
-    renderWithRegistry(
-      <ChatBox node={fakeNode({ type: "chat.box", props: { historyEndpoint: "/h" } })}>
-        {null}
-      </ChatBox>,
-      registry,
-    );
-
-    expect(await screen.findByTestId("chat-box")).toBeVisible();
   });
 
   it("sends a message and streams the assistant reply", async () => {

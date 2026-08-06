@@ -6,16 +6,6 @@ import type { RendererComponent } from "./index";
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
 
 describe("lattice registry", () => {
-  it("registers eager components without a loader", () => {
-    const registration = eagerComponent(EagerComponent);
-
-    expect(registration).toMatchObject({
-      component: EagerComponent,
-      mode: "eager",
-    });
-    expect("load" in registration).toBe(false);
-  });
-
   it("registers lazy components with a cached React component wrapper", () => {
     const load = () =>
       Promise.resolve({

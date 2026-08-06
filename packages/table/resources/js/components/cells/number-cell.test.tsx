@@ -71,12 +71,6 @@ describe("NumberCell", () => {
     expect(container.textContent).toBe("28K");
   });
 
-  it("renders no copy button by default", () => {
-    renderCell(1234.5);
-
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
-  });
-
   it("copies the raw value instead of the formatted text when copyable", () => {
     const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });

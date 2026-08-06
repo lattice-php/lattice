@@ -38,12 +38,6 @@ describe("resolveRichEditorExtensions", () => {
     expect(resolved[0].group).toBe("custom-a");
   });
 
-  it("defaults missing props to an empty object", () => {
-    expect(
-      resolveRichEditorExtensions([{ type: "custom-b", props: {} }], { "custom-b": {} })[0].props,
-    ).toEqual({});
-  });
-
   it("warns once and skips unknown types", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 

@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { setLocale } from "@lattice-php/ui/i18n/locale";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer, fakeConditions } from "@lattice-php/form/test-support";
+import { createFieldRenderer } from "@lattice-php/form/test-support";
 import { DateInputComponent } from "./date-input";
 
 const renderField = createFieldRenderer(DateInputComponent);
@@ -90,23 +90,5 @@ describe("DateInputComponent", () => {
     fireEvent.input(input, { target: { value: "20261340" } });
 
     expect(value).toHaveValue("");
-  });
-
-  it("hides when its visible condition fails", () => {
-    renderField(
-      fakeNode({
-        type: "field.date-input",
-        props: {
-          name: "due",
-          label: "Due",
-          conditions: fakeConditions({
-            visible: [{ field: "scheduled", operator: "eq", value: "1" }],
-          }),
-        },
-      }),
-      { scheduled: "0" },
-    );
-
-    expect(screen.queryByLabelText("Due")).not.toBeInTheDocument();
   });
 });

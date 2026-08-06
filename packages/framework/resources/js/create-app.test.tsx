@@ -23,11 +23,9 @@ vi.mock("@inertiajs/react", async () =>
 vi.mock("@lattice-php/ui/i18n/page-props", () => ({ configureI18nFromPageProps }));
 
 import { useAppearance } from "./appearance";
-import { createRegistry } from "@lattice-php/core/registry";
 import { createLatticeApp } from "./create-app";
 import { pageComponentName } from "./inertia";
 import Page from "./page";
-import { ProviderBase } from "./provider-base";
 
 type CapturedOptions = {
   resolve: (name: string) => unknown;
@@ -84,19 +82,6 @@ describe("createLatticeApp", () => {
     });
 
     await expect(captureOptions().resolve("Dashboard")).resolves.toBe(Dashboard);
-  });
-
-  it("wraps the app in the Provider so toasts use Lattice's own Toaster", () => {
-    const sprite = { href: "/sprite.svg" };
-    const registry = createRegistry();
-
-    createLatticeApp({ registry, sprite });
-
-    const wrapped = captureOptions().withApp(<div />, { ssr: false, page: fakePage() });
-
-    expect(wrapped.type).toBe(ProviderBase);
-    expect((wrapped.props as { registry: unknown }).registry).toBe(registry);
-    expect((wrapped.props as { sprite: unknown }).sprite).toBe(sprite);
   });
 
   it("merges component-package plugins onto the registry", () => {

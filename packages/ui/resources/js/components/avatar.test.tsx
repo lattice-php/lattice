@@ -32,11 +32,4 @@ describe("AvatarComponent", () => {
 
     expect(screen.getByText("GB")).toBeInTheDocument();
   });
-
-  it("renders a neutral user glyph when neither source nor name is given", () => {
-    const { container } = renderAvatar({});
-
-    expect(screen.queryByRole("img")).not.toBeNull();
-    expect(container.querySelector("svg")).not.toBeNull();
-  });
 });

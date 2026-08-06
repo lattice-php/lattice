@@ -406,20 +406,32 @@ describe("useMediaUpload", () => {
     expect(FakeRequest.instances).toEqual([]);
   });
 
-  it("ignores an empty selection and an unavailable endpoint", () => {
+  it("ignores a null selection", () => {
     const { result } = renderUpload();
 
     act(() => result.current.addFiles(null));
+
+    expect(result.current.uploads).toEqual([]);
+    expect(FakeRequest.instances).toEqual([]);
+  });
+
+  it("ignores an empty selection", () => {
+    const { result } = renderUpload();
+
     act(() => result.current.addFiles([]));
 
-    const withoutEndpoint = renderHook(() =>
+    expect(result.current.uploads).toEqual([]);
+    expect(FakeRequest.instances).toEqual([]);
+  });
+
+  it("ignores files when no endpoint is configured", () => {
+    const { result } = renderHook(() =>
       useMediaUpload({ endpoint: "", ref: "ref-1", signed: false }),
     );
 
-    act(() => withoutEndpoint.result.current.addFiles([file("alpha.jpg")]));
+    act(() => result.current.addFiles([file("alpha.jpg")]));
 
     expect(result.current.uploads).toEqual([]);
-    expect(withoutEndpoint.result.current.uploads).toEqual([]);
     expect(FakeRequest.instances).toEqual([]);
   });
 });

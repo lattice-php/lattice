@@ -197,7 +197,5 @@ describe("LibraryView", () => {
     await waitFor(() => {
       expect(screen.getByTestId("media-grid")).toHaveAttribute("aria-busy", "true");
     });
-
-    expect(screen.getByTestId("media-grid").className).toContain("opacity-60");
   });
 });

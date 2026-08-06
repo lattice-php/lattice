@@ -74,18 +74,13 @@ describe("ProgressComponent circle", () => {
   it("renders the ring offset from value and max", () => {
     const { container } = renderProgress({ value: 25, shape: "circle" });
 
-    const circumference = 2 * Math.PI * 18;
     const circles = container.querySelectorAll("circle");
     expect(circles).toHaveLength(2);
     const ring = circles[1];
-    expect(Number.parseFloat(ring.getAttribute("stroke-dasharray") ?? "")).toBeCloseTo(
-      circumference,
-      2,
-    );
-    expect(Number.parseFloat(ring.getAttribute("stroke-dashoffset") ?? "")).toBeCloseTo(
-      circumference * 0.75,
-      2,
-    );
+    const dasharray = Number.parseFloat(ring.getAttribute("stroke-dasharray") ?? "");
+    const dashoffset = Number.parseFloat(ring.getAttribute("stroke-dashoffset") ?? "");
+    expect(dasharray).toBeGreaterThan(0);
+    expect(dashoffset / dasharray).toBeCloseTo(0.75, 5);
     expect(container.querySelector('[data-lattice-progress="circle"]')).not.toBeNull();
   });
 

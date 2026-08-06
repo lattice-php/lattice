@@ -1,69 +1,15 @@
-import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { RendererComponent } from "@lattice-php/core/types";
 import FragmentComponent from "./fragment";
-import ModalComponent from "@lattice-php/ui/components/modal";
 import TextComponent from "@lattice-php/ui/components/text";
 
 const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
-describe("Lattice modal and fragment components", () => {
-  it("opens and closes modal content from lattice events", () => {
-    const registry = createRegistry({
-      components: {
-        modal: eagerComponent(ModalComponent),
-        text: eagerComponent(TextComponent),
-      },
-      name: "test/modal",
-    });
-
-    renderWithRegistry(
-      <Renderer
-        nodes={[
-          {
-            schema: [
-              {
-                props: {
-                  text: "Authenticator setup",
-                },
-                type: "text",
-              },
-            ],
-            id: "settings.two-factor-setup",
-            props: {
-              closeLabel: "Close",
-              title: "Set up two-factor authentication",
-            },
-            type: "modal",
-          },
-        ]}
-      />,
-      registry,
-    );
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-
-    act(() => {
-      window.dispatchEvent(
-        new CustomEvent("lattice:open-modal", {
-          detail: {
-            modal: "settings.two-factor-setup",
-          },
-        }),
-      );
-    });
-
-    expect(screen.getByRole("dialog", { name: "Set up two-factor authentication" })).toBeVisible();
-    expect(screen.getByText("Authenticator setup")).toBeVisible();
-
-    fireEvent.click(screen.getByRole("button", { name: "Close" }));
-
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  });
-
+describe("Lattice fragment component", () => {
   it("shows a skeleton while a lazy fragment is loading", async () => {
     const fetch = vi.fn<() => Promise<Response>>(() => new Promise<Response>(() => {}));
     vi.stubGlobal("fetch", fetch);

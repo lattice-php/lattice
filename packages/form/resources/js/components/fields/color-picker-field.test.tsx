@@ -28,16 +28,15 @@ function renderField(props: Record<string, unknown>, initial: Record<string, unk
 }
 
 describe("ColorPickerFieldComponent", () => {
-  it("shows the placeholder when empty", () => {
+  it("shows the placeholder when empty and the current hex once picked", () => {
     renderField({});
 
     expect(screen.getByTestId("color-picker-color")).toHaveTextContent("Pick a color");
-  });
 
-  it("shows the current hex on the trigger", () => {
-    renderField({}, { color: "#ff5733" });
+    fireEvent.click(screen.getByTestId("color-picker-color"));
+    fireEvent.click(screen.getByRole("option", { name: "#ef4444" }));
 
-    expect(screen.getByTestId("color-picker-color")).toHaveTextContent("#ff5733");
+    expect(screen.getByTestId("color-picker-color")).toHaveTextContent("#ef4444");
   });
 
   it("commits a swatch pick into the hidden input", () => {

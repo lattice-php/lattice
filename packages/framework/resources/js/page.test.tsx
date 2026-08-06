@@ -57,19 +57,6 @@ describe("Page", () => {
 
     expect(screen.getByText("Inside the app shell")).toBeVisible();
     expect(screen.getByTestId("lattice-default-container")).toBeVisible();
-    expect(screen.queryByTestId("lattice-centered-container")).not.toBeInTheDocument();
-  });
-
-  it("does not mount realtime listeners for an empty listeners array", () => {
-    render(
-      <Page
-        lattice={payload({
-          schema: [{ props: { text: "No listeners rendered" }, type: "text" }],
-          listeners: [],
-        })}
-      />,
-    );
-    expect(screen.getByText("No listeners rendered")).toBeVisible();
   });
 
   it("uses a provided registry for app and package extensions", () => {

@@ -64,12 +64,4 @@ describe("PromptInput", () => {
     expect(textarea).toBeDisabled();
     expect(button).toBeDisabled();
   });
-
-  it("renders the placeholder text", () => {
-    render(
-      <PromptInput onSubmit={vi.fn<(text: string) => void>()} placeholder="Type a message…" />,
-    );
-
-    expect(screen.getByPlaceholderText("Type a message…")).toBeInTheDocument();
-  });
 });

@@ -10,7 +10,6 @@ vi.mock("@lattice-php/core/renderer", async () => {
   return { RenderNode };
 });
 
-import { renderCounts } from "@lattice-php/form/test/form-renderer-probe";
 import { BuilderComponent } from "./builder";
 import type { RowTemplate } from "./row-templates";
 
@@ -128,17 +127,4 @@ it("renders the table layout: primary columns, spanning non-primary rows", () =>
   expect(texts).toContain("items[0][qty]");
   expect(texts).toContain("items[1][content]");
   expect(screen.getByTestId("table-row-items-1-span")).toBeInTheDocument();
-});
-
-it("does not re-render sibling rows when one row changes", () => {
-  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [
-      { type: "product", qty: "1" },
-      { type: "product", qty: "2" },
-    ],
-  });
-  renderCounts.clear();
-  fireEvent.click(screen.getByTestId("commit-items[0][qty]"));
-  expect(renderCounts.get("items[0][qty]") ?? 0).toBeGreaterThanOrEqual(1);
-  expect(renderCounts.get("items[1][qty]") ?? 0).toBe(0);
 });

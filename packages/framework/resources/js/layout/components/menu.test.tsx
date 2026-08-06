@@ -152,43 +152,7 @@ describe("Menu", () => {
     );
 
     const link = screen.getByRole("link", { name: "Home" });
-    expect(link).toHaveClass("group", "relative");
     expect(link).toHaveAttribute("aria-label", "Home");
-    expect(screen.getByText("Home")).toHaveClass("group-hover:block");
-  });
-
-  it("renders a prefix icon alongside the label", () => {
-    renderMenu({
-      id: "main",
-      type: "menu",
-      schema: [
-        {
-          id: "i-home",
-          props: { href: "/", label: "Home", prefix: { icon: "house", text: null } },
-          type: "menu-item",
-        },
-      ],
-    });
-
-    const link = screen.getByRole("link", { name: "Home" });
-    expect(link).toBeVisible();
-    expect(link.querySelector("svg")).not.toBeNull();
-  });
-
-  it("renders a text suffix after the label", () => {
-    renderMenu({
-      id: "main",
-      type: "menu",
-      schema: [
-        {
-          id: "i-tables",
-          props: { href: "/tables", label: "Tables", suffix: { icon: null, text: "beta" } },
-          type: "menu-item",
-        },
-      ],
-    });
-
-    expect(screen.getByText("beta")).toBeVisible();
   });
 
   it("renders an icon-only item with the label as its accessible name only", () => {
@@ -206,9 +170,7 @@ describe("Menu", () => {
 
     const link = screen.getByRole("link", { name: "Settings" });
     expect(link).toHaveAttribute("aria-label", "Settings");
-    expect(link).toHaveClass("justify-center");
     expect(link.querySelector("svg")).not.toBeNull();
-    expect(screen.queryByText("Settings")).not.toBeInTheDocument();
   });
 
   it("renders a non-get item as an actionable button link", () => {

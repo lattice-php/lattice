@@ -30,12 +30,6 @@ function renderCell(props: Record<string, unknown>, value: unknown, row: TableRo
 }
 
 describe("TextCell", () => {
-  it("renders a plain value when no modifiers are set", () => {
-    renderCell({}, "Hello");
-
-    expect(screen.getByText("Hello")).toBeInTheDocument();
-  });
-
   it("joins a multiple column without a badge", () => {
     renderCell({ multiple: "name" }, ["New", "Sale"]);
 

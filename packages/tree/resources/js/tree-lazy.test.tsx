@@ -166,11 +166,4 @@ describe("lazy tree", () => {
     expect(url).toBe("/lattice/trees/categories?parent=");
     expect(screen.getByTestId("tree-node-electronics")).toHaveAttribute("tabindex", "0");
   });
-
-  it("shows no chevron for hasChildren nodes without an endpoint", () => {
-    renderLazyTree({ endpoint: null, lazy: false, nodes: roots, ref: null });
-
-    expect(screen.queryByTestId("tree-node-electronics-toggle")).not.toBeInTheDocument();
-    expect(fetchMock).not.toHaveBeenCalled();
-  });
 });

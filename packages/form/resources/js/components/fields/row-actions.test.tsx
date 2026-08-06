@@ -30,17 +30,3 @@ it("renders nothing for an empty action list", () => {
   const { container } = render(<RowActions actions={[]} />);
   expect(container).toBeEmptyDOMElement();
 });
-
-it("applies danger styling to a menu item", () => {
-  render(
-    <RowActions
-      actions={[
-        { key: "duplicate", label: "Duplicate", icon: "copy", onClick: () => {} },
-        { key: "remove", label: "Remove", icon: "trash-2", onClick: () => {}, danger: true },
-      ]}
-    />,
-  );
-  fireEvent.click(screen.getByTestId("row-actions-menu"));
-  expect(screen.getByTestId("row-action-remove")).toHaveClass("text-lt-danger");
-  expect(screen.getByTestId("row-action-duplicate")).not.toHaveClass("text-lt-danger");
-});

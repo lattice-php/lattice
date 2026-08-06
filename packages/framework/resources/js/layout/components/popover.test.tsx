@@ -20,17 +20,6 @@ describe("Popover", () => {
     fireEvent.click(screen.getByTestId("pop"));
 
     expect(screen.getByRole("link", { name: "Item" })).toBeVisible();
-  });
-
-  it("renders its content as a menu", () => {
-    render(
-      <Popover trigger={<span>Open</span>} testId="pop">
-        <a href="/x">Item</a>
-      </Popover>,
-    );
-
-    fireEvent.click(screen.getByTestId("pop"));
-
     expect(screen.getByRole("menu")).toBeInTheDocument();
   });
 

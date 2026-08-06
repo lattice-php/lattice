@@ -342,28 +342,27 @@ describe("SelectComponent creatable", () => {
     ).toHaveLength(1);
   });
 
-  it("closes the popover after committing a tag in a single-select", () => {
-    renderStaticSelect(
+  it("closes the popover after committing a tag in a single-select but keeps it open in a multiple select", () => {
+    const single = renderStaticSelect(
       { creatable: true, options: [{ label: "Red", value: "red" }] },
       { color: "" },
     );
 
     fireEvent.click(screen.getByTestId("select-color"));
-    const input = screen.getByTestId("select-color-search");
+    let input = screen.getByTestId("select-color-search");
     fireEvent.change(input, { target: { value: "Red" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
     expect(screen.queryByTestId("select-color-search")).not.toBeInTheDocument();
-  });
 
-  it("keeps the popover open after committing a tag in a multiple select", () => {
+    single.unmount();
     renderStaticSelect(
       { multiple: true, creatable: true, options: [{ label: "Red", value: "red" }] },
       { color: [] },
     );
 
     fireEvent.click(screen.getByTestId("select-color"));
-    const input = screen.getByTestId("select-color-search");
+    input = screen.getByTestId("select-color-search");
     fireEvent.change(input, { target: { value: "Red" } });
     fireEvent.keyDown(input, { key: "Enter" });
 

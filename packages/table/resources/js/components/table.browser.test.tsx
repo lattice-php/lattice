@@ -1,4 +1,4 @@
-import { page } from "vitest/browser";
+import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
@@ -84,10 +84,8 @@ describe("Lattice table component in a browser", () => {
     await page.viewport(390, 800);
 
     const screen = await render(<TableComponent node={node()} />);
-    const skuHeader = Array.from(
-      document.querySelectorAll<HTMLElement>('[role="columnheader"]'),
-    ).find((element) => element.textContent?.trim() === "SKU");
-    const headerRow = skuHeader?.parentElement;
+    const skuHeader = screen.getByRole("columnheader", { name: "SKU", includeHidden: true });
+    const headerRow = skuHeader.element().parentElement;
     const skuText = screen.getByText("SKU-001").element();
     const skuCell = skuText.closest('[role="cell"]');
     const bodyRow = skuCell?.parentElement;
@@ -151,9 +149,10 @@ describe("Lattice table component in a browser", () => {
         <TableComponent node={node({ resizableColumns: true })} />
       </div>,
     );
-    const handle = screen.getByRole("separator", { name: "Resize SKU" }).element();
+    const handle = screen.getByRole("separator", { name: "Resize SKU" });
 
-    handle.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowRight" }));
+    (handle.element() as HTMLElement).focus();
+    await userEvent.keyboard("{ArrowRight}");
 
     await expect
       .poll(() => window.localStorage.getItem(storageKey))
@@ -177,11 +176,11 @@ describe("Lattice table component in a browser", () => {
         <TableComponent node={node({ resizableColumns: true })} />
       </div>,
     );
-    const handle = screen.getByRole("separator", { name: "Resize SKU" }).element();
+    const handle = screen.getByRole("separator", { name: "Resize SKU" });
     const skuHeader = screen.getByRole("columnheader", { name: "SKU" }).element();
     const table = skuHeader.closest('[role="table"]');
 
-    handle.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+    await handle.dblClick();
 
     await expect
       .poll(() => window.localStorage.getItem(storageKey))

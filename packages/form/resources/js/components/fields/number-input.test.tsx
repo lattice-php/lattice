@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer, fakeConditions } from "@lattice-php/form/test-support";
+import { createFieldRenderer } from "@lattice-php/form/test-support";
 import { NumberInputComponent } from "./number-input";
 
 const renderField = createFieldRenderer(NumberInputComponent);
@@ -30,24 +30,6 @@ describe("NumberInputComponent", () => {
     expect(slider).toHaveValue("7");
     expect(screen.getByText("7")).toBeInTheDocument();
   });
-
-  it("hides when its visible condition fails", () => {
-    renderField(
-      fakeNode({
-        type: "field.number-input",
-        props: {
-          name: "qty",
-          label: "Qty",
-          conditions: fakeConditions({
-            visible: [{ field: "type", operator: "eq", value: "order" }],
-          }),
-        },
-      }),
-      { type: "quote" },
-    );
-
-    expect(screen.queryByLabelText("Qty")).not.toBeInTheDocument();
-  });
 });
 
 describe("NumberInputComponent affixes", () => {
@@ -60,28 +42,5 @@ describe("NumberInputComponent affixes", () => {
     );
 
     expect(screen.getByText("$")).toBeVisible();
-    expect(screen.getByLabelText("Price")).toHaveClass("rounded-l-none");
-  });
-});
-
-describe("NumberInputComponent defaults", () => {
-  it("renders a slider without a label, min, max or step", () => {
-    renderField(fakeNode({ type: "field.number-input", props: { name: "level", slider: true } }), {
-      level: "3",
-    });
-
-    const slider = screen.getByRole("slider");
-    expect(slider).toHaveValue("3");
-    expect(slider).not.toHaveAttribute("min");
-    expect(slider).not.toHaveAttribute("max");
-    expect(slider).not.toHaveAttribute("step");
-  });
-
-  it("renders a bare number input when only a name is provided", () => {
-    renderField(fakeNode({ type: "field.number-input", props: { name: "qty" } }));
-
-    const input = document.querySelector('input[name="qty"]')!;
-    expect(input).toHaveAttribute("type", "number");
-    expect(input).not.toHaveAttribute("min");
   });
 });

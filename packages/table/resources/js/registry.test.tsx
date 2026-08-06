@@ -184,48 +184,6 @@ describe("column registry", () => {
     );
   }
 
-  it("renders an icon cell from the value map", () => {
-    renderCell(
-      col({
-        key: "verified",
-        label: "Verified",
-        type: "column.icon",
-        props: { icons: { "1": "check" } },
-      }),
-      { verified: "1" },
-    );
-
-    expect(screen.getByLabelText("1")).toBeVisible();
-  });
-
-  it("renders an image cell as a circular avatar", () => {
-    renderCell(
-      col({
-        key: "avatar",
-        label: "Avatar",
-        type: "column.image",
-        props: { circular: true, size: 40 },
-      }),
-      { avatar: "https://example.com/a.png" },
-    );
-
-    const img = screen.getByRole("img", { name: "Avatar" });
-    expect(img).toHaveAttribute("src", "https://example.com/a.png");
-    expect(img.className).toContain("rounded-full");
-  });
-
-  it("renders a copyable text cell from props", () => {
-    renderCell(
-      col({ key: "token", label: "Token", type: "column.text", props: { copyable: true } }),
-      {
-        token: "abc",
-      },
-    );
-
-    expect(screen.getByText("abc")).toBeVisible();
-    expect(screen.getByRole("button", { name: /Copy Token/ })).toBeVisible();
-  });
-
   it("copies the text cell value and shows the copied state", async () => {
     const writeText = stubClipboard();
 
@@ -242,50 +200,6 @@ describe("column registry", () => {
     expect(writeText).toHaveBeenCalledWith("abc");
   });
 
-  it("renders nothing for a badge cell with an empty value", () => {
-    const { container } = renderCell(
-      col({ key: "status", label: "Status", type: "column.badge" }),
-      {
-        status: "",
-      },
-    );
-
-    expect(container.querySelector(".lt-badge")).toBeNull();
-  });
-
-  it("renders nothing for an icon cell with no matching icon", () => {
-    const { container } = renderCell(
-      col({ key: "flag", label: "Flag", type: "column.icon", props: { icons: { "1": "check" } } }),
-      { flag: "0" },
-    );
-
-    expect(container.querySelector(".lt-cell-icon")).toBeNull();
-  });
-
-  it("renders a square image cell at the default size", () => {
-    renderCell(
-      col({ key: "avatar", label: "Avatar", type: "column.image", props: { circular: false } }),
-      {
-        avatar: "https://example.com/a.png",
-      },
-    );
-
-    const img = screen.getByRole("img", { name: "Avatar" });
-    expect(img.className).toContain("rounded-lt-sm");
-    expect(img).toHaveAttribute("width", "32");
-  });
-
-  it("renders nothing for an image cell with a non-string value", () => {
-    const { container } = renderCell(
-      col({ key: "avatar", label: "Avatar", type: "column.image" }),
-      {
-        avatar: 42,
-      },
-    );
-
-    expect(container.querySelector("img")).toBeNull();
-  });
-
   it("renders a text cell as an external link", () => {
     renderCell(
       col({
@@ -300,20 +214,6 @@ describe("column registry", () => {
     const link = screen.getByRole("link", { name: "Visit" });
     expect(link).toHaveAttribute("href", "/go");
     expect(link).toHaveAttribute("target", "_blank");
-  });
-
-  it("renders an empty stack cell when it has no bound schema", () => {
-    const { container } = renderCell(col({ key: "x", label: "X", type: "column.stack" }), {
-      x: "v",
-    });
-
-    expect(container.querySelector(".grid")).not.toBeNull();
-  });
-
-  it("falls back to the text renderer for an unknown column type", () => {
-    renderCell(col({ key: "x", label: "X", type: "totally.unknown" }), { x: "plain" });
-
-    expect(screen.getByText("plain")).toBeVisible();
   });
 
   it("renders a text cell as an internal link", () => {

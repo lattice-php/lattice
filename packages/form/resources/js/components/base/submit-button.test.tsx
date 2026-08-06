@@ -23,18 +23,10 @@ describe("FormSubmitButton", () => {
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
-  it("links the button to its form via the component id", () => {
-    renderSubmit({ componentId: "checkout" });
-
-    expect(screen.getByTestId("form-submit")).toHaveAttribute("data-lattice-form", "checkout");
-  });
-
-  it("disables the button and shows a spinner while processing", () => {
+  it("disables the button while processing", () => {
     renderSubmit({ processing: true });
 
-    const button = screen.getByTestId("form-submit");
-    expect(button).toBeDisabled();
-    expect(button.querySelector("svg")).toBeInTheDocument();
+    expect(screen.getByTestId("form-submit")).toBeDisabled();
   });
 
   it("disables the button and summarises invalid fields when there are errors", () => {

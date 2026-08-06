@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
-import { dispatchActionError, getActionEffects } from "@lattice-php/ui/effects/dispatch";
+import { dispatchActionError } from "@lattice-php/ui/effects/dispatch";
 import { runAction } from "./run-action";
 
-vi.mock("@lattice-php/ui/effects/dispatch", () => ({
+vi.mock("@lattice-php/ui/effects/dispatch", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@lattice-php/ui/effects/dispatch")>()),
   dispatchActionError: vi.fn(),
-  getActionEffects: vi.fn(),
 }));
 
 beforeEach(() => {
@@ -15,7 +15,6 @@ beforeEach(() => {
 describe("runAction", () => {
   it("dispatches effects and reports success on a 2xx response", async () => {
     const effect = { type: "toast" } as ActionEffect;
-    vi.mocked(getActionEffects).mockReturnValue([effect]);
     const request = (): Promise<Response> =>
       Promise.resolve(new Response(JSON.stringify({ effects: [effect] }), { status: 200 }));
     const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
@@ -28,7 +27,6 @@ describe("runAction", () => {
 
   it("dispatches effects but reports failure on a non-2xx response", async () => {
     const effect = { type: "toast" } as ActionEffect;
-    vi.mocked(getActionEffects).mockReturnValue([effect]);
     const request = (): Promise<Response> =>
       Promise.resolve(new Response(JSON.stringify({ effects: [effect] }), { status: 422 }));
     const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
