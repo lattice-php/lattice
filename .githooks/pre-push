@@ -14,6 +14,61 @@
 root="$(git rev-parse --show-toplevel)"
 cd "$root"
 
+# Skip the gate when the push contains nothing to verify: only deletions, or only
+# docs/meta files (*.md, .github/, .githooks/). Any doubt (unknown sha, missing
+# origin/main) fails toward running the gate.
+gate_required=""
+have_update=""
+changed_files=""
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+    case "$local_sha" in
+        *[!0]*) ;;
+        *) continue ;;
+    esac
+    have_update=1
+    [ -n "$gate_required" ] && continue
+    case "$remote_sha" in
+        *[!0]*) base="$remote_sha" ;;
+        *) base="$(git merge-base origin/main "$local_sha" 2>/dev/null)" || base="" ;;
+    esac
+    if [ -z "$base" ]; then
+        gate_required=1
+        continue
+    fi
+    if files="$(git diff --name-only "$base" "$local_sha" 2>/dev/null)"; then
+        changed_files="$changed_files$files
+"
+    else
+        gate_required=1
+    fi
+done
+
+if [ -z "$have_update" ]; then
+    echo "✓ pre-push: deletions only, nothing to verify"
+    exit 0
+fi
+
+if [ -z "$gate_required" ]; then
+    docs_only=1
+    IFS='
+'
+    for f in $changed_files; do
+        case "$f" in
+            *.md | .github/* | .githooks/*) ;;
+            *)
+                docs_only=""
+                break
+                ;;
+        esac
+    done
+    unset IFS
+    if [ -n "$docs_only" ]; then
+        echo "✓ pre-push: docs/meta-only changes, skipping gate"
+        exit 0
+    fi
+fi
+
 js_log="$(mktemp)"
 trap 'rm -f "$js_log"' EXIT
 
