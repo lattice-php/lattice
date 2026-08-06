@@ -1,6 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { createFieldRenderer, fakeConditions, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { createFieldRenderer, fakeConditions } from "@lattice-php/form/test-support";
 import { NumberInputComponent } from "./number-input";
 
 const renderField = createFieldRenderer(NumberInputComponent);

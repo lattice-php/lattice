@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { jsonResponse } from "@lattice-php/lattice/test/http";
+import { jsonResponse } from "@lattice-php/core/test-support";
 import { clearAll, dismiss, fetchNotifications, markAllRead, markRead } from "./api";
 
 describe("notifications api", () => {

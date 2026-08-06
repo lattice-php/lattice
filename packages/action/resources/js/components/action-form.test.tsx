@@ -4,8 +4,8 @@ import { createRegistry, eagerComponent, Renderer } from "@lattice-php/lattice";
 import type { Node, Plugin } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/form";
 import { useFormContext } from "@lattice-php/form/toolkit";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { actionComponents } from "@lattice-php/action/plugin";
 
 type ValidateFieldsOptions = { onSuccess?: () => void; onValidationError?: () => void };
@@ -92,7 +92,7 @@ function wizardAction(): Node {
 }
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 type FetchMock = (input: string, init: RequestInit) => Promise<Response>;

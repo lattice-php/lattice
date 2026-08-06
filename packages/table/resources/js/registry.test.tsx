@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import type { TableColumn } from "./types";
 import { Provider } from "@lattice-php/lattice/provider";
 import { createRegistry } from "@lattice-php/core/registry";

@@ -6,7 +6,7 @@ import type { PagePayload } from "@lattice-php/lattice";
 import SchemaLayout from "./schema-layout";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 const mockedUsePage = vi.mocked(usePage);

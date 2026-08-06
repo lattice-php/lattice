@@ -1,7 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeFormContext } from "@lattice-php/form/test-support";
 import { FormProvider } from "@lattice-php/form/hooks/context";
 import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 import { FormValuesProvider, useFormValues } from "@lattice-php/form/hooks/values";

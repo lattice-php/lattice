@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry } from "@lattice-php/core/registry";
 import type { ChatMessage } from "@lattice-php/lattice/chat/types";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import { MessageList } from "./message-list";
 
 const registry = createRegistry(chatComponents);

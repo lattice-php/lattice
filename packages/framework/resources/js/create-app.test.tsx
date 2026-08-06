@@ -4,6 +4,7 @@ import type { ReactElement } from "react";
 import { hydrateRoot, type Root } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { stubMatchMedia } from "@lattice-php/core/test-support";
 
 const createInertiaApp = vi.hoisted(() => vi.fn<(options?: unknown) => void>());
 const router = vi.hoisted(() => ({
@@ -14,7 +15,7 @@ const configureI18nFromPageProps = vi.hoisted(() =>
   vi.fn<(props: unknown, options?: unknown) => Promise<void>>(() => Promise.resolve()),
 );
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     createInertiaApp,
     router,
   }),
@@ -58,17 +59,7 @@ const i18nProps = {
 };
 
 beforeEach(() => {
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn<(query: string) => MediaQueryList>(
-      () =>
-        ({
-          matches: false,
-          addEventListener: vi.fn<() => void>(),
-          removeEventListener: vi.fn<() => void>(),
-        }) as unknown as MediaQueryList,
-    ),
-  );
+  stubMatchMedia();
 });
 
 afterEach(() => {

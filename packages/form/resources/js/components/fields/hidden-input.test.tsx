@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 import { HiddenInputComponent } from "./hidden-input";
 

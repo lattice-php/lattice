@@ -22,7 +22,7 @@ export default defineConfig({
       exclude: [
         "resources/js/**/*.test.*",
         "resources/js/**/*.test-d.*",
-        "resources/js/test-setup.ts",
+        "resources/js/test-support.*",
       ],
       rollupTypes: true,
       compilerOptions: {

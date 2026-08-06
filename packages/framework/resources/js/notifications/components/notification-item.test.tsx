@@ -2,11 +2,11 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/core/types";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { NotificationItemRow } from "./notification-item";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     Link: ({ children, onClick, ...props }: React.ComponentProps<"a">) => (
       <a
         {...props}

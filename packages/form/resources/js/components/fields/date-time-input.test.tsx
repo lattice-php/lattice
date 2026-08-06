@@ -2,7 +2,8 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { setLocale } from "@lattice-php/ui/i18n/locale";
 import { setTimezone } from "@lattice-php/ui/i18n/timezone";
-import { createFieldRenderer, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { createFieldRenderer } from "@lattice-php/form/test-support";
 import { DateTimeInputComponent } from "./date-time-input";
 
 const renderField = createFieldRenderer(DateTimeInputComponent);

@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
 import { registry } from "@lattice-php/lattice/registry";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { TableColumn, TableNode } from "@lattice-php/table/types";
 import TableComponent from "./table";
 

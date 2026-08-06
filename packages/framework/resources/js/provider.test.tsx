@@ -1,19 +1,10 @@
 import { act, render } from "@testing-library/react";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it } from "vitest";
 import { Provider } from "./provider";
+import { stubMatchMedia } from "@lattice-php/core/test-support";
 
 beforeEach(() => {
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn<(query: string) => MediaQueryList>(
-      () =>
-        ({
-          matches: false,
-          addEventListener: vi.fn<() => void>(),
-          removeEventListener: vi.fn<() => void>(),
-        }) as unknown as MediaQueryList,
-    ),
-  );
+  stubMatchMedia();
 });
 
 afterEach(() => {

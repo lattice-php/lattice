@@ -2,7 +2,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { FilterNode, TableColumn } from "@lattice-php/table/types";
 import { registry } from "@lattice-php/lattice/registry";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import { FilterBar, FilterMenu } from "./filter-bar";
 
 const selectFilter: FilterNode = {

@@ -4,7 +4,7 @@ import { NotificationList } from "./notification-list";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 function item(id: string, title: string): NotificationItem {

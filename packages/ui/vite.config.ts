@@ -10,7 +10,9 @@ function libraryEntries(): string[] {
   return readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
     .filter((file) => /\.(ts|tsx)$/.test(file))
     .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
-    .filter((file) => file !== "test-setup.ts" && file !== "types.ts")
+    .filter(
+      (file) => !file.startsWith("test/") && file !== "test-support.ts" && file !== "types.ts",
+    )
     .map((file) => path.join(sourceRoot, file));
 }
 
@@ -49,7 +51,8 @@ export default defineConfig({
       exclude: [
         "resources/js/**/*.test.*",
         "resources/js/**/*.test-d.*",
-        "resources/js/test-setup.ts",
+        "resources/js/test-support.*",
+        "resources/js/test/**",
       ],
       compilerOptions: {
         paths: {

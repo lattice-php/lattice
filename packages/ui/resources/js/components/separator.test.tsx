@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import SeparatorComponent from "./separator";
 
 function renderSeparator(orientation: "horizontal" | "vertical") {

@@ -6,17 +6,16 @@ afterEach(() => {
 });
 
 vi.mock("@lattice-php/core/renderer", async () => {
-  const { RenderNode } = await import("@lattice-php/lattice/test/form-renderer-probe");
+  const { RenderNode } = await import("@lattice-php/form/test/form-renderer-probe");
 
   return { RenderNode };
 });
 
-import { FormProvider } from "@lattice-php/form/hooks/context";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
-import { renderCounts } from "@lattice-php/lattice/test/form-renderer-probe";
+import { renderCounts } from "@lattice-php/form/test/form-renderer-probe";
 import { RepeaterComponent } from "./repeater";
 import { TableRows, type TableColumn } from "./table-rows";
-import { fakeFormContext, fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode, stubMatchMedia } from "@lattice-php/core/test-support";
+import { renderWithForm as wrap } from "@lattice-php/form/test-support";
 
 const columns: TableColumn[] = [
   { name: "qty", label: "Qty", columnWidth: "md" },
@@ -31,26 +30,6 @@ const priceNode = fakeNode({ id: "p", type: "field.text-input", props: { name: "
 const contentNode = fakeNode({ id: "c", type: "field.textarea", props: { name: "content" } });
 
 function noop() {}
-
-type MediaQueryListener = (this: MediaQueryList, event: MediaQueryListEvent) => void;
-
-function mockTableViewport(matches: boolean) {
-  vi.stubGlobal(
-    "matchMedia",
-    vi.fn<(query: string) => MediaQueryList>().mockImplementation((query: string) => ({
-      matches,
-      media: query,
-      onchange: null,
-      addEventListener:
-        vi.fn<(type: string, listener: EventListenerOrEventListenerObject | null) => void>(),
-      removeEventListener:
-        vi.fn<(type: string, listener: EventListenerOrEventListenerObject | null) => void>(),
-      addListener: vi.fn<(listener: MediaQueryListener | null) => void>(),
-      removeListener: vi.fn<(listener: MediaQueryListener | null) => void>(),
-      dispatchEvent: vi.fn<(event: Event) => boolean>(() => true),
-    })),
-  );
-}
 
 it("renders the header columns once and a columnar row's scoped cells", () => {
   render(
@@ -226,7 +205,7 @@ it("stores table layout column widths under the field base", () => {
 });
 
 it("renders stack rows instead of the horizontal table below the table breakpoint", () => {
-  mockTableViewport(false);
+  stubMatchMedia(false);
 
   render(
     <TableRows
@@ -252,14 +231,6 @@ it("renders stack rows instead of the horizontal table below the table breakpoin
     "items[0][price]",
   ]);
 });
-
-function wrap(ui: React.ReactNode, initial: Record<string, unknown> = {}) {
-  return render(
-    <FormProvider value={fakeFormContext()}>
-      <FormValuesProvider initial={initial}>{ui}</FormValuesProvider>
-    </FormProvider>,
-  );
-}
 
 const tableNode = fakeNode({
   id: "r",

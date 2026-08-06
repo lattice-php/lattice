@@ -1,4 +1,4 @@
-import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
+import { useFieldScope } from "../hooks/field-scope";
 
 export const renderCounts = new Map<string, number>();
 

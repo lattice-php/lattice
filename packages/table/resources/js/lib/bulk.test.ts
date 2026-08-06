@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { getBulkActions } from "./bulk";
 import type { ActionNode } from "@lattice-php/table/types";
 

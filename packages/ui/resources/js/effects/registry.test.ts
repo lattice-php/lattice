@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
-import { effect } from "@lattice-php/lattice/test/effect-fixture";
+import { effect } from "@lattice-php/ui/test/effect-fixture";
 import { builtinEffectHandlers } from "./registry";
 
 const router = vi.hoisted(() => ({
@@ -9,7 +9,7 @@ const router = vi.hoisted(() => ({
 }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({ router }),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({ router }),
 );
 
 const setLocale = vi.hoisted(() => vi.fn<(locale: string) => void>());

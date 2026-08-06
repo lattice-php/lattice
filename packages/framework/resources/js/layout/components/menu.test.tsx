@@ -2,14 +2,14 @@ import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     usePage: vi.fn<() => { url: string }>(() => ({ url: "/products" })),
     Link: ({
       children,

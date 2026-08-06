@@ -1,71 +1,11 @@
 import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { TableNode, TableResult, TableQuery } from "@lattice-php/table/types";
-import type { TableColumn } from "@lattice-php/table/types";
+import { beforeEach, describe, expect, it } from "vitest";
+import type { TableNode } from "@lattice-php/table/types";
+import { col, tableFetch, tableQuery } from "../test-support";
 import TableComponent from "./table";
 
 const storageKey = "lattice:table-columns:browser.products";
-
-function col(partial: {
-  key: string;
-  label: string;
-  type?: string;
-  width?: TableColumn["props"]["width"];
-  sortable?: boolean;
-}): TableColumn {
-  const { key, label, type = "column.text", width, sortable } = partial;
-
-  return {
-    key,
-    type,
-    props: {
-      label,
-      width: width ?? "md",
-      align: "start",
-      sortable: sortable ?? null,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: null,
-    },
-  } as TableColumn;
-}
-
-function tableQuery(overrides: Partial<TableQuery> = {}): Partial<TableQuery> {
-  return {
-    filters: [],
-    page: 1,
-    perPage: 25,
-    sorts: [],
-    tableFilters: {},
-    ...overrides,
-  };
-}
-
-type TableResultOverrides = Partial<Omit<TableResult, "query">> & { query?: Partial<TableQuery> };
-
-function tableResponse(overrides: TableResultOverrides = {}): Response {
-  return Response.json({
-    data: [],
-    pagination: {},
-    ...overrides,
-    query: tableQuery(overrides.query),
-  });
-}
-
-function tableFetch(...responses: TableResultOverrides[]) {
-  let calls = 0;
-  const fetch = vi.fn<typeof globalThis.fetch>(async () => {
-    const response = responses[Math.min(calls, responses.length - 1)] ?? {};
-    calls += 1;
-
-    return tableResponse(response);
-  });
-
-  vi.stubGlobal("fetch", fetch);
-
-  return fetch;
-}
 
 function node(overrides: Partial<TableNode["props"]> = {}): TableNode {
   return {

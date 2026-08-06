@@ -1,103 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@lattice-php/lattice/provider";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableNode, TablePagination, TableResult, TableQuery } from "@lattice-php/table/types";
-import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
-import type { Node } from "@lattice-php/core/types";
-import { fakeNode } from "@lattice-php/lattice/test-support";
-import type { TableColumn } from "@lattice-php/table/types";
+import type { TableNode } from "@lattice-php/table/types";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { col, pagination, requestOptions, tableFetch, tableQuery } from "../test-support";
 import TableComponent from "./table";
-
-function col(partial: {
-  key: string;
-  label: string;
-  type?: string;
-  width?: TableColumn["props"]["width"];
-  sortable?: boolean;
-  filter?: ColumnFilter | null;
-  schema?: Node[];
-  props?: Record<string, unknown>;
-}): TableColumn {
-  const { key, label, type = "column.text", width, sortable, filter, schema, props } = partial;
-
-  return {
-    key,
-    type,
-    props: {
-      label,
-      width: width ?? (type === "column.stack" ? "xl" : "md"),
-      align: "start",
-      sortable: sortable ?? null,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: filter ?? null,
-      ...props,
-    },
-    ...(schema ? { schema } : {}),
-  } as TableColumn;
-}
-
-function pagination(overrides: Partial<TablePagination> = {}): TablePagination {
-  return {
-    mode: "none",
-    currentPage: null,
-    lastPage: null,
-    perPage: null,
-    total: null,
-    from: null,
-    to: null,
-    hasMore: false,
-    nextPage: null,
-    ...overrides,
-  };
-}
-
-function tableQuery(overrides: Partial<TableQuery> = {}): Partial<TableQuery> {
-  return {
-    filters: [],
-    page: 1,
-    perPage: 25,
-    sorts: [],
-    ...overrides,
-  };
-}
-
-type TableResultOverrides = Partial<Omit<TableResult, "query">> & { query?: Partial<TableQuery> };
-
-function tableResponse(overrides: TableResultOverrides = {}): Response {
-  return Response.json({
-    data: [],
-    pagination: {},
-    ...overrides,
-    query: tableQuery(overrides.query),
-  });
-}
-
-function tableFetch(...responses: TableResultOverrides[]) {
-  let calls = 0;
-  const fetch = vi.fn<typeof globalThis.fetch>(async () => {
-    const response = responses[Math.min(calls, responses.length - 1)] ?? {};
-    calls += 1;
-
-    return tableResponse(response);
-  });
-
-  vi.stubGlobal("fetch", fetch);
-
-  return fetch;
-}
-
-function requestOptions(headers: Record<string, string> = {}) {
-  return {
-    credentials: "same-origin",
-    method: undefined,
-    headers: {
-      Accept: "application/json",
-      "Accept-Language": "en",
-      ...headers,
-    },
-  };
-}
 
 describe("Lattice table component", () => {
   afterEach(() => {

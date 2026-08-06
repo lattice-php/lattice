@@ -1,11 +1,11 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { createRegistry } from "@lattice-php/core/registry";
 import { clearRemoteTokenCache } from "@lattice-php/core/api";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import { ChatBox } from "./chat-box";
 
 const registry = createRegistry(chatComponents);

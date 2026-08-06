@@ -5,7 +5,7 @@ import type { PagePayload, RendererComponent } from "@lattice-php/lattice";
 import Page from "./page";
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 function payload(lattice: Partial<PagePayload> = {}): PagePayload {

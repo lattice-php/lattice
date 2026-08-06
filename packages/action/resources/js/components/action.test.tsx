@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { IconRendererProvider } from "@lattice-php/ui/icons";
 import type { IconRendererFunction } from "@lattice-php/ui/icons";
 import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
@@ -12,7 +12,7 @@ const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
 vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock(),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 describe("Lattice action component", () => {

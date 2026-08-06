@@ -1,48 +1,9 @@
-import { render, type RenderOptions, type RenderResult } from "@testing-library/react";
-import type { ReactElement } from "react";
-import {
-  createRegistry,
-  eagerComponent,
-  RegistryContext,
-  type ComponentPropsOf,
-  type Node,
-  type Registry,
-  type RendererComponent,
-  type Schema,
-} from "@lattice-php/core";
+import type { RenderResult } from "@testing-library/react";
+import { createRegistry, eagerComponent, type RendererComponent } from "@lattice-php/core";
+import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
 import TreeComponent, { type TreeNodeData } from "./tree";
 
-/**
- * Renders `ui` with `registry` available to the core `<Renderer>` (used here to
- * render a node's schema body), mirroring what the app Provider does.
- */
-export function renderWithRegistry(
-  ui: ReactElement,
-  registry: Registry,
-  options?: RenderOptions,
-): RenderResult {
-  return render(ui, {
-    wrapper: ({ children }) => (
-      <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>
-    ),
-    ...options,
-  });
-}
-
-/**
- * Build a node fixture with only the props a case cares about. The wire always
- * carries the full prop object, but the component defaults what is omitted, so
- * partial props are safe; prop names stay checked via `ComponentPropsOf`.
- */
-export function fakeNode<TType extends string>(node: {
-  type: TType;
-  id?: string;
-  key?: string;
-  schema?: Schema;
-  props?: Partial<ComponentPropsOf<TType>>;
-}): Node<TType> {
-  return node as unknown as Node<TType>;
-}
+export { fakeNode, renderWithRegistry };
 
 /**
  * Stand-in body component registered under `"test.text"` alongside

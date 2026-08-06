@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
-import { fakeNode } from "@lattice-php/lattice/test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import MenuItemComponent from "./menu-item";
 
@@ -10,7 +10,7 @@ const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
 vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     usePage: () => ({ url: "/products" }),
   }),
 );

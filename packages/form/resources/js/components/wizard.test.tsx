@@ -4,7 +4,7 @@ import type { Node } from "@lattice-php/core";
 import { FormProvider } from "@lattice-php/form/hooks/context";
 import type { FormContextValue } from "@lattice-php/form/hooks/context";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
-import { fakeFormContext } from "@lattice-php/lattice/test-support";
+import { fakeFormContext } from "@lattice-php/form/test-support";
 import { WizardComponent, WizardStepComponent } from "./wizard";
 
 configure({ testIdAttribute: "data-test" });

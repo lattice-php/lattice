@@ -4,7 +4,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { actionClicks, renderTree, sampleNodes as nodes, treeNode } from "./test-support";
 import { type TreeNodeData } from "./tree";
 
-vi.mock("@inertiajs/react", async () => (await import("./inertia-mock")).inertiaMock());
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
+);
 
 beforeEach(() => {
   vi.mocked(router.visit).mockClear();

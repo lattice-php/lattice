@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearRefreshedRefs } from "@lattice-php/core/component-ref";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import ButtonComponent from "@lattice-php/ui/components/button";
-import { fakeNode } from "@lattice-php/lattice/test-support";
-import { renderWithRegistry } from "@lattice-php/lattice/test/render";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
 import {
   CheckboxComponent,
   ChoiceComponent,
@@ -32,7 +32,7 @@ const formCallbacks = vi.hoisted(
 );
 
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/lattice/test/inertia-mock")).inertiaMock({
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
     Form: ({
       children,
       errorBag: _errorBag,
