@@ -59,9 +59,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+  # Runs on every push to main: the split action no-ops for packages whose
+  # contents are unchanged, and only pushes the tag when a release was created.
   split-composer:
     needs: release-please
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -91,7 +92,7 @@ jobs:
           package_directory: ${{ matrix.package.directory }}
           repository_organization: lattice-php
           repository_name: ${{ matrix.package.repository }}
-          tag: ${{ needs.release-please.outputs.tag_name }}
+          tag: ${{ needs.release-please.outputs.release_created == 'true' && needs.release-please.outputs.tag_name || '' }}
           user_email: github-actions[bot]@users.noreply.github.com
           user_name: github-actions[bot]
         env:
