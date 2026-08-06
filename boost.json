@@ -9,14 +9,16 @@
     "nightwatch": false,
     "sail": false,
     "skills": [
+        "infer-conventions",
         "laravel-best-practices",
         "pest-testing",
+        "tailwindcss-development",
         "inertia-react-development",
         "echo-react-development",
         "echo-development",
-        "tailwindcss-development",
         "documentation",
         "pr-review",
+        "test-audit",
         "worktrees"
     ]
 }

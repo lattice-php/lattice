@@ -37,17 +37,6 @@
 - Keep comments that explain framework quirks, ordering requirements, browser/test timing, cache/build behavior, performance
   traps, or other constraints that are hard to infer from the code alone.
 
-## Testing
-
-- Prefer feature tests for backend behavior. Test the application through HTTP endpoints, actions, jobs, commands,
-  events, policies, and database effects rather than isolating internals by default.
-- Use unit tests only for complex algorithms implemented as pure functions or small deterministic value objects where
-  integration coverage would make the important cases hard to see.
-- For UI behavior that is not directly about an endpoint's returned payload, use Pest browser tests. This includes
-  interactions, client-side state, navigation, visual toggles, JavaScript behavior, and regressions that only appear in
-  the browser.
-- It is acceptable to add stable test attributes when they make browser assertions clearer or less brittle.
-
 ## Translation Conventions
 
 - **Lowercase keys only**: Translation key segments may use lowercase letters, numbers, dashes, or underscores. Never use camelCase. Both `billing.coming-soon` and `billing.coming_soon` are valid.
