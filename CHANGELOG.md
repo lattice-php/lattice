@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.41.0](https://github.com/lattice-php/lattice/compare/0.40.0...0.41.0) (2026-08-06)
+
+
+### Features
+
+* import the media package ([dde885b](https://github.com/lattice-php/lattice/commit/dde885bdf3845285e1e37632a04190f6aeae1a58))
+* import the media package ([e356be8](https://github.com/lattice-php/lattice/commit/e356be8beb5f10ea6314fb23f354417bf0f79388))
+* import the tree package ([e2314f1](https://github.com/lattice-php/lattice/commit/e2314f180173bbb4b508aaf3c9efe3e7b70ac7a7))
+* import the tree package ([6bfcecf](https://github.com/lattice-php/lattice/commit/6bfcecfd45db6aee2a73a470b2c2bf701b259ade))
+* standalone plugin builds for tree and media ([86ab22b](https://github.com/lattice-php/lattice/commit/86ab22be8231485046696624aad811c4e6926b52))
+
+
+### Bug Fixes
+
+* activate the props augmentation in the tree workspace typecheck ([64deb8f](https://github.com/lattice-php/lattice/commit/64deb8f5a88139a837d2d5b52945fe77f56ffe88))
+* let the action package augment ComponentProps like its siblings ([0406c45](https://github.com/lattice-php/lattice/commit/0406c45a2a480b14c5c7cf1c3c0c57a1a4e98048))
+* release-split blockers for tree and action ([68eeb05](https://github.com/lattice-php/lattice/commit/68eeb055cd1f233743f3075a3ec4f01f8596da22))
+* ship a self-contained tree tsconfig for vendor installs ([204197b](https://github.com/lattice-php/lattice/commit/204197b5a063e40265729e24ce47f1fb08bc398a))
+* wire the ComponentProps augmentation into published types ([af4a2fd](https://github.com/lattice-php/lattice/commit/af4a2fd329a4ad354d76aff0e5bdcee663da5747))
+
+
+### Refactoring
+
+* extract the action package ([b41ca49](https://github.com/lattice-php/lattice/commit/b41ca4921db179fe51f30ced365a498d21c41535))
+* keep the tree workspace off npm ([2865a18](https://github.com/lattice-php/lattice/commit/2865a18c6f4b8948c71639e53864f35aede89f62))
+* move generic test helpers into the packages that own them ([b134eb3](https://github.com/lattice-php/lattice/commit/b134eb33b92d98b8abe924e4c4f4977639284f15))
+
+
+### Documentation
+
+* add a Packages section with the tree page ([8c3c0e7](https://github.com/lattice-php/lattice/commit/8c3c0e7c8e7a17be358ce74d315b3bb39fe62c88))
+* add a test-quality guideline and a test-audit skill ([29fd11d](https://github.com/lattice-php/lattice/commit/29fd11d8314f9ff812c2de0a0878a37d73d51220))
+* add the 0.38 to 0.40 upgrade guide ([a943641](https://github.com/lattice-php/lattice/commit/a943641945fac9942a19f4aa5d8487266c4e9031))
+* add the media package page ([55f2d2e](https://github.com/lattice-php/lattice/commit/55f2d2edd8fcf25f8f245c3aa144a4bdfc87121b))
+
 ## [0.40.0](https://github.com/lattice-php/lattice/compare/0.39.0...0.40.0) (2026-08-05)
 
 
