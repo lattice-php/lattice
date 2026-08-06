@@ -192,6 +192,7 @@ export default defineConfig({
           label: "Packages",
           collapsed: true,
           items: [
+            { label: "Media", link: "/packages/media/" },
             { label: "Tree", link: "/packages/tree/" },
           ],
         },
