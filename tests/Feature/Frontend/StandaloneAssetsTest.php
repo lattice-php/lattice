@@ -21,6 +21,7 @@ beforeEach(function (): void {
             'sprite.svg' => 'svghash12345',
             'runtime.js' => 'runtimehash12',
             'react.js' => 'reacthash1234',
+            'react-dom.js' => 'domhash123456',
             'jsx-runtime.js' => 'jsxhash123456',
         ],
     ], JSON_THROW_ON_ERROR));
@@ -49,6 +50,7 @@ it('maps standalone plugin imports to the shared runtime', function (): void {
     expect($html)->toContain('<script type="importmap">')
         ->toContain('"@lattice-php/lattice/runtime":"http://localhost/vendor/lattice/runtime.js?v=runtimehash12"')
         ->toContain('"react":"http://localhost/vendor/lattice/react.js?v=reacthash1234"')
+        ->toContain('"react-dom":"http://localhost/vendor/lattice/react-dom.js?v=domhash123456"')
         ->toContain('"react/jsx-runtime":"http://localhost/vendor/lattice/jsx-runtime.js?v=jsxhash123456"');
 });
 

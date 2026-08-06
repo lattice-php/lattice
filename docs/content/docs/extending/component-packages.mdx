@@ -85,10 +85,11 @@ export default {
 } satisfies Plugin;
 ```
 
-The optional `dist/plugin.js` is a single precompiled ESM file. Build it with `react`,
+The optional `dist/plugin.js` is a single precompiled ESM file. Build it with `react`, `react-dom`,
 `react/jsx-runtime`, and `@lattice-php/lattice/runtime` left as external imports; the standalone host
 maps those specifiers to its own React and Lattice instances. Bundle every other dependency and
-inline dynamic imports so the Composer package does not need to publish additional chunks.
+inline dynamic imports so the Composer package does not need to publish additional chunks, and
+define `process.env.NODE_ENV` away — the file runs in the browser as-is.
 
 ## How it reaches the app
 

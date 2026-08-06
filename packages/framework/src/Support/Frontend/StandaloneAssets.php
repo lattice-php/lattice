@@ -47,6 +47,7 @@ final class StandaloneAssets
         $imports = [
             '@lattice-php/lattice/runtime' => $this->versionedUrl('runtime.js'),
             'react' => $this->versionedUrl('react.js'),
+            'react-dom' => $this->versionedUrl('react-dom.js'),
             'react/jsx-runtime' => $this->versionedUrl('jsx-runtime.js'),
         ];
 

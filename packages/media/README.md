@@ -15,6 +15,8 @@ Development happens in the [lattice-php/lattice monorepo](https://github.com/lat
 On the PHP side there is nothing to wire: the classes, migrations, config (`config/media.php`), and
 the default `Media` policy are picked up automatically. The React renderer ships as source and
 Lattice's `lattice()` Vite plugin compiles it into your app's bundle via `virtual:lattice/plugins`.
+No-build apps use the precompiled standalone module instead: run `php artisan lattice:assets` after
+installation.
 
 ## Usage
 

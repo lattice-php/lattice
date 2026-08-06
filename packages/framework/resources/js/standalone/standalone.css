@@ -3,3 +3,5 @@
 @import "../../../../ui/resources/css/lattice.css";
 
 @source "../";
+@source "../../../../media/resources/js/";
+@source "../../../../tree/resources/js/";
