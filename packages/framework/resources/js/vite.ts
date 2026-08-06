@@ -195,8 +195,16 @@ export function componentPackagesPlugin(packages: LatticeComponentPackage[]): Pl
       }
 
       const workspaceRoot = searchForWorkspaceRoot(config.root ?? process.cwd());
+      // Vite's mergeAlias puts plugin-config aliases in front of the user config's,
+      // so this specific `/css` alias wins over a user's broader package-dir alias.
+      const alias = Object.fromEntries(
+        packages.flatMap((pkg) => (pkg.css ? [[`@${pkg.name}/css`, pkg.css]] : [])),
+      );
 
-      return { server: { fs: { allow: [workspaceRoot, ...packages.map((pkg) => pkg.dir)] } } };
+      return {
+        ...(Object.keys(alias).length > 0 ? { resolve: { alias } } : {}),
+        server: { fs: { allow: [workspaceRoot, ...packages.map((pkg) => pkg.dir)] } },
+      };
     },
     resolveId(id) {
       return id === VIRTUAL_PLUGINS_ID ? RESOLVED_VIRTUAL_PLUGINS_ID : null;
