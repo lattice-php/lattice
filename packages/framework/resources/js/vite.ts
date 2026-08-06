@@ -61,18 +61,34 @@ export type LatticeComponentPackage = {
   dir: string;
   /** Absolute path to the package's JS plugin entry. */
   plugin: string;
+  /** Absolute path to the package's stylesheet, when it declares one. */
+  css?: string;
+  /** Absolute path to the package's icon directory, when it declares one. */
+  icons?: string;
 };
+
+type LatticeManifest = { plugin?: string; css?: string; icons?: string };
 
 type InstalledPackage = {
   name: string;
   "install-path"?: string;
-  extra?: { lattice?: { plugin?: string } };
+  extra?: { lattice?: LatticeManifest };
 };
 
 type RootPackageJson = {
   name?: string;
-  extra?: { lattice?: { plugin?: string } };
+  extra?: { lattice?: LatticeManifest };
 };
+
+function resolveManifestPaths(
+  manifest: LatticeManifest,
+  dir: string,
+): Pick<LatticeComponentPackage, "css" | "icons"> {
+  return {
+    ...(typeof manifest.css === "string" ? { css: path.resolve(dir, manifest.css) } : {}),
+    ...(typeof manifest.icons === "string" ? { icons: path.resolve(dir, manifest.icons) } : {}),
+  };
+}
 
 /**
  * Resolve every Composer package that declares `extra.lattice.plugin` into an
@@ -86,7 +102,8 @@ export function collectComponentPackages(
   const packages = Array.isArray(installed) ? installed : (installed.packages ?? []);
 
   return packages.flatMap((pkg) => {
-    const entry = pkg.extra?.lattice?.plugin;
+    const manifest = pkg.extra?.lattice ?? {};
+    const entry = manifest.plugin;
 
     if (typeof entry !== "string") {
       return [];
@@ -94,7 +111,14 @@ export function collectComponentPackages(
 
     const dir = path.resolve(installPathsRelativeTo, pkg["install-path"] ?? `../${pkg.name}`);
 
-    return [{ name: pkg.name, dir, plugin: path.resolve(dir, entry) }];
+    return [
+      {
+        name: pkg.name,
+        dir,
+        plugin: path.resolve(dir, entry),
+        ...resolveManifestPaths(manifest, dir),
+      },
+    ];
   });
 }
 
@@ -109,13 +133,20 @@ export function collectRootComponentPackage(
   composerJson: RootPackageJson,
   appRoot: string,
 ): LatticeComponentPackage[] {
-  const entry = composerJson.extra?.lattice?.plugin;
+  const manifest = composerJson.extra?.lattice ?? {};
 
-  if (typeof entry !== "string" || typeof composerJson.name !== "string") {
+  if (typeof manifest.plugin !== "string" || typeof composerJson.name !== "string") {
     return [];
   }
 
-  return [{ name: composerJson.name, dir: appRoot, plugin: path.resolve(appRoot, entry) }];
+  return [
+    {
+      name: composerJson.name,
+      dir: appRoot,
+      plugin: path.resolve(appRoot, manifest.plugin),
+      ...resolveManifestPaths(manifest, appRoot),
+    },
+  ];
 }
 
 /**

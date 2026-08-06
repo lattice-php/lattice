@@ -190,6 +190,72 @@ describe("lattice Vite helper", () => {
     ).toEqual([]);
   });
 
+  it("resolves css and icons manifest paths for component packages", () => {
+    const composerDir = path.resolve("/tmp/app/vendor/composer");
+
+    const packages = collectComponentPackages(
+      {
+        packages: [
+          {
+            name: "acme/signature",
+            "install-path": "../acme/signature",
+            extra: {
+              lattice: {
+                plugin: "resources/js/plugin.ts",
+                css: "resources/css/signature.css",
+                icons: "resources/icons",
+              },
+            },
+          },
+          {
+            name: "acme/no-plugin",
+            "install-path": "../acme/no-plugin",
+            extra: { lattice: { css: "resources/css/ignored.css" } },
+          },
+        ],
+      },
+      composerDir,
+    );
+
+    expect(packages).toEqual([
+      {
+        name: "acme/signature",
+        dir: path.resolve("/tmp/app/vendor/acme/signature"),
+        plugin: path.resolve("/tmp/app/vendor/acme/signature/resources/js/plugin.ts"),
+        css: path.resolve("/tmp/app/vendor/acme/signature/resources/css/signature.css"),
+        icons: path.resolve("/tmp/app/vendor/acme/signature/resources/icons"),
+      },
+    ]);
+  });
+
+  it("resolves css and icons for the composer ROOT package", () => {
+    const appRoot = path.resolve("/tmp/app");
+
+    expect(
+      collectRootComponentPackage(
+        {
+          name: "acme/signature",
+          extra: {
+            lattice: {
+              plugin: "resources/js/plugin.ts",
+              css: "resources/css/signature.css",
+              icons: "resources/icons",
+            },
+          },
+        },
+        appRoot,
+      ),
+    ).toEqual([
+      {
+        name: "acme/signature",
+        dir: appRoot,
+        plugin: path.resolve(appRoot, "resources/js/plugin.ts"),
+        css: path.resolve(appRoot, "resources/css/signature.css"),
+        icons: path.resolve(appRoot, "resources/icons"),
+      },
+    ]);
+  });
+
   it("discovers a component package that is its own composer ROOT project", () => {
     const appRoot = path.resolve("tests/Fixtures/PackageDiscovery/root-package");
 
