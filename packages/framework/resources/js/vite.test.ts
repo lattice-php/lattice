@@ -366,4 +366,29 @@ describe("lattice Vite helper", () => {
       augmentInterface: "MyIcons",
     });
   });
+
+  it("orders icon dirs ui, then discovered packages, then app dirs", () => {
+    const appRoot = path.resolve("/tmp/lattice-app");
+    const root = path.resolve(appRoot, "vendor/lattice-php/lattice");
+
+    const iconOptions = resolveIconOptions({ appRoot, icons: { dirs: ["/app/icons"] } }, [
+      {
+        name: "acme/signature",
+        dir: "/app/vendor/acme/signature",
+        plugin: "/app/vendor/acme/signature/resources/js/plugin.ts",
+        icons: "/app/vendor/acme/signature/resources/icons",
+      },
+      {
+        name: "acme/widget",
+        dir: "/app/vendor/acme/widget",
+        plugin: "/app/vendor/acme/widget/resources/js/plugin.ts",
+      },
+    ]);
+
+    expect(iconOptions?.iconDirs).toEqual([
+      path.resolve(root, "../ui/resources/icons"),
+      "/app/vendor/acme/signature/resources/icons",
+      "/app/icons",
+    ]);
+  });
 });

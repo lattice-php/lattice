@@ -17,6 +17,8 @@ const sourceRoot = path.resolve(import.meta.dirname, "packages/framework/resourc
 
 const isVitest = process.env.VITEST !== undefined;
 
+const componentPackages = discoverComponentPackages(import.meta.dirname);
+
 // The lucide icons Lattice's built-in components rely on. The sprite plugin
 // idempotently vendors these into packages/ui/resources/icons at build time, so
 // consumers can use the icon set shipped by lattice-php/ui without
@@ -105,7 +107,10 @@ export default defineConfig({
                 outDir: "packages/ui/resources/icons",
               },
             ],
-            iconDirs: ["workbench/resources/icons"],
+            iconDirs: [
+              ...componentPackages.flatMap((pkg) => (pkg.icons ? [pkg.icons] : [])),
+              "workbench/resources/icons",
+            ],
             // Generate an importable IconName union + augment <Icon name>.
             dts: {
               file: "workbench/resources/js/sprite-icons.ts",
@@ -139,7 +144,7 @@ export default defineConfig({
           // The workbench acts as a Lattice consumer: auto-discover component
           // packages installed via Composer and expose them as
           // `virtual:lattice/plugins` (external apps get this from `lattice()`).
-          componentPackagesPlugin(discoverComponentPackages(import.meta.dirname)),
+          componentPackagesPlugin(componentPackages),
         ]),
     react(),
     tailwindcss(),

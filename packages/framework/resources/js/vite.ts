@@ -39,13 +39,14 @@ type Roots = {
 
 export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
   const { appRoot } = resolveRoots(options);
+  const packages = discoverComponentPackages(appRoot);
   const plugins: PluginOption[] = [
     corePlugin(options),
     optionalPeersPlugin(),
-    componentPackagesPlugin(discoverComponentPackages(appRoot)),
+    componentPackagesPlugin(packages),
     typescriptPlugin(options),
   ];
-  const iconOptions = resolveIconOptions(options);
+  const iconOptions = resolveIconOptions(options, packages);
 
   if (iconOptions) {
     plugins.push(svgSprite(iconOptions));
@@ -361,7 +362,10 @@ function typescriptPlugin(options: LatticeViteOptions): Plugin {
   };
 }
 
-export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOptions | null {
+export function resolveIconOptions(
+  options: LatticeViteOptions,
+  packages: LatticeComponentPackage[] = [],
+): SvgSpriteOptions | null {
   const icons = options.icons ?? true;
 
   if (icons === false) {
@@ -379,7 +383,11 @@ export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOption
 
   return {
     ...spriteOptions,
-    iconDirs: [path.resolve(root, "../ui/resources/icons"), ...dirs],
+    iconDirs: [
+      path.resolve(root, "../ui/resources/icons"),
+      ...packages.flatMap((pkg) => (pkg.icons ? [pkg.icons] : [])),
+      ...dirs,
+    ],
     ...(dts === false ? {} : { dts: { ...defaultTypes, ...dts } }),
   };
 }
