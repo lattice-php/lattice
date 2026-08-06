@@ -179,6 +179,10 @@ export default defineConfig({
       "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
       "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
       "@lattice-php/media": path.resolve(import.meta.dirname, "packages/media/resources/js"),
+      "@lattice-php/signature-example/css": path.resolve(
+        import.meta.dirname,
+        "packages/signature-example/resources/css/signature-example.css",
+      ),
       "@lattice-php/table": path.resolve(import.meta.dirname, "packages/table/resources/js"),
       "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
       "@lattice-php/lattice": sourceRoot,
