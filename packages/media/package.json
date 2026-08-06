@@ -1,0 +1,22 @@
+{
+  "name": "@lattice-php/media",
+  "version": "0.40.0",
+  "private": true,
+  "description": "Dev workspace for the media component package; ships to consumers via Composer, not npm.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@lattice-php/action": "0.40.0",
+    "@lattice-php/core": "0.40.0",
+    "@lattice-php/form": "0.40.0",
+    "@lattice-php/lattice": "0.40.0",
+    "@lattice-php/table": "0.40.0",
+    "@lattice-php/ui": "0.40.0",
+    "@tiptap/core": "^3.26.0",
+    "@tiptap/react": "^3.26.0",
+    "@tiptap/starter-kit": "^3.26.0"
+  }
+}

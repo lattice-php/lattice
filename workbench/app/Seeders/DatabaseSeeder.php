@@ -5,6 +5,7 @@ namespace Workbench\App\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Lattice\Media\Models\Media;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Factories\GroupFactory;
 use Workbench\App\Models\Category;
@@ -73,5 +74,10 @@ class DatabaseSeeder extends Seeder
             ->forBusinessPartner($customer)
             ->withLines($products)
             ->create();
+
+        $mediaProduct = Product::factory()->create(['name' => __('workbench.pages.product-media.product')]);
+        $images = Media::factory()->count(6)->create();
+        Media::factory()->document()->count(2)->create();
+        $mediaProduct->syncMedia($images->take(2)->pluck('id')->all(), 'gallery');
     }
 }

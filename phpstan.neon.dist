@@ -11,5 +11,6 @@ parameters:
         # The framework's publishable config file — larastan's env-outside-config
         # rule keys on a root config/ dir, which packaged configs don't live in.
         - packages/framework/config/lattice.php
+        - packages/media/config/media.php
         - tests/Fixtures/TypeScript/Unloadable/BrokenExtendsMissingClass.php
     level: 6

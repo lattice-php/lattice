@@ -20,6 +20,8 @@
       "@lattice-php/form/*": ["./form/resources/js/*"],
       "@lattice-php/lattice": ["./framework/resources/js/index.ts"],
       "@lattice-php/lattice/*": ["./framework/resources/js/*"],
+      "@lattice-php/media": ["./media/resources/js/plugin.ts"],
+      "@lattice-php/media/*": ["./media/resources/js/*"],
       "@lattice-php/table": ["./table/resources/js/index.ts"],
       "@lattice-php/table/*": ["./table/resources/js/*"],
       "@lattice-php/tree": ["./tree/resources/js/index.ts"],
