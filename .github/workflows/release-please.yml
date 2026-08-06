@@ -76,6 +76,8 @@ jobs:
             repository: form
           - directory: packages/framework
             repository: framework
+          - directory: packages/media
+            repository: media
           - directory: packages/table
             repository: table
           - directory: packages/tree

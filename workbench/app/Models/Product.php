@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Models;
 
+use Closure;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Image\Image;
+use Lattice\Media\Models\Attachment;
+use Lattice\Media\Models\Concerns\HasMedia;
+use Lattice\Media\Models\Media;
 use Workbench\App\Factories\ProductFactory;
 
 /**
@@ -18,6 +23,9 @@ use Workbench\App\Factories\ProductFactory;
  * @property-read string|null $image
  * @property string $status
  * @property bool $featured
+ * @property array<string, mixed>|null $body
+ * @property-read string|null $gallery_cover_url
+ * @property-read Collection<int, Media> $galleryMedia
  * @property-read Collection<int, File> $images
  * @property-read Collection<int, Product> $relatedProducts
  * @property-read Collection<int, SalesPrice> $salesPrices
@@ -28,6 +36,8 @@ class Product extends Model
 {
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
+
+    use HasMedia;
 
     /** @var list<string> */
     protected $appends = ['image'];
@@ -40,6 +50,7 @@ class Product extends Model
         'sku',
         'status',
         'featured',
+        'body',
     ];
 
     /**
@@ -50,7 +61,29 @@ class Product extends Model
     {
         return [
             'featured' => 'boolean',
+            'body' => 'array',
         ];
+    }
+
+    /** @return MorphToMany<Media, $this, Attachment> */
+    public function galleryMedia(): MorphToMany
+    {
+        return $this->media('gallery');
+    }
+
+    /**
+     * @return array<array-key, string|Closure(Image): Image>
+     */
+    public function mediaConversions(string $collection): array
+    {
+        return $collection === 'gallery'
+            ? ['card' => fn (Image $image): Image => $image->cover(1200, 800)->optimize('webp', 75)]
+            : [];
+    }
+
+    public function getGalleryCoverUrlAttribute(): ?string
+    {
+        return $this->galleryMedia->first()?->url();
     }
 
     /**

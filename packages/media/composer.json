@@ -1,0 +1,43 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/media",
+    "description": "First-party media library for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/http": "^13.0",
+        "illuminate/image": "^13.0",
+        "illuminate/queue": "^13.0",
+        "illuminate/support": "^13.0",
+        "intervention/image": "^4.0",
+        "lattice-php/action": "self.version",
+        "lattice-php/core": "self.version",
+        "lattice-php/form": "self.version",
+        "lattice-php/table": "self.version",
+        "lattice-php/ui": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Media\\": "src/",
+            "Lattice\\Media\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "plugin": "resources/js/plugin.ts",
+            "discover": ["src"]
+        },
+        "laravel": {
+            "providers": [
+                "Lattice\\Media\\MediaServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

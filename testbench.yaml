@@ -11,6 +11,7 @@ env:
 
 providers:
   - Lattice\LatticeServiceProvider
+  - Lattice\Media\MediaServiceProvider
   - Lattice\Tree\TreeServiceProvider
   - Inertia\ServiceProvider
   - Workbench\App\Providers\WorkbenchServiceProvider

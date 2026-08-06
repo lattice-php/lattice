@@ -334,6 +334,14 @@ return [
                 'draft' => 'Entwurf',
             ],
         ],
+        'product-media' => [
+            'fields' => [
+                'body' => 'Artikeltext',
+                'caption' => 'Bildunterschrift',
+                'gallery' => 'Galerie',
+                'gallery-help-text' => 'Bilder aus der Mediathek auswählen.',
+            ],
+        ],
         'showcase' => [
             'age' => 'Alter',
             'birthday' => 'Geburtstag',
@@ -405,6 +413,8 @@ return [
         'groups' => 'Gruppen',
         'home' => 'Home',
         'log-out' => 'Abmelden',
+        'media' => 'Medien',
+        'media-picker' => 'Medienauswahl',
         'modals' => 'Modals',
         'notifications' => 'Benachrichtigungen',
         'package' => 'Paket-Komponenten',
@@ -670,6 +680,12 @@ return [
             'heading' => 'Produkt bearbeiten',
             'submit' => 'Produkt speichern',
             'title' => 'Produkt bearbeiten',
+        ],
+        'product-media' => [
+            'heading' => 'Produktgalerie',
+            'product' => 'Medien-Demoprodukt',
+            'submit' => 'Galerie speichern',
+            'title' => 'Medienauswahl',
         ],
         'products' => [
             'create' => 'Produkt erstellen',

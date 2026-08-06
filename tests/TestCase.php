@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\LatticeServiceProvider;
+use Lattice\Media\MediaServiceProvider;
 use Lattice\Support\Testing\InteractsWithLatticeComponents;
 use Lattice\Tree\Tree;
 use Lattice\Tree\TreeServiceProvider;
@@ -74,6 +75,7 @@ abstract class TestCase extends BaseTestCase
         return [
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
+            MediaServiceProvider::class,
             TreeServiceProvider::class,
             I18NextServiceProvider::class,
             WorkbenchServiceProvider::class,

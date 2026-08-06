@@ -334,6 +334,14 @@ return [
                 'draft' => 'Draft',
             ],
         ],
+        'product-media' => [
+            'fields' => [
+                'body' => 'Article body',
+                'caption' => 'Caption',
+                'gallery' => 'Gallery',
+                'gallery-help-text' => 'Pick images from the media library.',
+            ],
+        ],
         'showcase' => [
             'age' => 'Age',
             'birthday' => 'Birthday',
@@ -405,6 +413,8 @@ return [
         'groups' => 'Groups',
         'home' => 'Home',
         'log-out' => 'Log out',
+        'media' => 'Media',
+        'media-picker' => 'Media picker',
         'modals' => 'Modals',
         'notifications' => 'Notifications',
         'package' => 'Package components',
@@ -670,6 +680,12 @@ return [
             'heading' => 'Edit Product',
             'submit' => 'Save product',
             'title' => 'Edit Product',
+        ],
+        'product-media' => [
+            'heading' => 'Product gallery',
+            'product' => 'Media demo product',
+            'submit' => 'Save gallery',
+            'title' => 'Media picker',
         ],
         'products' => [
             'create' => 'Create product',
