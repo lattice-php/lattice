@@ -1,0 +1,216 @@
+import { describe, expect, it } from "vitest";
+import {
+  initialRequestValues,
+  isJsonMediaType,
+  jsonRequestContracts,
+  parameterKey,
+} from "./request-state";
+import type { Contract, Operation, Param } from "./types";
+
+function parameter(overrides: Partial<Param>): Param {
+  return {
+    name: "value",
+    location: "query",
+    required: false,
+    deprecated: false,
+    description: null,
+    schema: {},
+    example: null,
+    ...overrides,
+  };
+}
+
+function requestContract(overrides: Partial<Contract>): Contract {
+  return {
+    role: "request",
+    status: null,
+    mediaType: "application/json",
+    schema: null,
+    title: null,
+    examples: [],
+    headers: [],
+    required: false,
+    ...overrides,
+  };
+}
+
+function operation(overrides: Partial<Operation> = {}): Operation {
+  return {
+    summary: {
+      id: "post-widgets",
+      method: "POST",
+      path: "/widgets/{id}",
+      title: "Create widget",
+      deprecated: false,
+    },
+    serverUrl: "https://api.example.test",
+    servers: [{ url: "https://api.example.test", description: null }],
+    usesRootServers: true,
+    description: null,
+    tags: [],
+    paramGroups: [],
+    requests: [],
+    responses: [],
+    security: [],
+    ...overrides,
+  };
+}
+
+describe("parameterKey", () => {
+  it("combines the parameter location and name into a stable key", () => {
+    expect(parameterKey(parameter({ name: "widget id", location: "path" }))).toBe("path:widget id");
+  });
+});
+
+describe("request JSON media types", () => {
+  it("accepts JSON and structured JSON suffixes while ignoring form data", () => {
+    expect(isJsonMediaType("application/json")).toBe(true);
+    expect(isJsonMediaType("application/problem+json")).toBe(true);
+    expect(isJsonMediaType("multipart/form-data")).toBe(false);
+    expect(isJsonMediaType(null)).toBe(false);
+  });
+
+  it("preserves the order of JSON-compatible request contracts", () => {
+    const form = requestContract({ mediaType: "application/x-www-form-urlencoded" });
+    const problem = requestContract({ mediaType: "application/problem+json" });
+    const json = requestContract({ mediaType: "application/json" });
+
+    expect(jsonRequestContracts(operation({ requests: [form, problem, json] }))).toEqual([
+      problem,
+      json,
+    ]);
+  });
+});
+
+describe("initialRequestValues", () => {
+  it("prefers direct parameter examples, then schema examples, defaults, enums, and finally an empty value", () => {
+    const params = [
+      parameter({ name: "direct", example: 42, schema: { type: "integer", example: 1 } }),
+      parameter({ name: "schema-example", schema: { type: "string", example: "shown" } }),
+      parameter({ name: "default", schema: { type: "boolean", default: false } }),
+      parameter({ name: "enum", schema: { type: "string", enum: ["active", "disabled"] } }),
+      parameter({
+        name: "array",
+        example: ["roles", "rolesCount"],
+        schema: { type: "array", items: { type: "string", enum: ["roles", "rolesCount"] } },
+      }),
+      parameter({ name: "empty", schema: { type: "string" } }),
+    ];
+
+    expect(
+      initialRequestValues(operation({ paramGroups: [{ location: "query", params }] })).parameters,
+    ).toEqual({
+      "query:direct": "42",
+      "query:schema-example": "shown",
+      "query:default": "false",
+      "query:enum": "active",
+      "query:array": "roles,rolesCount",
+      "query:empty": "",
+    });
+  });
+
+  it("selects the first JSON-compatible contract and pretty-prints its explicit example", () => {
+    const values = initialRequestValues(
+      operation({
+        requests: [
+          requestContract({
+            mediaType: "multipart/form-data",
+            examples: [{ name: null, summary: null, value: "ignored" }],
+          }),
+          requestContract({
+            mediaType: "application/problem+json",
+            examples: [
+              { name: "problem", summary: null, value: { title: "Invalid", status: 422 } },
+            ],
+          }),
+          requestContract({
+            mediaType: "application/json",
+            examples: [{ name: null, summary: null, value: { ignored: true } }],
+          }),
+        ],
+      }),
+    );
+
+    expect(values).toEqual({
+      parameters: {},
+      mediaType: "application/problem+json",
+      body: '{\n  "title": "Invalid",\n  "status": 422\n}',
+    });
+  });
+
+  it("pretty-prints a schema-derived example with component references", () => {
+    const values = initialRequestValues(
+      operation({
+        requests: [requestContract({ schema: { $ref: "#/components/schemas/Widget" } })],
+      }),
+      {
+        schemas: {
+          Widget: {
+            type: "object",
+            required: ["name"],
+            properties: {
+              name: { type: "string", example: "Desk" },
+              count: { type: "integer", default: 2 },
+            },
+          },
+        },
+      },
+    );
+
+    expect(values.body).toBe('{\n  "name": "Desk"\n}');
+  });
+
+  it("derives required writable fields from composed request schemas", () => {
+    const values = initialRequestValues(
+      operation({
+        requests: [requestContract({ schema: { $ref: "#/components/schemas/CreateOffer" } })],
+      }),
+      {
+        schemas: {
+          OfferState: {
+            type: "object",
+            required: ["status"],
+            properties: {
+              status: { type: "string", enum: ["draft", "sent"] },
+              internalNote: { type: "string", example: "Not sent" },
+            },
+          },
+          CreateOffer: {
+            allOf: [
+              { $ref: "#/components/schemas/OfferState" },
+              {
+                type: "object",
+                required: ["address", "reference", "id"],
+                properties: {
+                  address: {
+                    type: "object",
+                    required: ["city"],
+                    properties: {
+                      city: { type: "string", example: "Berlin" },
+                      street: { type: "string", example: "Optional street" },
+                    },
+                  },
+                  reference: { type: ["string", "null"], default: null },
+                  id: { type: "string", readOnly: true, example: "offer-1" },
+                  tags: { type: "array", items: { type: "string" } },
+                },
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    expect(values.body).toBe(
+      '{\n  "status": "draft",\n  "address": {\n    "city": "Berlin"\n  },\n  "reference": null\n}',
+    );
+  });
+
+  it("returns no selected body when only non-JSON contracts exist", () => {
+    expect(
+      initialRequestValues(
+        operation({ requests: [requestContract({ mediaType: "multipart/form-data" })] }),
+      ),
+    ).toEqual({ parameters: {}, mediaType: null, body: "" });
+  });
+});

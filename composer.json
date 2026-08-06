@@ -26,6 +26,7 @@
         "laravel/boost": "^2.5",
         "laravel/pint": "^1.16",
         "laravel/reverb": "^1.10",
+        "lattice-php/api-reference": "@dev",
         "lattice-php/lattice": "@dev",
         "lattice-php/media": "@dev",
         "lattice-php/signature-example": "@dev",

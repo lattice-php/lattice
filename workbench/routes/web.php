@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Workbench\App\Http\Controllers\ChatAgentController;
@@ -28,6 +29,15 @@ Route::middleware('web')->get('/standalone-package-demo', function () {
     Inertia::setRootView('standalone');
 
     return app(PackageComponentPage::class);
+});
+
+// Deterministic endpoints backing the API reference playground demo.
+Route::middleware('web')->group(function (): void {
+    Route::get('/api/categories', fn () => response()->json(['data' => []]));
+
+    Route::get('/api/users', fn (Request $request) => response()->json([
+        'received_pagination_mode' => $request->header('x-pagination'),
+    ]));
 });
 
 Route::middleware(['web', 'auth'])->group(function (): void {

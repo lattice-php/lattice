@@ -70,6 +70,8 @@ jobs:
         package:
           - directory: packages/action
             repository: action
+          - directory: packages/api-reference
+            repository: api-reference
           - directory: packages/core
             repository: core
           - directory: packages/form

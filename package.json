@@ -24,7 +24,7 @@
     "build": "vite build",
     "build:lib": "npm run build --workspace @lattice-php/core && npm run build --workspace @lattice-php/ui && npm run build --workspace @lattice-php/form && npm run build --workspace @lattice-php/table && npm run build --workspace @lattice-php/action && npm run build --workspace @lattice-php/lattice",
     "build:lib:watch": "npm run build --workspace @lattice-php/lattice -- --watch",
-    "build:standalone": "npm run build:standalone --workspace @lattice-php/lattice --workspace @lattice-php/tree --workspace @lattice-php/media",
+    "build:standalone": "npm run build:standalone --workspace @lattice-php/lattice --workspace @lattice-php/tree --workspace @lattice-php/media --workspace @lattice-php/api-reference",
     "verify:standalone": "node .github/scripts/verify-standalone.mjs",
     "test": "vitest run",
     "test:browser": "vitest run --project browser",
