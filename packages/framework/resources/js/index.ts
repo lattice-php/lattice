@@ -1,3 +1,5 @@
+import "./types/core-augmentation";
+
 export { registry } from "./registry";
 export { useChat } from "./chat/hooks/use-chat";
 export { chatComponents } from "./chat/plugin";

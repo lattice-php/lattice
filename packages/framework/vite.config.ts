@@ -144,10 +144,20 @@ export default defineConfig(({ mode }) => {
                 },
               },
               outDirs: "dist",
-              beforeWriteFile: (filePath, content) => ({
-                filePath,
-                content: withExplicitExtensions(filePath, content),
-              }),
+              // vite-plugin-dts strips side-effect imports of type-only modules,
+              // which orphans the ComponentProps augmentation in published dist.
+              beforeWriteFile: (filePath, content) => {
+                const withExtensions = withExplicitExtensions(filePath, content);
+                const isRootEntry =
+                  filePath === path.resolve(import.meta.dirname, "dist/index.d.ts");
+
+                return {
+                  filePath,
+                  content: isRootEntry
+                    ? `import "./types/core-augmentation.js";\n${withExtensions}`
+                    : withExtensions,
+                };
+              },
             }),
             stylesheet(),
           ]),
