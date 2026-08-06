@@ -25,6 +25,13 @@ export default defineConfig({
         "resources/js/test-setup.ts",
       ],
       rollupTypes: true,
+      compilerOptions: {
+        paths: {
+          "@lattice-php/core": [path.join(sourceRoot, "index.ts")],
+          "@lattice-php/core/*": [path.join(sourceRoot, "*")],
+        },
+        rootDir: sourceRoot,
+      },
       beforeWriteFile: (filePath, content) => ({
         filePath,
         content: withExplicitExtensions(content),

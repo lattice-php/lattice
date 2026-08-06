@@ -1,17 +1,11 @@
 import react from "@vitejs/plugin-react";
-import path from "node:path";
 import { defineConfig } from "vitest/config";
+import { workspaceAliases } from "../vitest.shared";
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: {
-      "@lattice-php/core": path.resolve(import.meta.dirname, "../core/resources/js"),
-      "@lattice-php/form": path.resolve(import.meta.dirname, "../form/resources/js"),
-      "@lattice-php/lattice": path.resolve(import.meta.dirname, "../framework/resources/js"),
-      "@lattice-php/table": path.resolve(import.meta.dirname, "resources/js"),
-      "@lattice-php/ui": path.resolve(import.meta.dirname, "../ui/resources/js"),
-    },
+    alias: workspaceAliases,
   },
   test: {
     environment: "jsdom",

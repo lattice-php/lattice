@@ -3,19 +3,38 @@
 # Bypass with `git push --no-verify` (emergencies only — never push on red).
 #
 # The generated-types and docs-fixtures diffs are intentionally left to CI: a local run
-# regenerates resources/js/types/generated.ts with a different property ordering than main,
+# regenerates the committed generated.ts with a different property ordering than main,
 # so a local diff check would fail spuriously. Pest Browser stays CI-only because it
 # needs the built workbench assets and Playwright browsers. docs:typecheck (docs/tsconfig.json)
 # and the icons-freshness diff also stay CI-only for the same local-drift reasons.
-set -e
+#
+# The PHP and JS gates are independent, so they run concurrently — JS logs to a
+# temp file that is replayed only on failure, PHP streams live.
 
 root="$(git rev-parse --show-toplevel)"
 cd "$root"
 
-echo "▶ pre-push: composer check (pint, phpstan, rector, pest)"
-composer check
+js_log="$(mktemp)"
+trap 'rm -f "$js_log"' EXIT
 
-echo "▶ pre-push: npm run check (lint, format, typecheck, type-coverage, vitest, build:lib, check:package)"
-npm run check
+echo "▶ pre-push: composer check + npm run check (concurrent)"
+
+npm run check >"$js_log" 2>&1 &
+js_pid=$!
+
+composer check
+php_status=$?
+
+wait "$js_pid"
+js_status=$?
+
+if [ "$js_status" -ne 0 ]; then
+    echo "✗ npm run check failed:"
+    cat "$js_log"
+fi
+
+if [ "$php_status" -ne 0 ] || [ "$js_status" -ne 0 ]; then
+    exit 1
+fi
 
 echo "✓ pre-push gate passed"

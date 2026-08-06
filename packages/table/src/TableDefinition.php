@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Table;
 
+use Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Core\Definition;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Contracts\TableSource;
@@ -103,7 +104,7 @@ abstract class TableDefinition extends Definition
     }
 
     /**
-     * @return array<int, Component>
+     * @return array<int, Component&InteractiveComponent>
      */
     public function bulkActions(): array
     {
