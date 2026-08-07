@@ -1,0 +1,121 @@
+---
+title: API Reference
+description: A browsable OpenAPI reference with tag-grouped navigation, schema trees, request snippets, and an in-browser request playground.
+---
+
+import ApiReferenceDemo from "@components/ApiReferenceDemo.tsx";
+
+The api-reference package renders an OpenAPI 3.x document as a browsable API reference —
+tag-grouped navigation, per-operation parameter and schema trees, generated cURL and JavaScript
+snippets, a copy-as-Markdown button, and a request playground that executes real requests from
+the browser. It pairs naturally with
+[Spectacular](https://github.com/bambamboole/spectacular), which generates OpenAPI documents
+from a Laravel application, but renders any valid document.
+
+## Demo
+
+The component below is live — browse the operations, inspect schemas, and switch snippet
+languages. The demo origin has no backend, so **Execute** shows how a failed request is
+surfaced in the response panel; against a real API the response renders the same way.
+
+<div
+  class="not-content"
+  style="border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; background: var(--sl-color-bg); padding: 0 1.5rem 1.5rem; max-height: 44rem; overflow: auto;"
+>
+  <ApiReferenceDemo client:only="react" />
+</div>
+
+## Installation
+
+```bash
+composer require lattice-php/api-reference
+```
+
+The package ships its React renderer as source, and the `lattice()` Vite plugin compiles it
+into your app's bundle via `virtual:lattice/plugins` (see
+[Component packages](/extending/component-packages/)). The PHP component is picked up by
+Lattice's discovery automatically.
+
+The component styles itself with Tailwind utilities, so add the package's stylesheet to your
+Tailwind entry after the Lattice import — its `@source` directive makes your build scan the
+package's components:
+
+```css
+@import "@lattice-php/lattice/css";
+@import "@lattice-php/api-reference/css";
+```
+
+:::note
+There is no npm package — Composer is the only install.
+[No-build apps](/introduction/no-build/) get the precompiled module via
+`php artisan lattice:assets`, but package stylesheets are not processed for standalone apps
+yet, so the reference currently renders unstyled there.
+:::
+
+## Usage
+
+Pass a decoded OpenAPI document to the component on any page. With Spectacular installed,
+Scramble's generator produces the document — cache it rather than regenerating per request:
+
+```php
+use Dedoc\Scramble\Generator;
+use Illuminate\Support\Facades\Cache;
+use Lattice\ApiReference\ApiReference;
+use Lattice\Core\Attributes\AsPage;
+use Lattice\Http\Page;
+use Lattice\Ui\PageSchema;
+
+#[AsPage(route: 'docs', name: 'docs', middleware: ['auth'])]
+final class ApiDocsPage extends Page
+{
+    public function render(PageSchema $schema, Generator $generator): PageSchema
+    {
+        $document = Cache::rememberForever(
+            'openapi.document',
+            fn (): array => $generator(),
+        );
+
+        return $schema->schema([ApiReference::make()->spec($document)]);
+    }
+}
+```
+
+Alternatively `->url('/openapi.json')` makes the browser fetch the document from a URL instead
+of embedding it in the page props.
+
+### Scoping and presentation
+
+```php
+ApiReference::make()
+    ->spec($document)
+    ->tag(['Users', 'Roles'])          // only these navigation groups
+    ->defaultOperation('users.index')  // initial selection
+    ->title('Acme API')                // overrides info.title
+    ->hideHeader()                     // drop the title/version header
+    ->hideBaseUrl()                    // drop the server picker
+    ->expandDepth(3)                   // schema tree levels expanded by default
+    ->twoColumnBreakpoint(Breakpoint::Xl);
+```
+
+`->operation('users.show')` pins the reference to a single operation with no navigation — useful
+for embedding one endpoint's documentation inside another page.
+
+The selected operation is mirrored to the URL hash, so operation links deep-link and survive
+reloads.
+
+## Request playground
+
+Every operation carries a playground: path, query, and header parameters render as typed
+inputs (enum parameters become selects), JSON request bodies get an editor pre-filled with an
+example derived from the schema, and **Execute** sends the request from the browser against the
+server selected in the picker — responses stream into a live panel with status and headers.
+
+```php
+ApiReference::make()
+    ->spec($document)
+    ->token($apiToken);
+```
+
+`->token()` pre-fills `Authorization: Bearer` for operations whose security scheme accepts a
+bearer token. Requests are plain browser `fetch` calls, so the API must be same-origin or send
+CORS headers for the reference's origin.
