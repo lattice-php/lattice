@@ -25,12 +25,15 @@ use Spatie\Attributes\Attributes;
  * the TypeScript emitter consumes.
  *
  * `build()` is the legacy single-document path (`$id` fixed, every class
- * inlined into one `$defs` namespace) still used by the pre-per-package
- * profiles. `buildAll()` is the per-package-document path: one document per
- * `WireSourceCatalog` source, `$defs` restricted to that source's own
- * classes, foreign references resolved to cross-document `$refs` — the
- * envelopes/strict unions/remote-manifest contract/`x-lattice` catalogs stay
- * in the framework (`lattice`) document only.
+ * inlined into one `$defs` namespace) still used by TypeScript emission.
+ * `buildAll()` is the per-package-document path feeding the committed schema
+ * artifacts: one document per `WireSourceCatalog` source, `$defs` restricted
+ * to that source's own classes; a foreign reference is still a local
+ * `#/$defs/{name}` pointer the document itself cannot resolve —
+ * `FlatProjection` dereferences it into a self-contained artifact before
+ * anything is committed. The envelopes/strict unions/remote-manifest
+ * contract/`x-lattice` catalogs stay in the framework (`lattice`) document
+ * only.
  */
 final class JsonSchemaBuilder
 {
@@ -154,8 +157,11 @@ final class JsonSchemaBuilder
 
     /**
      * One document per `WireSourceCatalog` source: `$defs` restricted to
-     * classes whose file's origin is that source, cross-document `$refs` for
-     * everything else. The envelopes/strict unions/remote-manifest
+     * classes whose file's origin is that source, local `$refs` for
+     * everything else — a def belonging to a different origin is still a
+     * `#/$defs/{name}` pointer, just one the document itself cannot resolve;
+     * `FlatProjection` dereferences it against the full def universe before
+     * anything is committed. The envelopes/strict unions/remote-manifest
      * contract/`x-lattice` catalogs live only in the framework document.
      *
      * @return array<string, array<string, mixed>>
@@ -180,27 +186,11 @@ final class JsonSchemaBuilder
 
         $classOrigins = $this->classOrigins($manifest, $catalog);
         $this->guardUniqueNamesPerOrigin($names, $classOrigins);
-        $defOrigins = $this->defOrigins($manifest, $names, $classOrigins);
-
-        $schemaIds = [];
-
-        foreach ($sources as $source) {
-            $schemaIds[$source->shortName] = $source->schemaId();
-        }
 
         $documents = [];
 
         foreach ($sources as $source) {
-            $documents[$source->shortName] = $this->document(
-                $source,
-                $manifest,
-                $names,
-                $markers,
-                $nodeDefs,
-                $classOrigins,
-                $defOrigins,
-                $schemaIds,
-            );
+            $documents[$source->shortName] = $this->document($source, $manifest, $names, $markers, $nodeDefs, $classOrigins);
         }
 
         return $documents;
@@ -208,51 +198,54 @@ final class JsonSchemaBuilder
 
     /**
      * Consumer-mode: builds ONLY the root/app source's own document,
-     * reflecting just its discover dirs. Cross-document refs to installed
-     * packages resolve against a def-name → origin index read from THEIR
-     * COMMITTED schema files — vendor PHP is never reflected here.
+     * reflecting just its discover dirs. A prop typed with an installed
+     * package's class resolves to that class's def name — read from a
+     * name index built off THEIR COMMITTED schema files, vendor PHP is never
+     * reflected here — as a local `$defs` pointer `FlatProjection` later
+     * dereferences against the installed packages' committed `$defs`.
      *
      * @param  list<WireSource>  $installed  every non-root source (framework included), read from disk
      * @return array<string, mixed>
      */
     public function buildRootDocument(WireSource $root, array $installed): array
     {
-        $this->appClasses = [];
-
         $manifest = $this->discover($root->dirs);
         $rootNames = $this->defNames($manifest);
         $this->guardUniqueNames($rootNames);
 
+        $this->appClasses = $this->classSet($manifest);
+
         $classOrigins = [];
 
-        foreach (array_keys($rootNames) as $class) {
+        // Not `array_keys($rootNames)`: `defNames()` also assigns a bare
+        // name to every marker family's reference class (e.g. `Column`)
+        // unconditionally, whether or not the app discovered anything from
+        // that family — attributing a BUILT-IN class like
+        // `Lattice\Table\Columns\Column` to the app's own origin would make
+        // `document()` re-emit table's own common-props def a second time,
+        // under the app's document, with no guarantee it renders identically
+        // to table's committed one once both land in the same flat `$defs`.
+        foreach (array_keys($this->appClasses) as $class) {
             $classOrigins[$class] = $root->shortName;
         }
 
-        [$externalNames, $externalDefOrigins, $externalSchemaIds] = $this->externalIndex($installed);
+        $names = [...$rootNames, ...$this->externalNames($installed)];
 
-        $names = [...$rootNames, ...$externalNames];
-        $defOrigins = [...$this->defOrigins($manifest, $rootNames, $classOrigins), ...$externalDefOrigins];
-        $schemaIds = [$root->shortName => $root->schemaId(), ...$externalSchemaIds];
-
-        return $this->document($root, $manifest, $names, $this->markers(), $this->nodeDefs($manifest), $classOrigins, $defOrigins, $schemaIds);
+        return $this->document($root, $manifest, $names, $this->markers(), $this->nodeDefs($manifest), $classOrigins);
     }
 
     /**
-     * The class → name and def-name → origin/schemaId index
-     * `buildRootDocument()` resolves cross-document refs against, built by
-     * reading every installed source's committed `$defs` (each def's
-     * `x-lattice.php` annotation gives back its owning class) — no
-     * reflection.
+     * The class → def-name index `buildRootDocument()` resolves a root prop
+     * typed with an installed package's class against, built by reading
+     * every installed source's committed `$defs` (each def's `x-lattice.php`
+     * annotation gives back its owning class) — no reflection.
      *
      * @param  list<WireSource>  $installed
-     * @return array{0: array<class-string, string>, 1: array<string, string>, 2: array<string, string>}
+     * @return array<class-string, string>
      */
-    private function externalIndex(array $installed): array
+    private function externalNames(array $installed): array
     {
         $names = [];
-        $defOrigins = [];
-        $schemaIds = [];
 
         foreach ($installed as $source) {
             if (! is_file($source->schemaPath())) {
@@ -265,11 +258,7 @@ final class JsonSchemaBuilder
                 continue;
             }
 
-            $schemaIds[$source->shortName] = $source->schemaId();
-
             foreach ($document['$defs'] as $name => $def) {
-                $defOrigins[$name] = $source->shortName;
-
                 $class = is_array($def) ? $def['x-lattice']['php'] ?? null : null;
 
                 if (is_string($class)) {
@@ -278,7 +267,7 @@ final class JsonSchemaBuilder
             }
         }
 
-        return [$names, $defOrigins, $schemaIds];
+        return $names;
     }
 
     /**
@@ -286,8 +275,6 @@ final class JsonSchemaBuilder
      * @param  array<string, array<class-string, string>>  $nodeDefs
      * @param  array<class-string, array{string, string}>  $markers
      * @param  array<class-string, string>  $classOrigins
-     * @param  array<string, string>  $defOrigins
-     * @param  array<string, string>  $schemaIds
      * @return array<string, mixed>
      */
     private function document(
@@ -297,10 +284,8 @@ final class JsonSchemaBuilder
         array $markers,
         array $nodeDefs,
         array $classOrigins,
-        array $defOrigins,
-        array $schemaIds,
     ): array {
-        $context = new JsonSchemaContext($names, $nodeDefs, $markers, $defOrigins, $schemaIds, $source->shortName);
+        $context = new JsonSchemaContext($names, $nodeDefs, $markers);
         $mapper = new PropertySchemaMapper($context);
         $isFramework = $source->shortName === self::FRAMEWORK_SOURCE;
 
@@ -319,7 +304,7 @@ final class JsonSchemaBuilder
                 continue;
             }
 
-            $defs[$names[$class]] = $this->objectDef($class, $mapper, ['kind' => 'value-object', 'php' => $class]);
+            $defs[$names[$class]] = $this->objectDef($class, $mapper, $this->annotated(['kind' => 'value-object', 'php' => $class], $class));
         }
 
         foreach ($manifest->components as $component) {
@@ -336,11 +321,11 @@ final class JsonSchemaBuilder
                 continue;
             }
 
-            $defs[class_basename($family->reference)] = $this->objectDef($family->reference, $mapper, [
+            $defs[class_basename($family->reference)] = $this->objectDef($family->reference, $mapper, $this->annotated([
                 'kind' => 'common-props',
                 'family' => $family->category,
                 'php' => $family->reference,
-            ]);
+            ], $family->reference));
         }
 
         foreach (Lattice::wireFamilies()->where('marker', false) as $family) {
@@ -349,12 +334,12 @@ final class JsonSchemaBuilder
                     continue;
                 }
 
-                $defs[$names[$class]] = $this->objectDef($class, $mapper, [
+                $defs[$names[$class]] = $this->objectDef($class, $mapper, $this->annotated([
                     'kind' => 'props',
                     'family' => $family->category,
                     'wireType' => $type,
                     'php' => $class,
-                ]);
+                ], $class));
                 $defs[$this->nodeDefKey($family->category, $type)] = $this->payloadDef($family->category, $type, $names[$class], $class, $context);
             }
         }
@@ -481,8 +466,8 @@ final class JsonSchemaBuilder
         // Every family's reference class gets a `defNames()` entry (marker
         // families for their own common-props def, loose families for their
         // envelope-name bookkeeping) even when it never becomes a `$defs`
-        // entry itself, so `guardUniqueNamesPerOrigin()`/`defOrigins()` need
-        // an origin for it too.
+        // entry itself, so `guardUniqueNamesPerOrigin()` needs an origin for
+        // it too.
         foreach (Lattice::wireFamilies() as $family) {
             $classes[$family->reference] = true;
         }
@@ -502,41 +487,6 @@ final class JsonSchemaBuilder
             }
 
             $origins[$class] = $source->shortName;
-        }
-
-        return $origins;
-    }
-
-    /**
-     * Every `$defs` name buildAll() can produce a `$ref` to, mapped to its
-     * owning source's shortName: class-based defs via `$classOrigins`, node
-     * defs via their component's/family member's class, and the
-     * framework-only envelopes/strict unions/remote-manifest contract.
-     *
-     * @param  array<class-string, string>  $names
-     * @param  array<class-string, string>  $classOrigins
-     * @return array<string, string>
-     */
-    private function defOrigins(WireTypeManifest $manifest, array $names, array $classOrigins): array
-    {
-        $origins = [];
-
-        foreach ($names as $class => $name) {
-            $origins[$name] = $classOrigins[$class] ?? throw new LogicException(sprintf('No wire source owns [%s].', $class));
-        }
-
-        foreach ($manifest->components as $component) {
-            $origins[$this->nodeDefKey($component->category, $component->type)] = $classOrigins[$component->class];
-        }
-
-        foreach (Lattice::wireFamilies()->where('marker', false) as $family) {
-            foreach ($manifest->family($family->category) as $class => $type) {
-                $origins[$this->nodeDefKey($family->category, $type)] = $classOrigins[$class];
-            }
-        }
-
-        foreach ([...array_keys($this->envelopeDefs()), ...array_values(self::STRICT_UNIONS), 'RemoteManifest', 'RemoteManifestNode'] as $frameworkOnly) {
-            $origins[$frameworkOnly] = self::FRAMEWORK_SOURCE;
         }
 
         return $origins;

@@ -3,16 +3,21 @@ declare(strict_types=1);
 
 use Lattice\Support\JsonSchema\JsonSchemaBuilder;
 
-it('emits one document per wire package with cross-document refs', function (): void {
+it('emits one document per wire package, restricted to that package\'s own classes', function (): void {
     $documents = app(JsonSchemaBuilder::class)->buildAll();
 
     expect($documents)->toHaveKeys(['lattice', 'core', 'ui', 'action', 'form', 'table'])
-        ->and($documents['table']['$id'])->toBe('https://lattice-php.dev/schema/table/v1.json');
-
-    $json = (string) json_encode($documents['table'], JSON_UNESCAPED_SLASHES);
-
-    expect($json)->toContain('https://lattice-php.dev/schema/core/v1.json#/$defs/Color')
+        ->and($documents['table']['$id'])->toBe('https://lattice-php.dev/schema/table/v1.json')
         ->and($documents['table']['$defs'])->not->toHaveKey('Color');
+});
+
+it('points a foreign class at a local pointer the internal document itself cannot resolve', function (): void {
+    $documents = app(JsonSchemaBuilder::class)->buildAll();
+
+    $json = (string) json_encode($documents['table']['$defs'], JSON_UNESCAPED_SLASHES);
+
+    expect($json)->toContain('"$ref":"#/$defs/Color"')
+        ->and($json)->not->toContain('https://lattice-php.dev/schema/');
 });
 
 it('keeps PagePayload, envelopes, and x-lattice catalogs in the lattice document', function (): void {
@@ -43,14 +48,14 @@ it('emits a schema document for tree from its own discover dirs', function (): v
 
     $json = (string) json_encode($documents['tree'], JSON_UNESCAPED_SLASHES);
 
-    expect($json)->toContain('https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps');
+    expect($json)->toContain('"$ref":"#/$defs/CommonNodeProps"');
 });
 
-it('cross-references a node def across documents through a nullable prop union', function (): void {
+it('points a node def in another package at the same local pointer form through a nullable prop union', function (): void {
     $documents = app(JsonSchemaBuilder::class)->buildAll();
 
     $json = (string) json_encode($documents['action'], JSON_UNESCAPED_SLASHES);
 
     expect($documents['action']['$defs'])->not->toHaveKey('node:form')
-        ->and($json)->toContain('https://lattice-php.dev/schema/form/v1.json#/$defs/node:form');
+        ->and($json)->toContain('"$ref":"#/$defs/node:form"');
 });

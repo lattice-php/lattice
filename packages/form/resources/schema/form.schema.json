@@ -13,7 +13,18 @@
           ]
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -176,6 +187,108 @@
         "php": "Lattice\\Form\\Components\\Builder"
       }
     },
+    "Button": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "buttonType": {
+          "$ref": "#/$defs/ButtonType"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          }
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Emphasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "href": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HttpMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Variant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "buttonType",
+        "effects",
+        "emphasis",
+        "href",
+        "icon",
+        "label",
+        "method",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "button",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
+    "ButtonType": {
+      "type": "string",
+      "enum": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ButtonType"
+      }
+    },
     "Checkbox": {
       "type": "object",
       "properties": {
@@ -183,7 +296,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -312,7 +436,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -364,7 +499,38 @@
         "options": {
           "type": "array",
           "items": {
-            "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Option"
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
           }
         },
         "prefillRefreshOn": {
@@ -445,7 +611,18 @@
       "type": "object",
       "properties": {
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -573,6 +750,34 @@
         "php": "Lattice\\Form\\Components\\ColorPicker"
       }
     },
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
     "Condition": {
       "type": "object",
       "properties": {
@@ -581,7 +786,28 @@
           "readOnly": true
         },
         "operator": {
-          "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Op",
+          "type": "string",
+          "enum": [
+            "contains",
+            "starts_with",
+            "ends_with",
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "before",
+            "after",
+            "empty",
+            "filled"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Core\\Enums\\Op"
+          },
           "readOnly": true
         },
         "value": {
@@ -605,7 +831,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -748,7 +985,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -988,6 +1236,25 @@
         "php": "Lattice\\Form\\RichEditor\\Extensions\\Emoji"
       }
     },
+    "EditorExtension": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "editor-extension"
+      }
+    },
     "EditorHeading": {
       "type": "object",
       "properties": {
@@ -1143,6 +1410,38 @@
         "php": "Lattice\\Form\\RichEditor\\Extensions\\Underline"
       }
     },
+    "Effect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "effect"
+      }
+    },
+    "Emphasis": {
+      "type": "string",
+      "enum": [
+        "solid",
+        "outline",
+        "ghost",
+        "link"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Emphasis"
+      }
+    },
     "FieldConditions": {
       "type": "object",
       "properties": {
@@ -1196,7 +1495,18 @@
           ]
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -1399,7 +1709,18 @@
         "method": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/HttpMethod"
+              "type": "string",
+              "enum": [
+                "get",
+                "post",
+                "put",
+                "patch",
+                "delete"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\HttpMethod"
+              }
             },
             {
               "type": "null"
@@ -1465,7 +1786,7 @@
             {
               "type": "array",
               "items": {
-                "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/node:button"
+                "$ref": "#/$defs/node:button"
               }
             },
             {
@@ -1476,7 +1797,17 @@
         "submitEmphasis": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Emphasis"
+              "type": "string",
+              "enum": [
+                "solid",
+                "outline",
+                "ghost",
+                "link"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Emphasis"
+              }
             },
             {
               "type": "null"
@@ -1486,7 +1817,19 @@
         "submitJustify": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Justify"
+              "type": "string",
+              "enum": [
+                "start",
+                "center",
+                "end",
+                "between",
+                "around",
+                "evenly"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Justify"
+              }
             },
             {
               "type": "null"
@@ -1502,7 +1845,19 @@
         "submitVariant": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Variant"
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "info",
+                "warning",
+                "danger"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Variant"
+              }
             },
             {
               "type": "null"
@@ -1550,7 +1905,18 @@
       "type": "object",
       "properties": {
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -1664,6 +2030,20 @@
         "php": "Lattice\\Form\\Components\\HiddenInput"
       }
     },
+    "HttpMethod": {
+      "type": "string",
+      "enum": [
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\HttpMethod"
+      }
+    },
     "LabelAction": {
       "type": "object",
       "properties": {
@@ -1693,6 +2073,33 @@
         "php": "Lattice\\Form\\Components\\LabelAction"
       }
     },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
     "NumberInput": {
       "type": "object",
       "properties": {
@@ -1700,7 +2107,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -1798,7 +2216,31 @@
         "prefix": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Affix"
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
             },
             {
               "type": "null"
@@ -1824,7 +2266,31 @@
         "suffix": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Affix"
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
             },
             {
               "type": "null"
@@ -1886,7 +2352,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -2018,7 +2495,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -2144,7 +2632,31 @@
         "prefix": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Affix"
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
             },
             {
               "type": "null"
@@ -2160,7 +2672,31 @@
         "suffix": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Affix"
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
             },
             {
               "type": "null"
@@ -2225,7 +2761,18 @@
           ]
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -2401,7 +2948,7 @@
         "fields": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Node"
+            "$ref": "#/$defs/Node"
           },
           "readOnly": true
         },
@@ -2430,7 +2977,18 @@
       "type": "object",
       "properties": {
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -2467,7 +3025,7 @@
         "extensions": {
           "type": "array",
           "items": {
-            "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/EditorExtension"
+            "$ref": "#/$defs/EditorExtension"
           }
         },
         "helperText": {
@@ -2617,6 +3175,12 @@
         "php": "Lattice\\Form\\Enums\\RowLayout"
       }
     },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
     "Select": {
       "type": "object",
       "properties": {
@@ -2624,7 +3188,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -2685,7 +3260,38 @@
         "options": {
           "type": "array",
           "items": {
-            "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Option"
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
           }
         },
         "placeholder": {
@@ -2793,7 +3399,18 @@
           "readOnly": true
         },
         "method": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/HttpMethod",
+          "type": "string",
+          "enum": [
+            "get",
+            "post",
+            "put",
+            "patch",
+            "delete"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\HttpMethod"
+          },
           "readOnly": true
         },
         "url": {
@@ -2825,7 +3442,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -2912,7 +3540,31 @@
         "prefix": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Affix"
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
             },
             {
               "type": "null"
@@ -2928,7 +3580,31 @@
         "suffix": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/core/v1.json#/$defs/Affix"
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
             },
             {
               "type": "null"
@@ -2995,7 +3671,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -3138,7 +3825,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -3288,7 +3986,18 @@
           "type": "boolean"
         },
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
@@ -3410,11 +4119,34 @@
         "php": "Lattice\\Form\\Components\\Toggle"
       }
     },
+    "Variant": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "secondary",
+        "success",
+        "info",
+        "warning",
+        "danger"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Variant"
+      }
+    },
     "Wizard": {
       "type": "object",
       "properties": {
         "orientation": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Orientation"
+          "type": "string",
+          "enum": [
+            "horizontal",
+            "vertical"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\Orientation"
+          }
         }
       },
       "required": [
@@ -3797,6 +4529,43 @@
         "wireType": "underline"
       }
     },
+    "node:button": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "button"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Button"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "button",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
     "node:field.builder": {
       "type": "object",
       "properties": {
@@ -3815,12 +4584,12 @@
               "$ref": "#/$defs/Builder"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -3852,12 +4621,12 @@
               "$ref": "#/$defs/Checkbox"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -3889,12 +4658,12 @@
               "$ref": "#/$defs/Choice"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -3926,12 +4695,12 @@
               "$ref": "#/$defs/ColorPicker"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -3963,12 +4732,12 @@
               "$ref": "#/$defs/DateInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4000,12 +4769,12 @@
               "$ref": "#/$defs/DateTimeInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4037,12 +4806,12 @@
               "$ref": "#/$defs/FileUpload"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4074,12 +4843,12 @@
               "$ref": "#/$defs/HiddenInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4111,12 +4880,12 @@
               "$ref": "#/$defs/NumberInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4148,12 +4917,12 @@
               "$ref": "#/$defs/OtpInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4185,12 +4954,12 @@
               "$ref": "#/$defs/PasswordInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4222,12 +4991,12 @@
               "$ref": "#/$defs/Repeater"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4259,12 +5028,12 @@
               "$ref": "#/$defs/RichEditor"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4296,12 +5065,12 @@
               "$ref": "#/$defs/Select"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4333,12 +5102,12 @@
               "$ref": "#/$defs/TextInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4370,12 +5139,12 @@
               "$ref": "#/$defs/Textarea"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4407,12 +5176,12 @@
               "$ref": "#/$defs/TimeInput"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4444,12 +5213,12 @@
               "$ref": "#/$defs/Toggle"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4481,12 +5250,12 @@
               "$ref": "#/$defs/Form"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4518,12 +5287,12 @@
               "$ref": "#/$defs/Wizard"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -4555,12 +5324,12 @@
               "$ref": "#/$defs/WizardStep"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [

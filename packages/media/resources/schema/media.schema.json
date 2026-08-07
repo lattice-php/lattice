@@ -3,6 +3,80 @@
   "$id": "https://lattice-php.dev/schema/media/v1.json",
   "title": "Lattice media wire types",
   "$defs": {
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string",
+          "readOnly": true
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "contains",
+            "starts_with",
+            "ends_with",
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "before",
+            "after",
+            "empty",
+            "filled"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Core\\Enums\\Op"
+          },
+          "readOnly": true
+        },
+        "value": {
+          "readOnly": true
+        }
+      },
+      "required": [
+        "field",
+        "operator",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Form\\Conditions\\Condition"
+      }
+    },
     "EditorMediaImage": {
       "type": "object",
       "properties": {
@@ -67,12 +141,63 @@
       "type": "object",
       "properties": {
         "columnWidth": {
-          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ColumnWidth"
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
         },
         "conditions": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/form/v1.json#/$defs/FieldConditions"
+              "type": "object",
+              "properties": {
+                "disabled": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                },
+                "readOnly": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                },
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                },
+                "visible": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "disabled",
+                "readOnly",
+                "required",
+                "visible"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Form\\Conditions\\FieldConditions"
+              }
             },
             {
               "type": "null"
@@ -261,6 +386,39 @@
         "php": "Lattice\\Media\\Tables\\Filters\\MediaTypeFilter"
       }
     },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
     "editor-extension:media-image": {
       "type": "object",
       "properties": {
@@ -296,12 +454,12 @@
               "$ref": "#/$defs/MediaTypeFilter"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -334,12 +492,12 @@
               "$ref": "#/$defs/MediaPicker"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -371,12 +529,12 @@
               "$ref": "#/$defs/MediaLibrary"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [

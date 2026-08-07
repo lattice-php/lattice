@@ -1,115 +1,57 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\File;
-use Lattice\Support\JsonSchema\JsonSchemaBuilder;
+use Lattice\Media\Tables\Filters\MediaTypeFilter;
 use Lattice\Support\JsonSchema\SchemaBundler;
-use Lattice\Support\JsonSchema\WireSource;
-use Lattice\Support\JsonSchema\WireSourceCatalog;
-use Opis\JsonSchema\Validator;
+use Lattice\Table\Filters\SelectFilter;
 
-use function Pest\Laravel\get;
-use function Pest\Laravel\withoutVite;
+it('merges every document\'s $defs directly into the base document, keeping the base\'s other top-level keys', function (): void {
+    $base = ['$schema' => 'https://json-schema.org/draft/2020-12/schema', '$id' => 'https://lattice-php.dev/schema/lattice/v1.json', 'title' => 'Lattice wire protocol', '$defs' => ['Node' => ['type' => 'object']]];
+    $documents = [
+        ['$defs' => ['Button' => ['type' => 'object', 'properties' => []]]],
+        ['$defs' => ['Table' => ['type' => 'object', 'properties' => []]]],
+    ];
 
-/**
- * @return array<string, mixed>
- */
-function schemaBundle(): array
-{
-    $catalog = WireSourceCatalog::fromApplication();
-
-    return new SchemaBundler()->bundle($catalog->discover(), []);
-}
-
-/**
- * @param  array<string, mixed>  $bundle
- */
-function bundleValidator(array $bundle): Validator
-{
-    $validator = new Validator;
-    $validator->resolver()?->registerRaw(
-        json_decode((string) json_encode($bundle)),
-        $bundle['$id'],
-    );
-
-    return $validator;
-}
-
-it('embeds every wire package under $defs/{shortName}, retaining each document\'s own $id', function (): void {
-    $bundle = schemaBundle();
+    $bundle = new SchemaBundler()->bundle($base, $documents);
 
     expect($bundle['$id'])->toBe('https://lattice-php.dev/schema/lattice/v1.json')
-        ->and($bundle['$defs'])->toHaveKeys(['core', 'ui', 'form', 'table', 'action', 'tree']);
-
-    foreach (['core', 'ui', 'form', 'table', 'action', 'tree'] as $shortName) {
-        expect($bundle['$defs'][$shortName]['$id'])->toBe("https://lattice-php.dev/schema/{$shortName}/v1.json");
-    }
+        ->and($bundle['title'])->toBe('Lattice wire protocol')
+        ->and($bundle['$defs'])->toHaveKeys(['Node', 'Button', 'Table']);
 });
 
-it('validates a real workbench page payload against the bundle', function (): void {
-    withoutVite();
-    $this->actingAs(workbenchTestUser());
+it('collapses an identical def recurring across documents silently, the envelope core case', function (): void {
+    $node = ['type' => 'object', 'properties' => ['schema' => ['$ref' => '#/$defs/Schema']]];
+    $base = ['$defs' => []];
+    $documents = [
+        ['$defs' => ['Node' => $node]],
+        ['$defs' => ['Node' => $node]],
+    ];
 
-    $page = get('/')->assertOk()->viewData('page');
+    $bundle = new SchemaBundler()->bundle($base, $documents);
 
-    $bundle = schemaBundle();
-    $result = bundleValidator($bundle)->validate(
-        json_decode((string) json_encode($page['props']['lattice'])),
-        $bundle['$id'].'#/$defs/PagePayload',
-    );
-
-    expect($result->isValid())->toBeTrue();
+    expect($bundle['$defs']['Node'])->toBe($node);
 });
 
-it('validates an embedded node against its own document through the bundle', function (): void {
-    $bundle = schemaBundle();
-    $validator = bundleValidator($bundle);
+it('keeps whichever document is processed first when two classes declare the same strict wire type', function (): void {
+    $tableFilter = ['type' => 'object', 'properties' => ['type' => ['const' => 'filter.select']], 'x-lattice' => ['kind' => 'strict', 'php' => SelectFilter::class]];
+    $mediaFilter = ['type' => 'object', 'properties' => ['type' => ['const' => 'filter.select']], 'x-lattice' => ['kind' => 'strict', 'php' => MediaTypeFilter::class]];
+    $base = ['$defs' => []];
+    $documents = [
+        ['$defs' => ['filter:filter.select' => $tableFilter]],
+        ['$defs' => ['filter:filter.select' => $mediaFilter]],
+    ];
 
-    $result = $validator->validate(
-        json_decode((string) json_encode(['type' => 'button', 'props' => [
-            'action' => null, 'buttonType' => 'button', 'effects' => [], 'emphasis' => null,
-            'href' => null, 'icon' => null, 'label' => 'Save', 'method' => null, 'variant' => null,
-        ]])),
-        $bundle['$id'].'#/$defs/ui/$defs/node:button',
-    );
+    $bundle = new SchemaBundler()->bundle($base, $documents);
 
-    expect($result->isValid())->toBeTrue();
+    expect($bundle['$defs']['filter:filter.select'])->toBe($tableFilter);
 });
 
-it('reads an installed package\'s COMMITTED schema file, never reflecting its PHP', function (): void {
-    $catalog = WireSourceCatalog::fromApplication();
-    $table = collect($catalog->discover())->firstWhere('shortName', 'table');
-    $original = File::get($table->schemaPath());
+it('throws when two unrelated defs claim the same name outside the known strict-collision case', function (): void {
+    $base = ['$defs' => []];
+    $documents = [
+        ['$defs' => ['Button' => ['type' => 'object', 'x-lattice' => ['kind' => 'value-object', 'php' => 'App\First']]]],
+        ['$defs' => ['Button' => ['type' => 'string', 'x-lattice' => ['kind' => 'enum', 'php' => 'App\Second']]]],
+    ];
 
-    try {
-        $doctored = json_decode($original, true);
-        $doctored['$defs'] = ['Doctored' => ['type' => 'string']];
-        File::put($table->schemaPath(), json_encode($doctored));
-
-        $bundle = new SchemaBundler()->bundle($catalog->discover(), []);
-
-        expect($bundle['$defs']['table']['$defs'])->toBe(['Doctored' => ['type' => 'string']])
-            ->and($bundle['$defs']['table']['$defs'])->not->toHaveKey('Column');
-    } finally {
-        File::put($table->schemaPath(), $original);
-    }
-});
-
-it('embeds the root document when the app declares its own wire surface, resolving app-only sources without reflecting vendor PHP', function (): void {
-    withScaffoldWorkspace(function (string $basePath): void {
-        $catalog = WireSourceCatalog::fromApplication()->withRoot(
-            ['name' => 'acme/app', 'extra' => ['lattice' => ['discover' => ['.']]]],
-            dirname(__DIR__, 2).'/Fixtures/TypeScript',
-        );
-
-        $sources = $catalog->discover();
-        $root = collect($sources)->firstWhere('isRoot', true);
-        $installed = array_values(array_filter($sources, fn (WireSource $source): bool => ! $source->isRoot));
-
-        $rootDocument = new JsonSchemaBuilder($catalog)->buildRootDocument($root, $installed);
-        $bundle = new SchemaBundler()->bundle($sources, $rootDocument);
-
-        expect($bundle['$defs'])->toHaveKey('app')
-            ->and($bundle['$defs']['app']['$defs'])->toHaveKey('SampleComponent');
-    });
-});
+    new SchemaBundler()->bundle($base, $documents);
+})->throws(LogicException::class, 'Schema definition name [Button] is claimed by two different defs');

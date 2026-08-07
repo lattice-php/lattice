@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\File;
 use Lattice\Support\JsonSchema\ExportSchemaProfile;
 use Lattice\Support\JsonSchema\JsonSchemaProfile;
+use Lattice\Support\JsonSchema\WireSourceCatalog;
 
 use function Pest\Laravel\artisan;
 
@@ -11,7 +13,7 @@ beforeEach(function (): void {
     app()->bind(JsonSchemaProfile::class, ExportSchemaProfile::class);
 });
 
-it('assembles a bundle with the app\'s own document embedded under its own shortName', function (): void {
+it('merges the app\'s own document directly into the flat bundle, marked with x-lattice.origin app', function (): void {
     withScaffoldWorkspace(function (): void {
         $output = base_path('lattice.schema.json');
 
@@ -23,14 +25,13 @@ it('assembles a bundle with the app\'s own document embedded under its own short
         $document = json_decode((string) file_get_contents($output), true);
 
         expect($document['$id'])->toBe('https://lattice-php.dev/schema/lattice/v1.json')
-            ->and($document['$defs']['app']['$defs'])->toHaveKey('SampleComponent')
-            ->and($document['$defs']['app']['$defs'])->toHaveKey('node:sample.widget')
-            ->and($document['$defs'])->not->toHaveKey('SampleComponent')
-            ->and($document['$defs']['ui']['$defs'])->toHaveKey('Button');
+            ->and($document['$defs'])->toHaveKeys(['SampleComponent', 'node:sample.widget', 'Button'])
+            ->and($document['$defs']['SampleComponent']['x-lattice']['origin'])->toBe('app')
+            ->and($document['$defs']['Button'])->not->toHaveKey('origin');
     });
 });
 
-it('embeds every installed wire package without an app document when no root source is declared', function (): void {
+it('merges every installed wire package directly into the flat bundle when no root source is declared', function (): void {
     withScaffoldWorkspace(function (): void {
         $output = base_path('lattice.schema.json');
 
@@ -39,11 +40,42 @@ it('embeds every installed wire package without an app document when no root sou
         artisan('lattice:schema')->assertSuccessful();
 
         $document = json_decode((string) file_get_contents($output), true);
-        $embedded = array_filter($document['$defs'], static fn (mixed $value): bool => is_array($value) && isset($value['$id']));
 
-        expect(array_keys($embedded))->toBe([
-            'action', 'api-reference', 'core', 'form', 'media', 'signature-example', 'table', 'tree', 'ui',
-        ])
-            ->and($document['$defs']['signature-example']['$defs'])->toHaveKey('Signature');
+        expect($document['$defs'])->toHaveKeys(['Signature', 'Button', 'Table'])
+            ->and($document['$defs'])->not->toHaveKey('SampleComponent');
+    });
+});
+
+it('merges an installed package\'s COMMITTED schema file, never reflecting its vendor PHP', function (): void {
+    withScaffoldWorkspace(function (): void {
+        $output = base_path('lattice.schema.json');
+
+        config()->set('lattice.schema.output', $output);
+
+        $catalog = WireSourceCatalog::fromApplication();
+        $table = collect($catalog->discover())->firstWhere('shortName', 'table');
+        $original = File::get($table->schemaPath());
+
+        try {
+            // Adds a def, doesn't touch or remove any existing one: framework's
+            // own committed lattice.schema.json is itself already the full flat
+            // merge (built once, at release time), so it independently carries
+            // a copy of table's OTHER defs too — the merge is per-def, not
+            // per-package, so it can't "erase" what framework's base already
+            // has. Only an ADDITION unambiguously proves the read came from
+            // table's fresh committed file (no PHP class named "Doctored"
+            // could ever be reflected into existence).
+            $doctored = json_decode($original, true);
+            $doctored['$defs']['Doctored'] = ['type' => 'string'];
+            File::put($table->schemaPath(), json_encode($doctored));
+
+            artisan('lattice:schema')->assertSuccessful();
+
+            $document = json_decode((string) file_get_contents($output), true);
+
+            expect($document['$defs'])->toHaveKey('Doctored');
+        } finally {
+            File::put($table->schemaPath(), $original);
+        }
     });
 });

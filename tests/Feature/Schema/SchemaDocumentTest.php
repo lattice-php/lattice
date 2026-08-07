@@ -19,29 +19,6 @@ function schemaDocument(): array
     );
 }
 
-/**
- * Merges every embedded package document's `$defs` with the framework
- * document's own, matching the flat set the pre-bundle single document had —
- * used only where a test cares "does a def exist somewhere in the bundle",
- * not "which document owns it".
- *
- * @return array<string, mixed>
- */
-function flattenedBundleDefs(): array
-{
-    $document = schemaDocument();
-    $defs = $document['$defs'];
-
-    foreach ($defs as $name => $value) {
-        if (is_array($value) && isset($value['$id'], $value['$defs'])) {
-            unset($defs[$name]);
-            $defs = [...$defs, ...$value['$defs']];
-        }
-    }
-
-    return $defs;
-}
-
 function schemaValidator(): Validator
 {
     $document = schemaDocument();
@@ -55,14 +32,12 @@ function schemaValidator(): Validator
 }
 
 /**
- * @param  string  $pointer  a bare `$defs` key (framework-native) or `package/name` (embedded document)
+ * @param  string  $pointer  a bare `$defs` key — the merged document is flat, so every def is directly addressable
  */
 function validateAgainst(string $pointer, mixed $data): bool
 {
-    $path = str_contains($pointer, '/') ? str_replace('/', '/$defs/', $pointer) : $pointer;
-
     return schemaValidator()
-        ->validate(json_decode((string) json_encode($data)), schemaDocument()['$id'].'#/$defs/'.$path)
+        ->validate(json_decode((string) json_encode($data)), schemaDocument()['$id'].'#/$defs/'.$pointer)
         ->isValid();
 }
 
@@ -109,7 +84,7 @@ it('rejects a remote manifest smuggling server-trusted props or missing its audi
 });
 
 it('rejects a node whose props violate its type schema', function (): void {
-    expect(validateAgainst('ui/node:button', [
+    expect(validateAgainst('node:button', [
         'type' => 'button',
         'props' => ['label' => 'Save'],
     ]))->toBeFalse()
@@ -121,7 +96,7 @@ it('rejects a node whose props violate its type schema', function (): void {
 
 it('covers every type the generated TypeScript module exports', function (): void {
     $document = schemaDocument();
-    $defs = flattenedBundleDefs();
+    $defs = $document['$defs'];
 
     $generated = (string) file_get_contents(dirname(__DIR__, 3).'/packages/framework/resources/js/types/generated.ts');
     $generatedShapes = explode('// ─── Generated shapes', $generated, 2)[1];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Workbench\App\Support\JsonSchema;
 
 use Illuminate\Support\Facades\File;
+use Lattice\Support\JsonSchema\FlatProjection;
 use Lattice\Support\JsonSchema\JsonSchemaBuilder;
 use Lattice\Support\JsonSchema\JsonSchemaProfile;
 use Lattice\Support\JsonSchema\JsonSchemaWriter;
@@ -13,10 +14,11 @@ use Lattice\Support\JsonSchema\WireSourceCatalog;
 
 /**
  * The package's own dev profile: regenerates every wire package's committed
- * schema document (`WireSource::schemaPath()`) from `buildAll()`, then
- * assembles and regenerates the committed monorepo bundle artifact from
- * those documents. Bound in the workbench so lattice:schema rebuilds the
- * published contract; workbench-only, so this build code never ships.
+ * schema document (`WireSource::schemaPath()`) — each a flat, self-contained
+ * projection of `buildAll()`'s internal wire model — then merges those flat
+ * documents into the committed monorepo bundle artifact. Bound in the
+ * workbench so lattice:schema rebuilds the published contract; workbench-only,
+ * so this build code never ships.
  */
 final readonly class BaseSchemaProfile implements JsonSchemaProfile
 {
@@ -30,6 +32,23 @@ final readonly class BaseSchemaProfile implements JsonSchemaProfile
         $documents = $builder->buildAll();
         $sources = $this->catalog->discover();
 
+        $universe = [];
+        $defOrigins = [];
+
+        foreach ($documents as $shortName => $document) {
+            foreach ($document['$defs'] as $name => $def) {
+                $universe[$name] = $def;
+                $defOrigins[$name] = $shortName;
+            }
+        }
+
+        $projector = new FlatProjection;
+        $flatDocuments = [];
+
+        foreach ($documents as $shortName => $document) {
+            $flatDocuments[$shortName] = $projector->project($document, $universe, $defOrigins, $shortName);
+        }
+
         foreach ($sources as $source) {
             // The framework's own document's path is the bundle's default
             // output path (its historical, still-npm-exported location) —
@@ -39,7 +58,7 @@ final readonly class BaseSchemaProfile implements JsonSchemaProfile
                 continue;
             }
 
-            $document = $documents[$source->shortName] ?? null;
+            $document = $flatDocuments[$source->shortName] ?? null;
 
             if ($document === null) {
                 continue;
@@ -49,7 +68,13 @@ final readonly class BaseSchemaProfile implements JsonSchemaProfile
             File::put($source->schemaPath(), $writer->write($document));
         }
 
-        $bundle = $this->bundler->bundle($sources, [], $documents['lattice'] ?? null);
+        $framework = $flatDocuments['lattice'] ?? ['$schema' => 'https://json-schema.org/draft/2020-12/schema', '$defs' => []];
+        $others = array_values(array_filter(
+            $flatDocuments,
+            static fn (string $shortName): bool => $shortName !== 'lattice',
+            ARRAY_FILTER_USE_KEY,
+        ));
+        $bundle = $this->bundler->bundle($framework, $others);
 
         $packageRoot = dirname(__DIR__, 4);
 

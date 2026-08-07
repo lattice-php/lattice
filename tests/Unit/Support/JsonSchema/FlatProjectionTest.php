@@ -67,6 +67,79 @@ it('keeps $ref sibling keywords like readOnly when a ref is inlined', function (
     ]);
 });
 
+it('copies a foreign strict node envelope once instead of inlining it at every use site', function (): void {
+    $universe = [
+        'FormProps' => ['type' => 'object', 'properties' => ['label' => ['type' => 'string']]],
+        'node:form' => ['type' => 'object', 'properties' => ['type' => ['const' => 'form'], 'props' => ['$ref' => '#/$defs/FormProps']], 'x-lattice' => ['kind' => 'strict']],
+    ];
+    $doc = ['$id' => 'x', '$defs' => ['ActionProps' => ['properties' => [
+        'target' => ['anyOf' => [['$ref' => '#/$defs/node:form'], ['type' => 'null']]],
+        'fallback' => ['$ref' => '#/$defs/node:form'],
+    ]]]];
+
+    $projected = new FlatProjection()->project($doc, $universe);
+
+    expect($projected['$defs']['ActionProps']['properties']['target']['anyOf'][0])->toBe(['$ref' => '#/$defs/node:form'])
+        ->and($projected['$defs']['ActionProps']['properties']['fallback'])->toBe(['$ref' => '#/$defs/node:form'])
+        ->and($projected['$defs']['node:form']['properties']['props'])->toBe(['type' => 'object', 'properties' => ['label' => ['type' => 'string']]]);
+});
+
+it('copies a foreign props def once so two documents pulling it in agree on its shape', function (): void {
+    $universe = [
+        'HttpMethod' => ['type' => 'string', 'enum' => ['get', 'post'], 'x-lattice' => ['kind' => 'enum']],
+        'Button' => ['type' => 'object', 'properties' => ['method' => ['$ref' => '#/$defs/HttpMethod']], 'x-lattice' => ['kind' => 'props']],
+    ];
+    $docA = ['$id' => 'a', '$defs' => ['ActionProps' => ['properties' => ['button' => ['$ref' => '#/$defs/Button']]]]];
+    $docB = ['$id' => 'b', '$defs' => ['ModalProps' => ['properties' => ['button' => ['$ref' => '#/$defs/Button']]]]];
+
+    $projectedA = new FlatProjection()->project($docA, $universe);
+    $projectedB = new FlatProjection()->project($docB, $universe);
+
+    expect($projectedA['$defs']['ActionProps']['properties']['button'])->toBe(['$ref' => '#/$defs/Button'])
+        ->and($projectedA['$defs']['Button'])->toBe($projectedB['$defs']['Button']);
+});
+
+it('keeps a same-origin sibling of a foreign copy-once def local too, so every puller agrees on its shape', function (): void {
+    $universe = [
+        'Confirmation' => ['type' => 'object', 'properties' => ['label' => ['type' => 'string']]],
+        'Action' => ['type' => 'object', 'properties' => ['confirmation' => ['$ref' => '#/$defs/Confirmation']], 'x-lattice' => ['kind' => 'props']],
+    ];
+    $defOrigins = ['Confirmation' => 'action', 'Action' => 'action'];
+
+    $actionDoc = ['$id' => 'action', '$defs' => ['Action' => $universe['Action'], 'Confirmation' => $universe['Confirmation']]];
+    $latticeDoc = ['$id' => 'lattice', '$defs' => ['ComponentNode' => ['oneOf' => [['$ref' => '#/$defs/Action']]]]];
+
+    $projectedAction = new FlatProjection()->project($actionDoc, $universe, $defOrigins, 'action');
+    $projectedLattice = new FlatProjection()->project($latticeDoc, $universe, $defOrigins, 'lattice');
+
+    expect($projectedAction['$defs']['Action'])->toBe($projectedLattice['$defs']['Action'])
+        ->and($projectedAction['$defs']['Confirmation'])->toBe($projectedLattice['$defs']['Confirmation'])
+        ->and($projectedLattice['$defs']['Action']['properties']['confirmation'])->toBe(['$ref' => '#/$defs/Confirmation']);
+});
+
+it('does not let one same-origin promotion leak into an unrelated, differently-origined reference to the same def', function (): void {
+    $universe = [
+        'Orientation' => ['type' => 'string', 'enum' => ['horizontal', 'vertical'], 'x-lattice' => ['kind' => 'enum']],
+        'Tabs' => ['type' => 'object', 'properties' => ['orientation' => ['$ref' => '#/$defs/Orientation']], 'x-lattice' => ['kind' => 'props']],
+        'Wizard' => ['type' => 'object', 'properties' => ['orientation' => ['$ref' => '#/$defs/Orientation']], 'x-lattice' => ['kind' => 'props']],
+    ];
+    $defOrigins = ['Orientation' => 'ui', 'Tabs' => 'ui', 'Wizard' => 'form'];
+
+    $doc = ['$id' => 'lattice', '$defs' => ['ComponentNode' => ['oneOf' => [
+        ['$ref' => '#/$defs/Tabs'],
+        ['$ref' => '#/$defs/Wizard'],
+    ]]]];
+
+    $projected = new FlatProjection()->project($doc, $universe, $defOrigins, 'lattice');
+
+    expect($projected['$defs']['Tabs']['properties']['orientation'])->toBe(['$ref' => '#/$defs/Orientation'])
+        ->and($projected['$defs']['Wizard']['properties']['orientation'])->toBe([
+            'type' => 'string',
+            'enum' => ['horizontal', 'vertical'],
+            'x-lattice' => ['kind' => 'enum'],
+        ]);
+});
+
 it('leaves same-document refs to sibling roots untouched', function (): void {
     $doc = [
         '$id' => 'x',

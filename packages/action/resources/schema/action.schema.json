@@ -19,7 +19,17 @@
         "emphasis": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Emphasis"
+              "type": "string",
+              "enum": [
+                "solid",
+                "outline",
+                "ghost",
+                "link"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Emphasis"
+              }
             },
             {
               "type": "null"
@@ -35,7 +45,7 @@
         "form": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/form/v1.json#/$defs/node:form"
+              "$ref": "#/$defs/node:form"
             },
             {
               "type": "null"
@@ -60,7 +70,18 @@
         "method": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/HttpMethod"
+              "type": "string",
+              "enum": [
+                "get",
+                "post",
+                "put",
+                "patch",
+                "delete"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\HttpMethod"
+              }
             },
             {
               "type": "null"
@@ -70,7 +91,15 @@
         "modalSide": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Side"
+              "type": "string",
+              "enum": [
+                "start",
+                "end"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Side"
+              }
             },
             {
               "type": "null"
@@ -80,7 +109,19 @@
         "modalWidth": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ModalWidth"
+              "type": "string",
+              "enum": [
+                "sm",
+                "md",
+                "lg",
+                "xl",
+                "2xl",
+                "3xl"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\ModalWidth"
+              }
             },
             {
               "type": "null"
@@ -96,7 +137,19 @@
         "variant": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Variant"
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "info",
+                "warning",
+                "danger"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Variant"
+              }
             },
             {
               "type": "null"
@@ -138,7 +191,15 @@
         "orientation": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Orientation"
+              "type": "string",
+              "enum": [
+                "horizontal",
+                "vertical"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Orientation"
+              }
             },
             {
               "type": "null"
@@ -176,7 +237,7 @@
         "effects": {
           "type": "array",
           "items": {
-            "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Effect"
+            "$ref": "#/$defs/Effect"
           },
           "readOnly": true
         }
@@ -206,7 +267,17 @@
         "emphasis": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Emphasis"
+              "type": "string",
+              "enum": [
+                "solid",
+                "outline",
+                "ghost",
+                "link"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Emphasis"
+              }
             },
             {
               "type": "null"
@@ -222,7 +293,7 @@
         "form": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/form/v1.json#/$defs/node:form"
+              "$ref": "#/$defs/node:form"
             },
             {
               "type": "null"
@@ -247,7 +318,18 @@
         "method": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/HttpMethod"
+              "type": "string",
+              "enum": [
+                "get",
+                "post",
+                "put",
+                "patch",
+                "delete"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\HttpMethod"
+              }
             },
             {
               "type": "null"
@@ -257,7 +339,15 @@
         "modalSide": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Side"
+              "type": "string",
+              "enum": [
+                "start",
+                "end"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Side"
+              }
             },
             {
               "type": "null"
@@ -267,7 +357,19 @@
         "modalWidth": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ModalWidth"
+              "type": "string",
+              "enum": [
+                "sm",
+                "md",
+                "lg",
+                "xl",
+                "2xl",
+                "3xl"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\ModalWidth"
+              }
             },
             {
               "type": "null"
@@ -283,7 +385,19 @@
         "variant": {
           "anyOf": [
             {
-              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Variant"
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "info",
+                "warning",
+                "danger"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Variant"
+              }
             },
             {
               "type": "null"
@@ -311,6 +425,136 @@
         "wireType": "action.bulk",
         "domain": "Actions",
         "php": "Lattice\\Actions\\Components\\BulkAction"
+      }
+    },
+    "Button": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "buttonType": {
+          "$ref": "#/$defs/ButtonType"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          }
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Emphasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "href": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HttpMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Variant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "buttonType",
+        "effects",
+        "emphasis",
+        "href",
+        "icon",
+        "label",
+        "method",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "button",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
+    "ButtonType": {
+      "type": "string",
+      "enum": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ButtonType"
+      }
+    },
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
       }
     },
     "Confirmation": {
@@ -356,6 +600,310 @@
         "php": "Lattice\\Actions\\Confirmation"
       }
     },
+    "Effect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "effect"
+      }
+    },
+    "Emphasis": {
+      "type": "string",
+      "enum": [
+        "solid",
+        "outline",
+        "ghost",
+        "link"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Emphasis"
+      }
+    },
+    "Form": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "errorBag": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "get",
+                "post",
+                "put",
+                "patch",
+                "delete"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\HttpMethod"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "precognitive": {
+          "type": "boolean"
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resetOnError": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resetOnSuccess": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "submitButton": {
+          "type": "boolean"
+        },
+        "submitButtons": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/node:button"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submitEmphasis": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "solid",
+                "outline",
+                "ghost",
+                "link"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Emphasis"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submitJustify": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "start",
+                "center",
+                "end",
+                "between",
+                "around",
+                "evenly"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Justify"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submitLabel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "submitVariant": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "info",
+                "warning",
+                "danger"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Variant"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validationSummaryLabel": {
+          "type": "string"
+        },
+        "validationTimeout": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "errorBag",
+        "method",
+        "precognitive",
+        "ref",
+        "resetOnError",
+        "resetOnSuccess",
+        "state",
+        "status",
+        "submitButton",
+        "submitButtons",
+        "submitEmphasis",
+        "submitJustify",
+        "submitLabel",
+        "submitVariant",
+        "validationSummaryLabel",
+        "validationTimeout"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "form",
+        "domain": "Form",
+        "php": "Lattice\\Form\\Components\\Form"
+      }
+    },
+    "HttpMethod": {
+      "type": "string",
+      "enum": [
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\HttpMethod"
+      }
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
+    "Variant": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "secondary",
+        "success",
+        "info",
+        "warning",
+        "danger"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Variant"
+      }
+    },
     "node:action": {
       "type": "object",
       "properties": {
@@ -374,12 +922,12 @@
               "$ref": "#/$defs/Action"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -411,12 +959,12 @@
               "$ref": "#/$defs/BulkAction"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -448,12 +996,12 @@
               "$ref": "#/$defs/ActionGroup"
             },
             {
-              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+              "$ref": "#/$defs/CommonNodeProps"
             }
           ]
         },
         "schema": {
-          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+          "$ref": "#/$defs/Schema"
         }
       },
       "required": [
@@ -465,6 +1013,80 @@
         "family": "component",
         "wireType": "action.group",
         "php": "Lattice\\Actions\\Components\\ActionGroup"
+      }
+    },
+    "node:button": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "button"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Button"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "button",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
+    "node:form": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "form"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Form"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "form",
+        "php": "Lattice\\Form\\Components\\Form"
       }
     }
   }

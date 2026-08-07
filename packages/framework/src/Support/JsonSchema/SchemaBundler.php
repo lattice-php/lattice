@@ -3,77 +3,58 @@ declare(strict_types=1);
 
 namespace Lattice\Support\JsonSchema;
 
+use LogicException;
+
 /**
- * Assembles the canonical full-protocol document as a JSON Schema 2020-12
- * bundle (§9.3.2 embedded schema resources) of per-package documents: the
- * framework ("lattice") document is the top level, every other source's
- * document is embedded under `$defs/{shortName}` retaining its own `$id` so
- * the cross-document `$refs` `JsonSchemaBuilder::buildAll()` wrote resolve
- * inside the bundle.
+ * Merges a set of already-flat, self-contained schema documents (each
+ * `FlatProjection`-processed, so none of them point outside themselves) into
+ * one: every def name lands directly in the merged `$defs`, keeping `$base`'s
+ * `$schema`/`$id`/`title`/`x-lattice`. Every flat document carries its own
+ * copy of the envelope core, so the same name recurs across documents with
+ * byte-identical content — those collapse silently.
  *
- * Every non-root source's document is read from its COMMITTED
- * `WireSource::schemaPath()` file — never reflected here — so a consumer
- * app assembling its bundle never touches vendor PHP; only the root/app's
- * own document (built fresh by the caller) is reflected at bundle time.
+ * Two different classes may declare the SAME wire type (`#[AsFilter]`/
+ * `#[AsComponent]` reusing an existing control's type string, e.g. a
+ * component package's filter opting into the built-in `filter.select`
+ * control) — their `strict` node-envelope defs then collide on the same
+ * `prefix:type` name with genuinely different content. That is a pre-existing
+ * property of the wire model (present before this fan-out), not something
+ * this merge can adjudicate, so it keeps whichever document is processed
+ * first — deterministic given a stable source order — instead of failing the
+ * build. Any OTHER kind of name collision is a real bug (e.g. two unrelated
+ * classes accidentally sharing a `class_basename()`) and still throws.
  */
 final readonly class SchemaBundler
 {
     /**
-     * @param  list<WireSource>  $sources  every wire source, including the root if the app declares one
-     * @param  array<string, mixed>  $rootDocument  the root/app's own freshly-built document; `[]` when there is no root source
-     * @param  array<string, mixed>|null  $frameworkDocument  the framework's own freshly-built document, when the
-     *                                                        caller already has it in memory (the workbench regenerating
-     *                                                        every document in one pass) — its committed file is the
-     *                                                        bundle's own output path, so re-reading it from disk mid-run
-     *                                                        would race the write; `null` reads it from disk like any
-     *                                                        other installed source (the consumer-app path).
+     * @param  array<string, mixed>  $base
+     * @param  list<array<string, mixed>>  $documents
      * @return array<string, mixed>
      */
-    public function bundle(array $sources, array $rootDocument, ?array $frameworkDocument = null): array
+    public function bundle(array $base, array $documents): array
     {
-        $bundle = $frameworkDocument;
-        $embedded = [];
+        $defs = $base['$defs'] ?? [];
 
-        foreach ($sources as $source) {
-            if ($source->shortName === 'lattice' && ! $source->isRoot) {
-                continue;
+        foreach ($documents as $document) {
+            foreach ($document['$defs'] ?? [] as $name => $def) {
+                if (isset($defs[$name]) && $defs[$name] !== $def) {
+                    if (($defs[$name]['x-lattice']['kind'] ?? null) === 'strict' && ($def['x-lattice']['kind'] ?? null) === 'strict') {
+                        continue;
+                    }
+
+                    throw new LogicException(sprintf(
+                        'Schema definition name [%s] is claimed by two different defs while merging the wire-protocol bundle.',
+                        $name,
+                    ));
+                }
+
+                $defs[$name] = $def;
             }
-
-            $document = $source->isRoot ? $rootDocument : $this->committedDocument($source);
-
-            if ($document === null || $document === []) {
-                continue;
-            }
-
-            $embedded[$source->shortName] = $document;
         }
 
-        if ($bundle === null) {
-            $lattice = collect($sources)->first(static fn (WireSource $source): bool => $source->shortName === 'lattice' && ! $source->isRoot);
-            $bundle = $lattice !== null ? $this->committedDocument($lattice) : null;
-        }
+        ksort($defs);
+        $base['$defs'] = $defs;
 
-        $bundle ??= ['$schema' => 'https://json-schema.org/draft/2020-12/schema', '$defs' => []];
-        $bundle['$defs'] = [...($bundle['$defs'] ?? []), ...$embedded];
-        ksort($bundle['$defs']);
-
-        return $bundle;
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    private function committedDocument(WireSource $source): ?array
-    {
-        $path = $source->schemaPath();
-        clearstatcache(true, $path);
-
-        if (! is_file($path)) {
-            return null;
-        }
-
-        $decoded = json_decode((string) file_get_contents($path), true);
-
-        return is_array($decoded) ? $decoded : null;
+        return $base;
     }
 }
