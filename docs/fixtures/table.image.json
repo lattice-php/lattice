@@ -100,7 +100,8 @@
             "resizableColumns": false,
             "resizeIndicator": false,
             "searchable": false,
-            "striped": false
+            "striped": false,
+            "toolbar": []
         },
         "type": "table"
     }

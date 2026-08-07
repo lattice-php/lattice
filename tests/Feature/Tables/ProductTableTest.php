@@ -85,6 +85,21 @@ test('the products table serializes bulk actions bound to the table', function (
             ->assertProp('form.schema.0.props.name', 'reason'));
 });
 
+test('the products table serializes toolbar components bound to the table', function (): void {
+    Lattice::tables([ProductsTable::class]);
+
+    $table = wire(Table::use(ProductsTable::class));
+
+    expect(data_get($table, 'props.toolbar.0.type'))->toBe('button');
+    expect(data_get($table, 'props.toolbar.1.props.ref'))->toBeString();
+
+    $this->assertLatticeComponent($table)
+        ->assertRenderedCount('button', 1)
+        ->assertRenderedCount('action', 1)
+        ->component('action', 'workbench.modals.submit-feedback', fn ($action) => $action
+            ->assertProp('endpoint', '/lattice/actions/workbench.modals.submit-feedback'));
+});
+
 test('bulk actions can target every row matching the current filter', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class]);

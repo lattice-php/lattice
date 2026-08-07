@@ -85,6 +85,7 @@ final class TableRegistry extends DefinitionRegistry
                     ->actionsLabel($definition->actionsLabel())
                     ->emptyLabel($definition->emptyLabel())
                     ->bulkActions($this->bulkActions($definition, $key, $context))
+                    ->toolbar($this->toolbarComponents($definition, $key, $context))
                     ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
 
                 $component->lazy = $lazy;
@@ -173,6 +174,20 @@ final class TableRegistry extends DefinitionRegistry
         return array_map(
             fn (Component&InteractiveComponent $action): Component => $action->context([...$context, 'table' => $key]),
             $this->renderableComponents($definition->bulkActions()),
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<int, Component>
+     */
+    private function toolbarComponents(TableDefinition $definition, string $key, array $context): array
+    {
+        return array_map(
+            fn (Component $component): Component => $component instanceof InteractiveComponent
+                ? $component->context([...$context, 'table' => $key])
+                : $component,
+            $this->renderableComponents($definition->toolbar()),
         );
     }
 

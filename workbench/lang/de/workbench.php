@@ -788,6 +788,7 @@ return [
         ],
         'products' => [
             'actions' => 'Aktionen',
+            'create' => 'Neues Produkt',
             'edit' => 'Bearbeiten',
         ],
     ],
