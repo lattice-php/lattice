@@ -52,6 +52,24 @@ final class RegBarePage extends RegBasePage
     }
 }
 
+#[AsPage(route: '/guarded', name: 'guarded.index', can: ['manage-widgets', 'inspect-widgets'])]
+final class RegGuardedPage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Guarded'));
+    }
+}
+
+#[AsPage(route: '/guarded-bare', name: 'guarded-bare.index', middleware: [], can: 'manage-widgets')]
+final class RegGuardedBarePage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Guarded bare'));
+    }
+}
+
 test('Lattice::pageRegistry()->all() resolves route metadata for registered pages', function (): void {
     Lattice::pages([RegWidgetsPage::class]);
 
@@ -108,6 +126,24 @@ test('an explicit empty middleware attribute opts the page out of the default', 
     new LatticeServiceProvider(app())->bootPages();
 
     expect(Route::getRoutes()->getByName('bare.index')->gatherMiddleware())->toBe([]);
+});
+
+test('a declared ability registers as can middleware after the page middleware', function (): void {
+    Lattice::pages([RegGuardedPage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    expect(Route::getRoutes()->getByName('guarded.index')->gatherMiddleware())
+        ->toBe(['web', 'can:manage-widgets', 'can:inspect-widgets']);
+});
+
+test('a middleware opt-out still registers the declared ability as can middleware', function (): void {
+    Lattice::pages([RegGuardedBarePage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    expect(Route::getRoutes()->getByName('guarded-bare.index')->gatherMiddleware())
+        ->toBe(['can:manage-widgets']);
 });
 
 test('an imperatively registered route-less page registers no route, while a routed sibling still gets its route', function (): void {
