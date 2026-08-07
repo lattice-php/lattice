@@ -184,6 +184,11 @@ export default defineConfig({
         import.meta.dirname,
         "packages/api-reference/resources/js",
       ),
+      "@lattice-php/calendar/css": path.resolve(
+        import.meta.dirname,
+        "packages/calendar/resources/css/calendar.css",
+      ),
+      "@lattice-php/calendar": path.resolve(import.meta.dirname, "packages/calendar/resources/js"),
       "@lattice-php/tree": path.resolve(import.meta.dirname, "packages/tree/resources/js"),
       "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
       "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
