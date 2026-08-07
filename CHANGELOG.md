@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.42.0](https://github.com/lattice-php/lattice/compare/0.41.0...0.42.0) (2026-08-07)
+
+
+### Features
+
+* add lattice-php/api-reference component package ([#407](https://github.com/lattice-php/lattice/issues/407)) ([75a225e](https://github.com/lattice-php/lattice/commit/75a225e81a742b9f07833cfcec77e032605b4241))
+* per-package css and icons for component packages ([#408](https://github.com/lattice-php/lattice/issues/408)) ([b146d51](https://github.com/lattice-php/lattice/commit/b146d51a84cc3fa6949d3a14e86b56299eeab6fc))
+
 ## [0.41.0](https://github.com/lattice-php/lattice/compare/0.40.0...0.41.0) (2026-08-06)
 
 
