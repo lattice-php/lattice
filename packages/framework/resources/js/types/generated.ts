@@ -1440,6 +1440,7 @@ export type Table = {
   resizeIndicator: boolean;
   searchable: boolean;
   striped: boolean;
+  toolbar: Node[];
 };
 export type TableNodeType = "table";
 export type TablePagination = {

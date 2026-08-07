@@ -48,6 +48,11 @@ class Table extends Component implements InteractiveComponent
      */
     public array $bulkActions = [];
 
+    /**
+     * @var array<int, Component>
+     */
+    public array $toolbar = [];
+
     public bool $striped = false;
 
     public bool $searchable = false;
@@ -173,6 +178,16 @@ class Table extends Component implements InteractiveComponent
     public function bulkActions(array $actions): static
     {
         $this->bulkActions = $actions;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<int, Component>  $components
+     */
+    public function toolbar(array $components): static
+    {
+        $this->toolbar = $components;
 
         return $this;
     }

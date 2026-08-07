@@ -6,7 +6,7 @@ namespace Lattice\Support\Testing;
 
 final readonly class ComponentNode
 {
-    private const array NESTED_COMPONENT_PROPS = ['form', 'headerActions', 'bulkActions', 'actions', 'trigger'];
+    private const array NESTED_COMPONENT_PROPS = ['form', 'headerActions', 'bulkActions', 'toolbar', 'actions', 'trigger'];
 
     /**
      * @param  array<string, mixed>  $data

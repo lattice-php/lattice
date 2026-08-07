@@ -111,5 +111,15 @@ abstract class TableDefinition extends Definition
         return [];
     }
 
+    /**
+     * Components rendered in the table toolbar, before the built-in controls.
+     *
+     * @return array<int, Component>
+     */
+    public function toolbar(): array
+    {
+        return [];
+    }
+
     abstract public function source(): TableSource;
 }
