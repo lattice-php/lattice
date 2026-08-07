@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Core\Attributes;
 
+use BackedEnum;
+use Lattice\Core\Authorization;
 use Lattice\Core\Contracts\DeclaresGate;
 use Lattice\Core\Definition;
 
@@ -25,11 +27,11 @@ abstract class DefinitionAttribute implements DeclaresGate
     private readonly array $can;
 
     /**
-     * @param  string|array<int, string>  $can
+     * @param  string|BackedEnum|array<int, string|BackedEnum>  $can
      */
-    public function __construct(public readonly string $key, string|array $can = [])
+    public function __construct(public readonly string $key, string|BackedEnum|array $can = [])
     {
-        $this->can = (array) $can;
+        $this->can = Authorization::abilities($can);
     }
 
     public function can(): array

@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace Lattice\Core;
 
+use BackedEnum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Lattice\Core\Contracts\Authorizable;
 use Lattice\Core\Contracts\DeclaresGate;
+use Lattice\Core\Support\Wire;
 use Spatie\Attributes\Attributes;
 
 /**
@@ -29,6 +31,18 @@ final class Authorization
     public static function ensure(Authorizable $subject, Request $request): void
     {
         abort_unless(self::passes($subject, $request), 403);
+    }
+
+    /**
+     * The declared abilities as gate names: a `can` spelled as a single
+     * ability or a list, each either a string or a backed-enum case.
+     *
+     * @param  string|BackedEnum|array<int, string|BackedEnum>  $can
+     * @return array<int, string>
+     */
+    public static function abilities(string|BackedEnum|array $can): array
+    {
+        return array_map(Wire::scalar(...), is_array($can) ? array_values($can) : [$can]);
     }
 
     /**
