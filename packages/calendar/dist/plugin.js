@@ -30,24 +30,7 @@ var _ = d((() => {}));
 function v(e) {
 	return /* @__PURE__ */ new Date(`${e}T12:00:00Z`);
 }
-function y(e) {
-	return e.toISOString().slice(0, 10);
-}
-function b(e, t) {
-	let n = v(e);
-	return n.setUTCDate(n.getUTCDate() + t), y(n);
-}
-function x(e, t) {
-	let n = v(e).getTime(), r = v(t).getTime();
-	return Math.round((r - n) / E);
-}
-function S(e) {
-	let t = v(e), n = (t.getUTCDay() + 6) % 7;
-	t.setUTCDate(t.getUTCDate() - n + 3);
-	let r = new Date(Date.UTC(t.getUTCFullYear(), 0, 4)), i = (r.getUTCDay() + 6) % 7;
-	return r.setUTCDate(r.getUTCDate() - i + 3), 1 + Math.round((t.getTime() - r.getTime()) / (7 * E));
-}
-function C(e, t) {
+function y(e, t) {
 	let n = [], r = null, i = 0;
 	for (let a = 0; a < e; a++) {
 		let e = t(a);
@@ -63,13 +46,13 @@ function C(e, t) {
 		label: r
 	}), n;
 }
-function w(e, t, n, r) {
+function b(e, t, n, r) {
 	let i = new Intl.DateTimeFormat(n, {
 		month: "long",
 		year: "numeric"
 	}), a = [];
 	for (let n = 0; n < t; n++) {
-		let t = b(e, n), i = v(t), o = i.getUTCDay();
+		let t = (0, h.addDays)(e, n), i = v(t), o = i.getUTCDay();
 		a.push({
 			index: n,
 			date: t,
@@ -82,11 +65,11 @@ function w(e, t, n, r) {
 	return {
 		start: e,
 		days: a,
-		weeks: C(t, (e) => String(S(a[e].date))),
-		months: C(t, (e) => i.format(v(a[e].date)))
+		weeks: y(t, (e) => String((0, h.isoWeek)(a[e].date))),
+		months: y(t, (e) => i.format(v(a[e].date)))
 	};
 }
-function T(e) {
+function x(e) {
 	let t = [...e].sort((e, t) => e.start - t.start || t.span - e.span || e.id.localeCompare(t.id)), n = [], r = [];
 	for (let e of t) {
 		let t = e.start + e.span, i = n.findIndex((t) => t <= e.start);
@@ -100,12 +83,12 @@ function T(e) {
 		laneCount: n.length
 	};
 }
-var E, D = d((() => {
-	E = 864e5;
+var S = d((() => {
+	_();
 }));
 //#endregion
 //#region resources/js/timeline-state.ts
-function O(e) {
+function C(e) {
 	if (e.length === 0) return [];
 	let t = [...e].sort((e, t) => e[0] < t[0] ? -1 : +(e[0] > t[0])), n = [[t[0][0], t[0][1]]];
 	for (let [e, r] of t.slice(1)) {
@@ -114,21 +97,21 @@ function O(e) {
 	}
 	return n;
 }
-function k(e, t, n) {
+function w(e, t, n) {
 	if (t >= n) return [];
-	let r = O(e), i = [], a = t;
+	let r = C(e), i = [], a = t;
 	for (let [e, t] of r) if (!(t <= a) && (e >= n || (e > a && i.push([a, e]), a = t > a ? t < n ? t : n : a, a >= n))) break;
 	return a < n && i.push([a, n]), i;
 }
-function A({ endpoint: i, componentRef: a, initialEvents: o, initialFrom: s, days: c }) {
-	let [l, u] = r(() => new Map(o.map((e) => [e.id, e]))), [d, f] = r(!1), p = n([[s, b(s, c)]]), m = n(/* @__PURE__ */ new Map()), g = e((e, t) => {
+function T({ endpoint: i, componentRef: a, initialEvents: o, initialFrom: s, days: c }) {
+	let [l, u] = r(() => new Map(o.map((e) => [e.id, e]))), [d, f] = r(!1), p = n([[s, (0, h.addDays)(s, c)]]), m = n(/* @__PURE__ */ new Map()), g = e((e, t) => {
 		if (!i || !a) return;
-		let n = k(p.current, e, t);
+		let n = w(p.current, e, t);
 		if (n.length === 0) return;
 		let r = n[0][0], o = n[n.length - 1][1], s = `${r}:${o}`;
 		if (m.current.has(s)) return;
 		let c = (0, h.apiJson)(`${i}?from=${r}&to=${o}`, { ref: a }).then(({ events: e }) => {
-			p.current = O([...p.current, [r, o]]), u((t) => {
+			p.current = C([...p.current, [r, o]]), u((t) => {
 				let n = new Map(t);
 				for (let t of e) n.set(t.id, t);
 				return n;
@@ -154,16 +137,13 @@ function A({ endpoint: i, componentRef: a, initialEvents: o, initialFrom: s, day
 		d
 	]);
 }
-var j = d((() => {
-	_(), D();
-})), M = /* @__PURE__ */ f({ default: () => H });
-function N() {
-	return (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-}
-function P(e, t, n, r) {
+var E = d((() => {
+	_();
+})), D = /* @__PURE__ */ f({ default: () => I });
+function O(e, t, n, r) {
 	let i = [];
 	for (let a of t(e)) {
-		let e = Math.max(0, x(n, a.start)), t = Math.min(r, x(n, a.end)) - e;
+		let e = Math.max(0, (0, h.daysBetween)(n, a.start)), t = Math.min(r, (0, h.daysBetween)(n, a.end)) - e;
 		t > 0 && i.push({
 			id: a.id,
 			start: e,
@@ -171,9 +151,9 @@ function P(e, t, n, r) {
 			event: a
 		});
 	}
-	return T(i);
+	return x(i);
 }
-function F({ collapsed: e, days: t, eventsForResource: n, from: r, group: s, onToggle: c, t: l }) {
+function k({ collapsed: e, days: t, eventsForResource: n, from: r, group: s, onToggle: c, t: l }) {
 	return /* @__PURE__ */ o(i, { children: [
 		/* @__PURE__ */ o("div", {
 			className: "lt-timeline-sticky-col flex items-center gap-1.5 border-t border-lt-border bg-lt-muted px-2 py-1.5 text-sm font-medium",
@@ -189,7 +169,7 @@ function F({ collapsed: e, days: t, eventsForResource: n, from: r, group: s, onT
 			}), /* @__PURE__ */ a("span", { children: s.label })]
 		}),
 		/* @__PURE__ */ a("div", { className: "lt-timeline-group-header-canvas border-t border-lt-border bg-lt-muted" }),
-		e ? null : s.resources.map((e) => /* @__PURE__ */ a(I, {
+		e ? null : s.resources.map((e) => /* @__PURE__ */ a(A, {
 			days: t,
 			eventsForResource: n,
 			from: r,
@@ -197,8 +177,8 @@ function F({ collapsed: e, days: t, eventsForResource: n, from: r, group: s, onT
 		}, e.id))
 	] });
 }
-function I({ days: e, eventsForResource: t, from: n, resource: r }) {
-	let { bars: s, laneCount: c } = P(r.id, t, n, e), l = `calc(${Math.max(c, 1)} * var(--lt-timeline-lane-height))`;
+function A({ days: e, eventsForResource: t, from: n, resource: r }) {
+	let { bars: s, laneCount: c } = O(r.id, t, n, e), l = `calc(${Math.max(c, 1)} * var(--lt-timeline-lane-height))`;
 	return /* @__PURE__ */ o(i, { children: [/* @__PURE__ */ a("div", {
 		className: "lt-timeline-sticky-col flex items-center border-t border-lt-border px-2 text-sm text-lt-fg",
 		style: { height: l },
@@ -226,33 +206,33 @@ function I({ days: e, eventsForResource: t, from: n, resource: r }) {
 		})]
 	})] });
 }
-var L, R, z, B, V, H, U = d((() => {
-	_(), D(), j(), L = 10, R = 64, z = 24, B = 1.25, V = 7, H = ({ node: e }) => {
-		let n = (0, h.nodeIdentity)(e), { t: i, locale: s } = (0, h.useT)("calendar"), [c, l] = r(e.props.from), [u, d] = r(z), [f, p] = r(/* @__PURE__ */ new Set()), [m] = r(N), { days: g } = e.props, { eventsForResource: _, ensureRange: v, loading: y } = A({
+var j, M, N, P, F, I, L = d((() => {
+	_(), S(), E(), j = 10, M = 64, N = 24, P = 1.25, F = 7, I = ({ node: e }) => {
+		let n = (0, h.nodeIdentity)(e), { t: i, locale: s } = (0, h.useT)("calendar"), [c, l] = r(e.props.from), [u, d] = r(N), [f, p] = r(/* @__PURE__ */ new Set()), [m] = r(() => (0, h.todayISO)((0, h.currentTimezone)())), { days: g } = e.props, { eventsForResource: _, ensureRange: v, loading: y } = T({
 			endpoint: e.props.endpoint,
 			componentRef: e.props.ref,
 			initialEvents: e.props.events,
 			initialFrom: e.props.from,
 			days: g
-		}), S = t(() => w(c, g, s, m), [
+		}), x = t(() => b(c, g, s, m), [
 			c,
 			g,
 			s,
 			m
-		]), C = S.days.length > 0 ? (S.days[0].weekday + 6) % 7 : 0, T = x(c, m), E = T >= 0 && T < g, D = t(() => new Intl.DateTimeFormat(s, { weekday: "short" }), [s]);
-		function O(e) {
-			l(e), v(e, b(e, g));
+		]), S = x.days.length > 0 ? (x.days[0].weekday + 6) % 7 : 0, C = (0, h.daysBetween)(c, m), w = C >= 0 && C < g, E = t(() => new Intl.DateTimeFormat(s, { weekday: "short" }), [s]);
+		function D(e) {
+			l(e), v(e, (0, h.addDays)(e, g));
 		}
-		function k(e) {
+		function O(e) {
 			p((t) => {
 				let n = new Set(t);
 				return n.has(e) ? n.delete(e) : n.add(e), n;
 			});
 		}
-		let j = {
+		let A = {
 			"--lt-timeline-day-width": `${u}px`,
 			"--lt-timeline-canvas-w": `calc(var(--lt-timeline-day-width) * ${g})`,
-			"--lt-timeline-weekend-offset": C
+			"--lt-timeline-weekend-offset": S
 		};
 		return /* @__PURE__ */ o("div", {
 			className: "lt-timeline",
@@ -263,7 +243,7 @@ var L, R, z, B, V, H, U = d((() => {
 					/* @__PURE__ */ a("button", {
 						"aria-label": i("calendar.previous", "Previous"),
 						className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
-						onClick: () => O(b(c, -7)),
+						onClick: () => D((0, h.addDays)(c, -7)),
 						type: "button",
 						children: /* @__PURE__ */ a(h.Icon, {
 							className: "size-lt-icon-sm",
@@ -273,7 +253,7 @@ var L, R, z, B, V, H, U = d((() => {
 					/* @__PURE__ */ a("button", {
 						"aria-label": i("calendar.next", "Next"),
 						className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
-						onClick: () => O(b(c, V)),
+						onClick: () => D((0, h.addDays)(c, F)),
 						type: "button",
 						children: /* @__PURE__ */ a(h.Icon, {
 							className: "size-lt-icon-sm",
@@ -282,7 +262,7 @@ var L, R, z, B, V, H, U = d((() => {
 					}),
 					/* @__PURE__ */ a("button", {
 						className: "rounded-lt-sm px-2 py-1 text-sm hover:bg-lt-muted",
-						onClick: () => O(b(m, -7)),
+						onClick: () => D((0, h.addDays)(m, -7)),
 						type: "button",
 						children: i("calendar.today", "Today")
 					}),
@@ -291,8 +271,8 @@ var L, R, z, B, V, H, U = d((() => {
 						children: [/* @__PURE__ */ a("button", {
 							"aria-label": i("calendar.zoom-out", "Zoom out"),
 							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
-							disabled: u <= L,
-							onClick: () => d((e) => Math.max(L, e / B)),
+							disabled: u <= j,
+							onClick: () => d((e) => Math.max(j, e / P)),
 							type: "button",
 							children: /* @__PURE__ */ a(h.Icon, {
 								className: "size-lt-icon-sm",
@@ -301,8 +281,8 @@ var L, R, z, B, V, H, U = d((() => {
 						}), /* @__PURE__ */ a("button", {
 							"aria-label": i("calendar.zoom-in", "Zoom in"),
 							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
-							disabled: u >= R,
-							onClick: () => d((e) => Math.min(R, e * B)),
+							disabled: u >= M,
+							onClick: () => d((e) => Math.min(M, e * P)),
 							type: "button",
 							children: /* @__PURE__ */ a(h.Icon, {
 								className: "size-lt-icon-sm",
@@ -316,12 +296,12 @@ var L, R, z, B, V, H, U = d((() => {
 				className: "lt-timeline-scroll rounded-lt-sm border border-lt-border",
 				children: /* @__PURE__ */ o("div", {
 					className: "lt-timeline-grid",
-					style: j,
+					style: A,
 					children: [
 						/* @__PURE__ */ a("div", { className: (0, h.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-months lt-timeline-header-cell") }),
 						/* @__PURE__ */ a("div", {
 							className: (0, h.cn)("lt-timeline-sticky-row lt-timeline-row-months lt-timeline-header-cell"),
-							children: S.months.map((e) => /* @__PURE__ */ a("div", {
+							children: x.months.map((e) => /* @__PURE__ */ a("div", {
 								className: "lt-timeline-segment flex items-center border-l border-lt-border px-2 text-xs font-medium text-lt-fg",
 								style: {
 									left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
@@ -333,7 +313,7 @@ var L, R, z, B, V, H, U = d((() => {
 						/* @__PURE__ */ a("div", { className: (0, h.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-weeks lt-timeline-header-cell") }),
 						/* @__PURE__ */ a("div", {
 							className: (0, h.cn)("lt-timeline-sticky-row lt-timeline-row-weeks lt-timeline-header-cell"),
-							children: S.weeks.map((e) => /* @__PURE__ */ o("div", {
+							children: x.weeks.map((e) => /* @__PURE__ */ o("div", {
 								className: "lt-timeline-segment flex items-center border-l border-lt-border px-2 text-xs text-lt-muted-fg",
 								style: {
 									left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
@@ -351,25 +331,25 @@ var L, R, z, B, V, H, U = d((() => {
 							className: (0, h.cn)("lt-timeline-sticky-row lt-timeline-row-days lt-timeline-header-cell"),
 							children: /* @__PURE__ */ a("div", {
 								className: "lt-timeline-days-row",
-								children: S.days.map((e) => /* @__PURE__ */ o("div", {
+								children: x.days.map((e) => /* @__PURE__ */ o("div", {
 									className: (0, h.cn)("lt-timeline-day flex flex-col items-center justify-center border-l border-lt-border text-xs", e.isWeekend && "bg-lt-muted text-lt-muted-fg", e.isToday && "font-semibold text-lt-primary"),
-									children: [/* @__PURE__ */ a("span", { children: D.format(/* @__PURE__ */ new Date(`${e.date}T12:00:00Z`)) }), /* @__PURE__ */ a("span", { children: e.dayOfMonth })]
+									children: [/* @__PURE__ */ a("span", { children: E.format(/* @__PURE__ */ new Date(`${e.date}T12:00:00Z`)) }), /* @__PURE__ */ a("span", { children: e.dayOfMonth })]
 								}, e.date))
 							})
 						}),
-						e.props.groups.map((e) => /* @__PURE__ */ a(F, {
+						e.props.groups.map((e) => /* @__PURE__ */ a(k, {
 							collapsed: f.has(e.key),
 							days: g,
 							eventsForResource: _,
 							from: c,
 							group: e,
-							onToggle: () => k(e.key),
+							onToggle: () => O(e.key),
 							t: i
 						}, e.key)),
-						E ? /* @__PURE__ */ a("div", {
+						w ? /* @__PURE__ */ a("div", {
 							"aria-hidden": "true",
 							className: "lt-timeline-today-marker",
-							style: { left: `calc(var(--lt-timeline-label-w) + var(--lt-timeline-day-width) * ${T})` }
+							style: { left: `calc(var(--lt-timeline-label-w) + var(--lt-timeline-day-width) * ${C})` }
 						}) : null
 					]
 				})
@@ -380,10 +360,10 @@ var L, R, z, B, V, H, U = d((() => {
 //#endregion
 //#region resources/js/plugin.ts
 _();
-var W = {
+var R = {
 	name: "lattice/calendar",
-	components: { timeline: (0, h.lazyComponent)(() => Promise.resolve().then(() => (U(), M))) },
+	components: { timeline: (0, h.lazyComponent)(() => Promise.resolve().then(() => (L(), D))) },
 	i18n: { namespace: "calendar" }
 };
 //#endregion
-export { W as default };
+export { R as default };

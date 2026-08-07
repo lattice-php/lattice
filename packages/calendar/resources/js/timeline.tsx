@@ -5,8 +5,9 @@ import type { RendererComponent } from "@lattice-php/core";
 import { coerceColor, namedColor, toneProps } from "@lattice-php/ui/lib/color";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Icon } from "@lattice-php/ui/icons";
-import { useT } from "@lattice-php/ui/i18n";
-import { addDays, assignLanes, buildAxis, dayIndexOf } from "./date-axis";
+import { currentTimezone, useT } from "@lattice-php/ui/i18n";
+import { addDays, daysBetween, todayISO } from "@lattice-php/ui/format/plain-date";
+import { assignLanes, buildAxis } from "./date-axis";
 import { useTimelineEvents } from "./timeline-state";
 import type {
   TimelineEventData,
@@ -34,10 +35,6 @@ const DEFAULT_DAY_WIDTH = 24;
 const ZOOM_FACTOR = 1.25;
 const NAV_STEP_DAYS = 7;
 
-function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
 type Bar = {
   id: string;
   start: number;
@@ -54,8 +51,8 @@ function barsForResource(
   const clipped: Bar[] = [];
 
   for (const event of eventsForResource(resourceId)) {
-    const start = Math.max(0, dayIndexOf(from, event.start));
-    const end = Math.min(days, dayIndexOf(from, event.end));
+    const start = Math.max(0, daysBetween(from, event.start));
+    const end = Math.min(days, daysBetween(from, event.end));
     const span = end - start;
 
     if (span > 0) {
@@ -72,7 +69,7 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
   const [from, setFrom] = useState(node.props.from);
   const [dayWidth, setDayWidth] = useState(DEFAULT_DAY_WIDTH);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  const [today] = useState(todayISO);
+  const [today] = useState(() => todayISO(currentTimezone()));
   const { days } = node.props;
   const { eventsForResource, ensureRange, loading } = useTimelineEvents({
     endpoint: node.props.endpoint,
@@ -84,7 +81,7 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
 
   const axis = useMemo(() => buildAxis(from, days, locale, today), [from, days, locale, today]);
   const weekendOffset = axis.days.length > 0 ? (axis.days[0].weekday + 6) % 7 : 0;
-  const todayIndex = dayIndexOf(from, today);
+  const todayIndex = daysBetween(from, today);
   const showTodayMarker = todayIndex >= 0 && todayIndex < days;
   const weekdayFormatter = useMemo(
     () => new Intl.DateTimeFormat(locale, { weekday: "short" }),

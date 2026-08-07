@@ -56,6 +56,7 @@ export * from "./use-column-resizing";
 export * from "./format/temporal";
 export * from "./format/number";
 export * from "./format/numeric";
+export * from "./format/plain-date";
 export * from "./effects/dispatch";
 export * from "./effects/registry";
 export * from "./effects/run-action";
