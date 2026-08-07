@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { apiJson } from "@lattice-php/core";
-import { addDays } from "@lattice-php/ui/format/plain-date";
+import { addDays } from "@lattice-php/ui/format/temporal";
 import type { TimelineEventData } from "./types";
 
 export type DateRange = readonly [string, string];

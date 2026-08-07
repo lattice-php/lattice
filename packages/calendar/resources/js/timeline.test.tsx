@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { currentTimezone } from "@lattice-php/ui/i18n";
-import { addDays, todayISO } from "@lattice-php/ui/format/plain-date";
+import { addDays, todayISO } from "@lattice-php/ui/format/temporal";
 import TimelineComponent from "./timeline";
 import type { TimelineEventData, TimelineGroupData, TimelineWireProps } from "./types";
 

@@ -1,4 +1,4 @@
-import { addDays, isoWeek } from "@lattice-php/ui/format/plain-date";
+import { addDays, isoWeek } from "@lattice-php/ui/format/temporal";
 
 function toNoonUtc(dateISO: string): Date {
   return new Date(`${dateISO}T12:00:00Z`);

@@ -6,7 +6,7 @@ import { coerceColor, namedColor, toneProps } from "@lattice-php/ui/lib/color";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Icon } from "@lattice-php/ui/icons";
 import { currentTimezone, useT } from "@lattice-php/ui/i18n";
-import { addDays, daysBetween, todayISO } from "@lattice-php/ui/format/plain-date";
+import { addDays, daysBetween, todayISO } from "@lattice-php/ui/format/temporal";
 import { assignLanes, buildAxis } from "./date-axis";
 import { useTimelineEvents } from "./timeline-state";
 import type {
