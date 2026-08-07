@@ -1,6 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fakeNode, renderTree, sampleNodes as nodes, treeNode } from "./test-support";
+import { fakeNode } from "@lattice-php/core/test-support";
+import { renderTree, sampleNodes as nodes, treeNode } from "./test-support";
 import TreeComponent, { type TreeNodeData } from "./tree";
 
 afterEach(() => {

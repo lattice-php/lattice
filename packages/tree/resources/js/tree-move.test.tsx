@@ -1,7 +1,8 @@
 import { act, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { dropTargetForElements } from "@lattice-php/lattice/dnd";
-import { fakeNode, renderWithRegistry, testRegistry, treeNode } from "./test-support";
+import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
+import { testRegistry, treeNode } from "./test-support";
 import TreeComponent, { type TreeNodeData } from "./tree";
 
 // Real drag gestures for this suite live in tree-move.browser.test.tsx. Only the
