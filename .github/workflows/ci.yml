@@ -252,7 +252,7 @@ jobs:
         run: composer rector:test
 
   generated-types:
-    name: Generated Schema & TypeScript Types
+    name: Generated TypeScript Types
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -282,36 +282,16 @@ jobs:
 
       - run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Generated schema and TypeScript types are up to date
+      - name: Generated TypeScript types are up to date
         run: |
           composer types
           git add --intent-to-add \
-            packages/action/resources/schema/action.schema.json \
-            packages/api-reference/resources/schema/api-reference.schema.json \
-            packages/core/resources/schema/core.schema.json \
-            packages/form/resources/schema/form.schema.json \
-            packages/framework/resources/schema/lattice.schema.json \
-            packages/media/resources/schema/media.schema.json \
-            packages/signature-example/resources/schema/signature-example.schema.json \
-            packages/table/resources/schema/table.schema.json \
-            packages/tree/resources/schema/tree.schema.json \
-            packages/ui/resources/schema/ui.schema.json \
             packages/framework/resources/js/types/generated.ts \
             packages/form/resources/js/generated.ts \
             packages/table/resources/js/generated.ts \
             packages/action/resources/js/generated.ts \
             packages/ui/resources/js/generated.ts
           git diff --exit-code -- \
-            packages/action/resources/schema/action.schema.json \
-            packages/api-reference/resources/schema/api-reference.schema.json \
-            packages/core/resources/schema/core.schema.json \
-            packages/form/resources/schema/form.schema.json \
-            packages/framework/resources/schema/lattice.schema.json \
-            packages/media/resources/schema/media.schema.json \
-            packages/signature-example/resources/schema/signature-example.schema.json \
-            packages/table/resources/schema/table.schema.json \
-            packages/tree/resources/schema/tree.schema.json \
-            packages/ui/resources/schema/ui.schema.json \
             packages/framework/resources/js/types/generated.ts \
             packages/form/resources/js/generated.ts \
             packages/table/resources/js/generated.ts \

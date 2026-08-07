@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
-use Lattice\Support\JsonSchema\JsonSchemaBuilder;
-use Lattice\Support\JsonSchema\WireSourceCatalog;
+use Lattice\Support\Wire\WireModelBuilder;
+use Lattice\Support\Wire\WireSourceCatalog;
 
 /**
- * Default profile: builds the app's effective schema document in memory and
+ * Default profile: builds the app's effective wire model in memory and
  * writes a module augmentation for every `origin: "app"` wire type, extending
  * the package's published types.
  */
@@ -18,7 +18,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
     public function run(): string
     {
-        $document = new JsonSchemaBuilder()->build(
+        $document = new WireModelBuilder()->build(
             $this->catalog->builtinDirs(self::EMISSION_EXCLUDED),
             $this->catalog->appDirs(),
         );

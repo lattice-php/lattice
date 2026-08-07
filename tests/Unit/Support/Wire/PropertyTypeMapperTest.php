@@ -10,17 +10,17 @@ use Lattice\Form\Components\Field;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\Conditions\FieldConditions;
 use Lattice\Http\PagePayload;
-use Lattice\Support\JsonSchema\JsonSchemaContext;
-use Lattice\Support\JsonSchema\PropertySchemaMapper;
+use Lattice\Support\Wire\PropertyTypeMapper;
+use Lattice\Support\Wire\WireModelContext;
 use Lattice\Table\Columns\BadgeColumn;
 use Lattice\Tests\Fixtures\TypeScript\SampleComponent;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Enums\ButtonType;
 
-function mapperContext(): JsonSchemaContext
+function mapperContext(): WireModelContext
 {
-    return new JsonSchemaContext(
+    return new WireModelContext(
         defNames: [
             ButtonType::class => 'ButtonType',
             FieldConditions::class => 'FieldConditions',
@@ -40,7 +40,7 @@ function mapperContext(): JsonSchemaContext
  */
 function mapProperty(string $class, string $property): array
 {
-    return new PropertySchemaMapper(mapperContext())->map(new ReflectionProperty($class, $property));
+    return new PropertyTypeMapper(mapperContext())->map(new ReflectionProperty($class, $property));
 }
 
 it('maps a native nullable scalar to a nullable type array', function (): void {

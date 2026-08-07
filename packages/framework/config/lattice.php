@@ -84,8 +84,4 @@ return [
         'output' => resource_path('js/lattice/generated.d.ts'),
         'module' => '@lattice-php/core',
     ],
-
-    'schema' => [
-        'output' => base_path('lattice.schema.json'),
-    ],
 ];

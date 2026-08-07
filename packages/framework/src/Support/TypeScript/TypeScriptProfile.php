@@ -10,9 +10,8 @@ namespace Lattice\Support\TypeScript;
 interface TypeScriptProfile
 {
     /**
-     * Wire packages excluded from TypeScript generation (their schema FILES
-     * are still generated from day one — only TS emission is skipped): each
-     * hand-writes TypeScript that a generated.ts sibling would collide with —
+     * Wire packages excluded from TypeScript generation: each hand-writes
+     * TypeScript that a generated.ts sibling would collide with —
      * tree/media/api-reference augment `@lattice-php/core`'s registries
      * directly with no generated.ts of their own yet, and signature-example
      * (though it has no such augmentation) trips the exhaustive

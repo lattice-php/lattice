@@ -32,7 +32,6 @@
         "lattice-php/signature-example": "@dev",
         "lattice-php/tree": "@dev",
         "league/flysystem-aws-s3-v3": "^3.34",
-        "opis/json-schema": "^2.6",
         "orchestra/testbench": "^10.0 || ^11.0",
         "pestphp/pest": "^5.0",
         "pestphp/pest-plugin-browser": "^5.0",
@@ -58,10 +57,7 @@
         "test:lint": "./vendor/bin/pint --test",
         "rector": "./vendor/bin/rector process",
         "rector:test": "./vendor/bin/rector process --dry-run",
-        "types": [
-            "@php vendor/bin/testbench lattice:schema",
-            "@php vendor/bin/testbench lattice:typescript"
-        ],
+        "types": "@php vendor/bin/testbench lattice:typescript",
         "fix": [
             "@rector",
             "@lint:fix",

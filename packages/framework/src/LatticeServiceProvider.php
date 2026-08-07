@@ -22,7 +22,6 @@ use Lattice\Console\Commands\MakeDefinitionCommand;
 use Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Console\Commands\PublishAssetsCommand;
-use Lattice\Console\Commands\SchemaCommand;
 use Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\AsLayout;
@@ -39,11 +38,9 @@ use Lattice\Http\PageRegistry;
 use Lattice\Layouts\LayoutRegistry;
 use Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Support\Frontend\StandaloneAssets;
-use Lattice\Support\JsonSchema\ExportSchemaProfile;
-use Lattice\Support\JsonSchema\JsonSchemaProfile;
-use Lattice\Support\JsonSchema\WireSourceCatalog;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Support\Wire\WireSourceCatalog;
 use Lattice\Table\TableServiceProvider;
 use Lattice\Theme\Theme;
 use Lattice\Theme\ThemeRenderer;
@@ -63,7 +60,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->hasRoute('web')
             ->hasConsoleCommands([
                 TypeScriptCommand::class,
-                SchemaCommand::class,
                 MakeComponentCommand::class,
                 MakeFieldCommand::class,
                 MakeColumnCommand::class,
@@ -84,7 +80,6 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(WireSourceCatalog::class, static fn (): WireSourceCatalog => WireSourceCatalog::fromApplication());
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
-        $this->app->bind(JsonSchemaProfile::class, ExportSchemaProfile::class);
 
         if ($this->app->runningInConsole()) {
             $this->commands(MakeDefinitionCommand::all());

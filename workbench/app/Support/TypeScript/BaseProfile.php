@@ -12,13 +12,13 @@ use Lattice\Core\Facades\Lattice;
 use Lattice\Core\Option;
 use Lattice\Core\Support\Affix;
 use Lattice\Form\Components\Form;
-use Lattice\Support\JsonSchema\JsonSchemaBuilder;
-use Lattice\Support\JsonSchema\WireSourceCatalog;
 use Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Support\TypeScript\SchemaTypeScriptEmitter;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Support\TypeScript\WireTypeDiscovery;
+use Lattice\Support\Wire\WireModelBuilder;
+use Lattice\Support\Wire\WireSourceCatalog;
 use Lattice\Table\Components\Table as TableComponent;
 use Lattice\Ui\Enums\ColumnWidth;
 use Lattice\Ui\Enums\DateTimeStyle;
@@ -34,8 +34,8 @@ use LogicException;
 /**
  * The package's own dev profile: regenerates the built-in TypeScript modules
  * (framework's superset generated.ts plus each component package's own scoped
- * generated.ts) from the wire-protocol schema document. Bound in the workbench
- * so lattice:typescript rebuilds the base types every consumer app then
+ * generated.ts) from the wire model. Bound in the workbench so
+ * lattice:typescript rebuilds the base types every consumer app then
  * augments. Workbench-only, so this build code never ships.
  */
 final readonly class BaseProfile implements TypeScriptProfile
@@ -49,7 +49,7 @@ final readonly class BaseProfile implements TypeScriptProfile
     {
         $packageRoot = dirname(__DIR__, 4);
         $sources = $this->catalog->builtinDirs(self::EMISSION_EXCLUDED);
-        $document = new JsonSchemaBuilder()->build($sources);
+        $document = new WireModelBuilder()->build($sources);
         $manifest = $this->discovery->discover($sources);
         $discovered = $manifest->components;
         $emitter = new SchemaTypeScriptEmitter;

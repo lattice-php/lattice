@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Support\JsonSchema;
+namespace Lattice\Support\Wire;
 
 /**
- * The name tables a schema fragment resolves against: class-string → `$defs`
- * key for enums/value objects/props, per-family concrete wire classes for
- * node references, and the abstract markers with their loose envelope defs.
+ * The name tables a wire model fragment resolves against: class-string →
+ * `$defs` key for enums/value objects/props, per-family concrete wire
+ * classes for node references, and the abstract markers with their loose
+ * envelope defs.
  *
  * Every def reference is a local `$defs` pointer, whether or not the def
- * belongs to the origin currently being built — `buildAll()`/
- * `buildRootDocument()` produce per-origin documents where a foreign pointer
- * is a valid pointer into the def universe, not the document itself;
- * `FlatProjection` resolves it into a self-contained artifact afterward.
+ * belongs to the origin currently being built — `buildAll()` produces
+ * per-origin documents where a foreign pointer is a valid pointer into the
+ * def universe, not necessarily resolvable within the document itself.
  */
-final readonly class JsonSchemaContext
+final readonly class WireModelContext
 {
     /**
      * @param  array<class-string, string>  $defNames

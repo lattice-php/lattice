@@ -210,7 +210,6 @@ export default defineConfig({
           items: [
             { label: "Security", link: "/advanced/security/" },
             { label: "Server-side rendering", link: "/advanced/ssr/" },
-            { label: "Wire protocol schema", link: "/advanced/wire-protocol/" },
             { label: "Remote components", link: "/advanced/remote/" },
             { label: "Bundle size", link: "/advanced/bundle-size/" },
             { label: "Enums reference", link: "/advanced/enums/" },

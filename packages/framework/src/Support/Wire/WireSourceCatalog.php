@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Support\JsonSchema;
+namespace Lattice\Support\Wire;
 
 use Composer\InstalledVersions;
 use ReflectionClass;
