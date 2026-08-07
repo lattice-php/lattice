@@ -56,6 +56,7 @@ export const iconNames = [
   "search",
   "send",
   "settings",
+  "signature-example-pen",
   "smile",
   "spark",
   "strikethrough",
@@ -124,6 +125,7 @@ declare module "@lattice-php/ui" {
     search: true;
     send: true;
     settings: true;
+    "signature-example-pen": true;
     smile: true;
     spark: true;
     strikethrough: true;

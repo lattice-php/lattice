@@ -17,6 +17,8 @@ const sourceRoot = path.resolve(import.meta.dirname, "packages/framework/resourc
 
 const isVitest = process.env.VITEST !== undefined;
 
+const componentPackages = discoverComponentPackages(import.meta.dirname);
+
 // The lucide icons Lattice's built-in components rely on. The sprite plugin
 // idempotently vendors these into packages/ui/resources/icons at build time, so
 // consumers can use the icon set shipped by lattice-php/ui without
@@ -105,7 +107,11 @@ export default defineConfig({
                 outDir: "packages/ui/resources/icons",
               },
             ],
-            iconDirs: ["workbench/resources/icons"],
+            iconDirs: [
+              ...componentPackages.flatMap((pkg) => (pkg.icons ? [pkg.icons] : [])),
+              "packages/signature-example/resources/icons",
+              "workbench/resources/icons",
+            ],
             // Generate an importable IconName union + augment <Icon name>.
             dts: {
               file: "workbench/resources/js/sprite-icons.ts",
@@ -136,11 +142,11 @@ export default defineConfig({
             ],
           }),
           inertia({ ssr: "workbench/resources/js/ssr.tsx" }),
-          // The workbench acts as a Lattice consumer: auto-discover component
-          // packages installed via Composer and expose them as
-          // `virtual:lattice/plugins` (external apps get this from `lattice()`).
-          componentPackagesPlugin(discoverComponentPackages(import.meta.dirname)),
         ]),
+    // The workbench acts as a Lattice consumer: auto-discover component
+    // packages installed via Composer and expose them as
+    // `virtual:lattice/plugins` (external apps get this from `lattice()`).
+    componentPackagesPlugin(componentPackages),
     react(),
     tailwindcss(),
     ...(isSonda
@@ -174,6 +180,10 @@ export default defineConfig({
       "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
       "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
       "@lattice-php/media": path.resolve(import.meta.dirname, "packages/media/resources/js"),
+      "@lattice-php/signature-example/css": path.resolve(
+        import.meta.dirname,
+        "packages/signature-example/resources/css/signature-example.css",
+      ),
       "@lattice-php/table": path.resolve(import.meta.dirname, "packages/table/resources/js"),
       "@lattice-php/ui": path.resolve(import.meta.dirname, "packages/ui/resources/js"),
       "@lattice-php/lattice": sourceRoot,

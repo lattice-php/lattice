@@ -39,13 +39,14 @@ type Roots = {
 
 export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
   const { appRoot } = resolveRoots(options);
+  const packages = discoverComponentPackages(appRoot);
   const plugins: PluginOption[] = [
     corePlugin(options),
     optionalPeersPlugin(),
-    componentPackagesPlugin(discoverComponentPackages(appRoot)),
+    componentPackagesPlugin(packages),
     typescriptPlugin(options),
   ];
-  const iconOptions = resolveIconOptions(options);
+  const iconOptions = resolveIconOptions(options, packages);
 
   if (iconOptions) {
     plugins.push(svgSprite(iconOptions));
@@ -61,18 +62,34 @@ export type LatticeComponentPackage = {
   dir: string;
   /** Absolute path to the package's JS plugin entry. */
   plugin: string;
+  /** Absolute path to the package's stylesheet, when it declares one. */
+  css?: string;
+  /** Absolute path to the package's icon directory, when it declares one. */
+  icons?: string;
 };
+
+type LatticeManifest = { plugin?: string; css?: string; icons?: string };
 
 type InstalledPackage = {
   name: string;
   "install-path"?: string;
-  extra?: { lattice?: { plugin?: string } };
+  extra?: { lattice?: LatticeManifest };
 };
 
 type RootPackageJson = {
   name?: string;
-  extra?: { lattice?: { plugin?: string } };
+  extra?: { lattice?: LatticeManifest };
 };
+
+function resolveManifestPaths(
+  manifest: LatticeManifest,
+  dir: string,
+): Pick<LatticeComponentPackage, "css" | "icons"> {
+  return {
+    ...(typeof manifest.css === "string" ? { css: path.resolve(dir, manifest.css) } : {}),
+    ...(typeof manifest.icons === "string" ? { icons: path.resolve(dir, manifest.icons) } : {}),
+  };
+}
 
 /**
  * Resolve every Composer package that declares `extra.lattice.plugin` into an
@@ -86,7 +103,8 @@ export function collectComponentPackages(
   const packages = Array.isArray(installed) ? installed : (installed.packages ?? []);
 
   return packages.flatMap((pkg) => {
-    const entry = pkg.extra?.lattice?.plugin;
+    const manifest = pkg.extra?.lattice ?? {};
+    const entry = manifest.plugin;
 
     if (typeof entry !== "string") {
       return [];
@@ -94,7 +112,14 @@ export function collectComponentPackages(
 
     const dir = path.resolve(installPathsRelativeTo, pkg["install-path"] ?? `../${pkg.name}`);
 
-    return [{ name: pkg.name, dir, plugin: path.resolve(dir, entry) }];
+    return [
+      {
+        name: pkg.name,
+        dir,
+        plugin: path.resolve(dir, entry),
+        ...resolveManifestPaths(manifest, dir),
+      },
+    ];
   });
 }
 
@@ -109,13 +134,20 @@ export function collectRootComponentPackage(
   composerJson: RootPackageJson,
   appRoot: string,
 ): LatticeComponentPackage[] {
-  const entry = composerJson.extra?.lattice?.plugin;
+  const manifest = composerJson.extra?.lattice ?? {};
 
-  if (typeof entry !== "string" || typeof composerJson.name !== "string") {
+  if (typeof manifest.plugin !== "string" || typeof composerJson.name !== "string") {
     return [];
   }
 
-  return [{ name: composerJson.name, dir: appRoot, plugin: path.resolve(appRoot, entry) }];
+  return [
+    {
+      name: composerJson.name,
+      dir: appRoot,
+      plugin: path.resolve(appRoot, manifest.plugin),
+      ...resolveManifestPaths(manifest, appRoot),
+    },
+  ];
 }
 
 /**
@@ -164,8 +196,16 @@ export function componentPackagesPlugin(packages: LatticeComponentPackage[]): Pl
       }
 
       const workspaceRoot = searchForWorkspaceRoot(config.root ?? process.cwd());
+      // Vite's mergeAlias puts plugin-config aliases in front of the user config's,
+      // so this specific `/css` alias wins over a user's broader package-dir alias.
+      const alias = Object.fromEntries(
+        packages.flatMap((pkg) => (pkg.css ? [[`@${pkg.name}/css`, pkg.css]] : [])),
+      );
 
-      return { server: { fs: { allow: [workspaceRoot, ...packages.map((pkg) => pkg.dir)] } } };
+      return {
+        ...(Object.keys(alias).length > 0 ? { resolve: { alias } } : {}),
+        server: { fs: { allow: [workspaceRoot, ...packages.map((pkg) => pkg.dir)] } },
+      };
     },
     resolveId(id) {
       return id === VIRTUAL_PLUGINS_ID ? RESOLVED_VIRTUAL_PLUGINS_ID : null;
@@ -322,7 +362,10 @@ function typescriptPlugin(options: LatticeViteOptions): Plugin {
   };
 }
 
-export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOptions | null {
+export function resolveIconOptions(
+  options: LatticeViteOptions,
+  packages: LatticeComponentPackage[] = [],
+): SvgSpriteOptions | null {
   const icons = options.icons ?? true;
 
   if (icons === false) {
@@ -340,7 +383,11 @@ export function resolveIconOptions(options: LatticeViteOptions): SvgSpriteOption
 
   return {
     ...spriteOptions,
-    iconDirs: [path.resolve(root, "../ui/resources/icons"), ...dirs],
+    iconDirs: [
+      path.resolve(root, "../ui/resources/icons"),
+      ...packages.flatMap((pkg) => (pkg.icons ? [pkg.icons] : [])),
+      ...dirs,
+    ],
     ...(dts === false ? {} : { dts: { ...defaultTypes, ...dts } }),
   };
 }

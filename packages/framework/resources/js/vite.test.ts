@@ -190,6 +190,72 @@ describe("lattice Vite helper", () => {
     ).toEqual([]);
   });
 
+  it("resolves css and icons manifest paths for component packages", () => {
+    const composerDir = path.resolve("/tmp/app/vendor/composer");
+
+    const packages = collectComponentPackages(
+      {
+        packages: [
+          {
+            name: "acme/signature",
+            "install-path": "../acme/signature",
+            extra: {
+              lattice: {
+                plugin: "resources/js/plugin.ts",
+                css: "resources/css/signature.css",
+                icons: "resources/icons",
+              },
+            },
+          },
+          {
+            name: "acme/no-plugin",
+            "install-path": "../acme/no-plugin",
+            extra: { lattice: { css: "resources/css/ignored.css" } },
+          },
+        ],
+      },
+      composerDir,
+    );
+
+    expect(packages).toEqual([
+      {
+        name: "acme/signature",
+        dir: path.resolve("/tmp/app/vendor/acme/signature"),
+        plugin: path.resolve("/tmp/app/vendor/acme/signature/resources/js/plugin.ts"),
+        css: path.resolve("/tmp/app/vendor/acme/signature/resources/css/signature.css"),
+        icons: path.resolve("/tmp/app/vendor/acme/signature/resources/icons"),
+      },
+    ]);
+  });
+
+  it("resolves css and icons for the composer ROOT package", () => {
+    const appRoot = path.resolve("/tmp/app");
+
+    expect(
+      collectRootComponentPackage(
+        {
+          name: "acme/signature",
+          extra: {
+            lattice: {
+              plugin: "resources/js/plugin.ts",
+              css: "resources/css/signature.css",
+              icons: "resources/icons",
+            },
+          },
+        },
+        appRoot,
+      ),
+    ).toEqual([
+      {
+        name: "acme/signature",
+        dir: appRoot,
+        plugin: path.resolve(appRoot, "resources/js/plugin.ts"),
+        css: path.resolve(appRoot, "resources/css/signature.css"),
+        icons: path.resolve(appRoot, "resources/icons"),
+      },
+    ]);
+  });
+
   it("discovers a component package that is its own composer ROOT project", () => {
     const appRoot = path.resolve("tests/Fixtures/PackageDiscovery/root-package");
 
@@ -247,6 +313,29 @@ describe("lattice Vite helper", () => {
     expect(config()).toEqual({});
   });
 
+  it("aliases @vendor/name/css for discovered packages that ship a stylesheet", () => {
+    const plugin = componentPackagesPlugin([
+      {
+        name: "acme/signature",
+        dir: "/app/vendor/acme/signature",
+        plugin: "/app/vendor/acme/signature/resources/js/plugin.ts",
+        css: "/app/vendor/acme/signature/resources/css/signature.css",
+      },
+      {
+        name: "acme/widget",
+        dir: "/app/vendor/acme/widget",
+        plugin: "/app/vendor/acme/widget/resources/js/plugin.ts",
+      },
+    ]);
+    const config = plugin.config as unknown as (c?: { root?: string }) => {
+      resolve?: { alias?: Record<string, string> };
+    };
+
+    expect(config({ root: "/app" }).resolve?.alias).toEqual({
+      "@acme/signature/css": "/app/vendor/acme/signature/resources/css/signature.css",
+    });
+  });
+
   it("does not refresh when the typescript option is false", () => {
     const refresh = vi
       .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
@@ -276,5 +365,30 @@ describe("lattice Vite helper", () => {
       augmentModule: "@lattice-php/ui",
       augmentInterface: "MyIcons",
     });
+  });
+
+  it("orders icon dirs ui, then discovered packages, then app dirs", () => {
+    const appRoot = path.resolve("/tmp/lattice-app");
+    const root = path.resolve(appRoot, "vendor/lattice-php/lattice");
+
+    const iconOptions = resolveIconOptions({ appRoot, icons: { dirs: ["/app/icons"] } }, [
+      {
+        name: "acme/signature",
+        dir: "/app/vendor/acme/signature",
+        plugin: "/app/vendor/acme/signature/resources/js/plugin.ts",
+        icons: "/app/vendor/acme/signature/resources/icons",
+      },
+      {
+        name: "acme/widget",
+        dir: "/app/vendor/acme/widget",
+        plugin: "/app/vendor/acme/widget/resources/js/plugin.ts",
+      },
+    ]);
+
+    expect(iconOptions?.iconDirs).toEqual([
+      path.resolve(root, "../ui/resources/icons"),
+      "/app/vendor/acme/signature/resources/icons",
+      "/app/icons",
+    ]);
   });
 });

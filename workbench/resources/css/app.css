@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../../../packages/ui/resources/css/lattice.css";
+@import "@lattice-php/signature-example/css";
 
 @source '../js';
 @source '../../../resources/js';
