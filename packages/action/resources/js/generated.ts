@@ -22,7 +22,7 @@ export type ActionGroup = {
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type ActionResult = {
   readonly data: Record<string, unknown>;
-  readonly effects: undefined[];
+  readonly effects: Effect[];
 };
 export type BulkAction = {
   confirmation: Confirmation | null;
@@ -49,8 +49,12 @@ export type Confirmation = {
   readonly description: string | null;
   readonly title: string | null;
 };
+export type Effect = {
+  type: string;
+  props: Record<string, unknown>;
+};
 export type Emphasis = "solid" | "outline" | "ghost" | "link";
-export type HttpMethod = import("@inertiajs/core").Method;
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type NodeType = "action" | "action.bulk" | "action.group";
 export type Orientation = "horizontal" | "vertical";

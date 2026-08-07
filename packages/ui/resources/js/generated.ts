@@ -41,7 +41,7 @@ export type Card = {
   tooltip: string | null;
 };
 export type Chart = {
-  categoryFormat: NumberFormat | DateFormat | null;
+  categoryFormat: DateFormat | NumberFormat | null;
   categoryKey: string | null;
   data: Record<string, unknown>[];
   description: string | null;
@@ -165,7 +165,7 @@ export type Heading = {
   tooltip: string | null;
 };
 export type Height = "full" | "screen";
-export type HttpMethod = import("@inertiajs/core").Method;
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type Icon = {
   class: string | null;
   color: Color | null;
@@ -323,8 +323,8 @@ export type Stack = {
 export type StackDirection = "row" | "column";
 export type Tab = {
   confirm: {
-    required: boolean;
     redirectUrl: string;
+    required: boolean;
     timeout: number | null;
   } | null;
   label: string;
@@ -363,7 +363,7 @@ export type Tooltip = {
 export type Translatable = {
   key: string;
   payload: Record<string, string>;
-  replacements: Record<string, string | number | boolean>;
+  replacements: Record<string, boolean | number | string>;
 };
 export type UiNodeType =
   | "avatar"

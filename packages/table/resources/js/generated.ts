@@ -112,7 +112,6 @@ export type FilterPropsMap = {
   "filter.toggle": ToggleFilter;
 };
 export type FilterType = "text" | "number" | "date" | "boolean";
-export type HttpMethod = import("@inertiajs/core").Method;
 export type IconColumn = {
   align: ColumnAlign;
   colors: Record<string | number, Color> | null;
@@ -289,8 +288,8 @@ export type TextColumn = {
   hiddenByDefault: boolean;
   label: string | null;
   link: {
-    href: string | null;
     external: boolean;
+    href: string | null;
   } | null;
   multiple: string | null;
   sortable: boolean;

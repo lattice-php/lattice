@@ -234,9 +234,9 @@ export type FileUpload = {
     | {
         key: string;
         name: string;
-        url: string | null;
         size: number | null;
         token: string;
+        url: string | null;
       }[]
     | null;
   helperText: string | null;
@@ -313,9 +313,9 @@ export type FormNodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
-  | "form"
   | "wizard"
-  | "wizard-step";
+  | "wizard-step"
+  | "form";
 export type HiddenInput = {
   columnWidth: ColumnWidth;
   conditions: FieldConditions | null;
@@ -333,7 +333,7 @@ export type HiddenInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type HttpMethod = import("@inertiajs/core").Method;
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LabelAction = {
   readonly href: string;
@@ -359,9 +359,9 @@ export type NodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
-  | "form"
   | "wizard"
-  | "wizard-step";
+  | "wizard-step"
+  | "form";
 export type NumberInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;

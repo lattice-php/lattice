@@ -301,7 +301,7 @@ export type Card = {
 };
 export type ChannelVisibility = "public" | "private" | "presence";
 export type Chart = {
-  categoryFormat: NumberFormat | DateFormat | null;
+  categoryFormat: DateFormat | NumberFormat | null;
   categoryKey: string | null;
   data: Record<string, unknown>[];
   description: string | null;
@@ -721,9 +721,9 @@ export type FileUpload = {
     | {
         key: string;
         name: string;
-        url: string | null;
         size: number | null;
         token: string;
+        url: string | null;
       }[]
     | null;
   helperText: string | null;
@@ -878,7 +878,7 @@ export type HiddenInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type HttpMethod = import("@inertiajs/core").Method;
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type I18nConfig = {
   readonly enabled: boolean;
   readonly locales: string[];
@@ -1418,8 +1418,8 @@ export type StackColumn = {
 export type StackDirection = "row" | "column";
 export type Tab = {
   confirm: {
-    required: boolean;
     redirectUrl: string;
+    required: boolean;
     timeout: number | null;
   } | null;
   label: string;
@@ -1508,8 +1508,8 @@ export type TextColumn = {
   hiddenByDefault: boolean;
   label: string | null;
   link: {
-    href: string | null;
     external: boolean;
+    href: string | null;
   } | null;
   multiple: string | null;
   sortable: boolean;
@@ -1634,7 +1634,7 @@ export type Topbar = {
 export type Translatable = {
   key: string;
   payload: Record<string, string>;
-  replacements: Record<string, string | number | boolean>;
+  replacements: Record<string, boolean | number | string>;
 };
 export type UiNodeType =
   | "avatar"
