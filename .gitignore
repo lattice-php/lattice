@@ -15,6 +15,7 @@ node_modules
 /dist
 /packages/*/dist
 !/packages/api-reference/dist
+!/packages/calendar/dist
 !/packages/media/dist
 !/packages/tree/dist
 /dist-docs

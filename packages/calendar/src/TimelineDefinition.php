@@ -1,0 +1,26 @@
+<?php
+declare(strict_types=1);
+
+namespace Lattice\Calendar;
+
+use Carbon\CarbonImmutable;
+use Lattice\Core\Definition;
+
+/**
+ * A registered, addressable timeline: the server-side counterpart of
+ * `Timeline::use()`. The registry key from {@see AsTimeline} lets the lazy
+ * endpoint re-resolve the definition on a later request, with the sealed
+ * context re-applied by the controller.
+ */
+abstract class TimelineDefinition extends Definition
+{
+    /**
+     * @return list<ResourceGroup>
+     */
+    abstract public function groups(): array;
+
+    /**
+     * @return iterable<Entry>
+     */
+    abstract public function events(CarbonImmutable $from, CarbonImmutable $until): iterable;
+}
