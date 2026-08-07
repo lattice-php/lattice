@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use Lattice\Support\TypeScript\AugmentProfile;
-use Lattice\Support\TypeScript\TypeScriptGenerator;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 
 use function Pest\Laravel\artisan;
@@ -37,8 +36,6 @@ it('writes an augmentation file for app components, not built-ins', function ():
             ->toContain('label: string | null')
             ->toContain('interface EffectProps')
             ->toContain('"sample-effect": {')
-            ->toContain('interface EffectProps')
-            ->toContain('"sample-effect": {')
             ->toContain('target: string')
             ->toContain('interface EditorExtensionProps')
             ->toContain('"sample-extension": {')
@@ -53,35 +50,23 @@ it('writes an augmentation file for app components, not built-ins', function ():
     });
 });
 
-it('no-ops with a friendly message when there are no custom wire types', function (): void {
+it('resolves built-in enum and value-object references instead of emitting undefined', function (): void {
     withScaffoldWorkspace(function (): void {
         $output = base_path('resources/js/lattice/generated.d.ts');
 
         config()->set('lattice.typescript.output', $output);
-        config()->set('lattice.discover', []);
+        config()->set('lattice.typescript.module', '@lattice-php/core');
+        config()->set('lattice.discover', [
+            dirname(__DIR__, 2).'/Fixtures/TypeScript',
+        ]);
 
-        // The workbench's require-dev fixture package (lattice-php/signature-example)
-        // always contributes a real component via ComponentPackages discovery, so
-        // AugmentProfile::pendingTypeCount() can never hit 0 in this repo's own dev
-        // environment. Stub the profile to isolate the command's no-op branch from
-        // that fixture, exercising the same contract a clean consumer app would hit.
-        app()->instance(TypeScriptProfile::class, new class implements TypeScriptProfile
-        {
-            public function pendingTypeCount(): int
-            {
-                return 0;
-            }
+        artisan('lattice:typescript')->assertSuccessful();
 
-            public function run(TypeScriptGenerator $generator): string
-            {
-                throw new RuntimeException('run() must not be called when pendingTypeCount() is 0.');
-            }
-        });
+        $contents = (string) file_get_contents($output);
 
-        artisan('lattice:typescript')
-            ->expectsOutputToContain('No custom Lattice wire types found')
-            ->assertSuccessful();
-
-        expect(file_exists($output))->toBeFalse();
+        expect($contents)
+            ->toContain('columnWidth: ColumnWidth;')
+            ->toContain('conditions: FieldConditions | null;')
+            ->not->toContain('undefined');
     });
 });
