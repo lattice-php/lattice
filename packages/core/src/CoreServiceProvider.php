@@ -17,6 +17,7 @@ final class CoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(LatticeRegistry::class);
+        $this->app->make(LatticeRegistry::class)->wireSource(__DIR__);
         $this->app->singleton(Evaluator::class);
         $this->app->singleton(ResolvesReferenceIdentity::class, RequestReferenceIdentity::class);
         $this->app->singleton(ComponentReferenceSigner::class);

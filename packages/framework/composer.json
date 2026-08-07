@@ -33,10 +33,8 @@
         "lattice-php/table": "self.version",
         "lattice-php/ui": "self.version",
         "spatie/laravel-package-tools": "^1.16 || ^2.0",
-        "spatie/php-attribute-reader": "^1.1"
-    },
-    "suggest": {
-        "spatie/laravel-typescript-transformer": "Only needed to run `php artisan lattice:typescript` when your app defines custom PHP wire types (components, fields, columns, filters, effects)"
+        "spatie/php-attribute-reader": "^1.1",
+        "symfony/type-info": "^7.0 || ^8.0"
     },
     "autoload": {
         "psr-4": {

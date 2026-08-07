@@ -22,6 +22,7 @@ use Lattice\Console\Commands\MakeDefinitionCommand;
 use Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Console\Commands\PublishAssetsCommand;
+use Lattice\Console\Commands\SchemaCommand;
 use Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\AsLayout;
@@ -38,6 +39,8 @@ use Lattice\Http\PageRegistry;
 use Lattice\Layouts\LayoutRegistry;
 use Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Support\Frontend\StandaloneAssets;
+use Lattice\Support\JsonSchema\ExportSchemaProfile;
+use Lattice\Support\JsonSchema\JsonSchemaProfile;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Table\TableServiceProvider;
@@ -59,6 +62,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
             ->hasRoute('web')
             ->hasConsoleCommands([
                 TypeScriptCommand::class,
+                SchemaCommand::class,
                 MakeComponentCommand::class,
                 MakeFieldCommand::class,
                 MakeColumnCommand::class,
@@ -79,6 +83,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $lattice->wireSource(__DIR__);
 
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
+        $this->app->bind(JsonSchemaProfile::class, ExportSchemaProfile::class);
 
         if ($this->app->runningInConsole()) {
             $this->commands(MakeDefinitionCommand::all());
