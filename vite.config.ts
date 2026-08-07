@@ -206,6 +206,9 @@ export default defineConfig({
         test: {
           name: "jsdom",
           environment: "jsdom",
+          // Must exceed setup.ts's 10s asyncUtilTimeout or a slow-but-passing
+          // findBy dies on the test timeout instead.
+          testTimeout: 30_000,
           include: ["docs/**/*.test.{ts,tsx}", "packages/*/resources/js/**/*.test.{ts,tsx}"],
           // exclude replaces Vitest's defaults instead of extending them, and
           // docs/ links the repo root through file:.., so the docs glob walks
