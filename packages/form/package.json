@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@internationalized/date": "^3.12.2",
+    "@internationalized/date": "3.12.2",
     "@lattice-php/core": "0.42.0",
     "@lattice-php/ui": "0.42.0",
     "@tiptap/core": "^3.26.0",

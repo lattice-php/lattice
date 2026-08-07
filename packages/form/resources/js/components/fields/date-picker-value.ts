@@ -7,7 +7,7 @@ import {
   parseZonedDateTime,
   toTimeZone,
   toZoned,
-} from "@internationalized/date";
+} from "@lattice-php/ui/format/temporal";
 
 const dateTimeWithZone = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?)\s+(.+)$/;
 const bareDateTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?$/;

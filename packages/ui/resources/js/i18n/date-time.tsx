@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { type FormatOptions, formatDateValue, preciseDateTime, toDate } from "../format/date-time";
+import { type FormatOptions, formatDateValue, preciseDateTime, toDate } from "../format/temporal";
 import type { DateTimeStyle } from "../types";
 import { useLocale } from "./locale";
 import { useTimezone } from "./timezone";
