@@ -25,6 +25,9 @@ final class FixtureHomePage extends FixtureBasePage {}
 #[AsPage(route: '/standalone', container: PageContainer::Centered)]
 final class FixtureStandalonePage extends FixtureBasePage {}
 
+#[AsPage(route: '/guarded', can: 'manage-widgets')]
+final class FixtureGuardedPage extends FixtureBasePage {}
+
 test('metadata inherits layout and container from a base AsPage attribute', function (): void {
     $meta = PageMetadata::for(FixtureProductsPage::class);
 
@@ -76,6 +79,20 @@ test('page metadata round-trips through an array descriptor', function (): void 
         ->and($rebuilt->route)->toBe('/products/{product}/edit')
         ->and($rebuilt->layout)->toBe('app')
         ->and($rebuilt->container)->toBe('default');
+});
+
+test('a declared ability round-trips through the descriptor', function (): void {
+    $descriptor = PageMetadata::reflect(FixtureGuardedPage::class)->toArray();
+
+    expect($descriptor['can'])->toBe(['manage-widgets'])
+        ->and(PageMetadata::fromArray($descriptor)->can)->toBe(['manage-widgets']);
+});
+
+test('a descriptor cached before can existed defaults to no abilities', function (): void {
+    $descriptor = PageMetadata::reflect(FixtureEditPage::class)->toArray();
+    unset($descriptor['can']);
+
+    expect(PageMetadata::fromArray($descriptor)->can)->toBe([]);
 });
 
 test('for() prefers a manifest descriptor and falls back to reflection', function (): void {
