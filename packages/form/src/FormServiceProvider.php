@@ -26,7 +26,6 @@ final class FormServiceProvider extends ServiceProvider
 
         $lattice = $this->app->make(LatticeRegistry::class);
         $lattice->registerCapability('forms', fn (string|array $forms) => $this->app->make(FormRegistry::class)->register($forms));
-        $lattice->wireSource(dirname(__DIR__));
         $lattice->wireFamily('editor-extension', AsEditorExtension::class, EditorExtension::class);
     }
 

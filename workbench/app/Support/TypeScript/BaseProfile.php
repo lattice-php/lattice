@@ -13,6 +13,7 @@ use Lattice\Core\Option;
 use Lattice\Core\Support\Affix;
 use Lattice\Form\Components\Form;
 use Lattice\Support\JsonSchema\JsonSchemaBuilder;
+use Lattice\Support\JsonSchema\WireSourceCatalog;
 use Lattice\Support\TypeScript\DiscoveredComponent;
 use Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Support\TypeScript\SchemaTypeScriptEmitter;
@@ -39,12 +40,15 @@ use LogicException;
  */
 final readonly class BaseProfile implements TypeScriptProfile
 {
-    public function __construct(private WireTypeDiscovery $discovery) {}
+    public function __construct(
+        private WireTypeDiscovery $discovery,
+        private WireSourceCatalog $catalog,
+    ) {}
 
     public function run(): string
     {
         $packageRoot = dirname(__DIR__, 4);
-        $sources = Lattice::wireSources();
+        $sources = $this->catalog->builtinDirs();
         $document = new JsonSchemaBuilder()->build($sources);
         $manifest = $this->discovery->discover($sources);
         $discovered = $manifest->components;

@@ -17,9 +17,7 @@ it('writes an augmentation file for app components, not built-ins', function ():
 
         config()->set('lattice.typescript.output', $output);
         config()->set('lattice.typescript.module', '@lattice-php/core');
-        config()->set('lattice.discover', [
-            dirname(__DIR__, 2).'/Fixtures/TypeScript',
-        ]);
+        bindAppWireSource(dirname(__DIR__, 2).'/Fixtures/TypeScript');
 
         artisan('lattice:typescript')->assertSuccessful();
 
@@ -56,9 +54,7 @@ it('resolves built-in enum and value-object references instead of emitting undef
 
         config()->set('lattice.typescript.output', $output);
         config()->set('lattice.typescript.module', '@lattice-php/core');
-        config()->set('lattice.discover', [
-            dirname(__DIR__, 2).'/Fixtures/TypeScript',
-        ]);
+        bindAppWireSource(dirname(__DIR__, 2).'/Fixtures/TypeScript');
 
         artisan('lattice:typescript')->assertSuccessful();
 

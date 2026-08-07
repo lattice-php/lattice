@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Core\Facades\Lattice;
 use Lattice\Form\RichEditor\Extensions\Bold;
 use Lattice\Support\JsonSchema\JsonSchemaBuilder;
+use Lattice\Support\JsonSchema\WireSourceCatalog;
 use Lattice\Ui\Enums\ButtonType;
 
 /**
@@ -13,7 +13,7 @@ function builtDocument(): array
 {
     static $document = null;
 
-    return $document ??= new JsonSchemaBuilder()->build(Lattice::wireSources());
+    return $document ??= new JsonSchemaBuilder()->build(app(WireSourceCatalog::class)->builtinDirs());
 }
 
 it('declares the 2020-12 dialect, the stable $id, and the protocol version', function (): void {

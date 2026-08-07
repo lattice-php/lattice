@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
+use Lattice\Support\JsonSchema\WireSourceCatalog;
 
 /**
  * @template TReturn
@@ -42,6 +43,22 @@ function withScaffoldWorkspace(Closure $callback): mixed
 
         File::deleteDirectory($basePath);
     }
+}
+
+/**
+ * Binds a `WireSourceCatalog` whose root package's wire surface is `$dir` —
+ * the fixture-hook replacement for the deleted `config('lattice.discover')`
+ * app-paths mechanism, keeping the real built-in sources.
+ */
+function bindAppWireSource(string $dir): void
+{
+    app()->instance(
+        WireSourceCatalog::class,
+        WireSourceCatalog::fromApplication()->withRoot(
+            ['name' => 'acme/app', 'extra' => ['lattice' => ['discover' => ['.']]]],
+            $dir,
+        ),
+    );
 }
 
 /**

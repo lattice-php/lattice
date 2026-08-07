@@ -620,7 +620,11 @@ final class JsonSchemaBuilder
 
             $componentTypes[] = $component->type;
 
-            if ($component->domain === 'Form') {
+            // Singularized, not an exact match: a field a non-Form package
+            // contributes to the Form domain from its own `…\Forms\Components\`
+            // namespace (e.g. Media's MediaPicker) must join FormNodeType
+            // instead of colliding with it — Str::singular('Forms') is 'Form'.
+            if (Str::singular($component->domain) === 'Form') {
                 if ($component->class !== Form::class) {
                     $fieldTypes[] = $component->type;
                 }

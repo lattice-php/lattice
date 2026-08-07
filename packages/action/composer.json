@@ -20,6 +20,9 @@
         }
     },
     "extra": {
+        "lattice": {
+            "discover": ["src"]
+        },
         "laravel": {
             "providers": [
                 "Lattice\\Actions\\ActionServiceProvider"

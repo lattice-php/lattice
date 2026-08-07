@@ -30,6 +30,10 @@
             "container": true,
             "interactive": true
           },
+          "api-reference": {
+            "node": "#/$defs/node:api-reference",
+            "props": "#/$defs/ApiReference"
+          },
           "avatar": {
             "node": "#/$defs/node:avatar",
             "props": "#/$defs/Avatar",
@@ -138,6 +142,11 @@
             "props": "#/$defs/HiddenInput",
             "domain": "Form"
           },
+          "field.media-picker": {
+            "node": "#/$defs/node:field.media-picker",
+            "props": "#/$defs/MediaPicker",
+            "domain": "Forms"
+          },
           "field.number-input": {
             "node": "#/$defs/node:field.number-input",
             "props": "#/$defs/NumberInput",
@@ -235,6 +244,12 @@
             "props": "#/$defs/Link",
             "domain": "Ui"
           },
+          "media.library": {
+            "node": "#/$defs/node:media.library",
+            "props": "#/$defs/MediaLibrary",
+            "domain": "Media",
+            "container": true
+          },
           "menu": {
             "node": "#/$defs/node:menu",
             "props": "#/$defs/Menu",
@@ -302,6 +317,11 @@
             "domain": "Layouts",
             "container": true
           },
+          "signature": {
+            "node": "#/$defs/node:signature",
+            "props": "#/$defs/Signature",
+            "domain": "SignatureExample"
+          },
           "stack": {
             "node": "#/$defs/node:stack",
             "props": "#/$defs/Stack",
@@ -341,6 +361,11 @@
             "props": "#/$defs/Topbar",
             "domain": "Layouts",
             "container": true
+          },
+          "tree": {
+            "node": "#/$defs/node:tree",
+            "props": "#/$defs/Tree",
+            "interactive": true
           },
           "wizard": {
             "node": "#/$defs/node:wizard",
@@ -466,6 +491,10 @@
             "node": "#/$defs/editor-extension:link",
             "props": "#/$defs/EditorLink"
           },
+          "media-image": {
+            "node": "#/$defs/editor-extension:media-image",
+            "props": "#/$defs/EditorMediaImage"
+          },
           "ordered-list": {
             "node": "#/$defs/editor-extension:ordered-list",
             "props": "#/$defs/EditorOrderedList"
@@ -564,6 +593,7 @@
         "field.date-time-input",
         "field.file-upload",
         "field.hidden-input",
+        "field.media-picker",
         "field.number-input",
         "field.otp",
         "field.password-input",
@@ -586,6 +616,7 @@
         "field.date-time-input",
         "field.file-upload",
         "field.hidden-input",
+        "field.media-picker",
         "field.number-input",
         "field.otp",
         "field.password-input",
@@ -623,11 +654,17 @@
         "sidebar",
         "topbar"
       ],
+      "MediumNodeType": [
+        "media.library"
+      ],
       "NotificationNodeType": [
         "notifications"
       ],
       "RemoteNodeType": [
         "remote.data-list"
+      ],
+      "SignatureExampleNodeType": [
+        "signature"
       ],
       "TableNodeType": [
         "table"
@@ -662,6 +699,7 @@
         "action",
         "action.bulk",
         "action.group",
+        "api-reference",
         "avatar",
         "badge",
         "breadcrumbs",
@@ -683,6 +721,7 @@
         "field.date-time-input",
         "field.file-upload",
         "field.hidden-input",
+        "field.media-picker",
         "field.number-input",
         "field.otp",
         "field.password-input",
@@ -701,6 +740,7 @@
         "icon",
         "image",
         "link",
+        "media.library",
         "menu",
         "menu-item",
         "modal",
@@ -713,6 +753,7 @@
         "segmented-control",
         "separator",
         "sidebar",
+        "signature",
         "stack",
         "tab",
         "table",
@@ -720,6 +761,7 @@
         "text",
         "tooltip",
         "topbar",
+        "tree",
         "wizard",
         "wizard-step"
       ],
@@ -735,6 +777,7 @@
       ],
       "FilterNodeType": [
         "filter.date-range",
+        "filter.select",
         "filter.select",
         "filter.ternary",
         "filter.toggle"
@@ -967,6 +1010,89 @@
       "x-lattice": {
         "kind": "enum",
         "php": "Lattice\\Ui\\Enums\\Align"
+      }
+    },
+    "ApiReference": {
+      "type": "object",
+      "properties": {
+        "defaultOperation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expandDepth": {
+          "type": "integer"
+        },
+        "hideBaseUrl": {
+          "type": "boolean"
+        },
+        "hideHeader": {
+          "type": "boolean"
+        },
+        "operation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "spec": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "token": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "twoColumnBreakpoint": {
+          "$ref": "#/$defs/Breakpoint"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "defaultOperation",
+        "expandDepth",
+        "hideBaseUrl",
+        "hideHeader",
+        "operation",
+        "spec",
+        "tags",
+        "title",
+        "token",
+        "twoColumnBreakpoint",
+        "url"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "api-reference",
+        "php": "Lattice\\ApiReference\\ApiReference"
       }
     },
     "Avatar": {
@@ -2899,6 +3025,9 @@
           "$ref": "#/$defs/node:action.group"
         },
         {
+          "$ref": "#/$defs/node:api-reference"
+        },
+        {
           "$ref": "#/$defs/node:avatar"
         },
         {
@@ -2962,6 +3091,9 @@
           "$ref": "#/$defs/node:field.hidden-input"
         },
         {
+          "$ref": "#/$defs/node:field.media-picker"
+        },
+        {
           "$ref": "#/$defs/node:field.number-input"
         },
         {
@@ -3016,6 +3148,9 @@
           "$ref": "#/$defs/node:link"
         },
         {
+          "$ref": "#/$defs/node:media.library"
+        },
+        {
           "$ref": "#/$defs/node:menu"
         },
         {
@@ -3052,6 +3187,9 @@
           "$ref": "#/$defs/node:sidebar"
         },
         {
+          "$ref": "#/$defs/node:signature"
+        },
+        {
           "$ref": "#/$defs/node:stack"
         },
         {
@@ -3071,6 +3209,9 @@
         },
         {
           "$ref": "#/$defs/node:topbar"
+        },
+        {
+          "$ref": "#/$defs/node:tree"
         },
         {
           "$ref": "#/$defs/node:wizard"
@@ -3766,6 +3907,9 @@
           "$ref": "#/$defs/editor-extension:link"
         },
         {
+          "$ref": "#/$defs/editor-extension:media-image"
+        },
+        {
           "$ref": "#/$defs/editor-extension:ordered-list"
         },
         {
@@ -3861,6 +4005,37 @@
         "family": "editor-extension",
         "wireType": "link",
         "php": "Lattice\\Form\\RichEditor\\Extensions\\Link"
+      }
+    },
+    "EditorMediaImage": {
+      "type": "object",
+      "properties": {
+        "conversions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "library": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/node:media.library"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversions",
+        "library"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "editor-extension",
+        "wireType": "media-image",
+        "php": "Lattice\\Media\\Forms\\RichEditor\\MediaImage"
       }
     },
     "EditorOrderedList": {
@@ -4369,6 +4544,9 @@
       "oneOf": [
         {
           "$ref": "#/$defs/filter:filter.date-range"
+        },
+        {
+          "$ref": "#/$defs/filter:filter.select"
         },
         {
           "$ref": "#/$defs/filter:filter.select"
@@ -5360,6 +5538,233 @@
         "family": "effect",
         "wireType": "locale-change",
         "php": "Lattice\\Ui\\Effects\\Builtin\\LocaleChange"
+      }
+    },
+    "MediaLibrary": {
+      "type": "object",
+      "properties": {
+        "accept": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "picker": {
+          "type": "boolean"
+        },
+        "signed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "accept",
+        "picker",
+        "signed"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "media.library",
+        "domain": "Media",
+        "php": "Lattice\\Media\\Components\\MediaLibrary"
+      }
+    },
+    "MediaPicker": {
+      "type": "object",
+      "properties": {
+        "columnWidth": {
+          "$ref": "#/$defs/ColumnWidth"
+        },
+        "conditions": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FieldConditions"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependsOnAny": {
+          "type": "boolean"
+        },
+        "dependsOnKeys": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "editablePrefill": {
+          "type": "boolean"
+        },
+        "helperText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "maxFiles": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "multiple": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "prefillRefreshOn": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prefillResetOn": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "readOnly": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "selected": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "mime_type": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "preview_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "values": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "id",
+                  "mime_type",
+                  "name",
+                  "preview_url",
+                  "url",
+                  "values"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tooltip": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {}
+      },
+      "required": [
+        "columnWidth",
+        "conditions",
+        "dependsOnAny",
+        "dependsOnKeys",
+        "disabled",
+        "editablePrefill",
+        "helperText",
+        "label",
+        "maxFiles",
+        "multiple",
+        "name",
+        "prefillRefreshOn",
+        "prefillResetOn",
+        "readOnly",
+        "required",
+        "selected",
+        "tooltip",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "field.media-picker",
+        "domain": "Forms",
+        "php": "Lattice\\Media\\Forms\\Components\\MediaPicker"
+      }
+    },
+    "MediaTypeFilter": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "filter",
+        "wireType": "filter.select",
+        "php": "Lattice\\Media\\Tables\\Filters\\MediaTypeFilter"
       }
     },
     "Menu": {
@@ -7800,6 +8205,27 @@
         "php": "Lattice\\Layouts\\Components\\Sidebar"
       }
     },
+    "Signature": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "signature",
+        "domain": "SignatureExample",
+        "php": "Lattice\\SignatureExample\\Components\\Signature"
+      }
+    },
     "SignedUpload": {
       "type": "object",
       "properties": {
@@ -9459,6 +9885,91 @@
         "php": "Lattice\\Ui\\I18n\\Values\\Translatable"
       }
     },
+    "Tree": {
+      "type": "object",
+      "properties": {
+        "activeId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "defaultExpanded": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lazy": {
+          "type": "boolean"
+        },
+        "moveAction": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/node:action"
+            },
+            {
+              "$ref": "#/$defs/node:action.bulk"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rememberState": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "selectAction": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/node:action"
+            },
+            {
+              "$ref": "#/$defs/node:action.bulk"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activeId",
+        "defaultExpanded",
+        "endpoint",
+        "lazy",
+        "moveAction",
+        "ref",
+        "rememberState",
+        "revision",
+        "selectAction"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "tree",
+        "php": "Lattice\\Tree\\Tree"
+      }
+    },
     "UnreadCount": {
       "type": "object",
       "properties": {
@@ -10072,6 +10583,26 @@
         "wireType": "link"
       }
     },
+    "editor-extension:media-image": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "media-image"
+        },
+        "props": {
+          "$ref": "#/$defs/EditorMediaImage"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "editor-extension",
+        "wireType": "media-image"
+      }
+    },
     "editor-extension:ordered-list": {
       "type": "object",
       "properties": {
@@ -10661,6 +11192,43 @@
         "family": "component",
         "wireType": "action.group",
         "php": "Lattice\\Actions\\Components\\ActionGroup"
+      }
+    },
+    "node:api-reference": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "api-reference"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ApiReference"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "api-reference",
+        "php": "Lattice\\ApiReference\\ApiReference"
       }
     },
     "node:avatar": {
@@ -11440,6 +12008,43 @@
         "php": "Lattice\\Form\\Components\\HiddenInput"
       }
     },
+    "node:field.media-picker": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "field.media-picker"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MediaPicker"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "field.media-picker",
+        "php": "Lattice\\Media\\Forms\\Components\\MediaPicker"
+      }
+    },
     "node:field.number-input": {
       "type": "object",
       "properties": {
@@ -12106,6 +12711,43 @@
         "php": "Lattice\\Ui\\Components\\Link"
       }
     },
+    "node:media.library": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "media.library"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MediaLibrary"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "media.library",
+        "php": "Lattice\\Media\\Components\\MediaLibrary"
+      }
+    },
     "node:menu": {
       "type": "object",
       "properties": {
@@ -12550,6 +13192,43 @@
         "php": "Lattice\\Layouts\\Components\\Sidebar"
       }
     },
+    "node:signature": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "signature"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Signature"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "signature",
+        "php": "Lattice\\SignatureExample\\Components\\Signature"
+      }
+    },
     "node:stack": {
       "type": "object",
       "properties": {
@@ -12807,6 +13486,43 @@
         "family": "component",
         "wireType": "topbar",
         "php": "Lattice\\Layouts\\Components\\Topbar"
+      }
+    },
+    "node:tree": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "tree"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Tree"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "tree",
+        "php": "Lattice\\Tree\\Tree"
       }
     },
     "node:wizard": {

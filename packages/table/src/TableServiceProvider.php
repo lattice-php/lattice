@@ -26,7 +26,6 @@ final class TableServiceProvider extends ServiceProvider
 
         $lattice = $this->app->make(LatticeRegistry::class);
         $lattice->registerCapability('tables', fn (string|array $tables) => $this->app->make(TableRegistry::class)->register($tables));
-        $lattice->wireSource(dirname(__DIR__));
         $lattice->wireFamily('column', AsColumn::class, Column::class, marker: true);
         $lattice->wireFamily('filter', AsFilter::class, Filter::class, marker: true);
     }

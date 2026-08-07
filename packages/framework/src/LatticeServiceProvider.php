@@ -41,6 +41,7 @@ use Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Support\JsonSchema\ExportSchemaProfile;
 use Lattice\Support\JsonSchema\JsonSchemaProfile;
+use Lattice\Support\JsonSchema\WireSourceCatalog;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Table\TableServiceProvider;
@@ -80,8 +81,8 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->register(TableServiceProvider::class);
         $this->app->register(ActionServiceProvider::class);
         $lattice = $this->app->make(LatticeRegistry::class);
-        $lattice->wireSource(__DIR__);
 
+        $this->app->singleton(WireSourceCatalog::class, static fn (): WireSourceCatalog => WireSourceCatalog::fromApplication());
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
         $this->app->bind(JsonSchemaProfile::class, ExportSchemaProfile::class);
 

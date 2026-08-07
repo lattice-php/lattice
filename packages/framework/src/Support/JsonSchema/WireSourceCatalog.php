@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Support\JsonSchema;
 
+use Composer\InstalledVersions;
+use ReflectionClass;
+
 /**
  * The composer-derived wire source catalog: every installed package that
  * declares `extra.lattice.discover`, plus the composer ROOT package (which
@@ -25,17 +28,41 @@ final readonly class WireSourceCatalog
         private string $rootDir,
     ) {}
 
+    /**
+     * Resolves via the ACTUAL Composer runtime (installed.json next to the
+     * `Composer\InstalledVersions` class file, the real root package's own
+     * install path) rather than Laravel's `base_path()` — identical to
+     * `Lattice\Core\Discovery\ComponentPackages`, for the identical reason: a
+     * component package's own testbench-driven test suite runs with
+     * `base_path()` pointed at the Testbench skeleton, not the package's real
+     * composer root, so only the Composer runtime sees the true root package.
+     */
     public static function fromApplication(): self
     {
-        $composerDir = base_path('vendor/composer');
-        $installed = self::decode($composerDir.'/installed.json');
+        $installedVersionsFile = new ReflectionClass(InstalledVersions::class)->getFileName();
+        $composerDir = is_string($installedVersionsFile) ? dirname($installedVersionsFile) : '';
+        $installed = $composerDir !== '' ? self::decode($composerDir.'/installed.json') : [];
+
+        $rootInstallPath = realpath(InstalledVersions::getRootPackage()['install_path']) ?: null;
 
         return new self(
             installed: is_array($installed['packages'] ?? null) ? $installed['packages'] : [],
-            rootComposer: self::decode(base_path('composer.json')),
+            rootComposer: $rootInstallPath !== null ? self::decode($rootInstallPath.'/composer.json') : [],
             composerDir: $composerDir,
-            rootDir: base_path(),
+            rootDir: $rootInstallPath ?? '',
         );
+    }
+
+    /**
+     * A copy with a different root package — the fixture hook tests use to
+     * exercise app-origin discovery without a real composer.json, while
+     * keeping the real built-in sources.
+     *
+     * @param  array<string, mixed>  $rootComposer
+     */
+    public function withRoot(array $rootComposer, string $rootDir): self
+    {
+        return new self($this->installed, $rootComposer, $this->composerDir, $rootDir);
     }
 
     /** @return list<WireSource> */
@@ -58,6 +85,32 @@ final readonly class WireSourceCatalog
         }
 
         return $sources;
+    }
+
+    /** @return list<string> */
+    public function builtinDirs(): array
+    {
+        $dirs = [];
+
+        foreach ($this->discover() as $source) {
+            if (! $source->isRoot) {
+                $dirs = [...$dirs, ...$source->dirs];
+            }
+        }
+
+        return $dirs;
+    }
+
+    /** @return list<string> */
+    public function appDirs(): array
+    {
+        foreach ($this->discover() as $source) {
+            if ($source->isRoot) {
+                return $source->dirs;
+            }
+        }
+
+        return [];
     }
 
     public function originOf(string $classFilePath): ?WireSource
