@@ -4,9 +4,18 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-/* Component preview: design tokens + scan the renderer source for utilities. */
+/* Component preview: design tokens + scan the package renderer sources for
+ * utilities (the pre-monorepo `../../resources/js` path scanned nothing). */
 @import "../../packages/ui/resources/css/lattice.css";
-@source "../../resources/js";
+@source "../../packages/action/resources/js";
+@source "../../packages/api-reference/resources/js";
+@source "../../packages/core/resources/js";
+@source "../../packages/form/resources/js";
+@source "../../packages/framework/resources/js";
+@source "../../packages/media/resources/js";
+@source "../../packages/table/resources/js";
+@source "../../packages/tree/resources/js";
+@source "../../packages/ui/resources/js";
 
 /*
  * This setup deliberately omits Tailwind's global preflight (Starlight owns the
