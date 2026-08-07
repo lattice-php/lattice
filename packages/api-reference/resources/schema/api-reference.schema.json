@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/api-reference/v1.json",
+  "title": "Lattice api-reference wire types",
+  "$defs": {
+    "ApiReference": {
+      "type": "object",
+      "properties": {
+        "defaultOperation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expandDepth": {
+          "type": "integer"
+        },
+        "hideBaseUrl": {
+          "type": "boolean"
+        },
+        "hideHeader": {
+          "type": "boolean"
+        },
+        "operation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "spec": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "token": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "twoColumnBreakpoint": {
+          "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Breakpoint"
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "defaultOperation",
+        "expandDepth",
+        "hideBaseUrl",
+        "hideHeader",
+        "operation",
+        "spec",
+        "tags",
+        "title",
+        "token",
+        "twoColumnBreakpoint",
+        "url"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "api-reference",
+        "php": "Lattice\\ApiReference\\ApiReference"
+      }
+    },
+    "node:api-reference": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "api-reference"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ApiReference"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "api-reference",
+        "php": "Lattice\\ApiReference\\ApiReference"
+      }
+    }
+  }
+}

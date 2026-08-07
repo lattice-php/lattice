@@ -73,14 +73,14 @@ final readonly class WireSourceCatalog
         foreach ($this->installed as $package) {
             $source = $this->sourceFromPackage($package, isRoot: false);
 
-            if ($source !== null) {
+            if ($source instanceof WireSource) {
                 $sources[] = $source;
             }
         }
 
         $root = $this->sourceFromPackage($this->rootComposer, isRoot: true);
 
-        if ($root !== null) {
+        if ($root instanceof WireSource) {
             $sources[] = $root;
         }
 

@@ -14,9 +14,9 @@ final class SchemaCommand extends Command
 
     protected $description = 'Export the Lattice wire-protocol JSON Schema for the current project';
 
-    public function handle(JsonSchemaProfile $profile): int
+    public function handle(JsonSchemaProfile $profile, JsonSchemaBuilder $builder, JsonSchemaWriter $writer): int
     {
-        $this->components->info($profile->run(new JsonSchemaBuilder, new JsonSchemaWriter));
+        $this->components->info($profile->run($builder, $writer));
 
         return self::SUCCESS;
     }

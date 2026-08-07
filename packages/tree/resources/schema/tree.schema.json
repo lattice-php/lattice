@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/tree/v1.json",
+  "title": "Lattice tree wire types",
+  "$defs": {
+    "Tree": {
+      "type": "object",
+      "properties": {
+        "activeId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "defaultExpanded": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lazy": {
+          "type": "boolean"
+        },
+        "moveAction": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/action/v1.json#/$defs/node:action"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/action/v1.json#/$defs/node:action.bulk"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rememberState": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "selectAction": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/action/v1.json#/$defs/node:action"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/action/v1.json#/$defs/node:action.bulk"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "activeId",
+        "defaultExpanded",
+        "endpoint",
+        "lazy",
+        "moveAction",
+        "ref",
+        "rememberState",
+        "revision",
+        "selectAction"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "tree",
+        "php": "Lattice\\Tree\\Tree"
+      }
+    },
+    "node:tree": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "tree"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Tree"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "tree",
+        "php": "Lattice\\Tree\\Tree"
+      }
+    }
+  }
+}

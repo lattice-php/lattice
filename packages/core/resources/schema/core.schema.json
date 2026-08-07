@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/core/v1.json",
+  "title": "Lattice core wire types",
+  "$defs": {
+    "Affix": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": [
+        "icon",
+        "text"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Core\\Support\\Affix"
+      }
+    },
+    "Breadcrumb": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "href",
+        "title"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Core\\Breadcrumb"
+      }
+    },
+    "Color": {
+      "type": "object",
+      "properties": {
+        "dark": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "kind": {
+          "$ref": "#/$defs/ColorKind",
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "dark",
+        "kind",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Core\\Color"
+      }
+    },
+    "ColorKind": {
+      "type": "string",
+      "enum": [
+        "named",
+        "css"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Core\\Enums\\ColorKind"
+      }
+    },
+    "ColorName": {
+      "type": "string",
+      "enum": [
+        "default",
+        "muted",
+        "primary",
+        "success",
+        "info",
+        "warning",
+        "danger",
+        "gray",
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "purple"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Core\\Enums\\ColorName"
+      }
+    },
+    "Op": {
+      "type": "string",
+      "enum": [
+        "contains",
+        "starts_with",
+        "ends_with",
+        "eq",
+        "neq",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "in",
+        "not_in",
+        "before",
+        "after",
+        "empty",
+        "filled"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Core\\Enums\\Op"
+      }
+    },
+    "Option": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "readOnly": true
+        },
+        "label": {
+          "type": "string",
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "data",
+        "label",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Core\\Option"
+      }
+    },
+    "PageContainer": {
+      "type": "string",
+      "enum": [
+        "centered",
+        "default"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Core\\Enums\\PageContainer"
+      }
+    },
+    "PageLayout": {
+      "type": "string",
+      "enum": [
+        "app",
+        "auth",
+        "none"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Core\\Enums\\PageLayout"
+      }
+    }
+  }
+}

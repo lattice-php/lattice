@@ -1,0 +1,471 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/action/v1.json",
+  "title": "Lattice action wire types",
+  "$defs": {
+    "Action": {
+      "type": "object",
+      "properties": {
+        "confirmation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Confirmation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Emphasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "form": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/form/v1.json#/$defs/node:form"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lazyForm": {
+          "type": "boolean"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/HttpMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalSide": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Side"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalWidth": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ModalWidth"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Variant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "confirmation",
+        "emphasis",
+        "endpoint",
+        "form",
+        "icon",
+        "label",
+        "lazyForm",
+        "method",
+        "modalSide",
+        "modalWidth",
+        "ref",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "action",
+        "domain": "Actions",
+        "php": "Lattice\\Actions\\Components\\Action"
+      }
+    },
+    "ActionGroup": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "orientation": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Orientation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "label",
+        "orientation",
+        "ref"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "action.group",
+        "domain": "Actions",
+        "php": "Lattice\\Actions\\Components\\ActionGroup"
+      }
+    },
+    "ActionResult": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": true,
+          "readOnly": true
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Effect"
+          },
+          "readOnly": true
+        }
+      },
+      "required": [
+        "data",
+        "effects"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Actions\\ActionResult"
+      }
+    },
+    "BulkAction": {
+      "type": "object",
+      "properties": {
+        "confirmation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Confirmation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Emphasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "form": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/form/v1.json#/$defs/node:form"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lazyForm": {
+          "type": "boolean"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/HttpMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalSide": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Side"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalWidth": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/ModalWidth"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "$ref": "https://lattice-php.dev/schema/ui/v1.json#/$defs/Variant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "confirmation",
+        "emphasis",
+        "endpoint",
+        "form",
+        "icon",
+        "label",
+        "lazyForm",
+        "method",
+        "modalSide",
+        "modalWidth",
+        "ref",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "action.bulk",
+        "domain": "Actions",
+        "php": "Lattice\\Actions\\Components\\BulkAction"
+      }
+    },
+    "Confirmation": {
+      "type": "object",
+      "properties": {
+        "cancelLabel": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "confirmLabel": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": [
+        "cancelLabel",
+        "confirmLabel",
+        "description",
+        "title"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Actions\\Confirmation"
+      }
+    },
+    "node:action": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "action"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Action"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "action",
+        "php": "Lattice\\Actions\\Components\\Action"
+      }
+    },
+    "node:action.bulk": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "action.bulk"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BulkAction"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "action.bulk",
+        "php": "Lattice\\Actions\\Components\\BulkAction"
+      }
+    },
+    "node:action.group": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "action.group"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ActionGroup"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "action.group",
+        "php": "Lattice\\Actions\\Components\\ActionGroup"
+      }
+    }
+  }
+}

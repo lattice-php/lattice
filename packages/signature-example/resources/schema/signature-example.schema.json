@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/signature-example/v1.json",
+  "title": "Lattice signature-example wire types",
+  "$defs": {
+    "Signature": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "signature",
+        "domain": "SignatureExample",
+        "php": "Lattice\\SignatureExample\\Components\\Signature"
+      }
+    },
+    "node:signature": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "signature"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Signature"
+            },
+            {
+              "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "https://lattice-php.dev/schema/lattice/v1.json#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "signature",
+        "php": "Lattice\\SignatureExample\\Components\\Signature"
+      }
+    }
+  }
+}

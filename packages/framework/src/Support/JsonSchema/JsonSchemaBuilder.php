@@ -207,6 +207,81 @@ final class JsonSchemaBuilder
     }
 
     /**
+     * Consumer-mode: builds ONLY the root/app source's own document,
+     * reflecting just its discover dirs. Cross-document refs to installed
+     * packages resolve against a def-name → origin index read from THEIR
+     * COMMITTED schema files — vendor PHP is never reflected here.
+     *
+     * @param  list<WireSource>  $installed  every non-root source (framework included), read from disk
+     * @return array<string, mixed>
+     */
+    public function buildRootDocument(WireSource $root, array $installed): array
+    {
+        $this->appClasses = [];
+
+        $manifest = $this->discover($root->dirs);
+        $rootNames = $this->defNames($manifest);
+        $this->guardUniqueNames($rootNames);
+
+        $classOrigins = [];
+
+        foreach (array_keys($rootNames) as $class) {
+            $classOrigins[$class] = $root->shortName;
+        }
+
+        [$externalNames, $externalDefOrigins, $externalSchemaIds] = $this->externalIndex($installed);
+
+        $names = [...$rootNames, ...$externalNames];
+        $defOrigins = [...$this->defOrigins($manifest, $rootNames, $classOrigins), ...$externalDefOrigins];
+        $schemaIds = [$root->shortName => $root->schemaId(), ...$externalSchemaIds];
+
+        return $this->document($root, $manifest, $names, $this->markers(), $this->nodeDefs($manifest), $classOrigins, $defOrigins, $schemaIds);
+    }
+
+    /**
+     * The class → name and def-name → origin/schemaId index
+     * `buildRootDocument()` resolves cross-document refs against, built by
+     * reading every installed source's committed `$defs` (each def's
+     * `x-lattice.php` annotation gives back its owning class) — no
+     * reflection.
+     *
+     * @param  list<WireSource>  $installed
+     * @return array{0: array<class-string, string>, 1: array<string, string>, 2: array<string, string>}
+     */
+    private function externalIndex(array $installed): array
+    {
+        $names = [];
+        $defOrigins = [];
+        $schemaIds = [];
+
+        foreach ($installed as $source) {
+            if (! is_file($source->schemaPath())) {
+                continue;
+            }
+
+            $document = json_decode((string) file_get_contents($source->schemaPath()), true);
+
+            if (! is_array($document) || ! is_array($document['$defs'] ?? null)) {
+                continue;
+            }
+
+            $schemaIds[$source->shortName] = $source->schemaId();
+
+            foreach ($document['$defs'] as $name => $def) {
+                $defOrigins[$name] = $source->shortName;
+
+                $class = is_array($def) ? $def['x-lattice']['php'] ?? null : null;
+
+                if (is_string($class)) {
+                    $names[$class] = $name;
+                }
+            }
+        }
+
+        return [$names, $defOrigins, $schemaIds];
+    }
+
+    /**
      * @param  array<class-string, string>  $names
      * @param  array<string, array<class-string, string>>  $nodeDefs
      * @param  array<class-string, array{string, string}>  $markers
@@ -418,7 +493,7 @@ final class JsonSchemaBuilder
             $file = new ReflectionClass($class)->getFileName();
             $source = is_string($file) ? $catalog->originOf($file) : null;
 
-            if ($source === null) {
+            if (! $source instanceof WireSource) {
                 throw new LogicException(sprintf(
                     'No wire source declares [%s] (%s) — is its package\'s composer.json missing extra.lattice.discover?',
                     $class,

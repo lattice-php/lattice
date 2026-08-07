@@ -19,21 +19,50 @@ function schemaDocument(): array
     );
 }
 
+/**
+ * Merges every embedded package document's `$defs` with the framework
+ * document's own, matching the flat set the pre-bundle single document had —
+ * used only where a test cares "does a def exist somewhere in the bundle",
+ * not "which document owns it".
+ *
+ * @return array<string, mixed>
+ */
+function flattenedBundleDefs(): array
+{
+    $document = schemaDocument();
+    $defs = $document['$defs'];
+
+    foreach ($defs as $name => $value) {
+        if (is_array($value) && isset($value['$id'], $value['$defs'])) {
+            unset($defs[$name]);
+            $defs = [...$defs, ...$value['$defs']];
+        }
+    }
+
+    return $defs;
+}
+
 function schemaValidator(): Validator
 {
+    $document = schemaDocument();
     $validator = new Validator;
-    $validator->resolver()?->registerFile(
-        'https://lattice-php.dev/schema/v1.json',
-        dirname(__DIR__, 3).'/packages/framework/resources/schema/lattice.schema.json',
+    $validator->resolver()?->registerRaw(
+        json_decode((string) json_encode($document)),
+        $document['$id'],
     );
 
     return $validator;
 }
 
+/**
+ * @param  string  $pointer  a bare `$defs` key (framework-native) or `package/name` (embedded document)
+ */
 function validateAgainst(string $pointer, mixed $data): bool
 {
+    $path = str_contains($pointer, '/') ? str_replace('/', '/$defs/', $pointer) : $pointer;
+
     return schemaValidator()
-        ->validate(json_decode((string) json_encode($data)), 'https://lattice-php.dev/schema/v1.json#/$defs/'.$pointer)
+        ->validate(json_decode((string) json_encode($data)), schemaDocument()['$id'].'#/$defs/'.$path)
         ->isValid();
 }
 
@@ -80,7 +109,7 @@ it('rejects a remote manifest smuggling server-trusted props or missing its audi
 });
 
 it('rejects a node whose props violate its type schema', function (): void {
-    expect(validateAgainst('node:button', [
+    expect(validateAgainst('ui/node:button', [
         'type' => 'button',
         'props' => ['label' => 'Save'],
     ]))->toBeFalse()
@@ -92,6 +121,7 @@ it('rejects a node whose props violate its type schema', function (): void {
 
 it('covers every type the generated TypeScript module exports', function (): void {
     $document = schemaDocument();
+    $defs = flattenedBundleDefs();
 
     $generated = (string) file_get_contents(dirname(__DIR__, 3).'/packages/framework/resources/js/types/generated.ts');
     $generatedShapes = explode('// ─── Generated shapes', $generated, 2)[1];
@@ -104,7 +134,7 @@ it('covers every type the generated TypeScript module exports', function (): voi
         $synthesized[] = $family['propsMap'];
     }
 
-    $allowed = [...array_keys($document['$defs']), ...$synthesized];
+    $allowed = [...array_keys($defs), ...$synthesized];
     $missing = array_diff($matches[1], $allowed);
 
     expect(array_values($missing))->toBe([]);
