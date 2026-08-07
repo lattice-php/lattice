@@ -14,9 +14,9 @@ use Spatie\Attributes\Attributes;
 final readonly class PageMetadata
 {
     /**
-     * `$middleware` is null when no attribute in the class hierarchy declares
-     * one — the route falls back to `lattice.pages.middleware` at registration
-     * time. An explicit `middleware: []` opts the route out of any middleware.
+     * `$middleware` holds only what the class hierarchy declares (null when
+     * nothing does) — the route merges it after the `lattice.pages.middleware`
+     * default at registration time, so the default applies everywhere.
      *
      * @param  class-string  $class
      * @param  array<int, string>|null  $middleware
