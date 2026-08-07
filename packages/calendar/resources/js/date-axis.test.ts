@@ -1,9 +1,5 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { addDays, assignLanes, buildAxis, dayIndexOf, isoWeek } from "./date-axis";
-
-afterEach(() => {
-  vi.unstubAllEnvs();
-});
+import { describe, expect, it } from "vitest";
+import { assignLanes, buildAxis } from "./date-axis";
 
 describe("buildAxis", () => {
   it("splits the months row at a year boundary", () => {
@@ -34,35 +30,6 @@ describe("buildAxis", () => {
     expect(axis.days[3]).toMatchObject({ date: "2027-01-02", isWeekend: true, isToday: false });
     expect(axis.days[4]).toMatchObject({ date: "2027-01-03", isWeekend: true, isToday: false });
     expect(axis.days[0]).toMatchObject({ isWeekend: false, isToday: false });
-  });
-});
-
-describe("isoWeek", () => {
-  it("resolves the last days of 2026 into ISO week 53, not week 1 of 2027", () => {
-    expect(isoWeek("2026-12-28")).toBe(53);
-    expect(isoWeek("2026-12-31")).toBe(53);
-    expect(isoWeek("2027-01-01")).toBe(53);
-    expect(isoWeek("2027-01-04")).toBe(1);
-  });
-});
-
-describe("addDays / dayIndexOf", () => {
-  it("round-trip for negative, zero, and positive offsets", () => {
-    const start = "2026-06-15";
-
-    for (const offset of [-40, -1, 0, 1, 40]) {
-      expect(dayIndexOf(start, addDays(start, offset))).toBe(offset);
-    }
-  });
-
-  it("does not shift the day index across a Europe/Berlin DST transition", () => {
-    vi.stubEnv("TZ", "Europe/Berlin");
-
-    // Clocks spring forward in Berlin on the last Sunday of March; a UTC-noon
-    // day count must still see plain calendar days regardless.
-    expect(dayIndexOf("2027-03-01", "2027-04-01")).toBe(31);
-    expect(addDays("2027-03-26", 5)).toBe("2027-03-31");
-    expect(dayIndexOf("2027-03-26", "2027-03-31")).toBe(5);
   });
 });
 
