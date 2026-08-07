@@ -1,4 +1,4 @@
-import { type FormatOptions, formatDateValue } from "@lattice-php/ui/format/date-time";
+import { type FormatOptions, formatDateValue } from "@lattice-php/ui/format/temporal";
 import type { ColumnPropsOf, TableColumn, TableRow } from "@lattice-php/table/types";
 
 export function formatCell(value: unknown, column?: TableColumn, options?: FormatOptions): string {

@@ -14,12 +14,13 @@ use Spatie\Attributes\Attributes;
 final readonly class PageMetadata
 {
     /**
-     * `$middleware` is null when no attribute in the class hierarchy declares
-     * one — the route falls back to `lattice.pages.middleware` at registration
-     * time. An explicit `middleware: []` opts the route out of any middleware.
+     * `$middleware` holds only what the class hierarchy declares (null when
+     * nothing does) — the route merges it after the `lattice.pages.middleware`
+     * default at registration time, so the default applies everywhere.
      *
      * @param  class-string  $class
      * @param  array<int, string>|null  $middleware
+     * @param  array<int, string>  $can
      */
     private function __construct(
         public string $class,
@@ -28,6 +29,7 @@ final readonly class PageMetadata
         public PageLayout|string $layout,
         public PageContainer|string $container,
         public ?array $middleware,
+        public array $can,
     ) {}
 
     public static function for(PageContract|string $page): self
@@ -48,6 +50,7 @@ final readonly class PageMetadata
             layout: self::inherited($class, fn (AsPage $a): PageLayout|string|null => $a->layout) ?? PageLayout::None,
             container: self::inherited($class, fn (AsPage $a): PageContainer|string|null => $a->container) ?? PageContainer::Centered,
             middleware: self::inheritedMiddleware($class),
+            can: $own?->can() ?? [],
         );
     }
 
@@ -62,7 +65,7 @@ final readonly class PageMetadata
     }
 
     /**
-     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string}
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can: array<int, string>}
      */
     public function toArray(): array
     {
@@ -73,11 +76,15 @@ final readonly class PageMetadata
             'middleware' => $this->middleware,
             'layout' => $this->serialize($this->layout),
             'container' => $this->serialize($this->container),
+            'can' => $this->can,
         ];
     }
 
     /**
-     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string}  $descriptor
+     * `can` defaults for descriptors cached by a manifest built before it
+     * existed, so an upgrade works without regenerating the discovery cache.
+     *
+     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can?: array<int, string>}  $descriptor
      */
     public static function fromArray(array $descriptor): self
     {
@@ -88,6 +95,7 @@ final readonly class PageMetadata
             layout: $descriptor['layout'],
             container: $descriptor['container'],
             middleware: $descriptor['middleware'],
+            can: $descriptor['can'] ?? [],
         );
     }
 

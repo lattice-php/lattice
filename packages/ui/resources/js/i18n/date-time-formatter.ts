@@ -1,5 +1,5 @@
 import type { i18n as I18nInstance } from "i18next";
-import { toDate } from "../format/date-time";
+import { toDate } from "../format/temporal";
 import { currentTimezone } from "./timezone";
 
 /**

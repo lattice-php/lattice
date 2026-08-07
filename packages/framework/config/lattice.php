@@ -42,8 +42,8 @@ return [
     ],
 
     // Pages ship unauthenticated by default; authorization is opt-in via
-    // attribute middleware or Page::authorize(). `#[AsPage(middleware: [])]`
-    // opts a page out of this default entirely.
+    // attribute middleware, `can`, or Page::authorize(). Attribute middleware
+    // is merged after this default, never replacing it.
     'pages' => [
         'middleware' => ['web'],
     ],

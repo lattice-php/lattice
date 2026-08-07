@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.43.0](https://github.com/lattice-php/lattice/compare/0.42.0...0.43.0) (2026-08-07)
+
+
+### Features
+
+* enum abilities in can + page gates as route middleware ([#414](https://github.com/lattice-php/lattice/issues/414)) ([6a8146c](https://github.com/lattice-php/lattice/commit/6a8146c491564c242936f790169e1ac0ec7374c6))
+
+
+### Bug Fixes
+
+* **ci:** deploy docs from main again ([#410](https://github.com/lattice-php/lattice/issues/410)) ([95cd11f](https://github.com/lattice-php/lattice/commit/95cd11f64238b69a6aea1c67d6efb9bb42a0cf22))
+
+
+### Refactoring
+
+* **ui:** move js date/time handling onto @internationalized/date in format/temporal ([#415](https://github.com/lattice-php/lattice/issues/415)) ([35b590d](https://github.com/lattice-php/lattice/commit/35b590d7f9279cc52ac65b25a32d44cf231919c0))
+
+
+### Documentation
+
+* widen the api-reference demo page and flag the dead demo backend ([#412](https://github.com/lattice-php/lattice/issues/412)) ([48f2e2b](https://github.com/lattice-php/lattice/commit/48f2e2b471cd33da442c687a86a3c992eb089836))
+
 ## [0.42.0](https://github.com/lattice-php/lattice/compare/0.41.0...0.42.0) (2026-08-07)
 
 

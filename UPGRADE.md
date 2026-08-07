@@ -1,5 +1,12 @@
 # Upgrade Guide
 
+## 0.42 → 0.43
+
+`#[AsPage(middleware: ...)]` now **merges after** the `lattice.pages.middleware` config default
+(`['web']`) instead of replacing it. A page declaring `middleware: 'auth'` registers with
+`['web', 'auth']` — drop any re-declared defaults from page attributes. The `middleware: []`
+opt-out is gone; to change the base stack for all pages, change the config value.
+
 ## 0.38 → 0.40 (the monorepo split)
 
 0.39 split the single `lattice-php/lattice` package into per-domain packages; 0.40 moved the

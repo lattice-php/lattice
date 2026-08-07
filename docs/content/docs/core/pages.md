@@ -132,7 +132,7 @@ too.
 | `name`       | The route name. Defaults to the route segments joined by dots (`products.edit`), falling back to the class name without its `Page` suffix.                           |
 | `layout`     | The [layout](/core/layouts/) the page renders into — a [`PageLayout`](/advanced/enums/#pages) or a registered layout key. Defaults to `PageLayout::None` (no shell). |
 | `container`  | How the content is framed — a [`PageContainer`](/advanced/enums/#pages) (`Default` or `Centered`). Defaults to `PageContainer::Centered`.                            |
-| `middleware` | Middleware for the page's route — a string or an array. Defaults to the `lattice.pages.middleware` config (`['web']`); pass `[]` to register the route with none.    |
+| `middleware` | Extra middleware for the page's route — a string or an array, merged after the `lattice.pages.middleware` config default (`['web']`).                                |
 | `can`        | Abilities the current user must pass before the page renders — a string or an array. See [Authorization](/core/authorization/).                                      |
 
 ```php
@@ -144,7 +144,7 @@ use Lattice\Core\Enums\PageLayout;
     name: 'products.index',
     layout: PageLayout::App,
     container: PageContainer::Default,
-    middleware: ['web', 'auth'],
+    middleware: 'auth',
 )]
 ```
 
@@ -161,7 +161,7 @@ value set by a parent class. Put the shared framing on a base page once, and con
 only their own route:
 
 ```php
-#[AsPage(layout: PageLayout::App, container: PageContainer::Default, middleware: ['web'])]
+#[AsPage(layout: PageLayout::App, container: PageContainer::Default, middleware: 'auth')]
 abstract class AppPage extends Page {}
 
 #[AsPage(route: '/products', name: 'products.index')]

@@ -1,5 +1,5 @@
 import type { DateFormat, NumberFormat } from "../generated";
-import { formatDateValue } from "./date-time";
+import { formatDateValue } from "./temporal";
 import { formatNumber } from "./number";
 
 export type Format = NumberFormat | DateFormat;

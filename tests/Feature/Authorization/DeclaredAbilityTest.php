@@ -200,10 +200,10 @@ test('a declared ability on a component drops it from the payload', function ():
 test('visible() cannot widen a component\'s declared ability', function (): void {
     allowAbilities();
 
-    expect(Heading::make('x')->can('manage-widgets')->visible(true)->shouldRender())->toBeFalse();
+    expect(Heading::make('x')->can(DeclaredAbility::ManageWidgets)->visible(true)->shouldRender())->toBeFalse();
 });
 
-#[AsPage(can: 'manage-widgets')]
+#[AsPage(can: DeclaredAbility::ManageWidgets)]
 final class DeclaredAbilityAttributePage extends Page
 {
     public function title(): string
@@ -258,7 +258,13 @@ final class DeclaredAbilityAction extends ActionDefinition
     }
 }
 
-#[AsAction('declared.multi-action', can: ['manage-widgets', 'inspect-widgets'])]
+enum DeclaredAbility: string
+{
+    case ManageWidgets = 'manage-widgets';
+    case InspectWidgets = 'inspect-widgets';
+}
+
+#[AsAction('declared.multi-action', can: [DeclaredAbility::ManageWidgets, DeclaredAbility::InspectWidgets])]
 final class DeclaredAbilityMultiAction extends ActionDefinition
 {
     public function definition(ActionComponent $action): ActionComponent

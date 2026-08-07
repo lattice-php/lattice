@@ -53,7 +53,7 @@ export * from "./text-link";
 export * from "./types";
 export * from "./use-collapsible-state";
 export * from "./use-column-resizing";
-export * from "./format/date-time";
+export * from "./format/temporal";
 export * from "./format/number";
 export * from "./format/numeric";
 export * from "./effects/dispatch";

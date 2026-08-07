@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Ui\Concerns;
 
+use BackedEnum;
 use Closure;
 use Illuminate\Http\Request;
 use Lattice\Core\Authorization;
@@ -36,11 +37,11 @@ trait GatesRendering
      * on a definition or page. Checked in addition to visible()/hidden() and
      * never widened by them, so the order of the calls does not matter.
      *
-     * @param  string|array<int, string>  $can
+     * @param  string|BackedEnum|array<int, string|BackedEnum>  $can
      */
-    public function can(string|array $can): static
+    public function can(string|BackedEnum|array $can): static
     {
-        $this->can = [...$this->can, ...(array) $can];
+        $this->can = [...$this->can, ...Authorization::abilities($can)];
         $this->resolvedVisibility = null;
 
         return $this;

@@ -3,7 +3,7 @@ import { runAction } from "@lattice-php/action/lib/run-action";
 import { apiFetch } from "@lattice-php/core/api";
 import type { Node } from "@lattice-php/core/types";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import { formatDateValue } from "@lattice-php/ui/format/date-time";
+import { formatDateValue } from "@lattice-php/ui/format/temporal";
 import { useFormatContext } from "@lattice-php/ui/format/format-context";
 import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/button";

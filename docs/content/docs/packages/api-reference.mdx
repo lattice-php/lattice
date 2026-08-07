@@ -1,9 +1,14 @@
 ---
 title: API Reference
 description: A browsable OpenAPI reference with tag-grouped navigation, schema trees, request snippets, and an in-browser request playground.
+tableOfContents: false
 ---
 
 import ApiReferenceDemo from "@components/ApiReferenceDemo.tsx";
+
+{/* The reference needs ~1000px before its two-column layout makes sense. */}
+
+<style>{`:root { --sl-content-width: min(68rem, 100%); }`}</style>
 
 The api-reference package renders an OpenAPI 3.x document as a browsable API reference —
 tag-grouped navigation, per-operation parameter and schema trees, generated cURL and JavaScript
@@ -15,8 +20,13 @@ from a Laravel application, but renders any valid document.
 ## Demo
 
 The component below is live — browse the operations, inspect schemas, and switch snippet
-languages. The demo origin has no backend, so **Execute** shows how a failed request is
-surfaced in the response panel; against a real API the response renders the same way.
+languages.
+
+:::caution[Execute has no backend here]
+The playground's **Execute** button sends a real request from your browser, but this demo's
+server (`https://api.example.com`) does not exist, so executing only shows how a failed request
+is surfaced in the response panel. Against a real API the response renders in the same panel.
+:::
 
 <div
   class="not-content"

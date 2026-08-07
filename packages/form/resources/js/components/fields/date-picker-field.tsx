@@ -1,4 +1,4 @@
-import type { DateValue } from "@internationalized/date";
+import type { DateValue } from "@lattice-php/ui/format/temporal";
 import * as datePicker from "@zag-js/date-picker";
 import { normalizeProps, useMachine } from "@zag-js/react";
 import { useId, useMemo } from "react";
