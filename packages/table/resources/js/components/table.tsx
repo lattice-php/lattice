@@ -162,9 +162,6 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             className="flex items-center gap-2 border-b border-lt-border px-4 py-2"
           >
             {node.props?.searchable && <TableSearch value={search} onSearch={setSearch} />}
-            {toolbarNodes.map((toolbarNode, index) => (
-              <RenderNode key={toolbarNode.key ?? toolbarNode.id ?? index} node={toolbarNode} />
-            ))}
             <div className="ms-auto flex items-center gap-1">
               {hasDedicatedFilters && (
                 <FilterMenu
@@ -198,6 +195,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   <Icon name="rotate-ccw" className="size-lt-icon-sm" />
                 </button>
               )}
+              {toolbarNodes.map((toolbarNode, index) => (
+                <RenderNode key={toolbarNode.key ?? toolbarNode.id ?? index} node={toolbarNode} />
+              ))}
             </div>
           </div>
         )}
@@ -377,7 +377,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                           key={column.key}
                           data-slot="table-cell"
                           className={cn(
-                            "grid min-w-0 gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y align-middle",
+                            "grid min-w-0 content-center gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y",
                             alignText(column.props.align),
                             alignJustifyItems(column.props.align),
                           )}

@@ -191,7 +191,7 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
   });
 
-  it("gathers search, slot nodes, filters, column visibility, and resize reset into one toolbar row", () => {
+  it("gathers search, filters, column visibility, resize reset, and slot nodes into one toolbar row, with slot nodes rightmost", () => {
     window.localStorage.setItem(
       "lattice:table-columns:workbench.toolbar",
       JSON.stringify({ overrides: { name: 180 } }),
@@ -245,6 +245,12 @@ describe("Lattice table component", () => {
     expect(toolbar).toContainElement(screen.getByTestId("table-columns-menu"));
     expect(toolbar).toContainElement(screen.getByTestId("table-reset-columns"));
     expect(screen.getByTestId("table-reset-columns")).not.toHaveClass("absolute");
+
+    const resetColumns = screen.getByTestId("table-reset-columns");
+    const slot = screen.getByText("Custom slot");
+    expect(resetColumns.compareDocumentPosition(slot) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 
   it("renders grid rows with stack columns and row actions without table cells", async () => {
