@@ -1,0 +1,1217 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Demo API",
+    "version": "1.0.0",
+    "description": "A Spectacular-generated OpenAPI document rendered by the api-reference component."
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com",
+      "description": "Demo"
+    }
+  ],
+  "security": [
+    {
+      "http": []
+    }
+  ],
+  "paths": {
+    "/categories": {
+      "get": {
+        "operationId": "categories.index",
+        "description": "Browse the category hierarchy used to organize products. Each category includes its parent and direct children so clients can build navigation without follow-up requests.\n\nResults are paginated so clients can request a predictable slice of the collection. Use `per_page` and `page` to move through the result set.",
+        "summary": "List product categories",
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items to retrieve per page.",
+            "schema": {
+              "type": "integer",
+              "default": 15,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `CategoryResource`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CategoryResource"
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "from": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "minimum": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "links": {
+                          "type": "array",
+                          "description": "Generated paginator links.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "label": {
+                                "type": "string"
+                              },
+                              "active": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "url",
+                              "label",
+                              "active"
+                            ]
+                          }
+                        },
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "to": {
+                          "type": [
+                            "integer",
+                            "null"
+                          ],
+                          "description": "Number of the last item in the slice.",
+                          "minimum": 1
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of items being paginated.",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "from",
+                        "last_page",
+                        "links",
+                        "path",
+                        "per_page",
+                        "to",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/roles": {
+      "get": {
+        "operationId": "roles.index",
+        "tags": [
+          "Roles"
+        ],
+        "parameters": [
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items to retrieve per page.",
+            "schema": {
+              "type": "integer",
+              "default": 15,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "fields[roles]",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "The cursor to start pagination from.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `RoleResource`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RoleResource"
+                      }
+                    },
+                    "links": {
+                      "type": "object",
+                      "properties": {
+                        "first": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "last": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "prev": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "next": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "first",
+                        "last",
+                        "prev",
+                        "next"
+                      ]
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "path": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Base path for paginator generated URLs."
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "description": "Number of items shown per page.",
+                          "minimum": 0
+                        },
+                        "next_cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "The \"cursor\" that points to the next set of items."
+                        },
+                        "prev_cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "The \"cursor\" that points to the previous set of items."
+                        }
+                      },
+                      "required": [
+                        "path",
+                        "per_page",
+                        "next_cursor",
+                        "prev_cursor"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "links",
+                    "meta"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/users/{user}": {
+      "get": {
+        "operationId": "users.show",
+        "tags": [
+          "ShowUser"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "description": "The user ID",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "roles"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "fields[users]",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "email"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "fields[roles]",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name"
+                ]
+              }
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "`UserResource`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UserResource"
+                    },
+                    "included": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RoleResource"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ModelNotFoundException"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "operationId": "users.store",
+        "tags": [
+          "StoreUser"
+        ],
+        "parameters": [
+          {
+            "name": "X-Debug-Context",
+            "in": "header",
+            "description": "Optional context echoed in request diagnostics.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "docs"
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "roles"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "fields[users]",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "email"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "fields[roles]",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name"
+                ]
+              }
+            },
+            "explode": false
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "`UserResource`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UserResource"
+                    },
+                    "included": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RoleResource"
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationException"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationException"
+          }
+        }
+      },
+      "get": {
+        "operationId": "users.index",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "include",
+            "in": "query",
+            "description": "Available includes are `roles`, `rolesCount`, `rolesExists`. You can include multiple options by separating them with a comma.",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "roles",
+                  "rolesCount",
+                  "rolesExists"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "fields[users]",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "email"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "fields[roles]",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Available sorts are `name`, `created_at`. You can sort by multiple options by separating them with a comma. To sort in descending order, use `-` sign in front of the sort, for example: `-name`.",
+            "style": "form",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "name",
+                  "-name",
+                  "created_at",
+                  "-created_at"
+                ]
+              }
+            },
+            "explode": false
+          },
+          {
+            "name": "filter[name]",
+            "in": "query",
+            "description": "Filter by `name`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter[email]",
+            "in": "query",
+            "description": "Filter by `email`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to retrieve.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "The cursor to start pagination from.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "The number of items to retrieve per page.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "x-pagination",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "default",
+                "simple",
+                "cursor"
+              ],
+              "default": "default"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated set of `UserResource`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "title": "Default pagination",
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/UserResource"
+                          }
+                        },
+                        "included": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RoleResource"
+                          }
+                        },
+                        "links": {
+                          "type": "object",
+                          "properties": {
+                            "first": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "last": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "prev": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "next": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "first",
+                            "last",
+                            "prev",
+                            "next"
+                          ]
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "from": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
+                              "minimum": 1
+                            },
+                            "last_page": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "links": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "url": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "label": {
+                                    "type": "string"
+                                  },
+                                  "active": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "url",
+                                  "label",
+                                  "active"
+                                ]
+                              }
+                            },
+                            "path": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "per_page": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "to": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
+                              "minimum": 1
+                            },
+                            "total": {
+                              "type": "integer",
+                              "minimum": 0
+                            }
+                          },
+                          "required": [
+                            "current_page",
+                            "from",
+                            "last_page",
+                            "links",
+                            "path",
+                            "per_page",
+                            "to",
+                            "total"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "links",
+                        "meta"
+                      ]
+                    },
+                    {
+                      "title": "Simple pagination",
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/UserResource"
+                          }
+                        },
+                        "included": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RoleResource"
+                          }
+                        },
+                        "links": {
+                          "type": "object",
+                          "properties": {
+                            "first": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "last": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "prev": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "next": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "first",
+                            "last",
+                            "prev",
+                            "next"
+                          ]
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "current_page": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "from": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
+                              "minimum": 1
+                            },
+                            "path": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "per_page": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "to": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ],
+                              "minimum": 1
+                            }
+                          },
+                          "required": [
+                            "current_page",
+                            "from",
+                            "path",
+                            "per_page",
+                            "to"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "links",
+                        "meta"
+                      ]
+                    },
+                    {
+                      "title": "Cursor pagination",
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/UserResource"
+                          }
+                        },
+                        "included": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RoleResource"
+                          }
+                        },
+                        "links": {
+                          "type": "object",
+                          "properties": {
+                            "first": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "last": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "prev": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "next": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "first",
+                            "last",
+                            "prev",
+                            "next"
+                          ]
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "path": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "per_page": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "next_cursor": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "prev_cursor": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "path",
+                            "per_page",
+                            "next_cursor",
+                            "prev_cursor"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "links",
+                        "meta"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "http": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "CategoryResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CategoryResource"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryResource"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "CategoryResource"
+      },
+      "RoleResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "const": "roles"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type"
+        ],
+        "title": "RoleResource"
+      },
+      "UserResource": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "const": "users"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "properties": {
+              "roles": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string",
+                        "const": "roles"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "type"
+                    ]
+                  }
+                },
+                "required": [
+                  "data"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "type"
+        ],
+        "title": "UserResource"
+      }
+    },
+    "responses": {
+      "ValidationException": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Errors overview."
+                },
+                "errors": {
+                  "type": "object",
+                  "description": "A detailed description of each field that failed validation.",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "message",
+                "errors"
+              ]
+            }
+          }
+        }
+      },
+      "AuthenticationException": {
+        "description": "Unauthenticated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "ModelNotFoundException": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Error overview."
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

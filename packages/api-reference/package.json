@@ -1,0 +1,17 @@
+{
+  "name": "@lattice-php/api-reference",
+  "version": "0.41.0",
+  "private": true,
+  "description": "Dev workspace for the API reference component package; ships to consumers via Composer, not npm.",
+  "type": "module",
+  "scripts": {
+    "build:standalone": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lattice-php/core": "0.41.0",
+    "@lattice-php/form": "0.41.0",
+    "@lattice-php/lattice": "0.41.0",
+    "@lattice-php/ui": "0.41.0"
+  }
+}

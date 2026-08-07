@@ -1,0 +1,28 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/api-reference",
+    "description": "Interactive OpenAPI reference component with request playground for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "lattice-php/core": "self.version",
+        "lattice-php/ui": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\ApiReference\\": "src/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "plugin": "resources/js/plugin.ts",
+            "standalone": "dist/plugin.js",
+            "css": "resources/css/api-reference.css",
+            "discover": ["src"]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

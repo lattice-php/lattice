@@ -8,7 +8,9 @@ setRequestHeaderProvider(localeHeader);
 
 // The default 1000ms waitFor timeout flakes under CI's coverage-instrumented,
 // parallel load — async event→fetch→re-render chains occasionally need longer.
-configure({ testIdAttribute: "data-test", asyncUtilTimeout: 3000 });
+// 3000ms still flaked for TipTap mounts when the pre-push gate runs vitest
+// concurrently with the PHP suite; testTimeout in vite.config.ts grows with it.
+configure({ testIdAttribute: "data-test", asyncUtilTimeout: 10_000 });
 
 if (!globalThis.ResizeObserver) {
   globalThis.ResizeObserver = class ResizeObserver {
