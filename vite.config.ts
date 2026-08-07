@@ -109,6 +109,7 @@ export default defineConfig({
             ],
             iconDirs: [
               ...componentPackages.flatMap((pkg) => (pkg.icons ? [pkg.icons] : [])),
+              "packages/signature-example/resources/icons",
               "workbench/resources/icons",
             ],
             // Generate an importable IconName union + augment <Icon name>.
