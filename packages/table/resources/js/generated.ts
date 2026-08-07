@@ -103,7 +103,6 @@ export type FilterIndicator = {
 export type FilterNodeType =
   | "filter.date-range"
   | "filter.select"
-  | "filter.select"
   | "filter.ternary"
   | "filter.toggle";
 export type FilterPropsMap = {

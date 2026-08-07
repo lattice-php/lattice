@@ -18,7 +18,10 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
     public function run(): string
     {
-        $document = new JsonSchemaBuilder()->build($this->catalog->builtinDirs(), $this->catalog->appDirs());
+        $document = new JsonSchemaBuilder()->build(
+            $this->catalog->builtinDirs(self::EMISSION_EXCLUDED),
+            $this->catalog->appDirs(),
+        );
 
         $output = (string) config('lattice.typescript.output');
         $module = (string) config('lattice.typescript.module', '@lattice-php/core');

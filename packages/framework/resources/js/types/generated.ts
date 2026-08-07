@@ -192,19 +192,6 @@ export type Affix = {
   readonly text: string | null;
 };
 export type Align = "center" | "left" | "start" | "stretch";
-export type ApiReference = {
-  defaultOperation: string | null;
-  expandDepth: number;
-  hideBaseUrl: boolean;
-  hideHeader: boolean;
-  operation: string | null;
-  spec: Record<string, unknown>;
-  tags: string[] | null;
-  title: string | null;
-  token: string | null;
-  twoColumnBreakpoint: Breakpoint;
-  url: string | null;
-};
 export type Avatar = {
   name: string | null;
   size: Size;
@@ -504,7 +491,6 @@ export type ComponentPropsMap = {
   action: Action;
   "action.bulk": BulkAction;
   "action.group": ActionGroup;
-  "api-reference": ApiReference;
   avatar: Avatar;
   badge: Badge;
   breadcrumbs: Breadcrumbs;
@@ -526,7 +512,6 @@ export type ComponentPropsMap = {
   "field.date-time-input": DateTimeInput;
   "field.file-upload": FileUpload;
   "field.hidden-input": HiddenInput;
-  "field.media-picker": MediaPicker;
   "field.number-input": NumberInput;
   "field.otp": OtpInput;
   "field.password-input": PasswordInput;
@@ -545,7 +530,6 @@ export type ComponentPropsMap = {
   icon: Icon;
   image: Image;
   link: Link;
-  "media.library": MediaLibrary;
   menu: Menu;
   "menu-item": MenuItem;
   modal: Modal;
@@ -558,7 +542,6 @@ export type ComponentPropsMap = {
   "segmented-control": SegmentedControl;
   separator: Separator;
   sidebar: Sidebar;
-  signature: Signature;
   stack: Stack;
   tab: Tab;
   table: Table;
@@ -566,7 +549,6 @@ export type ComponentPropsMap = {
   text: Text;
   tooltip: Tooltip;
   topbar: Topbar;
-  tree: Tree;
   wizard: Wizard;
   "wizard-step": WizardStep;
 };
@@ -675,7 +657,6 @@ export type EditorExtensionPropsMap = {
   "horizontal-rule": EditorHorizontalRule;
   italic: EditorItalic;
   link: EditorLink;
-  "media-image": EditorMediaImage;
   "ordered-list": EditorOrderedList;
   strike: EditorStrike;
   table: EditorTable;
@@ -691,10 +672,6 @@ export type EditorItalic = Record<string, never>;
 export type EditorLink = {
   openOnClick: boolean;
   protocols: string[];
-};
-export type EditorMediaImage = {
-  conversions: string[];
-  library: Node<"media.library"> | null;
 };
 export type EditorOrderedList = Record<string, never>;
 export type EditorStrike = Record<string, never>;
@@ -785,7 +762,6 @@ export type FilterIndicator = {
 export type FilterNodeType =
   | "filter.date-range"
   | "filter.select"
-  | "filter.select"
   | "filter.ternary"
   | "filter.toggle";
 export type FilterPropsMap = {
@@ -830,7 +806,6 @@ export type FormFieldNodeType =
   | "field.date-time-input"
   | "field.file-upload"
   | "field.hidden-input"
-  | "field.media-picker"
   | "field.number-input"
   | "field.otp"
   | "field.password-input"
@@ -852,7 +827,6 @@ export type FormNodeType =
   | "field.date-time-input"
   | "field.file-upload"
   | "field.hidden-input"
-  | "field.media-picker"
   | "field.number-input"
   | "field.otp"
   | "field.password-input"
@@ -984,44 +958,6 @@ export type Listen = {
 export type LocaleChange = {
   readonly locale: string;
 };
-export type MediaLibrary = {
-  accept: string | null;
-  picker: boolean;
-  signed: boolean;
-};
-export type MediaPicker = {
-  columnWidth: ColumnWidth;
-  conditions: FieldConditions | null;
-  dependsOnAny: boolean;
-  dependsOnKeys: string[] | null;
-  disabled: boolean;
-  editablePrefill: boolean;
-  helperText: string | null;
-  label: string | null;
-  maxFiles: number | null;
-  multiple: boolean;
-  name: string;
-  prefillRefreshOn: string[] | null;
-  prefillResetOn: string[] | null;
-  readOnly: boolean;
-  required: boolean;
-  selected:
-    | {
-        id: number;
-        mime_type: string;
-        name: string;
-        preview_url: string | null;
-        url: string | null;
-        values: Record<string, unknown>;
-      }[]
-    | null;
-  tooltip: string | null;
-  value: unknown;
-};
-export type MediaTypeFilter = {
-  label: string | null;
-};
-export type MediumNodeType = "media.library";
 export type Menu = Record<string, never>;
 export type MenuItem = {
   action: Node | null;
@@ -1061,7 +997,6 @@ export type NodeType =
   | "action"
   | "action.bulk"
   | "action.group"
-  | "api-reference"
   | "avatar"
   | "badge"
   | "breadcrumbs"
@@ -1083,7 +1018,6 @@ export type NodeType =
   | "field.date-time-input"
   | "field.file-upload"
   | "field.hidden-input"
-  | "field.media-picker"
   | "field.number-input"
   | "field.otp"
   | "field.password-input"
@@ -1102,7 +1036,6 @@ export type NodeType =
   | "icon"
   | "image"
   | "link"
-  | "media.library"
   | "menu"
   | "menu-item"
   | "modal"
@@ -1115,7 +1048,6 @@ export type NodeType =
   | "segmented-control"
   | "separator"
   | "sidebar"
-  | "signature"
   | "stack"
   | "tab"
   | "table"
@@ -1123,7 +1055,6 @@ export type NodeType =
   | "text"
   | "tooltip"
   | "topbar"
-  | "tree"
   | "wizard"
   | "wizard-step";
 export type NotificationItem = {
@@ -1458,10 +1389,6 @@ export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;
 };
-export type Signature = {
-  label: string | null;
-};
-export type SignatureExampleNodeType = "signature";
 export type SignedUpload = {
   readonly headers: Record<string, unknown>;
   readonly key: string;
@@ -1708,17 +1635,6 @@ export type Translatable = {
   key: string;
   payload: Record<string, string>;
   replacements: Record<string, boolean | number | string>;
-};
-export type Tree = {
-  activeId: string | null;
-  defaultExpanded: string[];
-  endpoint: string | null;
-  lazy: boolean;
-  moveAction: Node<"action"> | Node<"action.bulk"> | null;
-  ref: string | null;
-  rememberState: boolean;
-  revision: number | string | null;
-  selectAction: Node<"action"> | Node<"action.bulk"> | null;
 };
 export type UiNodeType =
   | "avatar"

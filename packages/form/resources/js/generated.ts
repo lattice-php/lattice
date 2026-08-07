@@ -188,7 +188,6 @@ export type EditorExtensionPropsMap = {
   "horizontal-rule": EditorHorizontalRule;
   italic: EditorItalic;
   link: EditorLink;
-  "media-image": EditorMediaImage;
   "ordered-list": EditorOrderedList;
   strike: EditorStrike;
   table: EditorTable;
@@ -204,10 +203,6 @@ export type EditorItalic = Record<string, never>;
 export type EditorLink = {
   openOnClick: boolean;
   protocols: string[];
-};
-export type EditorMediaImage = {
-  conversions: string[];
-  library: Node<"media.library"> | null;
 };
 export type EditorOrderedList = Record<string, never>;
 export type EditorStrike = Record<string, never>;

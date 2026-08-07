@@ -87,13 +87,16 @@ final readonly class WireSourceCatalog
         return $sources;
     }
 
-    /** @return list<string> */
-    public function builtinDirs(): array
+    /**
+     * @param  list<string>  $excludingShortNames
+     * @return list<string>
+     */
+    public function builtinDirs(array $excludingShortNames = []): array
     {
         $dirs = [];
 
         foreach ($this->discover() as $source) {
-            if (! $source->isRoot) {
+            if (! $source->isRoot && ! in_array($source->shortName, $excludingShortNames, true)) {
                 $dirs = [...$dirs, ...$source->dirs];
             }
         }
