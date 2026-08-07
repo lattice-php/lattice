@@ -104,7 +104,9 @@ jobs:
   deploy:
     name: Deploy docs to GitHub Pages
     needs: docs
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    # The skipped `changes` job sits in the needs chain on push events, so the
+    # implicit success() would skip this job — check the docs result directly.
+    if: ${{ !cancelled() && needs.docs.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
       pages: write
