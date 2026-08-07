@@ -160,7 +160,7 @@ final readonly class PropertySchemaMapper
     {
         foreach ($this->context->markers as $marker => [$category, $envelope]) {
             if ($class === $marker) {
-                return ['$ref' => '#/$defs/'.$envelope];
+                return ['$ref' => $this->context->refFor($envelope)];
             }
 
             if (is_a($class, $marker, true)) {
@@ -187,7 +187,7 @@ final readonly class PropertySchemaMapper
         $self = $known[$class] ?? $this->attributedType($class, $category);
 
         if ($self === null) {
-            return ['$ref' => '#/$defs/'.$envelope];
+            return ['$ref' => $this->context->refFor($envelope)];
         }
 
         $types = [$self];
@@ -203,7 +203,7 @@ final readonly class PropertySchemaMapper
 
         $prefix = self::NODE_DEF_PREFIXES[$category];
         $references = array_map(
-            static fn (string $type): array => ['$ref' => '#/$defs/'.$prefix.':'.$type],
+            fn (string $type): array => ['$ref' => $this->context->refFor($prefix.':'.$type)],
             $types,
         );
 
@@ -237,7 +237,7 @@ final readonly class PropertySchemaMapper
             $class,
         ));
 
-        return ['$ref' => '#/$defs/'.$name];
+        return ['$ref' => $this->context->refFor($name)];
     }
 
     /**

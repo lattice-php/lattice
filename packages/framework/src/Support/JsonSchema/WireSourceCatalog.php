@@ -71,7 +71,7 @@ final readonly class WireSourceCatalog
         $sources = [];
 
         foreach ($this->installed as $package) {
-            $source = is_array($package) ? $this->sourceFromPackage($package, isRoot: false) : null;
+            $source = $this->sourceFromPackage($package, isRoot: false);
 
             if ($source !== null) {
                 $sources[] = $source;

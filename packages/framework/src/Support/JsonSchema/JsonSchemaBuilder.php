@@ -19,17 +19,26 @@ use ReflectionProperty;
 use Spatie\Attributes\Attributes;
 
 /**
- * Builds the canonical wire-protocol JSON Schema document: every discovered
- * enum, value object, and wire family projected into `$defs`, with the
- * envelopes, strict unions, catalogs, remote-manifest contract, and the
- * `x-lattice` vocabulary the TypeScript emitter consumes. The document is the
- * published contract; everything else is derived from it.
+ * Builds wire-protocol JSON Schema documents: every discovered enum, value
+ * object, and wire family projected into `$defs`, with the envelopes, strict
+ * unions, catalogs, remote-manifest contract, and the `x-lattice` vocabulary
+ * the TypeScript emitter consumes.
+ *
+ * `build()` is the legacy single-document path (`$id` fixed, every class
+ * inlined into one `$defs` namespace) still used by the pre-per-package
+ * profiles. `buildAll()` is the per-package-document path: one document per
+ * `WireSourceCatalog` source, `$defs` restricted to that source's own
+ * classes, foreign references resolved to cross-document `$refs` — the
+ * envelopes/strict unions/remote-manifest contract/`x-lattice` catalogs stay
+ * in the framework (`lattice`) document only.
  */
 final class JsonSchemaBuilder
 {
     private const string ID = 'https://lattice-php.dev/schema/v1.json';
 
     private const int PROTOCOL_VERSION = 1;
+
+    private const string FRAMEWORK_SOURCE = 'lattice';
 
     private const array NODE_DEF_PREFIXES = [
         'component' => 'node',
@@ -52,6 +61,8 @@ final class JsonSchemaBuilder
      */
     private array $appClasses = [];
 
+    public function __construct(private readonly ?WireSourceCatalog $catalog = null) {}
+
     /**
      * @param  list<string>  $paths
      * @param  list<string>  $appPaths  App discovery roots whose defs are marked `origin: "app"`.
@@ -59,15 +70,19 @@ final class JsonSchemaBuilder
      */
     public function build(array $paths, array $appPaths = []): array
     {
+        $this->appClasses = [];
+
         $appManifest = $this->discover($appPaths);
         $this->appClasses = $this->classSet($appManifest);
 
         $manifest = $this->merge($this->discover($paths), $appManifest);
         $names = $this->defNames($manifest);
+        $this->guardUniqueNames($names);
         $markers = $this->markers();
         $nodeDefs = $this->nodeDefs($manifest);
 
-        $mapper = new PropertySchemaMapper(new JsonSchemaContext($names, $nodeDefs, $markers));
+        $context = new JsonSchemaContext($names, $nodeDefs, $markers);
+        $mapper = new PropertySchemaMapper($context);
 
         $defs = [];
 
@@ -84,7 +99,7 @@ final class JsonSchemaBuilder
 
         foreach ($manifest->components as $component) {
             $defs[$names[$component->class]] = $this->componentPropsDef($component, $mapper);
-            $defs[$this->nodeDefKey($component->category, $component->type)] = $this->nodeDef($component, $names);
+            $defs[$this->nodeDefKey($component->category, $component->type)] = $this->nodeDef($component, $names, $context);
         }
 
         foreach (Lattice::wireFamilies()->where('marker', true) as $family) {
@@ -107,7 +122,7 @@ final class JsonSchemaBuilder
                     'wireType' => $type,
                     'php' => $class,
                 ], $class));
-                $defs[$this->nodeDefKey($family->category, $type)] = $this->payloadDef($family->category, $type, $names[$class], $class);
+                $defs[$this->nodeDefKey($family->category, $type)] = $this->payloadDef($family->category, $type, $names[$class], $class, $context);
             }
         }
 
@@ -115,7 +130,7 @@ final class JsonSchemaBuilder
             $defs[$name] = $def;
         }
 
-        foreach ($this->strictUnionDefs($manifest) as $name => $def) {
+        foreach ($this->strictUnionDefs($manifest, $context) as $name => $def) {
             $defs[$name] = $def;
         }
 
@@ -130,11 +145,176 @@ final class JsonSchemaBuilder
             'title' => 'Lattice wire protocol',
             'x-lattice' => [
                 'protocolVersion' => self::PROTOCOL_VERSION,
-                'families' => $this->familiesCatalog($manifest, $names),
+                'families' => $this->familiesCatalog($manifest, $names, $context),
                 'domains' => $this->domainsCatalog($manifest),
             ],
             '$defs' => $defs,
         ];
+    }
+
+    /**
+     * One document per `WireSourceCatalog` source: `$defs` restricted to
+     * classes whose file's origin is that source, cross-document `$refs` for
+     * everything else. The envelopes/strict unions/remote-manifest
+     * contract/`x-lattice` catalogs live only in the framework document.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function buildAll(): array
+    {
+        $this->appClasses = [];
+
+        $catalog = $this->catalog ?? WireSourceCatalog::fromApplication();
+        $sources = $catalog->discover();
+
+        $allDirs = [];
+
+        foreach ($sources as $source) {
+            $allDirs = [...$allDirs, ...$source->dirs];
+        }
+
+        $manifest = $this->discover($allDirs);
+        $names = $this->defNames($manifest);
+        $markers = $this->markers();
+        $nodeDefs = $this->nodeDefs($manifest);
+
+        $classOrigins = $this->classOrigins($manifest, $catalog);
+        $this->guardUniqueNamesPerOrigin($names, $classOrigins);
+        $defOrigins = $this->defOrigins($manifest, $names, $classOrigins);
+
+        $schemaIds = [];
+
+        foreach ($sources as $source) {
+            $schemaIds[$source->shortName] = $source->schemaId();
+        }
+
+        $documents = [];
+
+        foreach ($sources as $source) {
+            $documents[$source->shortName] = $this->document(
+                $source,
+                $manifest,
+                $names,
+                $markers,
+                $nodeDefs,
+                $classOrigins,
+                $defOrigins,
+                $schemaIds,
+            );
+        }
+
+        return $documents;
+    }
+
+    /**
+     * @param  array<class-string, string>  $names
+     * @param  array<string, array<class-string, string>>  $nodeDefs
+     * @param  array<class-string, array{string, string}>  $markers
+     * @param  array<class-string, string>  $classOrigins
+     * @param  array<string, string>  $defOrigins
+     * @param  array<string, string>  $schemaIds
+     * @return array<string, mixed>
+     */
+    private function document(
+        WireSource $source,
+        WireTypeManifest $manifest,
+        array $names,
+        array $markers,
+        array $nodeDefs,
+        array $classOrigins,
+        array $defOrigins,
+        array $schemaIds,
+    ): array {
+        $context = new JsonSchemaContext($names, $nodeDefs, $markers, $defOrigins, $schemaIds, $source->shortName);
+        $mapper = new PropertySchemaMapper($context);
+        $isFramework = $source->shortName === self::FRAMEWORK_SOURCE;
+
+        $defs = [];
+
+        foreach ($manifest->enums as $enum) {
+            if (($classOrigins[$enum] ?? null) !== $source->shortName) {
+                continue;
+            }
+
+            $defs[$names[$enum]] = $this->enumDef($enum);
+        }
+
+        foreach ($manifest->valueObjects as $class) {
+            if (($classOrigins[$class] ?? null) !== $source->shortName) {
+                continue;
+            }
+
+            $defs[$names[$class]] = $this->objectDef($class, $mapper, ['kind' => 'value-object', 'php' => $class]);
+        }
+
+        foreach ($manifest->components as $component) {
+            if (($classOrigins[$component->class] ?? null) !== $source->shortName) {
+                continue;
+            }
+
+            $defs[$names[$component->class]] = $this->componentPropsDef($component, $mapper);
+            $defs[$this->nodeDefKey($component->category, $component->type)] = $this->nodeDef($component, $names, $context);
+        }
+
+        foreach (Lattice::wireFamilies()->where('marker', true) as $family) {
+            if ($this->wireProperties($family->reference) === [] || ($classOrigins[$family->reference] ?? null) !== $source->shortName) {
+                continue;
+            }
+
+            $defs[class_basename($family->reference)] = $this->objectDef($family->reference, $mapper, [
+                'kind' => 'common-props',
+                'family' => $family->category,
+                'php' => $family->reference,
+            ]);
+        }
+
+        foreach (Lattice::wireFamilies()->where('marker', false) as $family) {
+            foreach ($manifest->family($family->category) as $class => $type) {
+                if (($classOrigins[$class] ?? null) !== $source->shortName) {
+                    continue;
+                }
+
+                $defs[$names[$class]] = $this->objectDef($class, $mapper, [
+                    'kind' => 'props',
+                    'family' => $family->category,
+                    'wireType' => $type,
+                    'php' => $class,
+                ]);
+                $defs[$this->nodeDefKey($family->category, $type)] = $this->payloadDef($family->category, $type, $names[$class], $class, $context);
+            }
+        }
+
+        if ($isFramework) {
+            foreach ($this->envelopeDefs() as $name => $def) {
+                $defs[$name] = $def;
+            }
+
+            foreach ($this->strictUnionDefs($manifest, $context) as $name => $def) {
+                $defs[$name] = $def;
+            }
+
+            $defs['RemoteManifest'] = $this->remoteManifestDef();
+            $defs['RemoteManifestNode'] = $this->remoteManifestNodeDef();
+        }
+
+        ksort($defs);
+
+        $document = [
+            '$schema' => 'https://json-schema.org/draft/2020-12/schema',
+            '$id' => $source->schemaId(),
+            'title' => $isFramework ? 'Lattice wire protocol' : sprintf('Lattice %s wire types', $source->shortName),
+            '$defs' => $defs,
+        ];
+
+        if ($isFramework) {
+            $document['x-lattice'] = [
+                'protocolVersion' => self::PROTOCOL_VERSION,
+                'families' => $this->familiesCatalog($manifest, $names, $context),
+                'domains' => $this->domainsCatalog($manifest),
+            ];
+        }
+
+        return $document;
     }
 
     /**
@@ -213,6 +393,81 @@ final class JsonSchemaBuilder
     }
 
     /**
+     * Resolves every discovered class (including marker reference classes,
+     * which `classSet()` does not cover) to the `WireSourceCatalog` source
+     * whose discover dir contains its file.
+     *
+     * @return array<class-string, string>
+     */
+    private function classOrigins(WireTypeManifest $manifest, WireSourceCatalog $catalog): array
+    {
+        $classes = $this->classSet($manifest);
+
+        // Every family's reference class gets a `defNames()` entry (marker
+        // families for their own common-props def, loose families for their
+        // envelope-name bookkeeping) even when it never becomes a `$defs`
+        // entry itself, so `guardUniqueNamesPerOrigin()`/`defOrigins()` need
+        // an origin for it too.
+        foreach (Lattice::wireFamilies() as $family) {
+            $classes[$family->reference] = true;
+        }
+
+        $origins = [];
+
+        foreach (array_keys($classes) as $class) {
+            $file = new ReflectionClass($class)->getFileName();
+            $source = is_string($file) ? $catalog->originOf($file) : null;
+
+            if ($source === null) {
+                throw new LogicException(sprintf(
+                    'No wire source declares [%s] (%s) — is its package\'s composer.json missing extra.lattice.discover?',
+                    $class,
+                    $file !== false ? $file : 'unknown file',
+                ));
+            }
+
+            $origins[$class] = $source->shortName;
+        }
+
+        return $origins;
+    }
+
+    /**
+     * Every `$defs` name buildAll() can produce a `$ref` to, mapped to its
+     * owning source's shortName: class-based defs via `$classOrigins`, node
+     * defs via their component's/family member's class, and the
+     * framework-only envelopes/strict unions/remote-manifest contract.
+     *
+     * @param  array<class-string, string>  $names
+     * @param  array<class-string, string>  $classOrigins
+     * @return array<string, string>
+     */
+    private function defOrigins(WireTypeManifest $manifest, array $names, array $classOrigins): array
+    {
+        $origins = [];
+
+        foreach ($names as $class => $name) {
+            $origins[$name] = $classOrigins[$class] ?? throw new LogicException(sprintf('No wire source owns [%s].', $class));
+        }
+
+        foreach ($manifest->components as $component) {
+            $origins[$this->nodeDefKey($component->category, $component->type)] = $classOrigins[$component->class];
+        }
+
+        foreach (Lattice::wireFamilies()->where('marker', false) as $family) {
+            foreach ($manifest->family($family->category) as $class => $type) {
+                $origins[$this->nodeDefKey($family->category, $type)] = $classOrigins[$class];
+            }
+        }
+
+        foreach ([...array_keys($this->envelopeDefs()), ...array_values(self::STRICT_UNIONS), 'RemoteManifest', 'RemoteManifestNode'] as $frameworkOnly) {
+            $origins[$frameworkOnly] = self::FRAMEWORK_SOURCE;
+        }
+
+        return $origins;
+    }
+
+    /**
      * @param  array<string, string>  $annotation
      * @param  class-string  $class
      * @return array<string, string>
@@ -259,8 +514,6 @@ final class JsonSchemaBuilder
             }
         }
 
-        $this->guardUniqueNames($names);
-
         return $names;
     }
 
@@ -282,6 +535,35 @@ final class JsonSchemaBuilder
             }
 
             $seen[$name] = $class;
+        }
+    }
+
+    /**
+     * Per-document uniqueness: two classes may share a bare def name as long
+     * as different `WireSourceCatalog` sources own them — collisions are
+     * only structurally impossible within the same document.
+     *
+     * @param  array<class-string, string>  $names
+     * @param  array<class-string, string>  $classOrigins
+     */
+    private function guardUniqueNamesPerOrigin(array $names, array $classOrigins): void
+    {
+        $seenByOrigin = [];
+
+        foreach ($names as $class => $name) {
+            $origin = $classOrigins[$class] ?? null;
+
+            if (isset($seenByOrigin[$origin][$name])) {
+                throw new LogicException(sprintf(
+                    'Schema definition name [%s] in package [%s] is claimed by both [%s] and [%s]. Give the family attribute a typeNamePrefix().',
+                    $name,
+                    $origin,
+                    $seenByOrigin[$origin][$name],
+                    $class,
+                ));
+            }
+
+            $seenByOrigin[$origin][$name] = $class;
         }
     }
 
@@ -387,9 +669,9 @@ final class JsonSchemaBuilder
      * @param  array<class-string, string>  $names
      * @return array<string, mixed>
      */
-    private function nodeDef(DiscoveredComponent $component, array $names): array
+    private function nodeDef(DiscoveredComponent $component, array $names, JsonSchemaContext $context): array
     {
-        $propsRef = ['$ref' => '#/$defs/'.$names[$component->class]];
+        $propsRef = ['$ref' => $context->refFor($names[$component->class])];
 
         $properties = ['type' => ['const' => $component->type]];
 
@@ -399,9 +681,9 @@ final class JsonSchemaBuilder
 
         $properties['key'] = ['type' => 'string'];
         $properties['props'] = [
-            'allOf' => [$propsRef, ['$ref' => '#/$defs/CommonNodeProps']],
+            'allOf' => [$propsRef, ['$ref' => $context->refFor('CommonNodeProps')]],
         ];
-        $properties['schema'] = ['$ref' => '#/$defs/Schema'];
+        $properties['schema'] = ['$ref' => $context->refFor('Schema')];
 
         return [
             'type' => 'object',
@@ -422,13 +704,13 @@ final class JsonSchemaBuilder
      *
      * @return array<string, mixed>
      */
-    private function payloadDef(string $category, string $type, string $propsName, string $class): array
+    private function payloadDef(string $category, string $type, string $propsName, string $class, JsonSchemaContext $context): array
     {
         return [
             'type' => 'object',
             'properties' => [
                 'type' => ['const' => $type],
-                'props' => ['$ref' => '#/$defs/'.$propsName],
+                'props' => ['$ref' => $context->refFor($propsName)],
             ],
             'required' => ['type', 'props'],
             'x-lattice' => $this->annotated(['kind' => 'strict', 'family' => $category, 'wireType' => $type], $class),
@@ -496,7 +778,7 @@ final class JsonSchemaBuilder
     /**
      * @return array<string, array<string, mixed>>
      */
-    private function strictUnionDefs(WireTypeManifest $manifest): array
+    private function strictUnionDefs(WireTypeManifest $manifest, JsonSchemaContext $context): array
     {
         $types = [];
 
@@ -521,7 +803,7 @@ final class JsonSchemaBuilder
 
             $unions[$name] = [
                 'oneOf' => array_map(
-                    fn (string $type): array => ['$ref' => '#/$defs/'.$this->nodeDefKey($category, $type)],
+                    fn (string $type): array => ['$ref' => $context->refFor($this->nodeDefKey($category, $type))],
                     $members,
                 ),
                 'x-lattice' => ['kind' => 'union', 'family' => $category],
@@ -535,7 +817,7 @@ final class JsonSchemaBuilder
      * @param  array<class-string, string>  $names
      * @return array<string, mixed>
      */
-    private function familiesCatalog(WireTypeManifest $manifest, array $names): array
+    private function familiesCatalog(WireTypeManifest $manifest, array $names, JsonSchemaContext $context): array
     {
         $catalog = [];
 
@@ -553,8 +835,8 @@ final class JsonSchemaBuilder
                     }
 
                     $entry = [
-                        'node' => '#/$defs/'.$this->nodeDefKey($family->category, $component->type),
-                        'props' => '#/$defs/'.$names[$component->class],
+                        'node' => $context->refFor($this->nodeDefKey($family->category, $component->type)),
+                        'props' => $context->refFor($names[$component->class]),
                     ];
 
                     if ($component->category === 'component' && $component->domain !== '') {
@@ -574,8 +856,8 @@ final class JsonSchemaBuilder
             } else {
                 foreach ($manifest->family($family->category) as $class => $type) {
                     $entries[$type] = [
-                        'node' => '#/$defs/'.$this->nodeDefKey($family->category, $type),
-                        'props' => '#/$defs/'.$names[$class],
+                        'node' => $context->refFor($this->nodeDefKey($family->category, $type)),
+                        'props' => $context->refFor($names[$class]),
                     ];
                 }
             }
@@ -584,7 +866,7 @@ final class JsonSchemaBuilder
 
             $catalog[$family->category] = [
                 'envelope' => $envelope,
-                'strict' => '#/$defs/'.self::STRICT_UNIONS[$family->category],
+                'strict' => $context->refFor(self::STRICT_UNIONS[$family->category]),
                 'propsInterface' => $family->propsInterface(),
                 'propsMap' => $family->propsMap(),
                 'types' => $entries,
