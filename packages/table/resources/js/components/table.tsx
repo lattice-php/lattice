@@ -119,7 +119,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     [node.props?.filters],
   );
   const hasDedicatedFilters = filterDefinitions.length > 0;
-  const hasTrailingUtility = hasActions || hasDedicatedFilters || hasToggleableColumns;
+  const hasTrailingUtility = hasActions;
+  const toolbarNodes = useMemo(
+    () => (Array.isArray(node.props?.toolbar) ? node.props.toolbar : []),
+    [node.props?.toolbar],
+  );
   const sizingColumns = useMemo(() => getTableSizingColumns(visibleColumns), [visibleColumns]);
   const utilityTracks = useMemo(
     () => getTableUtilityTracks(hasTrailingUtility, hasBulkActions, hasExpandable),
@@ -139,31 +143,62 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
           : undefined,
       trailingTracks: utilityTracks.trailingTracks,
     });
+  const hasToolbar =
+    node.props?.searchable === true ||
+    toolbarNodes.length > 0 ||
+    hasDedicatedFilters ||
+    hasToggleableColumns ||
+    hasOverrides;
 
   return (
     <div data-slot="table" data-lattice-component={node.id} className="relative">
-      {hasOverrides && (
-        <button
-          aria-label={t("table.reset-column-widths", "Reset column widths")}
-          className="absolute right-1 top-1 z-10 hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
-          data-test="table-reset-columns"
-          onClick={resetColumns}
-          title={t("table.reset-column-widths", "Reset column widths")}
-          type="button"
-        >
-          <Icon name="rotate-ccw" className="size-lt-icon-sm" />
-        </button>
-      )}
       <div
         data-slot="table-scroll"
         className="overflow-x-auto rounded-lt-sm border border-lt-border"
       >
-        {node.props?.searchable && (
+        {hasToolbar && (
           <div
             data-slot="table-toolbar"
             className="flex items-center gap-2 border-b border-lt-border px-4 py-2"
           >
-            <TableSearch value={search} onSearch={setSearch} />
+            {node.props?.searchable && <TableSearch value={search} onSearch={setSearch} />}
+            {toolbarNodes.map((toolbarNode, index) => (
+              <RenderNode key={toolbarNode.key ?? toolbarNode.id ?? index} node={toolbarNode} />
+            ))}
+            <div className="ms-auto flex items-center gap-1">
+              {hasDedicatedFilters && (
+                <FilterMenu
+                  filters={filterDefinitions}
+                  values={tableFilters}
+                  processing={processing}
+                  onChange={setTableFilter}
+                  onSearch={searchFilterOptions}
+                />
+              )}
+              {hasToggleableColumns && (
+                <ColumnVisibilityMenu
+                  columns={toggleableColumns}
+                  isVisible={isVisible}
+                  visibleColumnCount={visibleColumns.length}
+                  hasHidden={hasHidden}
+                  onToggle={setColumnVisible}
+                  onReset={resetVisibility}
+                  processing={processing}
+                />
+              )}
+              {hasOverrides && (
+                <button
+                  aria-label={t("table.reset-column-widths", "Reset column widths")}
+                  className="hidden rounded-lt-sm p-1 text-lt-muted-fg hover:text-lt-fg md:inline-flex"
+                  data-test="table-reset-columns"
+                  onClick={resetColumns}
+                  title={t("table.reset-column-widths", "Reset column widths")}
+                  type="button"
+                >
+                  <Icon name="rotate-ccw" className="size-lt-icon-sm" />
+                </button>
+              )}
+            </div>
           </div>
         )}
         <FilterBar
@@ -245,31 +280,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   className="flex items-center justify-end gap-2 px-4 py-2 align-middle font-semibold text-lt-fg"
                   role="columnheader"
                 >
-                  {hasDedicatedFilters && (
-                    <FilterMenu
-                      filters={filterDefinitions}
-                      values={tableFilters}
-                      processing={processing}
-                      onChange={setTableFilter}
-                      onSearch={searchFilterOptions}
-                    />
-                  )}
-                  {hasToggleableColumns && (
-                    <ColumnVisibilityMenu
-                      columns={toggleableColumns}
-                      isVisible={isVisible}
-                      visibleColumnCount={visibleColumns.length}
-                      hasHidden={hasHidden}
-                      onToggle={setColumnVisible}
-                      onReset={resetVisibility}
-                      processing={processing}
-                    />
-                  )}
-                  {hasActions && (
-                    <span className="sr-only">
-                      {node.props?.actionsLabel ?? t("table.actions", "Actions")}
-                    </span>
-                  )}
+                  <span className="sr-only">
+                    {node.props?.actionsLabel ?? t("table.actions", "Actions")}
+                  </span>
                 </div>
               )}
             </div>

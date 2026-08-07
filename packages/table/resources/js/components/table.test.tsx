@@ -191,6 +191,62 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
   });
 
+  it("gathers search, slot nodes, filters, column visibility, and resize reset into one toolbar row", () => {
+    window.localStorage.setItem(
+      "lattice:table-columns:workbench.toolbar",
+      JSON.stringify({ overrides: { name: 180 } }),
+    );
+
+    const node = {
+      id: "workbench.toolbar",
+      props: {
+        columns: [
+          col({ key: "name", label: "Name" }),
+          col({ key: "notes", label: "Notes", props: { toggleable: true } }),
+        ],
+        data: [],
+        searchable: true,
+        resizableColumns: true,
+        filters: [
+          {
+            key: "status",
+            type: "filter.select",
+            props: {
+              label: "Status",
+              options: [],
+              multiple: false,
+              searchable: false,
+              placeholder: null,
+            },
+            schema: [],
+          },
+        ],
+        toolbar: [fakeNode({ type: "text", props: { text: "Custom slot" } })],
+        endpoint: "/lattice/tables/workbench.toolbar",
+        query: {
+          filters: [],
+          page: 1,
+          perPage: 25,
+          sorts: [],
+          tableFilters: {},
+        },
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    const toolbar = screen.getByTestId("table-search").closest('[data-slot="table-toolbar"]');
+
+    expect(toolbar).not.toBeNull();
+    expect(toolbar).toContainElement(screen.getByTestId("table-search"));
+    expect(toolbar).toContainElement(screen.getByText("Custom slot"));
+    expect(toolbar).toContainElement(screen.getByTestId("table-filters-menu"));
+    expect(toolbar).toContainElement(screen.getByTestId("table-columns-menu"));
+    expect(toolbar).toContainElement(screen.getByTestId("table-reset-columns"));
+    expect(screen.getByTestId("table-reset-columns")).not.toHaveClass("absolute");
+  });
+
   it("renders grid rows with stack columns and row actions without table cells", async () => {
     const node = {
       id: "workbench.stacked-users",
