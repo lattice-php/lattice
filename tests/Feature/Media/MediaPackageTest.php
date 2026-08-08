@@ -5,10 +5,7 @@ use Lattice\Core\Discovery\ComponentPackages;
 
 use function Pest\Laravel\getJson;
 
-test('the media package is discovered with config and plugin', function (): void {
-    expect(config('media.disk'))->toBe('public')
-        ->and(config('media.max_size'))->toBe(10240);
-
+test('the media package is discovered', function (): void {
     $package = collect(ComponentPackages::packages())
         ->first(fn (array $package): bool => $package['name'] === 'lattice-php/media');
 

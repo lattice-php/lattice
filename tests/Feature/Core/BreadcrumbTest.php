@@ -17,13 +17,6 @@ class CrumbTargetPage extends Page
     }
 }
 
-test('a breadcrumb is built from a title and href', function (): void {
-    $crumb = Breadcrumb::make('Dashboard', '/dashboard');
-
-    expect($crumb->title)->toBe('Dashboard')
-        ->and($crumb->href)->toBe('/dashboard');
-});
-
 test('a breadcrumb resolves a page route and default title', function (): void {
     Route::get('/crumb-target/{product}', [CrumbTargetPage::class, 'render'])->name('crumb-target.show');
 

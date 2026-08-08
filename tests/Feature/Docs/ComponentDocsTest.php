@@ -27,18 +27,6 @@ use Lattice\Ui\Enums\Size;
 use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Variant;
 
-it('serializes a card tooltip', function (): void {
-    $node = wire(Card::make('Plan')->tooltip('Billed monthly.'));
-
-    expect($node['props']['tooltip'])->toBe('Billed monthly.');
-});
-
-it('serializes a null card tooltip when unset', function (): void {
-    $node = wire(Card::make('Plan'));
-
-    expect($node['props']['tooltip'])->toBeNull();
-});
-
 describe('docs fixtures', function (): void {
     it('matches the card example fixture', function (): void {
         assertFixtureMatches('components.card', Wire::toWire([

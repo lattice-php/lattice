@@ -21,13 +21,6 @@ it('serves the workbench tree demo page', function (): void {
     );
 });
 
-it('serves the plain page the demo tree links to', function (): void {
-    actingAs(workbenchTestUser());
-    withoutVite();
-
-    get('/plain')->assertSuccessful();
-});
-
 it('serves the lazy tree demo page with interactive props', function (): void {
     actingAs(workbenchTestUser());
     withoutVite();

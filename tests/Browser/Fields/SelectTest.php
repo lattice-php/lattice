@@ -15,11 +15,10 @@ it('selects a static option from the select field', function (): void {
 });
 
 it('searches and selects entities in a multiple select', function (): void {
-    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Walnut Desk']);
     Product::factory()->create(['name' => 'Steel Lamp']);
 
-    $page = visit('/form/fields/select?type=searchable');
+    $page = $this->visitAsWorkbenchUser('/form/fields/select?type=searchable');
 
     $page->assertSee('Search products…')
         ->click('Search products…')
@@ -35,10 +34,9 @@ it('searches and selects entities in a multiple select', function (): void {
 });
 
 it('renders rich option rows in the products search', function (): void {
-    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'WD-100', 'status' => 'active']);
 
-    $page = visit('/form/fields/select?type=searchable');
+    $page = $this->visitAsWorkbenchUser('/form/fields/select?type=searchable');
 
     $page->click('Search products…')
         ->fill('input[aria-label="Search options"]', 'walnut');

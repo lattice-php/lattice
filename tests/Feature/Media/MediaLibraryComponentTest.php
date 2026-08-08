@@ -4,7 +4,6 @@ declare(strict_types=1);
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use Lattice\Core\Facades\Lattice;
 use Lattice\Media\Actions\DeleteMediaAction;
 use Lattice\Media\Actions\UpdateMediaAction;
 use Lattice\Media\Actions\UploadMediaAction;
@@ -12,12 +11,11 @@ use Lattice\Media\Components\MediaLibrary;
 use Lattice\Media\Models\Media;
 use Lattice\Media\Tables\MediaTable;
 
-use function Pest\Laravel\actingAs;
-
 beforeEach(function (): void {
-    Lattice::tables([MediaTable::class]);
-    Lattice::actions([UploadMediaAction::class, UpdateMediaAction::class, DeleteMediaAction::class]);
-    actingAs(workbenchTestUser());
+    bootstrapMediaTest(
+        tables: [MediaTable::class],
+        actions: [UploadMediaAction::class, UpdateMediaAction::class, DeleteMediaAction::class],
+    );
 });
 
 /**

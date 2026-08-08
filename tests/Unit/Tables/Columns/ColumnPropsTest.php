@@ -6,6 +6,7 @@ use Lattice\Table\Columns\ImageColumn;
 use Lattice\Table\Columns\MoneyColumn;
 use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Enums\ColumnAlign;
 use Lattice\Ui\Enums\DateTimeStyle;
 
 it('reflects a column\'s public properties into the full props shape', function (): void {
@@ -68,6 +69,10 @@ it('reflects only the common concerns for columns that expose no public properti
             'hiddenByDefault' => false,
             'filter' => null,
         ]);
+});
+
+it('lets a column override its alignment', function (): void {
+    expect(wire(TextColumn::make('name')->align(ColumnAlign::Center))['props']['align'])->toBe('center');
 });
 
 it('keeps protected filter and sort state off the wire props', function (): void {

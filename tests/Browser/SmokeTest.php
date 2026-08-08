@@ -29,6 +29,8 @@ it('renders every demo page without smoke failures', function (): void {
         '/components/charts',
         '/components/containers',
         '/components/notifications',
+        '/components/progress',
         '/components/chat',
+        '/business-partners',
     ])->assertNoSmoke();
 });

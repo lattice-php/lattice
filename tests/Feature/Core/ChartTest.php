@@ -78,86 +78,29 @@ it('serializes a cartesian chart with fluent series helpers', function (): void 
         ]);
 });
 
-it('serializes a pie chart series', function (): void {
+it('serializes the radial series helpers', function (string $method, array $arguments, array $expected): void {
     $node = wire(
         Chart::make('Revenue by channel')
             ->data([
                 ['channel' => 'Direct', 'amount' => 4200],
                 ['channel' => 'Partner', 'amount' => 2600],
             ])
-            ->pie('amount', nameKey: 'channel'),
+            ->{$method}('amount', ...$arguments),
     );
 
     expect($node['props']['series'])->toHaveCount(1)
         ->and($node['props']['series'][0])->toMatchArray([
-            'type' => 'pie',
             'dataKey' => 'amount',
             'name' => 'amount',
             'nameKey' => 'channel',
-            'innerRadius' => '0%',
+            ...$expected,
         ]);
-});
-
-it('serializes a doughnut series as a pie with an inner radius', function (): void {
-    $node = wire(
-        Chart::make('Revenue by channel')
-            ->data([
-                ['channel' => 'Direct', 'amount' => 4200],
-                ['channel' => 'Partner', 'amount' => 2600],
-            ])
-            ->doughnut('amount', nameKey: 'channel'),
-    );
-
-    expect($node['props']['series'])->toHaveCount(1)
-        ->and($node['props']['series'][0])->toMatchArray([
-            'type' => 'pie',
-            'dataKey' => 'amount',
-            'name' => 'amount',
-            'nameKey' => 'channel',
-            'innerRadius' => '60%',
-        ]);
-});
-
-it('serializes a distribution series', function (): void {
-    $node = wire(
-        Chart::make('Revenue by channel')
-            ->data([
-                ['channel' => 'Direct', 'amount' => 4200],
-                ['channel' => 'Partner', 'amount' => 2600],
-            ])
-            ->distribution('amount', nameKey: 'channel'),
-    );
-
-    expect($node['props']['series'])->toHaveCount(1)
-        ->and($node['props']['series'][0])->toMatchArray([
-            'type' => 'distribution',
-            'dataKey' => 'amount',
-            'name' => 'amount',
-            'nameKey' => 'channel',
-            'innerRadius' => '0%',
-            'maxValue' => null,
-        ]);
-});
-
-it('serializes a gauge series', function (): void {
-    $node = wire(
-        Chart::make('CPU usage')
-            ->data([
-                ['label' => 'CPU', 'value' => 72],
-            ])
-            ->gauge('value', nameKey: 'label', maxValue: 100),
-    );
-
-    expect($node['props']['series'])->toHaveCount(1)
-        ->and($node['props']['series'][0])->toMatchArray([
-            'type' => 'gauge',
-            'dataKey' => 'value',
-            'name' => 'value',
-            'nameKey' => 'label',
-            'innerRadius' => '70%',
-            'maxValue' => 100.0,
-        ]);
-});
+})->with([
+    'pie' => ['pie', ['nameKey' => 'channel'], ['type' => 'pie', 'innerRadius' => '0%']],
+    'doughnut' => ['doughnut', ['nameKey' => 'channel'], ['type' => 'pie', 'innerRadius' => '60%']],
+    'distribution' => ['distribution', ['nameKey' => 'channel'], ['type' => 'distribution', 'innerRadius' => '0%', 'maxValue' => null]],
+    'gauge' => ['gauge', ['nameKey' => 'channel', 'maxValue' => 100], ['type' => 'gauge', 'innerRadius' => '70%', 'maxValue' => 100.0]],
+]);
 
 it('defaults the gauge max value to null for data-derived scaling', function (): void {
     $node = wire(

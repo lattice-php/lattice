@@ -39,7 +39,6 @@ it('dumps missing React lattice keys back into the package lang file', function 
     // key deliberately and restores the file in its finally block.
     config(['i18next.save_missing.enabled' => true]);
 
-    $this->actingAs(workbenchTestUser());
     $file = package_path('packages/framework/lang/en/form.php');
     $original = File::get($file);
     $translations = require $file;
@@ -47,7 +46,7 @@ it('dumps missing React lattice keys back into the package lang file', function 
     Arr::forget($translations, 'editor.italic');
     writeLatticeBrowserTestTranslations($file, $translations);
 
-    $page = visit('/form/fields/rich-editor');
+    $page = $this->visitAsWorkbenchUser('/form/fields/rich-editor');
 
     try {
         $page->assertSee('Article')

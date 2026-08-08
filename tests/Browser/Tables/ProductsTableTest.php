@@ -4,20 +4,18 @@ declare(strict_types=1);
 use Workbench\App\Models\Product;
 
 it('renders the custom status-badge column cell', function (): void {
-    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Badge Product', 'sku' => 'BADGE-1', 'status' => 'active']);
 
-    visit('/products')
+    $this->visitAsWorkbenchUser('/products')
         ->assertSee('Badge Product')
         ->assertSeeIn('[data-testid="status-badge"]', 'Active')
         ->assertNoSmoke();
 });
 
 it('archives a product via the row action with confirmation', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
+    $product = deskLampProduct();
 
-    $page = visit('/products')
+    $page = $this->visitAsWorkbenchUser('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
         ->click('@action-archive')
@@ -34,10 +32,9 @@ it('archives a product via the row action with confirmation', function (): void 
 });
 
 it('cancels the archive confirmation without changing the product', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
+    $product = deskLampProduct();
 
-    visit('/products')
+    $this->visitAsWorkbenchUser('/products')
         ->click('@product-actions')
         ->click('@action-archive')
         ->assertSee('Archive product?')
@@ -48,10 +45,9 @@ it('cancels the archive confirmation without changing the product', function ():
 });
 
 it('rejects a product through a modal form', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $product = Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
+    $product = deskLampProduct();
 
-    $page = visit('/products')
+    $page = $this->visitAsWorkbenchUser('/products')
         ->click('@product-actions')
         ->click('@action-reject')
         ->assertSee('Reject product?')
@@ -74,10 +70,9 @@ it('rejects a product through a modal form', function (): void {
 });
 
 it('archives selected products in bulk', function (): void {
-    $this->actingAs(workbenchTestUser());
     Product::factory()->count(3)->create(['status' => 'active']);
 
-    $page = visit('/products')
+    $page = $this->visitAsWorkbenchUser('/products')
         ->click('@select-all')
         ->click('@bulk-action-archive-selected');
 
@@ -89,14 +84,13 @@ it('archives selected products in bulk', function (): void {
 });
 
 it('edits a product in a prefilled modal form', function (): void {
-    $this->actingAs(workbenchTestUser());
     Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
         'status' => 'active',
     ]);
 
-    $page = visit('/products')
+    $page = $this->visitAsWorkbenchUser('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
         ->click('@action-edit-modal')
@@ -119,11 +113,10 @@ it('edits a product in a prefilled modal form', function (): void {
 });
 
 it('searches products inside the reject modal form', function (): void {
-    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-001', 'status' => 'active']);
     $replacement = Product::factory()->create(['name' => 'Walnut Desk', 'sku' => 'DESK-001', 'status' => 'active']);
 
-    visit('/products')
+    $this->visitAsWorkbenchUser('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
         ->click('@action-reject')
@@ -136,10 +129,9 @@ it('searches products inside the reject modal form', function (): void {
 });
 
 it('renders the default price as euro currency in the money column', function (): void {
-    $this->actingAs(workbenchTestUser());
     Product::factory()->create(['name' => 'Euro Product', 'sku' => 'EURO-1', 'status' => 'active']);
 
-    visit('/products')
+    $this->visitAsWorkbenchUser('/products')
         ->assertSee('Euro Product')
         ->assertSee('€')
         ->assertNoSmoke();

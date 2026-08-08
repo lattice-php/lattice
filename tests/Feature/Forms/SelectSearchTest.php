@@ -22,94 +22,61 @@ use function Pest\Laravel\post;
 
 function searchableDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('name', 'Name'),
-                Select::make('plan', 'Plan')->options([Select::option('Free', 'free')]),
-                Select::make('author_id', 'Author')
-                    ->searchable(fn (string $search): array => [
-                        ['label' => "Match: {$search}", 'value' => '1'],
-                        ['label' => 'Other', 'value' => '2'],
-                    ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('name', 'Name'),
+        Select::make('plan', 'Plan')->options([Select::option('Free', 'free')]),
+        Select::make('author_id', 'Author')
+            ->searchable(fn (string $search): array => [
+                ['label' => "Match: {$search}", 'value' => '1'],
+                ['label' => 'Other', 'value' => '2'],
+            ]),
+    ]);
 }
 
 function rowSearchDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            $resolver = fn (string $search, FormData $data): array => [
-                Select::option(
-                    "{$data->get('customer')}:{$data->get('category')}:{$search}",
-                    '1',
-                ),
-            ];
+    $resolver = fn (string $search, FormData $data): array => [
+        Select::option(
+            "{$data->get('customer')}:{$data->get('category')}:{$search}",
+            '1',
+        ),
+    ];
 
-            return $form->schema([
-                TextInput::make('customer'),
-                Repeater::make('items')->schema([
-                    TextInput::make('category'),
-                    Select::make('plan')->options([Select::option('Free', 'free')]),
-                    Select::make('product')->searchable($resolver),
-                ]),
-                Builder::make('blocks')->templates([
-                    RowTemplate::make('product')->schema([
-                        TextInput::make('category'),
-                        Select::make('product')->searchable($resolver),
-                    ]),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('customer'),
+        Repeater::make('items')->schema([
+            TextInput::make('category'),
+            Select::make('plan')->options([Select::option('Free', 'free')]),
+            Select::make('product')->searchable($resolver),
+        ]),
+        Builder::make('blocks')->templates([
+            RowTemplate::make('product')->schema([
+                TextInput::make('category'),
+                Select::make('product')->searchable($resolver),
+            ]),
+        ]),
+    ]);
 }
 
 function nestedRowSearchDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            $resolver = fn (string $search, FormData $data): array => [
-                Select::option(
-                    "{$data->get('customer')}:{$data->get('section')}:{$data->get('category')}:{$search}",
-                    '1',
-                ),
-            ];
+    $resolver = fn (string $search, FormData $data): array => [
+        Select::option(
+            "{$data->get('customer')}:{$data->get('section')}:{$data->get('category')}:{$search}",
+            '1',
+        ),
+    ];
 
-            return $form->schema([
-                TextInput::make('customer'),
-                Repeater::make('sections')->schema([
-                    TextInput::make('section'),
-                    Repeater::make('items')->schema([
-                        TextInput::make('category'),
-                        Select::make('product')->searchable($resolver),
-                    ]),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('customer'),
+        Repeater::make('sections')->schema([
+            TextInput::make('section'),
+            Repeater::make('items')->schema([
+                TextInput::make('category'),
+                Select::make('product')->searchable($resolver),
+            ]),
+        ]),
+    ]);
 }
 
 it('resolves options for a searchable field', function (): void {

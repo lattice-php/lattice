@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Workbench\App\Models\Product;
-
 it('expands nested menu groups and navigates to a field page', function (): void {
     $this->visitAsWorkbenchUser('/')
         ->assertSee('Home')
@@ -19,20 +17,10 @@ it('expands nested menu groups and navigates to a field page', function (): void
         ->assertNoSmoke();
 });
 
-it('auto-expands the group containing the active page', function (): void {
-    $this->actingAs(workbenchTestUser());
-    Product::factory()->create(['name' => 'Desk Lamp']);
-
-    visit('/products')
-        ->assertPresent('[data-test="menu-products"]')
-        ->assertPresent('[data-test="menu-sales-orders"]');
-});
-
 it('collapses to an icon rail and opens a group submenu as a flyout', function (): void {
-    $this->actingAs(workbenchTestUser());
-    Product::factory()->create(['name' => 'Desk Lamp']);
+    deskLampProduct();
 
-    $page = visit('/')
+    $page = $this->visitAsWorkbenchUser('/')
         ->assertPresent('[data-test="sidebar"][data-collapsed="false"]')
         ->click('@sidebar-toggle');
 

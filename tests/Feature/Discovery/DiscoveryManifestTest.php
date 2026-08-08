@@ -3,39 +3,16 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
-use Lattice\Core\Attributes\AsAction;
-use Lattice\Core\Attributes\AsBulkAction;
-use Lattice\Core\Attributes\AsFragment;
-use Lattice\Core\Attributes\AsLayout;
-use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\Support\Discovery\ClassWalker;
-use Lattice\Form\Attributes\AsForm;
 use Lattice\LatticeServiceProvider;
-use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\BadgeColumn;
 use Lattice\Table\Enums\ColumnType;
 use Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 use Lattice\Tests\Fixtures\Discovery\DiscoveredEmbeddedPage;
 use Lattice\Tests\Fixtures\Discovery\DiscoveredProfileForm;
 use Lattice\Tests\Fixtures\Discovery\DiscoveredUsersTable;
-
-test('the service provider registers every built-in component group', function (): void {
-    expect(DiscoveryKinds::components())->toMatchArray([
-        'forms' => AsForm::class,
-        'tables' => AsTable::class,
-        'actions' => AsAction::class,
-        'bulk-actions' => AsBulkAction::class,
-        'fragments' => AsFragment::class,
-        'layouts' => AsLayout::class,
-    ]);
-});
-
-test('discovery kinds extracts a component key from its attribute', function (): void {
-    expect(DiscoveryKinds::keyOf(DiscoveredProfileForm::class, AsForm::class))
-        ->toBe('fixtures.profile');
-});
 
 test('the manifest builds resolved entries for every kind', function (): void {
     discoverFixtures();

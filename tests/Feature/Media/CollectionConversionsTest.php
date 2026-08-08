@@ -1,23 +1,12 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Media\Jobs\GenerateMediaConversions;
 use Lattice\Media\Models\Media;
 use Lattice\Tests\Fixtures\Media\ConversionProduct;
 use Workbench\App\Models\Product;
-
-function galleryImage(): Media
-{
-    expect(Storage::disk('public')->put(
-        'media/shot.jpg',
-        (string) UploadedFile::fake()->image('shot.jpg', 600, 400)->getContent(),
-    ))->toBeTrue();
-
-    return Media::factory()->create(['path' => 'media/shot.jpg', 'mime_type' => 'image/jpeg']);
-}
 
 function conversionProduct(string $name): ConversionProduct
 {
@@ -92,7 +81,7 @@ test('a partial re-sync queues only the media that were not attached before', fu
 });
 
 test("the collection's conversion is generated on top of the defaults", function (): void {
-    $media = galleryImage();
+    $media = fakeImageMedia('shot.jpg', 600, 400);
 
     new GenerateMediaConversions($media, Product::factory()->create(), 'gallery')->handle();
     $media->refresh();
@@ -105,7 +94,7 @@ test("the collection's conversion is generated on top of the defaults", function
 });
 
 test('a bare string reuses the globally defined conversion of that name', function (): void {
-    $media = galleryImage();
+    $media = fakeImageMedia('shot.jpg', 600, 400);
 
     new GenerateMediaConversions($media, conversionProduct('legacy'), 'legacy')->handle();
     $media->refresh();
@@ -115,7 +104,7 @@ test('a bare string reuses the globally defined conversion of that name', functi
 });
 
 test('a bare string naming no global conversion fails loudly', function (): void {
-    $media = galleryImage();
+    $media = fakeImageMedia('shot.jpg', 600, 400);
     $product = conversionProduct('typo');
 
     expect(function () use ($media, $product): void {
@@ -124,7 +113,7 @@ test('a bare string naming no global conversion fails loudly', function (): void
 });
 
 test('two collections asking for the same conversion name produce one file and one map entry', function (): void {
-    $media = galleryImage();
+    $media = fakeImageMedia('shot.jpg', 600, 400);
     $product = conversionProduct('shared');
 
     new GenerateMediaConversions($media, $product, 'gallery')->handle();
@@ -137,7 +126,7 @@ test('two collections asking for the same conversion name produce one file and o
 });
 
 test('detaching deletes no derivative: another attachment may rely on the same name', function (): void {
-    $media = galleryImage();
+    $media = fakeImageMedia('shot.jpg', 600, 400);
     $product = Product::factory()->create();
     $product->syncMedia([$media->getKey()], 'gallery');
 

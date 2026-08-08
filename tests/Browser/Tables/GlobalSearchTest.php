@@ -2,10 +2,7 @@
 declare(strict_types=1);
 
 it('filters rows through the global search box and restores them on clear', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedNamedWorkbenchUsers();
-
-    $page = visit('/');
+    $page = $this->visitWithSeededUsers(namedUsersOnly: true);
 
     $page->assertSee('Ada Lovelace')
         ->assertSee('Maya Chen')
@@ -22,10 +19,7 @@ it('filters rows through the global search box and restores them on clear', func
 });
 
 it('matches against a searchable relation-free email column', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedNamedWorkbenchUsers();
-
-    $page = visit('/');
+    $page = $this->visitWithSeededUsers(namedUsersOnly: true);
 
     $page->fill('@table-search', 'grace@example.com');
 

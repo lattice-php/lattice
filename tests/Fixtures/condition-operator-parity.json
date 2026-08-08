@@ -13,9 +13,11 @@
   { "operator": "gte", "actual": 5, "expected": 5, "result": true },
   { "operator": "gte", "actual": 4, "expected": 5, "result": false },
   { "operator": "gte", "actual": "abc", "expected": "abc", "result": false },
+  { "operator": "gte", "actual": "18", "expected": 18, "result": true },
   { "operator": "lt", "actual": 3, "expected": 5, "result": true },
   { "operator": "lt", "actual": 5, "expected": 3, "result": false },
   { "operator": "lt", "actual": "abc", "expected": 1, "result": false },
+  { "operator": "lt", "actual": "17", "expected": 18, "result": true },
   { "operator": "lte", "actual": 5, "expected": 5, "result": true },
   { "operator": "lte", "actual": 6, "expected": 5, "result": false },
   { "operator": "lte", "actual": "abc", "expected": "abc", "result": false },
@@ -41,6 +43,7 @@
   { "operator": "filled", "actual": "   ", "expected": null, "result": false },
   { "operator": "before", "actual": "2026-01-01", "expected": "2026-06-01", "result": true },
   { "operator": "before", "actual": "2026-06-01", "expected": "2026-01-01", "result": false },
+  { "operator": "before", "actual": "not-a-date", "expected": "2026-01-01", "result": false },
   { "operator": "after", "actual": "2026-06-01", "expected": "2026-01-01", "result": true },
   { "operator": "after", "actual": "2026-01-01", "expected": "2026-06-01", "result": false }
 ]

@@ -13,7 +13,6 @@ use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Attributes\AsBulkAction;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Facades\Lattice;
-use Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\FormDefinition;
@@ -65,7 +64,7 @@ test('an unauthorized action is hidden from the page payload, leaves no trace on
     $this->assertLatticePage($response)->assertNotRendered('action:render-auth.action');
     expect($response->getContent())->not->toContain('/lattice/actions/render-auth.action');
 
-    $ref = app(ComponentReferenceSigner::class)->seal('action', 'render-auth.action', []);
+    $ref = sealedRef('action', 'render-auth.action');
     postJson('/lattice/actions/render-auth.action', [], ['X-Lattice-Ref' => $ref])
         ->assertForbidden();
 });
@@ -78,7 +77,7 @@ test('an unauthorized form is hidden from the page payload, and the endpoint sti
     $this->assertLatticePage($response)->assertNotRendered('form:render-auth.form');
     expect($response->getContent())->not->toContain('/lattice/forms/render-auth.form');
 
-    $ref = app(ComponentReferenceSigner::class)->seal('form', 'render-auth.form', []);
+    $ref = sealedRef('form', 'render-auth.form');
     patch('/lattice/forms/render-auth.form', [], ['X-Lattice-Ref' => $ref])
         ->assertForbidden();
 });
@@ -91,7 +90,7 @@ test('an unauthorized fragment is hidden from the page payload, and the endpoint
     $this->assertLatticePage($response)->assertNotRendered('fragment:render-auth.fragment');
     expect($response->getContent())->not->toContain('/lattice/fragments/render-auth.fragment');
 
-    $ref = app(ComponentReferenceSigner::class)->seal('fragment', 'render-auth.fragment', []);
+    $ref = sealedRef('fragment', 'render-auth.fragment');
     $this->latticeGet('/lattice/fragments/render-auth.fragment', $ref)
         ->assertForbidden();
 });
@@ -106,7 +105,7 @@ test('an unauthorized table is hidden from the page payload, leaves no trace on 
         ->not->toContain('/lattice/tables/render-auth.table')
         ->not->toContain('render-auth.bulk-action');
 
-    $ref = app(ComponentReferenceSigner::class)->seal('table', 'render-auth.table', []);
+    $ref = sealedRef('table', 'render-auth.table');
     $this->latticeGet('/lattice/tables/render-auth.table', $ref)
         ->assertForbidden();
 });
@@ -120,11 +119,7 @@ test('an unauthorized bulk action is pruned from the table bulkActions prop, and
         ->component('table', 'render-auth.table', fn ($table) => $table
             ->assertNotRendered('action.bulk:render-auth.bulk-action'));
 
-    $ref = app(ComponentReferenceSigner::class)->seal(
-        'action.bulk',
-        'render-auth.bulk-action',
-        ['table' => 'render-auth.table'],
-    );
+    $ref = sealedRef('action.bulk', 'render-auth.bulk-action', ['table' => 'render-auth.table']);
     patch('/lattice/bulk-actions/render-auth.bulk-action', [], ['X-Lattice-Ref' => $ref])
         ->assertForbidden();
 });

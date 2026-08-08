@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use Lattice\Core\Facades\Lattice;
-use Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Tests\Fixtures\Discovery\DemoCrmSource;
 
 test('source definitions can be registered explicitly', function (): void {
@@ -17,7 +16,7 @@ test('source token endpoint returns a fake browser token after ref verification'
     $this->actingAs(workbenchTestUser());
     Lattice::remoteSources([DemoCrmSource::class]);
 
-    $ref = app(ComponentReferenceSigner::class)->seal('remote.data-list', 'customers', [
+    $ref = sealedRef('remote.data-list', 'customers', [
         'audience' => 'https://crm.example.test',
         'source' => 'fixtures.crm',
         'scopes' => ['customers.read'],
@@ -45,7 +44,7 @@ test('source token endpoint verifies refs for remote chat components', function 
     $this->actingAs(workbenchTestUser());
     Lattice::remoteSources([DemoCrmSource::class]);
 
-    $ref = app(ComponentReferenceSigner::class)->seal('chat.box', 'crm-chat', [
+    $ref = sealedRef('chat.box', 'crm-chat', [
         'audience' => 'https://crm.example.test',
         'source' => 'fixtures.crm',
         'scopes' => ['chat.read', 'chat.write'],
@@ -85,7 +84,7 @@ test('source token endpoint rejects audience and scope escalation', function ():
     $this->actingAs(workbenchTestUser());
     Lattice::remoteSources([DemoCrmSource::class]);
 
-    $ref = app(ComponentReferenceSigner::class)->seal('remote.data-list', 'customers', [
+    $ref = sealedRef('remote.data-list', 'customers', [
         'audience' => 'https://crm.example.test',
         'source' => 'fixtures.crm',
         'scopes' => ['customers.read'],
@@ -103,7 +102,7 @@ test('source token endpoint rejects refs for a different source', function (): v
     $this->actingAs(workbenchTestUser());
     Lattice::remoteSources([DemoCrmSource::class]);
 
-    $ref = app(ComponentReferenceSigner::class)->seal('remote.data-list', 'customers', [
+    $ref = sealedRef('remote.data-list', 'customers', [
         'audience' => 'https://crm.example.test',
         'source' => 'other.crm',
         'scopes' => ['customers.read'],

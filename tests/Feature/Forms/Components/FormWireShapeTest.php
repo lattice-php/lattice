@@ -11,7 +11,7 @@ it('serializes the form container wire shape', function (): void {
         ->method(HttpMethod::Post)
         ->submitLabel('Save')
         ->status('Saved')
-        ->precognitive()
+        ->precognitive(650)
         ->resetOnSuccess(['email'])
         ->resetOnError()
         ->withoutSubmitButton()
@@ -28,7 +28,7 @@ it('serializes the form container wire shape', function (): void {
         'submitLabel' => 'Save',
         'status' => 'Saved',
         'precognitive' => true,
-        'validationTimeout' => Form::DEFAULT_VALIDATION_DEBOUNCE_MS,
+        'validationTimeout' => 650,
         'submitButton' => false,
         'resetOnSuccess' => ['email'],
         'resetOnError' => true,

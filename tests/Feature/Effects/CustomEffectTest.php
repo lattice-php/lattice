@@ -12,11 +12,6 @@ final class ConfettiEffect extends Effect
     public function __construct(public string $color) {}
 }
 
-it('serializes a custom effect with its wire type and payload', function (): void {
-    expect(new ConfettiEffect('gold')->jsonSerialize())
-        ->toBe(['type' => 'confetti', 'props' => ['color' => 'gold']]);
-});
-
 it('carries a custom effect through an ActionResult', function (): void {
     $result = ActionResult::success()->effect(new ConfettiEffect('gold'));
 

@@ -3,33 +3,20 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Lattice\Form\Components\Builder;
-use Lattice\Form\Components\Form;
 use Lattice\Form\Components\Repeater;
 use Lattice\Form\Components\RowTemplate;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
-use Symfony\Component\HttpFoundation\Response;
 
 function computedDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('qty', 'Qty'),
-                TextInput::make('price', 'Price'),
-                TextInput::make('total', 'Total')
-                    ->value(fn (FormData $d): float => $d->float('qty') * $d->float('price')),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('qty', 'Qty'),
+        TextInput::make('price', 'Price'),
+        TextInput::make('total', 'Total')
+            ->value(fn (FormData $d): float => $d->float('qty') * $d->float('price')),
+    ]);
 }
 
 it('resolves computed field values', function (): void {
@@ -41,31 +28,20 @@ it('resolves computed field values', function (): void {
 
 function pricingDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('customer', 'Customer'),
-                Builder::make('items', 'Line items')->templates([
-                    RowTemplate::make('product')->label('Product')->schema([
-                        TextInput::make('product', 'Product'),
-                        TextInput::make('price', 'Price')->value(
-                            fn (FormData $row, FormData $form): float => $row->float('product') * ($form->string('customer') === 'vip' ? 0.5 : 1.0),
-                            editable: true,
-                            resetOn: ['product'],
-                            refreshOn: ['@customer'],
-                        ),
-                    ]),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('customer', 'Customer'),
+        Builder::make('items', 'Line items')->templates([
+            RowTemplate::make('product')->label('Product')->schema([
+                TextInput::make('product', 'Product'),
+                TextInput::make('price', 'Price')->value(
+                    fn (FormData $row, FormData $form): float => $row->float('product') * ($form->string('customer') === 'vip' ? 0.5 : 1.0),
+                    editable: true,
+                    resetOn: ['product'],
+                    refreshOn: ['@customer'],
+                ),
+            ]),
+        ]),
+    ]);
 }
 
 it('resolves row prefill values keyed by full path, reading a form-level field', function (): void {
@@ -93,27 +69,16 @@ it('emits no prefill for an unknown row type', function (): void {
 });
 
 it('resolves repeater row prefill values from the fixed schema', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                Repeater::make('lines', 'Lines')->schema([
-                    TextInput::make('base', 'Base'),
-                    TextInput::make('doubled', 'Doubled')->value(
-                        fn (FormData $row, FormData $form): float => $row->float('base') * 2,
-                        editable: true,
-                        resetOn: ['base'],
-                    ),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    $definition = testFormDefinition(fn (): array => [
+        Repeater::make('lines', 'Lines')->schema([
+            TextInput::make('base', 'Base'),
+            TextInput::make('doubled', 'Doubled')->value(
+                fn (FormData $row, FormData $form): float => $row->float('base') * 2,
+                editable: true,
+                resetOn: ['base'],
+            ),
+        ]),
+    ]);
 
     $result = $definition->resolveFields(Request::create('/', 'POST', [
         'lines' => [['base' => '5'], ['base' => '8']],
@@ -126,32 +91,21 @@ it('resolves repeater row prefill values from the fixed schema', function (): vo
 });
 
 it('resolves nested repeater prefill values keyed by recursive full path', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('customer', 'Customer'),
-                Repeater::make('sections', 'Sections')->schema([
-                    TextInput::make('section', 'Section'),
-                    Repeater::make('lines', 'Lines')->schema([
-                        TextInput::make('base', 'Base'),
-                        TextInput::make('price', 'Price')->value(
-                            fn (FormData $row, FormData $form): float => $row->float('base') + ($form->string('customer') === 'vip' ? 10 : 0),
-                            editable: true,
-                            resetOn: ['base'],
-                            refreshOn: ['@customer'],
-                        ),
-                    ]),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    $definition = testFormDefinition(fn (): array => [
+        TextInput::make('customer', 'Customer'),
+        Repeater::make('sections', 'Sections')->schema([
+            TextInput::make('section', 'Section'),
+            Repeater::make('lines', 'Lines')->schema([
+                TextInput::make('base', 'Base'),
+                TextInput::make('price', 'Price')->value(
+                    fn (FormData $row, FormData $form): float => $row->float('base') + ($form->string('customer') === 'vip' ? 10 : 0),
+                    editable: true,
+                    resetOn: ['base'],
+                    refreshOn: ['@customer'],
+                ),
+            ]),
+        ]),
+    ]);
 
     $result = $definition->resolveFields(Request::create('/', 'POST', [
         'customer' => 'vip',

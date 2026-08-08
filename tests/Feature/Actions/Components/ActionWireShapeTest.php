@@ -86,12 +86,14 @@ it('serializes an embedded form schema', function (): void {
     expect($payload['props']['form']['schema'][0]['props']['name'])->toBe('reason');
 });
 
-it('serializes a null form when none is attached', function (): void {
-    $action = Action::make('plain')->label('Plain');
-
-    $payload = wire($action);
-
-    expect($payload['props']['form'])->toBeNull();
+it('serializes null defaults for the form, the modal presentation and the group label', function (): void {
+    expect(wire(Action::make('plain')->label('Plain'))['props'])->toMatchArray([
+        'form' => null,
+        'modalSide' => null,
+        'modalWidth' => null,
+    ])
+        ->and(wire(ActionGroup::make('row-actions')->actions([Action::make('a')->label('A')]))['props']['label'])
+        ->toBeNull();
 });
 
 it('serializes the full confirmation shape', function (): void {
@@ -120,14 +122,6 @@ it('serializes the action group wire shape', function (): void {
     expect($payload['props']['ref'])->toBeNull();
     expect($payload['schema'])->toHaveCount(1);
     expect($payload['schema'][0]['type'])->toBe('action');
-});
-
-it('serializes a null label by default', function (): void {
-    $group = ActionGroup::make('row-actions')->actions([Action::make('a')->label('A')]);
-
-    $payload = wire($group);
-
-    expect($payload['props'])->toMatchArray(['label' => null]);
 });
 
 it('serializes an inline action group orientation', function (): void {
@@ -198,12 +192,5 @@ it('serializes the form modal presentation', function (): void {
     expect(wire($action)['props'])->toMatchArray([
         'modalSide' => 'end',
         'modalWidth' => 'xl',
-    ]);
-});
-
-it('serializes a null modal presentation by default', function (): void {
-    expect(wire(Action::make('plain')->label('Plain'))['props'])->toMatchArray([
-        'modalSide' => null,
-        'modalWidth' => null,
     ]);
 });

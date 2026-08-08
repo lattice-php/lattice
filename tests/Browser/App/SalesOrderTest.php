@@ -15,8 +15,6 @@ function vipPricedProduct(string $name, string $defaultAmount, Group $group, str
 }
 
 it('auto-resolves, re-resolves on partner change, and persists a manual override', function (): void {
-    $this->actingAs(workbenchTestUser());
-
     $vipGroup = Group::factory()->create(['name' => 'VIP Group']);
 
     $regularPartner = BusinessPartner::factory()->create(['name' => 'Regular Partner']);
@@ -25,7 +23,7 @@ it('auto-resolves, re-resolves on partner change, and persists a manual override
 
     vipPricedProduct('Standard Desk', '100.00', $vipGroup, '80.00');
 
-    $page = visit('/sales-orders/create')
+    $page = $this->visitAsWorkbenchUser('/sales-orders/create')
         ->assertSee('Create sales order')
         ->click('[data-test="select-business_partner_id"]')
         ->fill('[data-test="select-business_partner_id-search"]', 'Regular')

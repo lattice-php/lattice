@@ -4,10 +4,7 @@ declare(strict_types=1);
 use Workbench\App\Models\User;
 
 it('shows pagination modes in lazily loaded tabs', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedWorkbenchUsers();
-
-    $page = visit('/tables/pagination');
+    $page = $this->visitWithSeededUsers('/tables/pagination');
     disableInfiniteScrollAutoLoad($page);
 
     $page->assertSee('Pagination')
@@ -32,10 +29,7 @@ it('shows pagination modes in lazily loaded tabs', function (): void {
 });
 
 it('navigates between pages in table pagination mode', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedWorkbenchUsers();
-
-    $page = visit('/tables/pagination');
+    $page = $this->visitWithSeededUsers('/tables/pagination');
 
     $total = User::query()->count();
 
@@ -52,10 +46,7 @@ it('navigates between pages in table pagination mode', function (): void {
 });
 
 it('loads more rows in infinite mode', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedWorkbenchUsers();
-
-    $page = visit('/tables/pagination');
+    $page = $this->visitWithSeededUsers('/tables/pagination');
     disableInfiniteScrollAutoLoad($page);
 
     $page->click('@tab-infinite');
@@ -70,10 +61,7 @@ it('loads more rows in infinite mode', function (): void {
 });
 
 it('keeps the topbar user menu visible on infinite pagination pages', function (): void {
-    $this->actingAs(workbenchTestUser());
-    seedWorkbenchUsers();
-
-    $page = visit('/tables/pagination');
+    $page = $this->visitWithSeededUsers('/tables/pagination');
     disableInfiniteScrollAutoLoad($page);
 
     $page->click('@tab-infinite');

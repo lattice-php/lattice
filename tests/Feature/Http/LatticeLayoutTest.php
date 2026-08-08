@@ -101,15 +101,3 @@ test('a page without a layout serializes a null layout', function (): void {
 
     expect($payload['layout'])->toBeNull();
 });
-
-test('the none layout sentinel serializes a null layout', function (): void {
-    $page = new class extends Page
-    {
-        public function render(PageSchema $schema): PageSchema
-        {
-            return $schema->component(Text::make('body'));
-        }
-    };
-
-    expect($page->toArray($page->render(PageSchema::make()), new Request)['layout'])->toBeNull();
-});

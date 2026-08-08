@@ -2,21 +2,18 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Storage;
-use Lattice\Core\Facades\Lattice;
 use Lattice\Media\Actions\DeleteMediaAction;
 use Lattice\Media\Actions\DeleteSelectedMediaAction;
 use Lattice\Media\Actions\UpdateMediaAction;
 use Lattice\Media\Models\Media;
 use Lattice\Media\Tables\MediaTable;
 
-use function Pest\Laravel\actingAs;
-
 beforeEach(function (): void {
-    Storage::fake('public');
-    Lattice::tables([MediaTable::class]);
-    Lattice::actions([UpdateMediaAction::class, DeleteMediaAction::class]);
-    Lattice::bulkActions([DeleteSelectedMediaAction::class]);
-    actingAs(workbenchTestUser());
+    bootstrapMediaTest(
+        tables: [MediaTable::class],
+        actions: [UpdateMediaAction::class, DeleteMediaAction::class],
+        bulkActions: [DeleteSelectedMediaAction::class],
+    );
 });
 
 test('update edits name and alt', function (): void {

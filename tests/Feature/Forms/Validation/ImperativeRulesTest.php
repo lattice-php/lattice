@@ -3,32 +3,19 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Form\Components\Form;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
-use Symfony\Component\HttpFoundation\Response;
 
 function imperativeRulesDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('type', 'Type'),
-                TextInput::make('vat_id', 'VAT ID')
-                    ->rules(fn (FormData $data): array => $data->get('type') === 'business'
-                        ? ['required', 'string']
-                        : ['nullable']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('type', 'Type'),
+        TextInput::make('vat_id', 'VAT ID')
+            ->rules(fn (FormData $data): array => $data->get('type') === 'business'
+                ? ['required', 'string']
+                : ['nullable']),
+    ]);
 }
 
 it('skips the rule when the closure returns it optional', function (): void {

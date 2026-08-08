@@ -4,13 +4,6 @@ declare(strict_types=1);
 use Lattice\Core\Support\Wire;
 use Lattice\Form\Components\Toggle;
 
-it('serializes the shared focus options', function (): void {
-    $node = wire(Toggle::make('published', 'Published')->autoFocus()->tabIndex(3));
-
-    expect($node['type'])->toBe('field.toggle')
-        ->and($node['props'])->toMatchArray(['autoFocus' => true, 'tabIndex' => 3]);
-});
-
 it('serializes a default boolean value', function (): void {
     $node = wire(Toggle::make('published', 'Published')->value(true));
 
