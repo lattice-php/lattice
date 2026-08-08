@@ -1,9 +1,13 @@
-import type { Node } from "@lattice-php/core";
+import type { Affix, Node, Op, Option } from "@lattice-php/core";
+import type {
+  ColumnWidth,
+  Emphasis,
+  HttpMethod,
+  Justify,
+  Orientation,
+  Variant,
+} from "@lattice-php/ui";
 
-export type Affix = {
-  readonly icon: string | null;
-  readonly text: string | null;
-};
 export type Builder = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
@@ -88,7 +92,6 @@ export type ColorPicker = {
   tooltip: string | null;
   value: unknown;
 };
-export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ComponentPropsMap = {
   "field.builder": Builder;
   "field.checkbox": Checkbox;
@@ -215,7 +218,6 @@ export type EditorTextAlign = {
   alignments: string[];
 };
 export type EditorUnderline = Record<string, never>;
-export type Emphasis = "solid" | "outline" | "ghost" | "link";
 export type FieldConditions = {
   readonly disabled: Condition[];
   readonly readOnly: Condition[];
@@ -234,9 +236,9 @@ export type FileUpload = {
     | {
         key: string;
         name: string;
-        url: string | null;
         size: number | null;
         token: string;
+        url: string | null;
       }[]
     | null;
   helperText: string | null;
@@ -333,8 +335,6 @@ export type HiddenInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type HttpMethod = import("@inertiajs/core").Method;
-export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LabelAction = {
   readonly href: string;
   readonly label: string;
@@ -388,28 +388,6 @@ export type NumberInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type Op =
-  | "contains"
-  | "starts_with"
-  | "ends_with"
-  | "eq"
-  | "neq"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "in"
-  | "not_in"
-  | "before"
-  | "after"
-  | "empty"
-  | "filled";
-export type Option = {
-  readonly data: Record<string, unknown> | null;
-  readonly label: string;
-  readonly value: string;
-};
-export type Orientation = "horizontal" | "vertical";
 export type OtpInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -638,7 +616,6 @@ export type Toggle = {
   tooltip: string | null;
   value: unknown;
 };
-export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Wizard = {
   orientation: Orientation;
 };

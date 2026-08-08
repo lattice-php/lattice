@@ -2,7 +2,7 @@ import { apiFetch, apiJson } from "@lattice-php/core/api";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Option } from "../generated";
+import type { Option } from "@lattice-php/core";
 import { isEmptyFilterValue, isFilterValue } from "@lattice-php/table/lib/filter-values";
 import {
   getColumns,

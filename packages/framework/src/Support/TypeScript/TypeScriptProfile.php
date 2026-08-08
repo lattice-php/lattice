@@ -10,11 +10,20 @@ namespace Lattice\Support\TypeScript;
 interface TypeScriptProfile
 {
     /**
-     * App-defined wire types this profile would emit. Zero means the bundled
-     * types already cover the project and no transformer is needed.
+     * Wire packages excluded from TypeScript generation: each hand-writes
+     * TypeScript that a generated.ts sibling would collide with —
+     * tree/media/api-reference augment `@lattice-php/core`'s registries
+     * directly with no generated.ts of their own yet, and signature-example
+     * (though it has no such augmentation) trips the exhaustive
+     * `NodeType`/`RegisteredNodeType` check in
+     * packages/framework/resources/js/registry.ts once its `signature` node
+     * type is discoverable. Phase 3 (declarative hook props) empties this
+     * list.
+     *
+     * @var list<string>
      */
-    public function pendingTypeCount(): int;
+    public const array EMISSION_EXCLUDED = ['tree', 'media', 'api-reference', 'signature-example'];
 
     /** Run a generation pass and return a summary line for the command to print. */
-    public function run(TypeScriptGenerator $generator): string;
+    public function run(): string;
 }

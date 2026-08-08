@@ -16,9 +16,6 @@ final class LatticeRegistry
     /** @var array<string, WireFamily> */
     private array $wireFamilies = [];
 
-    /** @var array<string, string> */
-    private array $wireSources = [];
-
     /** @var array<string, Closure> */
     private array $capabilities = [];
 
@@ -69,18 +66,6 @@ final class LatticeRegistry
         }
 
         $this->wireFamilies[$category] = new WireFamily($category, $attribute, $reference, $marker);
-    }
-
-    public function wireSource(string $path): void
-    {
-        $path = realpath($path) ?: $path;
-        $this->wireSources[$path] = $path;
-    }
-
-    /** @return list<string> */
-    public function wireSources(): array
-    {
-        return array_values($this->wireSources);
     }
 
     /** @return Collection<string, WireFamily> */

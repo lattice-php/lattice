@@ -15,10 +15,18 @@ final readonly class RemoteSchemaResolver
     /**
      * @var array<string, list<string>>
      */
-    private const array EXTERNAL_URL_PROPS = [
+    public const array EXTERNAL_URL_PROPS = [
         'remote.data-list' => ['dataEndpoint'],
         'chat.box' => ['streamEndpoint', 'historyEndpoint'],
     ];
+
+    /**
+     * Server-trusted prop keys a remote manifest may never supply; the wire
+     * schema publishes the same list in the RemoteManifestNode contract.
+     *
+     * @var list<string>
+     */
+    public const array FORBIDDEN_PROP_KEYS = ['action', 'endpoint', 'ref', 'remote', 'tokenEndpoint'];
 
     public function __construct(
         private RemoteSchemaNormalizer $normalizer,
@@ -138,7 +146,9 @@ final readonly class RemoteSchemaResolver
         $props = $node['props'] ?? [];
 
         if (is_array($props)) {
-            unset($props['action'], $props['endpoint'], $props['ref'], $props['remote'], $props['tokenEndpoint']);
+            foreach (self::FORBIDDEN_PROP_KEYS as $forbidden) {
+                unset($props[$forbidden]);
+            }
 
             if (is_string($type) && array_key_exists($type, self::EXTERNAL_URL_PROPS)) {
                 foreach (self::EXTERNAL_URL_PROPS[$type] as $property) {

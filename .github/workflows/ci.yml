@@ -251,6 +251,53 @@ jobs:
       - name: Rector (dry-run)
         run: composer rector:test
 
+  generated-types:
+    name: Generated TypeScript Types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generated TypeScript types are up to date
+        run: |
+          composer types
+          git add --intent-to-add \
+            packages/framework/resources/js/types/generated.ts \
+            packages/form/resources/js/generated.ts \
+            packages/table/resources/js/generated.ts \
+            packages/action/resources/js/generated.ts \
+            packages/ui/resources/js/generated.ts
+          git diff --exit-code -- \
+            packages/framework/resources/js/types/generated.ts \
+            packages/form/resources/js/generated.ts \
+            packages/table/resources/js/generated.ts \
+            packages/action/resources/js/generated.ts \
+            packages/ui/resources/js/generated.ts
+
   php-tests:
     name: PHP Tests (${{ matrix.php-version }}, ${{ matrix.coverage }})
     runs-on: ubuntu-latest

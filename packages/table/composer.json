@@ -22,6 +22,9 @@
         }
     },
     "extra": {
+        "lattice": {
+            "discover": ["src"]
+        },
         "laravel": {
             "providers": [
                 "Lattice\\Table\\TableServiceProvider"

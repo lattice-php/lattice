@@ -1,0 +1,47 @@
+export type Affix = {
+  readonly icon: string | null;
+  readonly text: string | null;
+};
+export type Breadcrumb = {
+  readonly href: string;
+  readonly title: string;
+};
+export type Color = {
+  readonly dark: string | null;
+  readonly kind: ColorKind;
+  readonly value: string;
+};
+export type ColorKind = "named" | "css";
+export type ColorName =
+  | "default"
+  | "muted"
+  | "primary"
+  | "success"
+  | "info"
+  | "warning"
+  | "danger"
+  | "gray"
+  | "red"
+  | "orange"
+  | "yellow"
+  | "green"
+  | "blue"
+  | "purple";
+export type Op =
+  | "contains"
+  | "starts_with"
+  | "ends_with"
+  | "eq"
+  | "neq"
+  | "gt"
+  | "gte"
+  | "lt"
+  | "lte"
+  | "in"
+  | "not_in"
+  | "before"
+  | "after"
+  | "empty"
+  | "filled";
+export type PageContainer = "centered" | "default";
+export type PageLayout = "app" | "auth" | "none";

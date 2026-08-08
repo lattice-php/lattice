@@ -40,6 +40,7 @@ use Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
+use Lattice\Support\Wire\WireSourceCatalog;
 use Lattice\Table\TableServiceProvider;
 use Lattice\Theme\Theme;
 use Lattice\Theme\ThemeRenderer;
@@ -76,8 +77,8 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->register(TableServiceProvider::class);
         $this->app->register(ActionServiceProvider::class);
         $lattice = $this->app->make(LatticeRegistry::class);
-        $lattice->wireSource(__DIR__);
 
+        $this->app->singleton(WireSourceCatalog::class, static fn (): WireSourceCatalog => WireSourceCatalog::fromApplication());
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
 
         if ($this->app->runningInConsole()) {

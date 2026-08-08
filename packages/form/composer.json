@@ -24,6 +24,9 @@
         }
     },
     "extra": {
+        "lattice": {
+            "discover": ["src"]
+        },
         "laravel": {
             "providers": [
                 "Lattice\\Form\\FormServiceProvider"

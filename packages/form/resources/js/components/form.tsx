@@ -8,7 +8,7 @@ import { nodeKey } from "@lattice-php/core/nodes";
 import { RenderNode } from "@lattice-php/core/renderer";
 import type { Node, RendererComponent } from "@lattice-php/core";
 import { useT } from "@lattice-php/ui/i18n";
-import type { Emphasis, Justify, Variant } from "@lattice-php/form/generated";
+import type { Emphasis, Justify, Variant } from "@lattice-php/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormSubmitButton } from "./base/submit-button";
 import { FormProvider } from "@lattice-php/form/hooks/context";

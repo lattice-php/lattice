@@ -1,4 +1,4 @@
-import type { ColorName } from "@lattice-php/lattice/types/generated";
+import type { ColorName } from "@lattice-php/core";
 
 export function httpMethodColor(method: string): ColorName {
   switch (method) {

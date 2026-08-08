@@ -1,9 +1,9 @@
 import { cn } from "../lib/utils";
+import type { Affix } from "@lattice-php/core";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { IconRenderer } from "../icons";
 import { TextLink } from "../text-link";
-import type { Affix } from "../generated";
 import { actionMenuItemClassName, useActionMenu } from "../action-menu-context";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "../click-behavior";
 

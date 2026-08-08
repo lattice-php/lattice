@@ -1,6 +1,6 @@
 import { Button } from "@lattice-php/ui/button";
 import { Spinner } from "@lattice-php/ui/spinner";
-import type { Emphasis, Variant } from "@lattice-php/form/generated";
+import type { Emphasis, Variant } from "@lattice-php/ui";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 
 export function FormSubmitButton({

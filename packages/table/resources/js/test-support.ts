@@ -1,6 +1,6 @@
 import { vi } from "vitest";
-import type { ColumnFilter } from "@lattice-php/lattice/types/generated";
 import type { Node } from "@lattice-php/core/types";
+import type { ColumnFilter } from "./generated";
 import type { TableColumn, TablePagination, TableQuery, TableResult } from "./types";
 
 export function col(partial: {

@@ -3,458 +3,82 @@ declare(strict_types=1);
 
 namespace Workbench\App\Support\TypeScript;
 
-use Illuminate\Support\Str;
-use Lattice\Core\Attributes\WireEnvelope;
-use Lattice\Core\Color;
-use Lattice\Core\Enums\ColorKind;
-use Lattice\Core\Enums\Op;
-use Lattice\Core\LatticeRegistry;
-use Lattice\Core\Option;
-use Lattice\Core\Support\Affix;
-use Lattice\Form\Components\Form;
-use Lattice\Support\TypeScript\ComponentTransformer;
-use Lattice\Support\TypeScript\DiscoveredComponent;
-use Lattice\Support\TypeScript\NodeModuleWriter;
-use Lattice\Support\TypeScript\NodeTypeReference;
+use Illuminate\Support\Facades\File;
+use Lattice\Support\TypeScript\ImportResolver;
 use Lattice\Support\TypeScript\OxfmtFormatter;
-use Lattice\Support\TypeScript\TypeScriptGenerator;
+use Lattice\Support\TypeScript\SchemaTypeScriptEmitter;
 use Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Support\TypeScript\WireTypeDiscovery;
-use Lattice\Table\Columns\Column;
-use Lattice\Table\Components\Table as TableComponent;
-use Lattice\Table\Filters\Filter;
-use Lattice\Ui\Enums\ColumnWidth;
-use Lattice\Ui\Enums\DateTimeStyle;
-use Lattice\Ui\Enums\Emphasis;
-use Lattice\Ui\Enums\Justify;
-use Lattice\Ui\Enums\ModalWidth;
-use Lattice\Ui\Enums\NumberFormatUnit;
-use Lattice\Ui\Enums\Orientation;
-use Lattice\Ui\Enums\Side;
-use Lattice\Ui\Enums\Variant;
+use Lattice\Support\Wire\WireModelBuilder;
+use Lattice\Support\Wire\WireSourceCatalog;
 
 /**
- * The package's own dev profile: regenerates the built-in TypeScript module
- * (generated.ts) from the package sources. Bound in the workbench so lattice:typescript rebuilds
- * the base types every consumer app then augments. Workbench-only, so this
- * build code never ships.
+ * The package's own dev profile: regenerates the built-in TypeScript modules
+ * (one `generated.ts` per non-excluded `WireSourceCatalog` source) from
+ * `WireModelBuilder::buildAll()`'s per-origin partitioning. Bound in the
+ * workbench so `lattice:typescript` rebuilds the base types every consumer
+ * app then augments. Workbench-only, so this build code never ships.
+ *
+ * Which classes land in which module falls entirely out of each class file's
+ * own composer package — adding a package to emission needs nothing here,
+ * only dropping its short name from `EMISSION_EXCLUDED`.
  */
 final readonly class BaseProfile implements TypeScriptProfile
 {
-    public function __construct(
-        private WireTypeDiscovery $discovery,
-        private LatticeRegistry $lattice,
-    ) {}
+    /**
+     * A wire source's short name doesn't always match its package directory
+     * under packages/ — only `lattice-php/lattice` (short name `lattice`)
+     * diverges, living in packages/framework.
+     */
+    private const array PACKAGE_DIRS = ['lattice' => 'framework'];
 
-    public function pendingTypeCount(): int
-    {
-        return count($this->discovery->discover($this->sources(dirname(__DIR__, 4)))->components);
-    }
+    private const string FRAMEWORK_SOURCE = 'lattice';
 
-    public function run(TypeScriptGenerator $generator): string
+    public function __construct(private WireSourceCatalog $catalog) {}
+
+    public function run(): string
     {
         $packageRoot = dirname(__DIR__, 4);
-        $sources = $this->sources($packageRoot);
+        $model = new WireModelBuilder($this->catalog)->buildAll();
+        $imports = new ImportResolver($model['defOrigins']);
+        $emitter = new SchemaTypeScriptEmitter;
+        $formatter = new OxfmtFormatter;
 
-        // Overridable so the snapshot test regenerates into a scratch dir instead
-        // of rewriting the committed resources/js/types mid-suite.
         $configuredOutput = config('lattice.typescript.base_output');
-        $outputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
-            ? $configuredOutput
-            : $packageRoot.'/packages/framework/resources/js/types';
-        $formOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
-            ? $configuredOutput.'/form'
-            : $packageRoot.'/packages/form/resources/js';
-        $tableOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
-            ? $configuredOutput.'/table'
-            : $packageRoot.'/packages/table/resources/js';
-        $actionOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
-            ? $configuredOutput.'/action'
-            : $packageRoot.'/packages/action/resources/js';
-        $uiOutputDirectory = is_string($configuredOutput) && $configuredOutput !== ''
-            ? $configuredOutput.'/ui'
-            : $packageRoot.'/packages/ui/resources/js';
+        $outputFor = static fn (string $shortName): string => is_string($configuredOutput) && $configuredOutput !== ''
+            ? $configuredOutput.($shortName === self::FRAMEWORK_SOURCE ? '' : '/'.$shortName)
+            : $packageRoot.'/packages/'.(self::PACKAGE_DIRS[$shortName] ?? $shortName)
+                .($shortName === self::FRAMEWORK_SOURCE ? '/resources/js/types' : '/resources/js');
 
-        $manifest = $this->discovery->discover($sources);
+        $written = 0;
 
-        $discovered = $manifest->components;
-        $formFields = $this->buildFormFields($discovered);
-        $domainNodes = $this->buildDomainNodes($discovered);
-
-        $familyProps = [
-            'column' => $this->buildComponentProps($discovered, 'column'),
-            'filter' => $this->buildComponentProps($discovered, 'filter'),
-        ];
-
-        $markerRefs = [];
-
-        foreach ($this->lattice->wireFamilies()->where('marker', true) as $family) {
-            $markerRefs[$family->reference] = new NodeTypeReference(
-                $this->buildClassTypes($discovered, $family->category),
-                WireEnvelope::forClass($family->reference),
-                attributeFallback: $family->category === 'component',
-            );
-        }
-        $valueObjectClasses = $manifest->valueObjects;
-
-        foreach ($this->lattice->wireFamilies()->where('marker', false) as $family) {
-            $classes = $manifest->family($family->category);
-
-            if ($classes === []) {
+        foreach ($this->catalog->discover() as $source) {
+            if ($source->isRoot || in_array($source->shortName, self::EMISSION_EXCLUDED, true)) {
                 continue;
             }
 
-            $familyProps[$family->category] = array_flip($classes);
-            $valueObjectClasses = [...$valueObjectClasses, ...array_keys($classes)];
-        }
+            $document = $model['documents'][$source->shortName];
 
-        $generator->generate(
-            $sources,
-            [
-                new HttpMethodTransformer,
-                new EnumTransformer($manifest->enums),
-                new ValueObjectTransformer($valueObjectClasses, $markerRefs),
-                new ComponentTransformer([
-                    ...array_keys($formFields),
-                    Form::class,
-                    Column::class,
-                    Filter::class,
-                    ...$this->componentClasses($domainNodes),
-                    ...array_values($familyProps['column']),
-                    ...array_values($familyProps['filter']),
-                ], $markerRefs),
-            ],
-            [
-                new NodesProvider(
-                    $formFields,
-                    Form::class,
-                    $domainNodes,
-                    $this->lattice,
-                    'form',
-                    $familyProps,
-                ),
-            ],
-            new NodeModuleWriter('generated.ts'),
-            $outputDirectory,
-            new OxfmtFormatter,
-        );
-
-        $tableEnums = array_values(array_filter(
-            $manifest->enums,
-            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Table\\')
-                || in_array($class, [ColorKind::class, Op::class, ColumnWidth::class, DateTimeStyle::class, NumberFormatUnit::class], true),
-        ));
-        $tableValueObjects = array_values(array_unique([
-            ...array_filter(
-                $manifest->valueObjects,
-                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Table\\'),
-            ),
-            Color::class,
-            Option::class,
-        ]));
-        $tableNodes = ['TableNode' => $this->buildBucket($discovered, 'Table')];
-
-        $generator->generate(
-            $sources,
-            [
-                new HttpMethodTransformer,
-                new EnumTransformer($tableEnums),
-                new ValueObjectTransformer($tableValueObjects, $markerRefs),
-                new ComponentTransformer([
-                    TableComponent::class,
-                    Column::class,
-                    Filter::class,
-                    ...array_values($familyProps['column']),
-                    ...array_values($familyProps['filter']),
-                ], $markerRefs),
-            ],
-            [
-                new NodesProvider(
-                    [],
-                    null,
-                    $tableNodes,
-                    $this->lattice,
-                    familyProps: array_intersect_key($familyProps, array_flip(['column', 'filter'])),
-                ),
-            ],
-            new NodeModuleWriter(
-                'generated.ts',
-                'import type { Node } from "@lattice-php/core";'.PHP_EOL
-                    .'import type { ColumnNode, FilterNode } from "./types";'.PHP_EOL.PHP_EOL,
-            ),
-            $tableOutputDirectory,
-            new OxfmtFormatter,
-        );
-
-        $actionEnums = array_values(array_unique([
-            ...array_filter(
-                $manifest->enums,
-                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Actions\\'),
-            ),
-            Emphasis::class,
-            ModalWidth::class,
-            Orientation::class,
-            Side::class,
-            Variant::class,
-        ]));
-        $actionValueObjects = array_values(array_filter(
-            $manifest->valueObjects,
-            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Actions\\'),
-        ));
-        $actionNodes = ['ActionNode' => $this->buildBucket($discovered, 'Actions')];
-
-        $generator->generate(
-            $sources,
-            [
-                new HttpMethodTransformer,
-                new EnumTransformer($actionEnums),
-                new ValueObjectTransformer($actionValueObjects, $markerRefs),
-                new ComponentTransformer($this->componentClasses($actionNodes), $markerRefs),
-            ],
-            [
-                new NodesProvider(
-                    [],
-                    null,
-                    $actionNodes,
-                    $this->lattice,
-                ),
-            ],
-            new NodeModuleWriter(
-                'generated.ts',
-                'import type { Node } from "@lattice-php/core";'.PHP_EOL.PHP_EOL,
-            ),
-            $actionOutputDirectory,
-            new OxfmtFormatter,
-        );
-
-        $uiEffects = array_flip($manifest->family('effect'));
-        $uiEnums = array_values(array_filter(
-            $manifest->enums,
-            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Ui\\')
-                || $class === ColorKind::class,
-        ));
-        $uiValueObjects = array_values(array_unique([
-            ...array_filter(
-                $manifest->valueObjects,
-                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Ui\\'),
-            ),
-            ...array_values($uiEffects),
-            Affix::class,
-            Color::class,
-            Option::class,
-        ]));
-        $uiNodes = ['UiNode' => $this->buildBucket($discovered, 'Ui')];
-
-        $generator->generate(
-            $sources,
-            [
-                new HttpMethodTransformer,
-                new EnumTransformer($uiEnums),
-                new ValueObjectTransformer($uiValueObjects, $markerRefs),
-                new ComponentTransformer($this->componentClasses($uiNodes), $markerRefs),
-            ],
-            [
-                new NodesProvider(
-                    [],
-                    null,
-                    $uiNodes,
-                    $this->lattice,
-                    familyProps: ['effect' => $uiEffects],
-                ),
-            ],
-            new NodeModuleWriter(
-                'generated.ts',
-                'import type { Node } from "@lattice-php/core";'.PHP_EOL.PHP_EOL,
-            ),
-            $uiOutputDirectory,
-            new OxfmtFormatter,
-        );
-
-        $editorExtensions = array_flip($manifest->family('editor-extension'));
-        $formEnums = array_values(array_filter(
-            $manifest->enums,
-            static fn (string $class): bool => str_starts_with($class, 'Lattice\\Form\\')
-                || in_array($class, [Op::class, ColumnWidth::class, Emphasis::class, Justify::class, Orientation::class, Variant::class], true),
-        ));
-        $formValueObjects = array_values(array_unique([
-            ...array_filter(
-                $manifest->valueObjects,
-                static fn (string $class): bool => str_starts_with($class, 'Lattice\\Form\\'),
-            ),
-            ...array_values($editorExtensions),
-            Affix::class,
-            Option::class,
-        ]));
-
-        $generator->generate(
-            $sources,
-            [
-                new HttpMethodTransformer,
-                new EnumTransformer($formEnums),
-                new ValueObjectTransformer($formValueObjects, $markerRefs),
-                new ComponentTransformer([...array_keys($formFields), Form::class], $markerRefs),
-            ],
-            [
-                new NodesProvider(
-                    $formFields,
-                    Form::class,
-                    [],
-                    $this->lattice,
-                    'form',
-                    ['editor-extension' => $editorExtensions],
-                ),
-            ],
-            new NodeModuleWriter(
-                'generated.ts',
-                'import type { Node } from "@lattice-php/core";'.PHP_EOL.PHP_EOL,
-            ),
-            $formOutputDirectory,
-            new OxfmtFormatter,
-        );
-
-        return 'Regenerated built-in TypeScript types.';
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function sources(string $packageRoot): array
-    {
-        return [
-            $packageRoot.'/packages/framework/src',
-            $packageRoot.'/packages/action/src',
-            $packageRoot.'/packages/core/src',
-            $packageRoot.'/packages/form/src',
-            $packageRoot.'/packages/table/src',
-            $packageRoot.'/packages/ui/src',
-        ];
-    }
-
-    /**
-     * @param  list<DiscoveredComponent>  $discovered
-     * @return array<class-string, string>
-     */
-    private function buildClassTypes(array $discovered, string $category): array
-    {
-        $map = [];
-
-        foreach ($discovered as $dc) {
-            if ($dc->category === $category) {
-                $map[$dc->class] = $dc->type;
-            }
-        }
-
-        return $map;
-    }
-
-    /**
-     * @param  list<DiscoveredComponent>  $discovered
-     * @return array<string, class-string>
-     */
-    private function buildComponentProps(array $discovered, string $category): array
-    {
-        $map = [];
-
-        foreach ($discovered as $dc) {
-            if ($dc->category === $category) {
-                $map[$dc->type] = $dc->class;
-            }
-        }
-
-        return $map;
-    }
-
-    /**
-     * @param  list<DiscoveredComponent>  $discovered
-     * @return array<class-string, string>
-     */
-    private function buildFormFields(array $discovered): array
-    {
-        $fields = array_filter(
-            $discovered,
-            fn (DiscoveredComponent $dc): bool => $dc->domain === 'Form' && $dc->class !== Form::class,
-        );
-
-        usort($fields, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
-
-        return array_column(
-            array_map(fn (DiscoveredComponent $dc): array => [$dc->class, $dc->type], $fields),
-            1,
-            0,
-        );
-    }
-
-    /**
-     * @param  list<DiscoveredComponent>  $discovered
-     * @return array<string, array<class-string, array{type: string, container?: bool, interactive?: bool}>>
-     */
-    private function buildDomainNodes(array $discovered): array
-    {
-        $domains = array_values(array_unique(array_map(
-            static fn (DiscoveredComponent $dc): string => $dc->domain,
-            array_filter(
-                $discovered,
-                static fn (DiscoveredComponent $dc): bool => $dc->category === 'component'
-                    && $dc->domain !== ''
-                    && $dc->domain !== 'Form',
-            ),
-        )));
-
-        sort($domains);
-
-        $domainNodes = [];
-
-        foreach ($domains as $domain) {
-            $domainNodes[Str::singular($domain).'Node'] = $this->buildBucket($discovered, $domain);
-        }
-
-        return $domainNodes;
-    }
-
-    /**
-     * @param  list<DiscoveredComponent>  $discovered
-     * @return array<class-string, array{type: string, container?: bool, interactive?: bool}>
-     */
-    private function buildBucket(array $discovered, string $domain): array
-    {
-        $components = array_filter(
-            $discovered,
-            fn (DiscoveredComponent $dc): bool => $dc->domain === $domain && $dc->category === 'component',
-        );
-
-        usort($components, fn (DiscoveredComponent $a, DiscoveredComponent $b): int => $a->type <=> $b->type);
-
-        $result = [];
-
-        foreach ($components as $dc) {
-            $spec = ['type' => $dc->type];
-
-            if ($dc->container) {
-                $spec['container'] = true;
+            if ($source->shortName === 'core') {
+                // `Option` is hand-written in @lattice-php/core's own types.ts
+                // (identical shape, predates the wire model) — re-emitting it
+                // here would make the package root's `export type *` from
+                // both modules ambiguous. Every other core-origin def has no
+                // hand-written counterpart.
+                unset($document['$defs']['Option']);
             }
 
-            if ($dc->interactive) {
-                $spec['interactive'] = true;
-            }
-
-            $result[$dc->class] = $spec;
+            $this->writeModule($outputFor($source->shortName), $emitter->emitPackageModule($document, $imports), $formatter);
+            $written++;
         }
 
-        return $result;
+        return sprintf('Regenerated %d built-in TypeScript module(s).', $written);
     }
 
-    /**
-     * @param  array<string, array<class-string, array{type: string, container?: bool, interactive?: bool}>>  $domainNodes
-     * @return list<class-string>
-     */
-    private function componentClasses(array $domainNodes): array
+    private function writeModule(string $directory, string $contents, OxfmtFormatter $formatter): void
     {
-        $classes = [];
-
-        foreach ($domainNodes as $components) {
-            $classes = [...$classes, ...array_keys($components)];
-        }
-
-        return $classes;
+        File::ensureDirectoryExists($directory);
+        $path = $directory.'/generated.ts';
+        File::put($path, $contents);
+        $formatter->format([$path]);
     }
 }

@@ -1,7 +1,8 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import type { ColumnFilter, Op } from "@lattice-php/lattice/types/generated";
+import type { Op } from "@lattice-php/core";
 import { registry } from "@lattice-php/lattice/registry";
+import type { ColumnFilter } from "@lattice-php/table";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { FilterClause, TableColumn } from "@lattice-php/table/types";
 import { ColumnFilterControl } from "./column-filter-control";
