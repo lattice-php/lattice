@@ -42,6 +42,8 @@ class Form extends ContainerComponent implements InteractiveComponent
 
     public bool $submitButton = true;
 
+    public bool $fullWidth = false;
+
     public ?Justify $submitJustify = null;
 
     public ?Variant $submitVariant = null;
@@ -166,6 +168,13 @@ class Form extends ContainerComponent implements InteractiveComponent
     public function withoutSubmitButton(): static
     {
         $this->submitButton = false;
+
+        return $this;
+    }
+
+    public function fullWidth(bool $fullWidth = true): static
+    {
+        $this->fullWidth = $fullWidth;
 
         return $this;
     }

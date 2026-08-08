@@ -34,6 +34,7 @@ export type Callout = {
 };
 export type Card = {
   description: string | null;
+  headerActions: Node[];
   title: string | null;
   tooltip: string | null;
 };

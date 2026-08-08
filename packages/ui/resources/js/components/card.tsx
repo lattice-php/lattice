@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "../lib/utils";
 import { nodeIdentity } from "@lattice-php/core/test-id";
+import { RenderNode } from "@lattice-php/core/renderer";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { InfoTooltip } from "../info-tooltip";
 
@@ -62,16 +63,26 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const CardComponent: RendererComponent<"card"> = ({ children, node }) => {
-  const { title, description, tooltip } = node.props;
+  const { title, description, tooltip, headerActions } = node.props;
+  const actionNodes = headerActions ?? [];
 
   return (
     <Card data-lattice-component={nodeIdentity(node)}>
-      {(title || description) && (
+      {(title || description || actionNodes.length > 0) && (
         <CardHeader>
-          {title && (
-            <div className="flex items-center">
-              <CardTitle>{title}</CardTitle>
-              <InfoTooltip content={tooltip} />
+          {(title || actionNodes.length > 0) && (
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center">
+                {title && <CardTitle>{title}</CardTitle>}
+                {title && <InfoTooltip content={tooltip} />}
+              </div>
+              {actionNodes.length > 0 && (
+                <div className="flex items-center gap-2">
+                  {actionNodes.map((actionNode, index) => (
+                    <RenderNode key={actionNode.key ?? actionNode.id ?? index} node={actionNode} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {description && (

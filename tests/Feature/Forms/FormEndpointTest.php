@@ -54,6 +54,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'resetOnError' => null,
                 'status' => null,
                 'state' => [],
+                'fullWidth' => false,
             ],
             'schema' => [
                 [

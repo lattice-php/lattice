@@ -1,11 +1,14 @@
 #!/bin/sh
-# Full CI-equivalent gate. Mirrors the local Verification routine in .ai/guidelines/development.md.
+# Fast static gate. Mirrors the local Verification routine in .ai/guidelines/development.md.
 # Bypass with `git push --no-verify` (emergencies only — never push on red).
 #
-# The generated-types and docs-fixtures diffs are intentionally left to CI: a local run
-# regenerates the committed generated.ts with a different property ordering than main,
-# so a local diff check would fail spuriously. Pest Browser stays CI-only because it
-# needs the built workbench assets and Playwright browsers. docs:typecheck (docs/tsconfig.json)
+# The PHP side only runs Pint and PHPStan here — the full Pest suite and Rector are left
+# to CI (and to running explicitly, e.g. `composer test`/`composer check`) because a full
+# local test run on every push is too slow for a pre-push hook. The generated-types and
+# docs-fixtures diffs are also intentionally left to CI: a local run regenerates the
+# committed generated.ts with a different property ordering than main, so a local diff
+# check would fail spuriously. Pest Browser stays CI-only because it needs the built
+# workbench assets and Playwright browsers. docs:typecheck (docs/tsconfig.json)
 # and the icons-freshness diff also stay CI-only for the same local-drift reasons.
 #
 # The PHP and JS gates are independent, so they run concurrently — JS logs to a
@@ -72,12 +75,12 @@ fi
 js_log="$(mktemp)"
 trap 'rm -f "$js_log"' EXIT
 
-echo "▶ pre-push: composer check + npm run check (concurrent)"
+echo "▶ pre-push: PHP gate (pint + phpstan) + npm run check (concurrent)"
 
 npm run check >"$js_log" 2>&1 &
 js_pid=$!
 
-composer check
+vendor/bin/pint --parallel --test && vendor/bin/phpstan analyse
 php_status=$?
 
 wait "$js_pid"
