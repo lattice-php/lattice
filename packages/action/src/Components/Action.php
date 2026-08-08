@@ -124,11 +124,11 @@ class Action extends Component implements InteractiveComponent
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 250)]
+    #[SerializationHook(priority: 190)]
     protected function stripLazyFormSchema(array $data): array
     {
         if ($this->lazyForm) {
-            $data['props']['form'] = null;
+            $this->form = null;
         }
 
         return $data;
@@ -142,11 +142,11 @@ class Action extends Component implements InteractiveComponent
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 250)]
+    #[SerializationHook(priority: 190)]
     protected function stripUnauthorizedForm(array $data): array
     {
         if ($this->form instanceof Form && ! $this->form->shouldRender()) {
-            $data['props']['form'] = null;
+            $this->form = null;
         }
 
         return $data;
