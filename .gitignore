@@ -8,6 +8,7 @@ node_modules
 /.phpunit.cache
 /.phpunit.result.cache
 /.phpstan-cache
+/.rector-cache
 /vendor/orchestra/testbench-core/laravel
 /public/build
 /workbench/database/*.sqlite
