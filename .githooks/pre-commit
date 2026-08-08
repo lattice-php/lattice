@@ -1,6 +1,10 @@
 #!/bin/sh
-# Fast pre-commit gate: auto-format staged PHP/JS and block on lint errors.
-# The full CI-equivalent gate runs on pre-push. Bypass with `git commit --no-verify`.
+# Fast pre-commit gate: auto-fix staged PHP/JS and block on remaining errors.
+# PHPStan runs full-project (not scoped to staged files) so its cross-file inference stays
+# accurate; parameters.tmpDir in phpstan.neon.dist/phpstan-tests.neon.dist points its result
+# cache at .phpstan-cache/ (gitignored, persists across commits) so repeat runs only
+# re-analyse what actually changed instead of the whole tree.
+# Bypass with `git commit --no-verify`.
 set -e
 
 root="$(git rev-parse --show-toplevel)"
@@ -9,7 +13,15 @@ cd "$root"
 if ! git diff --cached --quiet --diff-filter=ACMR -- '*.php'; then
     echo "▶ pint (staged PHP)"
     git diff -z --cached --name-only --diff-filter=ACMR -- '*.php' | xargs -0 ./vendor/bin/pint
+
+    echo "▶ rector (staged PHP)"
+    git diff -z --cached --name-only --diff-filter=ACMR -- '*.php' | xargs -0 ./vendor/bin/rector process --config=rector.php
+
     git diff -z --cached --name-only --diff-filter=ACMR -- '*.php' | xargs -0 git add
+
+    echo "▶ phpstan (cached)"
+    ./vendor/bin/phpstan analyse --no-progress
+    ./vendor/bin/phpstan analyse -c phpstan-tests.neon.dist --no-progress
 fi
 
 if ! git diff --cached --quiet --diff-filter=ACMR -- '*.ts' '*.tsx'; then

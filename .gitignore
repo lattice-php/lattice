@@ -7,6 +7,7 @@ node_modules
 /.playwright-mcp
 /.phpunit.cache
 /.phpunit.result.cache
+/.phpstan-cache
 /vendor/orchestra/testbench-core/laravel
 /public/build
 /workbench/database/*.sqlite
