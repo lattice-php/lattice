@@ -80,7 +80,7 @@ echo "▶ pre-push: PHP gate (pint + phpstan) + npm run check (concurrent)"
 npm run check >"$js_log" 2>&1 &
 js_pid=$!
 
-vendor/bin/pint --parallel --test && vendor/bin/phpstan analyse
+vendor/bin/pint --parallel --test && vendor/bin/phpstan analyse && vendor/bin/phpstan analyse -c phpstan-tests.neon.dist
 php_status=$?
 
 wait "$js_pid"

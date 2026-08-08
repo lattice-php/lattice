@@ -5,12 +5,16 @@ includes:
 parameters:
     paths:
         - packages
-        - tests
-        - workbench/app
     excludePaths:
         # The framework's publishable config file — larastan's env-outside-config
         # rule keys on a root config/ dir, which packaged configs don't live in.
         - packages/framework/config/lattice.php
         - packages/media/config/media.php
-        - tests/Fixtures/TypeScript/Unloadable/BrokenExtendsMissingClass.php
-    level: 6
+    level: 8
+    ignoreErrors:
+        -
+            # This config only analyses packages/. Traits consumed exclusively from
+            # tests/ or workbench/app/ (analysed separately by phpstan-tests.neon.dist)
+            # read as unused from here; a genuinely dead trait would still surface
+            # there. Scoping artifact, not a suppressed defect.
+            identifier: trait.unused

@@ -1,0 +1,11 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/pestphp/pest-plugin-phpstan/extension.neon
+
+parameters:
+    paths:
+        - tests
+        - workbench/app
+    excludePaths:
+        - tests/Fixtures/TypeScript/Unloadable/BrokenExtendsMissingClass.php
+    level: 6
