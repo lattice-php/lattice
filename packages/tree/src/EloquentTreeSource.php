@@ -283,7 +283,7 @@ final class EloquentTreeSource implements TreeSource
 
         foreach ($modelsByParent as $parent => $models) {
             $this->childrenByParent[$parent] = array_map(
-                fn (Model $model): TreeNode => $this->node(
+                fn ($model): TreeNode => $this->node(
                     $model,
                     isset($modelsByParent[(string) $model->getKey()]),
                 ),
