@@ -10,6 +10,7 @@ use Lattice\Core\PageMetadata;
 use Lattice\Core\Support\Discovery\ClassWalker;
 use ReflectionClass;
 use Spatie\Attributes\Attributes;
+use Throwable;
 
 final class DiscoveryManifest
 {
@@ -109,7 +110,18 @@ final class DiscoveryManifest
 
         foreach (self::configuredPaths() as $path) {
             foreach (ClassWalker::classes($path) as $class) {
-                if (new ReflectionClass($class)->isAbstract()) {
+                try {
+                    $abstract = new ReflectionClass($class)->isAbstract();
+                } catch (Throwable) {
+                    // A discovered class can fail to autoload when it depends on an
+                    // optional (e.g. require-dev) package that isn't installed in the
+                    // consuming app — e.g. Lattice's own Testbench-based test
+                    // scaffolding. It can't carry a discoverable attribute either
+                    // way, so skip it rather than fatal.
+                    continue;
+                }
+
+                if ($abstract) {
                     continue;
                 }
 

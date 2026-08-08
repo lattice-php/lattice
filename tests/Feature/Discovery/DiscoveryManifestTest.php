@@ -119,3 +119,15 @@ test('the class walker returns classes under a path and an empty list for a miss
 test('the class walker includes enums via all()', function (): void {
     expect(ClassWalker::all(dirname(__DIR__, 3).'/packages/table/src/Enums'))->toContain(ColumnType::class);
 });
+
+test('the manifest skips a class that fails to autoload instead of throwing', function (): void {
+    config(['lattice.discover' => [
+        dirname(__DIR__, 2).'/Fixtures/Discovery',
+        dirname(__DIR__, 2).'/Fixtures/TypeScript/Unloadable',
+    ]]);
+    app(DiscoveryManifest::class)->clear();
+
+    $manifest = app(DiscoveryManifest::class);
+
+    expect($manifest->forGroup('forms'))->toMatchArray(['fixtures.profile' => DiscoveredProfileForm::class]);
+});
