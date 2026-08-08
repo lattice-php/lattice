@@ -3,6 +3,7 @@ includes:
     - vendor/pestphp/pest-plugin-phpstan/extension.neon
 
 parameters:
+    tmpDir: %currentWorkingDirectory%/.phpstan-cache/tests
     paths:
         - tests
         - workbench/app
