@@ -13,14 +13,13 @@ use Lattice\Support\Wire\WireSourceCatalog;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript modules
- * (one `generated.ts` per non-excluded `WireSourceCatalog` source) from
+ * (one `generated.ts` per non-root `WireSourceCatalog` source) from
  * `WireModelBuilder::buildAll()`'s per-origin partitioning. Bound in the
  * workbench so `lattice:typescript` rebuilds the base types every consumer
  * app then augments. Workbench-only, so this build code never ships.
  *
  * Which classes land in which module falls entirely out of each class file's
- * own composer package — adding a package to emission needs nothing here,
- * only dropping its short name from `EMISSION_EXCLUDED`.
+ * own composer package.
  */
 final readonly class BaseProfile implements TypeScriptProfile
 {
@@ -52,7 +51,7 @@ final readonly class BaseProfile implements TypeScriptProfile
         $written = 0;
 
         foreach ($this->catalog->discover() as $source) {
-            if ($source->isRoot || in_array($source->shortName, self::EMISSION_EXCLUDED, true)) {
+            if ($source->isRoot) {
                 continue;
             }
 

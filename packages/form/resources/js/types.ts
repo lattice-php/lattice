@@ -10,6 +10,7 @@ export type {
   Choice,
   DateInput,
   DateTimeInput,
+  FieldConditions,
   Form,
   FormNodeType,
   HiddenInput,

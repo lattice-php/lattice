@@ -15,6 +15,7 @@ it('serializes an eager node tree with defaults', function (): void {
     );
 
     expect($node['type'])->toBe('tree')
+        ->and($node['props']['nodes'][0])->toHaveKeys(['id', 'label', 'schema', 'href', 'disabled', 'hasChildren', 'children'])
         ->and($node['props']['nodes'][0])->toMatchArray(['id' => '1', 'label' => 'Electronics'])
         ->and($node['props']['nodes'][0]['children'][0])->toMatchArray(['id' => '2', 'label' => 'Laptops'])
         ->and($node['props']['rememberState'])->toBeFalse()
@@ -106,7 +107,7 @@ it('serializes source children beyond fifty levels', function (): void {
     );
 
     $boundary = $node['props']['nodes'][0];
-    while (isset($boundary['children'])) {
+    while ($boundary['children'] !== []) {
         $boundary = $boundary['children'][0];
     }
 
@@ -123,7 +124,7 @@ it('serializes inline children beyond fifty levels', function (): void {
     $node = wire(Tree::make()->nodes([$subtree]));
 
     $boundary = $node['props']['nodes'][0];
-    while (isset($boundary['children'])) {
+    while ($boundary['children'] !== []) {
         $boundary = $boundary['children'][0];
     }
 
@@ -139,7 +140,7 @@ it('terminates a source cycle without serializing a duplicate node', function ()
     );
 
     expect($node['props']['nodes'][0])->toMatchArray(['id' => 'root', 'hasChildren' => true])
-        ->and($node['props']['nodes'][0])->not->toHaveKey('children');
+        ->and($node['props']['nodes'][0]['children'])->toBe([]);
 });
 
 it('serves the package translations under the tree namespace', function (): void {

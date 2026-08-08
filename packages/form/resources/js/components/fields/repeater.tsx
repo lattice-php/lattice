@@ -27,7 +27,7 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
   const atMin = props.minItems != null && rows.length <= props.minItems;
   const isTable = props.layout === "table";
-  const itemLabels = (props as { itemLabels?: Array<string | null> | null }).itemLabels;
+  const itemLabels = props.itemLabels;
   const rowHeading = (index: number) => {
     const label = itemLabels?.[index];
 

@@ -11,6 +11,7 @@
             "editablePrefill": false,
             "helperText": null,
             "itemLabel": null,
+            "itemLabels": null,
             "label": "Line items",
             "layout": "stack",
             "maxItems": null,

@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { moveAction, stubMoveFetch, testRegistry, treeNode } from "./test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
 function renderTree(nodes: TreeNodeData[], extra: Record<string, unknown> = {}) {
   const node = fakeNode({

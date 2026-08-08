@@ -31,6 +31,7 @@ export type Builder = {
   resizableColumns: boolean;
   resizeIndicator: boolean;
   rowActions: RowAction[] | null;
+  templates: RowTemplateData[];
   tooltip: string | null;
   value: unknown;
 };
@@ -449,6 +450,7 @@ export type Repeater = {
   editablePrefill: boolean;
   helperText: string | null;
   itemLabel: string | null;
+  itemLabels: (string | null)[] | null;
   label: string | null;
   layout: RowLayout;
   maxItems: number | null;
@@ -498,6 +500,11 @@ export type RowAction = {
 };
 export type RowActionType = "duplicate" | "remove";
 export type RowLayout = "stack" | "table";
+export type RowTemplateData = {
+  readonly label: string;
+  readonly schema: Node[];
+  readonly type: string;
+};
 export type Select = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -512,6 +519,7 @@ export type Select = {
   label: string | null;
   multiple: boolean;
   name: string;
+  optionSchema: Node[] | null;
   options: Option[];
   placeholder: string | null;
   prefillRefreshOn: string[] | null;

@@ -1,7 +1,7 @@
 import { act, fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice";
-import type { Node, RendererComponent } from "@lattice-php/core";
+import type { RendererComponent } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { renderWithForm } from "@lattice-php/form/test-support";
 import { SelectComponent } from "./select";
@@ -362,11 +362,9 @@ describe("SelectComponent option schema", () => {
           { label: "Acme GmbH", value: "42", data: { email: "kontakt@acme.de" } },
           { label: "Globex AG", value: "43", data: { email: "info@globex.de" } },
         ],
+        optionSchema: [{ type: "test.meta", props: { dataBindings: { text: "email" } } }],
       },
     });
-    (node.props as { optionSchema?: Node[] }).optionSchema = [
-      { type: "test.meta", props: { dataBindings: { text: "email" } } },
-    ];
 
     renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
       context: { action: "/forms/customers", componentRef: "ref-1" },
@@ -388,9 +386,9 @@ describe("SelectComponent option schema", () => {
         emptyLabel: "No customers",
         searchPlaceholder: "Search",
         options: [{ label: "Acme GmbH", value: "42", data: { email: "kontakt@acme.de" } }],
+        optionSchema: [],
       },
     });
-    (node.props as { optionSchema?: Node[] }).optionSchema = [];
 
     renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
       context: { action: "/forms/customers", componentRef: "ref-1" },

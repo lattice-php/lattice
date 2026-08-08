@@ -7,6 +7,7 @@ declare module "@lattice-php/core" {
 
 export type { Affix, Color, ColorKind, ColorName } from "@lattice-php/core";
 export type {
+  Breakpoint,
   Callout,
   ColumnWidth,
   ComponentPropsMap,

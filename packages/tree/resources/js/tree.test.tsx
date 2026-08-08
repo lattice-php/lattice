@@ -2,7 +2,8 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fakeNode, jsonResponse, stubFetch } from "@lattice-php/core/test-support";
 import { renderTree, sampleNodes as nodes, treeNode } from "./test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -114,11 +115,9 @@ describe("Tree component", () => {
 
   it("keeps the label as the treeitem's accessible name even when the schema omits it", () => {
     const hiddenLabelNodes: TreeNodeData[] = [
-      {
-        id: "7",
-        label: "Hidden Label",
+      treeNode("7", "Hidden Label", {
         schema: [{ props: { text: "something else" }, type: "test.text" }],
-      },
+      }),
     ];
 
     renderTree({ nodes: hiddenLabelNodes });

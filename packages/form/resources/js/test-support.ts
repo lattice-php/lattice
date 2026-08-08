@@ -138,8 +138,12 @@ export function priceField(): Node {
 }
 
 export function builderNode(): Node {
-  return Object.assign(
-    fakeNode({ id: "builder", type: "field.builder", props: { name: "items" } }),
-    { templates: [{ type: "product", label: "Product", schema: [priceField()] }] },
-  );
+  return fakeNode({
+    id: "builder",
+    type: "field.builder",
+    props: {
+      name: "items",
+      templates: [{ type: "product", label: "Product", schema: [priceField()] }],
+    },
+  });
 }

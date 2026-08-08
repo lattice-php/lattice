@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { col, tableNode } from "../test-support";
+import { col, tableNode, tableQuery } from "../test-support";
 
 const apiFetch = vi.hoisted(() =>
   vi.fn<(url: string, init?: Record<string, unknown>) => Promise<Response>>(
@@ -78,9 +78,8 @@ describe("table bulk actions", () => {
       ...node,
       props: {
         ...node.props,
-        query: {
+        query: tableQuery({
           filters: [{ field: "status", operator: "eq", value: "active" }],
-          sorts: [],
           tableFilters: {
             featured: { value: "true" },
             updated_at: { from: "2026-01-01", until: "" },
@@ -89,9 +88,7 @@ describe("table bulk actions", () => {
             { filter: "featured", label: "Featured", value: "Yes" },
             { filter: "updated_at", label: "Updated", value: "2026-01-01" },
           ],
-          page: 1,
-          perPage: 25,
-        },
+        }),
         pagination: {
           mode: "table",
           currentPage: 1,

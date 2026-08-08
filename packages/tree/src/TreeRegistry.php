@@ -15,7 +15,7 @@ final class TreeRegistry extends DefinitionRegistry
      * One level of the tree for the lazy endpoint: the roots when no parent
      * is given, otherwise the immediate children of `?parent=`.
      *
-     * @return array{nodes: list<array<string, mixed>>}
+     * @return array{nodes: list<TreeNodeData>}
      */
     public function response(string $key, Request $request, ?TreeDefinition $definition = null): array
     {
@@ -32,18 +32,9 @@ final class TreeRegistry extends DefinitionRegistry
         return ['nodes' => array_map($this->serialiseLevelNode(...), $nodes)];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function serialiseLevelNode(TreeNode $node): array
+    private function serialiseLevelNode(TreeNode $node): TreeNodeData
     {
-        $data = $node->serialiseShallow();
-
-        if ($node->children !== []) {
-            $data['hasChildren'] = true;
-        }
-
-        return $data;
+        return $node->data([], $node->hasChildren || $node->children !== []);
     }
 
     /**

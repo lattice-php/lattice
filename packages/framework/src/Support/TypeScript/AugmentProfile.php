@@ -19,7 +19,7 @@ final readonly class AugmentProfile implements TypeScriptProfile
     public function run(): string
     {
         $document = new WireModelBuilder()->build(
-            $this->catalog->builtinDirs(self::EMISSION_EXCLUDED),
+            $this->catalog->builtinDirs(),
             $this->catalog->appDirs(),
         );
 

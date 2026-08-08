@@ -2,7 +2,8 @@ import type { RenderResult } from "@testing-library/react";
 import { vi } from "vitest";
 import { createRegistry, eagerComponent, type RendererComponent } from "@lattice-php/core";
 import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
 export const moveAction = fakeNode({
   props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
@@ -40,8 +41,12 @@ export function treeNode(
     id,
     label,
     schema: [{ props: { text: label }, type: "test.text" }],
+    href: null,
+    disabled: false,
+    hasChildren: false,
+    children: [],
     ...extra,
-  } as TreeNodeData;
+  };
 }
 
 /** Labels of the `test.action` buttons clicked since the last reset. */

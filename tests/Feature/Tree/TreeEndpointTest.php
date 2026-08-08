@@ -24,12 +24,13 @@ it('serves one level of children for a sealed tree', function (): void {
     $nodes = $response->json('nodes');
 
     expect($nodes)->toHaveCount(1)
+        ->and($nodes[0])->toHaveKeys(['id', 'label', 'schema', 'href', 'disabled', 'hasChildren', 'children'])
         ->and($nodes[0])->toMatchArray([
             'id' => $laptopsId,
             'label' => 'Laptops',
             'hasChildren' => true,
         ])
-        ->and($nodes[0])->not->toHaveKey('children')
+        ->and($nodes[0]['children'])->toBe([])
         ->and($nodes[0]['schema'])->toHaveCount(1)
         ->and($nodes[0]['schema'][0]['type'])->toBe('text')
         ->and($nodes[0]['schema'][0]['props']['text'])->toBe('Laptops');

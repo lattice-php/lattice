@@ -4,8 +4,7 @@ import { useT } from "@lattice-php/lattice/runtime";
 
 const Signature: RendererComponent<"signature"> = ({ node }) => {
   const { t } = useT("signature-example");
-  const label =
-    typeof node.props?.label === "string" ? node.props.label : t("placeholder", "Sign here");
+  const label = node.props.label ?? t("placeholder", "Sign here");
 
   return (
     <div

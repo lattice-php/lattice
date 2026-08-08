@@ -1,10 +1,24 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Core\Support\Wire;
 use Lattice\Form\Components\Builder;
 use Lattice\Form\Components\RowTemplate;
 use Lattice\Form\Components\Textarea;
 use Lattice\Form\Components\TextInput;
+
+it('serializes row templates inside props', function (): void {
+    $field = Builder::make('items', 'Line items')
+        ->templates([
+            RowTemplate::make('text')->label('Text')->schema([Textarea::make('content')]),
+            RowTemplate::make('product')->label('Product line')->schema([TextInput::make('qty')]),
+        ]);
+    $wire = $field->jsonSerialize();
+
+    expect($wire)->not->toHaveKey('templates')
+        ->and($wire['props']['templates'])->toHaveCount(2)
+        ->and(Wire::toArray($wire['props']['templates'][0]))->toHaveKeys(['type', 'label', 'schema']);
+});
 
 it('serialises a builder with its blocks and props', function (): void {
     $wire = wire(
@@ -24,10 +38,10 @@ it('serialises a builder with its blocks and props', function (): void {
         ->and($wire['props']['maxItems'])->toBe(20)
         ->and($wire['props']['reorderable'])->toBeTrue()
         ->and($wire['props']['addLabel'])->toBe('Add block')
-        ->and($wire['templates'])->toHaveCount(2)
-        ->and($wire['templates'][0]['type'])->toBe('text')
-        ->and($wire['templates'][1]['type'])->toBe('product')
-        ->and($wire['templates'][1]['schema'][0]['props']['name'])->toBe('qty');
+        ->and($wire['props']['templates'])->toHaveCount(2)
+        ->and($wire['props']['templates'][0]['type'])->toBe('text')
+        ->and($wire['props']['templates'][1]['type'])->toBe('product')
+        ->and($wire['props']['templates'][1]['schema'][0]['props']['name'])->toBe('qty');
 });
 
 it('configures default rows with the same fluent api as repeater', function (): void {

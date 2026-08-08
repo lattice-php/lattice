@@ -12,7 +12,8 @@ use Lattice\Form\FormData;
  * Rows discriminated by their reserved `type` key: each row validates and
  * casts through the RowTemplate matching its type, `type` is required and
  * constrained to the declared templates, and it survives casting. The
- * templates serialize onto the wire node under `templates`.
+ * templates compile to RowTemplateData and serialize onto the wire node
+ * under `props.templates`.
  *
  * @api
  */
@@ -23,14 +24,17 @@ abstract class TypedRowsField extends RowsField
     /**
      * @var array<int, RowTemplate>
      */
-    protected array $templates = [];
+    protected array $rowTemplates = [];
+
+    /** @var list<RowTemplateData> */
+    public array $templates = [];
 
     /**
      * @param  array<int, RowTemplate>  $templates
      */
     public function templates(array $templates): static
     {
-        $this->templates = $templates;
+        $this->rowTemplates = $templates;
 
         return $this;
     }
@@ -43,7 +47,7 @@ abstract class TypedRowsField extends RowsField
     {
         $type = is_string($row[self::TYPE] ?? null) ? $row[self::TYPE] : null;
 
-        foreach ($this->templates as $template) {
+        foreach ($this->rowTemplates as $template) {
             if ($template->type === $type) {
                 return $template->fields();
             }
@@ -59,7 +63,7 @@ abstract class TypedRowsField extends RowsField
 
         $typeRules = [
             'required',
-            Rule::in(array_map(static fn (RowTemplate $template): string => $template->type, $this->templates)),
+            Rule::in(array_map(static fn (RowTemplate $template): string => $template->type, $this->rowTemplates)),
         ];
 
         foreach (array_keys($rows) as $index) {
@@ -85,9 +89,14 @@ abstract class TypedRowsField extends RowsField
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 300)]
-    protected function serialiseTemplates(array $data): array
+    #[SerializationHook(priority: 190)]
+    protected function prepareTemplates(array $data): array
     {
-        return [...$data, 'templates' => $this->templates];
+        $this->templates = array_map(
+            static fn (RowTemplate $template): RowTemplateData => $template->data(),
+            $this->rowTemplates,
+        );
+
+        return $data;
     }
 }

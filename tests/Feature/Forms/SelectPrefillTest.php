@@ -37,7 +37,7 @@ function nestedRepeaterPrefilledOptions(Form $form): array
  */
 function builderPrefilledOptions(Form $form): array
 {
-    return wire($form)['schema'][0]['templates'][0]['schema'][0]['props']['options'] ?? [];
+    return wire($form)['schema'][0]['props']['templates'][0]['schema'][0]['props']['options'] ?? [];
 }
 
 it('resolves the label for a single filled id', function (): void {

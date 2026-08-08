@@ -12,9 +12,8 @@ import type { RefObject } from "react";
 import { runAction } from "@lattice-php/action";
 import { apiFetch, apiJson } from "@lattice-php/core";
 import { usePersistentState } from "@lattice-php/ui/lib/use-persistent-state";
-import type { Node } from "@lattice-php/core";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import type { TreeNodeData } from "./tree";
+import type { Tree, TreeNodeData } from "./types";
 
 export const ROOTS_KEY = "";
 
@@ -33,12 +32,11 @@ function addChildren(graph: TreeGraph, parentId: string, children: TreeNodeData[
   graph.loaded.add(parentId);
 
   for (const child of children) {
-    const { children: nested, ...node } = child;
-    graph.nodes.set(child.id, node);
+    graph.nodes.set(child.id, { ...child, children: [] });
     graph.parents.set(child.id, parentId === ROOTS_KEY ? null : parentId);
 
-    if (nested) {
-      addChildren(graph, child.id, nested);
+    if (child.children.length > 0) {
+      addChildren(graph, child.id, child.children);
     }
   }
 }
@@ -267,7 +265,7 @@ function visibleOrder(registry: Map<string, TreeItemRegistration>): TreeItemRegi
 }
 
 async function runTreeAction(
-  action: Node<"action">,
+  action: NonNullable<Tree["moveAction"]>,
   payload: Record<string, unknown>,
   dispatch: ReturnType<typeof useEffectDispatcher>,
 ): Promise<boolean> {
@@ -307,16 +305,16 @@ export function useTreeState({
   storageKey,
 }: {
   activeId: string | null;
-  activePath?: string[] | null;
+  activePath: string[] | null;
   defaultExpanded: string[];
   endpoint: string | null;
   componentRef: string | null;
   lazy: boolean;
   nodes: TreeNodeData[];
-  moveAction: Node<"action"> | null;
+  moveAction: Tree["moveAction"];
   rememberState: boolean;
   revision: string | number | null;
-  selectAction: Node<"action"> | null;
+  selectAction: Tree["selectAction"];
   storageKey: string;
 }): TreeContextValue {
   const [expanded, setExpanded] = usePersistentState<Set<string>>(
