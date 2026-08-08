@@ -105,7 +105,7 @@ it('expands array options carrying data', function (): void {
 it('serializes the option schema only when set', function (): void {
     $plain = Select::make('plan', 'Plan')->options([Select::option('Free', 'free')]);
 
-    expect(wire($plain)['props'])->not->toHaveKey('optionSchema');
+    expect(wire($plain)['props']['optionSchema'])->toBeNull();
 
     $rich = Select::make('customer', 'Customer')->optionSchema([
         Text::make('')->dataKey('text', 'label'),
@@ -126,7 +126,7 @@ it('omits the option schema when every component is hidden', function (): void {
         Text::make('')->dataKey('text', 'label')->hidden(),
     ]);
 
-    expect(wire($field)['props'])->not->toHaveKey('optionSchema');
+    expect(wire($field)['props']['optionSchema'])->toBeNull();
 });
 
 it('keeps per-option data when normalizing resolver options', function (): void {

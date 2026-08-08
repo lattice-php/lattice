@@ -14,6 +14,7 @@
             "label": "Country",
             "multiple": false,
             "name": "country",
+            "optionSchema": null,
             "options": [
                 {
                     "data": null,

@@ -7,7 +7,7 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import { Renderer } from "@lattice-php/core/renderer";
 import { materializeSchema } from "@lattice-php/core/materialize";
-import type { Node, Option, RendererComponent } from "@lattice-php/core";
+import type { Option, RendererComponent } from "@lattice-php/core";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { fieldDomName } from "@lattice-php/form/lib/field-dom-name";
@@ -52,7 +52,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],
   );
-  const optionSchema = (resolvedNode.props as { optionSchema?: Node[] }).optionSchema;
+  const optionSchema = resolvedNode.props.optionSchema;
 
   const globalValue = useFormValue(name);
   const values = useFormValues();

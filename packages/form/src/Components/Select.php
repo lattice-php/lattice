@@ -6,7 +6,6 @@ namespace Lattice\Form\Components;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Contracts\OptionSource;
 use Lattice\Core\Facades\Evaluate;
 use Lattice\Core\Option;
@@ -35,10 +34,8 @@ class Select extends Field
 
     private ?OptionSource $optionSource = null;
 
-    /**
-     * @var array<int, Component>
-     */
-    protected array $optionSchema = [];
+    /** @var list<Component>|null */
+    public ?array $optionSchema = null;
 
     public bool $multiple = false;
 
@@ -154,31 +151,26 @@ class Select extends Field
      */
     public function optionSchema(array $components): static
     {
-        $this->optionSchema = $components;
+        $this->optionSchema = $components === [] ? null : $components;
 
         return $this;
     }
 
     /**
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 300)]
-    protected function serialiseOptionSchema(array $data): array
+    #[\Override]
+    protected function decorateProps(array $props): array
     {
-        if ($this->optionSchema === []) {
-            return $data;
+        $props = parent::decorateProps($props);
+
+        if ($this->optionSchema !== null) {
+            $schema = $this->renderableComponents($this->optionSchema);
+            $props['optionSchema'] = $schema === [] ? null : $schema;
         }
 
-        $schema = $this->renderableComponents($this->optionSchema);
-
-        if ($schema === []) {
-            return $data;
-        }
-
-        $data['props']['optionSchema'] = $schema;
-
-        return $data;
+        return $props;
     }
 
     /**

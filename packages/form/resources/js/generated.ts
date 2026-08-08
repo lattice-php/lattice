@@ -513,6 +513,7 @@ export type Select = {
   label: string | null;
   multiple: boolean;
   name: string;
+  optionSchema: Node[] | null;
   options: Option[];
   placeholder: string | null;
   prefillRefreshOn: string[] | null;
