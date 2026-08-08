@@ -54,7 +54,7 @@ export type MediaPicker = {
   value: unknown;
 };
 export type MediaTypeFilter = {
-  label: string | null;
+  label: string;
 };
 export type MediumNodeType = "media.library";
 export type NodeType = "field.media-picker" | "media.library";

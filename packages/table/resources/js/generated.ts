@@ -73,10 +73,10 @@ export type ComponentPropsMap = {
   table: Table;
 };
 export type DateRangeFilter = {
-  label: string | null;
+  label: string;
 };
 export type Filter = {
-  label: string | null;
+  label: string;
 };
 export type FilterClause = {
   readonly field: string;
@@ -160,7 +160,7 @@ export type NumberColumn = {
 };
 export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type SelectFilter = {
-  label: string | null;
+  label: string;
   multiple: boolean;
   options: Option[];
   placeholder: string | null;
@@ -229,7 +229,7 @@ export type TableSort = {
 };
 export type TernaryFilter = {
   falseLabel: string;
-  label: string | null;
+  label: string;
   placeholder: string;
   trueLabel: string;
 };
@@ -256,5 +256,5 @@ export type TextColumn = {
   width: ColumnWidth;
 };
 export type ToggleFilter = {
-  label: string | null;
+  label: string;
 };
