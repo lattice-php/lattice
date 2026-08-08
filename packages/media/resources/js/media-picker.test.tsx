@@ -55,7 +55,14 @@ function renderPicker(props: Record<string, unknown> = {}, schema?: Schema) {
       multiple: false,
       maxFiles: null,
       selected: [
-        { id: 7, name: "cover.jpg", url: null, preview_url: null, mime_type: "image/jpeg" },
+        {
+          id: 7,
+          name: "cover.jpg",
+          url: null,
+          preview_url: null,
+          mime_type: "image/jpeg",
+          values: {},
+        },
       ],
       ...props,
     },
@@ -90,6 +97,7 @@ describe("MediaPickerComponent", () => {
           url: "/storage/media/cover.jpg",
           preview_url: "/storage/media/conversions/cover-thumb.webp",
           mime_type: "image/jpeg",
+          values: {},
         },
       ],
     });
@@ -113,8 +121,8 @@ describe("MediaPickerComponent", () => {
     const { container } = renderPicker({
       multiple: true,
       selected: [
-        { id: 7, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg" },
-        { id: 9, name: "b.jpg", url: null, preview_url: null, mime_type: "image/jpeg" },
+        { id: 7, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg", values: {} },
+        { id: 9, name: "b.jpg", url: null, preview_url: null, mime_type: "image/jpeg", values: {} },
       ],
     });
 
@@ -133,7 +141,16 @@ describe("MediaPickerComponent", () => {
       {
         multiple: true,
         maxFiles: 2,
-        selected: [{ id: 1, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg" }],
+        selected: [
+          {
+            id: 1,
+            name: "a.jpg",
+            url: null,
+            preview_url: null,
+            mime_type: "image/jpeg",
+            values: {},
+          },
+        ],
       },
       librarySchema([libraryRow(10, { name: "d.jpg" }), libraryRow(11, { name: "e.jpg" })]),
     );
@@ -182,7 +199,16 @@ describe("MediaPickerComponent", () => {
       {
         name: "gallery",
         multiple: true,
-        selected: [{ id: 7, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg" }],
+        selected: [
+          {
+            id: 7,
+            name: "a.jpg",
+            url: null,
+            preview_url: null,
+            mime_type: "image/jpeg",
+            values: {},
+          },
+        ],
       },
       librarySchema([]),
     );
