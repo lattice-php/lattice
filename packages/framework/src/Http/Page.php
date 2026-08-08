@@ -106,7 +106,7 @@ abstract class Page implements PageContract, Responsable
         // binding resolve exactly as they do on the [Page, 'render'] path.
         $parameters = ['schema' => PageSchema::make()] + ($request->route()?->parameters() ?? []);
 
-        $schema = app()->call([$this, 'render'], $parameters);
+        $schema = app()->call($this->render(...), $parameters);
 
         return $this->pageResponse('render', $schema)->toResponse($request);
     }

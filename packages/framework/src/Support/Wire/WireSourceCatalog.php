@@ -47,7 +47,7 @@ final readonly class WireSourceCatalog
 
         return new self(
             installed: is_array($installed['packages'] ?? null)
-                ? array_values(array_filter($installed['packages'], static fn (mixed $entry): bool => is_array($entry)))
+                ? array_values(array_filter($installed['packages'], is_array(...)))
                 : [],
             rootComposer: $rootInstallPath !== null ? self::decode($rootInstallPath.'/composer.json') : [],
             composerDir: $composerDir,

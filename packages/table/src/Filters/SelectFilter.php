@@ -85,7 +85,7 @@ final class SelectFilter extends Filter
             $field->placeholder($this->placeholder);
         }
 
-        if ($this->optionSource !== null) {
+        if ($this->optionSource instanceof OptionSource) {
             $field->optionsFrom($this->optionSource);
         } else {
             $field->options($this->options);
@@ -157,7 +157,7 @@ final class SelectFilter extends Filter
      */
     private function labelsFor(array $values): array
     {
-        $options = $this->optionSource !== null
+        $options = $this->optionSource instanceof OptionSource
             ? $this->optionSource->selected($values)
             : $this->options;
         $labelsByValue = [];

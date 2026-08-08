@@ -67,7 +67,7 @@ it('matches itself when the root is the target type', function (): void {
 it('throws a clear error when findOrFail cannot find a match', function (): void {
     $root = ComponentNode::root([]);
 
-    expect(fn () => $root->findOrFail(fn (ComponentNode $n): bool => $n->type() === 'missing', 'type "missing"'))
+    expect(fn (): ComponentNode => $root->findOrFail(fn (ComponentNode $n): bool => $n->type() === 'missing', 'type "missing"'))
         ->toThrow(RuntimeException::class, 'No component node found matching type "missing". Available: ');
 });
 
@@ -76,7 +76,7 @@ it('throws a clear error when firstOfTypeOrFail cannot find a match', function (
         ['type' => 'action', 'id' => 'archive', 'props' => [], 'schema' => []],
     ]);
 
-    expect(fn () => $root->firstOfTypeOrFail('action', 'missing'))
+    expect(fn (): ComponentNode => $root->firstOfTypeOrFail('action', 'missing'))
         ->toThrow(RuntimeException::class, 'No component of type [action] with id/key [missing] found. Available: action:archive');
 });
 
@@ -85,7 +85,7 @@ it('throws a clear error when fieldOrFail cannot find a match', function (): voi
         ['type' => 'field.text-input', 'id' => null, 'props' => ['name' => 'email'], 'schema' => []],
     ]]);
 
-    expect(fn () => $form->fieldOrFail('missing'))
+    expect(fn (): ComponentNode => $form->fieldOrFail('missing'))
         ->toThrow(RuntimeException::class, 'No field named [missing] found. Available fields: email');
 });
 
