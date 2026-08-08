@@ -18,12 +18,17 @@ final class NotificationController
     public function index(Request $request): JsonResponse
     {
         $notifiable = $request->user();
+
+        if ($notifiable === null) {
+            abort(401);
+        }
+
         $perPage = (int) config('lattice.notifications.per_page', 15);
 
         $notifications = $notifiable->notifications()->paginate($perPage);
 
         return response()->json(new NotificationList(
-            notifications: array_map($this->present(...), $notifications->items()),
+            notifications: array_values(array_map($this->present(...), $notifications->items())),
             unreadCount: $notifiable->unreadNotifications()->count(),
             hasMore: $notifications->hasMorePages(),
         ));
@@ -32,6 +37,11 @@ final class NotificationController
     public function read(Request $request, string $id): JsonResponse
     {
         $notifiable = $request->user();
+
+        if ($notifiable === null) {
+            abort(401);
+        }
+
         $notifiable->notifications()->findOrFail($id)->markAsRead();
 
         return $this->count($notifiable);
@@ -40,6 +50,11 @@ final class NotificationController
     public function readAll(Request $request): JsonResponse
     {
         $notifiable = $request->user();
+
+        if ($notifiable === null) {
+            abort(401);
+        }
+
         $notifiable->unreadNotifications()->update(['read_at' => now()]);
 
         return $this->count($notifiable);
@@ -48,6 +63,11 @@ final class NotificationController
     public function destroy(Request $request, string $id): JsonResponse
     {
         $notifiable = $request->user();
+
+        if ($notifiable === null) {
+            abort(401);
+        }
+
         $notifiable->notifications()->findOrFail($id)->delete();
 
         return $this->count($notifiable);
@@ -56,12 +76,17 @@ final class NotificationController
     public function clear(Request $request): JsonResponse
     {
         $notifiable = $request->user();
+
+        if ($notifiable === null) {
+            abort(401);
+        }
+
         $notifiable->notifications()->delete();
 
         return $this->count($notifiable);
     }
 
-    private function count(object $notifiable): JsonResponse
+    private function count(mixed $notifiable): JsonResponse
     {
         return response()->json(new UnreadCount($notifiable->unreadNotifications()->count()));
     }

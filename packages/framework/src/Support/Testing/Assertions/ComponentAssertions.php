@@ -184,8 +184,9 @@ final readonly class ComponentAssertions
      */
     private function select(string $selector): array
     {
-        [$type, $id] = array_pad(explode(':', $selector, 2), 2, null);
-        $type = $this->resolveType($type);
+        $parts = explode(':', $selector, 2);
+        $id = $parts[1] ?? null;
+        $type = $this->resolveType($parts[0]);
 
         return $this->node->findAllIncludingSelf(
             static fn (ComponentNode $node): bool => $node->matches($type, $id),

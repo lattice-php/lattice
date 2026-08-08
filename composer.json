@@ -46,7 +46,7 @@
         }
     },
     "scripts": {
-        "analyse": "./vendor/bin/phpstan analyse",
+        "analyse": "./vendor/bin/phpstan analyse && ./vendor/bin/phpstan analyse -c phpstan-tests.neon.dist",
         "check": [
             "@test:lint",
             "@analyse",

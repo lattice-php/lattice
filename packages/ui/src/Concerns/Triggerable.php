@@ -53,7 +53,7 @@ trait Triggerable
     {
         $this->assertBehaviorAllowed('effects');
 
-        $this->effects = $effects;
+        $this->effects = array_values($effects);
 
         return $this;
     }

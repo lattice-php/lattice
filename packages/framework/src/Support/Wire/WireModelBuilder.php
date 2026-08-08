@@ -17,6 +17,7 @@ use ReflectionClass;
 use ReflectionEnum;
 use ReflectionProperty;
 use Spatie\Attributes\Attributes;
+use UnitEnum;
 
 /**
  * Builds the in-memory wire model: every discovered enum, value object, and
@@ -528,7 +529,7 @@ final class WireModelBuilder
     }
 
     /**
-     * @param  class-string  $enum
+     * @param  class-string<UnitEnum>  $enum
      * @return array<string, mixed>
      */
     private function enumDef(string $enum): array
@@ -634,6 +635,7 @@ final class WireModelBuilder
      * The per-type strict envelope of a non-node family: `{type, props}`
      * without id/key/schema.
      *
+     * @param  class-string  $class
      * @return array<string, mixed>
      */
     private function payloadDef(string $category, string $type, string $propsName, string $class, WireModelContext $context): array

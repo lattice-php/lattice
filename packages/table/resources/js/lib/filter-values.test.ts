@@ -51,6 +51,6 @@ describe("filterOptions", () => {
   });
 
   it("returns an empty array when options are absent", () => {
-    expect(filterOptions({ ...filter, props: { label: null } })).toEqual([]);
+    expect(filterOptions({ ...filter, props: { label: "Status" } })).toEqual([]);
   });
 });

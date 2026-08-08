@@ -52,7 +52,7 @@ final class PageRoute
      * Pages booted by Lattice are named routes, so the name lookup is the fast
      * path; a page route registered by hand may be unnamed, hence the scan.
      *
-     * @param  class-string  $page
+     * @param  class-string<PageContract>  $page
      */
     private static function route(string $page): ?Route
     {

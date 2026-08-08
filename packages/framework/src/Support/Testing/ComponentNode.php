@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Lattice\Support\Testing;
 
+use RuntimeException;
+
 final readonly class ComponentNode
 {
     private const array NESTED_COMPONENT_PROPS = ['form', 'headerActions', 'bulkActions', 'toolbar', 'actions', 'trigger'];
@@ -110,6 +112,18 @@ final readonly class ComponentNode
 
     /**
      * @param  callable(self): bool  $matcher
+     */
+    public function findOrFail(callable $matcher, ?string $description = null): self
+    {
+        return $this->find($matcher) ?? throw new RuntimeException(sprintf(
+            'No component node found%s. Available: %s',
+            $description !== null ? " matching {$description}" : '',
+            implode(', ', $this->availableSelectors()),
+        ));
+    }
+
+    /**
+     * @param  callable(self): bool  $matcher
      * @return array<int, self>
      */
     public function findAll(callable $matcher): array
@@ -144,9 +158,28 @@ final readonly class ComponentNode
         return $matcher($this) ? $this : $this->find($matcher);
     }
 
+    public function firstOfTypeOrFail(string $type, ?string $id = null): self
+    {
+        return $this->firstOfType($type, $id) ?? throw new RuntimeException(sprintf(
+            'No component of type [%s]%s found. Available: %s',
+            $type,
+            $id !== null ? " with id/key [{$id}]" : '',
+            implode(', ', $this->availableSelectors()),
+        ));
+    }
+
     public function field(string $name): ?self
     {
         return $this->find(static fn (self $node): bool => $node->prop('name') === $name);
+    }
+
+    public function fieldOrFail(string $name): self
+    {
+        return $this->field($name) ?? throw new RuntimeException(sprintf(
+            'No field named [%s] found. Available fields: %s',
+            $name,
+            implode(', ', $this->availableFieldNames()),
+        ));
     }
 
     /**

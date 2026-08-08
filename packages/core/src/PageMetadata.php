@@ -32,11 +32,13 @@ final readonly class PageMetadata
         public array $can,
     ) {}
 
+    /** @param  PageContract|class-string<PageContract>  $page */
     public static function for(PageContract|string $page): self
     {
         return app(PageMetadataResolver::class)->for($page);
     }
 
+    /** @param  PageContract|class-string<PageContract>  $page */
     public static function reflect(PageContract|string $page): self
     {
         $class = is_object($page) ? $page::class : $page;
@@ -55,6 +57,7 @@ final readonly class PageMetadata
     }
 
     /**
+     * @param  class-string<PageContract>  $class
      * @return array<int, string>|null
      */
     private static function inheritedMiddleware(string $class): ?array
@@ -104,12 +107,14 @@ final readonly class PageMetadata
         return Wire::scalar($value);
     }
 
+    /** @param  class-string  $class */
     private static function attributeOn(string $class): ?AsPage
     {
         return Attributes::get($class, AsPage::class);
     }
 
     /**
+     * @param  class-string<PageContract>  $class
      * @param  callable(AsPage): (PageLayout|PageContainer|array<int,string>|string|null)  $value
      */
     private static function inherited(string $class, callable $value): mixed

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Lattice\Table\Enums\SortDirection;
 use Lattice\Table\RelationBinding;
 
 /**
@@ -89,7 +90,7 @@ final readonly class MultipleRelationColumn implements RelationProjection
             return [];
         }
 
-        return $related
+        return array_values($related
             ->map(function (Model $row): mixed {
                 $value = $row->getAttribute($this->labelField);
 
@@ -102,8 +103,7 @@ final readonly class MultipleRelationColumn implements RelationProjection
                     'color' => (string) ($row->getAttribute($this->colorField) ?? 'gray'),
                 ];
             })
-            ->values()
-            ->all();
+            ->all());
     }
 
     public function applyFilter(Builder $builder, Closure $constrain): void
@@ -124,5 +124,5 @@ final readonly class MultipleRelationColumn implements RelationProjection
      * A to-many list has no scalar ordering, so sorting is a no-op. Such columns
      * also report not-sortable, so a validated query never reaches here.
      */
-    public function applySort(Builder $builder, string $direction): void {}
+    public function applySort(Builder $builder, SortDirection $direction): void {}
 }

@@ -82,12 +82,12 @@ final class Notification
         return $this;
     }
 
-    public function send(object $notifiable): void
+    public function send(mixed $notifiable): void
     {
         $notifiable->notify(new LatticeNotification($this, broadcast: true));
     }
 
-    public function sendToDatabase(object $notifiable): void
+    public function sendToDatabase(mixed $notifiable): void
     {
         $notifiable->notify(new LatticeNotification($this, broadcast: false));
     }

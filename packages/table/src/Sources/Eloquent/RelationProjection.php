@@ -7,6 +7,7 @@ namespace Lattice\Table\Sources\Eloquent;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Lattice\Table\Enums\SortDirection;
 
 /**
  * How the Eloquent driver resolves a column's {@see RelationBinding} into a
@@ -69,5 +70,5 @@ interface RelationProjection
      *
      * @param  Builder<*>  $builder
      */
-    public function applySort(Builder $builder, string $direction): void;
+    public function applySort(Builder $builder, SortDirection $direction): void;
 }

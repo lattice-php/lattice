@@ -11,7 +11,7 @@ trait FiltersRenderableComponents
      * @template T of Renderable
      *
      * @param  array<int, T>  $components
-     * @return array<int, T>
+     * @return list<T>
      */
     protected function renderableComponents(array $components): array
     {

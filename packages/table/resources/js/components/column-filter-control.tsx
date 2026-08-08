@@ -145,7 +145,8 @@ function ColumnSelectFilter({
   onReplace: (field: string, clauses: FilterClause[]) => void;
   onSearch?: (query: string, signal?: AbortSignal) => Promise<Option[]>;
 }) {
-  const { filter, label } = column.props;
+  const { filter, label: rawLabel } = column.props;
+  const label = rawLabel ?? column.key;
 
   if (!filter) {
     return null;

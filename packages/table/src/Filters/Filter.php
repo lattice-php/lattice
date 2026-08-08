@@ -13,7 +13,6 @@ use Lattice\Form\FormData;
 use Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Lattice\Ui\Concerns\GatesRendering;
-use Lattice\Ui\Concerns\HasLabel;
 use Lattice\Ui\Contracts\Renderable;
 
 /**
@@ -27,8 +26,9 @@ abstract class Filter implements JsonSerializable, Renderable
 {
     use FiltersRenderableComponents;
     use GatesRendering;
-    use HasLabel;
     use SerializesWireNode;
+
+    public string $label;
 
     protected ?string $attribute = null;
 
@@ -45,6 +45,13 @@ abstract class Filter implements JsonSerializable, Renderable
     public function key(): string
     {
         return $this->key;
+    }
+
+    public function label(string $label): static
+    {
+        $this->label = $label;
+
+        return $this;
     }
 
     /**

@@ -115,7 +115,7 @@ class Table extends Component implements InteractiveComponent
      */
     public function columns(array $columns): static
     {
-        $this->columns = array_values($this->renderableComponents($columns));
+        $this->columns = $this->renderableComponents($columns);
 
         return $this;
     }
@@ -125,7 +125,7 @@ class Table extends Component implements InteractiveComponent
      */
     public function filters(array $filters): static
     {
-        $this->filters = array_values($this->renderableComponents($filters));
+        $this->filters = $this->renderableComponents($filters);
 
         return $this;
     }

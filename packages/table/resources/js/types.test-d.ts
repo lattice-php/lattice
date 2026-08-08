@@ -54,7 +54,7 @@ const _selectFilter: FilterPropsOf<"filter.select"> = {
 const _selectFilterBad: FilterPropsOf<"filter.select"> = { multiple: 1 };
 
 // Unknown filter types fall back to the generated Filter base plus a loose bag.
-const _looseFilter: FilterPropsOf<"totally.unknown"> = { anything: true, label: null };
+const _looseFilter: FilterPropsOf<"totally.unknown"> = { anything: true, label: "Status" };
 
 void _selectFilter;
 void _selectFilterBad;

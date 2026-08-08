@@ -6,6 +6,7 @@ namespace Lattice\Core\Discovery;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
+use Lattice\Core\Contracts\PageContract;
 use Lattice\Core\PageMetadata;
 use Lattice\Core\Support\Discovery\ClassWalker;
 use ReflectionClass;
@@ -45,11 +46,11 @@ final class DiscoveryManifest
 
     /**
      * @param  class-string  $class
-     * @return array<string, mixed>|null
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can?: array<int, string>}|null
      */
     public function descriptorFor(string $class): ?array
     {
-        /** @var array<class-string, array<string, mixed>> $pages */
+        /** @var array<class-string, array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can?: array<int, string>}> $pages */
         $pages = $this->resolve()['pages'] ?? [];
 
         return $pages[$class] ?? null;
@@ -131,7 +132,7 @@ final class DiscoveryManifest
                     }
                 }
 
-                if (Attributes::has($class, DiscoveryKinds::PAGE_ATTRIBUTE)) {
+                if (Attributes::has($class, DiscoveryKinds::PAGE_ATTRIBUTE) && is_subclass_of($class, PageContract::class)) {
                     $manifest['pages'][$class] = PageMetadata::reflect($class)->toArray();
                 }
             }
