@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.1](https://github.com/lattice-php/lattice/compare/0.45.0...0.45.1) (2026-08-08)
+
+
+### Bug Fixes
+
+* **core:** skip unloadable classes during structure discovery ([#422](https://github.com/lattice-php/lattice/issues/422)) ([37215a0](https://github.com/lattice-php/lattice/commit/37215a0584dfb95f277dd59bd690103f51c34024))
+
 ## [0.45.0](https://github.com/lattice-php/lattice/compare/0.44.0...0.45.0) (2026-08-08)
 
 
