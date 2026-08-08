@@ -23,6 +23,7 @@ class RawBlock extends Component
     }
 
     /**
+     * @param  view-string  $view
      * @param  array<string, mixed>  $data
      */
     public function blade(string $view, array $data = []): static

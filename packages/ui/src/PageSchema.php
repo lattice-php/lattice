@@ -89,7 +89,7 @@ final class PageSchema
     }
 
     /**
-     * @return array<int, Component>
+     * @return list<Component>
      */
     public function renderable(): array
     {

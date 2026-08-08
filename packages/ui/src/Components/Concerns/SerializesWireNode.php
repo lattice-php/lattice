@@ -10,7 +10,6 @@ use Lattice\Ui\Contracts\Renderable;
 use LogicException;
 use ReflectionMethod;
 use Spatie\Attributes\Attributes;
-use Spatie\Attributes\AttributeTarget;
 
 /**
  * The node-envelope serialization pipeline shared by every wire-node family
@@ -101,12 +100,27 @@ trait SerializesWireNode
         /** @var array<class-string, list<string>> $cache */
         static $cache = [];
 
-        return $cache[static::class] ??= collect(Attributes::find($this, SerializationHook::class))
-            ->filter(fn (AttributeTarget $target): bool => $target->attribute instanceof SerializationHook && $target->target instanceof ReflectionMethod)
-            ->filter(fn (AttributeTarget $target): bool => ! $target->target->isPrivate())
-            ->sortBy(fn (AttributeTarget $target): array => [$target->attribute->priority, $target->name])
-            ->map(fn (AttributeTarget $target): string => $target->name)
-            ->values()
-            ->all();
+        if (isset($cache[static::class])) {
+            return $cache[static::class];
+        }
+
+        /** @var list<array{priority: int, name: string}> $hooks */
+        $hooks = [];
+
+        foreach (Attributes::find($this, SerializationHook::class) as $target) {
+            if (! $target->attribute instanceof SerializationHook || ! $target->target instanceof ReflectionMethod) {
+                continue;
+            }
+
+            if ($target->target->isPrivate()) {
+                continue;
+            }
+
+            $hooks[] = ['priority' => $target->attribute->priority, 'name' => $target->name];
+        }
+
+        usort($hooks, fn (array $a, array $b): int => $a['priority'] <=> $b['priority'] ?: $a['name'] <=> $b['name']);
+
+        return $cache[static::class] = array_map(static fn (array $hook): string => $hook['name'], $hooks);
     }
 }
