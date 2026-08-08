@@ -16,8 +16,9 @@
 - Git hooks enforce the gate automatically. `composer install` points `core.hooksPath` at `.githooks/`; if the hooks are
   not active, run `composer install` (or `git config core.hooksPath .githooks`) once.
   - **pre-commit** auto-formats staged PHP/JS (Pint, oxfmt, oxlint) and blocks on lint errors.
-  - **pre-push** runs the full CI-equivalent gate: `composer check` (Pint, PHPStan, Rector, Pest) and `npm run check`
-    (lint, format, type check, type coverage, Vitest, library build).
+  - **pre-push** runs the fast static gate: Pint and PHPStan on the PHP side, `npm run check` (lint, format, type check,
+    type coverage, Vitest, library build) on the JS side. Rector and the full Pest suite are too slow to run on every
+    push, so they run in CI and via explicit local runs (`composer check`, `composer test`) instead.
 - Never push on red. Use `git commit`/`git push --no-verify` only in emergencies.
 - The library build is part of the gate on purpose: it is the artifact consumers receive, and it catches bundling
   regressions (e.g. dependencies that must stay external) that the type check and tests do not.
