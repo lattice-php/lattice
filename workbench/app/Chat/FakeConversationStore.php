@@ -9,7 +9,6 @@ use Lattice\Chat\ChatMessage;
 use Lattice\Chat\ChatPart;
 use Lattice\Chat\Enums\ChatRole;
 use Lattice\Core\Support\Wire;
-use Lattice\Ui\Components\Component;
 
 final readonly class FakeConversationStore
 {
@@ -65,7 +64,7 @@ final readonly class FakeConversationStore
         return [
             'id' => $message->id,
             'role' => $message->role->value,
-            'parts' => array_map(static fn (Component $part): array => Wire::toArray($part), $message->parts),
+            'parts' => array_map(Wire::toArray(...), $message->parts),
         ];
     }
 }

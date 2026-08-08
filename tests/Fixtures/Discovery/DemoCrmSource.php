@@ -19,7 +19,7 @@ final class DemoCrmSource extends RemoteSourceDefinition
             tokenType: 'Bearer',
             expiresIn: 120,
             audience: $request->string('audience')->toString(),
-            scopes: array_values(array_map('strval', $request->array('scopes'))),
+            scopes: array_values(array_map(strval(...), $request->array('scopes'))),
         );
     }
 }

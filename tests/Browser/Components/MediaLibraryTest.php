@@ -114,7 +114,7 @@ it('uploads a file through the real signed flow against rustfs', function (): vo
             $media = Media::query()->where('disk', 's3')->latest('id')->first();
             expect($media)->not->toBeNull();
         });
-        assert($media !== null);
+        assert($media instanceof Media);
 
         assertSeeEventually($page, $media->name);
 
