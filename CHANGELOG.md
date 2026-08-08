@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.46.0](https://github.com/lattice-php/lattice/compare/0.45.1...0.46.0) (2026-08-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* raise tests/ and workbench/app to PHPStan level 8 ([#428](https://github.com/lattice-php/lattice/issues/428))
+* raise packages/ to PHPStan level 8, add media Ownable hook, ComponentNode OrFail helpers ([#426](https://github.com/lattice-php/lattice/issues/426))
+* wire-prop alignment — generated types for every package ([#424](https://github.com/lattice-php/lattice/issues/424))
+
+### Features
+
+* raise packages/ to PHPStan level 8, add media Ownable hook, ComponentNode OrFail helpers ([#426](https://github.com/lattice-php/lattice/issues/426)) ([3b1e97a](https://github.com/lattice-php/lattice/commit/3b1e97a5e67df4bf1ee7b5261b49ca4bcd6af60d))
+* raise tests/ and workbench/app to PHPStan level 8 ([#428](https://github.com/lattice-php/lattice/issues/428)) ([fa5f868](https://github.com/lattice-php/lattice/commit/fa5f868b2f8c0e313e38c8c7411b28888180a140))
+* wire-prop alignment — generated types for every package ([#424](https://github.com/lattice-php/lattice/issues/424)) ([8badd57](https://github.com/lattice-php/lattice/commit/8badd57b8dcc6959ea47936cc832c739e1e27fd3))
+
 ## [0.45.1](https://github.com/lattice-php/lattice/compare/0.45.0...0.45.1) (2026-08-08)
 
 
