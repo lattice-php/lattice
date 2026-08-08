@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Lattice\Form\Components\Select;
 use Lattice\Form\FormData;
 use Lattice\Table\Attributes\AsFilter;
-use Lattice\Table\Enums\FilterControl;
 use Lattice\Table\Filters\Filter;
 
-#[AsFilter(FilterControl::Select)]
+#[AsFilter('filter.media-type')]
 final class MediaTypeFilter extends Filter
 {
     /**
