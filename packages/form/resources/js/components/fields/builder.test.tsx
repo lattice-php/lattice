@@ -2,6 +2,7 @@ import { expect, it, vi } from "vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
 import type { ComponentPropsOf, Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
+import type { RowTemplateData } from "@lattice-php/form/generated";
 import { renderWithForm as wrap } from "@lattice-php/form/test-support";
 
 vi.mock("@lattice-php/core/renderer", async () => {
@@ -11,13 +12,12 @@ vi.mock("@lattice-php/core/renderer", async () => {
 });
 
 import { BuilderComponent } from "./builder";
-import type { RowTemplate } from "./row-templates";
 
 function builderNode(
   props: Partial<ComponentPropsOf<"field.builder">>,
-  templates: RowTemplate[],
-): Node<"field.builder"> & { templates: RowTemplate[] } {
-  return { ...fakeNode({ type: "field.builder", props }), templates };
+  templates: RowTemplateData[],
+): Node<"field.builder"> {
+  return fakeNode({ type: "field.builder", props: { ...props, templates } });
 }
 
 const node = builderNode(

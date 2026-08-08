@@ -4,18 +4,17 @@ declare(strict_types=1);
 namespace Lattice\Form\Components;
 
 use Illuminate\Support\Str;
-use JsonSerializable;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Concerns\HasChildSchema;
 
 /**
  * A typed row template for a TypedRowsField: the schema of child Fields a row
- * of this type is built, validated, and cast from. Serializes as
- * `{type, label, schema}`.
+ * of this type is built, validated, and cast from. Compiles to a
+ * `RowTemplateData` value object for wire serialization.
  *
  * @api
  */
-final class RowTemplate implements JsonSerializable
+final class RowTemplate
 {
     use HasChildSchema;
 
@@ -46,15 +45,12 @@ final class RowTemplate implements JsonSerializable
         ));
     }
 
-    /**
-     * @return array{type: string, label: string, schema: array<int, mixed>}
-     */
-    public function jsonSerialize(): array
+    public function data(): RowTemplateData
     {
-        return [
-            'type' => $this->type,
-            'label' => $this->label ?? Str::headline($this->type),
-            'schema' => $this->renderableChildren(),
-        ];
+        return new RowTemplateData(
+            type: $this->type,
+            label: $this->label ?? Str::headline($this->type),
+            schema: $this->renderableChildren(),
+        );
     }
 }

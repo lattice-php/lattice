@@ -1,4 +1,5 @@
 import type { Node, RendererComponent } from "@lattice-php/core";
+import type { RowTemplateData } from "@lattice-php/form/generated";
 import { useT } from "@lattice-php/ui/i18n";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { useFormContext } from "@lattice-php/form/hooks/context";
@@ -9,7 +10,6 @@ import { buildRowActions } from "./row-action-menu";
 import { RowActions } from "./row-actions";
 import { RowKeyInputs } from "./row-key-inputs";
 import { RowItem } from "./row-item";
-import { rowTemplatesOf, type RowTemplate } from "./row-templates";
 import { columnsFromSchema, TableRows } from "./table-rows";
 import { useFlipReorder } from "./use-flip-reorder";
 import { useRowCollection } from "./use-row-collection";
@@ -19,7 +19,7 @@ const EMPTY_TEMPLATE: Node[] = [];
 export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) => {
   const props = node.props;
   const name = props.name;
-  const templates = rowTemplatesOf(node) ?? [];
+  const templates = props.templates;
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);
   const { path, rows, onField, onRemove, onMove, onDuplicate, append } = useRowCollection(
@@ -33,7 +33,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
   const atMin = props.minItems != null && rows.length <= props.minItems;
   const isTable = props.layout === "table";
 
-  const templateFor = (type: unknown): RowTemplate | undefined =>
+  const templateFor = (type: unknown): RowTemplateData | undefined =>
     templates.find((template) => template.type === type);
   const options: AddRowOption[] = templates.map((template) => ({
     type: template.type,

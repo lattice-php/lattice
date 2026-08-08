@@ -31,6 +31,7 @@ export type Builder = {
   resizableColumns: boolean;
   resizeIndicator: boolean;
   rowActions: RowAction[] | null;
+  templates: RowTemplateData[];
   tooltip: string | null;
   value: unknown;
 };
@@ -499,6 +500,11 @@ export type RowAction = {
 };
 export type RowActionType = "duplicate" | "remove";
 export type RowLayout = "stack" | "table";
+export type RowTemplateData = {
+  readonly label: string;
+  readonly schema: Node[];
+  readonly type: string;
+};
 export type Select = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
