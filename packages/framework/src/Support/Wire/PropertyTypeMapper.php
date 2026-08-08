@@ -60,8 +60,12 @@ final readonly class PropertyTypeMapper
             $type instanceof UnionType => $this->union($type->getTypes()),
             $type instanceof ArrayShapeType => $this->shape($type),
             $type instanceof CollectionType => $this->collection($type),
-            $type instanceof EnumType => $this->defReference($type->getClassName()),
-            $type instanceof ObjectType => $this->object($type->getClassName()),
+            $type instanceof EnumType => enum_exists($type->getClassName())
+                ? $this->defReference($type->getClassName())
+                : [],
+            $type instanceof ObjectType => class_exists($type->getClassName()) || interface_exists($type->getClassName())
+                ? $this->object($type->getClassName())
+                : [],
             $type instanceof BuiltinType => $this->builtin($type->getTypeIdentifier()),
             default => [],
         };

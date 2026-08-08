@@ -32,10 +32,13 @@ use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\LatticeRegistry;
 use Lattice\Form\FormServiceProvider;
+use Lattice\Fragments\FragmentDefinition;
 use Lattice\Fragments\FragmentRegistry;
 use Lattice\Http\Middleware\SetLocale;
 use Lattice\Http\PageRegistry;
+use Lattice\Layouts\LayoutDefinition;
 use Lattice\Layouts\LayoutRegistry;
+use Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Remote\RemoteSourceRegistry;
 use Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Support\TypeScript\AugmentProfile;
@@ -96,12 +99,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(StandaloneAssets::class);
         $this->app->singleton(ThemeRenderer::class);
 
-        $lattice->registerCapability('fragments', fn (string|array $fragments) => $this->app->make(FragmentRegistry::class)->register($fragments));
-        $lattice->registerCapability('layouts', fn (string|array $layouts) => $this->app->make(LayoutRegistry::class)->register($layouts));
+        $lattice->registerCapability('fragments', $this->registerFragments(...));
+        $lattice->registerCapability('layouts', $this->registerLayouts(...));
         $lattice->registerCapability('layoutRegistry', fn (): LayoutRegistry => $this->app->make(LayoutRegistry::class));
-        $lattice->registerCapability('pages', fn (string|array $pages) => $this->app->make(PageRegistry::class)->register($pages));
+        $lattice->registerCapability('pages', $this->registerPages(...));
         $lattice->registerCapability('pageRegistry', fn (): PageRegistry => $this->app->make(PageRegistry::class));
-        $lattice->registerCapability('remoteSources', fn (string|array $sources) => $this->app->make(RemoteSourceRegistry::class)->register($sources));
+        $lattice->registerCapability('remoteSources', $this->registerRemoteSources(...));
         $lattice->registerCapability('remoteSourceResolver', fn (callable $resolver) => $this->app->make(RemoteSourceRegistry::class)->resolveUsing($resolver));
         $lattice->registerCapability('remoteSourceRegistry', fn (): RemoteSourceRegistry => $this->app->make(RemoteSourceRegistry::class));
         $lattice->registerCapability('theme', fn (Theme|Closure $theme) => $this->app->make(ThemeRenderer::class)->register($theme));
@@ -266,5 +269,29 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $base = base_path().DIRECTORY_SEPARATOR;
 
         return str_starts_with($path, $base) ? substr($path, strlen($base)) : $path;
+    }
+
+    /** @param  class-string<FragmentDefinition>|array<int, class-string<FragmentDefinition>>  $fragments */
+    private function registerFragments(string|array $fragments): void
+    {
+        $this->app->make(FragmentRegistry::class)->register($fragments);
+    }
+
+    /** @param  class-string<LayoutDefinition>|array<int, class-string<LayoutDefinition>>  $layouts */
+    private function registerLayouts(string|array $layouts): void
+    {
+        $this->app->make(LayoutRegistry::class)->register($layouts);
+    }
+
+    /** @param  class-string|array<int, class-string>  $pages */
+    private function registerPages(string|array $pages): void
+    {
+        $this->app->make(PageRegistry::class)->register($pages);
+    }
+
+    /** @param  class-string<RemoteSourceDefinition>|array<int, class-string<RemoteSourceDefinition>>  $sources */
+    private function registerRemoteSources(string|array $sources): void
+    {
+        $this->app->make(RemoteSourceRegistry::class)->register($sources);
     }
 }

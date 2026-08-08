@@ -160,14 +160,13 @@ final class EloquentOptions implements OptionSource
      */
     private function toOptions(Collection $models): array
     {
-        return $models
+        return array_values($models
             ->map(fn (Model $model): Option => new Option(
                 (string) $model->getAttribute($this->labelKey),
                 (string) $model->getAttribute($this->valueColumn()),
                 $this->optionData($model),
             ))
-            ->values()
-            ->all();
+            ->all());
     }
 
     /**

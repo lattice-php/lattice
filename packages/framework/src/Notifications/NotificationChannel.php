@@ -5,9 +5,9 @@ namespace Lattice\Notifications;
 
 final class NotificationChannel
 {
-    public static function for(object $notifiable): string
+    public static function for(mixed $notifiable): string
     {
-        if (method_exists($notifiable, 'receivesBroadcastNotificationsOn')) {
+        if (is_object($notifiable) && method_exists($notifiable, 'receivesBroadcastNotificationsOn')) {
             return $notifiable->receivesBroadcastNotificationsOn();
         }
 

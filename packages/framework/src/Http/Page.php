@@ -22,6 +22,9 @@ use Lattice\Ui\PageSchema;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use UnexpectedValueException;
 
+/**
+ * @method PageSchema render(mixed ...$parameters)
+ */
 abstract class Page implements PageContract, Responsable
 {
     public function title(): ?string

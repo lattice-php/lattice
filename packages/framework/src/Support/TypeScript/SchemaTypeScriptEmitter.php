@@ -222,7 +222,10 @@ final class SchemaTypeScriptEmitter
         }
 
         foreach ($document['x-lattice']['domains'] as $name => $types) {
-            $exports[$name] = $this->union(array_map(json_encode(...), $types));
+            $exports[$name] = $this->union(array_values(array_map(
+                fn (mixed $value): string => json_encode($value, JSON_THROW_ON_ERROR),
+                $types,
+            )));
         }
 
         foreach ($document['x-lattice']['families'] as $family) {
@@ -273,7 +276,10 @@ final class SchemaTypeScriptEmitter
     public function defType(array $def, int $indent = 1): string
     {
         if (($def['x-lattice']['kind'] ?? null) === 'enum') {
-            return $this->union(array_map(json_encode(...), $def['enum']));
+            return $this->union(array_values(array_map(
+                fn (mixed $value): string => json_encode($value, JSON_THROW_ON_ERROR),
+                $def['enum'],
+            )));
         }
 
         return $this->type($this->withoutAnnotations($def), $indent);
@@ -289,10 +295,10 @@ final class SchemaTypeScriptEmitter
         }
 
         if (isset($fragment['anyOf'])) {
-            return $this->union(array_map(
+            return $this->union(array_values(array_map(
                 fn (array $member): string => $this->type($member, $indent),
                 $fragment['anyOf'],
-            ));
+            )));
         }
 
         if (is_array($fragment['type'] ?? null)) {
@@ -384,7 +390,7 @@ final class SchemaTypeScriptEmitter
             && str_ends_with(current($multiline), '}');
 
         if ($multiline === [] || $bareObject) {
-            return $this->union($members);
+            return $this->union(array_values($members));
         }
 
         $pad = str_repeat('  ', $indent);
