@@ -1,3 +1,6 @@
+// Side-effect import: loads the ComponentProps augmentation in programs whose
+// tsconfig include misses types.ts (the docs app), so node.props stays typed.
+import "../types";
 import { useEffect, useMemo, useState } from "react";
 import type { RendererComponent } from "@lattice-php/lattice";
 import { Icon } from "@lattice-php/ui/icons";
