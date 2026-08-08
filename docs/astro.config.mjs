@@ -193,6 +193,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: "API Reference", link: "/packages/api-reference/" },
+            { label: "Calendar", link: "/packages/calendar/" },
             { label: "Media", link: "/packages/media/" },
             { label: "Tree", link: "/packages/tree/" },
           ],
