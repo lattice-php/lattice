@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Notifications\DatabaseNotification;
 use Lattice\Notifications\Notification;
 
 use function Pest\Laravel\actingAs;
@@ -11,7 +12,10 @@ use function Pest\Laravel\postJson;
 test('a user can mark a single notification read', function (): void {
     $user = workbenchTestUser();
     Notification::make()->title('One')->send($user);
-    $id = $user->notifications()->first()->id;
+    $notification = $user->notifications()->first();
+    expect($notification)->not->toBeNull();
+    assert($notification instanceof DatabaseNotification);
+    $id = $notification->id;
 
     actingAs($user);
 
@@ -19,7 +23,10 @@ test('a user can mark a single notification read', function (): void {
         ->assertOk()
         ->assertJsonPath('unreadCount', 0);
 
-    expect($user->notifications()->first()->getAttribute('read_at'))->not->toBeNull();
+    $updated = $user->notifications()->first();
+    expect($updated)->not->toBeNull();
+    assert($updated instanceof DatabaseNotification);
+    expect($updated->getAttribute('read_at'))->not->toBeNull();
 });
 
 test('a user can mark all notifications read', function (): void {
@@ -40,7 +47,10 @@ test('a user can dismiss and clear notifications', function (): void {
     $user = workbenchTestUser();
     Notification::make()->title('One')->send($user);
     Notification::make()->title('Two')->send($user);
-    $id = $user->notifications()->first()->id;
+    $notification = $user->notifications()->first();
+    expect($notification)->not->toBeNull();
+    assert($notification instanceof DatabaseNotification);
+    $id = $notification->id;
 
     actingAs($user);
 
@@ -55,11 +65,18 @@ test('a user cannot mutate another users notification', function (): void {
     $me = workbenchTestUser();
     $other = workbenchTestUser();
     Notification::make()->title('Theirs')->send($other);
-    $id = $other->notifications()->first()->id;
+    $notification = $other->notifications()->first();
+    expect($notification)->not->toBeNull();
+    assert($notification instanceof DatabaseNotification);
+    $id = $notification->id;
 
     actingAs($me);
 
     patchJson("/lattice/notifications/{$id}/read")->assertNotFound();
     deleteJson("/lattice/notifications/{$id}")->assertNotFound();
-    expect($other->notifications()->first()->getAttribute('read_at'))->toBeNull();
+
+    $stillUnread = $other->notifications()->first();
+    expect($stillUnread)->not->toBeNull();
+    assert($stillUnread instanceof DatabaseNotification);
+    expect($stillUnread->getAttribute('read_at'))->toBeNull();
 });

@@ -58,6 +58,11 @@ test('stream endpoint emits NDJSON text and tool-call frames then persists the t
 
     $assistant = array_values(array_filter($messages, static fn (array $message): bool => $message['role'] === 'assistant'));
     $latestAssistant = end($assistant);
+
+    if ($latestAssistant === false) {
+        throw new RuntimeException('Expected an assistant message to be persisted.');
+    }
+
     $partTypes = array_column($latestAssistant['parts'], 'type');
 
     expect($partTypes)->toContain('chat.part.text')

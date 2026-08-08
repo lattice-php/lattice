@@ -62,7 +62,9 @@ it('edits alt text and deletes a file from the detail slideout', function (): vo
         ->click('@media-detail-save');
 
     retryUntil(function () use ($media): void {
-        expect($media->fresh()->alt)->toBe('Alt text here');
+        $fresh = $media->fresh();
+        assert($fresh !== null);
+        expect($fresh->alt)->toBe('Alt text here');
     });
 
     $page->click('@media-card')
@@ -112,6 +114,7 @@ it('uploads a file through the real signed flow against rustfs', function (): vo
             $media = Media::query()->where('disk', 's3')->latest('id')->first();
             expect($media)->not->toBeNull();
         });
+        assert($media !== null);
 
         assertSeeEventually($page, $media->name);
 

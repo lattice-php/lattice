@@ -24,7 +24,8 @@ beforeEach(function (): void {
 test('attaching media queues one job per new attachment, carrying the attachable and the collection', function (): void {
     Bus::fake();
     $product = Product::factory()->create();
-    [$a, $b] = Media::factory()->count(2)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
 
     $product->syncMedia([$a->getKey(), $b->getKey()], 'gallery');
 
@@ -54,7 +55,8 @@ test('a re-sync of the same set queues nothing', function (): void {
 test('reordering an attached set queues nothing', function (): void {
     Bus::fake();
     $product = Product::factory()->create();
-    [$a, $b] = Media::factory()->count(2)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
 
     $product->syncMedia([$a->getKey(), $b->getKey()], 'gallery');
     $product->syncMedia([$b->getKey(), $a->getKey()], 'gallery');
@@ -68,7 +70,8 @@ test('reordering an attached set queues nothing', function (): void {
 test('a partial re-sync queues only the media that were not attached before', function (): void {
     Bus::fake();
     $product = Product::factory()->create();
-    [$a, $b] = Media::factory()->count(2)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
 
     $product->syncMedia([$a->getKey()], 'gallery');
     $product->syncMedia([$a->getKey(), $b->getKey()], 'gallery');

@@ -44,6 +44,6 @@ class ProductMediaForm extends FormDefinition
 
     private function product(): Product
     {
-        return Product::query()->findOrFail($this->context('product_id'));
+        return Product::query()->findOrFail((int) $this->context('product_id'));
     }
 }

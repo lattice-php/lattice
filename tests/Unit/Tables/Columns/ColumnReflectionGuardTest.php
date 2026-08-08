@@ -35,6 +35,10 @@ it('exposes exactly the common wire props on the base Column', function (): void
 });
 
 it('exposes only the intended wire props on each built-in column', function (string $class, array $expected): void {
+    if (! class_exists($class)) {
+        throw new InvalidArgumentException("Not a class: {$class}");
+    }
+
     expect(publicColumnProps($class))->toEqualCanonicalizing([...COMMON_COLUMN_PROPS, ...$expected]);
 })->with([
     'text' => [TextColumn::class, ['date', 'copyable', 'link', 'badge', 'multiple']],

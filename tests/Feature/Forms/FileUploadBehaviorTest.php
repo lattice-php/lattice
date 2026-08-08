@@ -132,10 +132,12 @@ it('builds file descriptors from a stored path on prefill', function (): void {
 
     $field = FileUpload::make('document');
     $field->hydrateState('uploads/a.pdf');
+    $files = $field->files;
+    assert($files !== null);
 
-    expect($field->files)->toHaveCount(1)
-        ->and($field->files[0]['key'])->toBe('uploads/a.pdf')
-        ->and($field->files[0]['name'])->toBe('a.pdf');
+    expect($files)->toHaveCount(1)
+        ->and($files[0]['key'])->toBe('uploads/a.pdf')
+        ->and($files[0]['name'])->toBe('a.pdf');
 });
 
 it('prefers temporary urls for prefilled files when the disk supports them', function (): void {
@@ -145,8 +147,10 @@ it('prefers temporary urls for prefilled files when the disk supports them', fun
 
     $field = FileUpload::make('document')->disk('s3');
     $field->hydrateState('uploads/a.pdf');
+    $files = $field->files;
+    assert($files !== null);
 
-    expect($field->files[0]['url'])->toBe('https://signed.test/uploads/a.pdf');
+    expect($files[0]['url'])->toBe('https://signed.test/uploads/a.pdf');
 });
 
 it('builds descriptors for each stored path when multiple', function (): void {
@@ -284,9 +288,11 @@ it('sets url and size to null when prefill metadata cannot be read', function ()
 
     $field = FileUpload::make('document')->disk('broken');
     $field->hydrateState('uploads/a.pdf');
+    $files = $field->files;
+    assert($files !== null);
 
-    expect($field->files[0]['url'])->toBeNull()
-        ->and($field->files[0]['size'])->toBeNull();
+    expect($files[0]['url'])->toBeNull()
+        ->and($files[0]['size'])->toBeNull();
 });
 
 it('adds a sealed token to each prefilled file descriptor', function (): void {
@@ -295,9 +301,11 @@ it('adds a sealed token to each prefilled file descriptor', function (): void {
 
     $field = FileUpload::make('document');
     $field->hydrateState('uploads/a.pdf');
+    $files = $field->files;
+    assert($files !== null);
 
-    expect($field->files[0])->toHaveKeys(['key', 'name', 'url', 'size', 'token'])
-        ->and($field->files[0]['token'])->not->toBe('');
+    expect($files[0])->toHaveKeys(['key', 'name', 'url', 'size', 'token'])
+        ->and($files[0]['token'])->not->toBe('');
 });
 
 it('resolves removed tokens back to trusted paths', function (): void {

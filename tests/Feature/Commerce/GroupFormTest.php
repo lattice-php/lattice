@@ -40,5 +40,5 @@ test('the group form updates an existing group', function (): void {
     ], ['group_id' => $group->getKey()])
         ->assertRedirect('/groups');
 
-    expect($group->fresh()->name)->toBe('New Name');
+    expect($group->fresh()?->name)->toBe('New Name');
 });

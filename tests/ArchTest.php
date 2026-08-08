@@ -254,7 +254,7 @@ it('only SerializesWireNode writes into wire props', function (): void {
     $files = new Filesystem;
     $violations = [];
 
-    foreach (glob($root.'/packages/*/src') as $srcDir) {
+    foreach (glob($root.'/packages/*/src') ?: [] as $srcDir) {
         foreach ($files->allFiles($srcDir) as $file) {
             if ($file->getExtension() !== 'php' || str_ends_with($file->getPathname(), 'Concerns/SerializesWireNode.php')) {
                 continue;
@@ -284,7 +284,7 @@ it('wire nodes never hand-roll jsonSerialize', function (): void {
     $files = new Filesystem;
     $violations = [];
 
-    foreach (glob($root.'/packages/*/src') as $srcDir) {
+    foreach (glob($root.'/packages/*/src') ?: [] as $srcDir) {
         foreach ($files->allFiles($srcDir) as $file) {
             $relative = str_replace($root.'/', '', $file->getPathname());
 

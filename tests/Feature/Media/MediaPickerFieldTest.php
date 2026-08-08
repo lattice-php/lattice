@@ -23,14 +23,17 @@ beforeEach(function (): void {
 });
 
 test('hydrateState resolves stored ids to display descriptors in order', function (): void {
-    [$a, $b] = Media::factory()->count(2)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
 
     $field = MediaPicker::make('gallery')->multiple();
     $field->hydrateState([$b->getKey(), $a->getKey()]);
+    $selected = $field->selected;
+    assert($selected !== null && $selected !== []);
 
-    expect(array_column($field->selected, 'id'))->toBe([$b->getKey(), $a->getKey()])
-        ->and($field->selected[0]['name'])->toBe($b->name)
-        ->and($field->selected[0]['mime_type'])->toBe($b->mime_type);
+    expect(array_column($selected, 'id'))->toBe([$b->getKey(), $a->getKey()])
+        ->and($selected[0]['name'])->toBe($b->name)
+        ->and($selected[0]['mime_type'])->toBe($b->mime_type);
 });
 
 test('hydrateState drops ids that no longer exist', function (): void {
@@ -38,8 +41,10 @@ test('hydrateState drops ids that no longer exist', function (): void {
 
     $field = MediaPicker::make('gallery')->multiple();
     $field->hydrateState([$media->getKey(), 999999]);
+    $selected = $field->selected;
+    assert($selected !== null);
 
-    expect(array_column($field->selected, 'id'))->toBe([$media->getKey()]);
+    expect(array_column($selected, 'id'))->toBe([$media->getKey()]);
 });
 
 test('the media picker carries the library as its child schema', function (): void {
@@ -145,7 +150,9 @@ test('hydrateState carries row values into the selected descriptors', function (
     $field = MediaPicker::make('gallery')->multiple()->attachmentFields([TextInput::make('caption')]);
 
     $field->hydrateState([['id' => $media->getKey(), 'caption' => 'Front']]);
+    $selected = $field->selected;
+    assert($selected !== null && $selected !== []);
 
-    expect($field->selected[0]['id'])->toBe($media->getKey())
-        ->and($field->selected[0]['values'])->toBe(['caption' => 'Front']);
+    expect($selected[0]['id'])->toBe($media->getKey())
+        ->and($selected[0]['values'])->toBe(['caption' => 'Front']);
 });

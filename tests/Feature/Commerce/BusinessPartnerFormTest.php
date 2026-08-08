@@ -38,7 +38,7 @@ test('the business partner form creates a partner with groups and addresses', fu
     expect($partner->email)->toBe('acme@example.com');
     expect($partner->groups()->count())->toBe(1);
     expect($partner->addresses()->count())->toBe(1);
-    expect($partner->addresses()->first()->city)->toBe('Berlin');
+    expect($partner->addresses()->first()?->city)->toBe('Berlin');
 });
 
 test('the business partner form updates default address FKs', function (): void {

@@ -9,6 +9,7 @@ use Lattice\Chat\ChatMessage;
 use Lattice\Chat\ChatPart;
 use Lattice\Chat\Enums\ChatRole;
 use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Component;
 
 final readonly class FakeConversationStore
 {
@@ -28,13 +29,10 @@ final readonly class FakeConversationStore
         return $this->session->get(self::SESSION_KEY, []);
     }
 
-    /**
-     * @param  array{id: string, role: string, parts: array<int, array<string, mixed>>}  $message
-     */
-    public function append(array $message): void
+    public function append(ChatMessage $message): void
     {
         $messages = $this->messages();
-        $messages[] = $message;
+        $messages[] = $this->toShape($message);
 
         $this->session->put(self::SESSION_KEY, $messages);
     }
@@ -50,12 +48,24 @@ final readonly class FakeConversationStore
     private function seed(): array
     {
         return [
-            Wire::toArray(new ChatMessage('seed-user', ChatRole::User, [
+            $this->toShape(new ChatMessage('seed-user', ChatRole::User, [
                 ChatPart::text('What can you help me with?'),
             ])),
-            Wire::toArray(new ChatMessage('seed-assistant', ChatRole::Assistant, [
+            $this->toShape(new ChatMessage('seed-assistant', ChatRole::Assistant, [
                 ChatPart::text('I can answer questions about this workbench and look things up for you.'),
             ])),
+        ];
+    }
+
+    /**
+     * @return array{id: string, role: string, parts: array<int, array<string, mixed>>}
+     */
+    private function toShape(ChatMessage $message): array
+    {
+        return [
+            'id' => $message->id,
+            'role' => $message->role->value,
+            'parts' => array_map(static fn (Component $part): array => Wire::toArray($part), $message->parts),
         ];
     }
 }

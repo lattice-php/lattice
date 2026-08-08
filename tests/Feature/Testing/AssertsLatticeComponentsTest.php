@@ -60,17 +60,20 @@ it('asserts field visibility, conditions and initial value', function (): void {
         ]);
 
     $this->assertLatticeComponent($form)
-        ->form('create', fn (FormAssertions $form): FieldAssertions|\Lattice\Support\Testing\Assertions\FormAssertions => $form
-            ->assertSubmitsTo('/products')
-            ->assertHasField('email')
-            ->assertMissingField('nope')
-            ->assertMissingField('secret')
-            ->field('email', fn (FieldAssertions $f): FieldAssertions => $f
-                ->assertInitialValue('a@b.c'))
-            ->field('company', fn (FieldAssertions $f): FieldAssertions => $f
+        ->form('create', function (FormAssertions $form): void {
+            $form
+                ->assertSubmitsTo('/products')
+                ->assertHasField('email')
+                ->assertMissingField('nope')
+                ->assertMissingField('secret')
+                ->field('email', fn (FieldAssertions $f): FieldAssertions => $f
+                    ->assertInitialValue('a@b.c'));
+
+            $form->field('company', fn (FieldAssertions $f): FieldAssertions => $f
                 ->assertVisibleWhen(['type' => 'business'])
                 ->assertHiddenWhen(['type' => 'personal'])
-                ->assertHasCondition('visible', 'type', Op::Equals, 'business')));
+                ->assertHasCondition('visible', 'type', Op::Equals, 'business'));
+        });
 });
 
 it('asserts table filters, columns and operators', function (): void {
@@ -123,11 +126,12 @@ it('asserts field required, optional, disabled, enabled and read-only flags', fu
     ]);
 
     $this->assertLatticeComponent($form)
-        ->form('flags', fn (FormAssertions $f): FieldAssertions|\Lattice\Support\Testing\Assertions\FormAssertions => $f
-            ->field('plain', fn (FieldAssertions $x): FieldAssertions => $x->assertOptional()->assertEnabled())
-            ->field('req', fn (FieldAssertions $x): FieldAssertions => $x->assertRequired())
-            ->field('ro', fn (FieldAssertions $x): FieldAssertions => $x->assertReadOnly())
-            ->field('dis', fn (FieldAssertions $x): FieldAssertions => $x->assertDisabled()));
+        ->form('flags', function (FormAssertions $f): void {
+            $f->field('plain', fn (FieldAssertions $x): FieldAssertions => $x->assertOptional()->assertEnabled());
+            $f->field('req', fn (FieldAssertions $x): FieldAssertions => $x->assertRequired());
+            $f->field('ro', fn (FieldAssertions $x): FieldAssertions => $x->assertReadOnly());
+            $f->field('dis', fn (FieldAssertions $x): FieldAssertions => $x->assertDisabled());
+        });
 });
 
 it('asserts table presence and bulk actions', function (): void {
@@ -157,12 +161,17 @@ it('asserts against a rendered Inertia page', function (): void {
         ],
     ]))->middleware('web');
 
-    $this->assertLatticePage($this->get('lattice-demo-page'))
+    $page = $this->assertLatticePage($this->get('lattice-demo-page'))
         ->assertRendered('form:create')
-        ->assertRendered('table:products')
-        ->table('products', fn (TableAssertions $t): TableAssertions => $t->assertHasFilter('name'))
-        ->form('create', fn (FormAssertions $f): FieldAssertions => $f
-            ->field('email')->assertInitialValue('a@b.c'));
+        ->assertRendered('table:products');
+
+    $page->table('products', fn (TableAssertions $t): TableAssertions => $t->assertHasFilter('name'));
+
+    $page->form('create', function (FormAssertions $f): void {
+        $field = $f->field('email');
+        assert($field instanceof FieldAssertions);
+        $field->assertInitialValue('a@b.c');
+    });
 });
 
 it('addresses layout components by key and asserts their props', function (): void {

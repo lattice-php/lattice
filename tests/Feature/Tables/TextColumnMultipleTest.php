@@ -20,8 +20,10 @@ test('a multiple badge column projects coloured chips onto a flat key without N+
 
     $rows = tableRows(new ProductsTable);
 
-    $taggedRow = collect($rows)->firstWhere('id', $tagged->getKey());
-    $untaggedRow = collect($rows)->first(fn (array $row): bool => $row['id'] !== $tagged->getKey());
+    $taggedRow = collect($rows)->firstWhere('id', $tagged->getKey())
+        ?? throw new RuntimeException('Tagged row not found.');
+    $untaggedRow = collect($rows)->first(fn (array $row): bool => $row['id'] !== $tagged->getKey())
+        ?? throw new RuntimeException('Untagged row not found.');
 
     expect($taggedRow)->not->toHaveKey('taggables')
         ->and(collect((array) $taggedRow['tags'])->pluck('color', 'value')->all())

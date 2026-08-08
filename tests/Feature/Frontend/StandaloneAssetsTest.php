@@ -11,7 +11,7 @@ use Lattice\Theme\ThemeRenderer;
 beforeEach(function (): void {
     $this->publicPath = sys_get_temp_dir().'/lattice-directives-public-'.uniqid();
     File::makeDirectory($this->publicPath.'/vendor/lattice', recursive: true);
-    $this->app->usePublicPath($this->publicPath);
+    app()->usePublicPath($this->publicPath);
 
     File::put(public_path('vendor/lattice/manifest.json'), json_encode([
         'version' => '1.2.3',
@@ -104,14 +104,14 @@ it('tells you to publish when the assets are missing', function (): void {
 
 it('throws on a version mismatch when debugging', function (): void {
     config()->set('app.debug', true);
-    $this->app->instance(StandaloneAssets::class, new StandaloneAssets(app(ThemeRenderer::class), installedVersion: '9.9.9'));
+    app()->instance(StandaloneAssets::class, new StandaloneAssets(app(ThemeRenderer::class), installedVersion: '9.9.9'));
 
     app(StandaloneAssets::class)->head();
 })->throws(RuntimeException::class, 'do not match');
 
 it('ignores a version mismatch when not debugging', function (): void {
     config()->set('app.debug', false);
-    $this->app->instance(StandaloneAssets::class, new StandaloneAssets(app(ThemeRenderer::class), installedVersion: '9.9.9'));
+    app()->instance(StandaloneAssets::class, new StandaloneAssets(app(ThemeRenderer::class), installedVersion: '9.9.9'));
 
     expect(Blade::render('@latticeHead'))->toContain('lattice.css');
 });

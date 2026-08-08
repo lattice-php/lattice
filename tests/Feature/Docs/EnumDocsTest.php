@@ -35,10 +35,10 @@ function generateEnumReference(): array
 
             $reflection = new ReflectionEnum($class);
 
-            $cases = array_map(fn (ReflectionEnumUnitCase $case): array => [
+            $cases = array_values(array_map(fn (ReflectionEnumUnitCase $case): array => [
                 'name' => $case->getName(),
                 'value' => $case instanceof ReflectionEnumBackedCase ? $case->getBackingValue() : null,
-            ], $reflection->getCases());
+            ], $reflection->getCases()));
 
             $enums[$class] = [
                 'name' => $reflection->getShortName(),

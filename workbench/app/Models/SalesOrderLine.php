@@ -12,7 +12,8 @@ use Workbench\App\Factories\SalesOrderLineFactory;
  * @property int $sales_order_id
  * @property int $product_id
  * @property int $quantity
- * @property string $unit_price
+ * @property numeric-string $unit_price
+ * @property-read Product $product
  */
 class SalesOrderLine extends Model
 {
@@ -44,6 +45,7 @@ class SalesOrderLine extends Model
         return $this->belongsTo(Product::class);
     }
 
+    /** @return numeric-string */
     public function total(): string
     {
         return bcmul($this->unit_price, (string) $this->quantity, 2);

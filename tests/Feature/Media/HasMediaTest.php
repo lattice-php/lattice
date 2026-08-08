@@ -10,7 +10,9 @@ use Workbench\App\Models\Product;
 
 test('syncMedia attaches in order and re-sync replaces the set', function (): void {
     $product = Product::factory()->create();
-    [$a, $b, $c] = Media::factory()->count(3)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
+    $c = Media::factory()->create();
 
     $product->syncMedia([$b->getKey(), $a->getKey()], 'images');
 
@@ -25,7 +27,8 @@ test('syncMedia attaches in order and re-sync replaces the set', function (): vo
 
 test('syncMedia re-indexes a sparse ids array before assigning sort_order', function (): void {
     $product = Product::factory()->create();
-    [$a, $b] = Media::factory()->count(2)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
 
     $product->syncMedia([1 => $b->getKey(), 3 => $a->getKey()], 'images');
 
@@ -82,8 +85,11 @@ test('attachments carry an id, timestamps and a cast meta payload', function ():
     $attachment = Attachment::query()->sole();
     $attachment->update(['meta' => ['caption' => 'hello']]);
 
+    $pivot = $product->media('images')->sole()->pivot;
+    assert($pivot !== null);
+
     expect(Attachment::query()->sole()->meta)->toBe(['caption' => 'hello'])
-        ->and($product->media('images')->first()->pivot->meta)->toBe(['caption' => 'hello']);
+        ->and($pivot->meta)->toBe(['caption' => 'hello']);
 });
 
 test('the same media cannot attach twice to one collection', function (): void {
@@ -103,7 +109,8 @@ test('the same media cannot attach twice to one collection', function (): void {
 
 test('syncMedia writes row meta into the attachment and null when absent', function (): void {
     $product = Product::factory()->create();
-    [$a, $b] = Media::factory()->count(2)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
 
     $product->syncMedia([
         ['id' => $a->getKey(), 'caption' => 'Front view', 'featured' => true],
@@ -128,7 +135,8 @@ test('re-sync updates the meta of an existing attachment', function (): void {
 
 test('mediaPickerValue returns ordered rows of id plus meta', function (): void {
     $product = Product::factory()->create();
-    [$a, $b] = Media::factory()->count(2)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
 
     $product->syncMedia([
         ['id' => $b->getKey(), 'caption' => 'Back'],

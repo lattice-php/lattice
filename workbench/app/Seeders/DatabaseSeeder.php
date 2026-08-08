@@ -9,6 +9,7 @@ use Lattice\Media\Models\Media;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Factories\GroupFactory;
 use Workbench\App\Models\Category;
+use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\Tag;
@@ -43,6 +44,9 @@ class DatabaseSeeder extends Seeder
         $vipGroup = GroupFactory::new()
             ->withCustomers(10)
             ->create(['name' => 'VIP']);
+        assert($retailGroup instanceof Group);
+        assert($wholesaleGroup instanceof Group);
+        assert($vipGroup instanceof Group);
 
         $tags = collect([
             ['name' => 'New', 'color' => 'blue'],

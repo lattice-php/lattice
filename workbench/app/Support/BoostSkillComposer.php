@@ -20,7 +20,7 @@ class BoostSkillComposer extends SkillComposer
             return collect();
         }
 
-        return collect(glob($path.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR))
+        return collect(glob($path.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) ?: [])
             ->map(fn (string $skillPath): ?Skill => $this->parseSkill($skillPath, 'user', custom: false))
             ->filter()
             ->keyBy(fn (Skill $skill): string => $skill->name);

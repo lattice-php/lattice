@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Notifications\DatabaseNotification;
 use Lattice\Notifications\LatticeNotification;
 use Lattice\Notifications\Notification;
 
@@ -12,6 +13,9 @@ test('send persists a lattice payload to the native notifications table', functi
     expect($user->notifications()->count())->toBe(1);
 
     $row = $user->notifications()->first();
+    expect($row)->not->toBeNull();
+    assert($row instanceof DatabaseNotification);
+
     expect($row->getAttribute('data'))->toMatchArray([
         'format' => 'lattice',
         'title' => 'Order shipped',
@@ -27,7 +31,10 @@ test('send persists a translatable title and body as their wire shape', function
         ->body(rt('orders.shipped.body')->with(['order' => 1234]))
         ->send($user);
 
-    $data = $user->notifications()->first()->getAttribute('data');
+    $row = $user->notifications()->first();
+    expect($row)->not->toBeNull();
+    assert($row instanceof DatabaseNotification);
+    $data = $row->getAttribute('data');
 
     expect($data['title'])->toBe(['key' => 'orders.shipped.title', 'payload' => [], 'replacements' => []])
         ->and($data['body'])->toBe(['key' => 'orders.shipped.body', 'payload' => [], 'replacements' => ['order' => 1234]]);

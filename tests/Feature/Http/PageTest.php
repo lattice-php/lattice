@@ -62,7 +62,7 @@ test('confirmed active tabs serialize their children after password confirmation
 });
 
 test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function (): void {
-    $user = UserFactory::new()->create([
+    $user = UserFactory::new()->createOne([
         'name' => 'Route Bound User',
     ]);
 
@@ -206,7 +206,7 @@ test('a page can be returned directly and renders through the responsable contra
 });
 
 test('directly returned pages resolve route arguments and bound models in render', function (): void {
-    $user = UserFactory::new()->create([
+    $user = UserFactory::new()->createOne([
         'name' => 'Route Bound User',
     ]);
 
