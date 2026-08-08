@@ -12,9 +12,7 @@ it('serializes trusted raw html', function (): void {
 });
 
 it('renders a blade view into raw html', function (): void {
-    view()->addNamespace('raw-block-test', __DIR__);
-
-    $node = wire(RawBlock::make()->blade('raw-block-test::Fixtures.raw-block', ['name' => 'Ada Lovelace']));
+    $node = wire(RawBlock::make()->blade('fixtures.raw-block', ['name' => 'Ada Lovelace']));
 
     expect($node['props']['html'])->toContain('Ada Lovelace');
 });

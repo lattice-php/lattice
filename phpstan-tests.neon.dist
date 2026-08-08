@@ -9,3 +9,5 @@ parameters:
     excludePaths:
         - tests/Fixtures/TypeScript/Unloadable/BrokenExtendsMissingClass.php
     level: 6
+    bootstrapFiles:
+        - phpstan-bootstrap.php
