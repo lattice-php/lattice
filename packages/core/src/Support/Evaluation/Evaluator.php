@@ -96,14 +96,22 @@ final readonly class Evaluator
     private function typeNames(?ReflectionType $type): array
     {
         if ($type instanceof ReflectionNamedType) {
-            return $type->isBuiltin() ? [] : [$type->getName()];
+            $name = $type->isBuiltin() ? null : $type->getName();
+
+            return $name !== null && (class_exists($name) || interface_exists($name) || enum_exists($name)) ? [$name] : [];
         }
 
         if ($type instanceof ReflectionUnionType) {
             return array_values(array_filter(array_map(
-                static fn (ReflectionType $member): ?string => $member instanceof ReflectionNamedType && ! $member->isBuiltin()
-                    ? $member->getName()
-                    : null,
+                static function (ReflectionType $member): ?string {
+                    if (! $member instanceof ReflectionNamedType || $member->isBuiltin()) {
+                        return null;
+                    }
+
+                    $name = $member->getName();
+
+                    return class_exists($name) || interface_exists($name) || enum_exists($name) ? $name : null;
+                },
                 $type->getTypes(),
             )));
         }

@@ -16,6 +16,7 @@ final class PageMetadataResolver
 
     public function __construct(private readonly DiscoveryManifest $manifest) {}
 
+    /** @param  PageContract|class-string<PageContract>  $page */
     public function for(PageContract|string $page): PageMetadata
     {
         $class = is_object($page) ? $page::class : $page;
@@ -24,7 +25,7 @@ final class PageMetadataResolver
     }
 
     /**
-     * @param  class-string  $class
+     * @param  class-string<PageContract>  $class
      */
     private function resolve(string $class): PageMetadata
     {

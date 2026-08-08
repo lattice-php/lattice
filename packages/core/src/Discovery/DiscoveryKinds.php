@@ -49,6 +49,16 @@ final class DiscoveryKinds
      */
     public static function keyOf(string $class, string $attributeClass): string
     {
-        return Attributes::get($class, $attributeClass)->key;
+        $attribute = Attributes::get($class, $attributeClass);
+
+        if (! $attribute instanceof DefinitionAttribute) {
+            throw new \RuntimeException(sprintf(
+                'Class [%s] is not decorated with the [%s] attribute.',
+                $class,
+                class_basename($attributeClass),
+            ));
+        }
+
+        return $attribute->key;
     }
 }
