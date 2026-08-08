@@ -40,8 +40,12 @@ export function treeNode(
     id,
     label,
     schema: [{ props: { text: label }, type: "test.text" }],
+    href: null,
+    disabled: false,
+    hasChildren: false,
+    children: [],
     ...extra,
-  } as TreeNodeData;
+  };
 }
 
 /** Labels of the `test.action` buttons clicked since the last reset. */

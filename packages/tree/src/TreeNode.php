@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Tree;
 
-use JsonSerializable;
 use Lattice\Actions\Components\Action;
 use Lattice\Actions\Components\ActionGroup;
 use Lattice\Core\Color;
@@ -18,7 +17,7 @@ use Lattice\Ui\Enums\Side;
 use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Width;
 
-final class TreeNode implements JsonSerializable
+final class TreeNode
 {
     /** @var list<Component>|null */
     private ?array $schema = null;
@@ -169,49 +168,19 @@ final class TreeNode implements JsonSerializable
     }
 
     /**
-     * @return array<string, mixed>
+     * @param  list<TreeNodeData>  $children
      */
-    public function jsonSerialize(): array
+    public function data(array $children, bool $hasChildren): TreeNodeData
     {
-        $data = $this->serialiseShallow();
-
-        if ($this->children !== []) {
-            $data['children'] = array_map(static fn (TreeNode $child): array => $child->jsonSerialize(), $this->children);
-        }
-
-        return $data;
-    }
-
-    /**
-     * This node's own fields without its children, so a depth-aware walk (see
-     * Tree) can serialize each level exactly once.
-     *
-     * @return array<string, mixed>
-     */
-    public function serialiseShallow(): array
-    {
-        $data = [
-            'id' => $this->id,
-            'label' => $this->label,
-            'schema' => array_map(
-                static fn (Component $component): array => $component->jsonSerialize(),
-                $this->compiledSchema(),
-            ),
-        ];
-
-        if ($this->href !== null) {
-            $data['href'] = $this->href;
-        }
-
-        if ($this->disabled) {
-            $data['disabled'] = true;
-        }
-
-        if ($this->hasChildren) {
-            $data['hasChildren'] = true;
-        }
-
-        return $data;
+        return new TreeNodeData(
+            id: $this->id,
+            label: $this->label,
+            schema: $this->compiledSchema(),
+            href: $this->href,
+            disabled: $this->disabled,
+            hasChildren: $hasChildren,
+            children: $children,
+        );
     }
 
     /** @return list<Component> */

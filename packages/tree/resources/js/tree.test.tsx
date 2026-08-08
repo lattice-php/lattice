@@ -114,11 +114,9 @@ describe("Tree component", () => {
 
   it("keeps the label as the treeitem's accessible name even when the schema omits it", () => {
     const hiddenLabelNodes: TreeNodeData[] = [
-      {
-        id: "7",
-        label: "Hidden Label",
+      treeNode("7", "Hidden Label", {
         schema: [{ props: { text: "something else" }, type: "test.text" }],
-      },
+      }),
     ];
 
     renderTree({ nodes: hiddenLabelNodes });

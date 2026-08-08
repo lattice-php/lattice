@@ -33,12 +33,11 @@ function addChildren(graph: TreeGraph, parentId: string, children: TreeNodeData[
   graph.loaded.add(parentId);
 
   for (const child of children) {
-    const { children: nested, ...node } = child;
-    graph.nodes.set(child.id, node);
+    graph.nodes.set(child.id, { ...child, children: [] });
     graph.parents.set(child.id, parentId === ROOTS_KEY ? null : parentId);
 
-    if (nested) {
-      addChildren(graph, child.id, nested);
+    if (child.children.length > 0) {
+      addChildren(graph, child.id, child.children);
     }
   }
 }
@@ -307,7 +306,7 @@ export function useTreeState({
   storageKey,
 }: {
   activeId: string | null;
-  activePath?: string[] | null;
+  activePath: string[] | null;
   defaultExpanded: string[];
   endpoint: string | null;
   componentRef: string | null;

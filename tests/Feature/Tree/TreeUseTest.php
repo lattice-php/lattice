@@ -26,8 +26,8 @@ it('serializes only the roots for lazy eagerDepth 1', function (): void {
     expect($node['props']['lazy'])->toBeTrue()
         ->and(array_column($node['props']['nodes'], 'label'))->toBe(['Books', 'Electronics'])
         ->and($node['props']['nodes'][1])->toMatchArray(['hasChildren' => true])
-        ->and($node['props']['nodes'][1])->not->toHaveKey('children')
-        ->and($node['props']['nodes'][0])->not->toHaveKey('hasChildren');
+        ->and($node['props']['nodes'][1]['children'])->toBe([])
+        ->and($node['props']['nodes'][0]['hasChildren'])->toBeFalse();
 });
 
 it('serializes two levels for lazy eagerDepth 2, marking the boundary', function (): void {
@@ -38,7 +38,7 @@ it('serializes two levels for lazy eagerDepth 2, marking the boundary', function
     $laptops = $node['props']['nodes'][1]['children'][0];
 
     expect($laptops)->toMatchArray(['label' => 'Laptops', 'hasChildren' => true])
-        ->and($laptops)->not->toHaveKey('children');
+        ->and($laptops['children'])->toBe([]);
 });
 
 it('serializes a skeleton without nodes for lazy eagerDepth 0', function (): void {

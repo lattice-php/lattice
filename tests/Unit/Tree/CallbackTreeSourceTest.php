@@ -10,8 +10,10 @@ it('resolves roots and children from closures', function (): void {
         children: fn (string $parentId): array => [TreeNode::make("{$parentId}.1", "Child of {$parentId}")],
     );
 
-    expect($source->roots()[0]->jsonSerialize())->toMatchArray(['id' => '1', 'hasChildren' => true])
-        ->and($source->children('1')[0]->jsonSerialize())->toMatchArray(['id' => '1.1', 'label' => 'Child of 1']);
+    expect($source->roots()[0]->id)->toBe('1')
+        ->and($source->roots()[0]->hasChildren)->toBeTrue()
+        ->and($source->children('1')[0]->id)->toBe('1.1')
+        ->and($source->children('1')[0]->label)->toBe('Child of 1');
 });
 
 it('returns no children when no children closure is given', function (): void {

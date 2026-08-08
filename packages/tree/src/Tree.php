@@ -39,6 +39,12 @@ class Tree extends Component implements InteractiveComponent
 
     private ?int $eagerDepth = null;
 
+    /** @var list<string>|null */
+    public ?array $activePath = null;
+
+    /** @var list<TreeNodeData> */
+    public array $nodes = [];
+
     public static function make(?string $key = null): static
     {
         return new static($key);
@@ -161,11 +167,11 @@ class Tree extends Component implements InteractiveComponent
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 300)]
-    protected function serialiseActivePath(array $data): array
+    #[SerializationHook(priority: 190)]
+    protected function prepareActivePath(array $data): array
     {
         if ($this->activeId !== null && $this->source instanceof TreeSource) {
-            $data['props']['activePath'] = $this->source->path($this->activeId);
+            $this->activePath = $this->source->path($this->activeId);
         }
 
         return $data;
@@ -175,8 +181,8 @@ class Tree extends Component implements InteractiveComponent
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 300)]
-    protected function serialiseNodes(array $data): array
+    #[SerializationHook(priority: 190)]
+    protected function prepareNodes(array $data): array
     {
         $maxLevels = $this->lazy ? $this->eagerDepth : null;
 
@@ -184,8 +190,8 @@ class Tree extends Component implements InteractiveComponent
             ? $this->nodeList($this->source->roots())
             : [];
 
-        $data['props']['nodes'] = array_map(
-            fn (TreeNode $node): array => $this->serialiseNode($node, 1, $maxLevels),
+        $this->nodes = array_map(
+            fn (TreeNode $node): TreeNodeData => $this->nodeData($node, 1, $maxLevels),
             $roots,
         );
 
@@ -194,37 +200,26 @@ class Tree extends Component implements InteractiveComponent
 
     /**
      * @param  array<string, true>  $ancestors
-     * @return array<string, mixed>
      */
-    private function serialiseNode(TreeNode $node, int $level, ?int $maxLevels, array $ancestors = []): array
+    private function nodeData(TreeNode $node, int $level, ?int $maxLevels, array $ancestors = []): TreeNodeData
     {
-        $data = $node->serialiseShallow();
-
         if ($maxLevels !== null && $level >= $maxLevels) {
-            if ($node->children !== []) {
-                $data['hasChildren'] = true;
-            }
-
-            return $data;
+            return $node->data([], $node->hasChildren || $node->children !== []);
         }
 
         $ancestors[$node->id] = true;
-        $children = $this->resolveChildren($node);
         $children = array_values(array_filter(
-            $children,
+            $this->resolveChildren($node),
             static fn (TreeNode $child): bool => ! isset($ancestors[$child->id]),
         ));
 
-        if ($children !== []) {
-            $data['children'] = array_map(
-                fn (TreeNode $child): array => $this->serialiseNode($child, $level + 1, $maxLevels, $ancestors),
+        return $node->data(
+            array_map(
+                fn (TreeNode $child): TreeNodeData => $this->nodeData($child, $level + 1, $maxLevels, $ancestors),
                 $children,
-            );
-        } elseif ($node->hasChildren || $node->children !== []) {
-            $data['hasChildren'] = true;
-        }
-
-        return $data;
+            ),
+            $node->hasChildren,
+        );
     }
 
     /**

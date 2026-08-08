@@ -57,7 +57,7 @@ it('serializes the whole hierarchy when wired through the Tree component', funct
     expect($root)->toMatchArray(['label' => 'Electronics', 'hasChildren' => true])
         ->and($root['children'][0])->toMatchArray(['label' => 'Laptops', 'hasChildren' => true])
         ->and($root['children'][0]['children'][0])->toMatchArray(['label' => 'Ultrabooks'])
-        ->and($root['children'][0]['children'][0])->not->toHaveKey('children');
+        ->and($root['children'][0]['children'][0]['children'])->toBe([]);
 });
 
 it('applies a query scope to both roots and children', function (): void {
