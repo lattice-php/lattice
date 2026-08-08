@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Gate;
 use Lattice\Media\Models\Media;
+use Lattice\Tests\Fixtures\Media\OwnedMedia;
 
 use function Pest\Laravel\actingAs;
 
@@ -18,4 +19,17 @@ test('authenticated users are allowed by default', function (): void {
 
     expect(Gate::allows('viewAny', Media::class))->toBeTrue()
         ->and(Gate::allows('update', $media))->toBeTrue();
+});
+
+test('media implementing Ownable is only editable by its owner', function (): void {
+    config(['media.model' => OwnedMedia::class]);
+
+    $owner = workbenchTestUser();
+    $stranger = workbenchTestUser();
+    $media = OwnedMedia::factory()->create(['uploaded_by' => $owner->getKey()]);
+
+    expect(Gate::forUser($owner)->allows('update', $media))->toBeTrue()
+        ->and(Gate::forUser($stranger)->allows('update', $media))->toBeFalse()
+        ->and(Gate::forUser($stranger)->allows('delete', $media))->toBeFalse()
+        ->and(Gate::forUser($stranger)->allows('attach', $media))->toBeFalse();
 });
