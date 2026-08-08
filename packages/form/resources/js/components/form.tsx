@@ -8,6 +8,7 @@ import { nodeKey } from "@lattice-php/core/nodes";
 import { RenderNode } from "@lattice-php/core/renderer";
 import type { Node, RendererComponent } from "@lattice-php/core";
 import { useT } from "@lattice-php/ui/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
 import type { Emphasis, Justify, Variant } from "@lattice-php/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormSubmitButton } from "./base/submit-button";
@@ -154,6 +155,7 @@ function FormShell({ children, node }: { children: React.ReactNode; node: Node<"
   const componentRef = props.ref ?? "";
   const method = props.method ?? "post";
   const precognitive = props.precognitive;
+  const fullWidth = props.fullWidth;
   const resetOnError = props.resetOnError ?? false;
   const resetOnSuccess = props.resetOnSuccess ?? [];
   const fieldLabels = useMemo(() => collectFields(node.schema).labels, [node.schema]);
@@ -202,7 +204,7 @@ function FormShell({ children, node }: { children: React.ReactNode; node: Node<"
       resetOnSuccess={resetOnSuccess}
       validationTimeout={precognitive ? validationTimeout : undefined}
       headers={withHeaders(componentRef)}
-      className="mx-auto flex w-full max-w-2xl flex-col gap-6"
+      className={cn("flex w-full flex-col gap-6", !fullWidth && "mx-auto max-w-2xl")}
       onStart={() => {
         retryPhase.current = retryPhase.current === "renewing" ? "retried" : "idle";
       }}

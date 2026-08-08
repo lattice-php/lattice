@@ -48,6 +48,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'resetOnError' => null,
                 'status' => null,
                 'state' => [],
+                'fullWidth' => false,
             ],
         ])
         ->and($table)
