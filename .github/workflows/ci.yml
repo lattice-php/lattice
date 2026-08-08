@@ -299,7 +299,7 @@ jobs:
             packages/ui/resources/js/generated.ts
 
   php-tests:
-    name: PHP Tests (${{ matrix.php-version }}, ${{ matrix.coverage }})
+    name: PHP Tests (${{ matrix.php-version }}, ${{ matrix.coverage }}${{ matrix.shard && format(', shard {0}/2', matrix.shard) || '' }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -310,6 +310,10 @@ jobs:
         include:
           - php-version: "8.4"
             coverage: pcov
+            shard: 1
+          - php-version: "8.4"
+            coverage: pcov
+            shard: 2
           - php-version: "8.5"
             coverage: none
     steps:
@@ -319,7 +323,9 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: ${{ matrix.coverage }}
-          ini-values: pcov.directory=.
+          # The coverage source is packages/ only (phpunit.xml); instrumenting
+          # the whole workspace makes pcov also trace vendor/ and workbench/.
+          ini-values: pcov.directory=packages
           tools: composer:v2
 
       - name: Resolve composer cache directory
@@ -340,7 +346,7 @@ jobs:
 
       - name: Pest with coverage
         if: ${{ matrix.php-version == '8.4' }}
-        run: composer test:coverage
+        run: composer test:coverage -- --shard=${{ matrix.shard }}/2
 
       - name: Upload Pest coverage to Codecov
         if: ${{ !cancelled() && matrix.php-version == '8.4' }}
@@ -349,7 +355,7 @@ jobs:
           use_oidc: true
           files: coverage_phpunit/clover.xml
           flags: pest
-          name: pest
+          name: pest-${{ matrix.shard }}
           disable_search: true
           fail_ci_if_error: true
 
@@ -360,7 +366,7 @@ jobs:
           use_oidc: true
           files: coverage_phpunit/pest.junit.xml
           flags: pest
-          name: pest-tests
+          name: pest-tests-${{ matrix.shard }}
           report_type: test_results
           disable_search: true
           fail_ci_if_error: true
