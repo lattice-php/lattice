@@ -237,7 +237,7 @@ final class TableRegistry extends DefinitionRegistry
 
         return $result->decorateRows(function (array $row) use ($definition, $rowKeys): array {
             $actions = $this->renderableComponents($definition->actions($row));
-            $detail = array_values($this->renderableComponents(array_filter([$definition->rowDetail($row)])));
+            $detail = $this->renderableComponents(array_filter([$definition->rowDetail($row)]));
             $projected = array_intersect_key($row, array_flip($rowKeys));
 
             unset($projected['actions'], $projected['detail']);

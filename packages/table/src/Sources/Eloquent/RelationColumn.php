@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Lattice\Table\Enums\SortDirection;
 use Lattice\Table\RelationBinding;
 
 /**
@@ -122,7 +123,7 @@ final readonly class RelationColumn implements RelationProjection
      *
      * @param  Builder<*>  $builder
      */
-    public function applySort(Builder $builder, string $direction): void
+    public function applySort(Builder $builder, SortDirection $direction): void
     {
         $model = $builder->getModel();
 
@@ -134,6 +135,6 @@ final readonly class RelationColumn implements RelationProjection
             ->mergeConstraintsFrom($relation->getQuery())
             ->limit(1);
 
-        $builder->orderBy($subquery, $direction);
+        $builder->orderBy($subquery, $direction->value);
     }
 }

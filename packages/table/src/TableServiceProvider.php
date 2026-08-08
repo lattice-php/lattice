@@ -25,7 +25,7 @@ final class TableServiceProvider extends ServiceProvider
         $this->app->singleton(TableRegistry::class);
 
         $lattice = $this->app->make(LatticeRegistry::class);
-        $lattice->registerCapability('tables', fn (string|array $tables) => $this->app->make(TableRegistry::class)->register($tables));
+        $lattice->registerCapability('tables', $this->registerTables(...));
         $lattice->wireFamily('column', AsColumn::class, Column::class, marker: true);
         $lattice->wireFamily('filter', AsFilter::class, Filter::class, marker: true);
     }
@@ -33,5 +33,11 @@ final class TableServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+    }
+
+    /** @param  class-string<TableDefinition>|array<int, class-string<TableDefinition>>  $tables */
+    private function registerTables(string|array $tables): void
+    {
+        $this->app->make(TableRegistry::class)->register($tables);
     }
 }

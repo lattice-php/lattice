@@ -167,11 +167,14 @@ final readonly class TableQuery implements JsonSerializable
      */
     private static function parseFilters(mixed $filter, string $table): array
     {
-        return self::parseList(
-            $filter,
+        if (! is_string($filter) || $filter === '') {
+            return [];
+        }
+
+        return array_values(array_filter(array_map(
             fn (string $clause): ?FilterClause => self::parseClause($clause, $table),
-            fn (?FilterClause $clause): bool => $clause instanceof FilterClause,
-        );
+            explode(',', $filter),
+        )));
     }
 
     /**

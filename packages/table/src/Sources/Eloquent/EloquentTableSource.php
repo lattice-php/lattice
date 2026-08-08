@@ -148,7 +148,7 @@ final readonly class EloquentTableSource implements TableSource
             $relation = $relations[$sort->key] ?? null;
 
             if ($relation instanceof RelationProjection) {
-                $relation->applySort($builder, $sort->direction->value);
+                $relation->applySort($builder, $sort->direction);
 
                 continue;
             }
