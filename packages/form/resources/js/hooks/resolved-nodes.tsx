@@ -15,11 +15,11 @@ export function ResolvedNodesProvider({
   return <ResolvedNodesContext.Provider value={nodes}>{children}</ResolvedNodesContext.Provider>;
 }
 
-export function useResolvedNode(node: Node): Node {
+export function useResolvedNode<TType extends string = string>(node: Node<TType>): Node<TType> {
   const nodes = useContext(ResolvedNodesContext);
   const name = fieldProps(node).name ?? "";
   const scope = useFieldScope();
   const path = name && scope ? scope.errorKey(name) : name;
 
-  return (path && nodes[path]) || (name && nodes[name]) || node;
+  return ((path && nodes[path]) || (name && nodes[name]) || node) as Node<TType>;
 }

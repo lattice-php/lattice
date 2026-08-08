@@ -48,10 +48,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
   const multiple = props.multiple;
   const searchable = props.searchable;
   const creatable = props.creatable;
-  const staticOptions = useMemo(
-    () => (resolvedNode.props as { options?: Option[] }).options ?? [],
-    [resolvedNode.props],
-  );
+  const staticOptions = useMemo(() => resolvedNode.props.options, [resolvedNode.props]);
   const optionSchema = resolvedNode.props.optionSchema;
 
   const globalValue = useFormValue(name);
