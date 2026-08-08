@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.45.0](https://github.com/lattice-php/lattice/compare/0.44.0...0.45.0) (2026-08-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* LatticeRegistry::wireSource()/wireSources() and the Lattice::wireSource() facade call are deleted. Every wire-contributing package (including the six built-ins: core, ui, form, table, action, lattice) now declares its wire surface via the same extra.lattice.discover composer key ComponentPackages already reads for JS/PHP component discovery, resolved by the new WireSourceCatalog. ExportSchemaProfile, AugmentProfile, and the workbench BaseSchemaProfile/BaseProfile consume the catalog instead of the registry.
+
+### Features
+
+* card headerActions slot and form fullWidth option ([#420](https://github.com/lattice-php/lattice/issues/420)) ([3477fee](https://github.com/lattice-php/lattice/commit/3477fee432b6b7540639d79b2197aeb695007c8f))
+* wire-model TypeScript generation with uniform composer discovery ([#416](https://github.com/lattice-php/lattice/issues/416)) ([3f2ede1](https://github.com/lattice-php/lattice/commit/3f2ede1199a3521a2d5b64236c40a26be4c975e4))
+
 ## [0.44.0](https://github.com/lattice-php/lattice/compare/0.43.0...0.44.0) (2026-08-07)
 
 
