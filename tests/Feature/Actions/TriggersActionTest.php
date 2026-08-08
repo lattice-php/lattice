@@ -14,52 +14,40 @@ beforeEach(function (): void {
     Lattice::actions([WorkbenchPingAction::class]);
 });
 
-test('a menu item bound to an action serializes a nested action node sealed to its endpoint', function (): void {
-    $wire = wire(MenuItem::make('Log out', 'log-out')->action(WorkbenchPingAction::class));
+dataset('action triggers', [
+    'menu item' => [MenuItem::class, 'menu-item'],
+    'link' => [Link::class, 'link'],
+    'button' => [Button::class, 'button'],
+]);
 
-    expect($wire['type'])->toBe('menu-item')
+test('a trigger bound to an action serializes a nested action node sealed to its endpoint', function (string $class, string $type): void {
+    $wire = wire($class::make('Ping', 'ping')->action(WorkbenchPingAction::class));
+
+    expect($wire['type'])->toBe($type)
         ->and($wire['props']['href'])->toBeNull()
         ->and($wire['props']['action']['type'])->toBe('action')
         ->and($wire['props']['action']['props']['endpoint'])->toBe('/lattice/actions/workbench.ping')
         ->and($wire['props']['action']['props']['ref'])->not->toBe('');
-});
+})->with('action triggers');
 
-test('a link bound to an action serializes a nested action node sealed to its endpoint', function (): void {
-    $wire = wire(Link::make('Log out', 'log-out')->action(WorkbenchPingAction::class));
-
-    expect($wire['type'])->toBe('link')
-        ->and($wire['props']['href'])->toBeNull()
-        ->and($wire['props']['action']['type'])->toBe('action')
-        ->and($wire['props']['action']['props']['endpoint'])->toBe('/lattice/actions/workbench.ping')
-        ->and($wire['props']['action']['props']['ref'])->not->toBe('');
-});
-
-test('the nested action node of a menu item dispatches through the action endpoint', function (): void {
-    $wire = wire(MenuItem::make('Ping', 'ping')->action(WorkbenchPingAction::class));
-    $action = $wire['props']['action'];
+test('the nested action node of a trigger dispatches through the action endpoint', function (string $class): void {
+    $action = wire($class::make('Ping', 'ping')->action(WorkbenchPingAction::class))['props']['action'];
 
     postJson($action['props']['endpoint'], ['name' => 'Taylor'], $this->latticeHeaders($action['props']['ref']))
         ->assertOk()
         ->assertJsonPath('data.handled', 'Taylor')
         ->assertJsonPath('effects.0.type', 'toast');
-});
+})->with('action triggers');
 
-test('the nested action node of a link dispatches through the action endpoint', function (): void {
-    $wire = wire(Link::make('Ping', 'ping')->action(WorkbenchPingAction::class));
-    $action = $wire['props']['action'];
-
-    postJson($action['props']['endpoint'], ['name' => 'Jess'], $this->latticeHeaders($action['props']['ref']))
-        ->assertOk()
-        ->assertJsonPath('data.handled', 'Jess');
-});
-
-test('a menu item cannot bind an action and an href together', function (): void {
-    MenuItem::make('Log out', 'log-out')->href('/logout')->action(WorkbenchPingAction::class);
-})->throws(InvalidArgumentException::class);
-
-test('a menu item cannot set an href after binding an action', function (): void {
-    MenuItem::make('Log out', 'log-out')->action(WorkbenchPingAction::class)->href('/logout');
-})->throws(InvalidArgumentException::class);
+test('a trigger cannot combine an action and an href in either order', function (string $class): void {
+    expect(fn () => $class::make('Log out', 'log-out')->href('/logout')->action(WorkbenchPingAction::class))
+        ->toThrow(InvalidArgumentException::class)
+        ->and(fn () => $class::make('Log out', 'log-out')->action(WorkbenchPingAction::class)->href('/logout'))
+        ->toThrow(InvalidArgumentException::class);
+})->with([
+    'menu item' => [MenuItem::class],
+    'link' => [Link::class],
+]);
 
 test('a menu item cannot bind an action when it has children', function (): void {
     MenuItem::make('Account', 'account')
@@ -72,33 +60,6 @@ test('an action menu item cannot gain children', function (): void {
         ->action(WorkbenchPingAction::class)
         ->children([MenuItem::make('Profile', 'profile')->href('/profile')]);
 })->throws(InvalidArgumentException::class);
-
-test('a link cannot bind an action and an href together', function (): void {
-    Link::make('Log out', 'log-out')->href('/logout')->action(WorkbenchPingAction::class);
-})->throws(InvalidArgumentException::class);
-
-test('a link cannot set an href after binding an action', function (): void {
-    Link::make('Log out', 'log-out')->action(WorkbenchPingAction::class)->href('/logout');
-})->throws(InvalidArgumentException::class);
-
-test('a button bound to an action serializes a nested action node sealed to its endpoint', function (): void {
-    $wire = wire(Button::make('Ping', 'ping')->action(WorkbenchPingAction::class));
-
-    expect($wire['type'])->toBe('button')
-        ->and($wire['props']['href'])->toBeNull()
-        ->and($wire['props']['action']['type'])->toBe('action')
-        ->and($wire['props']['action']['props']['endpoint'])->toBe('/lattice/actions/workbench.ping')
-        ->and($wire['props']['action']['props']['ref'])->not->toBe('');
-});
-
-test('the nested action node of a button dispatches through the action endpoint', function (): void {
-    $wire = wire(Button::make('Ping', 'ping')->action(WorkbenchPingAction::class));
-    $action = $wire['props']['action'];
-
-    postJson($action['props']['endpoint'], ['name' => 'Sam'], $this->latticeHeaders($action['props']['ref']))
-        ->assertOk()
-        ->assertJsonPath('data.handled', 'Sam');
-});
 
 test('a link bound to effects serializes them without an href or action', function (): void {
     $wire = wire(Link::make('Collapse', 'collapse')->effects(Effects::toggleSidebar('app-sidebar')));

@@ -1,9 +1,23 @@
 import type { RenderResult } from "@testing-library/react";
+import { vi } from "vitest";
 import { createRegistry, eagerComponent, type RendererComponent } from "@lattice-php/core";
-import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
-export { fakeNode, renderWithRegistry };
+export const moveAction = fakeNode({
+  props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
+  type: "action",
+});
+
+export function stubMoveFetch(status = 200) {
+  const fetchMock = vi
+    .fn<typeof fetch>()
+    .mockResolvedValue(jsonResponse({ effects: [] }, { status }));
+  vi.stubGlobal("fetch", fetchMock);
+
+  return fetchMock;
+}
 
 /**
  * Stand-in body component registered under `"test.text"` alongside
@@ -27,8 +41,12 @@ export function treeNode(
     id,
     label,
     schema: [{ props: { text: label }, type: "test.text" }],
+    href: null,
+    disabled: false,
+    hasChildren: false,
+    children: [],
     ...extra,
-  } as TreeNodeData;
+  };
 }
 
 /** Labels of the `test.action` buttons clicked since the last reset. */

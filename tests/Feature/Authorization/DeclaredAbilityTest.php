@@ -13,7 +13,6 @@ use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Attributes\AsBulkAction;
 use Lattice\Core\Attributes\AsPage;
 use Lattice\Core\Facades\Lattice;
-use Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Http\Page;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
@@ -63,14 +62,6 @@ function allowAbilities(string ...$abilities): void
     }
 
     actingAs(workbenchTestUser());
-}
-
-/**
- * @param  array<string, mixed>  $context
- */
-function sealedRef(string $type, string $key, array $context = []): string
-{
-    return app(ComponentReferenceSigner::class)->seal($type, $key, $context);
 }
 
 test('a declared ability gates the endpoint', function (array $allowed, bool $expected): void {

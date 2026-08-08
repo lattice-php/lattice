@@ -3,35 +3,15 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Core\Facades\Lattice;
-use Lattice\Core\LatticeRegistry;
 use Lattice\Form\Components\Form;
 use Lattice\Http\Page;
 use Lattice\Table\Components\Table;
-use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Tab;
 use Lattice\Ui\Components\Tabs;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Contracts\SchemaEntry;
 use Lattice\Ui\PageSchema;
-
-test('lattice facade resolves the registry', function (): void {
-    expect(Lattice::getFacadeRoot())->toBe(app(LatticeRegistry::class));
-});
-
-test('interactive components keep their serialized ids', function (): void {
-    expect(wire(Form::make('demo-form')))
-        ->toMatchArray([
-            'type' => 'form',
-            'id' => 'demo-form',
-        ])
-        ->and(wire(Table::make('demo-table')))
-        ->toMatchArray([
-            'type' => 'table',
-            'id' => 'demo-table',
-        ]);
-});
 
 test('interactive components seal request context for endpoints', function (): void {
     $form = wire(Form::make('demo-form')
@@ -80,40 +60,6 @@ test('components can opt out of rendering with hidden', function (): void {
         ->and($pageData['schema'][0]['props']['text'])->toBe('Visible root')
         ->and($pageData['schema'][1]['schema'])->toHaveCount(1)
         ->and($pageData['schema'][1]['schema'][0]['props']['text'])->toBe('Visible child');
-});
-
-test('modals serialize composable children for action driven dialogs', function (): void {
-    expect(wire(Modal::make('settings.two-factor-setup')
-        ->title('Set up two-factor authentication')
-        ->description('Scan the QR code with your authenticator app.')
-        ->schema([
-            Text::make('Recovery codes will appear here.'),
-        ])))
-        ->toMatchArray([
-            'type' => 'modal',
-            'id' => 'settings.two-factor-setup',
-            'props' => [
-                'title' => 'Set up two-factor authentication',
-                'description' => 'Scan the QR code with your authenticator app.',
-                'closeLabel' => 'Close',
-                'open' => false,
-                'side' => null,
-                'width' => 'lg',
-                'ref' => null,
-            ],
-            'schema' => [
-                [
-                    'type' => 'text',
-                    'props' => [
-                        'text' => 'Recovery codes will appear here.',
-                        'align' => null,
-                        'size' => 'md',
-                        'color' => null,
-                        'copyable' => false,
-                    ],
-                ],
-            ],
-        ]);
 });
 
 test('tabs ignore hidden tab children when resolving their active value', function (): void {

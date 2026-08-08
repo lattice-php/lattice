@@ -1,9 +1,9 @@
 import type { Node } from "@lattice-php/core";
+import type { RowTemplateData } from "@lattice-php/form/generated";
 
-export type RowTemplate = { type: string; label: string; schema: Node[] };
-
-export function rowTemplatesOf(node: Node): RowTemplate[] | undefined {
-  return (node as unknown as { templates?: RowTemplate[] }).templates;
+export function rowTemplatesOf(node: Node): RowTemplateData[] | undefined {
+  const templates = (node.props as { templates?: RowTemplateData[] }).templates;
+  return templates?.length ? templates : undefined;
 }
 
 /** The schema for a submitted row: its matching template, or the node's own schema when untyped. */

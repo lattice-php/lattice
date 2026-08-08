@@ -1,5 +1,6 @@
-import { Button, type Emphasis, type Variant } from "./button";
+import { Button } from "./button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "./dialog";
+import type { Emphasis, Variant } from "./generated";
 import { Spinner } from "./spinner";
 
 export function ConfirmDialog({

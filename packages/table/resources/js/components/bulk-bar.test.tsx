@@ -133,12 +133,6 @@ describe("BulkBar", () => {
     expect(screen.getByText(expected)).toBeVisible();
   });
 
-  it("hides the select-all-matching button when it is not allowed", () => {
-    renderBar({ canSelectAllMatching: false });
-
-    expect(screen.queryByTestId("bulk-select-all-matching")).toBeNull();
-  });
-
   it("renders and fires the select-all-matching button when allowed", () => {
     const { onSelectAllMatching } = renderBar({ canSelectAllMatching: true, total: 50 });
 

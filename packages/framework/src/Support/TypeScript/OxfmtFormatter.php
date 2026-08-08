@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Support\TypeScript;
 
-use Spatie\TypeScriptTransformer\Formatters\Formatter;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -13,7 +12,7 @@ use Symfony\Component\Process\Process;
  * is a no-op: the byte-exact snapshot test catches any formatting divergence,
  * and the PHP CI test jobs deliberately run without node_modules.
  */
-final readonly class OxfmtFormatter implements Formatter
+final readonly class OxfmtFormatter
 {
     /**
      * @param  array<int, string>  $files

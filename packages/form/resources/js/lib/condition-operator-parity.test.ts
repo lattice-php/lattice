@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import type { Op } from "@lattice-php/form/generated";
+import type { Op } from "@lattice-php/core";
 import { describe, expect, it } from "vitest";
 import { evaluateConditions } from "./conditions";
 

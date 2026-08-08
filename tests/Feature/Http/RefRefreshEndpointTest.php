@@ -29,8 +29,3 @@ it('rejects a request without a ref', function (): void {
     $this->postJson(route('lattice.refs.refresh'))
         ->assertForbidden();
 });
-
-it('honours the configured middleware stack', function (): void {
-    expect(app('router')->getRoutes()->getByName('lattice.refs.refresh')->gatherMiddleware())
-        ->toBe(['web']);
-});

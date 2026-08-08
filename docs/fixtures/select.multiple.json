@@ -14,6 +14,7 @@
             "label": "Languages",
             "multiple": true,
             "name": "languages",
+            "optionSchema": null,
             "options": [
                 {
                     "data": null,

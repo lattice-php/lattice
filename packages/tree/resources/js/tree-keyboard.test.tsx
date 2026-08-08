@@ -1,8 +1,15 @@
 import { act, fireEvent, screen } from "@testing-library/react";
 import { router } from "@inertiajs/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { actionClicks, renderTree, sampleNodes as nodes, treeNode } from "./test-support";
-import { type TreeNodeData } from "./tree";
+import {
+  actionClicks,
+  moveAction,
+  renderTree,
+  sampleNodes as nodes,
+  stubMoveFetch,
+  treeNode,
+} from "./test-support";
+import type { TreeNodeData } from "./types";
 
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
@@ -296,22 +303,10 @@ describe("Tree keyboard navigation", () => {
   });
 
   it("moves a node with Ctrl Shift Arrow and posts the zero-based move contract", async () => {
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
-      new Response(JSON.stringify({ effects: [] }), {
-        headers: { "Content-Type": "application/json" },
-        status: 200,
-      }),
-    );
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = stubMoveFetch();
     const movable = [treeNode("a", "Alpha"), treeNode("b", "Beta"), treeNode("c", "Gamma")];
 
-    renderTree({
-      moveAction: {
-        props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
-        type: "action",
-      },
-      nodes: movable,
-    });
+    renderTree({ moveAction, nodes: movable });
 
     expect(item("a")).toHaveAttribute(
       "aria-keyshortcuts",
@@ -331,21 +326,9 @@ describe("Tree keyboard navigation", () => {
   });
 
   it("indents and outdents with the keyboard alternative", async () => {
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
-      new Response(JSON.stringify({ effects: [] }), {
-        headers: { "Content-Type": "application/json" },
-        status: 200,
-      }),
-    );
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = stubMoveFetch();
 
-    renderTree({
-      moveAction: {
-        props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
-        type: "action",
-      },
-      nodes: [treeNode("a", "Alpha"), treeNode("b", "Beta")],
-    });
+    renderTree({ moveAction, nodes: [treeNode("a", "Alpha"), treeNode("b", "Beta")] });
 
     fireEvent.keyDown(item("b"), { ctrlKey: true, key: "ArrowRight", shiftKey: true });
 
@@ -371,21 +354,9 @@ describe("Tree keyboard navigation", () => {
   });
 
   it("rolls an optimistic keyboard move back when the server rejects it", async () => {
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
-      new Response(JSON.stringify({ effects: [] }), {
-        headers: { "Content-Type": "application/json" },
-        status: 422,
-      }),
-    );
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = stubMoveFetch(422);
 
-    renderTree({
-      moveAction: {
-        props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
-        type: "action",
-      },
-      nodes: [treeNode("a", "Alpha"), treeNode("b", "Beta")],
-    });
+    renderTree({ moveAction, nodes: [treeNode("a", "Alpha"), treeNode("b", "Beta")] });
 
     fireEvent.keyDown(item("a"), { ctrlKey: true, key: "ArrowDown", shiftKey: true });
 

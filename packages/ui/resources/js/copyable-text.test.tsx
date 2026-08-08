@@ -1,34 +1,15 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { stubClipboard } from "@lattice-php/core/test-support";
 import { CopyButton, CopyableText, copyToClipboard } from "./copyable-text";
 
-function stubClipboard(writeText: (text: string) => Promise<void>) {
-  Object.defineProperty(navigator, "clipboard", {
-    configurable: true,
-    value: { writeText },
-  });
+function rejectingClipboard() {
+  return stubClipboard(vi.fn<Clipboard["writeText"]>().mockRejectedValue(new Error("denied")));
 }
 
-afterEach(() => {
-  Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
-  vi.restoreAllMocks();
-});
-
 describe("CopyableText", () => {
-  it("renders its children alongside a copy button", () => {
-    render(
-      <CopyableText value="tok_secret" label="API token">
-        <span>shown</span>
-      </CopyableText>,
-    );
-
-    expect(screen.getByText("shown")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Copy API token" })).toBeInTheDocument();
-  });
-
   it("copies the value and swaps the button label on click", async () => {
-    const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
-    stubClipboard(writeText);
+    const writeText = stubClipboard();
 
     render(<CopyableText value="tok_secret" label="API token" />);
 
@@ -52,21 +33,8 @@ describe("CopyButton", () => {
     expect(screen.getByRole("button", { name: "Copy API token" })).not.toHaveTextContent("Copy");
   });
 
-  it("renders a custom idle label", () => {
-    render(
-      <CopyButton value="tok_secret" label="API token">
-        Copy token
-      </CopyButton>,
-    );
-
-    expect(screen.getByRole("button", { name: "Copy API token" })).toHaveTextContent("Copy token");
-  });
-
   it("does not report success when copying fails", async () => {
-    const writeText = vi
-      .fn<(text: string) => Promise<void>>()
-      .mockRejectedValue(new Error("denied"));
-    stubClipboard(writeText);
+    const writeText = rejectingClipboard();
 
     render(<CopyButton value="tok_secret" label="API token" />);
 
@@ -80,8 +48,7 @@ describe("CopyButton", () => {
 
 describe("copyToClipboard", () => {
   it("writes the text and reports success", async () => {
-    const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
-    stubClipboard(writeText);
+    const writeText = stubClipboard();
 
     await expect(copyToClipboard("hello")).resolves.toBe(true);
     expect(writeText).toHaveBeenCalledWith("hello");
@@ -94,7 +61,7 @@ describe("copyToClipboard", () => {
   });
 
   it("returns false when writing rejects", async () => {
-    stubClipboard(vi.fn<(text: string) => Promise<void>>().mockRejectedValue(new Error("denied")));
+    rejectingClipboard();
 
     await expect(copyToClipboard("hello")).resolves.toBe(false);
   });

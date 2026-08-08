@@ -23,7 +23,6 @@ use Lattice\Core\LatticeRegistry;
  * @method static void theme(\Lattice\Theme\Theme|\Closure $theme)
  * @method static void translations(string $namespace, string $path)
  * @method static void wireFamily(string $category, class-string<\Lattice\Core\Attributes\WireType> $attribute, class-string $reference, bool $marker = false)
- * @method static void wireSource(string $path)
  *
  * @see LatticeRegistry
  */

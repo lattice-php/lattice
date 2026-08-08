@@ -5,12 +5,12 @@ namespace Lattice\Table\Components;
 
 use InvalidArgumentException;
 use Lattice\Core\Attributes\AsComponent;
-use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Enums\PaginationType;
 use Lattice\Table\Filters\Filter;
 use Lattice\Table\TableDefinition;
+use Lattice\Table\TablePagination;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableRegistry;
 use Lattice\Table\TableResult;
@@ -48,6 +48,11 @@ class Table extends Component implements InteractiveComponent
      */
     public array $bulkActions = [];
 
+    /**
+     * @var array<int, Component>
+     */
+    public array $toolbar = [];
+
     public bool $striped = false;
 
     public bool $searchable = false;
@@ -62,14 +67,12 @@ class Table extends Component implements InteractiveComponent
 
     public ?string $emptyLabel = null;
 
-    /**
-     * The serialized {data, pagination, state} result, projected into props
-     * verbatim so empty data/pagination stay on the wire — typed reflection
-     * would otherwise skip them.
-     *
-     * @var array<string, mixed>|null
-     */
-    protected ?array $result = null;
+    /** @var array<int, array<string, mixed>>|null */
+    public ?array $data = null;
+
+    public ?TablePagination $pagination = null;
+
+    public ?TableQuery $query = null;
 
     public static function make(string $id): static
     {
@@ -177,6 +180,16 @@ class Table extends Component implements InteractiveComponent
         return $this;
     }
 
+    /**
+     * @param  array<int, Component>  $components
+     */
+    public function toolbar(array $components): static
+    {
+        $this->toolbar = $components;
+
+        return $this;
+    }
+
     public function striped(bool $striped): static
     {
         $this->striped = $striped;
@@ -201,26 +214,11 @@ class Table extends Component implements InteractiveComponent
 
     public function result(TableResult $result, TableQuery $query): static
     {
-        $this->result = (array) $result->forQuery($query);
+        $resolved = $result->forQuery($query);
+        $this->data = $resolved->data;
+        $this->pagination = $resolved->pagination;
+        $this->query = $resolved->query;
 
         return $this;
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    #[SerializationHook(priority: 250)]
-    protected function projectResult(array $data): array
-    {
-        if ($this->result === null) {
-            return $data;
-        }
-
-        $props = is_array($data['props'] ?? null) ? $data['props'] : [];
-
-        $data['props'] = [...$props, ...$this->result];
-
-        return $data;
     }
 }

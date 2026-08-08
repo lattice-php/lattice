@@ -1,7 +1,9 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fakeNode, renderTree, sampleNodes as nodes, treeNode } from "./test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import { fakeNode, jsonResponse, stubFetch } from "@lattice-php/core/test-support";
+import { renderTree, sampleNodes as nodes, treeNode } from "./test-support";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -19,14 +21,18 @@ describe("Tree component", () => {
     expect(screen.getByText("Laptops")).toBeVisible();
   });
 
-  it("shows a chevron for a loadable boundary but not for a leaf", () => {
-    renderTree({ defaultExpanded: ["1"], endpoint: "/lattice/trees/demo", nodes, ref: "sealed" });
+  it("shows a chevron for a loadable boundary but not for a leaf or a dead boundary", () => {
+    const view = renderTree({
+      defaultExpanded: ["1"],
+      endpoint: "/lattice/trees/demo",
+      nodes,
+      ref: "sealed",
+    });
 
     expect(screen.getByTestId("tree-node-9-toggle")).toBeInTheDocument();
     expect(screen.queryByTestId("tree-node-3-toggle")).not.toBeInTheDocument();
-  });
 
-  it("hides the chevron for a dead boundary with no endpoint to load from", () => {
+    view.unmount();
     renderTree({ defaultExpanded: ["1"], nodes });
 
     expect(screen.queryByTestId("tree-node-9-toggle")).not.toBeInTheDocument();
@@ -84,13 +90,7 @@ describe("Tree component", () => {
   });
 
   it("posts the selection contract and rolls back a rejected selection", async () => {
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
-      new Response(JSON.stringify({ effects: [] }), {
-        headers: { "Content-Type": "application/json" },
-        status: 422,
-      }),
-    );
-    vi.stubGlobal("fetch", fetchMock);
+    const fetchMock = stubFetch(jsonResponse({ effects: [] }, { status: 422 }));
 
     renderTree({
       activeId: "1",
@@ -115,11 +115,9 @@ describe("Tree component", () => {
 
   it("keeps the label as the treeitem's accessible name even when the schema omits it", () => {
     const hiddenLabelNodes: TreeNodeData[] = [
-      {
-        id: "7",
-        label: "Hidden Label",
+      treeNode("7", "Hidden Label", {
         schema: [{ props: { text: "something else" }, type: "test.text" }],
-      },
+      }),
     ];
 
     renderTree({ nodes: hiddenLabelNodes });

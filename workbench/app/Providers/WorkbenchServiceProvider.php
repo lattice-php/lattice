@@ -43,7 +43,7 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         $this->keepLatticeEndpointsPublic();
 
-        // Rebind so lattice:typescript regenerates the package's own built-in types.
+        // Rebind so lattice:typescript regenerates the package's own built-in artifacts.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();

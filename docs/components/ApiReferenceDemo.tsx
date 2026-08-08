@@ -7,7 +7,26 @@ import spec from "../fixtures/api-reference.openapi.json";
 export default function ApiReferenceDemo() {
   return (
     <SpriteProvider sprite={sprite}>
-      <ApiReference node={{ type: "api-reference", props: { spec } }}>{null}</ApiReference>
+      <ApiReference
+        node={{
+          type: "api-reference",
+          props: {
+            spec,
+            url: null,
+            operation: null,
+            tags: null,
+            defaultOperation: null,
+            hideHeader: false,
+            hideBaseUrl: false,
+            title: null,
+            expandDepth: 2,
+            twoColumnBreakpoint: "lg",
+            token: null,
+          },
+        }}
+      >
+        {null}
+      </ApiReference>
     </SpriteProvider>
   );
 }

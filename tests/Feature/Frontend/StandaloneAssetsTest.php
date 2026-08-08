@@ -62,13 +62,6 @@ it('renders a registered theme as a managed style tag', function (): void {
         ->toContain('--lt-primary:#6366f1');
 });
 
-it('renders no style tag when no theme is registered', function (): void {
-    // The workbench provider registers a demo theme; clear it to test the bare directive.
-    app(ThemeRenderer::class)->register(fn (): ?Theme => null);
-
-    expect(Blade::render('@latticeHead'))->not->toContain('lattice-theme');
-});
-
 it('merges the directive argument over the configured frontend settings', function (): void {
     config()->set('lattice.frontend.echo', ['broadcaster' => 'reverb', 'key' => 'app-key']);
 

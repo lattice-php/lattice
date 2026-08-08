@@ -1,3 +1,6 @@
+// Side-effect import: loads the ComponentProps augmentation in programs whose
+// tsconfig include misses types.ts (the docs app), so node.props stays typed.
+import "../types";
 import { useEffect, useMemo, useState } from "react";
 import type { RendererComponent } from "@lattice-php/lattice";
 import { Icon } from "@lattice-php/ui/icons";
@@ -5,25 +8,10 @@ import { Badge, CopyButton } from "@lattice-php/ui";
 import { httpMethodColor } from "./http-method-color";
 import { operationToMarkdown } from "./operation-markdown";
 import { OperationView } from "./OperationView";
-import type { TwoColumnBreakpoint } from "./RequestPlayground";
 import { buildNavigation, filterNavigationByTags, parseOperation } from "./parse";
 import { operationUrl } from "./request-builder";
 import { ServerPicker } from "./ServerPicker";
 import type { ApiInfo, Navigation } from "./types";
-
-type ApiReferenceProps = {
-  spec?: unknown;
-  url?: string;
-  operation?: string | null;
-  tags?: string[] | null;
-  defaultOperation?: string | null;
-  hideHeader?: boolean;
-  hideBaseUrl?: boolean;
-  title?: string | null;
-  expandDepth?: number;
-  twoColumnBreakpoint?: TwoColumnBreakpoint;
-  token?: string | null;
-};
 
 function firstSummaryId(navigation: Navigation | null): string | null {
   if (!navigation) return null;
@@ -63,13 +51,13 @@ const ApiReference: RendererComponent<"api-reference"> = ({ node }) => {
     operation,
     tags,
     defaultOperation,
-    hideHeader = false,
-    hideBaseUrl = false,
+    hideHeader,
+    hideBaseUrl,
     title = null,
-    expandDepth = 2,
-    twoColumnBreakpoint = "lg",
+    expandDepth,
+    twoColumnBreakpoint,
     token = null,
-  } = node.props as ApiReferenceProps;
+  } = node.props;
 
   const [spec, setSpec] = useState<unknown>(inlineSpec ?? null);
   const [loading, setLoading] = useState<boolean>(Boolean(url));

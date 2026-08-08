@@ -1,5 +1,6 @@
-import type { Node } from "@lattice-php/core";
 import type { ColumnNode, FilterNode } from "./types";
+import type { Color, Node, Op, Option } from "@lattice-php/core";
+import type { ColumnWidth, DateTimeStyle, NumberFormatUnit } from "@lattice-php/ui";
 
 export type BadgeColumn = {
   align: ColumnAlign;
@@ -20,12 +21,6 @@ export type BooleanColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
-export type Color = {
-  readonly dark: string | null;
-  readonly kind: ColorKind;
-  readonly value: string;
-};
-export type ColorKind = "named" | "css";
 export type Column = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
@@ -74,14 +69,12 @@ export type ColumnPropsMap = {
   "column.stack": StackColumn;
   "column.text": TextColumn;
 };
-export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ComponentPropsMap = {
   table: Table;
 };
 export type DateRangeFilter = {
   label: string | null;
 };
-export type DateTimeStyle = "full" | "long" | "medium" | "short";
 export type Filter = {
   label: string | null;
 };
@@ -112,7 +105,6 @@ export type FilterPropsMap = {
   "filter.toggle": ToggleFilter;
 };
 export type FilterType = "text" | "number" | "date" | "boolean";
-export type HttpMethod = import("@inertiajs/core").Method;
 export type IconColumn = {
   align: ColumnAlign;
   colors: Record<string | number, Color> | null;
@@ -166,43 +158,6 @@ export type NumberColumn = {
   unit: NumberFormatUnit | null;
   width: ColumnWidth;
 };
-export type NumberFormatUnit =
-  | "percent"
-  | "kilogram"
-  | "gram"
-  | "kilometer"
-  | "meter"
-  | "byte"
-  | "kilobyte"
-  | "megabyte"
-  | "gigabyte"
-  | "millisecond"
-  | "second"
-  | "minute"
-  | "hour"
-  | "celsius"
-  | "fahrenheit";
-export type Op =
-  | "contains"
-  | "starts_with"
-  | "ends_with"
-  | "eq"
-  | "neq"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "in"
-  | "not_in"
-  | "before"
-  | "after"
-  | "empty"
-  | "filled";
-export type Option = {
-  readonly data: Record<string, unknown> | null;
-  readonly label: string;
-  readonly value: string;
-};
 export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type SelectFilter = {
   label: string | null;
@@ -225,17 +180,21 @@ export type Table = {
   actionsLabel: string | null;
   bulkActions: Node[];
   columns: ColumnNode[];
+  data: Record<string, unknown>[] | null;
   emptyLabel: string | null;
   endpoint: string | null;
   filters: FilterNode[];
   layout: string | null;
   lazy: boolean;
+  pagination: TablePagination | null;
   perPageOptions: (number | string)[];
+  query: TableQuery | null;
   ref: string | null;
   resizableColumns: boolean;
   resizeIndicator: boolean;
   searchable: boolean;
   striped: boolean;
+  toolbar: Node[];
 };
 export type TableNodeType = "table";
 export type TablePagination = {
@@ -288,8 +247,8 @@ export type TextColumn = {
   hiddenByDefault: boolean;
   label: string | null;
   link: {
-    href: string | null;
     external: boolean;
+    href: string | null;
   } | null;
   multiple: string | null;
   sortable: boolean;

@@ -22,18 +22,6 @@ function renderCollapsible(node: Node) {
 describe("Collapsible component", () => {
   beforeEach(() => window.localStorage.clear());
 
-  it("renders the trigger and hides the content until opened", () => {
-    renderCollapsible({
-      id: "name",
-      type: "collapsible",
-      props: { trigger: [{ type: "text", props: { text: "Name" } }] },
-      schema: [{ type: "text", props: { text: "Hidden body" } }],
-    });
-
-    expect(screen.getByText("Name")).toBeVisible();
-    expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
-  });
-
   it("toggles its content on click", () => {
     renderCollapsible({
       id: "name",

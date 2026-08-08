@@ -1,15 +1,10 @@
 import { page, userEvent } from "vitest/browser";
-import { render } from "vitest-browser-react";
 import { describe, expect, it, vi } from "vitest";
-import { RegistryContext } from "@lattice-php/core";
+import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
-import { testRegistry, treeNode } from "./test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
-
-const moveAction = fakeNode({
-  props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
-  type: "action",
-});
+import { moveAction, stubMoveFetch, testRegistry, treeNode } from "./test-support";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
 function renderTree(nodes: TreeNodeData[], extra: Record<string, unknown> = {}) {
   const node = fakeNode({
@@ -18,20 +13,7 @@ function renderTree(nodes: TreeNodeData[], extra: Record<string, unknown> = {}) 
     type: "tree",
   });
 
-  return render(<TreeComponent node={node}>{null}</TreeComponent>, {
-    wrapper: ({ children }) => (
-      <RegistryContext.Provider value={testRegistry}>{children}</RegistryContext.Provider>
-    ),
-  });
-}
-
-function stubMoveFetch(status = 200) {
-  const fetchMock = vi
-    .fn<typeof fetch>()
-    .mockResolvedValue(jsonResponse({ effects: [] }, { status }));
-  vi.stubGlobal("fetch", fetchMock);
-
-  return fetchMock;
+  return renderWithRegistry(<TreeComponent node={node}>{null}</TreeComponent>, testRegistry);
 }
 
 function row(id: string) {

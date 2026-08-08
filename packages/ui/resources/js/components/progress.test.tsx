@@ -56,15 +56,13 @@ describe("ProgressComponent bar", () => {
     expect(screen.getByText("50%")).toBeInTheDocument();
   });
 
-  it("maps color and size onto the fill and track", () => {
+  it("maps the color onto the fill", () => {
     renderProgress({
       value: 40,
       color: { kind: "named", value: "success", dark: null },
-      size: "lg",
     });
 
     const track = screen.getByRole("progressbar");
-    expect(track.className).toContain("h-3");
     const fill = track.firstElementChild as HTMLElement;
     expect(fill.style.getPropertyValue("background")).toBe("var(--lt-color-success)");
   });

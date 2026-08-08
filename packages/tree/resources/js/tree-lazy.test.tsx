@@ -1,8 +1,9 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { jsonResponse } from "@lattice-php/core/test-support";
-import { fakeNode, renderWithRegistry, testRegistry, treeNode } from "./test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
+import { testRegistry, treeNode } from "./test-support";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
 const fetchMock = vi.fn<typeof fetch>();
 

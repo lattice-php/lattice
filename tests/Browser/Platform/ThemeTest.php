@@ -34,3 +34,11 @@ it('applies the registered workbench theme with derived interaction states', fun
 
     $page->assertNoSmoke();
 });
+
+it('switches appearance to dark from the topbar switcher', function (): void {
+    $this->visitAsWorkbenchUser('/components/charts')
+        ->assertSee('Chart gallery')
+        ->click('@appearance-dark')
+        ->assertPresent('html.dark')
+        ->assertNoSmoke();
+});

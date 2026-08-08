@@ -29,10 +29,8 @@ class Repeater extends RowsField implements ContainerComponent
 
     protected ?Closure $itemLabelResolver = null;
 
-    /**
-     * @var list<string|null>|null
-     */
-    protected ?array $itemLabels = null;
+    /** @var list<string|null>|null */
+    public ?array $itemLabels = null;
 
     public function itemLabel(string|Closure $label): static
     {
@@ -93,19 +91,5 @@ class Repeater extends RowsField implements ContainerComponent
 
             return is_scalar($label) || $label instanceof Stringable ? (string) $label : null;
         }, array_values($value));
-    }
-
-    /**
-     * @param  array<string, mixed>  $props
-     * @return array<string, mixed>
-     */
-    #[\Override]
-    protected function decorateProps(array $props): array
-    {
-        if ($this->itemLabels === null) {
-            return parent::decorateProps($props);
-        }
-
-        return parent::decorateProps([...$props, 'itemLabels' => $this->itemLabels]);
     }
 }

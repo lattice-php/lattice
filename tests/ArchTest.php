@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
 use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionRegistry;
@@ -37,6 +38,9 @@ const CORE_FORBIDDEN_NAMESPACES = [
     'Lattice\\Notifications',
     'Lattice\\Realtime',
     'Lattice\\Remote',
+    'Lattice\\Media',
+    'Lattice\\Tree',
+    'Lattice\\ApiReference',
 ];
 
 arch('forms depend on no other feature domain')
@@ -113,6 +117,9 @@ arch('the ui and secondary domains never depend upward on orchestration or tooli
         'Lattice\Notifications',
         'Lattice\Realtime',
         'Lattice\Remote',
+        'Lattice\Media',
+        'Lattice\Tree',
+        'Lattice\ApiReference',
     ])
     ->not->toUse([
         'Lattice\Http',
@@ -240,4 +247,58 @@ it('uses lower-case translation keys separated by - or _', function (): void {
     }
 
     expect($violations)->toBeEmpty(implode(PHP_EOL, $violations));
+});
+
+it('only SerializesWireNode writes into wire props', function (): void {
+    $root = dirname(__DIR__);
+    $files = new Filesystem;
+    $violations = [];
+
+    foreach (glob($root.'/packages/*/src') as $srcDir) {
+        foreach ($files->allFiles($srcDir) as $file) {
+            if ($file->getExtension() !== 'php' || str_ends_with($file->getPathname(), 'Concerns/SerializesWireNode.php')) {
+                continue;
+            }
+
+            if (str_contains($file->getContents(), "\$data['props']")) {
+                $violations[] = str_replace($root.'/', '', $file->getPathname());
+            }
+        }
+    }
+
+    expect($violations)->toBeEmpty(
+        'Wire props must be declared as public properties (prepare hooks < 200 populate them); found $data[\'props\'] writes in: '.implode(', ', $violations),
+    );
+});
+
+it('wire nodes never hand-roll jsonSerialize', function (): void {
+    $root = dirname(__DIR__);
+    $allowed = [
+        'packages/ui/src/Components/Concerns/SerializesWireNode.php',
+        'packages/form/src/Conditions/ConditionSet.php',
+        'packages/form/src/RichEditor/EditorExtension.php',
+        'packages/table/src/TableQuery.php',
+        'packages/ui/src/Effects/Effect.php',
+        'packages/ui/src/I18n/Values/Translatable.php',
+    ];
+    $files = new Filesystem;
+    $violations = [];
+
+    foreach (glob($root.'/packages/*/src') as $srcDir) {
+        foreach ($files->allFiles($srcDir) as $file) {
+            $relative = str_replace($root.'/', '', $file->getPathname());
+
+            if ($file->getExtension() !== 'php' || in_array($relative, $allowed, true)) {
+                continue;
+            }
+
+            if (str_contains($file->getContents(), 'function jsonSerialize')) {
+                $violations[] = $relative;
+            }
+        }
+    }
+
+    expect($violations)->toBeEmpty(
+        'New wire shapes belong in #[TypeScript] value objects serialized from public properties, not jsonSerialize overrides: '.implode(', ', $violations),
+    );
 });

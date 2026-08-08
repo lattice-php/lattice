@@ -9,18 +9,18 @@ use Lattice\Core\Facades\Lattice;
 use Lattice\Form\Components\FileUpload;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\Repeater;
-use Lattice\Form\FormDefinition;
-use Symfony\Component\HttpFoundation\Response;
 use Workbench\App\Forms\Fields\FileUploadFieldForm;
 
 use function Pest\Laravel\post;
 
-it('signs an upload through the form endpoint', function (): void {
+beforeEach(function (): void {
     Storage::fake('s3');
     Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
         fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
     );
+});
 
+it('signs an upload through the form endpoint', function (): void {
     Lattice::forms([FileUploadFieldForm::class]);
 
     $this->submitForm(FileUploadFieldForm::class, ['_sub' => 'upload', '_target' => 'document', 'filename' => 'invoice.pdf'])
@@ -29,11 +29,6 @@ it('signs an upload through the form endpoint', function (): void {
 });
 
 it('signs an upload for a file field inside a repeater row', function (): void {
-    Storage::fake('s3');
-    Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
-        fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
-    );
-
     Lattice::forms([FileUploadFieldForm::class]);
 
     $this->submitForm(FileUploadFieldForm::class, [
@@ -49,29 +44,13 @@ it('signs an upload for a file field inside a repeater row', function (): void {
 });
 
 it('signs an upload for a file field inside nested repeater rows', function (): void {
-    Storage::fake('s3');
-    Storage::disk('s3')->buildTemporaryUploadUrlsUsing(
-        fn (string $path, $expiration, array $options = []): array => ['url' => "https://s3.test/{$path}", 'headers' => []],
-    );
-
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                Repeater::make('sections')->schema([
-                    Repeater::make('documents')->schema([
-                        FileUpload::make('file')->disk('s3')->signedUpload(),
-                    ]),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    $definition = testFormDefinition(fn (): array => [
+        Repeater::make('sections')->schema([
+            Repeater::make('documents')->schema([
+                FileUpload::make('file')->disk('s3')->signedUpload(),
+            ]),
+        ]),
+    ]);
 
     $result = $definition->signUpload(...subRequest(Request::create('/', 'POST', [
         '_sub' => 'upload',
@@ -88,8 +67,6 @@ it('signs an upload for a file field inside nested repeater rows', function (): 
 });
 
 it('returns 422 when the field does not use signed uploads', function (): void {
-    Storage::fake('s3');
-
     Lattice::forms([FileUploadFieldForm::class]);
 
     $this->submitForm(FileUploadFieldForm::class, ['_sub' => 'upload', '_target' => 'avatar', 'filename' => 'photo.jpg'])
@@ -97,8 +74,6 @@ it('returns 422 when the field does not use signed uploads', function (): void {
 });
 
 it('returns 404 when the upload field does not exist', function (): void {
-    Storage::fake('s3');
-
     Lattice::forms([FileUploadFieldForm::class]);
 
     $this->submitForm(FileUploadFieldForm::class, ['_sub' => 'upload', '_target' => 'nonexistent', 'filename' => 'file.pdf'])
@@ -136,7 +111,6 @@ it('rejects a multipart image upload that exceeds maxSize', function (): void {
 });
 
 it('accepts a signed tmp key that exists and rejects an out-of-prefix key', function (): void {
-    Storage::fake('s3');
     Storage::disk('s3')->put('tmp/real.pdf', 'data');
     Storage::disk('s3')->put('uploads/secret.pdf', 'data');
 

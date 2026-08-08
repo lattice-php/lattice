@@ -1,8 +1,8 @@
 import { act, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { dropTargetForElements } from "@lattice-php/lattice/dnd";
-import { fakeNode, renderWithRegistry, testRegistry, treeNode } from "./test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import { jsonResponse, stubFetch } from "@lattice-php/core/test-support";
+import { moveAction, renderTree, treeNode } from "./test-support";
 
 // Real drag gestures for this suite live in tree-move.browser.test.tsx. Only the
 // hover-expand timer stays here: it needs a drag paused mid-flight over a target,
@@ -19,21 +19,6 @@ vi.mock("@lattice-php/lattice/dnd", () => ({
   dropTargetForElements: vi.fn(() => () => {}),
   extractTreeItemInstruction: (data: Record<string, unknown>) => data.instruction ?? null,
 }));
-
-const moveAction = fakeNode({
-  props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
-  type: "action",
-});
-
-function renderTree(nodes: TreeNodeData[], extra: Record<string, unknown> = {}) {
-  const node = fakeNode({
-    id: "move-tree",
-    props: { defaultExpanded: [], moveAction, nodes, rememberState: false, ...extra },
-    type: "tree",
-  });
-
-  return renderWithRegistry(<TreeComponent node={node}>{null}</TreeComponent>, testRegistry);
-}
 
 function dropTarget(id: string) {
   const call = vi
@@ -57,16 +42,12 @@ afterEach(() => {
 describe("tree drag and drop", () => {
   it("expands and loads a lazy target after hovering it", async () => {
     vi.useFakeTimers();
-    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
-      new Response(JSON.stringify({ nodes: [treeNode("child", "Child")] }), {
-        headers: { "Content-Type": "application/json" },
-        status: 200,
-      }),
-    );
-    vi.stubGlobal("fetch", fetchMock);
-    renderTree([treeNode("parent", "Parent", { hasChildren: true })], {
+    const fetchMock = stubFetch(jsonResponse({ nodes: [treeNode("child", "Child")] }));
+    renderTree({
       endpoint: "/lattice/trees/categories",
       lazy: true,
+      moveAction,
+      nodes: [treeNode("parent", "Parent", { hasChildren: true })],
       ref: "tree-ref",
     });
 

@@ -48,9 +48,11 @@ the same for Pest and Vitest. Do not write — and delete on sight:
 ## Test helpers (TypeScript)
 
 - Reuse the owned helpers before writing local ones: `@lattice-php/core/test-support` (`fakeNode`,
-  `renderWithRegistry`, `jsonResponse`, `stubMatchMedia`), `@lattice-php/form/test-support` (`fakeFormContext`,
-  `fakeConditions`, `renderField`, `createFieldRenderer`, `renderWithForm`), `@lattice-php/ui/test/inertia-mock` and
-  `@lattice-php/ui/test/effect-fixture`, and `packages/table/resources/js/test-support.ts` for table wire fixtures.
+  `renderWithRegistry`, `jsonResponse`, `stubFetch`, `stubClipboard`, `stubMatchMedia`, `FakeXhr`, `TextProbe`),
+  `@lattice-php/core/browser-test-support` (`renderWithRegistry` for browser suites only — it imports
+  vitest-browser-react), `@lattice-php/form/test-support` (`fakeFormContext`, `renderField`, `createFieldRenderer`,
+  `renderWithForm`), `@lattice-php/ui/test/inertia-mock` and `@lattice-php/ui/test/effect-fixture`, and
+  `packages/table/resources/js/test-support.ts` for table wire fixtures.
 - A helper needed by two or more test files moves to the `test-support` of the lowest package that owns its concepts —
   never upward into framework, never copy-pasted sideways.
 - Helpers are source-only: excluded from library builds and never added to package exports.

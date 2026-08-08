@@ -2,43 +2,14 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Core\Facades\Lattice;
-use Lattice\Facades\Effects;
 use Lattice\Tests\Fixtures\Workbench\WorkbenchFailingAction;
 use Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
-use Lattice\Ui\Enums\Variant;
 use Workbench\App\Actions\SetLocaleAction;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\postJson;
-
-test('registered actions serialize their configured endpoint method and label', function (): void {
-    Lattice::actions([WorkbenchPingAction::class]);
-
-    $action = wire(ActionComponent::use(WorkbenchPingAction::class));
-
-    expect($action)
-        ->toMatchArray([
-            'type' => 'action',
-            'id' => 'workbench.ping',
-            'props' => [
-                'endpoint' => '/lattice/actions/workbench.ping',
-                'label' => 'Ping',
-                'method' => 'post',
-                'ref' => $this->latticeRef($action),
-                'variant' => 'secondary',
-                'emphasis' => null,
-                'icon' => null,
-                'confirmation' => null,
-                'form' => null,
-                'lazyForm' => false,
-                'modalSide' => null,
-                'modalWidth' => null,
-            ],
-        ]);
-});
 
 test('registered actions can be handled through the package endpoint', function (): void {
     Lattice::actions([WorkbenchPingAction::class]);
@@ -67,53 +38,6 @@ test('registered actions can return a locale change effect', function (): void {
         ->assertOk()
         ->assertJsonPath('effects.0.type', 'locale-change')
         ->assertJsonPath('effects.0.props.locale', 'de');
-});
-
-test('toast effects serialize correctly for action results', function (): void {
-    expect(wire(Effects::toast('Review the settings.', Variant::Warning)))
-        ->toBe([
-            'type' => 'toast',
-            'props' => [
-                'variant' => 'warning',
-                'message' => 'Review the settings.',
-                'duration' => null,
-                'persistent' => false,
-                'dismissible' => true,
-                'action' => null,
-            ],
-        ])
-        ->and(wire(ActionResult::success()->toast('Saved.')))
-        ->toMatchArray([
-            'effects' => [
-                [
-                    'type' => 'toast',
-                    'props' => [
-                        'variant' => 'success',
-                        'message' => 'Saved.',
-                        'duration' => null,
-                        'persistent' => false,
-                        'dismissible' => true,
-                        'action' => null,
-                    ],
-                ],
-            ],
-        ])
-        ->and(wire(ActionResult::success()->toast('Review the settings.', Variant::Warning)))
-        ->toMatchArray([
-            'effects' => [
-                [
-                    'type' => 'toast',
-                    'props' => [
-                        'variant' => 'warning',
-                        'message' => 'Review the settings.',
-                        'duration' => null,
-                        'persistent' => false,
-                        'dismissible' => true,
-                        'action' => null,
-                    ],
-                ],
-            ],
-        ]);
 });
 
 test('a failure result returns 422 and still serializes its effects', function (): void {

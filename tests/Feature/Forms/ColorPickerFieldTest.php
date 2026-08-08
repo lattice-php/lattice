@@ -4,26 +4,13 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Lattice\Form\Components\ColorPicker;
-use Lattice\Form\Components\Form;
 use Lattice\Form\FormDefinition;
-use Symfony\Component\HttpFoundation\Response;
 
 function colorPickerDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                ColorPicker::make('color', 'Tag color')->rules(['required', 'hex_color']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        ColorPicker::make('color', 'Tag color')->rules(['required', 'hex_color']),
+    ]);
 }
 
 it('accepts a valid hex color through the hex_color rule', function (): void {

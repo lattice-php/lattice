@@ -3,12 +3,10 @@ vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
-import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
-import type { ComponentRenderOptions } from "vitest-browser-react";
+import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
-import { RegistryContext } from "@lattice-php/core/registry-context";
 import type { Node } from "@lattice-php/core/types";
 import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import MenuComponent from "./menu";
@@ -21,12 +19,6 @@ const registry = createRegistry({
   },
   name: "test/menu",
 });
-
-const withRegistry: ComponentRenderOptions = {
-  wrapper: ({ children }) => (
-    <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>
-  ),
-};
 
 const menu: Node = {
   id: "main",
@@ -45,11 +37,11 @@ const menu: Node = {
 };
 
 function renderCollapsedMenu() {
-  return render(
+  return renderWithRegistry(
     <SidebarCollapsedContext.Provider value={true}>
       <Renderer nodes={[menu]} />
     </SidebarCollapsedContext.Provider>,
-    withRegistry,
+    registry,
   );
 }
 

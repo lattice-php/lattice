@@ -1,8 +1,9 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { SpriteProvider } from "@lattice-php/lattice";
+import type { Color } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import type { Color, Size } from "../generated";
+import type { Size } from "../generated";
 import IconComponent from "./icon";
 
 function renderIcon(props: {

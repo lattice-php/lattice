@@ -21,8 +21,18 @@ import { remoteComponents } from "./remote/plugin";
 import { tableComponents } from "@lattice-php/table";
 import { uiComponents } from "@lattice-php/ui";
 
+// Opt-in packages whose plugins are not bundled in the framework registry —
+// a consuming app registers them itself when it opts into the package.
+// WireModelBuilder::buildAll() still discovers them for the framework
+// document's system-wide NodeType (every composer package that declares
+// extra.lattice.discover, not just the ones this workbench emits a module
+// for), so their node types are legitimately part of it and are acknowledged
+// here rather than belonging to a registered plugin's union.
+type OptInNodeType = "api-reference" | "media.library" | "signature" | "tree";
+
 // Compile-time totality: every generated NodeType must belong to a registered
-// plugin's union. A new PHP domain fails here until its plugin exists.
+// plugin's union, or be an acknowledged opt-in package above. A new PHP
+// domain fails here until its plugin exists (or it's added to the opt-in list).
 type RegisteredNodeType =
   | ActionNodeType
   | ChatNodeType
@@ -30,6 +40,7 @@ type RegisteredNodeType =
   | FragmentNodeType
   | LayoutNodeType
   | NotificationNodeType
+  | OptInNodeType
   | RemoteNodeType
   | TableNodeType
   | UiNodeType;

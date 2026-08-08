@@ -18,12 +18,6 @@ function renderOtp() {
 }
 
 describe("OtpInputComponent in a browser", () => {
-  it("renders a one-time-code input with the configured length", async () => {
-    const screen = await renderOtp();
-
-    await expect.element(screen.getByRole("textbox")).toHaveAttribute("maxlength", "4");
-  });
-
   it("commits the typed code and renders it in the slots", async () => {
     const screen = await renderOtp();
     const input = screen.getByRole("textbox");

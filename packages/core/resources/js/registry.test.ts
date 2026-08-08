@@ -1,24 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent, lazyComponent, loadPluginModules } from "./registry";
+import { createRegistry, eagerComponent, loadPluginModules } from "./registry";
 import type { Plugin } from "./registry";
 import type { RendererComponent } from "./index";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
 
 describe("lattice registry", () => {
-  it("registers lazy components with a cached React component wrapper", () => {
-    const load = () =>
-      Promise.resolve({
-        default: EagerComponent,
-      });
-
-    const registration = lazyComponent(load);
-
-    expect(registration.mode).toBe("lazy");
-    expect(registration.load).toBe(load);
-    expect(registration.component).toBeTypeOf("object");
-  });
-
   it("merges plugins into a registry", () => {
     const firstPlugin = {
       components: {

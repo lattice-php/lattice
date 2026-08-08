@@ -20,6 +20,7 @@ use Lattice\Table\Filters\TernaryFilter;
 use Lattice\Table\Filters\ToggleFilter;
 use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Table\TableQuery;
+use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Link;
 use Workbench\App\Actions\ArchiveProductAction;
@@ -28,6 +29,7 @@ use Workbench\App\Actions\EditProductAction;
 use Workbench\App\Actions\FailingDemoAction;
 use Workbench\App\Actions\RejectProductAction;
 use Workbench\App\Actions\RejectSelectedProductsAction;
+use Workbench\App\Actions\SubmitFeedbackAction;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
 use Workbench\App\Tables\Columns\StatusBadgeColumn;
@@ -151,6 +153,18 @@ class ProductsTable extends EloquentTableDefinition
         return [
             BulkAction::use(ArchiveSelectedProductsAction::class),
             BulkAction::use(RejectSelectedProductsAction::class),
+        ];
+    }
+
+    /**
+     * @return array<int, Component>
+     */
+    #[\Override]
+    public function toolbar(): array
+    {
+        return [
+            Button::make(__('workbench.tables.products.create')),
+            Action::use(SubmitFeedbackAction::class),
         ];
     }
 }

@@ -2,6 +2,7 @@ import { expect, it, vi } from "vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
 import type { ComponentPropsOf, Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
+import type { RowTemplateData } from "@lattice-php/form/generated";
 import { renderWithForm as wrap } from "@lattice-php/form/test-support";
 
 vi.mock("@lattice-php/core/renderer", async () => {
@@ -11,13 +12,12 @@ vi.mock("@lattice-php/core/renderer", async () => {
 });
 
 import { BuilderComponent } from "./builder";
-import type { RowTemplate } from "./row-templates";
 
 function builderNode(
   props: Partial<ComponentPropsOf<"field.builder">>,
-  templates: RowTemplate[],
-): Node<"field.builder"> & { templates: RowTemplate[] } {
-  return { ...fakeNode({ type: "field.builder", props }), templates };
+  templates: RowTemplateData[],
+): Node<"field.builder"> {
+  return fakeNode({ type: "field.builder", props: { ...props, templates } });
 }
 
 const node = builderNode(
@@ -45,10 +45,12 @@ const node = builderNode(
 
 it("renders each row against its block template", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [
-      { type: "text", content: "hi" },
-      { type: "product", qty: "2" },
-    ],
+    initial: {
+      items: [
+        { type: "text", content: "hi" },
+        { type: "product", qty: "2" },
+      ],
+    },
   });
   const children = screen.getAllByTestId("child");
   expect(children.map((c) => c.textContent)).toEqual(["items[0][content]", "items[1][qty]"]);
@@ -62,14 +64,9 @@ it("adds a row of the chosen block type", () => {
   expect(children.map((c) => c.textContent)).toEqual(["items[0][qty]"]);
 });
 
-it("renders an unknown-block placeholder", () => {
-  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, { items: [{ type: "video" }] });
-  expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
-});
-
 it("can remove an unknown-block row", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [{ type: "video" }, { type: "text", content: "keep" }],
+    initial: { items: [{ type: "video" }, { type: "text", content: "keep" }] },
   });
   expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
   const firstRow = screen.getByTestId("repeater-items-row-0");
@@ -115,10 +112,12 @@ it("renders the table layout: primary columns, spanning non-primary rows", () =>
     ],
   );
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [
-      { type: "product", product: "SKU", qty: "2" },
-      { type: "text", content: "note" },
-    ],
+    initial: {
+      items: [
+        { type: "product", product: "SKU", qty: "2" },
+        { type: "text", content: "note" },
+      ],
+    },
   });
   expect(screen.getByText("Product")).toBeInTheDocument();
   expect(screen.getByText("Qty")).toBeInTheDocument();

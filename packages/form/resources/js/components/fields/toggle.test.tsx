@@ -47,11 +47,14 @@ describe("ToggleComponent", () => {
     );
   });
 
-  it("does not toggle while read-only", () => {
+  it.each([
+    { state: "read-only", props: { readOnly: true, value: true }, checked: "true" },
+    { state: "disabled", props: { disabled: true, value: false }, checked: "false" },
+  ])("does not toggle while $state", ({ props, checked }) => {
     renderField(
       fakeNode({
         type: "field.toggle",
-        props: { label: "Locked", name: "locked", readOnly: true, value: true },
+        props: { label: "Locked", name: "locked", ...props },
       }),
     );
 
@@ -59,29 +62,13 @@ describe("ToggleComponent", () => {
 
     fireEvent.click(toggle);
 
-    expect(toggle).toHaveAttribute("aria-checked", "true");
     expect(toggle).toBeDisabled();
+    expect(toggle).toHaveAttribute("aria-checked", checked);
   });
 
   it("uses the field name as its accessible label when no label is set", () => {
     renderField(fakeNode({ type: "field.toggle", props: { name: "notifications" } }));
 
     expect(screen.getByRole("switch", { name: "notifications" })).toBeVisible();
-  });
-
-  it("does not toggle while disabled", () => {
-    renderField(
-      fakeNode({
-        type: "field.toggle",
-        props: { disabled: true, label: "Notifications", name: "notifications", value: false },
-      }),
-    );
-
-    const toggle = screen.getByRole("switch", { name: "Notifications" });
-
-    fireEvent.click(toggle);
-
-    expect(toggle).toBeDisabled();
-    expect(toggle).toHaveAttribute("aria-checked", "false");
   });
 });

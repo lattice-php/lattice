@@ -3,13 +3,6 @@ declare(strict_types=1);
 
 use Workbench\App\Models\Address;
 use Workbench\App\Models\BusinessPartner;
-use Workbench\App\Models\Group;
-
-it('renders the business partners index page', function (): void {
-    $this->visitAsWorkbenchUser('/business-partners')
-        ->assertSee('Business partners')
-        ->assertNoSmoke();
-});
 
 it('creates a business partner via the form', function (): void {
     $page = $this->visitAsWorkbenchUser('/business-partners/create')
@@ -46,14 +39,6 @@ it('adds an address row in the repeater and submits', function (): void {
     $page->assertNoSmoke();
 });
 
-it('renders the edit page for an existing partner', function (): void {
-    $partner = BusinessPartner::factory()->create(['name' => 'Edit Target Corp']);
-    $this->visitAsWorkbenchUser("/business-partners/{$partner->getKey()}/edit")
-        ->assertSee('Edit business partner')
-        ->assertValue('input[name="name"]', 'Edit Target Corp')
-        ->assertNoSmoke();
-});
-
 it('prefills addresses on the edit page', function (): void {
     $partner = BusinessPartner::factory()->create();
     Address::factory()->create([
@@ -64,12 +49,5 @@ it('prefills addresses on the edit page', function (): void {
     $this->visitAsWorkbenchUser("/business-partners/{$partner->getKey()}/edit")
         ->assertPresent('[data-test="repeater-addresses-row-0"]')
         ->assertValue('input[name="addresses[0][label]"]', 'Warehouse')
-        ->assertNoSmoke();
-});
-
-it('shows groups dropdown on the create form', function (): void {
-    Group::factory()->create(['name' => 'VIP Group']);
-    $this->visitAsWorkbenchUser('/business-partners/create')
-        ->assertSee('Groups')
         ->assertNoSmoke();
 });

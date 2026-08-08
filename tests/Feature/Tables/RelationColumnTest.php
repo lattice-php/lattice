@@ -2,29 +2,10 @@
 
 declare(strict_types=1);
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Lattice\Table\TableQuery;
 use Workbench\App\Models\BusinessPartner;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Tables\SalesOrdersTable;
-
-/**
- * @param  array<string, string>  $params
- * @return array<int, array<string, mixed>>
- */
-function salesOrderRows(array $params = []): array
-{
-    $table = new SalesOrdersTable;
-
-    $query = TableQuery::fromRequest(
-        Request::create('/', 'GET', $params),
-        $table->columns(),
-        'workbench.sales-orders',
-    );
-
-    return $table->source()->query($query)->data;
-}
 
 test('a relation column eager-loads its value onto a flat key without N+1', function (): void {
     $acme = BusinessPartner::factory()->create(['name' => 'Acme']);
@@ -35,7 +16,7 @@ test('a relation column eager-loads its value onto a flat key without N+1', func
     DB::flushQueryLog();
     DB::enableQueryLog();
 
-    $rows = salesOrderRows();
+    $rows = tableRows(new SalesOrdersTable);
 
     expect($rows)->toHaveCount(5)
         ->and($rows[0])->toHaveKey('businessPartner.name')
@@ -55,7 +36,7 @@ test('a relation column filters through whereHas', function (): void {
     SalesOrder::factory()->create(['business_partner_id' => $acme->getKey(), 'number' => 'SO-A']);
     SalesOrder::factory()->create(['business_partner_id' => $globex->getKey(), 'number' => 'SO-G']);
 
-    $rows = salesOrderRows(['filter' => 'businessPartner.name:contains:Acme']);
+    $rows = tableRows(new SalesOrdersTable, ['filter' => 'businessPartner.name:contains:Acme']);
 
     expect($rows)->toHaveCount(1)
         ->and($rows[0]['number'])->toBe('SO-A')
@@ -68,7 +49,7 @@ test('a relation column sorts through a correlated subquery', function (): void 
     SalesOrder::factory()->create(['business_partner_id' => $acme->getKey(), 'number' => 'SO-A']);
     SalesOrder::factory()->create(['business_partner_id' => $globex->getKey(), 'number' => 'SO-G']);
 
-    $rows = salesOrderRows(['sort' => '-businessPartner.name']);
+    $rows = tableRows(new SalesOrdersTable, ['sort' => '-businessPartner.name']);
 
     expect(array_column($rows, 'number'))->toBe(['SO-G', 'SO-A']);
 });

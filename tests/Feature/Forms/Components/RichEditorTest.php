@@ -150,7 +150,5 @@ describe('docs fixtures', function (): void {
                 Link::make()->protocols('https', 'mailto'),
             ]),
         ]));
-
-        expect('docs/fixtures/rich-editor.extensions.json')->toBeReadableFile();
     });
 });

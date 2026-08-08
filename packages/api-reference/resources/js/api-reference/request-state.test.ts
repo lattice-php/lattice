@@ -1,60 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { operation, parameter, requestContract } from "../test-support";
 import {
   initialRequestValues,
   isJsonMediaType,
   jsonRequestContracts,
   parameterKey,
 } from "./request-state";
-import type { Contract, Operation, Param } from "./types";
-
-function parameter(overrides: Partial<Param>): Param {
-  return {
-    name: "value",
-    location: "query",
-    required: false,
-    deprecated: false,
-    description: null,
-    schema: {},
-    example: null,
-    ...overrides,
-  };
-}
-
-function requestContract(overrides: Partial<Contract>): Contract {
-  return {
-    role: "request",
-    status: null,
-    mediaType: "application/json",
-    schema: null,
-    title: null,
-    examples: [],
-    headers: [],
-    required: false,
-    ...overrides,
-  };
-}
-
-function operation(overrides: Partial<Operation> = {}): Operation {
-  return {
-    summary: {
-      id: "post-widgets",
-      method: "POST",
-      path: "/widgets/{id}",
-      title: "Create widget",
-      deprecated: false,
-    },
-    serverUrl: "https://api.example.test",
-    servers: [{ url: "https://api.example.test", description: null }],
-    usesRootServers: true,
-    description: null,
-    tags: [],
-    paramGroups: [],
-    requests: [],
-    responses: [],
-    security: [],
-    ...overrides,
-  };
-}
 
 describe("parameterKey", () => {
   it("combines the parameter location and name into a stable key", () => {
@@ -75,10 +26,7 @@ describe("request JSON media types", () => {
     const problem = requestContract({ mediaType: "application/problem+json" });
     const json = requestContract({ mediaType: "application/json" });
 
-    expect(jsonRequestContracts(operation({ requests: [form, problem, json] }))).toEqual([
-      problem,
-      json,
-    ]);
+    expect(jsonRequestContracts(operation([], [form, problem, json]))).toEqual([problem, json]);
   });
 });
 
@@ -97,9 +45,7 @@ describe("initialRequestValues", () => {
       parameter({ name: "empty", schema: { type: "string" } }),
     ];
 
-    expect(
-      initialRequestValues(operation({ paramGroups: [{ location: "query", params }] })).parameters,
-    ).toEqual({
+    expect(initialRequestValues(operation(params)).parameters).toEqual({
       "query:direct": "42",
       "query:schema-example": "shown",
       "query:default": "false",
@@ -111,8 +57,9 @@ describe("initialRequestValues", () => {
 
   it("selects the first JSON-compatible contract and pretty-prints its explicit example", () => {
     const values = initialRequestValues(
-      operation({
-        requests: [
+      operation(
+        [],
+        [
           requestContract({
             mediaType: "multipart/form-data",
             examples: [{ name: null, summary: null, value: "ignored" }],
@@ -128,7 +75,7 @@ describe("initialRequestValues", () => {
             examples: [{ name: null, summary: null, value: { ignored: true } }],
           }),
         ],
-      }),
+      ),
     );
 
     expect(values).toEqual({
@@ -140,9 +87,7 @@ describe("initialRequestValues", () => {
 
   it("pretty-prints a schema-derived example with component references", () => {
     const values = initialRequestValues(
-      operation({
-        requests: [requestContract({ schema: { $ref: "#/components/schemas/Widget" } })],
-      }),
+      operation([], [requestContract({ schema: { $ref: "#/components/schemas/Widget" } })]),
       {
         schemas: {
           Widget: {
@@ -162,9 +107,7 @@ describe("initialRequestValues", () => {
 
   it("derives required writable fields from composed request schemas", () => {
     const values = initialRequestValues(
-      operation({
-        requests: [requestContract({ schema: { $ref: "#/components/schemas/CreateOffer" } })],
-      }),
+      operation([], [requestContract({ schema: { $ref: "#/components/schemas/CreateOffer" } })]),
       {
         schemas: {
           OfferState: {
@@ -208,9 +151,7 @@ describe("initialRequestValues", () => {
 
   it("returns no selected body when only non-JSON contracts exist", () => {
     expect(
-      initialRequestValues(
-        operation({ requests: [requestContract({ mediaType: "multipart/form-data" })] }),
-      ),
+      initialRequestValues(operation([], [requestContract({ mediaType: "multipart/form-data" })])),
     ).toEqual({ parameters: {}, mediaType: null, body: "" });
   });
 });

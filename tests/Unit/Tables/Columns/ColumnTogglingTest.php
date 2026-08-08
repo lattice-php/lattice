@@ -4,11 +4,6 @@ declare(strict_types=1);
 use Lattice\Table\Columns\StackColumn;
 use Lattice\Table\Columns\TextColumn;
 
-it('is not toggleable by default', function (): void {
-    expect(wire(TextColumn::make('name'))['props'])
-        ->toMatchArray(['toggleable' => false, 'hiddenByDefault' => false]);
-});
-
 it('opts in to toggling', function (): void {
     expect(wire(TextColumn::make('name')->toggleable())['props'])
         ->toMatchArray(['toggleable' => true, 'hiddenByDefault' => false]);

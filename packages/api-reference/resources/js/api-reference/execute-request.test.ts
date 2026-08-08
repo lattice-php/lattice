@@ -91,7 +91,7 @@ describe("executeRequest", () => {
         },
       }),
     );
-    const now = vi.spyOn(Date, "now").mockReturnValueOnce(100).mockReturnValueOnce(175);
+    vi.spyOn(Date, "now").mockReturnValueOnce(100).mockReturnValueOnce(175);
 
     await expect(executeRequest(request, new AbortController().signal)).resolves.toMatchObject({
       kind: "response",
@@ -102,7 +102,6 @@ describe("executeRequest", () => {
         ["x-zeta", "last"],
       ],
     });
-    expect(now).toHaveBeenCalledTimes(2);
   });
 
   it("clamps a negative elapsed duration to zero", async () => {

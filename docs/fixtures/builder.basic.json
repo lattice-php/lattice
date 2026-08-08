@@ -23,131 +23,131 @@
             "resizableColumns": false,
             "resizeIndicator": false,
             "rowActions": null,
+            "templates": [
+                {
+                    "label": "Text",
+                    "schema": [
+                        {
+                            "props": {
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Content",
+                                "name": "content",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "readOnly": false,
+                                "required": true,
+                                "rows": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "value": null
+                            },
+                            "type": "field.textarea"
+                        }
+                    ],
+                    "type": "text"
+                },
+                {
+                    "label": "Product line",
+                    "schema": [
+                        {
+                            "props": {
+                                "autoComplete": null,
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "copyable": false,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Product",
+                                "name": "product",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "prefix": null,
+                                "readOnly": false,
+                                "required": true,
+                                "suffix": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "type": null,
+                                "value": null
+                            },
+                            "type": "field.text-input"
+                        },
+                        {
+                            "props": {
+                                "autoComplete": null,
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "copyable": false,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Qty",
+                                "name": "qty",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "prefix": null,
+                                "readOnly": false,
+                                "required": false,
+                                "suffix": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "type": null,
+                                "value": null
+                            },
+                            "type": "field.text-input"
+                        },
+                        {
+                            "props": {
+                                "autoComplete": null,
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "copyable": false,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Price",
+                                "name": "price",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "prefix": null,
+                                "readOnly": false,
+                                "required": false,
+                                "suffix": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "type": null,
+                                "value": null
+                            },
+                            "type": "field.text-input"
+                        }
+                    ],
+                    "type": "product"
+                }
+            ],
             "tooltip": null,
             "value": null
         },
-        "templates": [
-            {
-                "label": "Text",
-                "schema": [
-                    {
-                        "props": {
-                            "autoFocus": false,
-                            "columnWidth": "md",
-                            "conditions": null,
-                            "dependsOnAny": false,
-                            "dependsOnKeys": null,
-                            "disabled": false,
-                            "editablePrefill": false,
-                            "helperText": null,
-                            "label": "Content",
-                            "name": "content",
-                            "placeholder": null,
-                            "prefillRefreshOn": null,
-                            "prefillResetOn": null,
-                            "readOnly": false,
-                            "required": true,
-                            "rows": null,
-                            "tabIndex": null,
-                            "tooltip": null,
-                            "value": null
-                        },
-                        "type": "field.textarea"
-                    }
-                ],
-                "type": "text"
-            },
-            {
-                "label": "Product line",
-                "schema": [
-                    {
-                        "props": {
-                            "autoComplete": null,
-                            "autoFocus": false,
-                            "columnWidth": "md",
-                            "conditions": null,
-                            "copyable": false,
-                            "dependsOnAny": false,
-                            "dependsOnKeys": null,
-                            "disabled": false,
-                            "editablePrefill": false,
-                            "helperText": null,
-                            "label": "Product",
-                            "name": "product",
-                            "placeholder": null,
-                            "prefillRefreshOn": null,
-                            "prefillResetOn": null,
-                            "prefix": null,
-                            "readOnly": false,
-                            "required": true,
-                            "suffix": null,
-                            "tabIndex": null,
-                            "tooltip": null,
-                            "type": null,
-                            "value": null
-                        },
-                        "type": "field.text-input"
-                    },
-                    {
-                        "props": {
-                            "autoComplete": null,
-                            "autoFocus": false,
-                            "columnWidth": "md",
-                            "conditions": null,
-                            "copyable": false,
-                            "dependsOnAny": false,
-                            "dependsOnKeys": null,
-                            "disabled": false,
-                            "editablePrefill": false,
-                            "helperText": null,
-                            "label": "Qty",
-                            "name": "qty",
-                            "placeholder": null,
-                            "prefillRefreshOn": null,
-                            "prefillResetOn": null,
-                            "prefix": null,
-                            "readOnly": false,
-                            "required": false,
-                            "suffix": null,
-                            "tabIndex": null,
-                            "tooltip": null,
-                            "type": null,
-                            "value": null
-                        },
-                        "type": "field.text-input"
-                    },
-                    {
-                        "props": {
-                            "autoComplete": null,
-                            "autoFocus": false,
-                            "columnWidth": "md",
-                            "conditions": null,
-                            "copyable": false,
-                            "dependsOnAny": false,
-                            "dependsOnKeys": null,
-                            "disabled": false,
-                            "editablePrefill": false,
-                            "helperText": null,
-                            "label": "Price",
-                            "name": "price",
-                            "placeholder": null,
-                            "prefillRefreshOn": null,
-                            "prefillResetOn": null,
-                            "prefix": null,
-                            "readOnly": false,
-                            "required": false,
-                            "suffix": null,
-                            "tabIndex": null,
-                            "tooltip": null,
-                            "type": null,
-                            "value": null
-                        },
-                        "type": "field.text-input"
-                    }
-                ],
-                "type": "product"
-            }
-        ],
         "type": "field.builder"
     }
 ]

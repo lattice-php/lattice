@@ -15,8 +15,6 @@ use Lattice\Ui\Components\Tabs;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\PageSchema;
 use Orchestra\Testbench\Factories\UserFactory;
-use Workbench\App\Pages\HomePage;
-use Workbench\App\Pages\Tables\PaginationPage;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;
@@ -61,14 +59,6 @@ test('confirmed active tabs serialize their children after password confirmation
             ->where('lattice.schema.0.props.activeValue', 'security')
             ->where('lattice.schema.0.schema.1.schema.0.props.text', 'Security form')
         );
-});
-
-test('the workbench home route uses a workbench-owned page directly', function (): void {
-    expect(Route::getRoutes()->getByName('home')?->getActionName())->toBe(HomePage::class.'@render');
-});
-
-test('the workbench tables route uses lazy pagination tab tables', function (): void {
-    expect(Route::getRoutes()->getByName('tables.pagination')?->getActionName())->toBe(PaginationPage::class.'@render');
 });
 
 test('pages use laravel controller resolution for constructor dependencies render dependencies and route arguments', function (): void {

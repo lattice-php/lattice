@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
-import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import ButtonComponent from "./button";
 
@@ -46,7 +46,7 @@ function renderActionButton(node: Node<"button">) {
 describe("button action trigger", () => {
   beforeEach(() => {
     apiFetch.mockReset();
-    apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));
+    apiFetch.mockResolvedValue(jsonResponse({ effects: [] }));
   });
 
   it("dispatches its nested action with the ref header on click", async () => {

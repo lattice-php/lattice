@@ -3,21 +3,12 @@ declare(strict_types=1);
 
 use Workbench\App\Models\Product;
 
-it('shows precognitive validation messages in the form', function (): void {
-    $this->visitAsWorkbenchUser('/products/create')
-        ->assertSee('Create Product')
-        ->fill('input[name="sales_prices[0][amount]"]', 'invalid')
-        ->assertSee('must be a number')
-        ->assertNoSmoke();
-
-    expect(Product::query()->count())->toBe(0);
-});
-
 it('disables the submit button while precognition errors are active', function (): void {
     $this->visitAsWorkbenchUser('/products/create')
         ->assertSee('Create Product')
         ->assertEnabled('@form-submit')
         ->fill('input[name="sales_prices[0][amount]"]', 'invalid')
+        ->assertSee('must be a number')
         ->assertSee('Fix these fields to continue:')
         ->assertDisabled('@form-submit')
         ->fill('input[name="sales_prices[0][amount]"]', '49.99')
@@ -37,7 +28,6 @@ it('surfaces server validation errors after submitting an empty form', function 
 });
 
 it('shows existing related products on the edit page', function (): void {
-    $this->actingAs(workbenchTestUser());
     $product = Product::factory()->create([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
@@ -46,7 +36,7 @@ it('shows existing related products on the edit page', function (): void {
     $related = Product::factory()->create(['name' => 'Walnut Desk']);
     $product->relatedProducts()->sync([$related->getKey()]);
 
-    visit("/products/{$product->getKey()}/edit")
+    $this->visitAsWorkbenchUser("/products/{$product->getKey()}/edit")
         ->assertSee('Edit Product')
         ->assertSee('Related products')
         ->assertSee('Walnut Desk')
@@ -55,10 +45,9 @@ it('shows existing related products on the edit page', function (): void {
 });
 
 it('attaches related products via search when creating', function (): void {
-    $this->actingAs(workbenchTestUser());
     $related = Product::factory()->create(['name' => 'Walnut Desk']);
 
-    $page = visit('/products/create')
+    $page = $this->visitAsWorkbenchUser('/products/create')
         ->assertSee('Create Product')
         ->fill('@name', 'Gadget')
         ->fill('@sku', 'GAD-100')

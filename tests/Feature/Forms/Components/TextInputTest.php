@@ -4,8 +4,6 @@ declare(strict_types=1);
 use Lattice\Core\Support\Affix;
 use Lattice\Core\Support\Wire;
 use Lattice\Form\Components\Choice;
-use Lattice\Form\Components\NumberInput;
-use Lattice\Form\Components\PasswordInput;
 use Lattice\Form\Components\TextInput;
 use Lattice\Ui\Enums\Icon;
 
@@ -57,19 +55,6 @@ describe('affixes', function (): void {
         $node = wire(TextInput::make('handle', 'Handle')->prefix(Affix::text('@')));
 
         expect($node['props']['prefix'])->toBe(['icon' => null, 'text' => '@']);
-    });
-
-    it('supports affixes on number inputs', function (): void {
-        $node = wire(NumberInput::make('price', 'Price')->prefix('$')->suffix('USD'));
-
-        expect($node['props']['prefix'])->toBe(['icon' => null, 'text' => '$'])
-            ->and($node['props']['suffix'])->toBe(['icon' => null, 'text' => 'USD']);
-    });
-
-    it('supports affixes on password inputs', function (): void {
-        $node = wire(PasswordInput::make('token', 'Token')->prefix(Icon::Eye));
-
-        expect($node['props']['prefix'])->toBe(['icon' => 'eye', 'text' => null]);
     });
 });
 

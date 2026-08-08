@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Schema } from "@lattice-php/core/types";
 import { fakeNode } from "@lattice-php/core/test-support";
+import { libraryRow } from "../test-support";
 import { LibraryView } from "./library-view";
 import type { UploadItem } from "./use-media-upload";
 
@@ -26,20 +27,6 @@ function uploadItem(overrides: Partial<UploadItem> = {}): UploadItem {
   };
 }
 
-function row(id: number) {
-  return {
-    id,
-    url: null,
-    preview_url: null,
-    name: `file-${id}.jpg`,
-    mime_type: "image/jpeg",
-    size: 100,
-    alt: null,
-    created_at: "2026-07-29T00:00:00Z",
-    attachments_count: 0,
-  };
-}
-
 function libraryNode() {
   return fakeNode({
     type: "media.library",
@@ -47,7 +34,11 @@ function libraryNode() {
     schema: [
       {
         type: "table",
-        props: { columns: [], data: [row(1), row(2)], endpoint: "/lattice/tables/media" },
+        props: {
+          columns: [],
+          data: [libraryRow(1), libraryRow(2)],
+          endpoint: "/lattice/tables/media",
+        },
       },
       { type: "action", key: "media-update", props: { endpoint: "/update", ref: "ref-1" } },
       { type: "action", key: "media-delete", props: { endpoint: "/delete", ref: "ref-1" } },
@@ -155,7 +146,6 @@ describe("LibraryView", () => {
     expect(fireEvent.drop(wrapper, dropped)).toBe(false);
 
     expect(upload.addFiles).toHaveBeenCalledTimes(1);
-    expect(wrapper.className).not.toContain("border-lt-primary");
   });
 
   it("keeps accepting drops after a card click when there is no update/remove action to render a panel for", () => {
@@ -165,7 +155,7 @@ describe("LibraryView", () => {
       schema: [
         {
           type: "table",
-          props: { columns: [], data: [row(1)], endpoint: "/lattice/tables/media" },
+          props: { columns: [], data: [libraryRow(1)], endpoint: "/lattice/tables/media" },
         },
       ] as Schema,
     });

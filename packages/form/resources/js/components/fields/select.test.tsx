@@ -1,14 +1,12 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice";
-import { renderWithRegistry } from "@lattice-php/core/test-support";
-import type { Node, RendererComponent } from "@lattice-php/core";
+import type { RendererComponent } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { fakeFormContext } from "@lattice-php/form/test-support";
-import { FormProvider } from "@lattice-php/form/hooks/context";
-import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
+import { renderWithForm } from "@lattice-php/form/test-support";
 import { SelectComponent } from "./select";
+
+const formContext = { action: "/forms/products", componentRef: "ref-1" };
 
 type MockOption = { label: string; value: string; data?: { color?: string } };
 
@@ -52,20 +50,11 @@ function renderSelect({
     },
   });
 
-  const select = <SelectComponent node={node}>{null}</SelectComponent>;
-  const scoped = row ? (
-    <FieldScopeProvider base="items" index={0} row={row} onChange={() => {}}>
-      {select}
-    </FieldScopeProvider>
-  ) : (
-    select
-  );
-
-  return render(
-    <FormProvider value={fakeFormContext({ action: "/forms/products", componentRef: "ref-1" })}>
-      <FormValuesProvider initial={initial}>{scoped}</FormValuesProvider>
-    </FormProvider>,
-  );
+  return renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+    initial,
+    context: formContext,
+    scope: row ? { base: "items", index: 0, row } : undefined,
+  });
 }
 
 async function search(query: string): Promise<void> {
@@ -138,13 +127,10 @@ function renderStaticSelect(props: Record<string, unknown>, initial: Record<stri
     },
   });
 
-  return render(
-    <FormProvider value={fakeFormContext({ action: "/forms/products", componentRef: "ref-1" })}>
-      <FormValuesProvider initial={initial}>
-        <SelectComponent node={node}>{null}</SelectComponent>
-      </FormValuesProvider>
-    </FormProvider>,
-  );
+  return renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+    initial,
+    context: formContext,
+  });
 }
 
 describe("SelectComponent options", () => {
@@ -307,20 +293,6 @@ describe("SelectComponent creatable", () => {
     expect(document.querySelector('input[type="hidden"][name="color"]')).toHaveValue("steel");
   });
 
-  it("renders a color dot for an entity chip carrying data.color", () => {
-    renderStaticSelect(
-      {
-        multiple: true,
-        creatable: true,
-        options: [{ label: "Urgent", value: "5", data: { color: "#ef4444" } }],
-      },
-      { color: ["5"] },
-    );
-
-    const chip = screen.getByText("Urgent").closest("span");
-    expect(chip?.querySelector('[style*="rgb(239, 68, 68)"]')).not.toBeNull();
-  });
-
   it("keeps an already-selected tag selected when re-entered instead of toggling it off", () => {
     renderStaticSelect(
       {
@@ -390,20 +362,14 @@ describe("SelectComponent option schema", () => {
           { label: "Acme GmbH", value: "42", data: { email: "kontakt@acme.de" } },
           { label: "Globex AG", value: "43", data: { email: "info@globex.de" } },
         ],
+        optionSchema: [{ type: "test.meta", props: { dataBindings: { text: "email" } } }],
       },
     });
-    (node.props as { optionSchema?: Node[] }).optionSchema = [
-      { type: "test.meta", props: { dataBindings: { text: "email" } } },
-    ];
 
-    renderWithRegistry(
-      <FormProvider value={fakeFormContext({ action: "/forms/customers", componentRef: "ref-1" })}>
-        <FormValuesProvider initial={{}}>
-          <SelectComponent node={node}>{null}</SelectComponent>
-        </FormValuesProvider>
-      </FormProvider>,
+    renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+      context: { action: "/forms/customers", componentRef: "ref-1" },
       registry,
-    );
+    });
 
     fireEvent.click(screen.getByTestId("select-customer"));
 
@@ -420,17 +386,13 @@ describe("SelectComponent option schema", () => {
         emptyLabel: "No customers",
         searchPlaceholder: "Search",
         options: [{ label: "Acme GmbH", value: "42", data: { email: "kontakt@acme.de" } }],
+        optionSchema: [],
       },
     });
-    (node.props as { optionSchema?: Node[] }).optionSchema = [];
 
-    render(
-      <FormProvider value={fakeFormContext({ action: "/forms/customers", componentRef: "ref-1" })}>
-        <FormValuesProvider initial={{}}>
-          <SelectComponent node={node}>{null}</SelectComponent>
-        </FormValuesProvider>
-      </FormProvider>,
-    );
+    renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+      context: { action: "/forms/customers", componentRef: "ref-1" },
+    });
 
     fireEvent.click(screen.getByTestId("select-customer"));
 

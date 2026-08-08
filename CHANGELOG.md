@@ -1,5 +1,53 @@
 # Changelog
 
+## [0.45.1](https://github.com/lattice-php/lattice/compare/0.45.0...0.45.1) (2026-08-08)
+
+
+### Bug Fixes
+
+* **core:** skip unloadable classes during structure discovery ([#422](https://github.com/lattice-php/lattice/issues/422)) ([37215a0](https://github.com/lattice-php/lattice/commit/37215a0584dfb95f277dd59bd690103f51c34024))
+
+## [0.45.0](https://github.com/lattice-php/lattice/compare/0.44.0...0.45.0) (2026-08-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* LatticeRegistry::wireSource()/wireSources() and the Lattice::wireSource() facade call are deleted. Every wire-contributing package (including the six built-ins: core, ui, form, table, action, lattice) now declares its wire surface via the same extra.lattice.discover composer key ComponentPackages already reads for JS/PHP component discovery, resolved by the new WireSourceCatalog. ExportSchemaProfile, AugmentProfile, and the workbench BaseSchemaProfile/BaseProfile consume the catalog instead of the registry.
+
+### Features
+
+* card headerActions slot and form fullWidth option ([#420](https://github.com/lattice-php/lattice/issues/420)) ([3477fee](https://github.com/lattice-php/lattice/commit/3477fee432b6b7540639d79b2197aeb695007c8f))
+* wire-model TypeScript generation with uniform composer discovery ([#416](https://github.com/lattice-php/lattice/issues/416)) ([3f2ede1](https://github.com/lattice-php/lattice/commit/3f2ede1199a3521a2d5b64236c40a26be4c975e4))
+
+## [0.44.0](https://github.com/lattice-php/lattice/compare/0.43.0...0.44.0) (2026-08-07)
+
+
+### Features
+
+* **table:** toolbar slot and unified toolbar row ([#417](https://github.com/lattice-php/lattice/issues/417)) ([6b09a07](https://github.com/lattice-php/lattice/commit/6b09a0719bc5f0da8516828c24654f5ef7fd3b15))
+
+## [0.43.0](https://github.com/lattice-php/lattice/compare/0.42.0...0.43.0) (2026-08-07)
+
+
+### Features
+
+* enum abilities in can + page gates as route middleware ([#414](https://github.com/lattice-php/lattice/issues/414)) ([6a8146c](https://github.com/lattice-php/lattice/commit/6a8146c491564c242936f790169e1ac0ec7374c6))
+
+
+### Bug Fixes
+
+* **ci:** deploy docs from main again ([#410](https://github.com/lattice-php/lattice/issues/410)) ([95cd11f](https://github.com/lattice-php/lattice/commit/95cd11f64238b69a6aea1c67d6efb9bb42a0cf22))
+
+
+### Refactoring
+
+* **ui:** move js date/time handling onto @internationalized/date in format/temporal ([#415](https://github.com/lattice-php/lattice/issues/415)) ([35b590d](https://github.com/lattice-php/lattice/commit/35b590d7f9279cc52ac65b25a32d44cf231919c0))
+
+
+### Documentation
+
+* widen the api-reference demo page and flag the dead demo backend ([#412](https://github.com/lattice-php/lattice/issues/412)) ([48f2e2b](https://github.com/lattice-php/lattice/commit/48f2e2b471cd33da442c687a86a3c992eb089836))
+
 ## [0.42.0](https://github.com/lattice-php/lattice/compare/0.41.0...0.42.0) (2026-08-07)
 
 

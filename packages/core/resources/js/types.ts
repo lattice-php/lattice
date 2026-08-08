@@ -62,11 +62,6 @@ export type Option = {
   readonly value: string;
 };
 
-export type Breadcrumb = {
-  readonly label: string;
-  readonly url: string | null;
-};
-
 export type RendererComponentProps<TType extends string = string> = {
   children: ReactNode;
   node: Node<TType>;

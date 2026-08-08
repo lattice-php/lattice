@@ -4,8 +4,7 @@ import { createRegistry, eagerComponent, Renderer } from "@lattice-php/lattice";
 import type { Node, Plugin } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/form";
 import { useFormContext } from "@lattice-php/form/toolkit";
-import { renderWithRegistry } from "@lattice-php/core/test-support";
-import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
 import { actionComponents } from "@lattice-php/action/plugin";
 
 type ValidateFieldsOptions = { onSuccess?: () => void; onValidationError?: () => void };
@@ -197,11 +196,7 @@ afterEach(() => {
 
 describe("action form modal", () => {
   it("collects the form values and posts them to the action endpoint", async () => {
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => ({ effects: [], ok: true }),
-      ok: true,
-      status: 200,
-    } as unknown as Response);
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue(jsonResponse({ effects: [] }));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(rejectAction());
@@ -240,11 +235,11 @@ describe("action form modal", () => {
   });
 
   it("shows server validation errors returned on submit", async () => {
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => ({ errors: { reason: ["The Reason field is required."] } }),
-      ok: false,
-      status: 422,
-    } as unknown as Response);
+    const fetchMock = vi
+      .fn<FetchMock>()
+      .mockResolvedValue(
+        jsonResponse({ errors: { reason: ["The Reason field is required."] } }, { status: 422 }),
+      );
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(rejectAction());
@@ -256,20 +251,21 @@ describe("action form modal", () => {
   });
 
   it("dispatches effects and keeps the modal open on a domain rejection (422 without errors)", async () => {
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => ({
-        effects: [{ props: { message: "Rejected." }, type: "toast" }],
-      }),
-      ok: false,
-      status: 422,
-    } as unknown as Response);
+    const fetchMock = vi
+      .fn<FetchMock>()
+      .mockResolvedValue(
+        jsonResponse(
+          { effects: [{ props: { message: "Rejected." }, type: "toast" }] },
+          { status: 422 },
+        ),
+      );
     vi.stubGlobal("fetch", fetchMock);
 
     const toastListener = vi.fn<(event: Event) => void>();
 
     window.addEventListener("lattice:toast", toastListener);
 
-    const { container } = renderAction(rejectAction());
+    renderAction(rejectAction());
 
     fireEvent.click(screen.getByRole("button", { name: "Reject" }));
 
@@ -287,7 +283,7 @@ describe("action form modal", () => {
 
     expect(toastEvent.detail).toEqual({ message: "Rejected." });
     expect(screen.getByRole("textbox", { name: "Reason" })).toBeVisible();
-    expect(container.querySelector("p.text-lt-danger")).toBeNull();
+    expect(screen.getByRole("textbox", { name: "Reason" })).not.toHaveAttribute("aria-invalid");
 
     window.removeEventListener("lattice:toast", toastListener);
   });
@@ -303,13 +299,9 @@ describe("action form modal", () => {
     };
     const fetchMock = vi.fn<FetchMock>().mockImplementation((_url, init) => {
       const body = JSON.parse(String(init.body)) as Record<string, unknown>;
-      const payload = body._sub === "schema" ? formNode : { effects: [], ok: true };
+      const payload = body._sub === "schema" ? formNode : { effects: [] };
 
-      return Promise.resolve({
-        json: async () => payload,
-        ok: true,
-        status: 200,
-      } as unknown as Response);
+      return Promise.resolve(jsonResponse(payload));
     });
     vi.stubGlobal("fetch", fetchMock);
 
@@ -335,11 +327,7 @@ describe("action form modal", () => {
       ],
       type: "form",
     };
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => formNode,
-      ok: true,
-      status: 200,
-    } as unknown as Response);
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue(jsonResponse(formNode));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(lazyAction("patch"));
@@ -353,11 +341,7 @@ describe("action form modal", () => {
   });
 
   it("submits removed file tokens without stale existing file values", async () => {
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => ({ effects: [], ok: true }),
-      ok: true,
-      status: 200,
-    } as unknown as Response);
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue(jsonResponse({ effects: [] }));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(editProductActionWithExistingImage());
@@ -377,11 +361,7 @@ describe("action form modal", () => {
   });
 
   it("validates multiple fields on demand and reports success", async () => {
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => ({}),
-      ok: true,
-      status: 204,
-    } as unknown as Response);
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue(new Response(null, { status: 204 }));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(validateFieldsAction(), validateFieldsProbePlugin);
@@ -408,11 +388,9 @@ describe("action form modal", () => {
   });
 
   it("sets the field error and reports a validation failure on a 422", async () => {
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => ({ errors: { name: ["Required"] } }),
-      ok: false,
-      status: 422,
-    } as unknown as Response);
+    const fetchMock = vi
+      .fn<FetchMock>()
+      .mockResolvedValue(jsonResponse({ errors: { name: ["Required"] } }, { status: 422 }));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(validateFieldsAction(), validateFieldsProbePlugin);
@@ -433,16 +411,8 @@ describe("action form modal", () => {
   it("reports a validation failure on a non-422 error response without clearing errors", async () => {
     const fetchMock = vi
       .fn<FetchMock>()
-      .mockResolvedValueOnce({
-        json: async () => ({ errors: { name: ["Required"] } }),
-        ok: false,
-        status: 422,
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        json: async () => ({}),
-        ok: false,
-        status: 500,
-      } as unknown as Response);
+      .mockResolvedValueOnce(jsonResponse({ errors: { name: ["Required"] } }, { status: 422 }))
+      .mockResolvedValueOnce(jsonResponse({}, { status: 500 }));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(validateFieldsAction(), validateFieldsProbePlugin);
@@ -486,21 +456,11 @@ describe("action form modal", () => {
   it("keeps an unrelated field's error through another field's 422 merge and success-clear", async () => {
     const fetchMock = vi
       .fn<FetchMock>()
-      .mockResolvedValueOnce({
-        json: async () => ({ errors: { email: ["Invalid email"] } }),
-        ok: false,
-        status: 422,
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        json: async () => ({ errors: { name: ["Required"] } }),
-        ok: false,
-        status: 422,
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        json: async () => ({}),
-        ok: true,
-        status: 204,
-      } as unknown as Response);
+      .mockResolvedValueOnce(
+        jsonResponse({ errors: { email: ["Invalid email"] } }, { status: 422 }),
+      )
+      .mockResolvedValueOnce(jsonResponse({ errors: { name: ["Required"] } }, { status: 422 }))
+      .mockResolvedValueOnce(new Response(null, { status: 204 }));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(validateFieldsAction(), validateFieldsProbePlugin);
@@ -540,7 +500,7 @@ describe("action form modal", () => {
     capturedValidateFields?.(["name"]);
     await waitFor(() => expect(capturedValidating).toBe(true));
 
-    resolveFetch({ json: async () => ({}), ok: true, status: 204 } as unknown as Response);
+    resolveFetch(new Response(null, { status: 204 }));
     await waitFor(() => expect(capturedValidating).toBe(false));
   });
 
@@ -556,11 +516,7 @@ describe("action form modal", () => {
   });
 
   it("advances a wizard step once its precognitive validation passes", async () => {
-    const fetchMock = vi.fn<FetchMock>().mockResolvedValue({
-      json: async () => ({}),
-      ok: true,
-      status: 204,
-    } as unknown as Response);
+    const fetchMock = vi.fn<FetchMock>().mockResolvedValue(new Response(null, { status: 204 }));
     vi.stubGlobal("fetch", fetchMock);
 
     renderAction(wizardAction());

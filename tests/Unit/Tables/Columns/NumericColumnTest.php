@@ -2,12 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Table\Columns\NumberColumn;
-use Lattice\Table\Enums\FilterType;
 use Lattice\Ui\Enums\NumberFormatUnit;
-
-it('defaults a numeric column to end alignment', function (): void {
-    expect(wire(NumberColumn::make('price'))['props']['align'])->toBe('end');
-});
 
 it('emits fixed fraction digits', function (): void {
     $props = wire(NumberColumn::make('price')->decimals(2))['props'];
@@ -23,12 +18,6 @@ it('emits a fraction-digit range', function (): void {
         ->and($props['maximumFractionDigits'])->toBe(2);
 });
 
-it('filters a numeric column as a number', function (): void {
-    $data = wire(NumberColumn::make('price')->filterable());
-
-    expect($data['props']['filter']['type'])->toBe(FilterType::Number->value);
-});
-
 it('emits the Intl unit as its backed value', function (): void {
     $props = wire(
         NumberColumn::make('progress')
@@ -36,10 +25,4 @@ it('emits the Intl unit as its backed value', function (): void {
     )['props'];
 
     expect($props['unit'])->toBe('percent');
-});
-
-it('marks a number column compact', function (): void {
-    $column = NumberColumn::make('views')->compact();
-
-    expect($column->compact)->toBeTrue();
 });

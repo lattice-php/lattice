@@ -12,7 +12,7 @@ use Lattice\Table\Sources\Eloquent\EloquentTableDefinition;
 use Lattice\Table\TableQuery;
 use Orchestra\Testbench\Factories\UserFactory;
 
-test('eloquent tables can use infinite pagination metadata', function (): void {
+beforeEach(function (): void {
     User::query()->delete();
 
     foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
@@ -21,7 +21,9 @@ test('eloquent tables can use infinite pagination metadata', function (): void {
             'email' => str($name)->slug()->append('@example.com')->toString(),
         ]);
     }
+});
 
+test('eloquent tables can use infinite pagination metadata', function (): void {
     Lattice::tables([WorkbenchInfiniteUsersTable::class]);
 
     $table = wire(Table::use(WorkbenchInfiniteUsersTable::class));
@@ -58,15 +60,6 @@ test('eloquent tables can use infinite pagination metadata', function (): void {
 });
 
 test('eloquent tables use table pagination with totals by default', function (): void {
-    User::query()->delete();
-
-    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
-        UserFactory::new()->create([
-            'name' => $name,
-            'email' => str($name)->slug()->append('@example.com')->toString(),
-        ]);
-    }
-
     Lattice::tables([WorkbenchDefaultUsersTable::class]);
 
     $this->loadTable(WorkbenchDefaultUsersTable::class, ['per_page' => 2])
@@ -80,15 +73,6 @@ test('eloquent tables use table pagination with totals by default', function ():
 });
 
 test('eloquent tables can use simple pagination without totals', function (): void {
-    User::query()->delete();
-
-    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
-        UserFactory::new()->create([
-            'name' => $name,
-            'email' => str($name)->slug()->append('@example.com')->toString(),
-        ]);
-    }
-
     Lattice::tables([WorkbenchSimpleUsersTable::class]);
 
     $this->loadTable(WorkbenchSimpleUsersTable::class, ['per_page' => 2])
@@ -101,15 +85,6 @@ test('eloquent tables can use simple pagination without totals', function (): vo
 });
 
 test('eloquent tables can disable pagination for small datasets', function (): void {
-    User::query()->delete();
-
-    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
-        UserFactory::new()->create([
-            'name' => $name,
-            'email' => str($name)->slug()->append('@example.com')->toString(),
-        ]);
-    }
-
     Lattice::tables([WorkbenchSmallUsersTable::class]);
 
     $this->loadTable(WorkbenchSmallUsersTable::class, ['per_page' => 1])
@@ -121,16 +96,10 @@ test('eloquent tables can disable pagination for small datasets', function (): v
 });
 
 test('declared per-page options validate the requested page size', function (): void {
-    User::query()->delete();
-
-    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
-        UserFactory::new()->create([
-            'name' => $name,
-            'email' => str($name)->slug()->append('@example.com')->toString(),
-        ]);
-    }
-
     Lattice::tables([WorkbenchPerPageUsersTable::class]);
+
+    expect(wire(Table::use(WorkbenchPerPageUsersTable::class))['props']['perPageOptions'])
+        ->toBe([1, 2, 200, 'infinite']);
 
     $this->loadTable(WorkbenchPerPageUsersTable::class, ['per_page' => 1])
         ->assertOk()
@@ -146,24 +115,7 @@ test('declared per-page options validate the requested page size', function (): 
         ->assertJsonPath('query.perPage', 200);
 });
 
-test('per-page options serialize into the table component props', function (): void {
-    Lattice::tables([WorkbenchPerPageUsersTable::class]);
-
-    $table = wire(Table::use(WorkbenchPerPageUsersTable::class));
-
-    expect($table['props']['perPageOptions'])->toBe([1, 2, 200, 'infinite']);
-});
-
 test('mode=infinite switches a table-mode table to infinite pagination', function (): void {
-    User::query()->delete();
-
-    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
-        UserFactory::new()->create([
-            'name' => $name,
-            'email' => str($name)->slug()->append('@example.com')->toString(),
-        ]);
-    }
-
     Lattice::tables([WorkbenchPerPageUsersTable::class]);
 
     $this->loadTable(WorkbenchPerPageUsersTable::class, ['per_page' => 2, 'mode' => 'infinite'])
@@ -176,15 +128,6 @@ test('mode=infinite switches a table-mode table to infinite pagination', functio
 });
 
 test('mode=table switches an infinite-mode table to numbered pagination', function (): void {
-    User::query()->delete();
-
-    foreach (['Ada Lovelace', 'Grace Hopper', 'Maya Chen'] as $name) {
-        UserFactory::new()->create([
-            'name' => $name,
-            'email' => str($name)->slug()->append('@example.com')->toString(),
-        ]);
-    }
-
     Lattice::tables([WorkbenchInfiniteSwitchUsersTable::class]);
 
     $this->loadTable(WorkbenchInfiniteSwitchUsersTable::class, ['per_page' => 2, 'mode' => 'table'])
@@ -196,9 +139,6 @@ test('mode=table switches an infinite-mode table to numbered pagination', functi
 });
 
 test('mode=infinite is ignored when infinite is not declared', function (): void {
-    User::query()->delete();
-    UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
-
     Lattice::tables([WorkbenchNumericPerPageUsersTable::class]);
 
     $this->loadTable(WorkbenchNumericPerPageUsersTable::class, ['mode' => 'infinite'])
@@ -208,9 +148,6 @@ test('mode=infinite is ignored when infinite is not declared', function (): void
 });
 
 test('mode overrides are ignored when no options are declared', function (): void {
-    User::query()->delete();
-    UserFactory::new()->create(['name' => 'Ada Lovelace', 'email' => 'ada@example.com']);
-
     Lattice::tables([WorkbenchDefaultUsersTable::class]);
 
     $this->loadTable(WorkbenchDefaultUsersTable::class, ['mode' => 'infinite'])

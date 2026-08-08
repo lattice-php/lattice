@@ -7,6 +7,7 @@ import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { fakeFormContext } from "@lattice-php/form/test-support";
+import { libraryRow } from "./test-support";
 import MediaPickerComponent from "./media-picker";
 
 const CaptionField: RendererComponent<"field.text-input"> = ({ node }) => {
@@ -35,20 +36,6 @@ function captionTemplate(): Schema {
   ] as Schema;
 }
 
-function libraryRow(id: number, name: string) {
-  return {
-    id,
-    url: null,
-    preview_url: null,
-    name,
-    mime_type: "image/jpeg",
-    size: 100,
-    alt: null,
-    created_at: "2026-07-29T00:00:00Z",
-    attachments_count: 0,
-  };
-}
-
 function librarySchema(rows: ReturnType<typeof libraryRow>[]): Schema {
   return [
     {
@@ -68,7 +55,14 @@ function renderPicker(props: Record<string, unknown> = {}, schema?: Schema) {
       multiple: false,
       maxFiles: null,
       selected: [
-        { id: 7, name: "cover.jpg", url: null, preview_url: null, mime_type: "image/jpeg" },
+        {
+          id: 7,
+          name: "cover.jpg",
+          url: null,
+          preview_url: null,
+          mime_type: "image/jpeg",
+          values: {},
+        },
       ],
       ...props,
     },
@@ -103,6 +97,7 @@ describe("MediaPickerComponent", () => {
           url: "/storage/media/cover.jpg",
           preview_url: "/storage/media/conversions/cover-thumb.webp",
           mime_type: "image/jpeg",
+          values: {},
         },
       ],
     });
@@ -126,8 +121,8 @@ describe("MediaPickerComponent", () => {
     const { container } = renderPicker({
       multiple: true,
       selected: [
-        { id: 7, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg" },
-        { id: 9, name: "b.jpg", url: null, preview_url: null, mime_type: "image/jpeg" },
+        { id: 7, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg", values: {} },
+        { id: 9, name: "b.jpg", url: null, preview_url: null, mime_type: "image/jpeg", values: {} },
       ],
     });
 
@@ -146,9 +141,18 @@ describe("MediaPickerComponent", () => {
       {
         multiple: true,
         maxFiles: 2,
-        selected: [{ id: 1, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg" }],
+        selected: [
+          {
+            id: 1,
+            name: "a.jpg",
+            url: null,
+            preview_url: null,
+            mime_type: "image/jpeg",
+            values: {},
+          },
+        ],
       },
-      librarySchema([libraryRow(10, "d.jpg"), libraryRow(11, "e.jpg")]),
+      librarySchema([libraryRow(10, { name: "d.jpg" }), libraryRow(11, { name: "e.jpg" })]),
     );
 
     fireEvent.click(screen.getByTestId("media-picker-open"));
@@ -195,7 +199,16 @@ describe("MediaPickerComponent", () => {
       {
         name: "gallery",
         multiple: true,
-        selected: [{ id: 7, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg" }],
+        selected: [
+          {
+            id: 7,
+            name: "a.jpg",
+            url: null,
+            preview_url: null,
+            mime_type: "image/jpeg",
+            values: {},
+          },
+        ],
       },
       librarySchema([]),
     );

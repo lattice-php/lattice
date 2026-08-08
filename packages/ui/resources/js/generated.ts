@@ -1,9 +1,6 @@
-import type { Node } from "@lattice-php/core";
+import type { Affix, Color, Node, Option } from "@lattice-php/core";
+import type { Effect } from "@lattice-php/ui/effects/types";
 
-export type Affix = {
-  readonly icon: string | null;
-  readonly text: string | null;
-};
 export type Align = "center" | "left" | "start" | "stretch";
 export type Avatar = {
   name: string | null;
@@ -37,11 +34,12 @@ export type Callout = {
 };
 export type Card = {
   description: string | null;
+  headerActions: Node[];
   title: string | null;
   tooltip: string | null;
 };
 export type Chart = {
-  categoryFormat: NumberFormat | DateFormat | null;
+  categoryFormat: DateFormat | NumberFormat | null;
   categoryKey: string | null;
   data: Record<string, unknown>[];
   description: string | null;
@@ -84,12 +82,6 @@ export type Collapsible = {
   tooltip: string | null;
   trigger: Node[];
 };
-export type Color = {
-  readonly dark: string | null;
-  readonly kind: ColorKind;
-  readonly value: string;
-};
-export type ColorKind = "named" | "css";
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ComponentPropsMap = {
   avatar: Avatar;
@@ -128,10 +120,6 @@ export type DateTimeStyle = "full" | "long" | "medium" | "short";
 export type Download = {
   readonly url: string;
 };
-export type Effect = {
-  type: string;
-  props: Record<string, unknown>;
-};
 export type EffectPropsMap = {
   callout: Callout;
   "close-modal": CloseModal;
@@ -165,7 +153,7 @@ export type Heading = {
   tooltip: string | null;
 };
 export type Height = "full" | "screen";
-export type HttpMethod = import("@inertiajs/core").Method;
+export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type Icon = {
   class: string | null;
   color: Color | null;
@@ -256,11 +244,6 @@ export type NumberFormatUnit =
 export type OpenModal = {
   readonly modal: string;
 };
-export type Option = {
-  readonly data: Record<string, unknown> | null;
-  readonly label: string;
-  readonly value: string;
-};
 export type Orientation = "horizontal" | "vertical";
 export type Placement = "top" | "bottom" | "right";
 export type Progress = {
@@ -323,8 +306,8 @@ export type Stack = {
 export type StackDirection = "row" | "column";
 export type Tab = {
   confirm: {
-    required: boolean;
     redirectUrl: string;
+    required: boolean;
     timeout: number | null;
   } | null;
   label: string;
@@ -363,7 +346,7 @@ export type Tooltip = {
 export type Translatable = {
   key: string;
   payload: Record<string, string>;
-  replacements: Record<string, string | number | boolean>;
+  replacements: Record<string, boolean | number | string>;
 };
 export type UiNodeType =
   | "avatar"

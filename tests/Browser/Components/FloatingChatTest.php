@@ -2,13 +2,6 @@
 
 declare(strict_types=1);
 
-it('mounts the floating chat trigger on every page', function (): void {
-    $this->visitAsWorkbenchUser('/')
-        ->assertVisible('@assistant-chat-trigger')
-        ->assertMissing('@chat-box')
-        ->assertNoSmoke();
-});
-
 it('opens the chat panel and renders the seeded conversation history', function (): void {
     $this->visitAsWorkbenchUser('/')
         ->click('@assistant-chat-trigger')

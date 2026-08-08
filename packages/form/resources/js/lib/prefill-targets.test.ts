@@ -1,31 +1,13 @@
 import { expect, it } from "vitest";
 import type { Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
+import { builderNode, priceField } from "@lattice-php/form/test-support";
 import {
   collectPrefillTargets,
   pathsToClear,
   pruneOverrides,
   seededOverrides,
 } from "./prefill-targets";
-
-function priceField(): Node {
-  return fakeNode({
-    id: "f1",
-    type: "field.text",
-    props: {
-      name: "price",
-      editablePrefill: true,
-      prefillResetOn: ["product"],
-      prefillRefreshOn: ["@customer"],
-    },
-  });
-}
-
-function builderNode(): Node {
-  return Object.assign(fakeNode({ id: "b1", type: "field.builder", props: { name: "items" } }), {
-    templates: [{ type: "product", label: "Product", schema: [priceField()] }],
-  });
-}
 
 function nestedRepeaterNode(): Node {
   return fakeNode({

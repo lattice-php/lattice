@@ -17,9 +17,7 @@ it('writes a ColumnProps augmentation from the column class public props', funct
 
     config()->set('lattice.typescript.output', $output);
     config()->set('lattice.typescript.module', '@lattice-php/core');
-    config()->set('lattice.discover', [
-        dirname(__DIR__, 2).'/Fixtures/TypeScript',
-    ]);
+    bindAppWireSource(dirname(__DIR__, 2).'/Fixtures/TypeScript');
 
     artisan('lattice:typescript')->assertSuccessful();
 

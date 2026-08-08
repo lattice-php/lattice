@@ -11,41 +11,12 @@ const CustomPart: RendererComponent = ({ node }) => (
   <span data-test="custom-part">{(node.props as { label: string }).label}</span>
 );
 
-const registry = createRegistry(chatComponents);
 const customRegistry = createRegistry(chatComponents, {
   name: "test",
   components: { custom: eagerComponent(CustomPart) },
 });
 
 describe("Message", () => {
-  it("renders a user message with its text part", () => {
-    const message: ChatMessage = {
-      id: "1",
-      role: "user",
-      parts: [{ type: "chat.part.text", props: { text: "Hello there" } }],
-    };
-
-    renderWithRegistry(<Message message={message} />, registry);
-
-    expect(screen.getByText("Hello there")).toBeVisible();
-    const messageWrapper = screen.getByTestId("chat-message-user");
-    expect(messageWrapper).toBeInTheDocument();
-    expect(messageWrapper.firstElementChild).toHaveClass("rounded-lt");
-  });
-
-  it("renders an assistant message with its text part", () => {
-    const message: ChatMessage = {
-      id: "2",
-      role: "assistant",
-      parts: [{ type: "chat.part.text", props: { text: "Hi, how can I help?" } }],
-    };
-
-    renderWithRegistry(<Message message={message} />, registry);
-
-    expect(screen.getByText("Hi, how can I help?")).toBeVisible();
-    expect(screen.getByTestId("chat-message-assistant")).toBeInTheDocument();
-  });
-
   it("renders both a text part and a custom registered part", () => {
     const message: ChatMessage = {
       id: "3",

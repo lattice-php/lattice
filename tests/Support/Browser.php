@@ -8,6 +8,7 @@ use Orchestra\Testbench\Factories\UserFactory;
 use Pest\Browser\Api\AwaitableWebpage;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Api\Webpage;
+use Workbench\App\Models\Product;
 use Workbench\App\Models\User;
 
 use function Amp\delay;
@@ -135,6 +136,11 @@ function seedWorkbenchUsers(): void
             'email' => "browser-user-{$number}@example.com",
         ]);
     }
+}
+
+function deskLampProduct(): Product
+{
+    return Product::factory()->create(['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'status' => 'active']);
 }
 
 /**

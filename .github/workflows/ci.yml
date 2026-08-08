@@ -251,8 +251,55 @@ jobs:
       - name: Rector (dry-run)
         run: composer rector:test
 
+  generated-types:
+    name: Generated TypeScript Types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generated TypeScript types are up to date
+        run: |
+          composer types
+          git add --intent-to-add \
+            packages/framework/resources/js/types/generated.ts \
+            packages/form/resources/js/generated.ts \
+            packages/table/resources/js/generated.ts \
+            packages/action/resources/js/generated.ts \
+            packages/ui/resources/js/generated.ts
+          git diff --exit-code -- \
+            packages/framework/resources/js/types/generated.ts \
+            packages/form/resources/js/generated.ts \
+            packages/table/resources/js/generated.ts \
+            packages/action/resources/js/generated.ts \
+            packages/ui/resources/js/generated.ts
+
   php-tests:
-    name: PHP Tests (${{ matrix.php-version }}, ${{ matrix.coverage }})
+    name: PHP Tests (${{ matrix.php-version }}, ${{ matrix.coverage }}${{ matrix.shard && format(', shard {0}/2', matrix.shard) || '' }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -263,6 +310,10 @@ jobs:
         include:
           - php-version: "8.4"
             coverage: pcov
+            shard: 1
+          - php-version: "8.4"
+            coverage: pcov
+            shard: 2
           - php-version: "8.5"
             coverage: none
     steps:
@@ -272,7 +323,9 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           coverage: ${{ matrix.coverage }}
-          ini-values: pcov.directory=.
+          # The coverage source is packages/ only (phpunit.xml); instrumenting
+          # the whole workspace makes pcov also trace vendor/ and workbench/.
+          ini-values: pcov.directory=packages
           tools: composer:v2
 
       - name: Resolve composer cache directory
@@ -293,7 +346,7 @@ jobs:
 
       - name: Pest with coverage
         if: ${{ matrix.php-version == '8.4' }}
-        run: composer test:coverage
+        run: composer test:coverage -- --shard=${{ matrix.shard }}/2
 
       - name: Upload Pest coverage to Codecov
         if: ${{ !cancelled() && matrix.php-version == '8.4' }}
@@ -302,7 +355,7 @@ jobs:
           use_oidc: true
           files: coverage_phpunit/clover.xml
           flags: pest
-          name: pest
+          name: pest-${{ matrix.shard }}
           disable_search: true
           fail_ci_if_error: true
 
@@ -313,7 +366,7 @@ jobs:
           use_oidc: true
           files: coverage_phpunit/pest.junit.xml
           flags: pest
-          name: pest-tests
+          name: pest-tests-${{ matrix.shard }}
           report_type: test_results
           disable_search: true
           fail_ci_if_error: true

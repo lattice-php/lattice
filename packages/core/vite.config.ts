@@ -23,6 +23,7 @@ export default defineConfig({
         "resources/js/**/*.test.*",
         "resources/js/**/*.test-d.*",
         "resources/js/test-support.*",
+        "resources/js/browser-test-support.*",
       ],
       rollupTypes: true,
       compilerOptions: {

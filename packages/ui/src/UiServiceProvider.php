@@ -29,7 +29,6 @@ final class UiServiceProvider extends ServiceProvider
 
         $lattice = $this->app->make(LatticeRegistry::class);
         $lattice->registerCapability('extend', fn (string $name, Closure $factory, int $priority = 0) => $this->app->make(SlotRegistry::class)->extend($name, $factory, $priority));
-        $lattice->wireSource(__DIR__);
         $lattice->wireFamily('component', AsComponent::class, Component::class, marker: true);
         $lattice->wireFamily('effect', AsEffect::class, Effect::class);
     }

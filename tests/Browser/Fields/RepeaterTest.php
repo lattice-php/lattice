@@ -1,16 +1,6 @@
 <?php
 declare(strict_types=1);
 
-it('renders the repeater with one default row', function (): void {
-    $this->visitAsWorkbenchUser('/form/fields/repeater')
-        ->assertSee('Repeater')
-        ->assertSee('Line items')
-        ->assertPresent('[data-test="repeater-items-row-0"]')
-        ->assertPresent('input[name="items[0][name]"]')
-        ->assertPresent('input[name="items[0][qty]"]')
-        ->assertNoSmoke();
-});
-
 it('round-trips a repeater payload through submit and resets on success', function (): void {
     $page = $this->visitAsWorkbenchUser('/form/fields/repeater')
         ->assertSee('Line items')

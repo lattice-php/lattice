@@ -4,71 +4,36 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Lattice\Form\Components\Choice;
-use Lattice\Form\Components\Form;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormDefinition;
-use Symfony\Component\HttpFoundation\Response;
 
 function stubDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('name', 'Name')->rules(['required', 'string']),
-                TextInput::make('price', 'Price')->rules(['required', 'numeric']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('name', 'Name')->rules(['required', 'string']),
+        TextInput::make('price', 'Price')->rules(['required', 'numeric']),
+    ]);
 }
 
 function emailDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('email', 'Email')->email()->rules(['required']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('email', 'Email')->email()->rules(['required']),
+    ]);
 }
 
 function conditionalDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                Choice::make('type', 'Type')->options([
-                    Choice::option('Personal', 'personal'),
-                    Choice::option('Business', 'business'),
-                ]),
-                TextInput::make('company', 'Company')
-                    ->dependsOn('type', 'business')
-                    ->requiredWhen('type', 'business')
-                    ->rules(['string']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        Choice::make('type', 'Type')->options([
+            Choice::option('Personal', 'personal'),
+            Choice::option('Business', 'business'),
+        ]),
+        TextInput::make('company', 'Company')
+            ->dependsOn('type', 'business')
+            ->requiredWhen('type', 'business')
+            ->rules(['string']),
+    ]);
 }
 
 it('derives validation rules from fields and fails an empty payload', function (): void {
@@ -113,25 +78,14 @@ it('requires the field when its condition matches', function (): void {
 
 function choiceDefinition(bool $required = false): FormDefinition
 {
-    return new class($required) extends FormDefinition
-    {
-        public function __construct(private readonly bool $required) {}
+    return testFormDefinition(function () use ($required): array {
+        $role = Choice::make('role', 'Role')->options([
+            Choice::option('Member', 'member'),
+            Choice::option('Admin', 'admin'),
+        ]);
 
-        public function definition(Form $form, Request $request): Form
-        {
-            $role = Choice::make('role', 'Role')->options([
-                Choice::option('Member', 'member'),
-                Choice::option('Admin', 'admin'),
-            ]);
-
-            return $form->schema([$this->required ? $role->required() : $role]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+        return [$required ? $role->required() : $role];
+    });
 }
 
 it('rejects a choice value outside its options', function (): void {

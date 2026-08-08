@@ -28,7 +28,6 @@ final class ActionServiceProvider extends ServiceProvider
         $lattice = $this->app->make(LatticeRegistry::class);
         $lattice->registerCapability('actions', fn (string|array $actions) => $this->app->make(ActionRegistry::class)->register($actions));
         $lattice->registerCapability('bulkActions', fn (string|array $bulkActions) => $this->app->make(BulkActionRegistry::class)->register($bulkActions));
-        $lattice->wireSource(__DIR__);
     }
 
     public function boot(): void

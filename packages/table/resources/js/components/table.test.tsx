@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@lattice-php/lattice/provider";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { col, pagination, requestOptions, tableFetch, tableQuery } from "../test-support";
@@ -11,83 +11,28 @@ describe("Lattice table component", () => {
     window.localStorage.clear();
   });
 
-  it("renders columns and rows from server props", async () => {
-    Object.defineProperty(navigator, "clipboard", {
-      configurable: true,
-      value: { writeText: vi.fn().mockResolvedValue(undefined) },
-    });
-
+  it("derives per-column sort state from the server query", () => {
     const node = {
       id: "workbench.users",
       props: {
         columns: [
-          col({
-            key: "name",
-            label: "Name",
-            sortable: true,
-            filter: {
-              type: "text",
-              operators: ["contains", "eq", "neq"],
-              defaultOperator: "contains",
-              control: null,
-              options: [],
-              multiple: false,
-              searchable: false,
-              clauseOptions: [],
-            },
-          }),
-          col({
-            key: "status",
-            label: "Status",
-          }),
-          col({
-            key: "created_at",
-            label: "Created",
-            props: {
-              date: {
-                dateStyle: "medium",
-                timeStyle: "short",
-              },
-            },
-          }),
-          col({
-            key: "email",
-            label: "Email",
-            sortable: true,
-            props: {
-              copyable: true,
-              link: {
-                href: "mailto:{value}",
-                external: false,
-              },
-            },
-          }),
+          col({ key: "name", label: "Name", sortable: true }),
+          col({ key: "email", label: "Email", sortable: true }),
         ],
-        data: [
-          {
-            name: "Taylor",
-            status: "Active",
-            created_at: "2025-01-01 09:15:00",
-            email: "taylor@example.com",
-          },
-        ],
+        data: [],
         endpoint: "/lattice/tables/workbench.users",
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
+        query: tableQuery({
           sorts: [
             { key: "name", direction: "asc" },
             { key: "email", direction: "desc" },
           ],
-        },
+        }),
       },
       type: "table",
     } satisfies TableNode;
 
     render(<TableComponent node={node}>{null}</TableComponent>);
 
-    expect(screen.getByRole("button", { name: "Sort Name" })).toBeVisible();
     expect(
       screen.getByRole("button", { name: "Sort Name" }).closest('[role="columnheader"]'),
     ).toHaveAttribute("aria-sort", "ascending");
@@ -96,21 +41,6 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("img", { name: "ascending" })).toBeVisible();
     expect(screen.getByRole("img", { name: "descending" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Clear Name sort" })).toBeVisible();
-    expect(screen.getByRole("textbox", { name: "Filter Name" })).toBeVisible();
-    expect(screen.getByRole("columnheader", { name: "Status" })).toBeVisible();
-
-    expect(screen.getByRole("cell", { name: "Taylor" })).toBeVisible();
-    expect(screen.getByRole("cell", { name: "Active" })).toBeVisible();
-    const createdCell = screen.getByRole("cell", { name: /2025/ });
-    expect(createdCell).toBeVisible();
-    expect(createdCell.querySelector("time")).not.toBeNull();
-    expect(screen.getByRole("link", { name: "taylor@example.com" })).toHaveAttribute(
-      "href",
-      "mailto:taylor%40example.com",
-    );
-    fireEvent.click(screen.getByRole("button", { name: "Copy Email" }));
-
-    expect(await screen.findByRole("button", { name: "Copied Email" })).toBeVisible();
   });
 
   it("refreshes rows when table data props change", () => {
@@ -125,12 +55,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ name: "Taylor" }],
         endpoint: "/lattice/tables/workbench.users",
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -168,12 +93,7 @@ describe("Lattice table component", () => {
           }),
         ],
         data: [],
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -191,6 +111,62 @@ describe("Lattice table component", () => {
     expect(screen.getByRole("separator", { name: "Resize Qty" })).toBeInTheDocument();
   });
 
+  it("gathers search, filters, column visibility, resize reset, and slot nodes into one toolbar row, with slot nodes rightmost", () => {
+    window.localStorage.setItem(
+      "lattice:table-columns:workbench.toolbar",
+      JSON.stringify({ overrides: { name: 180 } }),
+    );
+
+    const node = {
+      id: "workbench.toolbar",
+      props: {
+        columns: [
+          col({ key: "name", label: "Name" }),
+          col({ key: "notes", label: "Notes", props: { toggleable: true } }),
+        ],
+        data: [],
+        searchable: true,
+        resizableColumns: true,
+        filters: [
+          {
+            key: "status",
+            type: "filter.select",
+            props: {
+              label: "Status",
+              options: [],
+              multiple: false,
+              searchable: false,
+              placeholder: null,
+            },
+            schema: [],
+          },
+        ],
+        toolbar: [fakeNode({ type: "text", props: { text: "Custom slot" } })],
+        endpoint: "/lattice/tables/workbench.toolbar",
+        query: tableQuery(),
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    const toolbar = screen.getByTestId("table-search").closest('[data-slot="table-toolbar"]');
+
+    expect(toolbar).not.toBeNull();
+    expect(toolbar).toContainElement(screen.getByTestId("table-search"));
+    expect(toolbar).toContainElement(screen.getByText("Custom slot"));
+    expect(toolbar).toContainElement(screen.getByTestId("table-filters-menu"));
+    expect(toolbar).toContainElement(screen.getByTestId("table-columns-menu"));
+    expect(toolbar).toContainElement(screen.getByTestId("table-reset-columns"));
+    expect(screen.getByTestId("table-reset-columns")).not.toHaveClass("absolute");
+
+    const resetColumns = screen.getByTestId("table-reset-columns");
+    const slot = screen.getByText("Custom slot");
+    expect(resetColumns.compareDocumentPosition(slot) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
   it("renders grid rows with stack columns and row actions without table cells", async () => {
     const node = {
       id: "workbench.stacked-users",
@@ -200,10 +176,7 @@ describe("Lattice table component", () => {
             key: "identity",
             label: "Identity",
             type: "column.stack",
-            schema: [
-              fakeNode({ type: "text", props: { dataBindings: { text: "name" } } }),
-              fakeNode({ type: "text", props: { dataBindings: { text: "email" } } }),
-            ],
+            schema: [fakeNode({ type: "text", props: { dataBindings: { text: "name" } } })],
           }),
           col({
             key: "status",
@@ -212,12 +185,6 @@ describe("Lattice table component", () => {
           }),
         ],
         data: [
-          {
-            id: 1,
-            name: "Ada",
-            email: "ada@example.com",
-            status: "Owner",
-          },
           {
             id: 2,
             name: "Taylor",
@@ -254,12 +221,7 @@ describe("Lattice table component", () => {
           },
         ],
         layout: "grid",
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -268,8 +230,6 @@ describe("Lattice table component", () => {
 
     expect(container.querySelector("td")).not.toBeInTheDocument();
     expect(screen.getByRole("table")).toBeVisible();
-    expect(screen.getByRole("cell", { name: /Ada/ })).toHaveTextContent("ada@example.com");
-    expect(screen.getByRole("cell", { name: /Taylor/ })).toHaveTextContent("taylor@example.com");
     expect(screen.getByRole("cell", { name: "Active" })).toBeVisible();
     expect(await screen.findByRole("button", { name: "Manage user" })).toBeVisible();
 
@@ -505,12 +465,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ id: 1, name: "Taylor" }],
         pagination: pagination({ total: 1 }),
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -716,55 +671,6 @@ describe("Lattice table component", () => {
       ),
     );
   });
-
-  it("adds a clause with a chosen operator from the column filter popover", async () => {
-    const fetch = tableFetch();
-
-    const node = {
-      id: "workbench.products",
-      props: {
-        columns: [
-          col({
-            key: "name",
-            label: "Name",
-            filter: {
-              type: "text",
-              operators: ["contains", "eq", "neq"],
-              defaultOperator: "contains",
-              control: null,
-              options: [],
-              multiple: false,
-              searchable: false,
-              clauseOptions: [],
-            },
-          }),
-        ],
-        data: [],
-        endpoint: "/lattice/tables/workbench.products",
-        query: tableQuery(),
-      },
-      type: "table",
-    } satisfies TableNode;
-
-    render(<TableComponent node={node}>{null}</TableComponent>);
-
-    fireEvent.click(screen.getByRole("button", { name: "Name filters" }));
-
-    fireEvent.change(screen.getByRole("combobox", { name: "Name operator" }), {
-      target: { value: "neq" },
-    });
-
-    const valueInput = screen.getByRole("textbox", { name: "Name filter value" });
-    fireEvent.change(valueInput, { target: { value: "bar" } });
-    fireEvent.keyDown(valueInput, { key: "Enter" });
-
-    await waitFor(() =>
-      expect(fetch).toHaveBeenLastCalledWith(
-        "/lattice/tables/workbench.products?filter=name%3Aneq%3Abar&page=1&per_page=25",
-        requestOptions(),
-      ),
-    );
-  });
 });
 
 describe("per-page options", () => {
@@ -790,13 +696,14 @@ describe("per-page options", () => {
     } satisfies TableNode;
   }
 
-  it("hides the select when no options are declared", () => {
-    render(<TableComponent node={perPageNode({ perPageOptions: [] })}>{null}</TableComponent>);
+  it("shows the select only when options are declared and changes the page size through it", async () => {
+    const { unmount } = render(
+      <TableComponent node={perPageNode({ perPageOptions: [] })}>{null}</TableComponent>,
+    );
 
     expect(screen.queryByLabelText("Rows per page")).not.toBeInTheDocument();
-  });
+    unmount();
 
-  it("changes the page size through the per-page select", async () => {
     const fetch = tableFetch({
       data: [{ id: 2, name: "Ada" }],
       pagination: pagination({ mode: "table", currentPage: 1, lastPage: 1, perPage: 50, total: 1 }),

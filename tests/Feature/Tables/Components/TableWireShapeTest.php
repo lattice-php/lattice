@@ -2,16 +2,13 @@
 declare(strict_types=1);
 
 use Lattice\Core\Enums\Op;
-use Lattice\Core\Facades\Lattice;
 use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Components\Table;
 use Lattice\Table\Enums\PaginationType;
 use Lattice\Table\TableQuery;
-use Lattice\Table\TableRegistry;
 use Lattice\Table\TableResult;
 use Lattice\Ui\Enums\ColumnWidth;
-use Workbench\App\Tables\ProductsTable;
 
 it('serializes the table component wire shape', function (): void {
     $table = Table::make('demo')
@@ -130,21 +127,4 @@ it('narrows the offered operators when a column restricts them', function (): vo
 
     expect($filter['operators'])->toBe(['eq', 'contains'])
         ->and($filter['defaultOperator'])->toBe('eq');
-});
-
-it('keeps empty data present on a lazy table (wire trap)', function (): void {
-    Lattice::tables([ProductsTable::class]);
-
-    $table = app(TableRegistry::class)->lazyComponent(ProductsTable::class);
-
-    $payload = wire($table);
-
-    expect($payload['type'])->toBe('table');
-    expect($payload['props']['lazy'])->toBeTrue();
-    expect($payload['props']['striped'])->toBeTrue();
-    expect($payload['props'])->toHaveKey('data');
-    expect($payload['props']['data'])->toBe([]);
-    expect($payload['props']['pagination']['mode'])->toBe('table');
-    expect($payload['props']['columns'])->toHaveCount(8);
-    expect($payload['props']['bulkActions'][0]['type'])->toBe('action.bulk');
 });

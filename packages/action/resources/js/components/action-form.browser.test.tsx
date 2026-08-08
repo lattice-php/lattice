@@ -40,9 +40,7 @@ const registry = createRegistry(actionComponents, formComponents);
 
 describe("action form modal in a browser", () => {
   it("validates precognitively as the user types", async () => {
-    const fetchMock = vi
-      .fn<typeof fetch>()
-      .mockResolvedValue({ json: async () => ({}), ok: true, status: 204 } as unknown as Response);
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(new Response(null, { status: 204 }));
     vi.stubGlobal("fetch", fetchMock);
 
     const screen = await render(<Renderer nodes={[rejectAction()]} />, {

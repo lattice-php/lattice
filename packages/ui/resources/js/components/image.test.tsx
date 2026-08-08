@@ -20,13 +20,6 @@ function renderImage(props: Record<string, unknown> = {}) {
 }
 
 describe("ImageComponent", () => {
-  it("renders the image inside a zoom trigger by default", () => {
-    renderImage();
-
-    expect(screen.getByRole("button", { name: "View image" })).toBeVisible();
-    expect(screen.getByAltText("Product photo")).toBeVisible();
-  });
-
   it("opens the lightbox on click and closes it again", () => {
     renderImage();
 
@@ -42,13 +35,5 @@ describe("ImageComponent", () => {
 
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(screen.getByAltText("Product photo")).toBeVisible();
-  });
-
-  it("applies circular rounding and a fixed size", () => {
-    renderImage({ circular: true, size: 64 });
-
-    const image = screen.getByAltText("Product photo");
-    expect(image).toHaveClass("rounded-full");
-    expect(image).toHaveAttribute("width", "64");
   });
 });

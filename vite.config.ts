@@ -255,7 +255,7 @@ export default defineConfig({
         "packages/*/resources/js/**/*.test-d.{ts,tsx}",
         "packages/*/resources/js/generated.ts",
         "packages/*/resources/js/test/**",
-        "packages/*/resources/js/test-support.{ts,tsx}",
+        "packages/*/resources/js/**/*test-support.{ts,tsx}",
         "packages/framework/resources/js/types/**",
       ],
     },

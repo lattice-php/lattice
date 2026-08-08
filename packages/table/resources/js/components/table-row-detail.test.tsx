@@ -1,25 +1,10 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
-import { renderWithRegistry } from "@lattice-php/core/test-support";
-import type { TableColumn, TableNode, TableRow } from "@lattice-php/table/types";
+import { jsonResponse, renderWithRegistry, stubFetch } from "@lattice-php/core/test-support";
+import type { TableNode, TableRow } from "@lattice-php/table/types";
+import { col, tableNode } from "../test-support";
 import TableComponent from "./table";
-
-function col(): TableColumn {
-  return {
-    key: "name",
-    type: "column.text",
-    props: {
-      label: "Name",
-      width: "md",
-      align: "start",
-      sortable: false,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: null,
-    },
-  };
-}
 
 function detailNode(id: string) {
   return {
@@ -30,34 +15,7 @@ function detailNode(id: string) {
 }
 
 function node(rows: TableRow[]): TableNode {
-  return {
-    id: "workbench.orders",
-    type: "table",
-    props: {
-      columns: [col()],
-      data: rows,
-      endpoint: "/lattice/tables/workbench.orders",
-      query: {
-        filters: [],
-        page: 1,
-        perPage: 25,
-        sorts: [],
-        tableFilters: {},
-        tableFilterIndicators: [],
-        search: "",
-      },
-    },
-  };
-}
-
-function stubFetch(text: string) {
-  const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-    Response.json({ schema: [{ type: "text", props: { text } }] }),
-  );
-
-  vi.stubGlobal("fetch", fetch);
-
-  return fetch;
+  return tableNode({ columns: [col({ key: "name", label: "Name" })], data: rows });
 }
 
 describe("expandable table rows", () => {
@@ -76,7 +34,9 @@ describe("expandable table rows", () => {
   });
 
   it("loads the detail fragment over AJAX on expand and hides it on collapse", async () => {
-    const fetch = stubFetch("Line items loaded");
+    const fetch = stubFetch(
+      jsonResponse({ schema: [{ type: "text", props: { text: "Line items loaded" } }] }),
+    );
 
     renderWithRegistry(
       <TableComponent node={node([{ id: "1", name: "Order 1", detail: detailNode("1") }])} />,

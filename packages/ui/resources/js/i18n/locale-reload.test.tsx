@@ -1,16 +1,15 @@
 import { render } from "@testing-library/react";
+import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LocaleReload } from "./locale-reload";
 
-const router = vi.hoisted(() => ({
-  visit: vi.fn<(url: string, options: Record<string, unknown>) => void>(),
-}));
-
-vi.mock("@inertiajs/react", () => ({ router }));
+vi.mock("@inertiajs/react", async () =>
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
+);
 
 describe("LocaleReload", () => {
   beforeEach(() => {
-    router.visit.mockReset();
+    vi.mocked(router.visit).mockReset();
     window.history.pushState({}, "", "/");
   });
 

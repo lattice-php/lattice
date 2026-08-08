@@ -14,14 +14,6 @@ use Lattice\Table\TableServiceProvider;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\UiServiceProvider;
 
-it('loads domain providers through the umbrella provider', function (): void {
-    expect(app()->getProvider(CoreServiceProvider::class))->not->toBeNull()
-        ->and(app()->getProvider(UiServiceProvider::class))->not->toBeNull()
-        ->and(app()->getProvider(FormServiceProvider::class))->not->toBeNull()
-        ->and(app()->getProvider(TableServiceProvider::class))->not->toBeNull()
-        ->and(app()->getProvider(ActionServiceProvider::class))->not->toBeNull();
-});
-
 it('registers wire families through the Lattice facade', function (): void {
     Lattice::wireFamily('fixture', AsComponent::class, Component::class, marker: true);
 

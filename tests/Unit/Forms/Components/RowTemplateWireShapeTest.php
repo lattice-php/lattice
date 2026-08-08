@@ -4,9 +4,9 @@ declare(strict_types=1);
 use Lattice\Form\Components\RowTemplate;
 use Lattice\Form\Components\TextInput;
 
-it('serialises a block as type + label + schema', function (): void {
+it('compiles to a type + label + schema value object', function (): void {
     $wire = wire(
-        RowTemplate::make('product')->label('Product line')->schema([TextInput::make('qty')])
+        RowTemplate::make('product')->label('Product line')->schema([TextInput::make('qty')])->data()
     );
 
     expect($wire['type'])->toBe('product')
@@ -17,7 +17,7 @@ it('serialises a block as type + label + schema', function (): void {
 });
 
 it('defaults the label to a title-cased type', function (): void {
-    $wire = wire(RowTemplate::make('product')->schema([]));
+    $wire = wire(RowTemplate::make('product')->schema([])->data());
 
     expect($wire['label'])->toBe('Product');
 });

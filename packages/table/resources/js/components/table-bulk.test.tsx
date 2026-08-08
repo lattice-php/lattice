@@ -1,23 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { TableColumn, TableNode } from "@lattice-php/table/types";
+import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
-
-function col(partial: { key: string; label: string }): TableColumn {
-  return {
-    key: partial.key,
-    type: "column.text",
-    props: {
-      label: partial.label,
-      width: "md",
-      align: "start",
-      sortable: false,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: null,
-    },
-  };
-}
+import { col, tableNode, tableQuery } from "../test-support";
 
 const apiFetch = vi.hoisted(() =>
   vi.fn<(url: string, init?: Record<string, unknown>) => Promise<Response>>(
@@ -33,31 +18,26 @@ vi.mock("@inertiajs/react", async () =>
 
 const { default: TableComponent } = await import("./table");
 
-const node = {
-  id: "workbench.products",
-  props: {
-    columns: [col({ key: "name", label: "Name" })],
-    data: [
-      { id: 1, name: "Lamp" },
-      { id: 2, name: "Shelf" },
-    ],
-    endpoint: "/lattice/tables/workbench.products",
-    bulkActions: [
-      fakeNode({
-        type: "action",
-        id: "workbench.products.archive-selected",
-        props: {
-          label: "Archive selected",
-          method: "patch",
-          endpoint: "/lattice/bulk-actions/workbench.products.archive-selected",
-          ref: "sealed-ref",
-          variant: "danger",
-        },
-      }),
-    ],
-  },
-  type: "table",
-} satisfies TableNode;
+const node = tableNode({
+  columns: [col({ key: "name", label: "Name" })],
+  data: [
+    { id: 1, name: "Lamp" },
+    { id: 2, name: "Shelf" },
+  ],
+  bulkActions: [
+    fakeNode({
+      type: "action",
+      id: "workbench.products.archive-selected",
+      props: {
+        label: "Archive selected",
+        method: "patch",
+        endpoint: "/lattice/bulk-actions/workbench.products.archive-selected",
+        ref: "sealed-ref",
+        variant: "danger",
+      },
+    }),
+  ],
+});
 
 describe("table bulk actions", () => {
   afterEach(() => {
@@ -98,9 +78,8 @@ describe("table bulk actions", () => {
       ...node,
       props: {
         ...node.props,
-        query: {
+        query: tableQuery({
           filters: [{ field: "status", operator: "eq", value: "active" }],
-          sorts: [],
           tableFilters: {
             featured: { value: "true" },
             updated_at: { from: "2026-01-01", until: "" },
@@ -109,9 +88,7 @@ describe("table bulk actions", () => {
             { filter: "featured", label: "Featured", value: "Yes" },
             { filter: "updated_at", label: "Updated", value: "2026-01-01" },
           ],
-          page: 1,
-          perPage: 25,
-        },
+        }),
         pagination: {
           mode: "table",
           currentPage: 1,

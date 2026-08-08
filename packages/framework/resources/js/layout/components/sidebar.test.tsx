@@ -28,13 +28,6 @@ function dispatchToggle(): void {
 describe("Sidebar", () => {
   afterEach(() => window.localStorage.clear());
 
-  it("renders an aside with no built-in toggle button", () => {
-    renderSidebar({ collapsible: false, rememberState: false });
-
-    expect(screen.getByRole("complementary")).toHaveAttribute("data-collapsed", "false");
-    expect(screen.queryByRole("button")).not.toBeInTheDocument();
-  });
-
   it("collapses to the icon rail when a toggle event targets it", () => {
     renderSidebar({ collapsible: true, rememberState: false });
 
