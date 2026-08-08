@@ -13,8 +13,10 @@ parameters:
     level: 8
     ignoreErrors:
         -
-            # This config only analyses packages/. Traits consumed exclusively from
-            # tests/ or workbench/app/ (analysed separately by phpstan-tests.neon.dist)
-            # read as unused from here; a genuinely dead trait would still surface
-            # there. Scoping artifact, not a suppressed defect.
+            # This config analyses packages/. Traits consumed exclusively by tests/workbench
+            # (analysed separately by phpstan-tests.neon.dist) appear unused here. Per-package
+            # CLI scans may match zero such errors if that package has no scoping victims;
+            # reportUnmatched: false exempts this entry only, leaving other unmatched patterns
+            # detectable by future linting.
             identifier: trait.unused
+            reportUnmatched: false
