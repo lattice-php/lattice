@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { FakeXhr } from "@lattice-php/core/test-support";
 import { useMediaUpload } from "./use-media-upload";
 
 const apiFetch = vi.hoisted(() => vi.fn<(...args: unknown[]) => Promise<Response>>());
@@ -45,61 +46,6 @@ const uploadEffects = JSON.stringify({
   ],
 });
 
-class FakeRequest {
-  static instances: FakeRequest[] = [];
-
-  body: unknown = null;
-
-  headers: Record<string, string> = {};
-
-  method = "";
-
-  onerror: (() => void) | null = null;
-
-  onload: (() => void) | null = null;
-
-  responseText = "";
-
-  status = 0;
-
-  upload: {
-    onprogress:
-      | ((event: { lengthComputable: boolean; loaded: number; total: number }) => void)
-      | null;
-  } = { onprogress: null };
-
-  url = "";
-
-  constructor() {
-    FakeRequest.instances.push(this);
-  }
-
-  open(method: string, url: string): void {
-    this.method = method;
-    this.url = url;
-  }
-
-  setRequestHeader(key: string, value: string): void {
-    this.headers[key] = value;
-  }
-
-  /** Reports progress but stays in flight, so the uploading state is observable. */
-  send(body: unknown): void {
-    this.body = body;
-    this.progress(3);
-  }
-
-  progress(loaded: number): void {
-    this.upload.onprogress?.({ lengthComputable: true, loaded, total: 10 });
-  }
-
-  finish(status = 200, responseText = reloadEffects): void {
-    this.status = status;
-    this.responseText = responseText;
-    this.onload?.();
-  }
-}
-
 function file(name: string): File {
   return new File(["bytes"], name, { type: "image/jpeg" });
 }
@@ -114,8 +60,8 @@ describe("useMediaUpload", () => {
   beforeEach(() => {
     document.cookie = "XSRF-TOKEN=csrf-token";
     apiFetch.mockReset();
-    FakeRequest.instances = [];
-    vi.stubGlobal("XMLHttpRequest", FakeRequest);
+    FakeXhr.reset();
+    vi.stubGlobal("XMLHttpRequest", FakeXhr);
   });
 
   it("posts one multipart request per file and tracks their progress apart", async () => {
@@ -124,9 +70,9 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([first, second]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(2));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(2));
 
-    const [alpha, beta] = FakeRequest.instances;
+    const [alpha, beta] = FakeXhr.instances;
 
     expect(alpha.method).toBe("POST");
     expect(alpha.url).toBe("/lattice/actions/media-upload");
@@ -139,7 +85,10 @@ describe("useMediaUpload", () => {
     expect((alpha.body as FormData).getAll("files[]")).toEqual([first]);
     expect((beta.body as FormData).getAll("files[]")).toEqual([second]);
 
-    act(() => beta.progress(9));
+    act(() => {
+      alpha.progress(3);
+      beta.progress(9);
+    });
 
     await waitFor(() => {
       expect(result.current.uploads).toEqual([
@@ -154,10 +103,10 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg"), file("beta.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(2));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(2));
     await act(async () => {
-      FakeRequest.instances[0].finish();
-      FakeRequest.instances[1].finish(422, JSON.stringify({ errors: { "files.0": ["Too big."] } }));
+      FakeXhr.instances[0].succeed(200, reloadEffects);
+      FakeXhr.instances[1].succeed(422, JSON.stringify({ errors: { "files.0": ["Too big."] } }));
     });
 
     await waitFor(() => {
@@ -174,10 +123,10 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg"), file("beta.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(2));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(2));
     await act(async () => {
-      FakeRequest.instances[0].finish(200, uploadEffects);
-      FakeRequest.instances[1].finish(200, uploadEffects);
+      FakeXhr.instances[0].succeed(200, uploadEffects);
+      FakeXhr.instances[1].succeed(200, uploadEffects);
     });
 
     await waitFor(() => expect(toasted).toHaveBeenCalledTimes(1));
@@ -198,9 +147,9 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(1));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
     await act(async () => {
-      FakeRequest.instances[0].finish(422, uploadEffects);
+      FakeXhr.instances[0].succeed(422, uploadEffects);
     });
 
     await waitFor(() => expect(result.current.uploads).toHaveLength(1));
@@ -219,10 +168,10 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg"), file("beta.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(2));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(2));
     await act(async () => {
-      FakeRequest.instances[0].finish();
-      FakeRequest.instances[1].finish();
+      FakeXhr.instances[0].succeed(200, reloadEffects);
+      FakeXhr.instances[1].succeed(200, reloadEffects);
     });
 
     await waitFor(() => expect(result.current.uploads).toEqual([]));
@@ -240,9 +189,9 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(1));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
     await act(async () => {
-      FakeRequest.instances[0].finish(422, JSON.stringify({ message: "The files are invalid." }));
+      FakeXhr.instances[0].succeed(422, JSON.stringify({ message: "The files are invalid." }));
     });
 
     await waitFor(() => {
@@ -261,9 +210,9 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(1));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
     await act(async () => {
-      FakeRequest.instances[0].finish(422, JSON.stringify({ message: "Too big." }));
+      FakeXhr.instances[0].succeed(422, JSON.stringify({ message: "Too big." }));
     });
 
     await waitFor(() => expect(result.current.uploads[0].status).toBe("error"));
@@ -272,15 +221,15 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.retry(failed));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(2));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(2));
 
-    expect((FakeRequest.instances[1].body as FormData).getAll("files[]")).toEqual([failed.file]);
+    expect((FakeXhr.instances[1].body as FormData).getAll("files[]")).toEqual([failed.file]);
     expect(result.current.uploads).toEqual([
       expect.objectContaining({ id: failed.id, status: "uploading", reason: undefined }),
     ]);
 
     await act(async () => {
-      FakeRequest.instances[1].finish();
+      FakeXhr.instances[1].succeed(200, reloadEffects);
     });
 
     await waitFor(() => expect(result.current.uploads).toEqual([]));
@@ -291,9 +240,9 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(1));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
     await act(async () => {
-      FakeRequest.instances[0].finish(500, "");
+      FakeXhr.instances[0].succeed(500, "");
     });
 
     await waitFor(() => expect(result.current.uploads).toHaveLength(1));
@@ -301,7 +250,7 @@ describe("useMediaUpload", () => {
     act(() => result.current.dismiss(result.current.uploads[0].id));
 
     expect(result.current.uploads).toEqual([]);
-    expect(FakeRequest.instances).toHaveLength(1);
+    expect(FakeXhr.instances).toHaveLength(1);
   });
 
   it("marks the file as failed when the transport reports no status", async () => {
@@ -309,9 +258,9 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(1));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
     await act(async () => {
-      FakeRequest.instances[0].finish(0, "");
+      FakeXhr.instances[0].succeed(0, "");
     });
 
     await waitFor(() => {
@@ -326,9 +275,9 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(1));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
     await act(async () => {
-      FakeRequest.instances[0].onerror?.();
+      FakeXhr.instances[0].fail();
     });
 
     await waitFor(() => {
@@ -357,16 +306,16 @@ describe("useMediaUpload", () => {
 
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
-    await waitFor(() => expect(FakeRequest.instances).toHaveLength(1));
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
 
-    const request = FakeRequest.instances[0];
+    const request = FakeXhr.instances[0];
 
     expect(request.method).toBe("PUT");
     expect(request.url).toBe("https://storage.test/tmp/alpha.jpg?signature=1");
     expect(request.headers).toEqual({ "x-amz-acl": "private" });
 
     await act(async () => {
-      request.finish(204, "");
+      request.succeed(204, "");
     });
 
     await waitFor(() => expect(result.current.uploads).toEqual([]));
@@ -403,7 +352,7 @@ describe("useMediaUpload", () => {
       ]);
     });
 
-    expect(FakeRequest.instances).toEqual([]);
+    expect(FakeXhr.instances).toEqual([]);
   });
 
   it("ignores a null selection", () => {
@@ -412,7 +361,7 @@ describe("useMediaUpload", () => {
     act(() => result.current.addFiles(null));
 
     expect(result.current.uploads).toEqual([]);
-    expect(FakeRequest.instances).toEqual([]);
+    expect(FakeXhr.instances).toEqual([]);
   });
 
   it("ignores an empty selection", () => {
@@ -421,7 +370,7 @@ describe("useMediaUpload", () => {
     act(() => result.current.addFiles([]));
 
     expect(result.current.uploads).toEqual([]);
-    expect(FakeRequest.instances).toEqual([]);
+    expect(FakeXhr.instances).toEqual([]);
   });
 
   it("ignores files when no endpoint is configured", () => {
@@ -432,6 +381,6 @@ describe("useMediaUpload", () => {
     act(() => result.current.addFiles([file("alpha.jpg")]));
 
     expect(result.current.uploads).toEqual([]);
-    expect(FakeRequest.instances).toEqual([]);
+    expect(FakeXhr.instances).toEqual([]);
   });
 });

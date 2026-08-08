@@ -1,21 +1,11 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { jsonResponse } from "@lattice-php/core/test-support";
+import { notificationItem } from "@lattice-php/lattice/test-support";
 import { markReadIn, prependIncoming, removeIn, useNotifications } from "./store";
-import type { NotificationItem } from "./types";
 
-function item(id: string, isRead = false): NotificationItem {
-  return {
-    id,
-    title: id,
-    body: null,
-    icon: null,
-    variant: "info",
-    href: null,
-    isRead,
-    createdAt: null,
-    actions: [],
-  };
+function item(id: string, isRead = false) {
+  return notificationItem({ id, isRead });
 }
 
 describe("reducers", () => {

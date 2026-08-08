@@ -81,6 +81,7 @@ describe("useChat", () => {
     const last = result.current.messages.at(-1)!;
     expect(last.role).toBe("assistant");
     expect(last.parts).toEqual([{ type: "chat.part.text", props: { text: "Hello world" } }]);
+    expect(result.current.error).toBeNull();
   });
 
   it("pushes an optimistic user message and an empty assistant message on send", async () => {
@@ -108,32 +109,6 @@ describe("useChat", () => {
 
     act(() => release());
     await waitFor(() => expect(result.current.status).toBe("idle"));
-  });
-
-  it("appends a structured part and closes the open text part", async () => {
-    const transport = scriptedTransport([
-      { type: "text", value: "Searching" },
-      {
-        type: "part",
-        part: { type: "chat.part.tool-call", props: { name: "search", args: { q: "x" } } },
-      },
-      { type: "done" },
-    ]);
-    const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
-    act(() => result.current.sendMessage("find x"));
-    await waitFor(() => expect(result.current.status).toBe("idle"));
-    expect(result.current.messages.at(-1)!.parts).toEqual([
-      { type: "chat.part.text", props: { text: "Searching" } },
-      { type: "chat.part.tool-call", props: { name: "search", args: { q: "x" } } },
-    ]);
-  });
-
-  it("sets status to idle on done", async () => {
-    const transport = scriptedTransport([{ type: "text", value: "ok" }, { type: "done" }]);
-    const { result } = renderHook(() => useChat({ endpoint: "/x", transport }));
-    act(() => result.current.sendMessage("hi"));
-    await waitFor(() => expect(result.current.status).toBe("idle"));
-    expect(result.current.error).toBeNull();
   });
 
   it("sets status to error and records the message on an error frame", async () => {

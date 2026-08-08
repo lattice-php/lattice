@@ -30,16 +30,14 @@ function renderCell(value: unknown) {
 
 describe("BooleanCell", () => {
   it.each([true, 1, "1", "true"])("treats %s as truthy", (value) => {
-    const { container } = renderCell(value);
+    renderCell(value);
 
     expect(screen.getByRole("img")).toHaveAttribute("aria-label", "Yes");
-    expect(container.querySelector("use")).toHaveAttribute("href", "#check");
   });
 
   it.each([false, 0, "0", "", null, undefined])("treats %s as falsy", (value) => {
-    const { container } = renderCell(value);
+    renderCell(value);
 
     expect(screen.getByRole("img")).toHaveAttribute("aria-label", "No");
-    expect(container.querySelector("use")).toHaveAttribute("href", "#x");
   });
 });

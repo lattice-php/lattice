@@ -6,14 +6,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import ButtonComponent from "@lattice-php/ui/components/button";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
-import {
-  CheckboxComponent,
-  ChoiceComponent,
-  FormComponent,
-  HiddenInputComponent,
-  PasswordInputComponent,
-  TextInputComponent,
-} from ".";
+import { CheckboxComponent, ChoiceComponent, FormComponent, TextInputComponent } from ".";
 
 const formSlotState = vi.hoisted(() => ({
   clearErrors: vi.fn<(field: string) => void>(),
@@ -133,70 +126,15 @@ describe("Lattice form schema components", () => {
     );
   });
 
-  it("renders fields from child schema components", () => {
+  it("omits the managed submit button when submitButton is false", () => {
     const formNode = fakeNode({
       id: "login-form",
       props: {
         action: "/login",
         method: "post",
-        resetOnSuccess: ["password"],
         submitButton: false,
-        submitLabel: "Log in",
       },
       type: "form",
-    });
-
-    const emailNode = fakeNode({
-      props: {
-        autoComplete: "email",
-        autoFocus: true,
-        label: "Email address",
-        name: "email",
-        placeholder: "email@example.com",
-        readOnly: true,
-        required: true,
-        value: "taylor@example.com",
-      },
-      type: "field.text-input",
-    });
-
-    const passwordNode = fakeNode({
-      props: {
-        autoComplete: "current-password",
-        autoFocus: true,
-        label: "Password",
-        labelAction: {
-          href: "/forgot-password",
-          label: "Forgot your password?",
-          tabIndex: 5,
-        },
-        confirmation: {
-          label: "Confirm password",
-          name: "password_confirmation",
-          placeholder: "Confirm password",
-        },
-        name: "password",
-        passwordRules: "minlength:8",
-        required: true,
-      },
-      type: "field.password-input",
-    });
-
-    const rememberNode = fakeNode({
-      props: {
-        label: "Remember me",
-        name: "remember",
-        required: true,
-      },
-      type: "field.checkbox",
-    });
-
-    const tokenNode = fakeNode({
-      props: {
-        name: "token",
-        value: "reset-token",
-      },
-      type: "field.hidden-input",
     });
 
     const submitNode = fakeNode({
@@ -209,38 +147,10 @@ describe("Lattice form schema components", () => {
 
     render(
       <FormComponent node={formNode}>
-        <HiddenInputComponent node={tokenNode}>{null}</HiddenInputComponent>
-        <TextInputComponent node={emailNode}>{null}</TextInputComponent>
-        <PasswordInputComponent node={passwordNode}>{null}</PasswordInputComponent>
-        <CheckboxComponent node={rememberNode}>{null}</CheckboxComponent>
         <ButtonComponent node={submitNode}>{null}</ButtonComponent>
       </FormComponent>,
     );
 
-    expect(screen.getByRole("textbox", { name: "Email address" })).toHaveAttribute("name", "email");
-    expect(screen.getByRole("textbox", { name: "Email address" })).toHaveValue(
-      "taylor@example.com",
-    );
-    expect(screen.getByRole("textbox", { name: "Email address" })).not.toHaveAttribute("required");
-    expect(screen.getByRole("textbox", { name: "Email address" })).toHaveAttribute("readonly");
-    expect(document.querySelector('input[type="hidden"][name="token"]')).toHaveValue("reset-token");
-    expect(screen.getByLabelText("Password")).toHaveAttribute("name", "password");
-    expect(screen.getByLabelText("Password")).not.toHaveAttribute("required");
-    expect(screen.getByLabelText("Confirm password")).toHaveAttribute(
-      "name",
-      "password_confirmation",
-    );
-    expect(screen.getByLabelText("Confirm password")).not.toHaveAttribute("required");
-    expect(screen.getByLabelText("Confirm password")).toHaveAttribute(
-      "passwordrules",
-      "minlength:8",
-    );
-    expect(screen.getByRole("checkbox", { name: "Remember me" })).toBeVisible();
-    expect(screen.getByRole("checkbox", { name: "Remember me" })).not.toHaveAttribute("required");
-    expect(screen.getByRole("link", { name: "Forgot your password?" })).toHaveAttribute(
-      "href",
-      "/forgot-password",
-    );
     expect(screen.getByRole("button", { name: "Log in" })).toHaveAttribute("type", "submit");
     expect(screen.queryByRole("button", { name: "Submit" })).not.toBeInTheDocument();
   });

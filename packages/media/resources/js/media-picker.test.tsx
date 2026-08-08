@@ -7,6 +7,7 @@ import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { fakeFormContext } from "@lattice-php/form/test-support";
+import { libraryRow } from "./test-support";
 import MediaPickerComponent from "./media-picker";
 
 const CaptionField: RendererComponent<"field.text-input"> = ({ node }) => {
@@ -33,20 +34,6 @@ function captionTemplate(): Schema {
     ...librarySchema([]),
     { type: "field.text-input", props: { name: "caption", label: "Caption" } },
   ] as Schema;
-}
-
-function libraryRow(id: number, name: string) {
-  return {
-    id,
-    url: null,
-    preview_url: null,
-    name,
-    mime_type: "image/jpeg",
-    size: 100,
-    alt: null,
-    created_at: "2026-07-29T00:00:00Z",
-    attachments_count: 0,
-  };
 }
 
 function librarySchema(rows: ReturnType<typeof libraryRow>[]): Schema {
@@ -148,7 +135,7 @@ describe("MediaPickerComponent", () => {
         maxFiles: 2,
         selected: [{ id: 1, name: "a.jpg", url: null, preview_url: null, mime_type: "image/jpeg" }],
       },
-      librarySchema([libraryRow(10, "d.jpg"), libraryRow(11, "e.jpg")]),
+      librarySchema([libraryRow(10, { name: "d.jpg" }), libraryRow(11, { name: "e.jpg" })]),
     );
 
     fireEvent.click(screen.getByTestId("media-picker-open"));

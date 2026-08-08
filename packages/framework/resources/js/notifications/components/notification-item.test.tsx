@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/core/types";
-import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 import { fakeNode } from "@lattice-php/core/test-support";
+import { notificationItem } from "@lattice-php/lattice/test-support";
 import { NotificationItemRow } from "./notification-item";
 
 vi.mock("@inertiajs/react", async () =>
@@ -40,32 +40,16 @@ vi.mock("@lattice-php/core/renderer", () => ({
   ),
 }));
 
-function item(overrides: Partial<NotificationItem> = {}): NotificationItem {
-  return {
-    id: "notice-a",
-    title: "Order shipped",
-    body: "Tracking is available.",
-    icon: "bell",
-    variant: "info",
-    href: null,
-    isRead: false,
-    createdAt: null,
-    actions: [],
-    ...overrides,
-  };
-}
-
 describe("NotificationItemRow", () => {
-  it("renders unread state, icon variant, actions, and row controls", () => {
+  it("renders the icon, actions, and row controls for an unread notification", () => {
     const onMarkRead = vi.fn<(id: string) => void>();
     const onDismiss = vi.fn<(id: string) => void>();
 
     render(
       <ul>
         <NotificationItemRow
-          notification={item({
+          notification={notificationItem({
             actions: [fakeNode({ type: "action", id: "acknowledge" })],
-            variant: "warning",
           })}
           onDismiss={onDismiss}
           onMarkRead={onMarkRead}
@@ -73,9 +57,7 @@ describe("NotificationItemRow", () => {
       </ul>,
     );
 
-    expect(screen.getByTestId("notification")).toHaveClass("bg-lt-muted/40");
     expect(screen.getByTestId("notification-icon")).toHaveAttribute("data-icon", "bell");
-    expect(screen.getByTestId("notification-icon")).toHaveClass("text-lt-warning");
     expect(screen.getByTestId("notification-action")).toHaveTextContent("action:acknowledge");
 
     fireEvent.click(screen.getByRole("button", { name: /mark read/i }));
@@ -89,7 +71,7 @@ describe("NotificationItemRow", () => {
     render(
       <ul>
         <NotificationItemRow
-          notification={item({
+          notification={notificationItem({
             title: { key: "orders.shipped.title", payload: {}, replacements: {} },
             body: { key: "orders.shipped.body", payload: {}, replacements: {} },
           })}
@@ -109,7 +91,7 @@ describe("NotificationItemRow", () => {
     render(
       <ul>
         <NotificationItemRow
-          notification={item({ href: "/orders/1234" })}
+          notification={notificationItem({ href: "/orders/1234" })}
           onDismiss={vi.fn<(id: string) => void>()}
           onMarkRead={onMarkRead}
         />

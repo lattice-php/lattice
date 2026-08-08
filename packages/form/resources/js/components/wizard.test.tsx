@@ -1,53 +1,44 @@
-import { configure, fireEvent, render, screen } from "@testing-library/react";
+import { configure, fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/core";
-import { FormProvider } from "@lattice-php/form/hooks/context";
+import { fakeNode } from "@lattice-php/core/test-support";
 import type { FormContextValue } from "@lattice-php/form/hooks/context";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
-import { fakeFormContext } from "@lattice-php/form/test-support";
+import { formFrame, renderWithForm } from "@lattice-php/form/test-support";
 import { WizardComponent, WizardStepComponent } from "./wizard";
 
 configure({ testIdAttribute: "data-test" });
 
-const node = <TType extends string>(
-  type: TType,
-  props: Record<string, unknown>,
-  schema: Node[] = [],
-): Node<TType> => ({ type, props, schema }) as unknown as Node<TType>;
-
-const fieldStep = node("wizard-step", { name: "customer", label: "Customer" }, [
-  node("field.text-input", { name: "name" }),
-]);
-const emptyStep = node("wizard-step", { name: "review", label: "Review" });
+const fieldStep = fakeNode({
+  type: "wizard-step",
+  props: { name: "customer", label: "Customer" },
+  schema: [fakeNode({ type: "field.text-input", props: { name: "name" } })],
+});
+const emptyStep = fakeNode({ type: "wizard-step", props: { name: "review", label: "Review" } });
 const wizardNode = (steps: Node<"wizard-step">[]) =>
-  node("wizard", { orientation: "horizontal" }, steps);
+  fakeNode({ type: "wizard", props: { orientation: "horizontal" }, schema: steps });
 
-function wizardTree(steps: Node<"wizard-step">[], stub: FormContextValue) {
+function wizardContent(steps: Node<"wizard-step">[]) {
   return (
-    <FormProvider value={stub}>
-      <FormValuesProvider initial={{}}>
-        <WizardComponent node={wizardNode(steps)}>
-          <>
-            {steps.map((step) => (
-              <WizardStepComponent key={step.props.name} node={step}>
-                <div data-test={`content-${step.props.name}`} />
-              </WizardStepComponent>
-            ))}
-          </>
-        </WizardComponent>
-      </FormValuesProvider>
-    </FormProvider>
+    <WizardComponent node={wizardNode(steps)}>
+      <>
+        {steps.map((step) => (
+          <WizardStepComponent key={step.props.name} node={step}>
+            <div data-test={`content-${step.props.name}`} />
+          </WizardStepComponent>
+        ))}
+      </>
+    </WizardComponent>
   );
 }
 
-function renderWizard(steps: Node<"wizard-step">[], stub = fakeFormContext()) {
-  return render(wizardTree(steps, stub));
+function renderWizard(steps: Node<"wizard-step">[], context: Partial<FormContextValue> = {}) {
+  return renderWithForm(wizardContent(steps), { context });
 }
 
 describe("WizardComponent", () => {
   it("mounts only the first step initially and keeps visited steps mounted", () => {
     const validateFields = vi.fn((_fields, options) => options?.onSuccess?.());
-    renderWizard([fieldStep, emptyStep], fakeFormContext({ validateFields }));
+    renderWizard([fieldStep, emptyStep], { validateFields });
 
     expect(screen.getByTestId("content-customer")).toBeInTheDocument();
     expect(screen.queryByTestId("content-review")).not.toBeInTheDocument();
@@ -62,7 +53,7 @@ describe("WizardComponent", () => {
   it("validates the step fields before advancing", () => {
     const touch = vi.fn();
     const validateFields = vi.fn();
-    renderWizard([fieldStep, emptyStep], fakeFormContext({ touch, validateFields }));
+    renderWizard([fieldStep, emptyStep], { touch, validateFields });
 
     fireEvent.click(screen.getByTestId("wizard-next"));
 
@@ -73,7 +64,7 @@ describe("WizardComponent", () => {
 
   it("advances a fieldless step without a validation round-trip", () => {
     const validateFields = vi.fn();
-    renderWizard([emptyStep, fieldStep], fakeFormContext({ validateFields }));
+    renderWizard([emptyStep, fieldStep], { validateFields });
 
     fireEvent.click(screen.getByTestId("wizard-next"));
 
@@ -95,17 +86,16 @@ describe("WizardComponent", () => {
   it("jumps back to the first errored step and badges it after a failed submit", () => {
     const validateFields = vi.fn((_fields, options) => options?.onSuccess?.());
     const steps = [fieldStep, emptyStep];
-    const { rerender } = renderWizard(steps, fakeFormContext({ validateFields }));
+    const { rerender } = renderWizard(steps, { validateFields });
 
     fireEvent.click(screen.getByTestId("wizard-next"));
     expect(screen.getByTestId("content-review")).toBeInTheDocument();
 
-    rerender(wizardTree(steps, fakeFormContext({ validateFields, processing: true })));
+    rerender(formFrame(wizardContent(steps), { context: { validateFields, processing: true } }));
     rerender(
-      wizardTree(
-        steps,
-        fakeFormContext({ validateFields, processing: false, errors: { name: "Required" } }),
-      ),
+      formFrame(wizardContent(steps), {
+        context: { validateFields, processing: false, errors: { name: "Required" } },
+      }),
     );
 
     expect(screen.getByTestId("content-customer").closest("section")).not.toHaveAttribute("hidden");

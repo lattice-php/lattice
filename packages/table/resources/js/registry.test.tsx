@@ -1,60 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice-php/core/types";
-import { fakeNode } from "@lattice-php/core/test-support";
+import { describe, expect, it } from "vitest";
+import { fakeNode, stubClipboard } from "@lattice-php/core/test-support";
 import type { TableColumn } from "./types";
 import { Provider } from "@lattice-php/lattice/provider";
 import { createRegistry } from "@lattice-php/core/registry";
+import { col } from "./test-support";
 import { ColumnCell } from "./components/table-cell";
 
-function col(partial: {
-  key: string;
-  label: string;
-  type?: string;
-  schema?: Node[];
-  props?: Record<string, unknown>;
-}): TableColumn {
-  const { key, label, type = "column.text", schema, props } = partial;
-
-  return {
-    key,
-    type,
-    props: {
-      label,
-      width: type === "column.stack" ? "xl" : "md",
-      align: "start",
-      sortable: false,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: null,
-      ...props,
-    },
-    ...(schema ? { schema } : {}),
-  } as TableColumn;
-}
-
-const clipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, "clipboard");
-
-function stubClipboard(writeText = vi.fn<Clipboard["writeText"]>(async () => undefined)) {
-  Object.defineProperty(navigator, "clipboard", {
-    configurable: true,
-    value: { writeText },
-  });
-
-  return writeText;
-}
-
 describe("column registry", () => {
-  afterEach(() => {
-    if (clipboardDescriptor) {
-      Object.defineProperty(navigator, "clipboard", clipboardDescriptor);
-    } else {
-      Reflect.deleteProperty(navigator, "clipboard");
-    }
-
-    vi.restoreAllMocks();
-  });
-
   it("dispatches a registered custom cell renderer", () => {
     const registry = createRegistry({
       name: "test",

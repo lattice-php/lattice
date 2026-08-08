@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Provider } from "@lattice-php/lattice";
 import type { PagePayload } from "@lattice-php/lattice";
+import { payload } from "@lattice-php/lattice/test-support";
 import SchemaLayout from "./schema-layout";
 
 vi.mock("@inertiajs/react", async () =>
@@ -10,18 +11,6 @@ vi.mock("@inertiajs/react", async () =>
 );
 
 const mockedUsePage = vi.mocked(usePage);
-
-function payload(lattice: Partial<PagePayload> = {}): PagePayload {
-  return {
-    breadcrumbs: [],
-    listeners: [],
-    schema: [],
-    container: "default",
-    layout: null,
-    title: "Lattice",
-    ...lattice,
-  };
-}
 
 function renderLayout(lattice: PagePayload) {
   mockedUsePage.mockReturnValue({ props: { lattice } } as unknown as ReturnType<typeof usePage>);

@@ -2,31 +2,9 @@ import { page } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { createRegistry } from "@lattice-php/core/registry";
-import { RegistryContext } from "@lattice-php/core/registry-context";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
-import type { EditorExtension } from "@lattice-php/form/generated";
+import { formFrame, RICH_EDITOR_EXTENSIONS } from "@lattice-php/form/test-support";
 import { RichEditorComponent } from "./rich-editor";
-
-const DEFAULT_EXTENSIONS: EditorExtension[] = [
-  { type: "bold", props: {} },
-  { type: "italic", props: {} },
-  { type: "strike", props: {} },
-  { type: "underline", props: {} },
-  { type: "highlight", props: {} },
-  { type: "code", props: {} },
-  { type: "heading", props: {} },
-  { type: "bullet-list", props: {} },
-  { type: "ordered-list", props: {} },
-  { type: "blockquote", props: {} },
-  { type: "code-block", props: {} },
-  { type: "horizontal-rule", props: {} },
-  { type: "text-align", props: {} },
-  { type: "link", props: {} },
-  { type: "table", props: {} },
-  { type: "details", props: {} },
-  { type: "emoji", props: {} },
-];
 
 const seededDoc = {
   type: "doc",
@@ -35,18 +13,17 @@ const seededDoc = {
 
 function renderEditor(initial: Record<string, unknown> = {}) {
   return render(
-    <RegistryContext.Provider value={createRegistry()}>
-      <FormValuesProvider initial={initial}>
-        <RichEditorComponent
-          node={fakeNode({
-            type: "field.rich-editor",
-            props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
-          })}
-        >
-          {null}
-        </RichEditorComponent>
-      </FormValuesProvider>
-    </RegistryContext.Provider>,
+    formFrame(
+      <RichEditorComponent
+        node={fakeNode({
+          type: "field.rich-editor",
+          props: { name: "body", label: "Body", extensions: RICH_EDITOR_EXTENSIONS },
+        })}
+      >
+        {null}
+      </RichEditorComponent>,
+      { initial, registry: createRegistry() },
+    ),
   );
 }
 

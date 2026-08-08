@@ -1,21 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { clearRemoteTokenCache } from "@lattice-php/core/api";
+import { jsonResponse } from "@lattice-php/core/test-support";
+import { streamResponse } from "@lattice-php/lattice/chat/test-support";
 import { createRemoteNdjsonChatTransport, ndjsonChatTransport } from "./transport";
 import type { ChatFrame } from "@lattice-php/lattice/chat/types";
-
-function streamResponse(lines: string[]): Response {
-  const enc = new TextEncoder();
-  const body = new ReadableStream<Uint8Array>({
-    start(c) {
-      for (const l of lines) {
-        c.enqueue(enc.encode(l));
-      }
-      c.close();
-    },
-  });
-
-  return { ok: true, status: 200, body } as unknown as Response;
-}
 
 afterEach(() => {
   clearRemoteTokenCache();
@@ -105,16 +93,13 @@ describe("ndjsonChatTransport", () => {
   it("streams remote chat frames with a browser token", async () => {
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
       if (String(url) === "/custom/remote-tokens/fixtures.crm") {
-        return new Response(
-          JSON.stringify({
-            accessToken: "fake-browser-token",
-            audience: "https://crm.example.test",
-            expiresIn: 120,
-            scopes: ["chat.write"],
-            tokenType: "Bearer",
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
+        return jsonResponse({
+          accessToken: "fake-browser-token",
+          audience: "https://crm.example.test",
+          expiresIn: 120,
+          scopes: ["chat.write"],
+          tokenType: "Bearer",
+        });
       }
 
       return streamResponse(['{"type":"text","value":"Hi"}\n', '{"type":"done"}\n']);
@@ -159,16 +144,13 @@ describe("ndjsonChatTransport", () => {
   it("throws when a remote chat stream response is not readable", async () => {
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
       if (String(url) === "/custom/remote-tokens/fixtures.crm") {
-        return new Response(
-          JSON.stringify({
-            accessToken: "fake-browser-token",
-            audience: "https://crm.example.test",
-            expiresIn: 120,
-            scopes: ["chat.write"],
-            tokenType: "Bearer",
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
+        return jsonResponse({
+          accessToken: "fake-browser-token",
+          audience: "https://crm.example.test",
+          expiresIn: 120,
+          scopes: ["chat.write"],
+          tokenType: "Bearer",
+        });
       }
 
       return { ok: false, status: 500, body: null } as unknown as Response;

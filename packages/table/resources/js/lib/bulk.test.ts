@@ -28,8 +28,8 @@ describe("getBulkActions", () => {
     expect(getBulkActions([node])).toEqual([]);
   });
 
-  it("maps a fully-specified action node", () => {
-    const node = fakeNode({
+  it("maps a fully-specified action node and defaults every optional field on a minimal one", () => {
+    const full = fakeNode({
       type: "action",
       id: "archive",
       props: {
@@ -50,8 +50,12 @@ describe("getBulkActions", () => {
         modalWidth: "2xl",
       },
     }) as ActionNode;
+    const minimal = fakeNode({
+      type: "action",
+      props: { endpoint: "/bulk/run" },
+    }) as ActionNode;
 
-    expect(getBulkActions([node])).toEqual([
+    expect(getBulkActions([full, minimal])).toEqual([
       {
         id: "archive",
         label: "Archive",
@@ -70,16 +74,6 @@ describe("getBulkActions", () => {
         modalSide: "end",
         modalWidth: "2xl",
       },
-    ]);
-  });
-
-  it("applies defaults for every optional field when only endpoint is set", () => {
-    const node = fakeNode({
-      type: "action",
-      props: { endpoint: "/bulk/run" },
-    }) as ActionNode;
-
-    expect(getBulkActions([node])).toEqual([
       {
         id: "",
         label: "Run action",

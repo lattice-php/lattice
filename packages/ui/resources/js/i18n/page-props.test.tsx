@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
+import { resetLocaleState } from "@lattice-php/ui/test/locale-state";
 import { useLocaleOptions } from "./locale-switcher";
 import { configureI18nFromPageProps, i18nConfigFromPageProps } from "./page-props";
 import { setLocale } from "./locale";
@@ -12,9 +13,7 @@ function LocalesProbe() {
 
 describe("page prop i18n helpers", () => {
   beforeEach(() => {
-    localStorage.clear();
-    document.cookie = "locale=;path=/;max-age=0";
-    document.documentElement.lang = "";
+    resetLocaleState();
     setLocale("en");
   });
 

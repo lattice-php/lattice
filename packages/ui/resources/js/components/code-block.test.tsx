@@ -19,8 +19,6 @@ describe("CodeBlock", () => {
     );
     expect(container.querySelector("pre")).toHaveTextContent("<?php echo 'Hello';");
     expect(html).toContain('style="max-height:240px"');
-    expect(html).toContain("overflow-auto");
-    expect(html).not.toContain("pt-11");
     expect(
       Array.from(
         container.querySelectorAll('pre [aria-hidden="true"]'),

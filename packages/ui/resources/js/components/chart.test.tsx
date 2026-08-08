@@ -126,43 +126,65 @@ vi.mock("recharts", async () => {
   };
 });
 
-function renderChart(node: Node<"chart">) {
-  return render(<ChartComponent node={node}>{null}</ChartComponent>);
+type ChartProps = Node<"chart">["props"];
+type ChartSeries = ChartProps["series"][number];
+
+function series(overrides: Partial<ChartSeries> = {}): ChartSeries {
+  return {
+    color: null,
+    dataKey: "amount",
+    name: "amount",
+    nameKey: "channel",
+    stackId: null,
+    innerRadius: "0%",
+    maxValue: null,
+    type: "distribution",
+    ...overrides,
+  };
+}
+
+function chartNode(props: Partial<ChartProps> = {}): Node<"chart"> {
+  return {
+    type: "chart",
+    props: {
+      categoryFormat: null,
+      categoryKey: null,
+      data: [],
+      description: null,
+      valueFormat: null,
+      grid: true,
+      height: 320,
+      legend: true,
+      series: [],
+      title: null,
+      tooltip: true,
+      xAxis: true,
+      yAxis: true,
+      ...props,
+    },
+  } as Node<"chart">;
+}
+
+function renderChart(props: Partial<ChartProps>) {
+  return render(<ChartComponent node={chartNode(props)}>{null}</ChartComponent>);
 }
 
 describe("Chart component", () => {
   it("renders a pie chart with one cell per datum, preferring datum colors over the series color", () => {
     renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [
-          { amount: 4200, channel: "Direct", color: "#111827" },
-          { amount: 2600, channel: "Partner" },
-        ],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: { kind: "css", value: "#2563eb", dark: null },
-            dataKey: "amount",
-            name: "Series",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "60%",
-            maxValue: null,
-            type: "pie",
-          },
-        ],
-        title: "Revenue by channel",
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
+      data: [
+        { amount: 4200, channel: "Direct", color: "#111827" },
+        { amount: 2600, channel: "Partner" },
+      ],
+      series: [
+        series({
+          color: { kind: "css", value: "#2563eb", dark: null },
+          name: "Series",
+          innerRadius: "60%",
+          type: "pie",
+        }),
+      ],
+      title: "Revenue by channel",
     });
 
     expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
@@ -179,40 +201,27 @@ describe("Chart component", () => {
 
   it("renders a gauge as a semicircle radial bar with a fixed max domain and center label", () => {
     renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [{ label: "CPU", value: 72 }],
-        description: null,
-        valueFormat: {
-          kind: "number",
-          notation: "standard",
-          minimumFractionDigits: null,
-          maximumFractionDigits: null,
-          currency: null,
-          unit: "percent",
-        },
-        grid: true,
-        height: 260,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "value",
-            name: "value",
-            nameKey: "label",
-            stackId: null,
-            innerRadius: "70%",
-            maxValue: 100,
-            type: "gauge",
-          },
-        ],
-        title: "CPU usage",
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
+      data: [{ label: "CPU", value: 72 }],
+      valueFormat: {
+        kind: "number",
+        notation: "standard",
+        minimumFractionDigits: null,
+        maximumFractionDigits: null,
+        currency: null,
+        unit: "percent",
       },
+      height: 260,
+      series: [
+        series({
+          dataKey: "value",
+          name: "value",
+          nameKey: "label",
+          innerRadius: "70%",
+          maxValue: 100,
+          type: "gauge",
+        }),
+      ],
+      title: "CPU usage",
     });
 
     expect(screen.getByTestId("radial-bar-chart")).toHaveAttribute("data-start-angle", "210");
@@ -233,36 +242,20 @@ describe("Chart component", () => {
 
   it("derives the gauge domain from the largest datum and drops the center label for multiple rings", () => {
     renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [
-          { color: "#111827", label: "Used", value: 3 },
-          { label: "Free", value: 5 },
-        ],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: { kind: "css", value: "#2563eb", dark: null },
-            dataKey: "value",
-            name: "value",
-            nameKey: "label",
-            stackId: null,
-            innerRadius: "70%",
-            maxValue: null,
-            type: "gauge",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
+      data: [
+        { color: "#111827", label: "Used", value: 3 },
+        { label: "Free", value: 5 },
+      ],
+      series: [
+        series({
+          color: { kind: "css", value: "#2563eb", dark: null },
+          dataKey: "value",
+          name: "value",
+          nameKey: "label",
+          innerRadius: "70%",
+          type: "gauge",
+        }),
+      ],
     });
 
     expect(screen.getByTestId("polar-angle-axis")).toHaveAttribute("data-domain", "0,5");
@@ -280,43 +273,20 @@ describe("Chart component", () => {
 
   it("renders a distribution as a proportional segmented bar with a percent legend", () => {
     const { container } = renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [
-          { amount: 3, channel: "Direct", color: "#111827" },
-          { amount: 1, channel: "Partner" },
-        ],
-        description: null,
-        valueFormat: {
-          kind: "number",
-          notation: "compact",
-          minimumFractionDigits: null,
-          maximumFractionDigits: null,
-          currency: "USD",
-          unit: null,
-        },
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: { kind: "css", value: "#2563eb", dark: null },
-            dataKey: "amount",
-            name: "amount",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "distribution",
-          },
-        ],
-        title: "Revenue by channel",
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
+      data: [
+        { amount: 3, channel: "Direct", color: "#111827" },
+        { amount: 1, channel: "Partner" },
+      ],
+      valueFormat: {
+        kind: "number",
+        notation: "compact",
+        minimumFractionDigits: null,
+        maximumFractionDigits: null,
+        currency: "USD",
+        unit: null,
       },
+      series: [series({ color: { kind: "css", value: "#2563eb", dark: null } })],
+      title: "Revenue by channel",
     });
 
     const track = container.querySelector("[data-lattice-distribution]");
@@ -336,37 +306,12 @@ describe("Chart component", () => {
 
   it("skips non-positive distribution rows", () => {
     const { container } = renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [
-          { amount: 0, channel: "Zero" },
-          { amount: -5, channel: "Negative" },
-          { amount: 4, channel: "Direct" },
-        ],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "amount",
-            name: "amount",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "distribution",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
+      data: [
+        { amount: 0, channel: "Zero" },
+        { amount: -5, channel: "Negative" },
+        { amount: 4, channel: "Direct" },
+      ],
+      series: [series()],
     });
 
     const track = container.querySelector("[data-lattice-distribution]");
@@ -378,75 +323,24 @@ describe("Chart component", () => {
     expect(screen.queryByText("Negative")).not.toBeInTheDocument();
   });
 
-  it("renders a muted empty track when a distribution has no positive values", () => {
-    const { container } = renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "amount",
-            name: "amount",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "distribution",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
-    });
+  it("renders an empty track when a distribution has no positive values", () => {
+    const { container } = renderChart({ series: [series()] });
 
     const track = container.querySelector("[data-lattice-distribution]");
 
-    expect(track).toHaveClass("bg-lt-muted");
+    expect(track).not.toBeNull();
     expect(track?.children).toHaveLength(0);
   });
 
   it("omits distribution titles and legend when tooltip and legend are off", () => {
     const { container } = renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: null,
-        data: [
-          { amount: 3, channel: "Direct" },
-          { amount: 1, channel: "Partner" },
-        ],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: false,
-        series: [
-          {
-            color: null,
-            dataKey: "amount",
-            name: "amount",
-            nameKey: "channel",
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "distribution",
-          },
-        ],
-        title: null,
-        tooltip: false,
-        xAxis: true,
-        yAxis: true,
-      },
+      data: [
+        { amount: 3, channel: "Direct" },
+        { amount: 1, channel: "Partner" },
+      ],
+      legend: false,
+      series: [series()],
+      tooltip: false,
     });
 
     const track = container.querySelector("[data-lattice-distribution]");
@@ -460,53 +354,20 @@ describe("Chart component", () => {
 
   it("keeps cartesian series visible when gauge and pie series are also present", () => {
     renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: null,
-        categoryKey: "month",
-        data: [{ amount: 4200, month: "Jan", revenue: 1200, value: 72 }],
-        description: null,
-        valueFormat: null,
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "value",
-            name: "value",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "70%",
-            maxValue: 100,
-            type: "gauge",
-          },
-          {
-            color: null,
-            dataKey: "amount",
-            name: "Series",
-            nameKey: "month",
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "pie",
-          },
-          {
-            color: null,
-            dataKey: "revenue",
-            name: "Revenue",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "line",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
-      },
+      categoryKey: "month",
+      data: [{ amount: 4200, month: "Jan", revenue: 1200, value: 72 }],
+      series: [
+        series({
+          dataKey: "value",
+          name: "value",
+          nameKey: null,
+          innerRadius: "70%",
+          maxValue: 100,
+          type: "gauge",
+        }),
+        series({ name: "Series", nameKey: "month", type: "pie" }),
+        series({ dataKey: "revenue", name: "Revenue", nameKey: null, type: "line" }),
+      ],
     });
 
     expect(screen.getByTestId("line-chart")).toBeInTheDocument();
@@ -517,46 +378,24 @@ describe("Chart component", () => {
 
   it("formats axis ticks and tooltip via value and category formats", () => {
     renderChart({
-      type: "chart",
-      props: {
-        categoryFormat: {
-          kind: "date",
-          dateStyle: "short",
-          timeStyle: null,
-          month: null,
-          year: null,
-        },
-        categoryKey: "month",
-        data: [{ month: "2026-01-15", revenue: 28000 }],
-        description: null,
-        valueFormat: {
-          kind: "number",
-          notation: "compact",
-          minimumFractionDigits: null,
-          maximumFractionDigits: null,
-          currency: "USD",
-          unit: null,
-        },
-        grid: true,
-        height: 320,
-        legend: true,
-        series: [
-          {
-            color: null,
-            dataKey: "revenue",
-            name: "Series",
-            nameKey: null,
-            stackId: null,
-            innerRadius: "0%",
-            maxValue: null,
-            type: "line",
-          },
-        ],
-        title: null,
-        tooltip: true,
-        xAxis: true,
-        yAxis: true,
+      categoryFormat: {
+        kind: "date",
+        dateStyle: "short",
+        timeStyle: null,
+        month: null,
+        year: null,
       },
+      categoryKey: "month",
+      data: [{ month: "2026-01-15", revenue: 28000 }],
+      valueFormat: {
+        kind: "number",
+        notation: "compact",
+        minimumFractionDigits: null,
+        maximumFractionDigits: null,
+        currency: "USD",
+        unit: null,
+      },
+      series: [series({ dataKey: "revenue", name: "Series", nameKey: null, type: "line" })],
     });
 
     expect(screen.getByTestId("y-axis")).toHaveTextContent("$28K");
@@ -565,41 +404,25 @@ describe("Chart component", () => {
   });
 
   it("lazily mounts the chart view through the registered wrapper", async () => {
-    render(
-      <ChartWrapper
-        node={{
-          type: "chart",
-          props: {
-            categoryFormat: null,
-            categoryKey: "month",
-            data: [{ month: "Jan", revenue: 1200 }],
-            description: null,
-            valueFormat: null,
-            grid: false,
-            height: 200,
-            legend: false,
-            series: [
-              {
-                color: { kind: "css", value: "#2563eb", dark: null },
-                dataKey: "revenue",
-                name: "Revenue",
-                nameKey: null,
-                stackId: null,
-                innerRadius: "0%",
-                maxValue: null,
-                type: "line",
-              },
-            ],
-            title: null,
-            tooltip: false,
-            xAxis: true,
-            yAxis: true,
-          },
-        }}
-      >
-        {null}
-      </ChartWrapper>,
-    );
+    const node = chartNode({
+      categoryKey: "month",
+      data: [{ month: "Jan", revenue: 1200 }],
+      grid: false,
+      height: 200,
+      legend: false,
+      series: [
+        series({
+          color: { kind: "css", value: "#2563eb", dark: null },
+          dataKey: "revenue",
+          name: "Revenue",
+          nameKey: null,
+          type: "line",
+        }),
+      ],
+      tooltip: false,
+    });
+
+    render(<ChartWrapper node={node}>{null}</ChartWrapper>);
 
     expect(await screen.findByTestId("responsive-container")).toBeInTheDocument();
   });

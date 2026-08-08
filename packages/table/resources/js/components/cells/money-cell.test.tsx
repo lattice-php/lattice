@@ -1,23 +1,17 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { stubClipboard } from "@lattice-php/core/test-support";
 import type { ColumnPropsOf, TableColumn, TableRow } from "@lattice-php/table/types";
+import { col } from "../../test-support";
 import { MoneyCell } from "./money-cell";
 
 function column(props: Record<string, unknown>): TableColumn {
-  return {
+  return col({
     key: "total",
+    label: "Total",
     type: "column.money",
-    props: {
-      label: "Total",
-      width: "md",
-      align: "end",
-      sortable: false,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: null,
-      ...props,
-    },
-  } as TableColumn;
+    props: { align: "end", ...props },
+  });
 }
 
 function renderCell(value: unknown, props: Record<string, unknown>, row: TableRow = {}) {
@@ -31,11 +25,6 @@ function renderCell(value: unknown, props: Record<string, unknown>, row: TableRo
     />,
   );
 }
-
-afterEach(() => {
-  Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
-  vi.restoreAllMocks();
-});
 
 describe("MoneyCell", () => {
   it("formats with a static currency", () => {
@@ -58,8 +47,7 @@ describe("MoneyCell", () => {
   });
 
   it("copies the raw value instead of the formatted text when copyable", () => {
-    const writeText = vi.fn<(text: string) => Promise<void>>().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+    const writeText = stubClipboard();
 
     renderCell(1234.5, { copyable: true, currency: "EUR" });
 

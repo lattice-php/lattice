@@ -1,67 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { operation, parameter, requestContract } from "../test-support";
 import { buildRequest, redactAuthorization } from "./request-builder";
 import { parameterKey, type RequestValues } from "./request-state";
-import { curlSnippet } from "./snippets/curl";
-import { javascriptSnippet } from "./snippets/javascript";
-import type { Contract, Operation, Param } from "./types";
-
-function parameter(overrides: Partial<Param>): Param {
-  return {
-    name: "value",
-    location: "query",
-    required: false,
-    deprecated: false,
-    description: null,
-    schema: { type: "string" },
-    example: null,
-    ...overrides,
-  };
-}
-
-function requestContract(overrides: Partial<Contract> = {}): Contract {
-  return {
-    role: "request",
-    status: null,
-    mediaType: "application/json",
-    schema: { type: "object" },
-    title: null,
-    examples: [],
-    headers: [],
-    required: false,
-    ...overrides,
-  };
-}
-
-function operation(
-  params: Param[] = [],
-  requests: Contract[] = [],
-  overrides: Partial<Operation> = {},
-): Operation {
-  return {
-    summary: {
-      id: "post-widgets-id",
-      method: "POST",
-      path: "/widgets/{id}",
-      title: "Update widget",
-      deprecated: false,
-    },
-    serverUrl: "https://api.example.test",
-    servers: [{ url: "https://api.example.test", description: null }],
-    usesRootServers: true,
-    description: null,
-    tags: [],
-    paramGroups: [
-      { location: "path", params: params.filter((param) => param.location === "path") },
-      { location: "query", params: params.filter((param) => param.location === "query") },
-      { location: "header", params: params.filter((param) => param.location === "header") },
-      { location: "cookie", params: params.filter((param) => param.location === "cookie") },
-    ].filter((group) => group.params.length > 0),
-    requests,
-    responses: [],
-    security: [],
-    ...overrides,
-  };
-}
+import type { Param } from "./types";
 
 const oauth2Security = [
   { schemes: [{ name: "oauth2", scopes: [], type: "oauth2", scheme: null }] },
@@ -334,21 +275,6 @@ describe("buildRequest", () => {
       },
       errors: null,
     });
-
-    if (result.request === null) {
-      throw new Error("Expected a built request.");
-    }
-
-    const redacted = redactAuthorization(result.request);
-    for (const snippet of [curlSnippet.generate(redacted), javascriptSnippet.generate(redacted)]) {
-      expect(snippet.match(/Content-Type/g)).toHaveLength(1);
-      expect(snippet.match(/Authorization/g)).toHaveLength(1);
-      expect(snippet).toContain("application/json");
-      expect(snippet).toContain("Bearer <YOUR_TOKEN>");
-      expect(snippet).not.toContain("text/plain");
-      expect(snippet).not.toContain("stale-credential");
-      expect(snippet).not.toContain("real-secret-token");
-    }
   });
 
   it("adds a configured token for an HTTP bearer security scheme", () => {

@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { router } from "@inertiajs/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
@@ -12,12 +13,8 @@ type FlashListener = (
   }>,
 ) => void;
 
-const router = vi.hoisted(() => ({
-  on: vi.fn<(event: string, listener: FlashListener) => () => void>(() => () => undefined),
-}));
-
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({ router }),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 import { useFlashEffects } from "./use-flash-effects";
@@ -33,7 +30,7 @@ function Wrapper({ children }: { children: ReactNode }) {
 }
 
 describe("useFlashEffects", () => {
-  beforeEach(() => router.on.mockClear());
+  beforeEach(() => vi.mocked(router.on).mockClear());
 
   it("dispatches flashed effects onto the bus", () => {
     const received = vi.fn<(event: Event) => void>();
@@ -42,7 +39,10 @@ describe("useFlashEffects", () => {
     try {
       render(<Host />, { wrapper: Wrapper });
 
-      const [event, listener] = router.on.mock.calls[0] as ["flash", FlashListener];
+      const [event, listener] = vi.mocked(router.on).mock.calls[0] as unknown as [
+        "flash",
+        FlashListener,
+      ];
       expect(event).toBe("flash");
 
       listener(
@@ -79,7 +79,7 @@ describe("useFlashEffects", () => {
 
     render(<Host />, { wrapper: Wrapper });
 
-    const [, listener] = router.on.mock.calls[0] as ["flash", FlashListener];
+    const [, listener] = vi.mocked(router.on).mock.calls[0] as unknown as ["flash", FlashListener];
 
     expect(() => listener(new CustomEvent("flash", { detail: { flash: {} } }))).not.toThrow();
 

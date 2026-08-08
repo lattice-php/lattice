@@ -1,29 +1,27 @@
 import type { Page as InertiaPage } from "@inertiajs/core";
+import { createInertiaApp as inertiaCreateInertiaApp } from "@inertiajs/react";
 import { hydrateRoot, type Root } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { configureI18nFromPageProps as uiConfigureI18nFromPageProps } from "@lattice-php/ui/i18n/page-props";
 
-const createInertiaApp = vi.hoisted(() => vi.fn<(options?: unknown) => void>());
-const router = vi.hoisted(() => ({
-  on: vi.fn<() => () => void>(() => () => {}),
-  visit: vi.fn<() => void>(),
-}));
-const configureI18nFromPageProps = vi.hoisted(() =>
-  vi.fn<(props: unknown, options?: unknown) => Promise<void>>(() => Promise.resolve()),
-);
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
-    createInertiaApp,
-    router,
+    createInertiaApp: vi.fn<(options?: unknown) => void>(),
   }),
 );
 vi.mock("@lattice-php/ui/i18n/page-props", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  configureI18nFromPageProps,
+  configureI18nFromPageProps: vi.fn<(props: unknown, options?: unknown) => Promise<void>>(() =>
+    Promise.resolve(),
+  ),
 }));
 
 import { createLatticeApp } from "./create-app";
 import { pageComponentName } from "./inertia";
+
+const createInertiaApp = vi.mocked(inertiaCreateInertiaApp);
+const configureI18nFromPageProps = vi.mocked(uiConfigureI18nFromPageProps);
 
 type CapturedOptions = {
   withApp: (

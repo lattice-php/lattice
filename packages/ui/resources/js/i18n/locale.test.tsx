@@ -1,10 +1,9 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
+import { resetLocaleState } from "@lattice-php/ui/test/locale-state";
 
 afterEach(() => {
-  localStorage.clear();
-  document.cookie = "locale=;path=/;max-age=0";
-  document.documentElement.lang = "";
+  resetLocaleState();
   vi.resetModules();
 });
 

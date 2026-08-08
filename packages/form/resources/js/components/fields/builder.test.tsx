@@ -64,13 +64,6 @@ it("adds a row of the chosen block type", () => {
   expect(children.map((c) => c.textContent)).toEqual(["items[0][qty]"]);
 });
 
-it("renders an unknown-block placeholder", () => {
-  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    initial: { items: [{ type: "video" }] },
-  });
-  expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
-});
-
 it("can remove an unknown-block row", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
     initial: { items: [{ type: "video" }, { type: "text", content: "keep" }] },

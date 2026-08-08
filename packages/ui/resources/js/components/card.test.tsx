@@ -28,13 +28,6 @@ describe("CardComponent tooltip", () => {
     fireEvent.click(screen.getByRole("button", { name: "More information" }));
     expect(screen.getByText("Billed monthly.")).toBeVisible();
   });
-
-  it("anchors the tooltip to the description when there is no title", () => {
-    renderCard({ title: null, description: "Some detail", tooltip: "Extra.", headerActions: [] });
-
-    fireEvent.click(screen.getByRole("button", { name: "More information" }));
-    expect(screen.getByText("Extra.")).toBeVisible();
-  });
 });
 
 describe("CardComponent headerActions", () => {

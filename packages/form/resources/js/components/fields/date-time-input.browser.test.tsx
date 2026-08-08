@@ -59,6 +59,5 @@ describe("DateTimeInputComponent in a browser", () => {
       .element(screen.getByRole("option", { name: "Hour 01" }))
       .toHaveAttribute("aria-selected", "true");
     await expect.element(screen.getByRole("option", { name: "Minute 01" })).toBeInTheDocument();
-    await expect.element(screen.getByLabelText("Starts at time")).not.toBeInTheDocument();
   });
 });

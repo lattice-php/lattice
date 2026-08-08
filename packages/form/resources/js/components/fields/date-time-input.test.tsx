@@ -1,28 +1,12 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { setLocale } from "@lattice-php/ui/i18n/locale";
 import { setTimezone } from "@lattice-php/ui/i18n/timezone";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer } from "@lattice-php/form/test-support";
+import { createFieldRenderer, findNamedInput } from "@lattice-php/form/test-support";
 import { DateTimeInputComponent } from "./date-time-input";
 
 const renderField = createFieldRenderer(DateTimeInputComponent);
-
-async function findNamedInput(name: string): Promise<HTMLInputElement> {
-  let input: HTMLInputElement | null = null;
-
-  await waitFor(() => {
-    input = document.querySelector<HTMLInputElement>(`input[name="${name}"]`);
-
-    expect(input).toBeInstanceOf(HTMLInputElement);
-  });
-
-  if (!input) {
-    throw new Error(`Input ${name} was not rendered.`);
-  }
-
-  return input;
-}
 
 afterEach(() => {
   setLocale("en");

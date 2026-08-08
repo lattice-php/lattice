@@ -99,6 +99,16 @@ export function tableFetch(...responses: TableResultOverrides[]) {
   return fetch;
 }
 
+export function searchFetch(options: Array<{ label: string; value: string }>) {
+  const fetch = vi.fn<typeof globalThis.fetch>(async (input) =>
+    String(input).includes("_sub=search") ? Response.json({ options }) : tableResponse(),
+  );
+
+  vi.stubGlobal("fetch", fetch);
+
+  return fetch;
+}
+
 export function requestOptions(headers: Record<string, string> = {}) {
   return {
     credentials: "same-origin",

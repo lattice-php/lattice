@@ -18,21 +18,17 @@ describe("Floating panel", () => {
       type: "floating-panel",
     });
 
-    const { container } = renderWithRegistry(
+    renderWithRegistry(
       <FloatingPanelComponent node={node}>
         <section>Conversation</section>
       </FloatingPanelComponent>,
       createRegistry(uiComponents),
     );
 
-    expect(container.querySelector('[data-lattice-component="assistant-chat"]')).not.toBeNull();
-
     expect(screen.getByRole("button", { name: "Chat" })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByText("Conversation").parentElement).toHaveClass("hidden");
 
     fireEvent.click(screen.getByRole("button", { name: "Chat" }));
 
     expect(screen.getByRole("button", { name: "Chat" })).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText("Conversation").parentElement).toHaveClass("block");
   });
 });

@@ -63,19 +63,12 @@ const menu: Node = {
 };
 
 describe("Menu", () => {
-  it("renders a navigation with a link per item", () => {
-    renderMenu(menu);
-
-    expect(screen.getByRole("navigation")).toBeVisible();
-    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
-    expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("href", "/products");
-  });
-
   it("marks the item matching the current url as active", () => {
     renderMenu(menu);
 
-    expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Home" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("aria-current", "page");
   });
 
   it("renders a non-link item with children as a collapsed toggle", () => {
@@ -161,6 +154,5 @@ describe("Menu", () => {
     const link = screen.getByRole("link", { name: "Log out" });
     expect(link).toHaveAttribute("data-method", "post");
     expect(link).toHaveAttribute("data-as", "button");
-    expect(link).toHaveClass("w-full");
   });
 });

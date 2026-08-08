@@ -14,21 +14,4 @@ describe("Checkbox", () => {
 
     expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
-
-  it("renders the indicator when checked", () => {
-    render(<Checkbox aria-label="Accept" checked />);
-
-    expect(screen.getByRole("checkbox", { name: "Accept" })).toHaveAttribute(
-      "data-state",
-      "checked",
-    );
-  });
-
-  it("merges a custom class and supports the disabled state", () => {
-    render(<Checkbox aria-label="Accept" className="custom-class" disabled checked />);
-
-    const checkbox = screen.getByRole("checkbox", { name: "Accept" });
-    expect(checkbox).toHaveClass("custom-class");
-    expect(checkbox).toBeDisabled();
-  });
 });

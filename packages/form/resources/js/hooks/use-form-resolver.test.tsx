@@ -1,32 +1,10 @@
 import { act, render, screen } from "@testing-library/react";
 import { useLayoutEffect } from "@lattice-php/ui/lib/use-layout-effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Node } from "@lattice-php/core";
-import { fakeNode } from "@lattice-php/core/test-support";
 import { FORM_DEBOUNCE_MS } from "@lattice-php/form/lib/form-transport";
+import { builderNode } from "@lattice-php/form/test-support";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider, useFormValues, useSetFormValue } from "./values";
-
-function priceField(): Node {
-  return fakeNode({
-    type: "field.text-input",
-    props: {
-      name: "price",
-      editablePrefill: true,
-      prefillRefreshOn: ["@customer"],
-      prefillResetOn: ["product"],
-    },
-  });
-}
-
-function builderNode(): Node {
-  return Object.assign(
-    fakeNode({ id: "builder", type: "field.builder", props: { name: "items" } }),
-    {
-      templates: [{ type: "product", label: "Product", schema: [priceField()] }],
-    },
-  );
-}
 
 function StampRowId() {
   const values = useFormValues();
