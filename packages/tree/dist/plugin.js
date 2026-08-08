@@ -29,10 +29,10 @@ var b = m((() => {}));
 //#region resources/js/tree-context.tsx
 function x(e, t, n) {
 	e.children.set(t, n.map((e) => e.id)), e.loaded.add(t);
-	for (let r of n) {
-		let { children: n, ...i } = r;
-		e.nodes.set(r.id, i), e.parents.set(r.id, t === "" ? null : t), n && x(e, r.id, n);
-	}
+	for (let r of n) e.nodes.set(r.id, {
+		...r,
+		children: []
+	}), e.parents.set(r.id, t === "" ? null : t), r.children.length > 0 && x(e, r.id, r.children);
 }
 function ee(e, t) {
 	let n = {
