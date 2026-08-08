@@ -40,7 +40,7 @@ class Card extends ContainerComponent
      */
     public function headerActions(array $actions): static
     {
-        $this->headerActions = $actions;
+        $this->headerActions = array_values($this->renderableComponents($actions));
 
         return $this;
     }

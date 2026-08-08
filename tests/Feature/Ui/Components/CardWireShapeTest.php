@@ -32,3 +32,14 @@ it('serializes header actions as button components on the card', function (): vo
 it('serializes an empty headerActions array by default', function (): void {
     expect(wire(Card::make('Team settings'))['props']['headerActions'])->toBe([]);
 });
+
+it('omits a header action hidden via visible(false) from the serialized headerActions', function (): void {
+    $card = Card::make('Team settings')->headerActions([
+        Button::make('Edit'),
+        Button::make('Secret')->visible(false),
+    ]);
+
+    $labels = array_column(wire($card)['props']['headerActions'], 'props');
+
+    expect(array_column($labels, 'label'))->toBe(['Edit']);
+});
