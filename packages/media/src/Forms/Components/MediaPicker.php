@@ -184,7 +184,6 @@ class MediaPicker extends Field implements ProvidesRowFields
                 ];
             })
             ->filter()
-            ->values()
             ->all());
     }
 

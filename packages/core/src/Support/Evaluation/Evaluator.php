@@ -98,7 +98,7 @@ final readonly class Evaluator
         if ($type instanceof ReflectionNamedType) {
             $name = $type->isBuiltin() ? null : $type->getName();
 
-            return $name !== null && (class_exists($name) || interface_exists($name) || enum_exists($name)) ? [$name] : [];
+            return $name !== null && (class_exists($name) || interface_exists($name)) ? [$name] : [];
         }
 
         if ($type instanceof ReflectionUnionType) {
@@ -110,7 +110,7 @@ final readonly class Evaluator
 
                     $name = $member->getName();
 
-                    return class_exists($name) || interface_exists($name) || enum_exists($name) ? $name : null;
+                    return class_exists($name) || interface_exists($name) ? $name : null;
                 },
                 $type->getTypes(),
             )));

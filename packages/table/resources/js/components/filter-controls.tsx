@@ -72,7 +72,7 @@ export function TableFilterControl({
           size="md"
           icon="x"
           label={t("table.filter.clear", "Clear {{label}} filter", {
-            label: filter.props.label ?? "",
+            label: filter.props.label,
           })}
           disabled={processing}
           onClick={() => onChange(undefined)}
@@ -204,7 +204,7 @@ function ToggleControl({
   return (
     <label className="flex h-lt-control-md cursor-pointer items-center gap-2 text-sm">
       <Checkbox
-        aria-label={filter.props.label ?? undefined}
+        aria-label={filter.props.label}
         data-test={`table-filter-${filter.key}`}
         checked={checked}
         disabled={processing}
