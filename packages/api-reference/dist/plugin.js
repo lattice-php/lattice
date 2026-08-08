@@ -2428,7 +2428,7 @@ function rr({ title: e, info: t }) {
 }
 var ir, ar = f((() => {
 	v(), b(), ye(), Xn(), Ge(), Ht(), $n(), ir = ({ node: t }) => {
-		let { spec: r, url: c, operation: l, tags: u, defaultOperation: d, hideHeader: f = !1, hideBaseUrl: p = !1, title: m = null, expandDepth: h = 2, twoColumnBreakpoint: _ = "lg", token: v = null } = t.props, [b, x] = i(r ?? null), [ee, te] = i(!!c), [S, C] = i(null), [w, T] = i(() => nr()), [E, D] = i(null), [O, ne] = i(null), [k, A] = i(null), [j, M] = i({});
+		let { spec: r, url: c, operation: l, tags: u, defaultOperation: d, hideHeader: f, hideBaseUrl: p, title: m = null, expandDepth: h, twoColumnBreakpoint: _, token: v = null } = t.props, [b, x] = i(r ?? null), [ee, te] = i(!!c), [S, C] = i(null), [w, T] = i(() => nr()), [E, D] = i(null), [O, ne] = i(null), [k, A] = i(null), [j, M] = i({});
 		e(() => {
 			if (!c) return;
 			let e = !0;
