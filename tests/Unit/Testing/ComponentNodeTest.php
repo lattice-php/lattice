@@ -63,3 +63,40 @@ it('matches itself when the root is the target type', function (): void {
 
     expect($form->firstOfTypeIncludingSelf('form', 'create'))->toBe($form);
 });
+
+it('throws a clear error when findOrFail cannot find a match', function (): void {
+    $root = ComponentNode::root([]);
+
+    expect(fn () => $root->findOrFail(fn (ComponentNode $n): bool => $n->type() === 'missing', 'type "missing"'))
+        ->toThrow(RuntimeException::class, 'No component node found matching type "missing". Available: ');
+});
+
+it('throws a clear error when firstOfTypeOrFail cannot find a match', function (): void {
+    $root = ComponentNode::root([
+        ['type' => 'action', 'id' => 'archive', 'props' => [], 'schema' => []],
+    ]);
+
+    expect(fn () => $root->firstOfTypeOrFail('action', 'missing'))
+        ->toThrow(RuntimeException::class, 'No component of type [action] with id/key [missing] found. Available: action:archive');
+});
+
+it('throws a clear error when fieldOrFail cannot find a match', function (): void {
+    $form = componentNode(['type' => 'form', 'id' => 'f', 'props' => [], 'schema' => [
+        ['type' => 'field.text-input', 'id' => null, 'props' => ['name' => 'email'], 'schema' => []],
+    ]]);
+
+    expect(fn () => $form->fieldOrFail('missing'))
+        ->toThrow(RuntimeException::class, 'No field named [missing] found. Available fields: email');
+});
+
+it('returns the matched node when the OrFail variants succeed', function (): void {
+    $root = ComponentNode::root([
+        ['type' => 'action', 'id' => 'archive', 'props' => ['label' => 'Archive'], 'schema' => [
+            ['type' => 'field.text-input', 'id' => null, 'props' => ['name' => 'reason'], 'schema' => []],
+        ]],
+    ]);
+
+    expect($root->firstOfTypeOrFail('action', 'archive')->prop('label'))->toBe('Archive')
+        ->and($root->fieldOrFail('reason')->prop('name'))->toBe('reason')
+        ->and($root->findOrFail(fn (ComponentNode $n): bool => $n->type() === 'action')->id())->toBe('archive');
+});
