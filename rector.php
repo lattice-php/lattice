@@ -14,6 +14,9 @@ return RectorConfig::configure()
         __DIR__.'/workbench/app',
         __DIR__.'/workbench/routes',
     ])
+    // Default is sys_get_temp_dir(), which is as volatile as PHPStan's — pin it locally
+    // (gitignored) so the cache survives between commits instead of resetting per OS cleanup.
+    ->withCache(cacheDirectory: __DIR__.'/.rector-cache')
     ->withPhpSets(php84: true)
     ->withPreparedSets(
         deadCode: true,
