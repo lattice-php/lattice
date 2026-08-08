@@ -1,4 +1,5 @@
 export type * from "./types";
+export type * from "./generated";
 
 export * from "./api";
 export { CollapsedContext, useCollapsed } from "./collapsed-context";

@@ -1,4 +1,4 @@
-import type { Option } from "../generated";
+import type { Option } from "@lattice-php/core";
 import type { FilterNode } from "@lattice-php/table/types";
 
 /**

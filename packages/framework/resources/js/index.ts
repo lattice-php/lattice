@@ -82,7 +82,8 @@ export type {
   UnknownComponent,
 } from "./types";
 export { RealtimeListeners } from "./realtime/listeners";
-export type { ChannelVisibility, DateFormat, Listen, NumberFormat } from "./types/generated";
+export type { ChannelVisibility, Listen } from "./types/generated";
+export type { DateFormat, NumberFormat } from "@lattice-php/ui";
 export { columnCell } from "@lattice-php/table/registry";
 export type {
   ColumnCellArgs,

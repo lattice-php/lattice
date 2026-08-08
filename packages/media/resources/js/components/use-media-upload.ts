@@ -6,7 +6,7 @@ import { withHeaders } from "@lattice-php/core/headers";
 import { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { useT } from "@lattice-php/ui/i18n";
-import type { SignedUpload } from "@lattice-php/lattice/types/generated";
+import type { SignedUpload } from "@lattice-php/form";
 
 export type UploadItem = {
   id: string;

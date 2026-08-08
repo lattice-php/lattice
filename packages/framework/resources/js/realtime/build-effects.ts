@@ -1,4 +1,4 @@
-import type { Effect } from "@lattice-php/lattice/types/generated";
+import type { Effect } from "@lattice-php/ui/effects/types";
 import { isTranslatable, resolveTranslatable } from "@lattice-php/ui/i18n/translatable";
 import type { Translate } from "@lattice-php/ui/i18n/translatable";
 

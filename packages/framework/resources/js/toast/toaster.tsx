@@ -2,7 +2,7 @@ import { Icon } from "@lattice-php/ui/icons";
 import * as Toast from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
 import { RenderNode } from "@lattice-php/core/renderer";
-import type { Toast as ToastMessage } from "@lattice-php/lattice/types/generated";
+import type { Toast as ToastMessage } from "@lattice-php/ui";
 import { onToast } from "./toast";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";

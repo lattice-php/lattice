@@ -1,5 +1,5 @@
 import { Badge, CodeBlock } from "@lattice-php/ui";
-import type { ColorName } from "@lattice-php/lattice/types/generated";
+import type { ColorName } from "@lattice-php/core";
 import type { ExecutedResponse, ExecutionError } from "./execute-request";
 
 type LiveResponsePanelProps = {

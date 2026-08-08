@@ -1,10 +1,5 @@
-import type {
-  Breadcrumb,
-  NodeType,
-  PageContainer as GeneratedPageContainer,
-  PageLayoutPayload,
-  PagePayload as GeneratedPagePayload,
-} from "./generated";
+import type { Breadcrumb, PageContainer as GeneratedPageContainer } from "@lattice-php/core";
+import type { NodeType, PageLayoutPayload, PagePayload as GeneratedPagePayload } from "./generated";
 
 export type * from "@lattice-php/core";
 

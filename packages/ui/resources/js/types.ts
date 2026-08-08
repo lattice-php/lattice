@@ -5,38 +5,29 @@ declare module "@lattice-php/core" {
   interface ComponentProps extends ComponentPropsMap {}
 }
 
+export type { Affix, Color, ColorKind, ColorName } from "@lattice-php/core";
 export type {
-  Affix,
-  Color,
-  ColorKind,
+  Callout,
   ColumnWidth,
   ComponentPropsMap,
+  DateFormat,
   DateTimeStyle,
+  HttpMethod,
+  Justify,
   ModalWidth,
   NumberFormat,
   NumberFormatUnit,
+  Orientation,
+  Placement,
+  RetractCallout,
   Side,
+  Size,
+  Toast,
   Translatable,
   UiNodeType,
 } from "./generated";
 
 export type UiNode = NodeUnionOf<UiNodeType>;
-
-export type ColorName =
-  | "default"
-  | "muted"
-  | "primary"
-  | "success"
-  | "info"
-  | "warning"
-  | "danger"
-  | "gray"
-  | "red"
-  | "orange"
-  | "yellow"
-  | "green"
-  | "blue"
-  | "purple";
 
 export type I18nConfig = {
   readonly enabled: boolean;
