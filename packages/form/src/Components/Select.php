@@ -151,7 +151,7 @@ class Select extends Field
      */
     public function optionSchema(array $components): static
     {
-        $this->optionSchema = $components === [] ? null : $components;
+        $this->optionSchema = $components === [] ? null : array_values($components);
 
         return $this;
     }

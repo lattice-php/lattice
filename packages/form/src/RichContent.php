@@ -178,19 +178,24 @@ final class RichContent
      */
     public function nodes(string $type): array
     {
-        $collect = static function (array $node) use (&$collect, $type): array {
-            $matches = ($node['type'] ?? null) === $type ? [$node] : [];
+        return $this->collectNodes($this->toArray(), $type);
+    }
 
-            foreach (is_array($node['content'] ?? null) ? $node['content'] : [] as $child) {
-                if (is_array($child)) {
-                    $matches = [...$matches, ...$collect($child)];
-                }
+    /**
+     * @param  array<string, mixed>  $node
+     * @return list<array<string, mixed>>
+     */
+    private function collectNodes(array $node, string $type): array
+    {
+        $matches = ($node['type'] ?? null) === $type ? [$node] : [];
+
+        foreach (is_array($node['content'] ?? null) ? $node['content'] : [] as $child) {
+            if (is_array($child)) {
+                $matches = [...$matches, ...$this->collectNodes($child, $type)];
             }
+        }
 
-            return $matches;
-        };
-
-        return $collect($this->toArray());
+        return $matches;
     }
 
     /**

@@ -92,10 +92,10 @@ abstract class TypedRowsField extends RowsField
     #[SerializationHook(priority: 190)]
     protected function prepareTemplates(array $data): array
     {
-        $this->templates = array_map(
+        $this->templates = array_values(array_map(
             static fn (RowTemplate $template): RowTemplateData => $template->data(),
             $this->rowTemplates,
-        );
+        ));
 
         return $data;
     }

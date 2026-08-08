@@ -23,7 +23,7 @@ trait HasRowActions
      */
     public function rowActions(array $actions): static
     {
-        $this->rowActions = array_values($this->renderableComponents($actions));
+        $this->rowActions = $this->renderableComponents($actions);
 
         return $this;
     }

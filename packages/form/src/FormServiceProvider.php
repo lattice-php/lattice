@@ -25,12 +25,18 @@ final class FormServiceProvider extends ServiceProvider
         $this->app->singleton(EditorExtensionRegistry::class, fn (): EditorExtensionRegistry => EditorExtensionRegistry::withBuiltins());
 
         $lattice = $this->app->make(LatticeRegistry::class);
-        $lattice->registerCapability('forms', fn (string|array $forms) => $this->app->make(FormRegistry::class)->register($forms));
+        $lattice->registerCapability('forms', $this->registerForms(...));
         $lattice->wireFamily('editor-extension', AsEditorExtension::class, EditorExtension::class);
     }
 
     public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+    }
+
+    /** @param  class-string<FormDefinition>|array<int, class-string<FormDefinition>>  $forms */
+    private function registerForms(string|array $forms): void
+    {
+        $this->app->make(FormRegistry::class)->register($forms);
     }
 }

@@ -50,7 +50,7 @@ final class RowTemplate
         return new RowTemplateData(
             type: $this->type,
             label: $this->label ?? Str::headline($this->type),
-            schema: $this->renderableChildren(),
+            schema: array_values($this->renderableChildren()),
         );
     }
 }
