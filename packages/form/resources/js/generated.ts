@@ -449,6 +449,7 @@ export type Repeater = {
   editablePrefill: boolean;
   helperText: string | null;
   itemLabel: string | null;
+  itemLabels: (string | null)[] | null;
   label: string | null;
   layout: RowLayout;
   maxItems: number | null;
