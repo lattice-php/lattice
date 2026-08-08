@@ -16,6 +16,8 @@ it('keeps every committed generated.ts in sync with the schema-derived emitter',
 
         expect(file_get_contents($output.'/generated.ts'))
             ->toBe(file_get_contents($root.'/packages/framework/resources/js/types/generated.ts'));
+        expect(file_get_contents($output.'/core/generated.ts'))
+            ->toBe(file_get_contents($root.'/packages/core/resources/js/generated.ts'));
         expect(file_get_contents($output.'/form/generated.ts'))
             ->toBe(file_get_contents($root.'/packages/form/resources/js/generated.ts'));
         expect(file_get_contents($output.'/table/generated.ts'))

@@ -1,4 +1,6 @@
 import type { Node } from "@lattice-php/core";
+import type { Emphasis, HttpMethod, ModalWidth, Orientation, Side, Variant } from "@lattice-php/ui";
+import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type Action = {
   confirmation: Confirmation | null;
@@ -49,14 +51,4 @@ export type Confirmation = {
   readonly description: string | null;
   readonly title: string | null;
 };
-export type Effect = {
-  type: string;
-  props: Record<string, unknown>;
-};
-export type Emphasis = "solid" | "outline" | "ghost" | "link";
-export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
-export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type NodeType = "action" | "action.bulk" | "action.group";
-export type Orientation = "horizontal" | "vertical";
-export type Side = "start" | "end";
-export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";

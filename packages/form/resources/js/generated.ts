@@ -1,9 +1,13 @@
-import type { Node } from "@lattice-php/core";
+import type { Affix, Node, Op, Option } from "@lattice-php/core";
+import type {
+  ColumnWidth,
+  Emphasis,
+  HttpMethod,
+  Justify,
+  Orientation,
+  Variant,
+} from "@lattice-php/ui";
 
-export type Affix = {
-  readonly icon: string | null;
-  readonly text: string | null;
-};
 export type Builder = {
   addLabel: string | null;
   columnWidth: ColumnWidth;
@@ -88,7 +92,6 @@ export type ColorPicker = {
   tooltip: string | null;
   value: unknown;
 };
-export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ComponentPropsMap = {
   "field.builder": Builder;
   "field.checkbox": Checkbox;
@@ -215,7 +218,6 @@ export type EditorTextAlign = {
   alignments: string[];
 };
 export type EditorUnderline = Record<string, never>;
-export type Emphasis = "solid" | "outline" | "ghost" | "link";
 export type FieldConditions = {
   readonly disabled: Condition[];
   readonly readOnly: Condition[];
@@ -313,9 +315,9 @@ export type FormNodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
+  | "form"
   | "wizard"
-  | "wizard-step"
-  | "form";
+  | "wizard-step";
 export type HiddenInput = {
   columnWidth: ColumnWidth;
   conditions: FieldConditions | null;
@@ -333,8 +335,6 @@ export type HiddenInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
-export type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type LabelAction = {
   readonly href: string;
   readonly label: string;
@@ -359,9 +359,9 @@ export type NodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
+  | "form"
   | "wizard"
-  | "wizard-step"
-  | "form";
+  | "wizard-step";
 export type NumberInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -388,28 +388,6 @@ export type NumberInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type Op =
-  | "contains"
-  | "starts_with"
-  | "ends_with"
-  | "eq"
-  | "neq"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "in"
-  | "not_in"
-  | "before"
-  | "after"
-  | "empty"
-  | "filled";
-export type Option = {
-  readonly data: Record<string, unknown> | null;
-  readonly label: string;
-  readonly value: string;
-};
-export type Orientation = "horizontal" | "vertical";
 export type OtpInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -638,7 +616,6 @@ export type Toggle = {
   tooltip: string | null;
   value: unknown;
 };
-export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Wizard = {
   orientation: Orientation;
 };

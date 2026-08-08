@@ -8,13 +8,15 @@ use LogicException;
 /**
  * Emits a TypeScript module from a wire-protocol schema document — the schema
  * is the only input, so the published artifact provably carries everything the
- * types need. The hand-written envelope prelude (stubs/envelopes.ts) is
- * inlined verbatim into the primary module; every other export is a
- * transliteration of a `$defs` entry or an `x-lattice` catalog. A document
- * need not be the full canonical one: a caller may pass a filtered `$defs` /
- * `x-lattice` slice to emit one package's own generated.ts, with its own
- * import header instead of the prelude. Output is oxfmt-clean (two-space
- * indent, 100-column union wrap).
+ * types need. Every export is a transliteration of a `$defs` entry or an
+ * `x-lattice` catalog. Three ways to call it: `emitModule()` inlines the
+ * hand-written envelope prelude (stubs/envelopes.ts) verbatim for a
+ * self-contained single-document module; `emitScopedModule()` takes a custom
+ * header instead of the prelude for a hand-curated `$defs` slice;
+ * `emitPackageModule()` is `WireModelBuilder::buildAll()`'s counterpart — one
+ * origin's own `$defs`, with every reference outside them resolved to a
+ * generated `import type` header via `ImportResolver`. Output is oxfmt-clean
+ * (two-space indent, 100-column union wrap).
  */
 final class SchemaTypeScriptEmitter
 {
@@ -27,6 +29,29 @@ final class SchemaTypeScriptEmitter
     public const array PRELUDE_DEFS = ['Node', 'ColumnNode', 'FilterNode', 'Schema', 'CommonNodeProps'];
 
     /**
+     * Envelope generics with no generated form of their own: whichever
+     * document's `$defs` references one by this bare name gets an `import
+     * type` from this module instead — `emitPackageModule()`'s counterpart to
+     * `PRELUDE_DEFS`. `Node`/`Schema`/`CommonNodeProps` are `@lattice-php/core`'s
+     * hand-written `types.ts`; `ColumnNode`/`FilterNode` are table's own
+     * `./types.ts` (relative — only ever referenced from table's own
+     * document); `Effect` is ui's own hand-written, augmentable
+     * `effects/types.ts` (relative import paths resolve identically as a
+     * self-reference, so the bare module specifier below is safe even when
+     * ui's own document is what's referencing it).
+     *
+     * @var array<string, string>
+     */
+    public const array MARKER_MODULES = [
+        'Node' => '@lattice-php/core',
+        'Schema' => '@lattice-php/core',
+        'CommonNodeProps' => '@lattice-php/core',
+        'ColumnNode' => './types',
+        'FilterNode' => './types',
+        'Effect' => '@lattice-php/ui/effects/types',
+    ];
+
+    /**
      * @var array<string, mixed>
      */
     private array $defs = [];
@@ -35,6 +60,13 @@ final class SchemaTypeScriptEmitter
      * @var array<string, true>
      */
     private array $inlining = [];
+
+    private ?ImportResolver $imports = null;
+
+    /**
+     * @var array<string, array<string, true>> module => (name => true)
+     */
+    private array $collectedImports = [];
 
     /**
      * @param  array<string, mixed>  $document
@@ -55,6 +87,26 @@ final class SchemaTypeScriptEmitter
     }
 
     /**
+     * One `WireModelBuilder::buildAll()` origin's own `generated.ts`: its own
+     * `$defs` transliterated as usual, but every `$ref` outside those local
+     * `$defs` becomes a cross-package `import type` (via `$imports`) instead
+     * of a bare identifier or an inlined duplicate.
+     *
+     * @param  array<string, mixed>  $document
+     */
+    public function emitPackageModule(array $document, ImportResolver $imports): string
+    {
+        $this->imports = $imports;
+        $this->collectedImports = [];
+
+        $body = $this->emitBody($document);
+
+        $this->imports = null;
+
+        return $this->importHeader().$body;
+    }
+
+    /**
      * @param  array<string, mixed>  $document
      */
     private function emitBody(array $document): string
@@ -71,6 +123,49 @@ final class SchemaTypeScriptEmitter
         }
 
         return $body;
+    }
+
+    private function importHeader(): string
+    {
+        if ($this->collectedImports === []) {
+            return '';
+        }
+
+        ksort($this->collectedImports);
+        $lines = '';
+
+        foreach ($this->collectedImports as $module => $names) {
+            $names = array_keys($names);
+            sort($names);
+            $lines .= sprintf('import type { %s } from "%s";'.PHP_EOL, implode(', ', $names), $module);
+        }
+
+        return $lines.PHP_EOL;
+    }
+
+    /**
+     * Records that `emitPackageModule()`'s module needs `$name` imported —
+     * a marker's hand-written home, or (via `$imports`) whichever origin's
+     * document actually defines it. A no-op outside `emitPackageModule()`,
+     * and for a name the local `$defs` already carries.
+     */
+    private function useIdentifier(string $name): void
+    {
+        if (! $this->imports instanceof ImportResolver || isset($this->defs[$name])) {
+            return;
+        }
+
+        $module = self::MARKER_MODULES[$name] ?? null;
+
+        if ($module === null) {
+            $origin = $this->imports->originOf($name) ?? throw new LogicException(sprintf(
+                'Referenced type [%s] belongs to no known wire source.',
+                $name,
+            ));
+            $module = $this->imports->moduleFor($origin);
+        }
+
+        $this->collectedImports[$module][$name] = true;
     }
 
     /**
@@ -335,25 +430,36 @@ final class SchemaTypeScriptEmitter
 
         [$prefix, $type] = str_contains($name, ':') ? explode(':', $name, 2) : [null, $name];
 
-        return match ($prefix) {
-            null => $this->identifierOrInline($name, $indent),
-            'node' => sprintf('Node<"%s">', $type),
-            'column' => sprintf('ColumnNode<"%s">', $type),
-            'filter' => sprintf('FilterNode<"%s">', $type),
+        $generic = match ($prefix) {
+            null => null,
+            'node' => 'Node',
+            'column' => 'ColumnNode',
+            'filter' => 'FilterNode',
             default => throw new LogicException(sprintf('Unexpected reference to [%s] in a prop type.', $name)),
         };
+
+        if ($generic !== null) {
+            $this->useIdentifier($generic);
+
+            return sprintf('%s<"%s">', $generic, $type);
+        }
+
+        return $this->identifierOrInline($name, $indent);
     }
 
     /**
      * App-origin defs inline at their reference site (an augmentation cannot
      * export standalone types); anything else is a module-resolvable
-     * identifier. Cycles degrade to `unknown`.
+     * identifier — cross-package for `emitPackageModule()` (`useIdentifier()`).
+     * Cycles degrade to `unknown`.
      */
     private function identifierOrInline(string $name, int $indent): string
     {
         $def = $this->defs[$name] ?? null;
 
         if (! is_array($def) || (($def['x-lattice']['origin'] ?? null) !== 'app')) {
+            $this->useIdentifier($name);
+
             return $name;
         }
 

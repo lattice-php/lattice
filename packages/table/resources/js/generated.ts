@@ -1,5 +1,6 @@
-import type { Node } from "@lattice-php/core";
 import type { ColumnNode, FilterNode } from "./types";
+import type { Color, Node, Op, Option } from "@lattice-php/core";
+import type { ColumnWidth, DateTimeStyle, NumberFormatUnit } from "@lattice-php/ui";
 
 export type BadgeColumn = {
   align: ColumnAlign;
@@ -20,12 +21,6 @@ export type BooleanColumn = {
   toggleable: boolean;
   width: ColumnWidth;
 };
-export type Color = {
-  readonly dark: string | null;
-  readonly kind: ColorKind;
-  readonly value: string;
-};
-export type ColorKind = "named" | "css";
 export type Column = {
   align: ColumnAlign;
   filter: ColumnFilter | null;
@@ -74,14 +69,12 @@ export type ColumnPropsMap = {
   "column.stack": StackColumn;
   "column.text": TextColumn;
 };
-export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ComponentPropsMap = {
   table: Table;
 };
 export type DateRangeFilter = {
   label: string | null;
 };
-export type DateTimeStyle = "full" | "long" | "medium" | "short";
 export type Filter = {
   label: string | null;
 };
@@ -164,43 +157,6 @@ export type NumberColumn = {
   toggleable: boolean;
   unit: NumberFormatUnit | null;
   width: ColumnWidth;
-};
-export type NumberFormatUnit =
-  | "percent"
-  | "kilogram"
-  | "gram"
-  | "kilometer"
-  | "meter"
-  | "byte"
-  | "kilobyte"
-  | "megabyte"
-  | "gigabyte"
-  | "millisecond"
-  | "second"
-  | "minute"
-  | "hour"
-  | "celsius"
-  | "fahrenheit";
-export type Op =
-  | "contains"
-  | "starts_with"
-  | "ends_with"
-  | "eq"
-  | "neq"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "in"
-  | "not_in"
-  | "before"
-  | "after"
-  | "empty"
-  | "filled";
-export type Option = {
-  readonly data: Record<string, unknown> | null;
-  readonly label: string;
-  readonly value: string;
 };
 export type PaginationType = "none" | "simple" | "table" | "infinite";
 export type SelectFilter = {

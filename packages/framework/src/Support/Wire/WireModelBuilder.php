@@ -154,13 +154,17 @@ final class WireModelBuilder
 
     /**
      * One document per `WireSourceCatalog` source: `$defs` restricted to
-     * classes whose file's origin is that source, local `$refs` for
-     * everything else — a def belonging to a different origin is still a
-     * `#/$defs/{name}` pointer the document itself cannot resolve. The
-     * envelopes/strict unions/remote-manifest contract/`x-lattice` catalogs
-     * live only in the framework document.
+     * classes whose file's origin is that source — every other package's own
+     * def is left for the TypeScript emitter to resolve as a cross-package
+     * import via the returned `defOrigins` map, instead of being duplicated
+     * into every document that references it. A non-framework document's
+     * `x-lattice` catalog is scoped to its own origin too (its own
+     * `…PropsMap`/`…NodeType` only); the framework document additionally
+     * carries the system-wide `NodeType`/per-domain unions every plugin's
+     * compile-time totality check needs, since only the full manifest knows
+     * about every origin's node types.
      *
-     * @return array<string, array<string, mixed>>
+     * @return array{documents: array<string, array<string, mixed>>, defOrigins: array<string, string>}
      */
     public function buildAll(): array
     {
@@ -177,11 +181,10 @@ final class WireModelBuilder
 
         $manifest = $this->discover($allDirs);
         $names = $this->defNames($manifest);
+        $this->guardUniqueNames($names);
         $markers = $this->markers();
         $nodeDefs = $this->nodeDefs($manifest);
-
         $classOrigins = $this->classOrigins($manifest, $catalog);
-        $this->guardUniqueNamesPerOrigin($names, $classOrigins);
 
         $documents = [];
 
@@ -189,7 +192,15 @@ final class WireModelBuilder
             $documents[$source->shortName] = $this->document($source, $manifest, $names, $markers, $nodeDefs, $classOrigins);
         }
 
-        return $documents;
+        $defOrigins = [];
+
+        foreach ($names as $class => $name) {
+            if (isset($classOrigins[$class])) {
+                $defOrigins[$name] = $classOrigins[$class];
+            }
+        }
+
+        return ['documents' => $documents, 'defOrigins' => $defOrigins];
     }
 
     /**
@@ -210,30 +221,19 @@ final class WireModelBuilder
         $context = new WireModelContext($names, $nodeDefs, $markers);
         $mapper = new PropertyTypeMapper($context);
         $isFramework = $source->shortName === self::FRAMEWORK_SOURCE;
+        $originManifest = $this->manifestForOrigin($manifest, $classOrigins, $source->shortName);
 
         $defs = [];
 
-        foreach ($manifest->enums as $enum) {
-            if (($classOrigins[$enum] ?? null) !== $source->shortName) {
-                continue;
-            }
-
+        foreach ($originManifest->enums as $enum) {
             $defs[$names[$enum]] = $this->enumDef($enum);
         }
 
-        foreach ($manifest->valueObjects as $class) {
-            if (($classOrigins[$class] ?? null) !== $source->shortName) {
-                continue;
-            }
-
+        foreach ($originManifest->valueObjects as $class) {
             $defs[$names[$class]] = $this->objectDef($class, $mapper, $this->annotated(['kind' => 'value-object', 'php' => $class], $class));
         }
 
-        foreach ($manifest->components as $component) {
-            if (($classOrigins[$component->class] ?? null) !== $source->shortName) {
-                continue;
-            }
-
+        foreach ($originManifest->components as $component) {
             $defs[$names[$component->class]] = $this->componentPropsDef($component, $mapper);
             $defs[$this->nodeDefKey($component->category, $component->type)] = $this->nodeDef($component, $names, $context);
         }
@@ -251,11 +251,7 @@ final class WireModelBuilder
         }
 
         foreach (Lattice::wireFamilies()->where('marker', false) as $family) {
-            foreach ($manifest->family($family->category) as $class => $type) {
-                if (($classOrigins[$class] ?? null) !== $source->shortName) {
-                    continue;
-                }
-
+            foreach ($originManifest->family($family->category) as $class => $type) {
                 $defs[$names[$class]] = $this->objectDef($class, $mapper, $this->annotated([
                     'kind' => 'props',
                     'family' => $family->category,
@@ -264,39 +260,57 @@ final class WireModelBuilder
                 ], $class));
                 $defs[$this->nodeDefKey($family->category, $type)] = $this->payloadDef($family->category, $type, $names[$class], $class, $context);
             }
-        }
 
-        if ($isFramework) {
-            foreach ($this->envelopeDefs() as $name => $def) {
-                $defs[$name] = $def;
+            // The loose envelope generic (`{type, props}`, unioned across every
+            // concrete payload) belongs wherever its family reference class
+            // lives — unless that family already has a hand-written home
+            // elsewhere (component/column/filter's Node/ColumnNode/FilterNode
+            // in @lattice-php/core and table's own ./types; effect's in
+            // @lattice-php/ui/effects/types), which the TypeScript emitter's
+            // marker table resolves to instead of a generated def.
+            if (($classOrigins[$family->reference] ?? null) === $source->shortName && $family->category === 'editor-extension') {
+                $defs[$family->looseAlias()] = $this->looseEnvelopeDef($family->category);
             }
-
-            foreach ($this->strictUnionDefs($manifest, $context) as $name => $def) {
-                $defs[$name] = $def;
-            }
-
-            $defs['RemoteManifest'] = $this->remoteManifestDef();
-            $defs['RemoteManifestNode'] = $this->remoteManifestNodeDef();
         }
 
         ksort($defs);
 
-        $document = [
-            '$schema' => 'https://json-schema.org/draft/2020-12/schema',
-            '$id' => $source->schemaId(),
-            'title' => $isFramework ? 'Lattice wire protocol' : sprintf('Lattice %s wire types', $source->shortName),
-            '$defs' => $defs,
-        ];
+        $catalogManifest = $isFramework ? $manifest : $originManifest;
 
-        if ($isFramework) {
-            $document['x-lattice'] = [
-                'protocolVersion' => self::PROTOCOL_VERSION,
-                'families' => $this->familiesCatalog($manifest, $names, $context),
-                'domains' => $this->domainsCatalog($manifest),
-            ];
+        return [
+            '$id' => $source->schemaId(),
+            '$defs' => $defs,
+            'x-lattice' => [
+                'domains' => $this->domainsCatalog($catalogManifest),
+                'families' => $this->familiesCatalog($originManifest, $names, $context),
+            ],
+        ];
+    }
+
+    /**
+     * Restricts a manifest to the classes a single `WireSourceCatalog`
+     * source owns, keyed and shaped exactly like the full manifest so
+     * `domainsCatalog()`/`familiesCatalog()` need no origin-awareness of
+     * their own.
+     *
+     * @param  array<class-string, string>  $classOrigins
+     */
+    private function manifestForOrigin(WireTypeManifest $manifest, array $classOrigins, string $shortName): WireTypeManifest
+    {
+        $matches = static fn (string $class): bool => ($classOrigins[$class] ?? null) === $shortName;
+
+        $families = [];
+
+        foreach ($manifest->families as $category => $classes) {
+            $families[$category] = array_filter($classes, static fn (string $class): bool => $matches($class), ARRAY_FILTER_USE_KEY);
         }
 
-        return $document;
+        return new WireTypeManifest(
+            array_values(array_filter($manifest->enums, $matches)),
+            array_values(array_filter($manifest->valueObjects, $matches)),
+            array_values(array_filter($manifest->components, static fn (DiscoveredComponent $c): bool => $matches($c->class))),
+            $families,
+        );
     }
 
     /**
@@ -482,35 +496,6 @@ final class WireModelBuilder
             }
 
             $seen[$name] = $class;
-        }
-    }
-
-    /**
-     * Per-document uniqueness: two classes may share a bare def name as long
-     * as different `WireSourceCatalog` sources own them — collisions are
-     * only structurally impossible within the same document.
-     *
-     * @param  array<class-string, string>  $names
-     * @param  array<class-string, string>  $classOrigins
-     */
-    private function guardUniqueNamesPerOrigin(array $names, array $classOrigins): void
-    {
-        $seenByOrigin = [];
-
-        foreach ($names as $class => $name) {
-            $origin = $classOrigins[$class] ?? null;
-
-            if (isset($seenByOrigin[$origin][$name])) {
-                throw new LogicException(sprintf(
-                    'Schema definition name [%s] in package [%s] is claimed by both [%s] and [%s]. Give the family attribute a typeNamePrefix().',
-                    $name,
-                    $origin,
-                    $seenByOrigin[$origin][$name],
-                    $class,
-                ));
-            }
-
-            $seenByOrigin[$origin][$name] = $class;
         }
     }
 
@@ -723,6 +708,27 @@ final class WireModelBuilder
     }
 
     /**
+     * A loose family's generic envelope (`{type, props}`), for `document()`'s
+     * per-origin path — `envelopeDefs()`'s stand-alone counterpart, used only
+     * where the family has no hand-written home for the TypeScript emitter's
+     * marker table to redirect to instead.
+     *
+     * @return array<string, mixed>
+     */
+    private function looseEnvelopeDef(string $category): array
+    {
+        return [
+            'type' => 'object',
+            'properties' => [
+                'type' => ['type' => 'string'],
+                'props' => ['type' => 'object'],
+            ],
+            'required' => ['type', 'props'],
+            'x-lattice' => ['kind' => 'envelope', 'family' => $category],
+        ];
+    }
+
+    /**
      * @return array<string, array<string, mixed>>
      */
     private function strictUnionDefs(WireTypeManifest $manifest, WireModelContext $context): array
@@ -864,12 +870,20 @@ final class WireModelBuilder
 
         $domains = [];
 
-        sort($fieldTypes);
-        $domains['FormFieldNodeType'] = $fieldTypes;
+        // A per-origin manifest (`document()`'s non-framework path) may carry
+        // no Form component at all — only add the Form domain unions when
+        // this manifest actually discovered one, so an unrelated origin
+        // doesn't get a spurious `FormNodeType = "form"` of its own.
+        $hasForm = array_any($manifest->components, static fn (DiscoveredComponent $c): bool => $c->class === Form::class);
 
-        $formTypes = [...$fieldTypes, AsComponent::wireTypeForClass(Form::class)];
-        sort($formTypes);
-        $domains['FormNodeType'] = $formTypes;
+        if ($fieldTypes !== [] || $hasForm) {
+            sort($fieldTypes);
+            $domains['FormFieldNodeType'] = $fieldTypes;
+
+            $formTypes = $hasForm ? [...$fieldTypes, AsComponent::wireTypeForClass(Form::class)] : $fieldTypes;
+            sort($formTypes);
+            $domains['FormNodeType'] = $formTypes;
+        }
 
         ksort($byDomain);
 
@@ -878,8 +892,10 @@ final class WireModelBuilder
             $domains[Str::singular($domain).'NodeType'] = $types;
         }
 
-        sort($componentTypes);
-        $domains['NodeType'] = $componentTypes;
+        if ($componentTypes !== []) {
+            sort($componentTypes);
+            $domains['NodeType'] = $componentTypes;
+        }
 
         if ($columnTypes !== []) {
             sort($columnTypes);

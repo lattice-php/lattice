@@ -1,9 +1,6 @@
-import type { Node } from "@lattice-php/core";
+import type { Affix, Color, Node, Option } from "@lattice-php/core";
+import type { Effect } from "@lattice-php/ui/effects/types";
 
-export type Affix = {
-  readonly icon: string | null;
-  readonly text: string | null;
-};
 export type Align = "center" | "left" | "start" | "stretch";
 export type Avatar = {
   name: string | null;
@@ -84,12 +81,6 @@ export type Collapsible = {
   tooltip: string | null;
   trigger: Node[];
 };
-export type Color = {
-  readonly dark: string | null;
-  readonly kind: ColorKind;
-  readonly value: string;
-};
-export type ColorKind = "named" | "css";
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
 export type ComponentPropsMap = {
   avatar: Avatar;
@@ -127,10 +118,6 @@ export type DateFormat = {
 export type DateTimeStyle = "full" | "long" | "medium" | "short";
 export type Download = {
   readonly url: string;
-};
-export type Effect = {
-  type: string;
-  props: Record<string, unknown>;
 };
 export type EffectPropsMap = {
   callout: Callout;
@@ -255,11 +242,6 @@ export type NumberFormatUnit =
   | "fahrenheit";
 export type OpenModal = {
   readonly modal: string;
-};
-export type Option = {
-  readonly data: Record<string, unknown> | null;
-  readonly label: string;
-  readonly value: string;
 };
 export type Orientation = "horizontal" | "vertical";
 export type Placement = "top" | "bottom" | "right";
