@@ -17,6 +17,11 @@ it('surfaces discovery state in the lattice section of php artisan about', funct
     $discoverRoot = realpath($signaturePath.'/src');
     $pluginPath = realpath($signaturePath.'/resources/js/plugin.ts');
 
+    expect($discoverRoot)->not->toBeFalse()
+        ->and($pluginPath)->not->toBeFalse();
+    assert($discoverRoot !== false);
+    assert($pluginPath !== false);
+
     Artisan::call('about', ['--json' => true]);
     $data = json_decode((string) Artisan::output(), true);
 

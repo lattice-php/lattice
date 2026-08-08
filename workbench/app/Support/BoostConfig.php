@@ -50,7 +50,7 @@ class BoostConfig extends Config
 
         file_put_contents(
             $this->path(),
-            Str::of(json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES))->append(PHP_EOL),
+            Str::of(json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) ?: '{}')->append(PHP_EOL),
         );
     }
 

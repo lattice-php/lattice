@@ -105,7 +105,7 @@ class SalesOrderForm extends FormDefinition
 
         $lineRows = $validated['lines'] ?? [];
 
-        $partner = BusinessPartner::query()->findOrFail($validated['business_partner_id']);
+        $partner = BusinessPartner::query()->findOrFail((int) $validated['business_partner_id']);
 
         DB::transaction(function () use ($order, $validated, $lineRows, $partner): void {
             $shippingAddressId = array_key_exists('shipping_address_id', $validated)
@@ -150,8 +150,8 @@ class SalesOrderForm extends FormDefinition
             return null;
         }
 
-        $partner = BusinessPartner::find($partnerId);
-        $product = Product::find($productId);
+        $partner = BusinessPartner::find((int) $partnerId);
+        $product = Product::find((int) $productId);
 
         if ($partner === null || $product === null) {
             return null;

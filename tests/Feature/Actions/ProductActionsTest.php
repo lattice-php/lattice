@@ -26,8 +26,8 @@ test('the product archive row action is pinned to its sealed product', function 
         ->assertOk()
         ->assertJsonPath('data.id', $target->getKey());
 
-    expect($target->fresh()->status)->toBe('archived')
-        ->and($other->fresh()->status)->toBe('active');
+    expect($target->fresh()?->status)->toBe('archived')
+        ->and($other->fresh()?->status)->toBe('active');
 });
 
 test('the product archive row action authorizes per row', function (): void {
@@ -62,9 +62,9 @@ test('bulk actions resolve the selection through the table and archive only thos
         ->assertOk()
         ->assertJsonPath('data.archived', 2);
 
-    expect($a->fresh()->status)->toBe('archived')
-        ->and($b->fresh()->status)->toBe('archived')
-        ->and($c->fresh()->status)->toBe('active');
+    expect($a->fresh()?->status)->toBe('archived')
+        ->and($b->fresh()?->status)->toBe('archived')
+        ->and($c->fresh()?->status)->toBe('active');
 });
 
 test('bulk actions ignore selected ids that are not in the table result', function (): void {
@@ -79,7 +79,7 @@ test('bulk actions ignore selected ids that are not in the table result', functi
         ->assertOk()
         ->assertJsonPath('data.archived', 1);
 
-    expect($a->fresh()->status)->toBe('archived');
+    expect($a->fresh()?->status)->toBe('archived');
 });
 
 test('bulk actions resolve all matching rows with dedicated table filters', function (): void {
@@ -99,9 +99,9 @@ test('bulk actions resolve all matching rows with dedicated table filters', func
         ->assertOk()
         ->assertJsonPath('data.archived', 2);
 
-    expect($featured->fresh()->status)->toBe('archived')
-        ->and($notFeatured->fresh()->status)->toBe('active')
-        ->and($draft->fresh()->status)->toBe('archived');
+    expect($featured->fresh()?->status)->toBe('archived')
+        ->and($notFeatured->fresh()?->status)->toBe('active')
+        ->and($draft->fresh()?->status)->toBe('archived');
 });
 
 test('bulk action endpoints require a valid component reference', function (): void {
@@ -124,7 +124,7 @@ test('bulk actions execute through their serialized component reference', functi
         ->assertOk()
         ->assertJsonPath('data.archived', 1);
 
-    expect($product->fresh()->status)->toBe('archived');
+    expect($product->fresh()?->status)->toBe('archived');
 });
 
 test('bulk form actions validate the submitted reason before archiving', function (): void {
@@ -143,7 +143,7 @@ test('bulk form actions validate the submitted reason before archiving', functio
         ->assertUnprocessable()
         ->assertJsonValidationErrors('reason');
 
-    expect($product->fresh()->status)->toBe('active');
+    expect($product->fresh()?->status)->toBe('active');
 
     patch('/lattice/bulk-actions/workbench.products.reject-selected', [
         'reason' => 'Counterfeit',
@@ -153,7 +153,7 @@ test('bulk form actions validate the submitted reason before archiving', functio
         ->assertJsonPath('data.archived', 1)
         ->assertJsonPath('data.reason', 'Counterfeit');
 
-    expect($product->fresh()->status)->toBe('archived');
+    expect($product->fresh()?->status)->toBe('archived');
 });
 
 test('bulk form actions validate precognitively without archiving', function (): void {
@@ -179,7 +179,7 @@ test('bulk form actions validate precognitively without archiving', function ():
         'selected' => [$product->getKey()],
     ], $precognition)->assertNoContent();
 
-    expect($product->fresh()->status)->toBe('active');
+    expect($product->fresh()?->status)->toBe('active');
 });
 
 test('the edit product action syncs sales prices', function (): void {
@@ -203,7 +203,7 @@ test('the edit product action syncs sales prices', function (): void {
         ->assertOk();
 
     expect($product->salesPrices()->whereNull('group_id')->count())->toBe(1)
-        ->and($product->salesPrices()->whereNull('group_id')->first()->amount)->toBe('79.99');
+        ->and($product->salesPrices()->whereNull('group_id')->first()?->amount)->toBe('79.99');
 });
 
 test('the edit product action syncs images', function (): void {

@@ -8,7 +8,7 @@ use function Pest\Laravel\artisan;
 beforeEach(function (): void {
     $this->publicPath = sys_get_temp_dir().'/lattice-assets-public-'.uniqid();
     File::makeDirectory($this->publicPath, recursive: true);
-    $this->app->usePublicPath($this->publicPath);
+    app()->usePublicPath($this->publicPath);
 
     $this->distPath = sys_get_temp_dir().'/lattice-assets-dist-'.uniqid();
     File::makeDirectory($this->distPath.'/chunks', recursive: true);

@@ -20,6 +20,7 @@ class TagFactory extends Factory
     public function definition(): array
     {
         $name = fake()->unique()->words(2, true);
+        assert(is_string($name));
 
         return [
             'name' => Str::title($name),

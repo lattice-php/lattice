@@ -58,7 +58,7 @@ test('the product form replaces related products on update', function (): void {
     ], $this->latticeHeaders($form))
         ->assertRedirect('/products');
 
-    expect($product->fresh()->relatedProducts->pluck('id')->all())
+    expect($product->refresh()->relatedProducts->pluck('id')->all())
         ->toBe([$gamma->getKey()]);
 });
 

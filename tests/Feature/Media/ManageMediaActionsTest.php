@@ -51,7 +51,9 @@ test('delete removes the row and the disk object', function (): void {
 });
 
 test('bulk delete removes only the selection', function (): void {
-    [$a, $b, $c] = Media::factory()->count(3)->create();
+    $a = Media::factory()->create();
+    $b = Media::factory()->create();
+    $c = Media::factory()->create();
 
     $this->callBulkAction(DeleteSelectedMediaAction::class, [
         'selected' => [$a->getKey(), $b->getKey()],

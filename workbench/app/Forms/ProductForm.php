@@ -129,7 +129,7 @@ class ProductForm extends FormDefinition
      */
     public function imagePaths(Product $product): array
     {
-        return $product->images()->pluck('files.path')->all();
+        return array_values($product->images()->pluck('files.path')->map(fn (mixed $path): string => (string) $path)->all());
     }
 
     /**

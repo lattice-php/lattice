@@ -65,7 +65,8 @@ test('a MorphMany relation column lists every related row without N+1', function
     BusinessPartner::factory()->create(['name' => 'Globex']);
 
     $rows = tableRows(new MorphRelationColumnsTable);
-    $acmeRow = collect($rows)->firstWhere('name', 'Acme');
+    $acmeRow = collect($rows)->firstWhere('name', 'Acme')
+        ?? throw new RuntimeException('Acme row not found.');
 
     expect($acmeRow['notes'])->toBe(['first', 'second']);
 });

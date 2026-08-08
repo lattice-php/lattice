@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Tests\TestCase;
 use Lattice\Tree\Tree;
 use Workbench\App\Models\Category;
 use Workbench\App\Trees\CategoryTree;
@@ -54,7 +55,7 @@ it('rejects a request whose ref does not authorize the tree', function (Closure 
 })->with([
     'no ref' => [fn (): array => []],
     'forged ref' => [fn (): array => ['X-Lattice-Ref' => 'forged']],
-    'expired ref' => [function (object $test, array $tree): array {
+    'expired ref' => [function (TestCase $test, array $tree): array {
         $test->travel(config('lattice.security.ref_lifetime', 30) + 1)->minutes();
 
         return ['X-Lattice-Ref' => $tree['props']['ref']];

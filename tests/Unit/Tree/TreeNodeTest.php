@@ -57,6 +57,11 @@ it('wraps actions in an end-floated row stack at the end of the schema', functio
     $node = TreeNode::make('n1', 'Docs')->action(Action::make('delete')->label('Delete'));
     $schema = $node->data([], false)->schema;
     $stackComponent = end($schema);
+
+    if ($stackComponent === false) {
+        throw new RuntimeException('Expected the schema to contain a trailing stack.');
+    }
+
     $stack = $stackComponent->jsonSerialize();
 
     expect($stackComponent)->toBeInstanceOf(Stack::class)

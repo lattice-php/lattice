@@ -115,7 +115,7 @@ test('bulk actions can target every row matching the current filter', function (
         ->assertJsonPath('data.archived', 3);
 
     expect(Product::query()->where('status', 'archived')->count())->toBe(3)
-        ->and($draft->fresh()->status)->toBe('draft');
+        ->and($draft->fresh()?->status)->toBe('draft');
 });
 
 test('bulk all-matching validates the filter against the table columns', function (): void {

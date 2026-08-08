@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Foundation\Application;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\LatticeServiceProvider;
 use Lattice\Support\Testing\PackageTestCase;
@@ -42,6 +43,7 @@ it('applies the sqlite app defaults, package config, and workbench view path', f
     config()->set('view.paths', ['/existing']);
 
     $app = $this->app;
+    assert($app instanceof Application);
     (fn () => $this->getEnvironmentSetUp($app))->call($case);
 
     expect(config('database.default'))->toBe('sqlite')

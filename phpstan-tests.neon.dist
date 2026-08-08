@@ -9,6 +9,14 @@ parameters:
         - workbench/app
     excludePaths:
         - tests/Fixtures/TypeScript/Unloadable/BrokenExtendsMissingClass.php
-    level: 6
+    level: 8
     bootstrapFiles:
         - phpstan-bootstrap.php
+    ignoreErrors:
+        -
+            # Pest's artisan() helper (Pest\Laravel\artisan()) declares PendingCommand|int because
+            # the underlying InteractsWithConsole::artisan() only returns int when mockConsoleOutput
+            # is disabled. Nothing in this suite disables it, so PendingCommand is the only real
+            # runtime type here; the union is a static-analysis gap in a vendor test helper we don't own.
+            message: '#^Cannot call method \w+\(\) on Illuminate\\Testing\\PendingCommand\|int\.$#'
+            identifier: method.nonObject

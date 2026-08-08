@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\Form\Components\Form;
+use Lattice\Form\FormDefinition;
 use Workbench\App\Forms\Fields\BuilderFieldForm;
 use Workbench\App\Forms\Fields\RepeaterFieldForm;
 
@@ -38,6 +39,7 @@ dataset('nested field forms', [
 
 it('accepts a valid nested rows payload through the form endpoint', function (string $formClass, string $action, array $validItems, string $redirect): void {
     $this->actingAs(workbenchTestUser());
+    assert(is_a($formClass, FormDefinition::class, true));
     $form = wire(Form::use($formClass));
 
     post($action, ['items' => $validItems], $this->latticeHeaders($form))
@@ -46,6 +48,7 @@ it('accepts a valid nested rows payload through the form endpoint', function (st
 
 it('rejects a nested rows payload missing a required row field', function (string $formClass, string $action, array $validItems, string $redirect, array $invalidItems, string $errorKey): void {
     $this->actingAs(workbenchTestUser());
+    assert(is_a($formClass, FormDefinition::class, true));
     $form = wire(Form::use($formClass));
 
     post($action, ['items' => $invalidItems], $this->latticeHeaders($form))

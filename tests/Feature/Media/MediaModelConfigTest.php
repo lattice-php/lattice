@@ -49,7 +49,7 @@ test('deleting the configured model cascades its attachment rows', function (): 
     $media = Media::factory()->create();
     $product->syncMedia([$media->getKey()], 'images');
 
-    Media::modelQuery()->findOrFail($media->getKey())->delete();
+    Media::modelQuery()->whereKey($media->getKey())->firstOrFail()->delete();
 
     expect(DB::table('media_attachments')->count())->toBe(0);
 });

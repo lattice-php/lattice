@@ -28,7 +28,7 @@ it('archives a product via the row action with confirmation', function (): void 
 
     $page->assertNoSmoke();
 
-    expect($product->fresh()->status)->toBe('archived');
+    expect($product->fresh()?->status)->toBe('archived');
 });
 
 it('cancels the archive confirmation without changing the product', function (): void {
@@ -41,7 +41,7 @@ it('cancels the archive confirmation without changing the product', function ():
         ->click('@confirm-cancel')
         ->assertNoSmoke();
 
-    expect($product->fresh()->status)->toBe('active');
+    expect($product->fresh()?->status)->toBe('active');
 });
 
 it('rejects a product through a modal form', function (): void {
@@ -63,7 +63,7 @@ it('rejects a product through a modal form', function (): void {
     });
 
     retryUntil(function () use ($product): void {
-        expect($product->fresh()->status)->toBe('archived');
+        expect($product->fresh()?->status)->toBe('archived');
     });
 
     $page->assertNoSmoke();

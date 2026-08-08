@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 use Lattice\Chat\ChatMessage;
 use Lattice\Chat\ChatPart;
 use Lattice\Chat\Enums\ChatRole;
-use Lattice\Core\Support\Wire;
 use Lattice\Remote\RemoteSourceRegistry;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Workbench\App\Chat\FakeConversationStore;
@@ -28,9 +27,9 @@ final readonly class ChatAgentController
         $message = trim((string) $request->input('message'));
 
         $this->store->append(
-            Wire::toArray(new ChatMessage((string) Str::uuid(), ChatRole::User, [
+            new ChatMessage((string) Str::uuid(), ChatRole::User, [
                 ChatPart::text($message),
-            ])),
+            ]),
         );
 
         return response()->stream(function () use ($message, $request): void {
@@ -55,11 +54,11 @@ final readonly class ChatAgentController
             $this->writeFrame(['type' => 'done']);
 
             $this->store->append(
-                Wire::toArray(new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
+                new ChatMessage((string) Str::uuid(), ChatRole::Assistant, [
                     ChatPart::text(self::REPLY),
                     $toolCall,
                     ...$schema,
-                ])),
+                ]),
             );
         }, 200, [
             'Cache-Control' => 'no-cache',
