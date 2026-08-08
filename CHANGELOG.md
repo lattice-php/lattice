@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.44.0](https://github.com/lattice-php/lattice/compare/0.43.0...0.44.0) (2026-08-07)
+
+
+### Features
+
+* **table:** toolbar slot and unified toolbar row ([#417](https://github.com/lattice-php/lattice/issues/417)) ([6b09a07](https://github.com/lattice-php/lattice/commit/6b09a0719bc5f0da8516828c24654f5ef7fd3b15))
+
 ## [0.43.0](https://github.com/lattice-php/lattice/compare/0.42.0...0.43.0) (2026-08-07)
 
 
