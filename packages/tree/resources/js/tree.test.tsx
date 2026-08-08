@@ -2,7 +2,8 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fakeNode, jsonResponse, stubFetch } from "@lattice-php/core/test-support";
 import { renderTree, sampleNodes as nodes, treeNode } from "./test-support";
-import TreeComponent, { type TreeNodeData } from "./tree";
+import type { TreeNodeData } from "./types";
+import TreeComponent from "./tree";
 
 afterEach(() => {
   vi.unstubAllGlobals();

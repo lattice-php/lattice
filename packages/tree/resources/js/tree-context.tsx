@@ -12,9 +12,8 @@ import type { RefObject } from "react";
 import { runAction } from "@lattice-php/action";
 import { apiFetch, apiJson } from "@lattice-php/core";
 import { usePersistentState } from "@lattice-php/ui/lib/use-persistent-state";
-import type { Node } from "@lattice-php/core";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import type { TreeNodeData } from "./tree";
+import type { Tree, TreeNodeData } from "./types";
 
 export const ROOTS_KEY = "";
 
@@ -266,7 +265,7 @@ function visibleOrder(registry: Map<string, TreeItemRegistration>): TreeItemRegi
 }
 
 async function runTreeAction(
-  action: Node<"action">,
+  action: NonNullable<Tree["moveAction"]>,
   payload: Record<string, unknown>,
   dispatch: ReturnType<typeof useEffectDispatcher>,
 ): Promise<boolean> {
@@ -312,10 +311,10 @@ export function useTreeState({
   componentRef: string | null;
   lazy: boolean;
   nodes: TreeNodeData[];
-  moveAction: Node<"action"> | null;
+  moveAction: Tree["moveAction"];
   rememberState: boolean;
   revision: string | number | null;
-  selectAction: Node<"action"> | null;
+  selectAction: Tree["selectAction"];
   storageKey: string;
 }): TreeContextValue {
   const [expanded, setExpanded] = usePersistentState<Set<string>>(

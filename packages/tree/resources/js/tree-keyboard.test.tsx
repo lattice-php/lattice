@@ -9,7 +9,7 @@ import {
   stubMoveFetch,
   treeNode,
 } from "./test-support";
-import { type TreeNodeData } from "./tree";
+import type { TreeNodeData } from "./types";
 
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),

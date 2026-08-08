@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
 import { nodeIdentity, Renderer } from "@lattice-php/core";
 import { cn } from "@lattice-php/ui/lib/utils";
-import type { Node, RendererComponent, Schema } from "@lattice-php/core";
+import type { RendererComponent } from "@lattice-php/core";
 import {
   announce,
   attachTreeItemInstruction,
@@ -15,44 +15,8 @@ import {
 import type { TreeItemInstruction } from "@lattice-php/lattice/dnd";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
+import type { TreeNodeData } from "./types";
 import { ROOTS_KEY, TreeContext, useTreeContext, useTreeState } from "./tree-context";
-
-/**
- * The dense wire shape a tree node serializes as (see `TreeNode::data()`):
- * every field always ships, with `null`/`false`/`[]` in place of an omitted
- * key. `schema` is the compiled body — icon/text-or-link/badge/actions —
- * rendered by core's `<Renderer>`; `label` stays a plain string used for
- * typeahead and registry registration, not for rendering.
- */
-export type TreeNodeData = {
-  readonly id: string;
-  readonly label: string;
-  schema: Schema;
-  href: string | null;
-  disabled: boolean;
-  hasChildren: boolean;
-  children: TreeNodeData[];
-};
-
-export type TreeWireProps = {
-  activeId: string | null;
-  activePath: string[] | null;
-  defaultExpanded: string[];
-  rememberState: boolean;
-  nodes: TreeNodeData[];
-  ref: string | null;
-  endpoint: string | null;
-  lazy: boolean;
-  moveAction: Node<"action"> | null;
-  revision: string | number | null;
-  selectAction: Node<"action"> | null;
-};
-
-declare module "@lattice-php/core" {
-  interface ComponentProps {
-    tree: TreeWireProps;
-  }
-}
 
 function isExpandable(
   node: TreeNodeData,
