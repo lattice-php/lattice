@@ -5,7 +5,6 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Facades\Http;
 use Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Core\Facades\Lattice;
-use Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Remote\RemoteSchemaEndpoint;
 use Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Tests\Fixtures\Remote\DynamicExternalAppRemoteSource;
@@ -71,7 +70,7 @@ test('dynamic remote source keys resolve the same source during token exchange',
         RemoteSchemaEndpoint::url('https://acme.example.test/schema.json', allowedHosts: ['acme.example.test']),
     );
 
-    $ref = app(ComponentReferenceSigner::class)->seal('remote.data-list', 'tickets', [
+    $ref = sealedRef('remote.data-list', 'tickets', [
         'audience' => 'https://acme.example.test',
         'source' => 'external-app:acme',
         'scopes' => ['tickets.read'],

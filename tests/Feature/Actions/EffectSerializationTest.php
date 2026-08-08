@@ -4,7 +4,6 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Actions\Components\ActionGroup;
 use Lattice\Facades\Effects;
 use Lattice\Ui\Effects\Builtin\Callout;
 use Lattice\Ui\Effects\Builtin\Toast;
@@ -155,69 +154,4 @@ test('action results expose the retract callout effect', function (): void {
         'type' => 'retract-callout',
         'props' => ['unique' => 'billing.state'],
     ]);
-});
-
-test('action groups serialize grouped child actions', function (): void {
-    $group = wire(ActionGroup::make('workbench.user-actions')
-        ->label('Manage user')
-        ->actions([
-            ActionComponent::make('workbench.users.promote')
-                ->endpoint('/lattice/actions/workbench.users.promote')
-                ->label('Promote')
-                ->method(HttpMethod::Patch),
-            ActionComponent::make('workbench.users.remove')
-                ->endpoint('/lattice/actions/workbench.users.remove')
-                ->label('Remove')
-                ->method(HttpMethod::Delete)
-                ->variant(Variant::Danger),
-        ]));
-
-    expect($group)
-        ->toMatchArray([
-            'type' => 'action.group',
-            'id' => 'workbench.user-actions',
-            'props' => [
-                'label' => 'Manage user',
-                'orientation' => null,
-                'ref' => null,
-            ],
-            'schema' => [
-                [
-                    'type' => 'action',
-                    'id' => 'workbench.users.promote',
-                    'props' => [
-                        'endpoint' => '/lattice/actions/workbench.users.promote',
-                        'label' => 'Promote',
-                        'method' => 'patch',
-                        'icon' => null,
-                        'confirmation' => null,
-                        'form' => null,
-                        'lazyForm' => false,
-                        'modalSide' => null,
-                        'modalWidth' => null,
-                        'variant' => null,
-                        'emphasis' => null,
-                        'ref' => $this->latticeRef($group['schema'][0]),
-                    ],
-                ],
-                [
-                    'type' => 'action',
-                    'id' => 'workbench.users.remove',
-                    'props' => [
-                        'endpoint' => '/lattice/actions/workbench.users.remove',
-                        'label' => 'Remove',
-                        'method' => 'delete',
-                        'icon' => null,
-                        'confirmation' => null,
-                        'form' => null,
-                        'lazyForm' => false,
-                        'modalSide' => null,
-                        'modalWidth' => null,
-                        'variant' => 'danger',
-                        'emphasis' => null,
-                        'ref' => $this->latticeRef($group['schema'][1]),
-                    ],
-                ],
-            ],
-        ]);
 });

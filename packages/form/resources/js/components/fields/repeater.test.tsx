@@ -43,7 +43,7 @@ it("adds a row up to maxItems", () => {
 
 it("removes a row", () => {
   wrap(<RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>, {
-    items: [{ name: "a" }, { name: "b" }],
+    initial: { items: [{ name: "a" }, { name: "b" }] },
   });
   expect(screen.getAllByTestId("child")).toHaveLength(2);
   const firstRow = screen.getByTestId("repeater-items-row-0");
@@ -71,7 +71,7 @@ it("renders declared row actions in a kebab and duplicates a row", () => {
   });
 
   wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {
-    items: [{ name: "a" }],
+    initial: { items: [{ name: "a" }] },
   });
 
   expect(screen.getAllByTestId("child")).toHaveLength(1);
@@ -84,11 +84,9 @@ it("renders declared row actions in a kebab and duplicates a row", () => {
 });
 
 it("shows the array-level error for the repeater field", () => {
-  wrap(
-    <RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>,
-    {},
-    { items: "Must have at least 1 item" },
-  );
+  wrap(<RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>, {
+    errors: { items: "Must have at least 1 item" },
+  });
   expect(screen.getByText("Must have at least 1 item")).toBeInTheDocument();
 });
 
@@ -111,7 +109,7 @@ it("renders the table layout with a header from the schema", () => {
     ],
   });
   wrap(<RepeaterComponent node={node}>{null}</RepeaterComponent>, {
-    items: [{ qty: "1", price: "2" }],
+    initial: { items: [{ qty: "1", price: "2" }] },
   });
   expect(screen.getByText("Qty")).toBeInTheDocument();
   expect(screen.getByText("Price")).toBeInTheDocument();
@@ -121,7 +119,7 @@ it("renders the table layout with a header from the schema", () => {
 
 it("does not re-render sibling rows when one row changes", () => {
   wrap(<RepeaterComponent node={repeaterNode}>{null}</RepeaterComponent>, {
-    items: [{ name: "a" }, { name: "b" }],
+    initial: { items: [{ name: "a" }, { name: "b" }] },
   });
 
   renderCounts.clear();

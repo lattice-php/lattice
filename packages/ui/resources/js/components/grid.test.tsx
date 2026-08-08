@@ -2,11 +2,9 @@ import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
-import { renderWithRegistry } from "@lattice-php/core/test-support";
-import type { Node, RendererComponent } from "@lattice-php/core/types";
+import { renderWithRegistry, TextProbe } from "@lattice-php/core/test-support";
+import type { Node } from "@lattice-php/core/types";
 import GridComponent from "./grid";
-
-const TextProbe: RendererComponent<"text"> = ({ node }) => <span>{String(node.props?.text)}</span>;
 
 function renderGrid(
   props: Record<string, unknown>,

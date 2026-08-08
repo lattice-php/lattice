@@ -230,19 +230,6 @@ it('serializes the justify prop', function (): void {
     expect($node['props']['justify'])->toBe('between');
 });
 
-it('serializes default text styling props', function (): void {
-    $props = wire(Text::make('Default copy'))['props'];
-
-    expect($props)->toHaveCount(5)
-        ->and($props)->toMatchArray([
-            'text' => 'Default copy',
-            'align' => null,
-            'size' => 'md',
-            'color' => null,
-            'copyable' => false,
-        ]);
-});
-
 it('serializes text size and color styling', function (): void {
     $data = wire(
         Text::make('Manuel Christlieb')

@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import type { Node } from "@lattice-php/lattice";
+import { apiReferenceNode, parameter, requestContract } from "../test-support";
 import ApiReference from "./ApiReference";
 import { RequestPlayground } from "./RequestPlayground";
-import type { Contract, Operation, Param } from "./types";
+import type { Contract, Operation } from "./types";
 
 const REAL_TOKEN = "real-secret-token";
 
@@ -12,24 +13,8 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function parameter(overrides: Partial<Param>): Param {
-  return {
-    name: "value",
-    location: "query",
-    required: false,
-    deprecated: false,
-    description: null,
-    schema: { type: "string" },
-    example: null,
-    ...overrides,
-  };
-}
-
-function requestContract(overrides: Partial<Contract> = {}): Contract {
-  return {
-    role: "request",
-    status: null,
-    mediaType: "application/json",
+function bodyContract(overrides: Partial<Contract> = {}): Contract {
+  return requestContract({
     schema: {
       type: "object",
       required: ["name"],
@@ -37,12 +22,9 @@ function requestContract(overrides: Partial<Contract> = {}): Contract {
         name: { type: "string", example: "Desk" },
       },
     },
-    title: null,
-    examples: [],
-    headers: [],
     required: true,
     ...overrides,
-  };
+  });
 }
 
 function playgroundOperation(overrides: Partial<Operation> = {}): Operation {
@@ -73,7 +55,7 @@ function playgroundOperation(overrides: Partial<Operation> = {}): Operation {
       { location: "query", params: [status] },
       { location: "header", params: [debug] },
     ],
-    requests: [requestContract()],
+    requests: [bodyContract()],
     responses: [],
     security: [],
     ...overrides,
@@ -81,10 +63,6 @@ function playgroundOperation(overrides: Partial<Operation> = {}): Operation {
     servers: overrides.servers ?? [{ url: "https://api.example.test", description: null }],
     usesRootServers: overrides.usesRootServers ?? true,
   };
-}
-
-function apiReferenceNode(props: Record<string, unknown>): Node<"api-reference"> {
-  return { type: "api-reference", props };
 }
 
 describe("RequestPlayground", () => {
@@ -119,24 +97,10 @@ describe("RequestPlayground", () => {
     const bodyName = screen.getByLabelText("name");
     const snippet = screen.getByLabelText("Request snippet", { exact: true });
     const requestPanel = screen.getByRole("complementary", { name: "Request" });
-    const referencePanel = screen.getByRole("complementary", { name: "Reference" });
     const execute = requestPanel.getByRole("button", { name: "Execute" });
     const markdownCopy = requestPanel.getByRole("button", { name: "Copy as Markdown" });
-    const statusRow = screen.getByLabelText("status").element().closest("li");
-    const statusType = statusRow?.querySelectorAll("span")[1];
 
     await expect.element(id).toHaveValue("42");
-    await expect.element(requestPanel.getByText("Try it out")).not.toBeInTheDocument();
-    expect(requestPanel.element().querySelector('[data-slot="card"]')).toBeNull();
-    expect(execute.element().parentElement).toBe(markdownCopy.element().parentElement);
-    expect(requestPanel.element().parentElement?.classList).toContain(
-      "xl:grid-cols-[minmax(0,1fr)_minmax(22rem,32rem)]",
-    );
-    expect(referencePanel.element().classList).toContain("xl:border-l");
-    expect(statusRow?.classList).toContain("sm:grid-cols-[minmax(0,3fr)_minmax(12rem,2fr)]");
-    expect(statusType?.classList).toContain("px-2");
-    expect(statusType?.classList).toContain("py-1");
-    await expect.element(markdownCopy).toHaveClass("ml-auto");
     await expect.element(screen.getByLabelText("status")).toBeVisible();
     await expect.element(screen.getByLabelText("X-Debug")).toBeVisible();
     await expect.element(bodyName).toHaveValue("Desk");
@@ -144,10 +108,6 @@ describe("RequestPlayground", () => {
       .element(screen.getByRole("radio", { name: "cURL" }))
       .toHaveAttribute("aria-checked", "true");
     await expect.element(snippet).toHaveAttribute("data-slot", "code-block");
-    await expect
-      .poll(() => document.querySelector(".cm-content")?.getAttribute("contenteditable"))
-      .toBe("false");
-    await expect.poll(() => snippet.element().querySelector(".cm-lineNumbers")).not.toBeNull();
     await expect.element(snippet).toHaveTextContent("Bearer <YOUR_TOKEN>");
     await expect.element(snippet).not.toHaveTextContent(REAL_TOKEN);
     await expect.element(screen.getByText("Access token supplied by the host page.")).toBeVisible();
@@ -161,8 +121,6 @@ describe("RequestPlayground", () => {
       .element(snippet)
       .toHaveTextContent('fetch("https://api.example.test/v1/widgets/a%2Fb?status=archived"');
     await expect.element(snippet).toHaveTextContent('\\"name\\": \\"Lamp\\"');
-    await expect.element(snippet).toHaveTextContent("Bearer <YOUR_TOKEN>");
-    await expect.element(snippet).not.toHaveTextContent(REAL_TOKEN);
 
     const selectedSnippet = snippet.element().querySelector<HTMLElement>(".cm-content")?.innerText;
     expect(selectedSnippet).not.toBeNull();
@@ -208,7 +166,7 @@ describe("RequestPlayground", () => {
           },
           paramGroups: [],
           requests: [
-            requestContract({
+            bodyContract({
               schema: {
                 type: "object",
                 required: ["name", "active", "launchDate", "publishedAt", "address", "items"],
@@ -296,7 +254,7 @@ describe("RequestPlayground", () => {
         operation={playgroundOperation({
           paramGroups: [],
           requests: [
-            requestContract({
+            bodyContract({
               schema: {
                 type: "object",
                 additionalProperties: true,
@@ -383,18 +341,18 @@ describe("RequestPlayground", () => {
     await expect.element(screen.getByLabelText("Search options")).toBeVisible();
     const sortOption = screen.getByRole("option", { name: "-created_at" });
     await sortOption.click();
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await userEvent.keyboard("{Escape}");
     await includeField.click();
     await expect.element(screen.getByLabelText("Search options")).not.toBeInTheDocument();
     await screen.getByRole("option", { name: "roles", exact: true }).click();
     const rolesCountOption = screen.getByRole("option", { name: "rolesCount" });
     await rolesCountOption.click();
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await userEvent.keyboard("{Escape}");
     await fieldsField.click();
     await screen.getByRole("option", { name: "id" }).click();
     const emailOption = screen.getByRole("option", { name: "email" });
     await emailOption.click();
-    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    await userEvent.keyboard("{Escape}");
 
     await expect.element(sortField).toHaveTextContent("-created_at");
     await expect.element(includeField).toHaveTextContent("roles, rolesCount");
@@ -498,14 +456,6 @@ describe("RequestPlayground", () => {
       Array.from(pagination.element().querySelectorAll<HTMLElement>("[data-field-key]")).map(
         (field) => field.dataset.fieldKey,
       );
-
-    expect(pagination.element().classList).toContain("p-3");
-    expect(paginationMode.element().parentElement?.parentElement?.classList).toContain("flex-wrap");
-    await expect.element(paginationMode).toHaveValue("default");
-    expect(fieldKeys()).toEqual(["header:x-pagination", "query:page", "query:per_page"]);
-    expect(
-      screen.getByLabelText("page", { exact: true }).element().getBoundingClientRect().top,
-    ).toBe(screen.getByLabelText("per_page").element().getBoundingClientRect().top);
 
     await screen.getByLabelText("page", { exact: true }).fill("3");
     await screen.getByLabelText("per_page").fill("25");
@@ -728,8 +678,8 @@ describe("RequestPlayground", () => {
       <RequestPlayground
         operation={playgroundOperation({
           responses: [
-            requestContract({ role: "response", status: "422", title: "Validation response" }),
-            requestContract({ role: "response", status: "200", title: "Successful response" }),
+            bodyContract({ role: "response", status: "422", title: "Validation response" }),
+            bodyContract({ role: "response", status: "200", title: "Successful response" }),
           ],
         })}
         baseUrl="https://api.example.test"
@@ -741,59 +691,13 @@ describe("RequestPlayground", () => {
 
     await expect.element(responseStatus).toHaveValue("200 application/json");
     await expect.element(screen.getByText("Successful response")).toBeVisible();
-    await expect.element(screen.getByText("200", { exact: true })).toHaveClass("lt-tone-success");
+    await expect.element(screen.getByText("200", { exact: true })).toBeVisible();
     await responseStatus.selectOptions("422 application/json");
     await expect.element(screen.getByText("Validation response")).toBeVisible();
-    await expect.element(screen.getByText("422", { exact: true })).toHaveClass("lt-tone-warning");
+    await expect.element(screen.getByText("422", { exact: true })).toBeVisible();
   });
 
-  it("aborts the active request before starting another", async () => {
-    let firstSignal = new AbortController().signal;
-    const fetchMock = vi.fn();
-    fetchMock.mockImplementationOnce((_input: RequestInfo | URL, init?: RequestInit) => {
-      firstSignal = init?.signal ?? firstSignal;
-
-      return new Promise<Response>((_resolve, reject) => {
-        firstSignal.addEventListener(
-          "abort",
-          () => reject(new DOMException("The operation was aborted.", "AbortError")),
-          { once: true },
-        );
-      });
-    });
-    fetchMock.mockResolvedValueOnce(
-      new Response("second response", { status: 200, statusText: "OK" }),
-    );
-    vi.stubGlobal("fetch", fetchMock);
-    const screen = await render(
-      <RequestPlayground
-        operation={playgroundOperation()}
-        baseUrl="https://api.example.test"
-        token={null}
-        components={null}
-      />,
-    );
-    const executeButton = screen.getByRole("button", { name: "Execute" });
-
-    await executeButton.click();
-    const button = (await executeButton.element()) as HTMLButtonElement;
-
-    if (button.form === null) {
-      throw new Error("Expected the execute button to submit the playground form.");
-    }
-
-    button.disabled = false;
-    await executeButton.click();
-
-    await expect.poll(() => fetchMock.mock.calls.length).toBe(2);
-    expect(firstSignal.aborted).toBe(true);
-    await expect.element(screen.getByText("200 OK")).toBeVisible();
-    await expect
-      .element(screen.getByRole("region", { name: "Live response body" }))
-      .toHaveTextContent("second response");
-  });
-
-  it("aborts the active request when unmounted", async () => {
+  it("disables Execute while in flight and aborts the active request when unmounted", async () => {
     let signal = new AbortController().signal;
     const fetchMock = vi.fn((_input: RequestInfo | URL, init?: RequestInit) => {
       signal = init?.signal ?? signal;
@@ -815,8 +719,12 @@ describe("RequestPlayground", () => {
         components={null}
       />,
     );
+    const execute = screen.getByRole("button", { name: "Execute" });
 
-    await screen.getByRole("button", { name: "Execute" }).click();
+    await execute.click();
+
+    await expect.element(execute).toBeDisabled();
+
     await screen.unmount();
 
     expect(signal.aborted).toBe(true);

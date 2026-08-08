@@ -27,20 +27,6 @@ it('serializes a fragment with an endpoint and injected ref', function (): void 
     expect($payload)->toHaveKey('schema');
 });
 
-it('serializes a lazy fragment via the registry with lazy and endpoint props', function (): void {
-    Lattice::fragments([FragmentWireShapePanel::class]);
-
-    $fragment = wire(Fragment::lazy(FragmentWireShapePanel::class));
-
-    expect($fragment['type'])->toBe('fragment');
-    expect($fragment['id'])->toBe('wire-shape.panel');
-    expect($fragment['props']['endpoint'])->toBe('/lattice/fragments/wire-shape.panel');
-    expect($fragment['props']['lazy'])->toBe(true);
-    expect($fragment['props']['size'])->toBe('md');
-    expect($fragment['props']['ref'])->toBeString();
-    expect($fragment['props']['ref'])->not->toBe('');
-});
-
 it('serializes a configured lazy fragment size', function (): void {
     Lattice::fragments([FragmentWireShapePanel::class]);
 

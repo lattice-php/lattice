@@ -7,17 +7,12 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Lattice\Core\Facades\Lattice;
 use Lattice\Media\Actions\UploadMediaAction;
 use Lattice\Media\Jobs\GenerateMediaConversions;
 use Lattice\Media\Models\Media;
 
-use function Pest\Laravel\actingAs;
-
 beforeEach(function (): void {
-    Storage::fake('public');
-    Lattice::actions([UploadMediaAction::class]);
-    actingAs(workbenchTestUser());
+    bootstrapMediaTest(actions: [UploadMediaAction::class]);
 });
 
 test('multipart uploads create media rows on the configured disk', function (): void {

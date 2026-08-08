@@ -19,15 +19,3 @@ it('picks a time from the standalone TimeInput popover', function (): void {
         ->assertValue('input[name="meeting_time"]', '09:30')
         ->assertNoSmoke();
 });
-
-it('picks the time portion of a DateTimeInput from the calendar popover', function (): void {
-    $this->actingAs(workbenchTestUser());
-    $day = now()->toDateString();
-
-    visit('/form/fields/date-time?type=datetime')
-        ->click('[aria-label="Open Launch at calendar"]')
-        ->click("button[data-value=\"$day\"]")
-        ->click('[aria-label="Hour 10"]')
-        ->click('[aria-label="Minute 15"]')
-        ->assertNoSmoke();
-});

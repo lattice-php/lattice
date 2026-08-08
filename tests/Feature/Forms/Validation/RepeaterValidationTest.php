@@ -43,14 +43,6 @@ it('rejects more rows than maxItems', function (): void {
     (new FieldValidator)->validate([repeaterField()], $request);
 })->throws(ValidationException::class);
 
-it('casts each row through child field casts', function (): void {
-    $request = Request::create('/', 'POST', ['items' => [['name' => 'A'], ['name' => 'B']]]);
-
-    $validated = (new FieldValidator)->validate([repeaterField()], $request);
-
-    expect(withoutRowIds($validated['items']))->toBe([['name' => 'A'], ['name' => 'B']]);
-});
-
 it('requires row children from same-row sibling conditions', function (): void {
     $field = Repeater::make('items')
         ->schema([
@@ -58,20 +50,12 @@ it('requires row children from same-row sibling conditions', function (): void {
             TextInput::make('note')->requiredWhen('product', '!=', ''),
         ]);
 
-    $request = Request::create('/', 'POST', ['items' => [
+    $errors = validationErrors(testFormDefinition(fn (): array => [$field]), ['items' => [
         ['product' => '', 'note' => ''],
         ['product' => 'SKU-1', 'note' => ''],
     ]]);
 
-    $errors = null;
-
-    try {
-        (new FieldValidator)->validate([$field], $request);
-    } catch (ValidationException $exception) {
-        $errors = $exception->errors();
-    }
-
-    expect(array_keys($errors ?? []))->toBe(['items.1.note']);
+    expect(array_keys($errors))->toBe(['items.1.note']);
 });
 
 it('lets row values shadow same-named form values for conditions', function (): void {
@@ -111,16 +95,16 @@ it('skips validation for row children hidden by same-row conditions', function (
     expect($validated['items'][0]['kind'])->toBe('free');
 });
 
-it('validates repeater children recursively with full error paths', function (): void {
+it('validates repeater children recursively with full error paths and child labels', function (): void {
     $field = Repeater::make('sections')
         ->schema([
             TextInput::make('title')->required(),
             Repeater::make('items')->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name', 'Item Name')->required(),
             ]),
         ]);
 
-    $request = Request::create('/', 'POST', ['sections' => [[
+    $errors = validationErrors(testFormDefinition(fn (): array => [$field]), ['sections' => [[
         'title' => 'Hardware',
         'items' => [
             ['name' => 'Desk'],
@@ -128,40 +112,8 @@ it('validates repeater children recursively with full error paths', function ():
         ],
     ]]]);
 
-    $errors = null;
-
-    try {
-        (new FieldValidator)->validate([$field], $request);
-    } catch (ValidationException $exception) {
-        $errors = $exception->errors();
-    }
-
-    expect(array_keys($errors ?? []))->toBe(['sections.0.items.1.name']);
-});
-
-it('uses nested repeater child labels in validation messages', function (): void {
-    $field = Repeater::make('sections')
-        ->schema([
-            Repeater::make('items')->schema([
-                TextInput::make('name', 'Item Name')->required(),
-            ]),
-        ]);
-
-    $request = Request::create('/', 'POST', ['sections' => [[
-        'items' => [
-            ['name' => ''],
-        ],
-    ]]]);
-
-    $errors = null;
-
-    try {
-        (new FieldValidator)->validate([$field], $request);
-    } catch (ValidationException $exception) {
-        $errors = $exception->errors();
-    }
-
-    expect($errors['sections.0.items.0.name'][0] ?? null)->toBe('The Item Name field is required.');
+    expect(array_keys($errors))->toBe(['sections.0.items.1.name'])
+        ->and($errors['sections.0.items.1.name'][0])->toBe('The Item Name field is required.');
 });
 
 it('returns recursively cast repeater values', function (): void {

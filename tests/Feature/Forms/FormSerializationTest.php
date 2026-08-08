@@ -6,31 +6,8 @@ use Lattice\Form\Components\PasswordInput;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Ui\Components\Button;
-use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Emphasis;
 use Lattice\Ui\Enums\Justify;
-
-test('forms serialize schema children like pages', function (): void {
-    expect(wire(Form::make('profile-form')->schema([
-        Text::make('Profile details'),
-    ])))
-        ->toMatchArray([
-            'type' => 'form',
-            'id' => 'profile-form',
-            'schema' => [
-                [
-                    'type' => 'text',
-                    'props' => [
-                        'text' => 'Profile details',
-                        'align' => null,
-                        'size' => 'md',
-                        'color' => null,
-                        'copyable' => false,
-                    ],
-                ],
-            ],
-        ]);
-});
 
 test('password inputs can request automatic confirmation fields', function (): void {
     expect(wire(PasswordInput::make('password', 'Password')

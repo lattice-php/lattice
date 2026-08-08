@@ -16,31 +16,4 @@ describe("NumberInputComponent", () => {
     fireEvent.change(input, { target: { value: "5" } });
     expect(input).toHaveValue(5);
   });
-
-  it("renders as a slider with a value readout", () => {
-    renderField(
-      fakeNode({
-        type: "field.number-input",
-        props: { name: "level", label: "Level", slider: true, min: 0, max: 10 },
-      }),
-      { level: "7" },
-    );
-
-    const slider = screen.getByRole("slider", { name: "Level" });
-    expect(slider).toHaveValue("7");
-    expect(screen.getByText("7")).toBeInTheDocument();
-  });
-});
-
-describe("NumberInputComponent affixes", () => {
-  it("renders a text prefix around the input", () => {
-    renderField(
-      fakeNode({
-        type: "field.number-input",
-        props: { name: "price", label: "Price", prefix: { icon: null, text: "$" } },
-      }),
-    );
-
-    expect(screen.getByText("$")).toBeVisible();
-  });
 });

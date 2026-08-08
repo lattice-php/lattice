@@ -1,9 +1,22 @@
 import type { RenderResult } from "@testing-library/react";
+import { vi } from "vitest";
 import { createRegistry, eagerComponent, type RendererComponent } from "@lattice-php/core";
-import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
+import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
 import TreeComponent, { type TreeNodeData } from "./tree";
 
-export { fakeNode, renderWithRegistry };
+export const moveAction = fakeNode({
+  props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
+  type: "action",
+});
+
+export function stubMoveFetch(status = 200) {
+  const fetchMock = vi
+    .fn<typeof fetch>()
+    .mockResolvedValue(jsonResponse({ effects: [] }, { status }));
+  vi.stubGlobal("fetch", fetchMock);
+
+  return fetchMock;
+}
 
 /**
  * Stand-in body component registered under `"test.text"` alongside

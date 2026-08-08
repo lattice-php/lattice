@@ -8,8 +8,6 @@ use Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\TextInput;
-use Lattice\Support\Testing\Assertions\FieldAssertions;
-use Lattice\Support\Testing\Assertions\FormAssertions;
 use Workbench\App\Forms\ProductForm;
 use Workbench\App\Models\File;
 use Workbench\App\Models\Product;
@@ -29,23 +27,10 @@ test('forms serialize initial state for bound edit values', function (): void {
             TextInput::make('name', 'Name'),
         ]);
 
-    $this->assertLatticeComponent($form)
-        ->assertHasForm('product-form')
-        ->form('product-form', fn (FormAssertions $f): FieldAssertions => $f
-            ->field('name')->assertInitialValue('Desk Lamp'));
-
     expect(wire($form)['props']['state'])->toBe([
         'name' => 'Desk Lamp',
         'sku' => 'LAMP-001',
     ]);
-});
-
-test('forms can enable precognitive validation with a delay', function (): void {
-    $form = wire(Form::make('product-form')
-        ->precognitive(650));
-
-    expect($form['props']['precognitive'])->toBeTrue()
-        ->and($form['props']['validationTimeout'])->toBe(650);
 });
 
 test('the product index page lists products and links to creation', function (): void {

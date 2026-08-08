@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Validator;
-use Lattice\Core\Facades\Lattice;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Media\Actions\DeleteMediaAction;
@@ -15,13 +14,12 @@ use Lattice\Media\Tables\MediaTable;
 use Workbench\App\Forms\ProductMediaForm;
 use Workbench\App\Models\Product;
 
-use function Pest\Laravel\actingAs;
-
 beforeEach(function (): void {
-    Lattice::tables([MediaTable::class]);
-    Lattice::actions([UploadMediaAction::class, UpdateMediaAction::class, DeleteMediaAction::class]);
-    Lattice::forms([ProductMediaForm::class]);
-    actingAs(workbenchTestUser());
+    bootstrapMediaTest(
+        tables: [MediaTable::class],
+        actions: [UploadMediaAction::class, UpdateMediaAction::class, DeleteMediaAction::class],
+        forms: [ProductMediaForm::class],
+    );
 });
 
 test('hydrateState resolves stored ids to display descriptors in order', function (): void {

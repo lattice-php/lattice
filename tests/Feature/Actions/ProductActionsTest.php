@@ -2,9 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Storage;
-use Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Core\Facades\Lattice;
-use Lattice\Core\Services\ComponentReferenceSigner;
 use Workbench\App\Actions\ArchiveProductAction;
 use Workbench\App\Actions\ArchiveSelectedProductsAction;
 use Workbench\App\Actions\EditProductAction;
@@ -42,7 +40,7 @@ test('the product archive row action authorizes per row', function (): void {
     // so a legitimate render never produces a sealed ref here. Seal one directly to
     // prove the endpoint still enforces its own authorize() check regardless —
     // defense in depth against a forged or stale ref.
-    $ref = app(ComponentReferenceSigner::class)->seal('action', 'workbench.products.archive', [
+    $ref = sealedRef('action', 'workbench.products.archive', [
         'product_id' => $archived->getKey(),
     ]);
 
@@ -135,11 +133,7 @@ test('bulk form actions validate the submitted reason before archiving', functio
 
     $product = Product::factory()->create(['status' => 'active']);
 
-    $ref = app(ComponentReferenceSigner::class)->seal(
-        'action.bulk',
-        'workbench.products.reject-selected',
-        ['table' => 'workbench.products'],
-    );
+    $ref = sealedRef('action.bulk', 'workbench.products.reject-selected', ['table' => 'workbench.products']);
 
     $headers = $this->latticeHeaders($ref, ['Accept' => 'application/json']);
 
@@ -168,11 +162,7 @@ test('bulk form actions validate precognitively without archiving', function ():
 
     $product = Product::factory()->create(['status' => 'active']);
 
-    $ref = app(ComponentReferenceSigner::class)->seal(
-        'action.bulk',
-        'workbench.products.reject-selected',
-        ['table' => 'workbench.products'],
-    );
+    $ref = sealedRef('action.bulk', 'workbench.products.reject-selected', ['table' => 'workbench.products']);
 
     $precognition = $this->latticeHeaders($ref, [
         'Precognition' => 'true',
@@ -268,8 +258,7 @@ test('the edit product action removes existing images without new uploads', func
     ]);
     $product->images()->attach($image->getKey(), ['sort_order' => 1]);
 
-    $removedToken = app(SignsComponentReferences::class)
-        ->seal('file', 'images', ['disk' => 's3', 'path' => 'workbench/products/lamp.jpg']);
+    $removedToken = sealedRef('file', 'images', ['disk' => 's3', 'path' => 'workbench/products/lamp.jpg']);
 
     $this->callAction(EditProductAction::class, [
         'name' => 'Desk Lamp',

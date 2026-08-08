@@ -1,24 +1,11 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Contracts\Translation\HasLocalePreference;
-use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Models\User;
 
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 use function Pest\Laravel\withoutVite;
-
-test('workbench auth uses the locale aware workbench user model', function (): void {
-    $model = config('auth.providers.users.model');
-
-    expect($model)->toBe(User::class)
-        ->and(is_a($model, HasLocalePreference::class, true))->toBeTrue();
-
-    $user = new User(['locale' => 'de']);
-
-    expect($user->preferredLocale())->toBe('de');
-});
 
 test('login page renders a simple seeded credential form', function (): void {
     withoutVite();
@@ -41,12 +28,7 @@ test('login page renders a simple seeded credential form', function (): void {
 });
 
 test('workbench user can log in', function (): void {
-    User::query()->create([
-        'name' => 'Workbench User',
-        'email' => 'workbench@example.com',
-        'password' => 'password',
-        'locale' => 'en',
-    ]);
+    workbenchTestUser(['email' => 'workbench@example.com']);
 
     post('/login', [
         'email' => 'workbench@example.com',
@@ -67,9 +49,7 @@ test('invalid login keeps the user unauthenticated', function (): void {
 });
 
 test('authenticated workbench users can log out', function (): void {
-    $user = UserFactory::new()->create();
-
-    $this->actingAs($user);
+    $this->actingAs(workbenchTestUser());
 
     post('/logout')->assertRedirect('/login');
 

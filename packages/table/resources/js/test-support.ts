@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 import type { Node } from "@lattice-php/core/types";
 import type { ColumnFilter } from "./generated";
-import type { TableColumn, TablePagination, TableQuery, TableResult } from "./types";
+import type { TableColumn, TableNode, TablePagination, TableQuery, TableResult } from "./types";
 
 export function col(partial: {
   key: string;
@@ -58,11 +58,25 @@ export function tableQuery(overrides: Partial<TableQuery> = {}): Partial<TableQu
   };
 }
 
+export function tableNode(overrides: Partial<TableNode["props"]> = {}): TableNode {
+  return {
+    id: "workbench.products",
+    type: "table",
+    props: {
+      columns: [],
+      data: [],
+      endpoint: "/lattice/tables/workbench.products",
+      query: tableQuery(),
+      ...overrides,
+    },
+  };
+}
+
 export type TableResultOverrides = Partial<Omit<TableResult, "query">> & {
   query?: Partial<TableQuery>;
 };
 
-export function tableResponse(overrides: TableResultOverrides = {}): Response {
+function tableResponse(overrides: TableResultOverrides = {}): Response {
   return Response.json({
     data: [],
     pagination: {},
@@ -79,6 +93,16 @@ export function tableFetch(...responses: TableResultOverrides[]) {
 
     return tableResponse(response);
   });
+
+  vi.stubGlobal("fetch", fetch);
+
+  return fetch;
+}
+
+export function searchFetch(options: Array<{ label: string; value: string }>) {
+  const fetch = vi.fn<typeof globalThis.fetch>(async (input) =>
+    String(input).includes("_sub=search") ? Response.json({ options }) : tableResponse(),
+  );
 
   vi.stubGlobal("fetch", fetch);
 

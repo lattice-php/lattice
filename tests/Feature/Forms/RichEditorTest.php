@@ -2,14 +2,24 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
-use Lattice\Form\Components\Form;
 use Lattice\Form\Components\RichEditor;
 use Lattice\Form\FormDefinition;
 use Lattice\Form\RichContent;
 use Lattice\Form\RichEditor\EditorExtension;
 use Lattice\Form\RichEditor\Extensions\Bold;
 use Lattice\Form\RichEditor\Extensions\Italic;
-use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * @param  array<int, EditorExtension|string>|null  $extensions
+ */
+function richEditorDefinition(?array $extensions = null): FormDefinition
+{
+    return testFormDefinition(function () use ($extensions): array {
+        $editor = RichEditor::make('body', 'Body')->rules(['required']);
+
+        return [$extensions === null ? $editor : $editor->extensions($extensions)];
+    });
+}
 
 /**
  * @return array<string, mixed>
@@ -160,22 +170,7 @@ it('preserves tables and details through toArray', function (): void {
 });
 
 it('decodes the submitted json document during validation', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                RichEditor::make('body', 'Body')->rules(['required']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
-
-    $validated = $definition->validate(Request::create('/', 'POST', [
+    $validated = richEditorDefinition()->validate(Request::create('/', 'POST', [
         'body' => json_encode(richDocument()),
     ]));
 
@@ -185,21 +180,6 @@ it('decodes the submitted json document during validation', function (): void {
 });
 
 it('preserves submitted links during validation', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                RichEditor::make('body', 'Body')->rules(['required']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
-
     $document = [
         'type' => 'doc',
         'content' => [
@@ -221,7 +201,7 @@ it('preserves submitted links during validation', function (): void {
         ],
     ];
 
-    $validated = $definition->validate(Request::create('/', 'POST', [
+    $validated = richEditorDefinition()->validate(Request::create('/', 'POST', [
         'body' => json_encode($document),
     ]));
 
@@ -235,23 +215,7 @@ it('preserves submitted links during validation', function (): void {
 });
 
 it('strips node types outside the active extension set during validation', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
-                    Bold::make(),
-                    Italic::make(),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    $definition = richEditorDefinition([Bold::make(), Italic::make()]);
 
     $document = [
         'type' => 'doc',
@@ -279,22 +243,7 @@ it('strips node types outside the active extension set during validation', funct
 });
 
 it('strips marks outside the active extension set during validation', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
-                    Bold::make(),
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    $definition = richEditorDefinition([Bold::make()]);
 
     $document = [
         'type' => 'doc',
@@ -321,20 +270,7 @@ it('strips marks outside the active extension set during validation', function (
 });
 
 it('keeps the full document for the default extension set', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                RichEditor::make('body', 'Body')->rules(['required']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    $definition = richEditorDefinition();
 
     $document = [
         'type' => 'doc',
@@ -369,23 +305,7 @@ it('keeps the full document for the default extension set', function (): void {
 });
 
 it('strips nodes of client-only extension types during validation', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
-                    Bold::make(),
-                    'mention',
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    $definition = richEditorDefinition([Bold::make(), 'mention']);
 
     $document = [
         'type' => 'doc',
@@ -408,32 +328,19 @@ it('strips nodes of client-only extension types during validation', function ():
 });
 
 it('keeps nodes of a custom extension that declares their server types', function (): void {
-    $definition = new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
+    $definition = richEditorDefinition([
+        Bold::make(),
+        new class extends EditorExtension
         {
-            return $form->schema([
-                RichEditor::make('body', 'Body')->rules(['required'])->extensions([
-                    Bold::make(),
-                    new class extends EditorExtension
-                    {
-                        protected array $serverTypes = ['mention'];
+            protected array $serverTypes = ['mention'];
 
-                        #[Override]
-                        public function wireType(): string
-                        {
-                            return 'mention';
-                        }
-                    },
-                ]),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+            #[Override]
+            public function wireType(): string
+            {
+                return 'mention';
+            }
+        },
+    ]);
 
     $document = [
         'type' => 'doc',

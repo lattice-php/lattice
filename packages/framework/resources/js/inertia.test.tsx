@@ -5,6 +5,7 @@ import { setLocale } from "@lattice-php/ui/i18n/locale";
 import { createLayoutResolver, createPageResolver, withVisitHeaders } from "./inertia";
 import { SchemaLayout } from "./layout";
 import Page from "./page";
+import { payload } from "./test-support";
 import type { PagePayload } from "./types";
 
 afterEach(() => {
@@ -26,18 +27,6 @@ function pageWithLattice(lattice: PagePayload): InertiaPage {
     rescuedProps: [],
     url: "/",
     version: null,
-  };
-}
-
-function payload(lattice: Partial<PagePayload> = {}): PagePayload {
-  return {
-    breadcrumbs: [],
-    listeners: [],
-    schema: [],
-    container: "default",
-    layout: null,
-    title: "Lattice",
-    ...lattice,
   };
 }
 

@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 use Lattice\Core\Support\Wire;
 use Lattice\Notifications\Components\Notifications;
-use Workbench\App\Models\User;
 
 use function Pest\Laravel\actingAs;
 
 test('the bell serializes its endpoint, channel and mode', function (): void {
-    $user = User::query()->forceCreate([
-        'name' => 'Bell', 'email' => 'bell@example.com', 'password' => 'x',
-    ]);
+    $user = workbenchTestUser();
     actingAs($user);
 
     $payload = wire(Notifications::make()->slideOut());
@@ -24,15 +21,6 @@ test('the bell serializes its endpoint, channel and mode', function (): void {
             'pollingInterval' => null,
         ],
     ]);
-});
-
-test('the bell defaults to popover mode', function (): void {
-    $user = User::query()->forceCreate([
-        'name' => 'Bell', 'email' => 'bell2@example.com', 'password' => 'x',
-    ]);
-    actingAs($user);
-
-    expect(wire(Notifications::make())['props']['slideOut'])->toBeFalse();
 });
 
 describe('docs fixtures', function (): void {

@@ -1,8 +1,9 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
-import type { FilterNode, TableColumn, TableNode } from "@lattice-php/table/types";
+import type { FilterNode, TableNode } from "@lattice-php/table/types";
+import { col, searchFetch, tableNode } from "../test-support";
 import TableComponent from "./table";
 
 const filter: FilterNode = {
@@ -30,69 +31,16 @@ const filter: FilterNode = {
   ],
 };
 
-function col(): TableColumn {
-  return {
-    key: "name",
-    type: "column.text",
-    props: {
-      label: "Name",
-      width: "md",
-      align: "start",
-      sortable: false,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: null,
-    },
-  };
-}
-
-const node: TableNode = {
-  id: "workbench.products",
-  type: "table",
-  props: {
-    columns: [col()],
-    filters: [filter],
-    data: [],
-    endpoint: "/lattice/tables/workbench.products",
-    query: {
-      filters: [],
-      page: 1,
-      perPage: 25,
-      sorts: [],
-      tableFilters: {},
-      tableFilterIndicators: [],
-    },
-  },
-};
+const node: TableNode = tableNode({
+  columns: [col({ key: "name", label: "Name" })],
+  filters: [filter],
+});
 
 function stubFetch() {
-  const fetch = vi.fn<typeof globalThis.fetch>(async (input) => {
-    if (String(input).includes("_sub=search")) {
-      return Response.json({
-        options: [
-          { label: "Ada", value: "1" },
-          { label: "Adam", value: "4" },
-        ],
-      });
-    }
-
-    return Response.json({
-      data: [],
-      pagination: {},
-      query: {
-        filters: [],
-        page: 1,
-        perPage: 25,
-        sorts: [],
-        tableFilters: {},
-        tableFilterIndicators: [],
-      },
-    });
-  });
-
-  vi.stubGlobal("fetch", fetch);
-
-  return fetch;
+  return searchFetch([
+    { label: "Ada", value: "1" },
+    { label: "Adam", value: "4" },
+  ]);
 }
 
 function openFilters(): void {

@@ -15,6 +15,7 @@ function libraryEntries(): string[] {
       .filter((file) => /\.(ts|tsx)$/.test(file))
       .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
       .filter((file) => !file.startsWith("test/"))
+      .filter((file) => !/(^|\/)test-support\.(ts|tsx)$/.test(file))
       // Type-only sources compile to empty chunks; they ship as .d.ts via the
       // dts plugin and are exposed through types-only export conditions.
       .filter((file) => !file.startsWith("types/"))
@@ -123,6 +124,7 @@ export default defineConfig(({ mode }) => {
               exclude: [
                 "resources/js/**/*.test.*",
                 "resources/js/**/*.test-d.*",
+                "resources/js/**/test-support.*",
                 "resources/js/test/**",
                 "resources/js/standalone/**",
               ],

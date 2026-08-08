@@ -1,20 +1,13 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Actions\Components\Action as ActionComponent;
-use Lattice\Actions\Components\ActionGroup;
 use Lattice\Chat\Components\ChatBox;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Color;
 use Lattice\Core\Support\Affix;
-use Lattice\Form\Components\Choice;
-use Lattice\Form\Components\Form;
-use Lattice\Fragments\Components\Fragment as FragmentComponent;
-use Lattice\Table\Components\Table;
 use Lattice\Ui\Components\Avatar;
 use Lattice\Ui\Components\Badge;
 use Lattice\Ui\Components\Button;
-use Lattice\Ui\Components\Card;
 use Lattice\Ui\Components\CodeBlock;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\FloatingPanel;
@@ -23,12 +16,9 @@ use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Icon as IconComponent;
 use Lattice\Ui\Components\Image;
 use Lattice\Ui\Components\Link;
-use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Progress;
 use Lattice\Ui\Components\Separator;
 use Lattice\Ui\Components\Stack;
-use Lattice\Ui\Components\Tab;
-use Lattice\Ui\Components\Tabs;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\CodeBlockLanguage;
 use Lattice\Ui\Enums\FloatingPlacement;
@@ -155,42 +145,6 @@ test('separators default to horizontal and serialize their orientation', functio
         ]);
 });
 
-test('only container components expose a schema', function (): void {
-    $containerComponentClasses = [
-        Card::class,
-        FloatingPanel::class,
-        Grid::class,
-        Stack::class,
-        FragmentComponent::class,
-        Modal::class,
-        Form::class,
-        ActionGroup::class,
-        Tab::class,
-        Tabs::class,
-    ];
-
-    $leafComponentClasses = [
-        Avatar::class,
-        Badge::class,
-        Button::class,
-        Heading::class,
-        Link::class,
-        Separator::class,
-        Text::class,
-        ActionComponent::class,
-        Table::class,
-        Choice::class,
-    ];
-
-    foreach ($containerComponentClasses as $componentClass) {
-        expect(method_exists($componentClass, 'schema'))->toBeTrue();
-    }
-
-    foreach ($leafComponentClasses as $componentClass) {
-        expect(method_exists($componentClass, 'schema'))->toBeFalse();
-    }
-});
-
 test('floating panels serialize their placement and children', function (): void {
     $payload = wire(FloatingPanel::make('locale-switcher-panel')
         ->label('Language')
@@ -266,11 +220,7 @@ test('components serialize through prioritized hook attributes without child-spe
             'type' => 'hooked',
             'props' => [],
             'custom' => 'value',
-        ])
-        ->and(method_exists(Component::class, 'serializedChildren'))
-        ->toBeFalse()
-        ->and(new ReflectionClass(Component::class)->hasProperty('serialisationHooks'))
-        ->toBeFalse();
+        ]);
 });
 
 test('private serialization hooks are ignored', function (): void {

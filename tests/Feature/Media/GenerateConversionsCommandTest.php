@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Media\Jobs\GenerateMediaConversions;
@@ -15,15 +14,8 @@ beforeEach(function (): void {
     Storage::fake('public');
 });
 
-function convertibleMedia(string $name = 'source.jpg'): Media
-{
-    Storage::disk('public')->put("media/{$name}", (string) UploadedFile::fake()->image($name, 320, 200)->getContent());
-
-    return Media::factory()->create(['path' => "media/{$name}", 'mime_type' => 'image/jpeg']);
-}
-
 test('the command backfills a media that never had its conversions generated', function (): void {
-    $media = convertibleMedia();
+    $media = fakeImageMedia();
 
     artisan('media:conversions')->assertSuccessful();
 
@@ -45,7 +37,7 @@ test('a media that is not convertible is never queued', function (): void {
 });
 
 test('force deletes the derivative it un-maps, so a renamed output leaves nothing behind', function (): void {
-    $media = convertibleMedia();
+    $media = fakeImageMedia();
     $media->mergeMeta(['conversions' => [
         'thumb' => ['path' => 'media/conversions/source-thumb.jpg', 'width' => 400, 'height' => 400],
     ]]);
@@ -59,7 +51,7 @@ test('force deletes the derivative it un-maps, so a renamed output leaves nothin
 });
 
 test('force regenerates a derivative whose file was removed behind the map', function (): void {
-    $media = convertibleMedia();
+    $media = fakeImageMedia();
     artisan('media:conversions')->assertSuccessful();
 
     Storage::disk('public')->delete('media/conversions/source-thumb.webp');
@@ -75,7 +67,7 @@ test('force regenerates a derivative whose file was removed behind the map', fun
 
 test('only limits which conversions force drops and rebuilds', function (): void {
     config()->set('media.model', TwoConversionMedia::class);
-    $media = convertibleMedia();
+    $media = fakeImageMedia();
     artisan('media:conversions')->assertSuccessful();
 
     $media->refresh()->mergeMeta(['conversions' => [
@@ -91,7 +83,7 @@ test('only limits which conversions force drops and rebuilds', function (): void
 });
 
 test('missing skips a media whose conversions are all present', function (): void {
-    $media = convertibleMedia();
+    $media = fakeImageMedia();
     artisan('media:conversions')->assertSuccessful();
     Bus::fake();
 
@@ -104,7 +96,7 @@ test('missing skips a media whose conversions are all present', function (): voi
 });
 
 test('missing covers a complete map whose dimensions were never recorded', function (): void {
-    $media = convertibleMedia();
+    $media = fakeImageMedia();
     artisan('media:conversions')->assertSuccessful();
     $media->refresh();
     $map = $media->conversions();
@@ -120,7 +112,7 @@ test('missing covers a complete map whose dimensions were never recorded', funct
 });
 
 test('a media whose stored mime is generic is still reached by the command', function (): void {
-    $media = convertibleMedia();
+    $media = fakeImageMedia();
     $media->update(['mime_type' => 'application/octet-stream']);
 
     artisan('media:conversions')->assertSuccessful();
@@ -129,8 +121,8 @@ test('a media whose stored mime is generic is still reached by the command', fun
 });
 
 test('ids narrow the run to the given media', function (): void {
-    $first = convertibleMedia('first.jpg');
-    $second = convertibleMedia('second.jpg');
+    $first = fakeImageMedia('first.jpg');
+    $second = fakeImageMedia('second.jpg');
 
     artisan("media:conversions --id={$first->getKey()}")->assertSuccessful();
 

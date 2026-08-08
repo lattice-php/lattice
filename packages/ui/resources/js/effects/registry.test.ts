@@ -1,23 +1,19 @@
+import { router } from "@inertiajs/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { effect } from "@lattice-php/ui/test/effect-fixture";
 import { builtinEffectHandlers } from "./registry";
 
-const router = vi.hoisted(() => ({
-  reload: vi.fn<() => void>(),
-  visit: vi.fn<(url: string) => void>(),
-}));
-
 vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({ router }),
+  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
 const setLocale = vi.hoisted(() => vi.fn<(locale: string) => void>());
 vi.mock("../i18n/locale", () => ({ setLocale }));
 
 afterEach(() => {
-  router.reload.mockReset();
-  router.visit.mockReset();
+  vi.mocked(router.reload).mockReset();
+  vi.mocked(router.visit).mockReset();
   setLocale.mockReset();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();

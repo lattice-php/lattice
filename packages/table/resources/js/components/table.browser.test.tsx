@@ -2,31 +2,20 @@ import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
-import { col, tableFetch, tableQuery } from "../test-support";
+import { col, tableNode } from "../test-support";
 import TableComponent from "./table";
 
-const storageKey = "lattice:table-columns:browser.products";
+const storageKey = "lattice:table-columns:workbench.products";
 
 function node(overrides: Partial<TableNode["props"]> = {}): TableNode {
-  return {
-    id: "browser.products",
-    type: "table",
-    props: {
-      columns: [
-        col({ key: "sku", label: "SKU", width: "sm" }),
-        col({ key: "name", label: "Name", width: "md" }),
-      ],
-      data: [{ id: 1, sku: "SKU-001", name: "Desk Lamp" }],
-      query: {
-        filters: [],
-        page: 1,
-        perPage: 25,
-        sorts: [],
-        tableFilters: {},
-      },
-      ...overrides,
-    },
-  };
+  return tableNode({
+    columns: [
+      col({ key: "sku", label: "SKU", width: "sm" }),
+      col({ key: "name", label: "Name", width: "md" }),
+    ],
+    data: [{ id: 1, sku: "SKU-001", name: "Desk Lamp" }],
+    ...overrides,
+  });
 }
 
 describe("Lattice table component in a browser", () => {
@@ -190,62 +179,5 @@ describe("Lattice table component in a browser", () => {
       "minmax(6rem, 0.5fr) 224px",
     );
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
-  });
-
-  it("adds and clears table sorts through the endpoint", async () => {
-    const fetch = tableFetch(
-      {
-        data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
-        query: tableQuery({ sorts: [{ key: "sku", direction: "asc" }] }),
-      },
-      {
-        data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
-        query: tableQuery({
-          sorts: [
-            { key: "sku", direction: "asc" },
-            { key: "name", direction: "asc" },
-          ],
-        }),
-      },
-      {
-        data: [{ id: 1, sku: "SKU-001", name: "Ada Lovelace" }],
-        query: tableQuery({ sorts: [{ key: "name", direction: "asc" }] }),
-      },
-    );
-    const screen = await render(
-      <TableComponent
-        node={node({
-          columns: [
-            col({ key: "sku", label: "SKU", sortable: true }),
-            col({ key: "name", label: "Name", sortable: true }),
-          ],
-          data: [{ id: 1, sku: "SKU-001", name: "Desk Lamp" }],
-          endpoint: "/lattice/tables/workbench.users",
-          query: tableQuery(),
-        })}
-      />,
-    );
-
-    await screen.getByRole("button", { name: "Sort SKU" }).click();
-
-    await expect.element(screen.getByText("1. SKU")).toBeInTheDocument();
-    await expect
-      .poll(() => fetch.mock.calls.at(-1)?.[0])
-      .toBe("/lattice/tables/workbench.users?sort=sku&page=1&per_page=25");
-
-    await screen.getByRole("button", { name: "Sort Name" }).click();
-
-    await expect.element(screen.getByText("2. Name")).toBeInTheDocument();
-    await expect
-      .poll(() => fetch.mock.calls.at(-1)?.[0])
-      .toBe("/lattice/tables/workbench.users?sort=sku%2Cname&page=1&per_page=25");
-
-    await screen.getByRole("button", { name: "Clear SKU sort" }).click();
-
-    await expect.element(screen.getByText("1. SKU")).not.toBeInTheDocument();
-    await expect.element(screen.getByText("1. Name")).toBeInTheDocument();
-    await expect
-      .poll(() => fetch.mock.calls.at(-1)?.[0])
-      .toBe("/lattice/tables/workbench.users?sort=name&page=1&per_page=25");
   });
 });

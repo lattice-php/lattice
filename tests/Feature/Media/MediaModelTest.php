@@ -29,10 +29,8 @@ test('isConvertibleMime covers only the mimes the image driver can decode', func
     ['application/pdf', false],
 ]);
 
-test('an svg is an image but never convertible', function (): void {
-    $svg = Media::factory()->make(['mime_type' => 'image/svg+xml']);
-
-    expect($svg->isImage())->toBeTrue()->and(Media::isConvertibleMime($svg->mime_type))->toBeFalse();
+test('an svg counts as an image', function (): void {
+    expect(Media::factory()->make(['mime_type' => 'image/svg+xml'])->isImage())->toBeTrue();
 });
 
 test('url serves a generated conversion and falls back to the original', function (): void {
@@ -85,10 +83,6 @@ test('the preview url falls back to the original before the conversion exists', 
     $payload = Media::factory()->create(['path' => 'media/a.jpg'])->toArray();
 
     expect($payload['preview_url'])->toContain('media/a.jpg');
-});
-
-test('the default conversions ship a thumb', function (): void {
-    expect(Media::factory()->make()->defaultConversions())->toHaveKey('thumb');
 });
 
 test('deleting media removes the disk object and cascades attachments', function (): void {

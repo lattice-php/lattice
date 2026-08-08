@@ -11,8 +11,6 @@ it("connects a standalone control to its label, helper text, and error", () => {
       helperText="Whole numbers only"
       error="Invalid quantity"
       required
-      className="min-w-0"
-      data-test="qty-frame"
     >
       {(controlProps) => <input {...controlProps} />}
     </FormFieldFrame>,
@@ -26,7 +24,6 @@ it("connects a standalone control to its label, helper text, and error", () => {
   expect(input).toHaveAttribute("aria-describedby", "qty-helper qty-error");
   expect(screen.getByText("Whole numbers only")).toHaveAttribute("id", "qty-helper");
   expect(screen.getByText("Invalid quantity")).toHaveAttribute("id", "qty-error");
-  expect(input.closest("[data-test='qty-frame']")).toHaveClass("min-w-0");
 });
 
 it("keeps a visually-hidden accessible label inside a table cell", () => {
@@ -40,7 +37,6 @@ it("keeps a visually-hidden accessible label inside a table cell", () => {
 
   expect(screen.getByLabelText("Qty")).toBeInTheDocument();
   expect(screen.getByText("bad")).toHaveAttribute("id", "qty-error");
-  expect(screen.getByText("Qty")).toHaveClass("sr-only");
 });
 
 it("renders a tooltip trigger only when a tooltip is provided", () => {

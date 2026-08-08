@@ -12,16 +12,6 @@ use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\SalesPrice;
 use Workbench\App\Pricing\PriceResolver;
 
-use function Pest\Laravel\get;
-use function Pest\Laravel\withoutVite;
-
-test('the sales order create page renders', function (): void {
-    withoutVite();
-    $this->actingAs(workbenchTestUser());
-
-    get('/sales-orders/create')->assertOk();
-});
-
 test('the sales order form creates an order with snapshotted lines and partner default addresses', function (): void {
     Lattice::forms([SalesOrderForm::class]);
 

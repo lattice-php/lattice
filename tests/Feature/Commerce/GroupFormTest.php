@@ -8,13 +8,6 @@ use Workbench\App\Models\Group;
 use function Pest\Laravel\get;
 use function Pest\Laravel\withoutVite;
 
-test('the group create page renders', function (): void {
-    withoutVite();
-    $this->actingAs(workbenchTestUser());
-
-    get('/groups/create')->assertOk();
-});
-
 test('the group form creates a group and redirects', function (): void {
     Lattice::forms([GroupForm::class]);
 

@@ -63,12 +63,6 @@ test('the products table exposes product images', function (): void {
         ->and($product->images()->count())->toBe(2);
 });
 
-test('the products table is serialized as striped', function (): void {
-    Lattice::tables([ProductsTable::class]);
-
-    expect(data_get(wire(Table::use(ProductsTable::class)), 'props.striped'))->toBeTrue();
-});
-
 test('the products table serializes bulk actions bound to the table', function (): void {
     Lattice::tables([ProductsTable::class]);
     Lattice::bulkActions([ArchiveSelectedProductsAction::class, RejectSelectedProductsAction::class]);

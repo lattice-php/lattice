@@ -1,16 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { FormProvider } from "@lattice-php/form/hooks/context";
 import type { FormContextValue } from "@lattice-php/form/hooks/context";
-import { fakeFormContext } from "@lattice-php/form/test-support";
+import { renderWithForm } from "@lattice-php/form/test-support";
 import { FormSubmitButton } from "./submit-button";
 
 function renderSubmit(overrides: Partial<FormContextValue> = {}) {
-  return render(
-    <FormProvider value={fakeFormContext(overrides)}>
-      <FormSubmitButton label="Save" summaryLabel="Fix these fields" />
-    </FormProvider>,
-  );
+  return renderWithForm(<FormSubmitButton label="Save" summaryLabel="Fix these fields" />, {
+    context: overrides,
+  });
 }
 
 describe("FormSubmitButton", () => {

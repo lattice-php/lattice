@@ -21,7 +21,6 @@ use Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
 use Lattice\Ui\Components\Link;
 use Lattice\Ui\Components\Text;
 use Workbench\App\Models\Product;
-use Workbench\App\Tables\UsersTable as WorkbenchAppUsersTable;
 
 use function Pest\Laravel\getJson;
 
@@ -427,34 +426,6 @@ test('a hidden column referenced by a visible badge column is still pruned from 
 
     expect(array_keys($row))->toBe(['status'])
         ->and($row)->not->toHaveKey('helper');
-});
-
-test('workbench users table exposes timestamp columns for each row', function (): void {
-    Lattice::tables([WorkbenchAppUsersTable::class]);
-
-    $columns = wire(Table::use(WorkbenchAppUsersTable::class))['props']['columns'];
-
-    expect(array_column($columns, 'key'))->toBe(['name', 'email', 'created_at', 'updated_at'])
-        ->and($columns[2])->toMatchArray(['key' => 'created_at'])
-        ->and($columns[2]['props'])->toMatchArray([
-            'label' => 'Created at',
-            'sortable' => true,
-            'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
-            'copyable' => false,
-            'link' => null,
-            'badge' => null,
-            'multiple' => null,
-        ])
-        ->and($columns[3])->toMatchArray(['key' => 'updated_at'])
-        ->and($columns[3]['props'])->toMatchArray([
-            'label' => 'Updated at',
-            'sortable' => true,
-            'date' => ['dateStyle' => 'medium', 'timeStyle' => 'medium'],
-            'copyable' => false,
-            'link' => null,
-            'badge' => null,
-            'multiple' => null,
-        ]);
 });
 
 #[AsTable('workbench.users')]

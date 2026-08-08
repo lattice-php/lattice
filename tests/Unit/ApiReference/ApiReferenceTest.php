@@ -14,18 +14,17 @@ it('serializes the api-reference node', function (): void {
 it('defaults to the grouped API reference', function (): void {
     $props = ApiReference::make()->jsonSerialize()['props'];
 
-    expect($props)->not->toHaveKeys(['hideNav', 'layout'])
-        ->and($props)->toMatchArray([
-            'operation' => null,
-            'tags' => null,
-            'defaultOperation' => null,
-            'hideHeader' => false,
-            'hideBaseUrl' => false,
-            'title' => null,
-            'expandDepth' => 2,
-            'twoColumnBreakpoint' => 'lg',
-            'token' => null,
-        ]);
+    expect($props)->toMatchArray([
+        'operation' => null,
+        'tags' => null,
+        'defaultOperation' => null,
+        'hideHeader' => false,
+        'hideBaseUrl' => false,
+        'title' => null,
+        'expandDepth' => 2,
+        'twoColumnBreakpoint' => 'lg',
+        'token' => null,
+    ]);
 });
 
 it('serializes fluent options', function (Closure $configure, string $property, mixed $expected): void {

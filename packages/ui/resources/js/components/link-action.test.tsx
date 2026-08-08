@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
-import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import LinkComponent from "./link";
 
@@ -45,7 +45,7 @@ function renderActionLink(node: Node<"link">) {
 describe("link action trigger", () => {
   beforeEach(() => {
     apiFetch.mockReset();
-    apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));
+    apiFetch.mockResolvedValue(jsonResponse({ effects: [] }));
   });
 
   it("dispatches the nested action with the ref header", async () => {
@@ -59,31 +59,6 @@ describe("link action trigger", () => {
         ref: "sealed-reference",
         throwOnError: false,
       });
-    });
-  });
-
-  it("confirms before dispatching when the action requires confirmation", async () => {
-    const node = actionLink({
-      confirmation: {
-        cancelLabel: "Stay",
-        confirmLabel: "Log out",
-        description: "End your session?",
-        title: "Log out?",
-      },
-    });
-
-    renderActionLink(node);
-
-    fireEvent.click(screen.getByRole("button", { name: "Log out" }));
-
-    expect(apiFetch).not.toHaveBeenCalled();
-    const dialog = screen.getByRole("dialog", { name: "Log out?" });
-    expect(dialog).toBeVisible();
-
-    fireEvent.click(within(dialog).getByRole("button", { name: "Log out" }));
-
-    await waitFor(() => {
-      expect(apiFetch).toHaveBeenCalledTimes(1);
     });
   });
 

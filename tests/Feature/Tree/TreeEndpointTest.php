@@ -45,37 +45,23 @@ it('serves the roots when no parent is given', function (): void {
     expect(array_column($response->json('nodes'), 'label'))->toBe(['Books', 'Electronics']);
 });
 
-it('rejects a request without a ref', function (): void {
+it('rejects a request whose ref does not authorize the tree', function (Closure $headers): void {
     seedCategoryTree();
     $tree = $this->sealTree(fn (): Tree => Tree::use(CategoryTree::class)->lazy());
 
-    getJson($tree['props']['endpoint'])->assertForbidden();
-});
+    getJson($tree['props']['endpoint'], $headers($this, $tree))->assertForbidden();
+})->with([
+    'no ref' => [fn (): array => []],
+    'forged ref' => [fn (): array => ['X-Lattice-Ref' => 'forged']],
+    'expired ref' => [function (object $test, array $tree): array {
+        $test->travel(config('lattice.security.ref_lifetime', 30) + 1)->minutes();
 
-it('rejects a forged ref', function (): void {
-    seedCategoryTree();
-    $tree = $this->sealTree(fn (): Tree => Tree::use(CategoryTree::class)->lazy());
-
-    getJson($tree['props']['endpoint'], ['X-Lattice-Ref' => 'forged'])->assertForbidden();
-});
-
-it('rejects an expired ref', function (): void {
-    seedCategoryTree();
-    $tree = $this->sealTree(fn (): Tree => Tree::use(CategoryTree::class)->lazy());
-
-    $this->travel(config('lattice.security.ref_lifetime', 30) + 1)->minutes();
-
-    getJson($tree['props']['endpoint'], ['X-Lattice-Ref' => $tree['props']['ref']])->assertForbidden();
-});
-
-it('rejects a ref sealed for a different tree', function (): void {
-    seedCategoryTree();
-    $tree = $this->sealTree(fn (): Tree => Tree::use(CategoryTree::class)->lazy());
-
-    $foreign = app(SignsComponentReferences::class)->seal('tree', 'denied', []);
-
-    getJson($tree['props']['endpoint'], ['X-Lattice-Ref' => $foreign])->assertForbidden();
-});
+        return ['X-Lattice-Ref' => $tree['props']['ref']];
+    }],
+    'ref sealed for a different tree' => [fn (): array => [
+        'X-Lattice-Ref' => app(SignsComponentReferences::class)->seal('tree', 'denied', []),
+    ]],
+]);
 
 it('returns 404 for a sealed but unregistered tree key', function (): void {
     $ref = app(SignsComponentReferences::class)->seal('tree', 'ghost', []);

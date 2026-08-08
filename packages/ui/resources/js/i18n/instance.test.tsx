@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { resetLocaleState } from "@lattice-php/ui/test/locale-state";
 import { configureI18n } from "./backend";
 import { i18n, preloadLanguages, translate, useT } from "./instance";
 import { setLocale } from "./locale";
@@ -20,9 +21,7 @@ function LocaleProbe() {
 
 describe("i18n instance", () => {
   beforeEach(() => {
-    localStorage.clear();
-    document.cookie = "locale=;path=/;max-age=0";
-    document.documentElement.lang = "";
+    resetLocaleState();
     act(() => setLocale("en"));
 
     if (i18n.isInitialized && i18n.hasResourceBundle("en", namespace)) {

@@ -7,35 +7,9 @@ use Lattice\Core\Option;
 use Lattice\Form\Components\Select;
 use Lattice\Form\FormData;
 
-/** An in-memory option source — proves the Select talks only to the contract, never Eloquent. */
 function arrayOptionSource(): OptionSource
 {
-    return new class implements OptionSource
-    {
-        /** @var array<int|string, string> */
-        private array $people = ['1' => 'Ada', '2' => 'Linus', '3' => 'Grace'];
-
-        public function search(string $query): array
-        {
-            $matches = $query === ''
-                ? $this->people
-                : array_filter($this->people, fn (string $name): bool => str_contains(strtolower($name), strtolower($query)));
-
-            return array_map(
-                fn (string $name, int|string $id): Option => new Option($name, (string) $id),
-                $matches,
-                array_keys($matches),
-            );
-        }
-
-        public function selected(array $values): array
-        {
-            return array_map(
-                fn (string $id): Option => new Option($this->people[$id] ?? "User {$id}", $id),
-                $values,
-            );
-        }
-    };
+    return inMemoryOptionSource(['1' => 'Ada', '2' => 'Linus', '3' => 'Grace']);
 }
 
 it('marks a select searchable once an option source is attached', function (): void {

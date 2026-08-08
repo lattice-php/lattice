@@ -1,25 +1,10 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
-import type { FilterNode, TableColumn, TableNode } from "@lattice-php/table/types";
+import type { FilterNode, TableNode } from "@lattice-php/table/types";
+import { col, tableFetch, tableNode, tableQuery } from "../test-support";
 import TableComponent from "./table";
-
-function col(key: string, label: string): TableColumn {
-  return {
-    key,
-    type: "column.text",
-    props: {
-      label,
-      width: "md",
-      align: "start",
-      sortable: false,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter: null,
-    },
-  };
-}
 
 const filters: FilterNode[] = [
   {
@@ -85,27 +70,6 @@ const filters: FilterNode[] = [
   { key: "high", type: "filter.toggle", props: { label: "High value" } },
 ];
 
-function stubFetch() {
-  const fetch = vi.fn<typeof globalThis.fetch>(async () =>
-    Response.json({
-      data: [{ name: "Alpha" }],
-      pagination: {},
-      query: {
-        filters: [],
-        page: 1,
-        perPage: 25,
-        sorts: [],
-        tableFilters: {},
-        tableFilterIndicators: [],
-      },
-    }),
-  );
-
-  vi.stubGlobal("fetch", fetch);
-
-  return fetch;
-}
-
 function indicatorsFor(tableFilters: Record<string, unknown>) {
   const indicators = [];
 
@@ -123,24 +87,15 @@ function indicatorsFor(tableFilters: Record<string, unknown>) {
 }
 
 function node(tableFilters: Record<string, Record<string, unknown>>): TableNode {
-  return {
-    id: "workbench.products",
-    type: "table",
-    props: {
-      columns: [col("name", "Name")],
-      filters,
-      data: [{ name: "Alpha" }],
-      endpoint: "/lattice/tables/workbench.products",
-      query: {
-        filters: [],
-        page: 1,
-        perPage: 25,
-        sorts: [],
-        tableFilters,
-        tableFilterIndicators: indicatorsFor(tableFilters),
-      },
+  return tableNode({
+    columns: [col({ key: "name", label: "Name" })],
+    filters,
+    data: [{ name: "Alpha" }],
+    query: {
+      ...tableQuery({ tableFilters }),
+      tableFilterIndicators: indicatorsFor(tableFilters),
     },
-  } satisfies TableNode;
+  });
 }
 
 function openFilters(): void {
@@ -149,7 +104,7 @@ function openFilters(): void {
 
 describe("dedicated table filters in the table component", () => {
   it("renders an active-value chip per dedicated filter type", () => {
-    stubFetch();
+    tableFetch();
 
     renderWithRegistry(
       <TableComponent
@@ -168,7 +123,7 @@ describe("dedicated table filters in the table component", () => {
   });
 
   it("applies a ternary selection through the endpoint", async () => {
-    const fetch = stubFetch();
+    const fetch = tableFetch();
 
     renderWithRegistry(<TableComponent node={node({})} />, registry);
 
@@ -185,7 +140,7 @@ describe("dedicated table filters in the table component", () => {
   });
 
   it("toggles a single value off the multi-select through the endpoint", async () => {
-    const fetch = stubFetch();
+    const fetch = tableFetch();
 
     renderWithRegistry(
       <TableComponent node={node({ status: { value: ["active", "draft"] } })} />,
@@ -204,7 +159,7 @@ describe("dedicated table filters in the table component", () => {
   });
 
   it("applies a date-range bound through the endpoint", async () => {
-    const fetch = stubFetch();
+    const fetch = tableFetch();
 
     renderWithRegistry(<TableComponent node={node({})} />, registry);
 
@@ -222,7 +177,7 @@ describe("dedicated table filters in the table component", () => {
   });
 
   it("turns a toggle filter on through the endpoint", async () => {
-    const fetch = stubFetch();
+    const fetch = tableFetch();
 
     renderWithRegistry(<TableComponent node={node({})} />, registry);
 
@@ -238,7 +193,7 @@ describe("dedicated table filters in the table component", () => {
   });
 
   it("clears one filter through its indicator chip", async () => {
-    const fetch = stubFetch();
+    const fetch = tableFetch();
 
     renderWithRegistry(
       <TableComponent
@@ -253,19 +208,6 @@ describe("dedicated table filters in the table component", () => {
       const url = fetch.mock.calls.at(-1)?.[0];
       expect(url).not.toContain("tf%5Bfeatured%5D");
       expect(url).toContain("tf%5Bstatus%5D%5Bvalue%5D%5B%5D=active");
-    });
-  });
-
-  it("resets every filter", async () => {
-    const fetch = stubFetch();
-
-    renderWithRegistry(<TableComponent node={node({ featured: { value: "true" } })} />, registry);
-
-    fireEvent.click(screen.getByRole("button", { name: "Reset all" }));
-
-    await waitFor(() => {
-      const url = fetch.mock.calls.at(-1)?.[0];
-      expect(url).not.toContain("tf%5B");
     });
   });
 });

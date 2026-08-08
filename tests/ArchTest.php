@@ -37,6 +37,9 @@ const CORE_FORBIDDEN_NAMESPACES = [
     'Lattice\\Notifications',
     'Lattice\\Realtime',
     'Lattice\\Remote',
+    'Lattice\\Media',
+    'Lattice\\Tree',
+    'Lattice\\ApiReference',
 ];
 
 arch('forms depend on no other feature domain')
@@ -113,6 +116,9 @@ arch('the ui and secondary domains never depend upward on orchestration or tooli
         'Lattice\Notifications',
         'Lattice\Realtime',
         'Lattice\Remote',
+        'Lattice\Media',
+        'Lattice\Tree',
+        'Lattice\ApiReference',
     ])
     ->not->toUse([
         'Lattice\Http',

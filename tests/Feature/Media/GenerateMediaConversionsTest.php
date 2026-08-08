@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Image\Image;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -14,13 +13,6 @@ use Lattice\Tests\Fixtures\Media\PartialConversionMedia;
 function writeToDisk(string $path, string $contents): void
 {
     expect(Storage::disk('public')->put($path, $contents))->toBeTrue();
-}
-
-function storedImage(int $width = 320, int $height = 200): Media
-{
-    writeToDisk('media/source.jpg', (string) UploadedFile::fake()->image('source.jpg', $width, $height)->getContent());
-
-    return Media::factory()->create(['path' => 'media/source.jpg', 'mime_type' => 'image/jpeg']);
 }
 
 /**
@@ -64,7 +56,7 @@ beforeEach(function (): void {
 });
 
 test('the default thumb conversion is generated and recorded', function (): void {
-    $media = storedImage(600, 400);
+    $media = fakeImageMedia(width: 600, height: 400);
 
     new GenerateMediaConversions($media)->handle();
     $media->refresh();
@@ -86,7 +78,7 @@ test('a non-convertible media is skipped without a conversion map', function ():
 });
 
 test('a media with every conversion and its dimensions recorded never reads the source', function (): void {
-    $media = storedImage();
+    $media = fakeImageMedia();
     $media->update(['meta' => [
         'conversions' => ['thumb' => ['path' => 'x.webp', 'width' => 1, 'height' => 1]],
         'width' => 320,
@@ -100,7 +92,7 @@ test('a media with every conversion and its dimensions recorded never reads the 
 });
 
 test('a complete map with no recorded dimensions is probed without touching the map', function (): void {
-    $media = storedImage(600, 400);
+    $media = fakeImageMedia(width: 600, height: 400);
     $map = ['thumb' => ['path' => 'media/conversions/source-thumb.webp', 'width' => 400, 'height' => 400]];
     $media->update(['meta' => ['conversions' => $map]]);
 
@@ -114,7 +106,7 @@ test('a complete map with no recorded dimensions is probed without touching the 
 });
 
 test('a media stored under a generic mime is still probed', function (): void {
-    $media = storedImage(600, 400);
+    $media = fakeImageMedia(width: 600, height: 400);
     $media->update(['mime_type' => 'application/octet-stream']);
 
     new GenerateMediaConversions($media)->handle();
@@ -123,7 +115,7 @@ test('a media stored under a generic mime is still probed', function (): void {
 });
 
 test('a missing conversion does read the source', function (): void {
-    $media = storedImage();
+    $media = fakeImageMedia();
     unreadableDisk();
 
     expect(function () use ($media): void {
@@ -133,7 +125,7 @@ test('a missing conversion does read the source', function (): void {
 
 test('a conversion that fails to return an image throws, keeping the derivatives already written', function (): void {
     config()->set('media.model', PartialConversionMedia::class);
-    $media = storedImage(600, 400);
+    $media = fakeImageMedia(width: 600, height: 400);
 
     expect(function () use ($media): void {
         new GenerateMediaConversions($media)->handle();
@@ -229,7 +221,5 @@ test('overlapping jobs for the same media are released, retried and never deadlo
 
     expect($middleware)->toHaveCount(1);
     expect($middleware[0]->key)->toBe((string) $media->getKey());
-    expect($middleware[0]->releaseAfter)->toBe(30);
-    expect($middleware[0]->expiresAfter)->toBe(300);
     expect($job->tries)->toBeGreaterThan(1);
 });

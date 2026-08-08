@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
+import { resetLocaleState } from "@lattice-php/ui/test/locale-state";
 import { configureI18n } from "./backend";
 import { useLocaleOptions } from "./locale-switcher";
 import { setLocale } from "./locale";
@@ -19,9 +20,7 @@ function LocaleOptionsProbe() {
 
 describe("locale switcher helpers", () => {
   beforeEach(() => {
-    localStorage.clear();
-    document.cookie = "locale=;path=/;max-age=0";
-    document.documentElement.lang = "";
+    resetLocaleState();
     setLocale("en");
   });
 

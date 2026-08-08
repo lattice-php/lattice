@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { jsonResponse } from "@lattice-php/core/test-support";
 import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
 import { dispatchActionError } from "@lattice-php/ui/effects/dispatch";
 import { runAction } from "./run-action";
@@ -15,8 +16,7 @@ beforeEach(() => {
 describe("runAction", () => {
   it("dispatches effects and reports success on a 2xx response", async () => {
     const effect = { type: "toast" } as ActionEffect;
-    const request = (): Promise<Response> =>
-      Promise.resolve(new Response(JSON.stringify({ effects: [effect] }), { status: 200 }));
+    const request = (): Promise<Response> => Promise.resolve(jsonResponse({ effects: [effect] }));
     const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
 
     await expect(runAction(request, dispatch)).resolves.toBe(true);
@@ -28,7 +28,7 @@ describe("runAction", () => {
   it("dispatches effects but reports failure on a non-2xx response", async () => {
     const effect = { type: "toast" } as ActionEffect;
     const request = (): Promise<Response> =>
-      Promise.resolve(new Response(JSON.stringify({ effects: [effect] }), { status: 422 }));
+      Promise.resolve(jsonResponse({ effects: [effect] }, { status: 422 }));
     const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
 
     await expect(runAction(request, dispatch)).resolves.toBe(false);

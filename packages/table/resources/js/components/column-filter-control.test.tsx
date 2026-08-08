@@ -5,6 +5,7 @@ import { registry } from "@lattice-php/lattice/registry";
 import type { ColumnFilter } from "@lattice-php/table";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { FilterClause, TableColumn } from "@lattice-php/table/types";
+import { col as tableCol } from "../test-support";
 import { ColumnFilterControl } from "./column-filter-control";
 
 function textFilter(overrides: Partial<ColumnFilter> = {}): ColumnFilter {
@@ -22,19 +23,7 @@ function textFilter(overrides: Partial<ColumnFilter> = {}): ColumnFilter {
 }
 
 function col(filter: ColumnFilter | null): TableColumn {
-  return {
-    key: "name",
-    type: "column.text",
-    props: {
-      label: "Name",
-      width: "md",
-      align: "start",
-      sortable: false,
-      toggleable: false,
-      hiddenByDefault: false,
-      filter,
-    },
-  };
+  return tableCol({ key: "name", label: "Name", filter });
 }
 
 function clause(operator: Op, value: string): FilterClause {
@@ -346,6 +335,7 @@ describe("ColumnFilterControl", () => {
 
       openPopover();
 
+      expect(screen.getByText("equals")).toBeVisible();
       expect(screen.queryByTestId("filter-name-operator")).not.toBeInTheDocument();
     });
 

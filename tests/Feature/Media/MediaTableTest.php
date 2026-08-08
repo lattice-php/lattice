@@ -1,28 +1,18 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Storage;
-use Lattice\Core\Facades\Lattice;
 use Lattice\Media\Models\Media;
 use Lattice\Media\Tables\MediaTable;
 use Lattice\Table\Components\Table;
 
-use function Pest\Laravel\actingAs;
-use function Pest\Laravel\getJson;
-
 beforeEach(function (): void {
-    Storage::fake('public');
-    Lattice::tables([MediaTable::class]);
-    actingAs(workbenchTestUser());
+    bootstrapMediaTest(tables: [MediaTable::class]);
 });
 
 test('the media table serializes rows with url, name and usage count', function (): void {
     $media = Media::factory()->create(['name' => 'hero.jpg']);
 
-    $table = wire(Table::use(MediaTable::class));
-    $ref = $this->latticeRef($table);
-
-    getJson('/lattice/tables/media.library', ['X-Lattice-Ref' => $ref])
+    $this->loadTable(MediaTable::class)
         ->assertOk()
         ->assertJsonPath('data.0.name', 'hero.jpg')
         ->assertJsonPath('data.0.attachments_count', 0)
@@ -36,9 +26,7 @@ test('the row payload previews the generated derivative next to the original', f
         'meta' => ['conversions' => ['thumb' => ['path' => 'media/conversions/hero-thumb.webp', 'width' => 400, 'height' => 400]]],
     ]);
 
-    $ref = $this->latticeRef(wire(Table::use(MediaTable::class)));
-
-    $row = getJson('/lattice/tables/media.library', ['X-Lattice-Ref' => $ref])
+    $row = $this->loadTable(MediaTable::class)
         ->assertOk()
         ->json('data.0');
 
@@ -50,9 +38,7 @@ test('the row payload previews the generated derivative next to the original', f
 test('the row payload falls back to the original preview while no conversion exists', function (): void {
     Media::factory()->create(['path' => 'media/hero.jpg']);
 
-    $ref = $this->latticeRef(wire(Table::use(MediaTable::class)));
-
-    $row = getJson('/lattice/tables/media.library', ['X-Lattice-Ref' => $ref])
+    $row = $this->loadTable(MediaTable::class)
         ->assertOk()
         ->json('data.0');
 
@@ -63,13 +49,11 @@ test('search matches names and the type filter narrows by mime prefix', function
     Media::factory()->create(['name' => 'invoice.pdf', 'mime_type' => 'application/pdf']);
     Media::factory()->create(['name' => 'photo.jpg']);
 
-    $ref = $this->latticeRef(wire(Table::use(MediaTable::class)));
-
-    getJson('/lattice/tables/media.library?q=invoice', ['X-Lattice-Ref' => $ref])
+    $this->loadTable(MediaTable::class, ['q' => 'invoice'])
         ->assertOk()
         ->assertJsonCount(1, 'data');
 
-    getJson('/lattice/tables/media.library?tf[type][value]=image', ['X-Lattice-Ref' => $ref])
+    $this->loadTable(MediaTable::class, ['tf' => ['type' => ['value' => 'image']]])
         ->assertOk()
         ->assertJsonCount(1, 'data')
         ->assertJsonPath('data.0.name', 'photo.jpg');
@@ -80,6 +64,6 @@ test('guests cannot query the media table', function (): void {
 
     auth()->logout();
 
-    getJson('/lattice/tables/media.library', ['X-Lattice-Ref' => $ref])
+    $this->latticeGet('/lattice/tables/media.library', $ref)
         ->assertForbidden();
 });

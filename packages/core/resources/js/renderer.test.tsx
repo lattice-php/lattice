@@ -44,23 +44,16 @@ describe("Renderer", () => {
     expect(screen.getByTestId("parent")).toContainElement(screen.getByTestId("child"));
   });
 
-  it("renders the built-in missing-component marker for unknown types", () => {
+  it("renders a visible missing-component marker with an icon for unknown types", () => {
     const registry = createRegistry({ components: {}, name: "empty" });
 
     renderWithRegistry(<Renderer nodes={[{ type: "unknown.component" }]} />, registry);
 
-    expect(screen.getByText("Missing component: unknown.component")).toBeVisible();
-  });
-
-  it("renders a visible icon placeholder for unknown types so the gap is never invisible", () => {
-    const registry = createRegistry({ components: {}, name: "empty" });
-
-    renderWithRegistry(<Renderer nodes={[{ type: "widget.unknown" }]} />, registry);
-
-    const marker = screen.getByTitle("Missing component: widget.unknown");
+    const marker = screen.getByTitle("Missing component: unknown.component");
 
     expect(marker).toBeVisible();
     expect(marker.querySelector("svg")).not.toBeNull();
+    expect(screen.getByText("Missing component: unknown.component")).toBeVisible();
   });
 
   it("warns once, with actionable guidance, when a node type has no renderer", () => {

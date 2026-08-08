@@ -2,28 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Lattice\Table\TableQuery;
 use Workbench\App\Models\BusinessPartner;
 use Workbench\App\Tables\MorphRelationColumnsTable;
-
-/**
- * @param  array<string, string>  $params
- * @return array<int, array<string, mixed>>
- */
-function morphRelationRows(array $params = []): array
-{
-    $table = new MorphRelationColumnsTable;
-
-    $query = TableQuery::fromRequest(
-        Request::create('/', 'GET', $params),
-        $table->columns(),
-        'workbench.morph-relation-columns',
-    );
-
-    return $table->source()->query($query)->data;
-}
 
 test('a MorphOne relation column eager-loads its value onto a flat key without N+1', function (): void {
     $acme = BusinessPartner::factory()->create(['name' => 'Acme']);
@@ -34,7 +15,7 @@ test('a MorphOne relation column eager-loads its value onto a flat key without N
     DB::flushQueryLog();
     DB::enableQueryLog();
 
-    $rows = morphRelationRows();
+    $rows = tableRows(new MorphRelationColumnsTable);
 
     expect($rows)->toHaveCount(2)
         ->and($rows[0])->toHaveKey('internalNote.body')
@@ -55,7 +36,7 @@ test('a MorphOne relation column filters through whereHas honouring both the mor
     $acme->internalNote()->create(['type' => 'internal', 'body' => 'needs follow-up']);
     $globex->notes()->create(['type' => 'external', 'body' => 'needs follow-up']);
 
-    $rows = morphRelationRows(['filter' => 'internalNote.body:contains:follow-up']);
+    $rows = tableRows(new MorphRelationColumnsTable, ['filter' => 'internalNote.body:contains:follow-up']);
 
     // Globex's matching note is type=external, outside internalNote()'s scope — it must not match.
     expect($rows)->toHaveCount(1)
@@ -72,7 +53,7 @@ test('a MorphOne relation column sorts through a correlated subquery that preser
     $acme->notes()->create(['type' => 'external', 'body' => 'aaa-external']);
     $globex->internalNote()->create(['type' => 'internal', 'body' => 'mmm-internal']);
 
-    $rows = morphRelationRows(['sort' => 'internalNote.body']);
+    $rows = tableRows(new MorphRelationColumnsTable, ['sort' => 'internalNote.body']);
 
     expect(array_column($rows, 'name'))->toBe(['Globex', 'Acme']);
 });
@@ -83,7 +64,7 @@ test('a MorphMany relation column lists every related row without N+1', function
     $acme->notes()->create(['type' => 'external', 'body' => 'second']);
     BusinessPartner::factory()->create(['name' => 'Globex']);
 
-    $rows = morphRelationRows();
+    $rows = tableRows(new MorphRelationColumnsTable);
     $acmeRow = collect($rows)->firstWhere('name', 'Acme');
 
     expect($acmeRow['notes'])->toBe(['first', 'second']);

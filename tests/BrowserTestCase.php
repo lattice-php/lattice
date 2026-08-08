@@ -8,10 +8,13 @@ use Lattice\Support\Testing\ChecksWorkbenchAssets;
 use Pest\Browser\Api\ArrayablePendingAwaitablePage;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Playwright\Playwright;
+use Workbench\App\Models\User;
 
 class BrowserTestCase extends TestCase
 {
     use ChecksWorkbenchAssets;
+
+    protected ?User $workbenchUser = null;
 
     #[\Override]
     protected function setUp(): void
@@ -35,11 +38,23 @@ class BrowserTestCase extends TestCase
      * @template TUrl of array<int, string>|string
      *
      * @param  TUrl  $url
+     * @param  array<string, mixed>  $userAttributes
      * @return (TUrl is array<int, string> ? ArrayablePendingAwaitablePage : PendingAwaitablePage)
      */
-    protected function visitAsWorkbenchUser(array|string $url): ArrayablePendingAwaitablePage|PendingAwaitablePage
+    protected function visitAsWorkbenchUser(array|string $url, array $userAttributes = []): ArrayablePendingAwaitablePage|PendingAwaitablePage
     {
-        $this->actingAs(\workbenchTestUser());
+        $this->workbenchUser = \workbenchTestUser($userAttributes);
+        $this->actingAs($this->workbenchUser);
+
+        return \visit($url);
+    }
+
+    protected function visitWithSeededUsers(string $url = '/', bool $namedUsersOnly = false): PendingAwaitablePage
+    {
+        $this->workbenchUser = \workbenchTestUser();
+        $this->actingAs($this->workbenchUser);
+
+        $namedUsersOnly ? \seedNamedWorkbenchUsers() : \seedWorkbenchUsers();
 
         return \visit($url);
     }

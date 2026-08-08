@@ -1,11 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { useEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeNode } from "@lattice-php/core/test-support";
-import { fakeFormContext } from "@lattice-php/form/test-support";
-import { FormProvider } from "@lattice-php/form/hooks/context";
-import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
-import { FormValuesProvider, useFormValues } from "@lattice-php/form/hooks/values";
+import { FakeXhr, fakeNode } from "@lattice-php/core/test-support";
+import { renderWithForm } from "@lattice-php/form/test-support";
+import { useFormValues } from "@lattice-php/form/hooks/values";
 import { FileUploadComponent } from "./file-upload";
 
 const apiFetch = vi.hoisted(() =>
@@ -53,63 +51,28 @@ function renderUpload({
     },
   });
 
-  return render(
-    <FormProvider value={fakeFormContext({ action: "/forms/products", componentRef: "ref-1" })}>
-      <FormValuesProvider initial={values}>
-        <ValuesProbe onValues={onValues} />
-        {scoped ? (
-          <FieldScopeProvider base="items" index={0} row={{ id: "row-1" }} onChange={() => {}}>
-            <FileUploadComponent node={node}>{null}</FileUploadComponent>
-          </FieldScopeProvider>
-        ) : (
-          <FileUploadComponent node={node}>{null}</FileUploadComponent>
-        )}
-      </FormValuesProvider>
-    </FormProvider>,
+  return renderWithForm(
+    <>
+      <ValuesProbe onValues={onValues} />
+      <FileUploadComponent node={node}>{null}</FileUploadComponent>
+    </>,
+    {
+      initial: values,
+      context: { action: "/forms/products", componentRef: "ref-1" },
+      scope: scoped ? { base: "items", index: 0, row: { id: "row-1" } } : undefined,
+    },
   );
 }
 
-class SignedUploadRequest {
-  static instances: SignedUploadRequest[] = [];
+async function signedUpload(): Promise<FakeXhr> {
+  return waitFor(() => {
+    const request = FakeXhr.instances[0];
 
-  headers: Record<string, string> = {};
+    expect(request).toBeDefined();
 
-  method = "";
-
-  onerror: (() => void) | null = null;
-
-  onload: (() => void) | null = null;
-
-  status = 204;
-
-  upload: {
-    onprogress:
-      | ((event: { lengthComputable: boolean; loaded: number; total: number }) => void)
-      | null;
-  } = { onprogress: null };
-
-  url = "";
-
-  constructor() {
-    SignedUploadRequest.instances.push(this);
-  }
-
-  open(method: string, url: string): void {
-    this.method = method;
-    this.url = url;
-  }
-
-  send(): void {
-    this.upload.onprogress?.({ lengthComputable: true, loaded: 5, total: 10 });
-    this.onload?.();
-  }
-
-  setRequestHeader(key: string, value: string): void {
-    this.headers[key] = value;
-  }
+    return request as FakeXhr;
+  });
 }
-
-const sendSignedUploadSuccessfully = SignedUploadRequest.prototype.send;
 
 function successfulSignResponse(key = "tmp/lamp.jpg"): Response {
   return new Response(
@@ -128,8 +91,7 @@ describe("FileUploadComponent image previews", () => {
     apiFetch.mockClear();
     createObjectURL.mockClear();
     revokeObjectURL.mockClear();
-    SignedUploadRequest.instances = [];
-    SignedUploadRequest.prototype.send = sendSignedUploadSuccessfully;
+    FakeXhr.reset();
 
     Object.defineProperty(URL, "createObjectURL", {
       configurable: true,
@@ -139,7 +101,7 @@ describe("FileUploadComponent image previews", () => {
       configurable: true,
       value: revokeObjectURL,
     });
-    vi.stubGlobal("XMLHttpRequest", SignedUploadRequest);
+    vi.stubGlobal("XMLHttpRequest", FakeXhr);
   });
 
   afterEach(() => {
@@ -209,6 +171,9 @@ describe("FileUploadComponent image previews", () => {
       target: { files: [file] },
     });
 
+    const request = await signedUpload();
+    request.succeed(204);
+
     await waitFor(() => {
       expect(screen.getByTestId("images-uploaded")).toHaveValue("tmp/lamp.jpg");
     });
@@ -230,8 +195,8 @@ describe("FileUploadComponent image previews", () => {
       }),
       throwOnError: false,
     });
-    expect(SignedUploadRequest.instances[0]?.method).toBe("PUT");
-    expect(SignedUploadRequest.instances[0]?.headers).toEqual({ "x-amz-acl": "private" });
+    expect(request.method).toBe("PUT");
+    expect(request.headers).toEqual({ "x-amz-acl": "private" });
   });
 
   it("marks a signed upload as failed when signing is rejected", async () => {
@@ -247,14 +212,13 @@ describe("FileUploadComponent image previews", () => {
 
   it("marks a signed upload as failed when the direct upload fails", async () => {
     apiFetch.mockResolvedValue(successfulSignResponse());
-    SignedUploadRequest.prototype.send = function send(): void {
-      this.onerror?.();
-    };
     renderUpload();
 
     fireEvent.change(screen.getByLabelText("Images"), {
       target: { files: [new File(["image-data"], "lamp.jpg", { type: "image/jpeg" })] },
     });
+
+    (await signedUpload()).fail();
 
     expect(await screen.findByText("Failed")).toBeVisible();
   });
@@ -279,6 +243,8 @@ describe("FileUploadComponent image previews", () => {
     fireEvent.change(screen.getByLabelText("Images"), {
       target: { files: [new File(["image-data"], "new-lamp.jpg", { type: "image/jpeg" })] },
     });
+
+    (await signedUpload()).succeed(204);
 
     await waitFor(() => {
       expect(screen.getByTestId("images-uploaded")).toHaveValue("tmp/new-lamp.jpg");
@@ -331,6 +297,8 @@ describe("FileUploadComponent image previews", () => {
     fireEvent.change(screen.getByLabelText("Images"), {
       target: { files: [new File(["image-data"], "lamp.jpg", { type: "image/jpeg" })] },
     });
+
+    (await signedUpload()).succeed(204);
 
     await waitFor(() => {
       expect(screen.getByTestId("images-uploaded")).toHaveAttribute("name", "items[0][images][]");

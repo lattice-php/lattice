@@ -1,25 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { notificationItem } from "@lattice-php/lattice/test-support";
 import { NotificationList } from "./notification-list";
-import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 
 vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
-
-function item(id: string, title: string): NotificationItem {
-  return {
-    id,
-    title,
-    body: "body",
-    icon: "bell",
-    variant: "info",
-    href: null,
-    isRead: false,
-    createdAt: null,
-    actions: [],
-  };
-}
 
 describe("NotificationList", () => {
   it("shows the empty state when there are no notifications", () => {
@@ -40,7 +26,7 @@ describe("NotificationList", () => {
     const onLoadMore = vi.fn<() => void>();
     const { rerender } = render(
       <NotificationList
-        notifications={[item("a", "Order shipped")]}
+        notifications={[notificationItem()]}
         status="idle"
         hasMore={false}
         onMarkRead={vi.fn<(id: string) => void>()}
@@ -53,7 +39,7 @@ describe("NotificationList", () => {
 
     rerender(
       <NotificationList
-        notifications={[item("a", "Order shipped")]}
+        notifications={[notificationItem()]}
         status="idle"
         hasMore={true}
         onMarkRead={vi.fn<(id: string) => void>()}

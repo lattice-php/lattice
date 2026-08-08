@@ -45,10 +45,12 @@ const node = builderNode(
 
 it("renders each row against its block template", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [
-      { type: "text", content: "hi" },
-      { type: "product", qty: "2" },
-    ],
+    initial: {
+      items: [
+        { type: "text", content: "hi" },
+        { type: "product", qty: "2" },
+      ],
+    },
   });
   const children = screen.getAllByTestId("child");
   expect(children.map((c) => c.textContent)).toEqual(["items[0][content]", "items[1][qty]"]);
@@ -62,14 +64,9 @@ it("adds a row of the chosen block type", () => {
   expect(children.map((c) => c.textContent)).toEqual(["items[0][qty]"]);
 });
 
-it("renders an unknown-block placeholder", () => {
-  wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, { items: [{ type: "video" }] });
-  expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
-});
-
 it("can remove an unknown-block row", () => {
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [{ type: "video" }, { type: "text", content: "keep" }],
+    initial: { items: [{ type: "video" }, { type: "text", content: "keep" }] },
   });
   expect(screen.getByText(/Unknown block/i)).toBeInTheDocument();
   const firstRow = screen.getByTestId("repeater-items-row-0");
@@ -115,10 +112,12 @@ it("renders the table layout: primary columns, spanning non-primary rows", () =>
     ],
   );
   wrap(<BuilderComponent node={node}>{null}</BuilderComponent>, {
-    items: [
-      { type: "product", product: "SKU", qty: "2" },
-      { type: "text", content: "note" },
-    ],
+    initial: {
+      items: [
+        { type: "product", product: "SKU", qty: "2" },
+        { type: "text", content: "note" },
+      ],
+    },
   });
   expect(screen.getByText("Product")).toBeInTheDocument();
   expect(screen.getByText("Qty")).toBeInTheDocument();

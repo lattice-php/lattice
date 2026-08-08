@@ -1,48 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { FakeXhr } from "./test-support";
 import { requestSignedUpload, xhrTransfer } from "./upload";
-type Progress = { lengthComputable: boolean; loaded: number; total: number };
-
-class FakeUploadRequest {
-  static instances: FakeUploadRequest[] = [];
-
-  body: unknown = null;
-
-  headers: Record<string, string> = {};
-
-  method = "";
-
-  onerror: (() => void) | null = null;
-
-  onload: (() => void) | null = null;
-
-  responseText = "";
-
-  status = 200;
-
-  upload: { onprogress: ((event: Progress) => void) | null } = { onprogress: null };
-
-  url = "";
-
-  constructor() {
-    FakeUploadRequest.instances.push(this);
-  }
-
-  open(method: string, url: string): void {
-    this.method = method;
-    this.url = url;
-  }
-
-  send(body: unknown): void {
-    this.body = body;
-  }
-
-  setRequestHeader(key: string, value: string): void {
-    this.headers[key] = value;
-  }
-}
 
 function startTransfer(onProgress?: (percent: number) => void): {
-  request: FakeUploadRequest;
+  request: FakeXhr;
   transfer: Promise<Response>;
 } {
   const transfer = xhrTransfer({
@@ -53,13 +14,13 @@ function startTransfer(onProgress?: (percent: number) => void): {
     onProgress,
   });
 
-  return { request: FakeUploadRequest.instances[0] as FakeUploadRequest, transfer };
+  return { request: FakeXhr.instances[0] as FakeXhr, transfer };
 }
 
 describe("xhrTransfer", () => {
   beforeEach(() => {
-    FakeUploadRequest.instances = [];
-    vi.stubGlobal("XMLHttpRequest", FakeUploadRequest);
+    FakeXhr.reset();
+    vi.stubGlobal("XMLHttpRequest", FakeXhr);
   });
 
   it("opens the signed request with stringified headers and the raw body", () => {
@@ -75,9 +36,9 @@ describe("xhrTransfer", () => {
     const percents: number[] = [];
     const { request, transfer } = startTransfer((percent) => percents.push(percent));
 
-    request.upload.onprogress?.({ lengthComputable: true, loaded: 1, total: 3 });
+    request.progress(1, 3);
     request.upload.onprogress?.({ lengthComputable: false, loaded: 2, total: 3 });
-    request.onload?.();
+    request.succeed();
     await transfer;
 
     expect(percents).toEqual([33]);
@@ -86,9 +47,7 @@ describe("xhrTransfer", () => {
   it("resolves a response carrying the transport status and body", async () => {
     const { request, transfer } = startTransfer();
 
-    request.status = 200;
-    request.responseText = JSON.stringify({ key: "tmp/lamp.jpg" });
-    request.onload?.();
+    request.succeed(200, JSON.stringify({ key: "tmp/lamp.jpg" }));
 
     const response = await transfer;
 
@@ -99,8 +58,7 @@ describe("xhrTransfer", () => {
   it("maps a status of zero to a 500 response instead of hanging", async () => {
     const { request, transfer } = startTransfer();
 
-    request.status = 0;
-    request.onload?.();
+    request.succeed(0);
 
     const response = await transfer;
 
@@ -111,7 +69,7 @@ describe("xhrTransfer", () => {
   it("rejects when the transport fails", async () => {
     const { request, transfer } = startTransfer();
 
-    request.onerror?.();
+    request.fail();
 
     await expect(transfer).rejects.toThrow(
       "Upload to https://rustfs.test/tmp/lamp.jpg?signature=1 failed",
@@ -158,8 +116,9 @@ describe("requestSignedUpload", () => {
       contentType: "image/jpeg",
     });
 
+    const init = fetchMock.mock.calls[0]?.[1] as RequestInit;
     expect(response.status).toBe(422);
-    expect((fetchMock.mock.calls[0]?.[1] as RequestInit).body).toBe(
+    expect(init.body).toBe(
       JSON.stringify({
         _sub: "upload",
         _target: "files",

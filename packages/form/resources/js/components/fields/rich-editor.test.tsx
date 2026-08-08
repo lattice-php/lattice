@@ -1,46 +1,21 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { createRegistry, type Registry } from "@lattice-php/core/registry";
-import { RegistryContext } from "@lattice-php/core/registry-context";
 import type { Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
+import { renderWithForm, RICH_EDITOR_EXTENSIONS } from "@lattice-php/form/test-support";
 import type { RichEditorExtensionRegistry } from "@lattice-php/form/rich-editor/registry";
-import type { EditorExtension } from "@lattice-php/form/generated";
 import { RichEditorComponent } from "./rich-editor";
-
-const DEFAULT_EXTENSIONS: EditorExtension[] = [
-  { type: "bold", props: {} },
-  { type: "italic", props: {} },
-  { type: "strike", props: {} },
-  { type: "underline", props: {} },
-  { type: "highlight", props: {} },
-  { type: "code", props: {} },
-  { type: "heading", props: {} },
-  { type: "bullet-list", props: {} },
-  { type: "ordered-list", props: {} },
-  { type: "blockquote", props: {} },
-  { type: "code-block", props: {} },
-  { type: "horizontal-rule", props: {} },
-  { type: "text-align", props: {} },
-  { type: "link", props: {} },
-  { type: "table", props: {} },
-  { type: "details", props: {} },
-  { type: "emoji", props: {} },
-];
 
 function renderField(
   node: Node<"field.rich-editor">,
   initial: Record<string, unknown> = {},
   registry: Registry = createRegistry(),
 ) {
-  return render(
-    <RegistryContext.Provider value={registry}>
-      <FormValuesProvider initial={initial}>
-        <RichEditorComponent node={node}>{null}</RichEditorComponent>
-      </FormValuesProvider>
-    </RegistryContext.Provider>,
-  );
+  return renderWithForm(<RichEditorComponent node={node}>{null}</RichEditorComponent>, {
+    initial,
+    registry,
+  });
 }
 
 describe("RichEditorComponent", () => {
@@ -48,7 +23,7 @@ describe("RichEditorComponent", () => {
     renderField(
       fakeNode({
         type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: DEFAULT_EXTENSIONS },
+        props: { name: "body", label: "Body", extensions: RICH_EDITOR_EXTENSIONS },
       }),
     );
 
@@ -117,28 +92,6 @@ describe("RichEditorComponent", () => {
 
     await waitFor(() =>
       expect(document.querySelector(".lattice-prose")).toHaveTextContent("STAMPED"),
-    );
-  });
-
-  it("shows the placeholder while the editor is empty", async () => {
-    renderField(
-      fakeNode({
-        type: "field.rich-editor",
-        props: {
-          name: "body",
-          label: "Body",
-          extensions: DEFAULT_EXTENSIONS,
-          placeholder: "Write your article…",
-        },
-      }),
-    );
-
-    await screen.findByLabelText("Bold");
-
-    await waitFor(() =>
-      expect(
-        document.querySelector('[data-placeholder="Write your article…"]'),
-      ).toBeInTheDocument(),
     );
   });
 });

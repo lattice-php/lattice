@@ -3,36 +3,23 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Lattice\Form\Components\Form;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
-use Symfony\Component\HttpFoundation\Response;
 
 function resolvedDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('mode', 'Mode'),
-                TextInput::make('secret', 'Secret')
-                    ->dependsOn('mode', fn ($component, FormData $d) => $d->get('mode') === 'reveal'
-                        ? $component->visible()->rules(['required', 'string'])
-                        : $component->hidden()),
-                TextInput::make('qty', 'Qty'),
-                TextInput::make('price', 'Price'),
-                TextInput::make('total', 'Total')
-                    ->value(fn (FormData $d): float => $d->float('qty') * $d->float('price')),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('mode', 'Mode'),
+        TextInput::make('secret', 'Secret')
+            ->dependsOn('mode', fn ($component, FormData $d) => $d->get('mode') === 'reveal'
+                ? $component->visible()->rules(['required', 'string'])
+                : $component->hidden()),
+        TextInput::make('qty', 'Qty'),
+        TextInput::make('price', 'Price'),
+        TextInput::make('total', 'Total')
+            ->value(fn (FormData $d): float => $d->float('qty') * $d->float('price')),
+    ]);
 }
 
 it('skips validation for a field hidden by a closure', function (): void {
@@ -59,23 +46,12 @@ it('uses the server-computed value, not the submitted one', function (): void {
 
 function lockedDefinition(): FormDefinition
 {
-    return new class extends FormDefinition
-    {
-        public function definition(Form $form, Request $request): Form
-        {
-            return $form->schema([
-                TextInput::make('display', 'Display')->readOnly()->rules(['string']),
-                TextInput::make('locked', 'Locked')->readOnly()->value('server')->rules(['string']),
-                TextInput::make('off', 'Off')->disabled()->rules(['string']),
-                TextInput::make('name', 'Name')->rules(['required', 'string']),
-            ]);
-        }
-
-        public function handle(Request $request): Response
-        {
-            return new Response('ok');
-        }
-    };
+    return testFormDefinition(fn (): array => [
+        TextInput::make('display', 'Display')->readOnly()->rules(['string']),
+        TextInput::make('locked', 'Locked')->readOnly()->value('server')->rules(['string']),
+        TextInput::make('off', 'Off')->disabled()->rules(['string']),
+        TextInput::make('name', 'Name')->rules(['required', 'string']),
+    ]);
 }
 
 it('drops readonly and disabled values that have no field value', function (): void {

@@ -1,39 +1,21 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";
-import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
 import { createRegistry } from "@lattice-php/core/registry";
 import { clearRemoteTokenCache } from "@lattice-php/core/api";
 import { chatComponents } from "@lattice-php/lattice/chat/plugin";
-import { renderWithRegistry } from "@lattice-php/core/test-support";
+import { streamResponse } from "@lattice-php/lattice/chat/test-support";
 import { ChatBox } from "./chat-box";
 
 const registry = createRegistry(chatComponents);
 
 function historyResponse(): Response {
-  return {
-    ok: true,
-    status: 200,
-    json: async () => ({
-      messages: [
-        { id: "1", role: "assistant", parts: [{ type: "chat.part.text", props: { text: "Hi" } }] },
-      ],
-    }),
-  } as unknown as Response;
-}
-
-function streamResponse(lines: string[]): Response {
-  const enc = new TextEncoder();
-  const body = new ReadableStream<Uint8Array>({
-    start(controller) {
-      for (const line of lines) {
-        controller.enqueue(enc.encode(line));
-      }
-      controller.close();
-    },
+  return jsonResponse({
+    messages: [
+      { id: "1", role: "assistant", parts: [{ type: "chat.part.text", props: { text: "Hi" } }] },
+    ],
   });
-
-  return { ok: true, status: 200, body } as unknown as Response;
 }
 
 function renderChatBox(props: Partial<ChatBoxProps> = {}): void {
@@ -187,30 +169,24 @@ describe("ChatBox component", () => {
     document.cookie = "XSRF-TOKEN=test-token";
     const fetchMock = vi.fn<typeof fetch>(async (url) => {
       if (String(url) === "/custom/remote-tokens/fixtures.crm") {
-        return new Response(
-          JSON.stringify({
-            accessToken: "fake-browser-token",
-            tokenType: "Bearer",
-            expiresIn: 120,
-            audience: "https://crm.example.test",
-            scopes: ["chat.read", "chat.write"],
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
+        return jsonResponse({
+          accessToken: "fake-browser-token",
+          tokenType: "Bearer",
+          expiresIn: 120,
+          audience: "https://crm.example.test",
+          scopes: ["chat.read", "chat.write"],
+        });
       }
 
-      return new Response(
-        JSON.stringify({
-          messages: [
-            {
-              id: "assistant-1",
-              role: "assistant",
-              parts: [{ type: "chat.part.text", props: { text: "Previous answer" } }],
-            },
-          ],
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
+      return jsonResponse({
+        messages: [
+          {
+            id: "assistant-1",
+            role: "assistant",
+            parts: [{ type: "chat.part.text", props: { text: "Previous answer" } }],
+          },
+        ],
+      });
     });
     vi.stubGlobal("fetch", fetchMock);
 

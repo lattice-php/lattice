@@ -3,13 +3,27 @@ import type { Node } from "@lattice-php/core/types";
 import { clearRemoteTokenCache } from "@lattice-php/core/api";
 import { createRegistry } from "@lattice-php/core/registry";
 import { actionComponents } from "@lattice-php/action";
-import { renderWithRegistry } from "@lattice-php/core/test-support";
-import { fakeNode } from "@lattice-php/core/test-support";
+import {
+  fakeNode,
+  jsonResponse,
+  renderWithRegistry,
+  stubFetch,
+} from "@lattice-php/core/test-support";
 import { uiComponents } from "@lattice-php/ui";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataList } from "./data-list";
 
 const registry = createRegistry(uiComponents, actionComponents);
+
+function tokenResponse(): Response {
+  return jsonResponse({
+    accessToken: "fake-browser-token",
+    tokenType: "Bearer",
+    expiresIn: 120,
+    audience: "https://crm.example.test",
+    scopes: ["customers.read"],
+  });
+}
 
 function node(): Node<"remote.data-list"> {
   return {
@@ -120,25 +134,11 @@ describe("DataList", () => {
 
   it("fetches remote rows with a scoped browser token", async () => {
     document.cookie = "XSRF-TOKEN=test-token";
-    const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
-        return new Response(
-          JSON.stringify({
-            accessToken: "fake-browser-token",
-            tokenType: "Bearer",
-            expiresIn: 120,
-            audience: "https://crm.example.test",
-            scopes: ["customers.read"],
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
-      }
-
-      return new Response(
-        JSON.stringify({ data: [{ id: 1, name: "Ada Lovelace", email: "ada@example.test" }] }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
-    });
+    const fetchMock = vi.fn<typeof fetch>(async (url) =>
+      String(url) === "/custom/remote-tokens/fixtures.crm"
+        ? tokenResponse()
+        : jsonResponse({ data: [{ id: 1, name: "Ada Lovelace", email: "ada@example.test" }] }),
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     renderWithRegistry(<DataList node={node()}>{null}</DataList>, registry);
@@ -160,7 +160,9 @@ describe("DataList", () => {
     );
   });
 
-  it("shows the loading fallback when remote access is missing", () => {
+  it("shows the loading fallback without fetching when remote access is missing", () => {
+    const fetchMock = stubFetch();
+
     renderWithRegistry(
       <DataList
         node={{
@@ -177,25 +179,15 @@ describe("DataList", () => {
     );
 
     expect(screen.getByText("Loading...")).toBeVisible();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("renders remote fetch errors", async () => {
-    const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
-        return new Response(
-          JSON.stringify({
-            accessToken: "fake-browser-token",
-            audience: "https://crm.example.test",
-            expiresIn: 120,
-            scopes: ["customers.read"],
-            tokenType: "Bearer",
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
-      }
-
-      return new Response("Failed", { status: 500 });
-    });
+    const fetchMock = vi.fn<typeof fetch>(async (url) =>
+      String(url) === "/custom/remote-tokens/fixtures.crm"
+        ? tokenResponse()
+        : new Response("Failed", { status: 500 }),
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     renderWithRegistry(<DataList node={node()}>{null}</DataList>, registry);
@@ -204,25 +196,11 @@ describe("DataList", () => {
   });
 
   it("uses the configured empty label when the remote payload has no rows", async () => {
-    const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
-        return new Response(
-          JSON.stringify({
-            accessToken: "fake-browser-token",
-            audience: "https://crm.example.test",
-            expiresIn: 120,
-            scopes: ["customers.read"],
-            tokenType: "Bearer",
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
-      }
-
-      return new Response(JSON.stringify({ data: [] }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    });
+    const fetchMock = vi.fn<typeof fetch>(async (url) =>
+      String(url) === "/custom/remote-tokens/fixtures.crm"
+        ? tokenResponse()
+        : jsonResponse({ data: [] }),
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     renderWithRegistry(
@@ -244,40 +222,26 @@ describe("DataList", () => {
   });
 
   it("renders the child schema once per remote row using data bindings", async () => {
-    const fetchMock = vi.fn<typeof fetch>(async (url) => {
-      if (String(url) === "/custom/remote-tokens/fixtures.crm") {
-        return new Response(
-          JSON.stringify({
-            accessToken: "fake-browser-token",
-            tokenType: "Bearer",
-            expiresIn: 120,
-            audience: "https://crm.example.test",
-            scopes: ["customers.read"],
+    const fetchMock = vi.fn<typeof fetch>(async (url) =>
+      String(url) === "/custom/remote-tokens/fixtures.crm"
+        ? tokenResponse()
+        : jsonResponse({
+            data: [
+              {
+                id: 1,
+                actionLabel: "Open Ada",
+                email: "ada@example.test",
+                name: "Ada Lovelace",
+              },
+              {
+                id: 2,
+                actionLabel: "Open Grace",
+                email: "grace@example.test",
+                name: "Grace Hopper",
+              },
+            ],
           }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        );
-      }
-
-      return new Response(
-        JSON.stringify({
-          data: [
-            {
-              id: 1,
-              actionLabel: "Open Ada",
-              email: "ada@example.test",
-              name: "Ada Lovelace",
-            },
-            {
-              id: 2,
-              actionLabel: "Open Grace",
-              email: "grace@example.test",
-              name: "Grace Hopper",
-            },
-          ],
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } },
-      );
-    });
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     renderWithRegistry(<DataList node={schemaNode()}>{null}</DataList>, registry);

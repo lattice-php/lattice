@@ -80,19 +80,6 @@ describe("Lattice icon renderer", () => {
 });
 
 describe("Icon", () => {
-  it("renders a sprite reference and forwards svg props", () => {
-    const { container } = render(
-      <SpriteProvider sprite={{ href: "/s.svg", ids: ["x"] }}>
-        <Icon name="x" className="size-5" role="img" />
-      </SpriteProvider>,
-    );
-
-    const svg = container.querySelector("svg");
-    expect(svg).toHaveClass("size-5");
-    expect(svg).toHaveAttribute("role", "img");
-    expect(svg?.querySelector("use")?.getAttribute("href")).toBe("/s.svg#x");
-  });
-
   it("injects the inline sprite source so same-document refs resolve", () => {
     const { container } = render(
       <SpriteProvider

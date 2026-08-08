@@ -4,18 +4,6 @@ import { TimePicker } from "./time-picker";
 import type { TimeValue } from "./time-picker-columns";
 
 describe("TimePicker", () => {
-  it("renders hour and minute columns and no seconds by default", () => {
-    render(<TimePicker value={{ hour: 1, minute: 1, second: 0 }} onChange={() => {}} />);
-
-    expect(screen.getByRole("listbox", { name: "Hour" })).toBeInTheDocument();
-    expect(screen.getByRole("listbox", { name: "Minute" })).toBeInTheDocument();
-    expect(screen.queryByRole("listbox", { name: "Second" })).not.toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Hour 01" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
-  });
-
   it("emits a full time value when an option is clicked", () => {
     const onChange = vi.fn<(next: TimeValue) => void>();
 
@@ -35,38 +23,19 @@ describe("TimePicker", () => {
     expect(screen.getByRole("option", { name: "Hour 10" })).not.toBeDisabled();
   });
 
-  it("moves selection with the down arrow", () => {
+  it.each([
+    { key: "ArrowDown", start: "Hour 01", hour: 1, expected: 2 },
+    { key: "ArrowUp", start: "Hour 02", hour: 2, expected: 1 },
+    { key: "End", start: "Hour 05", hour: 5, expected: 23 },
+    { key: "Home", start: "Hour 05", hour: 5, expected: 0 },
+  ])("moves the hour selection with $key", ({ key, start, hour, expected }) => {
     const onChange = vi.fn<(next: TimeValue) => void>();
 
-    render(<TimePicker value={{ hour: 1, minute: 0, second: 0 }} onChange={onChange} />);
+    render(<TimePicker value={{ hour, minute: 0, second: 0 }} onChange={onChange} />);
 
-    fireEvent.keyDown(screen.getByRole("option", { name: "Hour 01" }), { key: "ArrowDown" });
+    fireEvent.keyDown(screen.getByRole("option", { name: start }), { key });
 
-    expect(onChange).toHaveBeenCalledWith({ hour: 2, minute: 0, second: 0 });
-  });
-
-  it("moves selection with the up arrow", () => {
-    const onChange = vi.fn<(next: TimeValue) => void>();
-
-    render(<TimePicker value={{ hour: 2, minute: 0, second: 0 }} onChange={onChange} />);
-
-    fireEvent.keyDown(screen.getByRole("option", { name: "Hour 02" }), { key: "ArrowUp" });
-
-    expect(onChange).toHaveBeenCalledWith({ hour: 1, minute: 0, second: 0 });
-  });
-
-  it("jumps to the first and last option with Home and End", () => {
-    const onChange = vi.fn<(next: TimeValue) => void>();
-
-    render(<TimePicker value={{ hour: 5, minute: 0, second: 0 }} onChange={onChange} />);
-
-    const hour = screen.getByRole("option", { name: "Hour 05" });
-
-    fireEvent.keyDown(hour, { key: "End" });
-    expect(onChange).toHaveBeenLastCalledWith({ hour: 23, minute: 0, second: 0 });
-
-    fireEvent.keyDown(hour, { key: "Home" });
-    expect(onChange).toHaveBeenLastCalledWith({ hour: 0, minute: 0, second: 0 });
+    expect(onChange).toHaveBeenCalledWith({ hour: expected, minute: 0, second: 0 });
   });
 
   it("selects a value in the seconds column", () => {

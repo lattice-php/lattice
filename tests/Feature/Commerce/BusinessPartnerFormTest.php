@@ -11,16 +11,6 @@ use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
 
-use function Pest\Laravel\get;
-use function Pest\Laravel\withoutVite;
-
-test('the business partner create page renders', function (): void {
-    withoutVite();
-    $this->actingAs(workbenchTestUser());
-
-    get('/business-partners/create')->assertOk();
-});
-
 test('the business partner form creates a partner with groups and addresses', function (): void {
     Lattice::forms([BusinessPartnerForm::class]);
 

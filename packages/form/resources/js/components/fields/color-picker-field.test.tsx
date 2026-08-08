@@ -1,9 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { fakeFormContext } from "@lattice-php/form/test-support";
-import { FormProvider } from "@lattice-php/form/hooks/context";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
+import { renderWithForm } from "@lattice-php/form/test-support";
 import { ColorPickerFieldComponent } from "./color-picker-field";
 
 function renderField(props: Record<string, unknown>, initial: Record<string, unknown> = {}) {
@@ -18,18 +16,15 @@ function renderField(props: Record<string, unknown>, initial: Record<string, unk
     },
   });
 
-  return render(
-    <FormProvider value={fakeFormContext({ action: "/forms/tags", componentRef: "ref-1" })}>
-      <FormValuesProvider initial={initial}>
-        <ColorPickerFieldComponent node={node}>{null}</ColorPickerFieldComponent>
-      </FormValuesProvider>
-    </FormProvider>,
-  );
+  return renderWithForm(<ColorPickerFieldComponent node={node}>{null}</ColorPickerFieldComponent>, {
+    initial,
+    context: { action: "/forms/tags", componentRef: "ref-1" },
+  });
 }
 
 describe("ColorPickerFieldComponent", () => {
-  it("shows the placeholder when empty and the current hex once picked", () => {
-    renderField({});
+  it("shows the placeholder when empty and commits a swatch pick", () => {
+    const { container } = renderField({});
 
     expect(screen.getByTestId("color-picker-color")).toHaveTextContent("Pick a color");
 
@@ -37,15 +32,7 @@ describe("ColorPickerFieldComponent", () => {
     fireEvent.click(screen.getByRole("option", { name: "#ef4444" }));
 
     expect(screen.getByTestId("color-picker-color")).toHaveTextContent("#ef4444");
-  });
-
-  it("commits a swatch pick into the hidden input", () => {
-    const { container } = renderField({});
-
-    fireEvent.click(screen.getByTestId("color-picker-color"));
-    fireEvent.click(screen.getByRole("option", { name: "#3b82f6" }));
-
-    expect(container.querySelector('input[type="hidden"][name="color"]')).toHaveValue("#3b82f6");
+    expect(container.querySelector('input[type="hidden"][name="color"]')).toHaveValue("#ef4444");
   });
 
   it("disables the trigger when the field is disabled", () => {

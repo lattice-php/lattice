@@ -46,10 +46,9 @@ function bootReverb(): void
 }
 
 it('delivers a broadcast to the browser and shows a toast', function (): void {
-    $this->actingAs(workbenchTestUser());
     bootReverb();
 
-    $page = visit('/platform/realtime');
+    $page = $this->visitAsWorkbenchUser('/platform/realtime');
 
     retryUntil(
         function () use ($page): void {

@@ -40,20 +40,6 @@ test('a menu serializes its items as a menu node tree', function (): void {
         ]);
 });
 
-test('a menu item nests children that pipe to its schema', function (): void {
-    $wire = wire(
-        MenuItem::make('Account')->children([
-            MenuItem::make('Profile')->href('/profile'),
-        ]),
-    );
-
-    expect($wire['schema'][0]['type'])->toBe('menu-item')
-        ->and($wire['schema'][0]['props'])->toMatchArray([
-            'label' => 'Profile',
-            'href' => '/profile',
-        ]);
-});
-
 test('a menu item serializes its icon and method', function (): void {
     $wire = wire(
         MenuItem::make('Log out')->href('/logout')->icon('log-out')->method(HttpMethod::Post),
@@ -65,16 +51,9 @@ test('a menu item serializes its icon and method', function (): void {
             'href' => '/logout',
             'icon' => 'log-out',
             'method' => 'post',
-        ]);
-});
-
-test('a menu item includes unset optional props as null on the wire', function (): void {
-    $wire = wire(MenuItem::make('Home')->href('/'));
-
-    expect($wire['props']['method'])->toBeNull()
-        ->and($wire['props']['icon'])->toBeNull()
-        ->and($wire['props']['prefix'])->toBeNull()
-        ->and($wire['props']['suffix'])->toBeNull();
+        ])
+        ->and(wire(MenuItem::make('Settings')->href('/settings')->icon(Icon::Settings))['props']['icon'])
+        ->toBe('settings');
 });
 
 test('a menu item serializes prefix and suffix affixes', function (): void {
@@ -90,12 +69,6 @@ test('a menu item prefix takes an icon by name via the affix escape hatch', func
     $wire = wire(MenuItem::make('Home')->href('/')->prefix(Affix::icon('house')));
 
     expect($wire['props']['prefix'])->toBe(['icon' => 'house', 'text' => null]);
-});
-
-test('icon serializes as a string prop on a menu item', function (): void {
-    $wire = wire(MenuItem::make('Settings')->href('/settings')->icon(Icon::Settings));
-
-    expect($wire['props']['icon'])->toBe('settings');
 });
 
 test('fromPage resolves the href and a default label from the page route', function (): void {
