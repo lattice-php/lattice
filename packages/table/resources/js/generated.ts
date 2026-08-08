@@ -180,12 +180,15 @@ export type Table = {
   actionsLabel: string | null;
   bulkActions: Node[];
   columns: ColumnNode[];
+  data: Record<string, unknown>[] | null;
   emptyLabel: string | null;
   endpoint: string | null;
   filters: FilterNode[];
   layout: string | null;
   lazy: boolean;
+  pagination: TablePagination | null;
   perPageOptions: (number | string)[];
+  query: TableQuery | null;
   ref: string | null;
   resizableColumns: boolean;
   resizeIndicator: boolean;

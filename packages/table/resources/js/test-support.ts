@@ -47,12 +47,15 @@ export function pagination(overrides: Partial<TablePagination> = {}): TablePagin
   };
 }
 
-export function tableQuery(overrides: Partial<TableQuery> = {}): Partial<TableQuery> {
+export function tableQuery(overrides: Partial<TableQuery> = {}): TableQuery {
   return {
     filters: [],
+    mode: null,
     page: 1,
     perPage: 25,
+    search: "",
     sorts: [],
+    tableFilterIndicators: [],
     tableFilters: {},
     ...overrides,
   };

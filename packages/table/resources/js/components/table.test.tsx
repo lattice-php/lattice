@@ -55,12 +55,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ name: "Taylor" }],
         endpoint: "/lattice/tables/workbench.users",
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -98,12 +93,7 @@ describe("Lattice table component", () => {
           }),
         ],
         data: [],
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -153,13 +143,7 @@ describe("Lattice table component", () => {
         ],
         toolbar: [fakeNode({ type: "text", props: { text: "Custom slot" } })],
         endpoint: "/lattice/tables/workbench.toolbar",
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-          tableFilters: {},
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -237,12 +221,7 @@ describe("Lattice table component", () => {
           },
         ],
         layout: "grid",
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;
@@ -486,12 +465,7 @@ describe("Lattice table component", () => {
         ],
         data: [{ id: 1, name: "Taylor" }],
         pagination: pagination({ total: 1 }),
-        query: {
-          filters: [],
-          page: 1,
-          perPage: 25,
-          sorts: [],
-        },
+        query: tableQuery(),
       },
       type: "table",
     } satisfies TableNode;

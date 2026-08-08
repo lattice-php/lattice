@@ -75,11 +75,7 @@ export type {
 
 export type ActionNode = NodeUnionOf<"action" | "action.bulk" | "action.group">;
 export type TableRow = Record<string, unknown>;
-export type TableNodeProps = Partial<Table> & {
-  data?: TableRow[];
-  pagination?: TablePagination;
-  query?: Partial<TableQuery>;
-};
+export type TableNodeProps = Partial<Table>;
 export type TableNode = {
   type: TableNodeType;
   id?: string;
