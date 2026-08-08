@@ -78,7 +78,7 @@ final class MediaLibrary extends ContainerComponent
      */
     public function uploadRules(array $rules): static
     {
-        $this->uploadRules = array_map(strval(...), $rules);
+        $this->uploadRules = array_values(array_map(strval(...), $rules));
 
         return $this->schema([]);
     }

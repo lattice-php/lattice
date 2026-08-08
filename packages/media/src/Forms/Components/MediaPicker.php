@@ -165,7 +165,7 @@ class MediaPicker extends Field implements ProvidesRowFields
         $ids = array_values(array_filter(array_column($rows, 'id'), is_numeric(...)));
         $media = Media::modelQuery()->findMany($ids)->keyBy(fn (Media $row): int => (int) $row->getKey());
 
-        $this->selected = collect($rows)
+        $this->selected = array_values(collect($rows)
             ->map(function (array $row) use ($media): ?array {
                 $id = $row['id'] ?? null;
                 $item = is_numeric($id) ? $media->get((int) $id) : null;
@@ -185,7 +185,7 @@ class MediaPicker extends Field implements ProvidesRowFields
             })
             ->filter()
             ->values()
-            ->all();
+            ->all());
     }
 
     /**
