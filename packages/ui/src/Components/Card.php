@@ -15,6 +15,11 @@ class Card extends ContainerComponent
 
     public ?string $description = null;
 
+    /**
+     * @var array<int, Component>
+     */
+    public array $headerActions = [];
+
     public static function make(?string $title = null, ?string $description = null, ?string $key = null): static
     {
         $card = new static($key);
@@ -28,5 +33,15 @@ class Card extends ContainerComponent
         }
 
         return $card;
+    }
+
+    /**
+     * @param  array<int, Component>  $actions
+     */
+    public function headerActions(array $actions): static
+    {
+        $this->headerActions = $actions;
+
+        return $this;
     }
 }
