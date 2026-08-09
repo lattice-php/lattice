@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.47.0](https://github.com/lattice-php/lattice/compare/0.46.0...0.47.0) (2026-08-09)
+
+
+### Features
+
+* **form:** add PatternInput field ([#432](https://github.com/lattice-php/lattice/issues/432)) ([da39c91](https://github.com/lattice-php/lattice/commit/da39c91c2fe06b696af5fb49bbae641d3675bfc6))
+* **table:** translate enum column values and derive filter options from enum() ([62bebf0](https://github.com/lattice-php/lattice/commit/62bebf022f1f6aea91df62ee2601f652d3f77872))
+* **ui:** add Modal::height() lever ([#433](https://github.com/lattice-php/lattice/issues/433)) ([24bf750](https://github.com/lattice-php/lattice/commit/24bf7507212b95d204ba2593424d763400a8ecfb))
+
+
+### Bug Fixes
+
+* **form:** stop the required-field asterisk from stretching the label row ([e77e059](https://github.com/lattice-php/lattice/commit/e77e059ba97ee9346f0328a16b2939e1d1228955))
+* **table:** contain horizontal overflow to the table's own scrollport ([59b43e9](https://github.com/lattice-php/lattice/commit/59b43e962a5ed92b3408bc2663a06c338af91624))
+* **table:** keep the header background/border painted across horizontal scroll ([4fda66d](https://github.com/lattice-php/lattice/commit/4fda66d65b8a0d22691554ffd1ecbbd3163021b0))
+* **table:** stop page-level scroll leak, pin toolbar during scroll, translate status filter ([#431](https://github.com/lattice-php/lattice/issues/431)) ([aa7b1f4](https://github.com/lattice-php/lattice/commit/aa7b1f445d6d8eb27d81b19592ca30634b45c3fd))
+
+
+### Refactoring
+
+* **workbench:** use BadgeColumn::enum() for sales order status labels ([ac20405](https://github.com/lattice-php/lattice/commit/ac20405ae5c686ec472865878b8357f3671a8109))
+
 ## [0.46.0](https://github.com/lattice-php/lattice/compare/0.45.1...0.46.0) (2026-08-08)
 
 
