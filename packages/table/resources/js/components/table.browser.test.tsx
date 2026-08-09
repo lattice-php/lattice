@@ -44,6 +44,34 @@ describe("Lattice table component in a browser", () => {
     expect(getComputedStyle(mobileLabel as HTMLElement).display).toBe("none");
   });
 
+  it("contains horizontal overflow inside table-scroll instead of a flex ancestor", async () => {
+    const wideNode = node({
+      columns: Array.from({ length: 8 }, (_, index) =>
+        col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
+      ),
+      data: [
+        Object.fromEntries([
+          ["id", 1],
+          ...Array.from({ length: 8 }, (_, index) => [`col${index}`, `Value ${index}`]),
+        ]),
+      ],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const scroll = table.closest('[data-slot="table-scroll"]') as HTMLElement;
+    const wrapper = scroll.closest('[data-slot="table"]') as HTMLElement;
+    const ancestor = wrapper.parentElement as HTMLElement;
+
+    expect(ancestor.scrollWidth).toBeLessThanOrEqual(ancestor.clientWidth + 1);
+    expect(scroll.scrollWidth).toBeGreaterThan(scroll.clientWidth);
+  });
+
   it("keeps overflowing body cell content within the rendered column boundary", async () => {
     const longSku = `sku-${"x".repeat(120)}`;
     const screen = await render(
