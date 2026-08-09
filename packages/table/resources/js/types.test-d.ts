@@ -15,6 +15,7 @@ const commonColumnProps: CommonColumnProps = {
   toggleable: false,
   hiddenByDefault: false,
   filter: null,
+  options: [],
 };
 
 // 1. Augmented type narrows correctly.

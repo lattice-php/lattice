@@ -59,7 +59,7 @@ it('maps each date style method to its dateStyle/timeStyle shape', function (): 
 it('reflects only the common concerns for columns that expose no public properties', function (): void {
     $props = wire(BooleanColumn::make('active'))['props'];
 
-    expect($props)->toHaveCount(7)
+    expect($props)->toHaveCount(8)
         ->and($props)->toMatchArray([
             'label' => 'Active',
             'width' => 'md',
@@ -68,6 +68,7 @@ it('reflects only the common concerns for columns that expose no public properti
             'toggleable' => false,
             'hiddenByDefault' => false,
             'filter' => null,
+            'options' => [],
         ]);
 });
 

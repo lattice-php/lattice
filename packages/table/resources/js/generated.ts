@@ -8,6 +8,7 @@ export type BadgeColumn = {
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -17,6 +18,7 @@ export type BooleanColumn = {
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -26,6 +28,7 @@ export type Column = {
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -113,6 +116,7 @@ export type IconColumn = {
   icon: string | null;
   icons: Record<string | number, string> | null;
   label: string | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -123,6 +127,7 @@ export type ImageColumn = {
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
+  options: Option[];
   previewable: boolean;
   size: number | null;
   sortable: boolean;
@@ -139,6 +144,7 @@ export type MoneyColumn = {
   label: string | null;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -153,6 +159,7 @@ export type NumberColumn = {
   label: string | null;
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   unit: NumberFormatUnit | null;
@@ -172,6 +179,7 @@ export type StackColumn = {
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -251,6 +259,7 @@ export type TextColumn = {
     href: string | null;
   } | null;
   multiple: string | null;
+  options: Option[];
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;

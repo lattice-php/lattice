@@ -1,5 +1,10 @@
 import { type FormatOptions, formatDateValue } from "@lattice-php/ui/format/temporal";
-import type { ColumnPropsOf, TableColumn, TableRow } from "@lattice-php/table/types";
+import type {
+  ColumnPropsOf,
+  CommonColumnProps,
+  TableColumn,
+  TableRow,
+} from "@lattice-php/table/types";
 
 export function formatCell(value: unknown, column?: TableColumn, options?: FormatOptions): string {
   if (value === null || value === undefined) {
@@ -10,6 +15,14 @@ export function formatCell(value: unknown, column?: TableColumn, options?: Forma
 
   if (date) {
     return formatDateValue(value, date, options);
+  }
+
+  const label = (column?.props as CommonColumnProps | undefined)?.options?.find(
+    (option) => option.value === String(value),
+  )?.label;
+
+  if (label !== undefined) {
+    return label;
   }
 
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {

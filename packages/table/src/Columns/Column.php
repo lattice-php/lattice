@@ -13,6 +13,7 @@ use Lattice\Table\RelationBinding;
 use Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Ui\Concerns\GatesRendering;
 use Lattice\Ui\Concerns\HasLabel;
+use Lattice\Ui\Concerns\HasOptions;
 use Lattice\Ui\Contracts\Renderable;
 use Lattice\Ui\Enums\ColumnWidth;
 
@@ -24,6 +25,7 @@ abstract class Column implements JsonSerializable, Renderable
 {
     use GatesRendering;
     use HasLabel;
+    use HasOptions;
     use SerializesWireNode;
 
     public ColumnWidth $width = ColumnWidth::Md;

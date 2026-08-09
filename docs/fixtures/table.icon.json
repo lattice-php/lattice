@@ -17,6 +17,7 @@
                         "label": "Name",
                         "link": null,
                         "multiple": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -47,6 +48,7 @@
                             "1": "check"
                         },
                         "label": "Verified",
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"

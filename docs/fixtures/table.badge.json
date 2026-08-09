@@ -17,6 +17,7 @@
                         "label": "Reference",
                         "link": null,
                         "multiple": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -64,6 +65,7 @@
                         },
                         "hiddenByDefault": false,
                         "label": "Status",
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"

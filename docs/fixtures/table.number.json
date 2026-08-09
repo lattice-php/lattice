@@ -17,6 +17,7 @@
                         "label": "Metric",
                         "link": null,
                         "multiple": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -34,6 +35,7 @@
                         "label": "Views",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
+                        "options": [],
                         "sortable": true,
                         "toggleable": false,
                         "unit": null,
@@ -52,6 +54,7 @@
                         "label": "Conversion",
                         "maximumFractionDigits": 1,
                         "minimumFractionDigits": 1,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "unit": "percent",

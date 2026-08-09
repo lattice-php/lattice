@@ -20,6 +20,7 @@
                             "href": "/people/{value}"
                         },
                         "multiple": null,
+                        "options": [],
                         "sortable": true,
                         "toggleable": false,
                         "width": "md"
@@ -41,6 +42,7 @@
                             "href": "mailto:{value}"
                         },
                         "multiple": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -62,6 +64,7 @@
                         "label": "Joined",
                         "link": null,
                         "multiple": null,
+                        "options": [],
                         "sortable": true,
                         "toggleable": false,
                         "width": "md"
