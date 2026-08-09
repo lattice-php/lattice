@@ -154,7 +154,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     <div data-slot="table" data-lattice-component={node.id} className="relative min-w-0">
       <div
         data-slot="table-scroll"
-        className="overflow-x-auto rounded-lt-sm border border-lt-border"
+        className="relative overflow-x-auto rounded-lt-sm border border-lt-border"
       >
         {hasToolbar && (
           <div

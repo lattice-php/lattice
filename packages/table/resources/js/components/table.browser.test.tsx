@@ -72,6 +72,41 @@ describe("Lattice table component in a browser", () => {
     expect(scroll.scrollWidth).toBeGreaterThan(scroll.clientWidth);
   });
 
+  it("keeps table-scroll as the containing block so the sr-only actions label scrolls with it instead of leaking page overflow", async () => {
+    const wideNode = node({
+      columns: Array.from({ length: 8 }, (_, index) =>
+        col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
+      ),
+      data: [
+        Object.fromEntries([
+          ["id", 1],
+          ...Array.from({ length: 8 }, (_, index) => [`col${index}`, `Value ${index}`]),
+          ["actions", [{ type: "unregistered-test-action", id: "a1", props: {} }]],
+        ]),
+      ],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const scroll = table.closest('[data-slot="table-scroll"]') as HTMLElement;
+    const wrapper = scroll.closest('[data-slot="table"]') as HTMLElement;
+    const ancestor = wrapper.parentElement as HTMLElement;
+
+    // The sr-only actions label has no explicit position, so it falls back to
+    // its static layout position within its containing block. If that
+    // containing block is an ancestor outside table-scroll (the actual
+    // scrolling element), the label renders at a fixed page coordinate that
+    // ignores scrollLeft entirely, leaking page-level horizontal overflow.
+    scroll.scrollLeft = scroll.scrollWidth;
+
+    expect(ancestor.scrollWidth).toBeLessThanOrEqual(ancestor.clientWidth + 1);
+  });
+
   it("keeps the header background painted behind every column even though the header row's own box is narrower than its grid tracks", async () => {
     const wideNode = node({
       columns: Array.from({ length: 8 }, (_, index) =>
