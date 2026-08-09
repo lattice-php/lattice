@@ -55,19 +55,28 @@ Drop a form or a table into the tree with `Form::use(MyForm::class)` and `Table:
 - **Tables** — `EloquentTableDefinition` classes with columns, sorting, filtering, pagination, and row/bulk actions. **Reach for the `lattice-tables` skill.**
 - **Actions** — `ActionDefinition` / `BulkActionDefinition` that run on the server and return effects (toast, redirect, refresh, modal) via `ActionResult`. **Reach for the `lattice-actions` skill.**
 - **Navigation** — compose `Menu`/`Sidebar` components inside a layout (there is no route-level sidebar helper).
+- **Closures** — most field/action/filter APIs accept `Closure|T`; parameters resolve by name (`$state`, `$get`, `$value`, `$component`, `$search`, …) before type. **Reach for the `lattice-closures` skill.**
 
 ### Conventions
 
 - Definitions (forms, tables, actions, pages) live under a discover path (`app/` by default) and follow normal PSR-4 namespacing — e.g. `App\Forms\ProfileForm`, `App\Tables\ProductsTable`. Discovery scans recursively, so the sub-folder is your choice.
 - Always give a definition a **stable id** in its attribute: `#[AsForm('app.profile.form')]`. Endpoints and signed refs derive from it; changing it breaks existing references.
 - After changing the PHP wire format (enums / value objects) or adding custom components, regenerate the TypeScript types with `php artisan lattice:typescript`.
-- Scaffold custom UI with the `make` commands below — each generates a paired PHP builder and React `.tsx` component.
+- Scaffold a page/form/table/action/layout/fragment/remote source with its matching `lattice:*` command below instead of writing the class and attribute by hand. Scaffold **custom** UI (a component, field, or column type of your own) with `lattice:component`/`lattice:field`/`lattice:column` — each generates a paired PHP builder and React `.tsx` component.
 - Use Boost's `search-docs` tool for Laravel/Inertia/Pest specifics.
 
 ### Artisan commands
 
 | Command | Purpose |
 | --- | --- |
+| `php artisan lattice:page {name}` | Scaffold a page class. |
+| `php artisan lattice:form {name}` | Scaffold a form class. |
+| `php artisan lattice:table {name}` | Scaffold a table class. |
+| `php artisan lattice:action {name}` | Scaffold an action class. |
+| `php artisan lattice:bulk-action {name}` | Scaffold a bulk-action class. |
+| `php artisan lattice:layout {name}` | Scaffold a layout class. |
+| `php artisan lattice:fragment {name}` | Scaffold a fragment class. |
+| `php artisan lattice:remote-source {name}` | Scaffold a remote source class. |
 | `php artisan lattice:component {name} {--type=}` | Scaffold a custom Lattice UI component (PHP + React). |
 | `php artisan lattice:field {name} {--type=}` | Scaffold a custom form field (PHP + React). |
 | `php artisan lattice:column {name} {--type=}` | Scaffold a custom table column (PHP + React). |

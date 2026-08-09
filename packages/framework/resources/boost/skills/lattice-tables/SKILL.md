@@ -41,11 +41,11 @@ class ProductsTable extends EloquentTableDefinition
 
 `builder()` returns the **base query** — your own scoping only (a `select()`, eager loads, tenant constraints, a default order). Lattice applies the request's filters and sorts **on top** of it, driven by the columns' capabilities. The `TableQuery` argument is the read model of the current request (public readonly properties `$filters`, `$sorts`, `$page`, `$perPage`), so the builder can react — e.g. apply a default order only when `$query->sorts === []`.
 
-`TableDefinition` hooks beyond `columns()`: `source()`, `perPage()` (default `25`), `pagination()`, `striped()`, `emptyLabel()`, `actionsLabel()`, `actions($row)`, `bulkActions()`.
+`TableDefinition` hooks beyond `columns()`: `source()`, `filters()` (dedicated, table-level filters — see below), `perPage()` (default `25`), `perPageOptions()` (page-size choices in the pagination bar, empty hides it), `pagination()`, `rowDetail($row)` (expandable row content), `toolbar()` (extra components above the table), `striped()`, `emptyLabel()`, `actionsLabel()`, `actions($row)`, `bulkActions()`.
 
 ## Columns
 
-Columns live in `Lattice\Table\Columns`. `Column::make('key')` reads `$row['key']`; the label defaults to the humanized key (override with `->label()`).
+Columns live in `Lattice\Table\Columns`. `Column::make('key')` reads `$row['key']`; the label defaults to the humanized key (override with `->label()`). Every column shares `->enum(BackedEnum::class)` / `->options([...])` (the same option-building used by form `Select`/`Choice`) — declare it once and the cell renders the translated label, and a `->filterable()` column with no explicit `->filterOptions()` derives a select filter from it automatically.
 
 - **`TextColumn`** — `->date()`, `->time()`, `->dateTime()` (style: `full|long|medium|short`, e.g. `->dateTime(DateTimeStyle::Short)`), `->copyable()`, `->link('/products/{value}')` (`{value}` is substituted; pass `external: true` for outbound).
 - **`NumberColumn`** — right-aligns and formats the value as a number; `->decimals(2)` fixes fraction digits (`->decimals(0, 2)` for a range); `->unit(NumberFormatUnit::Percent)` adds a locale-correct unit (percent, kilogram, byte, …). Filters as a number.
@@ -53,7 +53,7 @@ Columns live in `Lattice\Table\Columns`. `Column::make('key')` reads `$row['key'
 - **`BooleanColumn`** — renders a check or cross; filters as a boolean.
 - **`BadgeColumn`** — `->colors(['active' => 'green', 'invited' => 'yellow', 'archived' => 'gray'])`. Colors: `gray`, `red`, `green`, `yellow`, `blue`, `purple`, `orange` (unmapped → gray).
 - **`IconColumn`** — `->icon(Icon::Star)` for one icon, or `->icons(['1' => Icon::Check, '0' => Icon::Minus])`; add `->colors([...])` to tint.
-- **`ImageColumn`** — renders the value as an image URL: `->circular()`, `->size(40)`.
+- **`ImageColumn`** — renders the value as an image URL: `->circular()`, `->size(40)`, `->previewable(false)` to drop the click-to-enlarge lightbox (on by default).
 - **`StackColumn`** — group child columns into one cell: `->schema([TextColumn::make('name'), TextColumn::make('email')])`.
 
 ### Sortable & filterable
@@ -63,6 +63,29 @@ Columns live in `Lattice\Table\Columns`. `Column::make('key')` reads `$row['key'
 ```php
 TextColumn::make('name')->sortable()->filterable();
 ```
+
+## Filters
+
+`->filterable()` on a column reuses the column's own key as the filter; a dedicated, table-level filter (`Lattice\Table\Filters`) is for constraints that don't map to one column — return them from `filters()`:
+
+```php
+use Lattice\Table\Filters\SelectFilter;
+use Lattice\Table\Filters\TernaryFilter;
+use Lattice\Table\Filters\ToggleFilter;
+use Lattice\Table\Filters\DateRangeFilter;
+
+public function filters(): array
+{
+    return [
+        SelectFilter::make('status')->options([...])->multiple(),
+        TernaryFilter::make('is_active'),          // true / false / all
+        ToggleFilter::make('overdue')->query(fn (Builder $q) => $q->whereDate('due_at', '<', now())),
+        DateRangeFilter::make('created_at'),       // from/until
+    ];
+}
+```
+
+Each owns its own form schema, server-side validation, and `apply(Builder, FormData)` query logic; an empty schema (like `ToggleFilter`) renders as a plain on/off toggle. Extend `Filter` directly for anything more bespoke.
 
 ## Custom data sources
 
