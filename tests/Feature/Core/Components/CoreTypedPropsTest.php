@@ -13,6 +13,7 @@ use Lattice\Ui\Enums\Align;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\Icon as IconName;
 use Lattice\Ui\Enums\Justify;
+use Lattice\Ui\Enums\ModalHeight;
 use Lattice\Ui\Enums\ModalWidth;
 use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Side;
@@ -86,6 +87,7 @@ it('modal serializes id title description and children', function (): void {
                 'open' => true,
                 'side' => null,
                 'width' => 'lg',
+                'height' => 'lg',
                 'ref' => null,
             ],
             'schema' => [
@@ -106,6 +108,7 @@ it('modal without optional props includes them as null', function (): void {
                 'open' => false,
                 'side' => null,
                 'width' => 'lg',
+                'height' => 'lg',
                 'ref' => null,
             ],
         ]);
@@ -120,6 +123,12 @@ it('modal serializes slide-out side and width', function (): void {
         'side' => 'start',
         'width' => '2xl',
     ]);
+});
+
+it('modal serializes a custom height', function (): void {
+    $payload = wire(Modal::make('order.preview')->height(ModalHeight::Xl2));
+
+    expect($payload['props'])->toMatchArray(['height' => '2xl']);
 });
 
 it('modal slide-out defaults to the end side', function (): void {

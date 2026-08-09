@@ -185,12 +185,14 @@ export type LocaleChange = {
 export type Modal = {
   closeLabel: string;
   description: string | null;
+  height: ModalHeight;
   open: boolean;
   ref: string | null;
   side: Side | null;
   title: string | null;
   width: ModalWidth;
 };
+export type ModalHeight = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type NodeType =
   | "avatar"

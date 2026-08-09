@@ -4,7 +4,7 @@ import * as React from "react";
 import { cva } from "class-variance-authority";
 import { Button } from "./button";
 import { cn } from "./lib/utils";
-import type { ModalWidth, Side } from "./types";
+import type { ModalHeight, ModalWidth, Side } from "./types";
 
 export type DialogPlacement = "center" | Side;
 
@@ -14,7 +14,7 @@ const dialogContentVariants = cva(
     variants: {
       placement: {
         center:
-          "left-1/2 top-1/2 max-h-[min(680px,calc(100vh-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border data-[state=open]:animate-lt-dialog-in data-[state=closed]:animate-lt-dialog-out",
+          "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border data-[state=open]:animate-lt-dialog-in data-[state=closed]:animate-lt-dialog-out",
         start:
           "inset-y-0 start-0 border-e border-lt-border data-[state=open]:animate-lt-sheet-in-start data-[state=closed]:animate-lt-sheet-out-start",
         end: "inset-y-0 end-0 border-s border-lt-border data-[state=open]:animate-lt-sheet-in-end data-[state=closed]:animate-lt-sheet-out-end",
@@ -27,8 +27,24 @@ const dialogContentVariants = cva(
         "2xl": "max-w-2xl",
         "3xl": "max-w-3xl",
       },
+      height: {
+        sm: "",
+        md: "",
+        lg: "",
+        xl: "",
+        "2xl": "",
+        "3xl": "",
+      },
     },
-    defaultVariants: { placement: "center", width: "lg" },
+    compoundVariants: [
+      { placement: "center", height: "sm", class: "max-h-[min(480px,calc(100vh-2rem))]" },
+      { placement: "center", height: "md", class: "max-h-[min(600px,calc(100vh-2rem))]" },
+      { placement: "center", height: "lg", class: "max-h-[min(680px,calc(100vh-2rem))]" },
+      { placement: "center", height: "xl", class: "max-h-[min(820px,calc(100vh-2rem))]" },
+      { placement: "center", height: "2xl", class: "max-h-[min(920px,calc(100vh-2rem))]" },
+      { placement: "center", height: "3xl", class: "max-h-[min(1040px,calc(100vh-2rem))]" },
+    ],
+    defaultVariants: { placement: "center", width: "lg", height: "lg" },
   },
 );
 
@@ -68,10 +84,12 @@ function DialogContent({
   className,
   placement = "center",
   width = "lg",
+  height = "lg",
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   placement?: DialogPlacement;
   width?: ModalWidth;
+  height?: ModalHeight;
 }) {
   return (
     <DialogPrimitive.Portal>
@@ -80,7 +98,7 @@ function DialogContent({
         data-slot="dialog-overlay"
       />
       <DialogPrimitive.Content
-        className={cn(dialogContentVariants({ placement, width }), className)}
+        className={cn(dialogContentVariants({ placement, width, height }), className)}
         data-slot="dialog-content"
         {...props}
       >

@@ -15,6 +15,7 @@ export type {
   DateTimeStyle,
   HttpMethod,
   Justify,
+  ModalHeight,
   ModalWidth,
   NumberFormat,
   NumberFormatUnit,
