@@ -501,6 +501,16 @@ abstract class Field extends Component
     }
 
     /**
+     * Normalize this field's raw request value before {@see FieldValidator}
+     * builds the Validator — override when the wire format needs decoding
+     * before dot-path rules can traverse it. No-op by default.
+     */
+    public function normalizeInput(mixed $value): mixed
+    {
+        return $value;
+    }
+
+    /**
      * React to the form's filled value for this field during serialization. Override
      * per field (e.g. a Select resolving labels for stored ids). Defaults to a no-op.
      */

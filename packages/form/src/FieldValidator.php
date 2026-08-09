@@ -56,6 +56,9 @@ final class FieldValidator
 
             if ($serverValue) {
                 Arr::set($input, $path, $field->resolvedValue());
+            } elseif (Arr::has($input, $path)) {
+                // nestedRules() below builds dot-path rule keys that need $input already decoded.
+                Arr::set($input, $path, $field->normalizeInput(Arr::get($input, $path)));
             }
 
             if (! $visible) {
