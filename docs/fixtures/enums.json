@@ -252,6 +252,10 @@
                 "value": "field.password-input"
             },
             {
+                "name": "PatternInput",
+                "value": "field.pattern-input"
+            },
+            {
                 "name": "Repeater",
                 "value": "field.repeater"
             },

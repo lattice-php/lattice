@@ -42,6 +42,9 @@ return [
         'remove-label' => 'Remove',
         'failed' => 'Failed',
     ],
+    'pattern-input' => [
+        'insert-token' => 'Insert token',
+    ],
     'search-options' => 'Search options',
     'remove-option' => 'Remove :label',
     'create-option' => 'Create ":label"',

@@ -105,6 +105,7 @@ export type ComponentPropsMap = {
   "field.number-input": NumberInput;
   "field.otp": OtpInput;
   "field.password-input": PasswordInput;
+  "field.pattern-input": PatternInput;
   "field.repeater": Repeater;
   "field.rich-editor": RichEditor;
   "field.select": Select;
@@ -289,6 +290,7 @@ export type FormFieldNodeType =
   | "field.number-input"
   | "field.otp"
   | "field.password-input"
+  | "field.pattern-input"
   | "field.repeater"
   | "field.rich-editor"
   | "field.select"
@@ -310,6 +312,7 @@ export type FormNodeType =
   | "field.number-input"
   | "field.otp"
   | "field.password-input"
+  | "field.pattern-input"
   | "field.repeater"
   | "field.rich-editor"
   | "field.select"
@@ -354,6 +357,7 @@ export type NodeType =
   | "field.number-input"
   | "field.otp"
   | "field.password-input"
+  | "field.pattern-input"
   | "field.repeater"
   | "field.rich-editor"
   | "field.select"
@@ -438,6 +442,30 @@ export type PasswordInput = {
   tabIndex: number | null;
   tooltip: string | null;
   value: unknown;
+};
+export type PatternInput = {
+  columnWidth: ColumnWidth;
+  conditions: FieldConditions | null;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  label: string | null;
+  name: string;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  separator: string;
+  tokens: PatternTokenData[];
+  tooltip: string | null;
+  value: unknown;
+};
+export type PatternTokenData = {
+  readonly label: string;
+  readonly name: string;
+  readonly schema: Node[];
 };
 export type Repeater = {
   addLabel: string | null;

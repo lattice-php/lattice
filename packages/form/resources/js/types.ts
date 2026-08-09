@@ -17,6 +17,8 @@ export type {
   LabelAction,
   NumberInput,
   PasswordInput,
+  PatternInput,
+  PatternTokenData,
   RichEditor,
   Select,
   SignedUpload,

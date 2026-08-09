@@ -22,6 +22,7 @@ import {
   WizardComponent,
   WizardStepComponent,
 } from "./components";
+import { PatternInputComponent } from "./components/fields/pattern-input";
 import { RichEditorComponent } from "./components/fields/rich-editor";
 
 export const formComponents: Plugin = {
@@ -38,6 +39,7 @@ export const formComponents: Plugin = {
     "field.number-input": eagerComponent(NumberInputComponent),
     "field.otp": eagerComponent(OtpInputComponent),
     "field.password-input": eagerComponent(PasswordInputComponent),
+    "field.pattern-input": eagerComponent(PatternInputComponent),
     "field.repeater": eagerComponent(RepeaterComponent),
     "field.rich-editor": eagerComponent(RichEditorComponent),
     "field.select": eagerComponent(SelectComponent),
