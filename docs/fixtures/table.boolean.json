@@ -17,6 +17,7 @@
                         "label": "Name",
                         "link": null,
                         "multiple": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -43,6 +44,7 @@
                         },
                         "hiddenByDefault": false,
                         "label": "Featured",
+                        "options": [],
                         "sortable": true,
                         "toggleable": false,
                         "width": "md"
@@ -56,6 +58,7 @@
                         "filter": null,
                         "hiddenByDefault": false,
                         "label": "Archived",
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"

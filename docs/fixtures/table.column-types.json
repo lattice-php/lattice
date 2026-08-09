@@ -13,6 +13,7 @@
                         "filter": null,
                         "hiddenByDefault": false,
                         "label": "",
+                        "options": [],
                         "previewable": true,
                         "size": 32,
                         "sortable": false,
@@ -33,6 +34,7 @@
                         "label": "Name",
                         "link": null,
                         "multiple": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -63,6 +65,7 @@
                         "filter": null,
                         "hiddenByDefault": false,
                         "label": "Status",
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -93,6 +96,7 @@
                             "1": "check"
                         },
                         "label": "Verified",
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"

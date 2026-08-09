@@ -26,6 +26,7 @@ export function col(partial: {
       toggleable: false,
       hiddenByDefault: false,
       filter: filter ?? null,
+      options: [],
       ...props,
     },
     ...(schema ? { schema } : {}),

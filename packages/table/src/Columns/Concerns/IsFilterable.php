@@ -91,9 +91,14 @@ trait IsFilterable
         return FilterType::Text;
     }
 
+    /**
+     * Select-based filtering derived from the column's enum()/options() when
+     * filterOptions() was never called itself — declare the enum once and both
+     * the cell label and the filter dropdown share it.
+     */
     public function filterControl(): ?FilterControl
     {
-        return $this->filterControl;
+        return $this->filterControl ?? ($this->options !== [] ? FilterControl::Select : null);
     }
 
     /**
@@ -101,7 +106,11 @@ trait IsFilterable
      */
     public function filterSelectOptions(): array
     {
-        return $this->resolveOptions($this->filterSelectOptions);
+        if ($this->filterSelectOptions !== [] || $this->hasOptionSource()) {
+            return $this->resolveOptions($this->filterSelectOptions);
+        }
+
+        return $this->filterControl() === FilterControl::Select ? $this->options : [];
     }
 
     public function filterMultiple(): bool
@@ -135,7 +144,7 @@ trait IsFilterable
      */
     public function availableOperators(): array
     {
-        if ($this->filterControl === FilterControl::Select) {
+        if ($this->filterControl() === FilterControl::Select) {
             $operators = $this->filterMultiple ? [Op::In, Op::NotIn] : [Op::Equals, Op::NotEquals];
 
             foreach ($this->filterClauseOptions as $option) {
@@ -158,7 +167,7 @@ trait IsFilterable
 
     public function defaultFilterOperator(): Op
     {
-        if ($this->filterControl === FilterControl::Select) {
+        if ($this->filterControl() === FilterControl::Select) {
             return $this->filterMultiple ? Op::In : Op::Equals;
         }
 

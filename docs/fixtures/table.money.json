@@ -17,6 +17,7 @@
                         "label": "Invoice",
                         "link": null,
                         "multiple": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -35,6 +36,7 @@
                         "label": "Total",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
+                        "options": [],
                         "sortable": true,
                         "toggleable": false,
                         "width": "md"
@@ -53,6 +55,7 @@
                         "label": "Refunded",
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
+                        "options": [],
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
