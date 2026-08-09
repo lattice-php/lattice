@@ -1,8 +1,11 @@
 # Local Development
 
 - This package is developed with Orchestra Testbench, not a full Laravel app.
-- `artisan` at the repo root is a symlink to `vendor/bin/testbench`, so `php artisan <command>` boots the Testbench
-  skeleton with this package's service provider and the `workbench/` app.
+- `artisan` at the repo root is a thin shim requiring `vendor/bin/testbench`, so `php artisan <command>` boots the
+  Testbench skeleton with this package's service provider and the `workbench/` app.
+- `bambamboole/extended-testbench` rebases `base_path()` (and storage/config/database/bootstrap/lang/public paths) to
+  the package root for `boost:*`/`mcp:*` commands specifically, so Laravel Boost's package-guideline and skill
+  discovery — which reads `base_path('composer.json')` — sees this monorepo instead of the Testbench skeleton.
 - Run the test suite with `composer test` or `./vendor/bin/pest`.
 - Run browser tests with `composer test:browser`.
 - Serve the workbench app with `composer serve`.
@@ -47,7 +50,7 @@
 
 - **Lowercase keys only**: Translation key segments may use lowercase letters, numbers, dashes, or underscores. Never use camelCase. Both `billing.coming-soon` and `billing.coming_soon` are valid.
 - **Dot notation via nested arrays**: Use nested PHP arrays to create dot-separated keys. Example: `'subscription' => ['heading' => '...']` resolves to `billing.subscription.heading`.
-- **`.title` suffix for notification titles**: When a field has both a title and body text, nest them
+- **`.title` suffix for notification titles**: When a message has both a title and body text, nest them: `'export' => ['title' => 'Export complete', 'body' => 'Your file is ready to download.']`. Reference as `__('team.notification.export.title')` / `.body`.
 - **`.label` suffix for form labels**: When a field has both a label and helper text, nest them: `'slug' => ['label' => '...', 'help-text' => '...']`. Reference as `__('team.field.slug.label')`.
 - **`.help-text` suffix for helper text**: Use `field-name.help-text` for form helper text. Example: `__('template-designer.margins.help-text')`.
 - **`common.*` prefix for reusable strings**: Shared strings like field labels (`common.field.email`), actions (`common.action.save`), and statuses (`common.field.status`) go in `lang/{locale}/common.php`.
