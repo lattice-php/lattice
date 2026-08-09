@@ -1,0 +1,107 @@
+---
+title: Pattern input
+description: A pattern of free text and typed token chips, like a document-numbering template.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+The pattern input lets the user build a template out of free text and inline token chips — a
+document-numbering pattern is the typical case: literal text like `RE-` mixed with tokens like a
+sequential number, the year, or the month. Tokens are inserted from a menu, render as chips inline
+with the surrounding text, and — when a token declares its own config schema — are clickable to
+configure. Create one with `PatternInput::make()` and list the available tokens with `->tokens()`.
+
+<ComponentExample
+  php={`PatternInput::make('pattern', 'Number pattern')
+    ->tokens([
+        PatternToken::make('NUMBER')
+            ->label('Sequential number')
+            ->configurable([
+                Choice::make('padding', 'Padding')->options([4 => '4', 5 => '5', 6 => '6'])->value(4),
+            ]),
+        PatternToken::make('YYYY')->label('Year (4-digit)'),
+        PatternToken::make('MM')->label('Month'),
+    ])
+    ->requiredTokens(['NUMBER'])`}
+  fixture="pattern-input.basic"
+  values={{
+    pattern: [
+      { type: "text", value: "RE-" },
+      { type: "token", token: "NUMBER", config: { padding: "4" } },
+      { type: "text", value: "-" },
+      { type: "token", token: "YYYY", config: {} },
+    ],
+  }}
+/>
+
+## Stored value
+
+The field submits an ordered array of segments — never a raw editor document. Each segment is
+either literal text or a placed token:
+
+```php
+['pattern' => [
+    ['type' => 'text', 'value' => 'RE-'],
+    ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '4']],
+    ['type' => 'text', 'value' => '-'],
+    ['type' => 'token', 'token' => 'YYYY', 'config' => []],
+]]
+```
+
+Reading this array is application logic — the field itself has no opinion on how a pattern like
+this turns into an actual document number.
+
+## Tokens
+
+`->tokens()` takes the list of token types the pattern offers. Each is a `PatternToken::make($name)`
+where `$name` is the value stored on every placed segment of that kind. Give it a human label with
+`->label()` (defaults to a title-cased version of the name) and, if it needs configuration, a schema
+of fields with `->configurable()` — a normal array of fields, exactly like a `Builder` row's schema:
+
+```php
+PatternToken::make('NUMBER')
+    ->label('Sequential number')
+    ->configurable([
+        Choice::make('padding', 'Padding')->options([4 => '4', 5 => '5', 6 => '6'])->value(4),
+    ]);
+```
+
+A token without `->configurable()` (like `YYYY` and `MM` above) renders as a plain chip with
+nothing to click. Each token type can only be placed once per pattern — the insert menu hides a
+token once it's already in use.
+
+<Info>
+  The field ships with no token types of its own. `NUMBER`, `YYYY`, and `MM` above are just names —
+  give them whatever meaning your application needs; the field only enforces that a placed token is
+  one you declared, and validates its `config` against the schema you gave it.
+</Info>
+
+## Required tokens
+
+`->requiredTokens()` lists token names that must appear somewhere in the pattern for it to be valid:
+
+```php
+PatternInput::make('pattern')
+    ->tokens([PatternToken::make('NUMBER'), PatternToken::make('YYYY')])
+    ->requiredTokens(['NUMBER']);
+```
+
+A submitted pattern missing a required token fails validation, alongside an unknown token name or
+the same token placed twice.
+
+## Separator
+
+`->separator()` sets the text inserted between a newly-placed chip and whatever's already there when
+a token is added from the menu — a convenience for the common case of dash- or slash-separated
+patterns, not a stored or validated part of the value:
+
+```php
+PatternInput::make('pattern')->separator('-');
+```
+
+## Common options
+
+`PatternInput` shares label, required, disabled, read-only, and visibility options with every field
+— see [Fields](/forms/fields/overview/). For validation and conditional behavior, see
+[Validation](/forms/validation/) and [Conditional fields](/forms/conditional-fields/).

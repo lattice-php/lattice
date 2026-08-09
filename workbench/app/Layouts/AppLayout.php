@@ -57,6 +57,7 @@ use Workbench\App\Pages\Fields\FileUploadPage;
 use Workbench\App\Pages\Fields\NumberInputPage;
 use Workbench\App\Pages\Fields\OtpInputPage;
 use Workbench\App\Pages\Fields\PasswordInputPage;
+use Workbench\App\Pages\Fields\PatternInputPage;
 use Workbench\App\Pages\Fields\RepeaterPage;
 use Workbench\App\Pages\Fields\RichEditorPage;
 use Workbench\App\Pages\Fields\SelectPage;
@@ -138,6 +139,7 @@ class AppLayout extends LayoutDefinition
                         MenuItem::fromPage(FileUploadPage::class)->key('field-file-upload')->label(__('workbench.navigation.field-file-upload')),
                         MenuItem::fromPage(OtpInputPage::class)->key('field-otp')->label(__('workbench.navigation.field-otp')),
                         MenuItem::fromPage(RichEditorPage::class)->key('field-rich-editor')->label(__('workbench.navigation.field-rich-editor')),
+                        MenuItem::fromPage(PatternInputPage::class)->key('field-pattern-input')->label(__('workbench.navigation.field-pattern-input')),
                         MenuItem::fromPage(RepeaterPage::class)->key('field-repeater')->label(__('workbench.navigation.field-repeater')),
                         MenuItem::fromPage(BuilderPage::class)->key('field-builder')->label(__('workbench.navigation.field-builder')),
                     ]),

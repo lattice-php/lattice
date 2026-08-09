@@ -42,6 +42,9 @@ return [
         'remove-label' => 'Entfernen',
         'failed' => 'Fehlgeschlagen',
     ],
+    'pattern-input' => [
+        'insert-token' => 'Baustein einfügen',
+    ],
     'search-options' => 'Optionen durchsuchen',
     'remove-option' => ':label entfernen',
     'create-option' => '":label" erstellen',

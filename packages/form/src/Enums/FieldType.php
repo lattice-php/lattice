@@ -22,6 +22,7 @@ enum FieldType: string
     case NumberInput = 'field.number-input';
     case Otp = 'field.otp';
     case PasswordInput = 'field.password-input';
+    case PatternInput = 'field.pattern-input';
     case Repeater = 'field.repeater';
     case RichEditor = 'field.rich-editor';
     case Select = 'field.select';

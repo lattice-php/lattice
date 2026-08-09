@@ -129,6 +129,7 @@ export default defineConfig({
                 { label: "Hidden input", link: "/forms/fields/hidden-input/" },
                 { label: "File upload", link: "/forms/fields/file-upload/" },
                 { label: "Rich editor", link: "/forms/fields/rich-editor/" },
+                { label: "Pattern input", link: "/forms/fields/pattern-input/" },
                 { label: "Repeater", link: "/forms/fields/repeater/" },
                 { label: "Builder", link: "/forms/fields/builder/" },
               ],

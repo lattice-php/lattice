@@ -1,0 +1,80 @@
+[
+    {
+        "props": {
+            "columnWidth": "md",
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "label": "Number pattern",
+            "name": "pattern",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "separator": "",
+            "tokens": [
+                {
+                    "label": "Sequential number",
+                    "name": "NUMBER",
+                    "schema": [
+                        {
+                            "props": {
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Padding",
+                                "name": "padding",
+                                "options": [
+                                    {
+                                        "data": null,
+                                        "label": "4",
+                                        "value": "4"
+                                    },
+                                    {
+                                        "data": null,
+                                        "label": "5",
+                                        "value": "5"
+                                    },
+                                    {
+                                        "data": null,
+                                        "label": "6",
+                                        "value": "6"
+                                    }
+                                ],
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "readOnly": false,
+                                "required": false,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "value": 4
+                            },
+                            "type": "field.choice"
+                        }
+                    ]
+                },
+                {
+                    "label": "Year (4-digit)",
+                    "name": "YYYY",
+                    "schema": []
+                },
+                {
+                    "label": "Month",
+                    "name": "MM",
+                    "schema": []
+                }
+            ],
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.pattern-input"
+    }
+]

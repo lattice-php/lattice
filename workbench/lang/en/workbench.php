@@ -260,6 +260,14 @@ return [
         'password' => [
             'confirmation' => 'Confirmation',
         ],
+        'pattern-input' => [
+            'title' => 'Number pattern',
+            'number' => 'Sequential number',
+            'padding' => 'Padding',
+            'year' => 'Year (4-digit)',
+            'month' => 'Month',
+            'customer-prefix' => 'Customer prefix',
+        ],
         'repeater' => [
             'add-section' => 'Add section',
             'lines' => 'Lines',
@@ -403,6 +411,7 @@ return [
         'field-number' => 'Number',
         'field-otp' => 'OTP',
         'field-password' => 'Password',
+        'field-pattern-input' => 'Pattern input',
         'field-repeater' => 'Repeater',
         'field-rich-editor' => 'Rich editor',
         'field-select' => 'Select',
@@ -623,6 +632,10 @@ return [
             'password' => [
                 'description' => 'Masked input, optionally with confirmation.',
                 'title' => 'Password',
+            ],
+            'pattern-input' => [
+                'description' => 'Free text mixed with typed, configurable token chips.',
+                'title' => 'Pattern input',
             ],
             'repeater' => [
                 'description' => 'Repeatable rows of a fixed child schema.',
