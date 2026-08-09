@@ -78,6 +78,7 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
         {...(description ? {} : { "aria-describedby": undefined })}
         placement={node.props.side ?? "center"}
         width={node.props.width}
+        height={node.props.height}
       >
         <DialogHeader closeLabel={closeLabel} description={description} title={title} />
         <div className="mt-6 space-y-6">{children}</div>

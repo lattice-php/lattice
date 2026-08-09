@@ -5,6 +5,7 @@ namespace Lattice\Ui\Components;
 
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Ui\Enums\ModalHeight;
 use Lattice\Ui\Enums\ModalWidth;
 use Lattice\Ui\Enums\Side;
 
@@ -24,6 +25,8 @@ class Modal extends ContainerComponent implements InteractiveComponent
     public ?Side $side = null;
 
     public ModalWidth $width = ModalWidth::Lg;
+
+    public ModalHeight $height = ModalHeight::Lg;
 
     public function __construct(?string $key = null)
     {
@@ -78,6 +81,13 @@ class Modal extends ContainerComponent implements InteractiveComponent
     public function width(ModalWidth $width): static
     {
         $this->width = $width;
+
+        return $this;
+    }
+
+    public function height(ModalHeight $height): static
+    {
+        $this->height = $height;
 
         return $this;
     }

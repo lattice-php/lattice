@@ -787,6 +787,36 @@
         "name": "Justify",
         "namespace": "Lattice\\Ui\\Enums"
     },
+    "Lattice\\Ui\\Enums\\ModalHeight": {
+        "cases": [
+            {
+                "name": "Sm",
+                "value": "sm"
+            },
+            {
+                "name": "Md",
+                "value": "md"
+            },
+            {
+                "name": "Lg",
+                "value": "lg"
+            },
+            {
+                "name": "Xl",
+                "value": "xl"
+            },
+            {
+                "name": "Xl2",
+                "value": "2xl"
+            },
+            {
+                "name": "Xl3",
+                "value": "3xl"
+            }
+        ],
+        "name": "ModalHeight",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
     "Lattice\\Ui\\Enums\\ModalWidth": {
         "cases": [
             {
