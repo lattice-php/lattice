@@ -21,9 +21,9 @@ class CustomColumnTable extends BaseProductsDemoTable
         return [
             TextColumn::make('name')->label(__('workbench.tables.columns.name'))->sortable(),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
-                'draft' => 'Draft',
-                'active' => 'Active',
-                'archived' => 'Archived',
+                'draft' => __('workbench.status.draft'),
+                'active' => __('workbench.status.active'),
+                'archived' => __('workbench.status.archived'),
             ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
         ];
     }

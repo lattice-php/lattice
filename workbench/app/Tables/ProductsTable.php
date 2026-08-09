@@ -60,9 +60,9 @@ class ProductsTable extends EloquentTableDefinition
             TextColumn::make('sku')->label(__('workbench.tables.columns.sku'))->sortable()->filterable()->toggleable(),
             MoneyColumn::make('default_price')->label(__('workbench.tables.columns.default-price'))->sortable()->currency('EUR'),
             StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->filterOptions([
-                'draft' => 'Draft',
-                'active' => 'Active',
-                'archived' => 'Archived',
+                'draft' => __('workbench.status.draft'),
+                'active' => __('workbench.status.active'),
+                'archived' => __('workbench.status.archived'),
             ])->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
             BooleanColumn::make('featured')->label(__('workbench.tables.columns.featured'))->sortable()->filterable(),
             TextColumn::make('tags')->label(__('workbench.tables.columns.tags'))->multiple('name')->badge('color')->filterable()->toggleable(),
