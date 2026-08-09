@@ -72,6 +72,41 @@ describe("Lattice table component in a browser", () => {
     expect(scroll.scrollWidth).toBeGreaterThan(scroll.clientWidth);
   });
 
+  it("keeps the header background painted behind every column even though the header row's own box is narrower than its grid tracks", async () => {
+    const wideNode = node({
+      columns: Array.from({ length: 8 }, (_, index) =>
+        col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
+      ),
+      data: [
+        Object.fromEntries([
+          ["id", 1],
+          ...Array.from({ length: 8 }, (_, index) => [`col${index}`, `Value ${index}`]),
+        ]),
+      ],
+    });
+
+    const screen = await render(
+      <div style={{ width: "400px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const headerRow = screen.getByRole("columnheader", { name: "Column 0" }).element()
+      .parentElement as HTMLElement;
+    const headerCells = Array.from(headerRow.querySelectorAll('[role="columnheader"]'));
+
+    expect(headerCells.length).toBe(8);
+    expect(headerRow.getBoundingClientRect().width).toBeLessThan(
+      headerCells[headerCells.length - 1].getBoundingClientRect().right -
+        headerRow.getBoundingClientRect().left,
+    );
+
+    const backgrounds = headerCells.map((cell) => getComputedStyle(cell).backgroundColor);
+
+    expect(new Set(backgrounds).size).toBe(1);
+    expect(backgrounds[0]).not.toBe("rgba(0, 0, 0, 0)");
+  });
+
   it("keeps overflowing body cell content within the rendered column boundary", async () => {
     const longSku = `sku-${"x".repeat(120)}`;
     const screen = await render(

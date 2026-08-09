@@ -25,12 +25,14 @@ function SortIndicator({ sort }: { sort: TableSort | undefined }) {
 }
 
 export function ColumnHeader({
+  bottomBordered,
   column,
   processing,
   resizeHandleProps,
   sort,
   query,
 }: {
+  bottomBordered?: boolean;
   column: TableColumn;
   processing: boolean;
   resizeHandleProps?: HTMLAttributes<HTMLDivElement>;
@@ -45,7 +47,8 @@ export function ColumnHeader({
     <div
       aria-sort={getColumnAriaSort(columnSort)}
       className={cn(
-        "relative min-w-0 px-4 py-3 pr-5 align-middle font-semibold text-lt-fg",
+        "relative min-w-0 bg-lt-muted/50 px-4 py-3 pr-5 align-middle font-semibold text-lt-fg",
+        bottomBordered && "border-b border-lt-border",
         alignText(align),
       )}
       role="columnheader"
