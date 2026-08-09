@@ -79,7 +79,6 @@ class PatternInput extends Field
     {
         return [
             ...parent::defaultRules(),
-            'array',
             new PatternSegments($this->patternTokens, $this->requiredTokenNames),
         ];
     }
@@ -90,10 +89,10 @@ class PatternInput extends Field
     #[\Override]
     public function nestedRules(FormData $data, Request $request): array
     {
-        $segments = $data->get($this->name);
+        $segments = PatternSegments::decode($data->get($this->name));
         $rules = [];
 
-        if (! is_array($segments)) {
+        if ($segments === null) {
             return $rules;
         }
 
@@ -125,15 +124,31 @@ class PatternInput extends Field
         return $rules;
     }
 
+    /**
+     * Decodes the client's wire value (a JSON-encoded string, or already an
+     * array for programmatic construction) before validation, so nested rule
+     * paths built in {@see nestedRules()} — e.g. `pattern.0.config.padding` —
+     * can actually traverse it. An undecodable value passes through
+     * unchanged, so {@see PatternSegments} still fails it with its own
+     * "must be an array" message rather than this silently swallowing it.
+     */
+    #[\Override]
+    public function normalizeInput(mixed $value): mixed
+    {
+        return PatternSegments::decode($value) ?? $value;
+    }
+
     #[\Override]
     public function castValue(mixed $value): mixed
     {
-        if (! is_array($value)) {
+        $segments = PatternSegments::decode($value);
+
+        if ($segments === null) {
             return [];
         }
 
         return array_values(array_filter(
-            array_map($this->castSegment(...), $value),
+            array_map($this->castSegment(...), $segments),
             static fn (?array $segment): bool => $segment !== null,
         ));
     }

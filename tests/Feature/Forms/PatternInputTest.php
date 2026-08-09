@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Lattice\Core\Support\Wire;
 use Lattice\Form\Components\Choice;
 use Lattice\Form\Components\PatternInput;
@@ -37,6 +38,34 @@ it('casts a submitted pattern into text and token segments', function (): void {
         ['type' => 'text', 'value' => '-'],
         ['type' => 'token', 'token' => 'YYYY', 'config' => []],
     ]);
+});
+
+it('casts a submitted pattern encoded as the client\'s JSON wire string', function (): void {
+    // The field submits one hidden <input> whose value is JSON.stringify(segments)
+    // (packages/form/resources/js/pattern-input/field.tsx) — a native array in a
+    // Request is a test convenience, never what a real browser sends.
+    $request = Request::create('/', 'POST', ['pattern' => json_encode([
+        ['type' => 'text', 'value' => 'RE-'],
+        ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '5']],
+        ['type' => 'text', 'value' => '-'],
+        ['type' => 'token', 'token' => 'YYYY'],
+    ])]);
+
+    $validated = (new FieldValidator)->validate([documentNumberPattern()], $request);
+
+    expect($validated['pattern'])->toBe([
+        ['type' => 'text', 'value' => 'RE-'],
+        ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '5']],
+        ['type' => 'text', 'value' => '-'],
+        ['type' => 'token', 'token' => 'YYYY', 'config' => []],
+    ]);
+});
+
+it('rejects a pattern value that is neither an array nor a JSON-encoded array string', function (): void {
+    $request = Request::create('/', 'POST', ['pattern' => 'not-json']);
+
+    expect(fn (): array => (new FieldValidator)->validate([documentNumberPattern()], $request))
+        ->toThrow(ValidationException::class);
 });
 
 it('drops a segment for a token no longer declared on the field', function (): void {

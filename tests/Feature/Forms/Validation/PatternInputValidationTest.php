@@ -31,6 +31,19 @@ it('accepts a well-formed pattern of text and token segments', function (): void
     expect($errors)->toBe([]);
 });
 
+it('accepts the same pattern encoded as the client\'s JSON wire string', function (): void {
+    $errors = validationErrors(testFormDefinition(fn (): array => [patternField()]), [
+        'pattern' => json_encode([
+            ['type' => 'text', 'value' => 'RE-'],
+            ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '4']],
+            ['type' => 'text', 'value' => '-'],
+            ['type' => 'token', 'token' => 'YYYY'],
+        ]),
+    ]);
+
+    expect($errors)->toBe([]);
+});
+
 it('rejects an unknown token name', function (): void {
     $errors = validationErrors(testFormDefinition(fn (): array => [patternField()]), [
         'pattern' => [['type' => 'token', 'token' => 'MADE_UP']],
