@@ -44,7 +44,9 @@ The schema accepts fields and layout containers (`Card`, `Grid`, `Stack`) in any
 
 ## Fields
 
-Built-in fields live in `Lattice\Form\Components`: `TextInput`, `Textarea`, `Select`, `Choice`, `Checkbox`, `DateInput`, `NumberInput`, `PasswordInput`, `HiddenInput`, `RichEditor`, `Repeater`. Create one with `Field::make('name', 'Label')` (label optional).
+Built-in fields live in `Lattice\Form\Components`: `TextInput`, `Textarea`, `Select`, `Choice`, `Checkbox`, `Toggle`, `DateInput`, `DateTimeInput`, `TimeInput`, `NumberInput`, `PatternInput`, `ColorPicker`, `OtpInput`, `PasswordInput`, `HiddenInput`, `RichEditor`, `FileUpload`/`SignedUpload`, `Repeater`, `Builder`. Create one with `Field::make('name', 'Label')` (label optional).
+
+`Repeater` repeats one schema per row; `Builder` repeats **typed** rows the user picks from a set of block types — reach for it when rows aren't interchangeable (e.g. a page-builder's mixed content blocks). `Wizard::make([WizardStep::make('name', 'Label')->schema([...]), ...])` splits a form's schema into steps; it's a layout container like `Card`/`Grid`/`Stack`, not a field.
 
 Options shared by **every** field (they extend the base `Field`):
 
@@ -54,6 +56,8 @@ Options shared by **every** field (they extend the base `Field`):
 | `->helperText($t)` / `->hint($t)` | Muted help line below the input. |
 | `->required()` | Required indicator + `required` rule. |
 | `->rules([...])` | Laravel validation rules for this field. |
+| `->message($rule, $text)` | Custom message for one of this field's rules. |
+| `->columnWidth(ColumnWidth::…)` | Grid span when the field sits in a `Grid`. |
 | `->disabled()` | Non-interactive **and not submitted**. |
 | `->readOnly()` | Shown, not editable. Like disabled, typed input is **not submitted** — only a server-set `->value()` survives. |
 | `->hidden()` / `->visible($bool)` | Remove / show the field. |
@@ -82,12 +86,12 @@ Choice::make('plan', 'Plan')->options([
 ]);
 ```
 
-For large datasets make the select server-driven with `->searchable()`; the closure gets the query (plus `FormData` and `Request`) and returns options. On an edit form, add `->resolveSelectedUsing()` so the stored value(s) resolve back to labels:
+For large datasets make the select server-driven with `->searchable()`; the closure's parameter must be named `$search` to receive the query string (utilities resolve by name, plus `FormData`/`Request` by type), and it returns options. On an edit form, add `->resolveSelectedUsing()` so the stored value(s) resolve back to labels:
 
 ```php
 Select::make('author_id', 'Author')
-    ->searchable(fn (string $query) => User::query()
-        ->where('name', 'like', "%{$query}%")->limit(10)->get()
+    ->searchable(fn (string $search) => User::query()
+        ->where('name', 'like', "%{$search}%")->limit(10)->get()
         ->map(fn (User $u) => Select::option($u->name, (string) $u->id))->all())
     ->resolveSelectedUsing(fn (array $values) => User::query()
         ->whereIn('id', $values)->get()
@@ -119,7 +123,7 @@ TextInput::make('coupon')->readOnlyWhen('plan', 'enterprise');
 TextInput::make('coupon')->disabledWhen('billing', 'invoice');
 ```
 
-Pass an array to match any value (`->visibleWhen('country', ['DE', 'AT', 'CH'])`), or an operator string / `Lattice\Core\Enums\Op` case as the middle argument (`->requiredWhen('age', '<', 18)`). Operators include `=`, `!=`, `>`, `<`, `contains`, `starts_with`, `in`, `empty`, `before`/`after`. Conditions are evaluated on the client **and** re-checked on the server.
+Pass an array to match any value (`->visibleWhen('country', ['DE', 'AT', 'CH'])`), or an operator string / `Lattice\Core\Enums\Op` case as the middle argument (`->requiredWhen('age', '<', 18)`). Operators include `=`, `!=`, `>`, `>=`, `<`, `<=`, `contains`, `starts_with`, `ends_with`, `in`, `not_in`, `empty`, `filled`, `before`/`after`. Conditions are evaluated on the client **and** re-checked on the server.
 
 Compute a value from the form data instead of typing it:
 

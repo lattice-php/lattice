@@ -33,7 +33,7 @@ class ArchiveProductAction extends ActionDefinition
 
     public function handle(Request $request): ActionResult
     {
-        $product = $this->product($request);
+        $product = Product::findOrFail($this->context('product_id'));
         $product->update(['status' => 'archived']);
 
         return ActionResult::success()
@@ -49,14 +49,16 @@ class ArchiveProductAction extends ActionDefinition
 
 | Effect | What it does |
 | --- | --- |
-| `->toast($message, $variant?)` | Show a toast. `$message` first, then an optional `Variant` (`Success` default, or `Error`/`Warning`/`Info`). |
-| `->callout($callout)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot. Pass a `Callout` value object (`Lattice\Ui\Effects\Builtin\Callout`). |
+| `->toast($message, $variant?)` | Show a toast. `$message` first, then an optional `Variant` (`Success` default, or `Danger`/`Warning`/`Info`). |
+| `->callout($callout)` / `->retractCallout($key)` | Show a persistent in-flow banner in the layout's `Callouts::make()` slot (a `Callout` value object, `Lattice\Ui\Effects\Builtin\Callout`), or retract a previously-keyed one. |
 | `->reloadComponent($id)` | Re-fetch one component — pass a `#[AsTable]`/component id so only it refreshes. |
 | `->reloadPage()` | Reload the current page's props. |
 | `->to($url)` / `->toRoute($name, $params?)` / `->back()` | Navigate to a URL, a named route, or back. |
 | `->download($url)` | Trigger a file download. |
 | `->openModal($id)` / `->closeModal($id?)` | Open/close a modal (`closeModal()` closes the current one). |
 | `->resetForm($id?)` | Reset a form to its initial values (`resetForm()` resets the current form). |
+| `->localeChange($locale)` | Switch the client's active locale. |
+| `->toggleSidebar($target?)` | Toggle a layout sidebar open/closed. |
 
 ```php
 return ActionResult::success()->toast('Saved.')->reloadComponent('app.products');
@@ -79,6 +81,8 @@ return ActionResult::success()
 ```
 
 The callout renders in the layout slot `Callouts::make()` (placed between the header bar and `Outlet::make()` in the layout's `schema()`). A layout without that slot silently drops the callout.
+
+Without `->unique($key)` a callout is a one-off event: it stays until dismissed. With a key it's a projection of server state — re-emit it on every request for which it still holds, and clear it with `->retractCallout($key)` (or flash `Callout::retract($key)`) once it no longer applies.
 
 ## Flashing effects from outside an action
 
@@ -107,7 +111,7 @@ Reference an action anywhere a component is accepted with `Action::use(...)`, pa
 Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
 ```
 
-`handle()` reads it back with `$this->context($request, 'product_id')`. The context is **signed** into the action's reference, so it cannot be tampered with on the way back. Group related triggers behind one button with `ActionGroup::make('row')->actions([...])` (`Lattice\Actions\Components\ActionGroup`).
+`handle()` reads it back with `$this->context('product_id')`. The context is **signed** into the action's reference, so it cannot be tampered with on the way back. Group related triggers behind one button with `ActionGroup::make('row')->actions([...])` (`Lattice\Actions\Components\ActionGroup`).
 
 ## Confirmation and input forms
 
@@ -130,7 +134,7 @@ Override `authorize(Request $request): bool` to gate an action; the trusted cont
 
 ## Bulk actions
 
-A bulk action runs over a table selection. Extend `BulkActionDefinition`; `handle()` receives the selected models as a `Collection`. `definition()` returns the same `Action` component, so labels, variants, confirmation, and forms all apply.
+A bulk action runs over a table selection. Extend `BulkActionDefinition`; `handle()` receives the selected records as a `Collection`, resolved by the table's data source (Eloquent models for an `EloquentTableDefinition`). `definition()` returns the same `Action` component, so labels, variants, confirmation, and forms all apply.
 
 ```php
 use Illuminate\Support\Collection;
@@ -170,7 +174,7 @@ See the **`lattice-tables`** skill for the table wiring.
 
 - **Confusing the attribute and the component** — `#[AsAction]`/`#[AsBulkAction]` live in `Lattice\Core\Attributes`; `Action::use()`/`BulkAction::use()` are components in `Lattice\Actions\Components`.
 - **`reloadComponent()` with the wrong id** — pass the target component's `#[AsTable]`/component id, not the action's id.
-- **Reading context off the raw request** — use `$this->context($request, $key)`; it is the signed, trusted copy.
+- **Reading context off the raw request** — use `$this->context($key)`; it is the signed, trusted copy.
 - **No `#[AsAction('id')]` / `#[AsBulkAction('id')]`** → the action is not discovered and has no endpoint.
 - **Callout not appearing** — the active layout's `schema()` must include `Callouts::make()`; without it the effect is silently dropped.
 - **Signalling failure with a 2xx** — return `ActionResult::failure('…')` (HTTP 422) to reject; a plain `success()` with an error toast still reads as success to the client and closes modals.

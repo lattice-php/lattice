@@ -7,6 +7,9 @@
     "guidelines": true,
     "mcp": true,
     "nightwatch": false,
+    "packages": [
+        "lattice-php/lattice"
+    ],
     "sail": false,
     "skills": [
         "infer-conventions",
@@ -16,6 +19,10 @@
         "inertia-react-development",
         "echo-react-development",
         "echo-development",
+        "lattice-actions",
+        "lattice-closures",
+        "lattice-forms",
+        "lattice-tables",
         "documentation",
         "pr-review",
         "test-audit",

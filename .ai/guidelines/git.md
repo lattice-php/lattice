@@ -5,6 +5,8 @@
 - Make meaningful commits: one logical change per commit with a conventional-commit subject (`feat:`, `fix:`, `chore:`,
   `refactor:`, `test:`, `docs:`). Squash throwaway "wip" commits before opening a PR.
 - Never commit agent planning artifacts or Superpowers plan/spec files. Keep `docs/superpowers/`, `.superpowers/`,
-  `.codex/`, `.agents/`, and similar local agent scratch files out of commits, even when they informed the work.
+  and similar local agent scratch files out of commits, even when they informed the work.
+- `.claude/`, `.agents/`, `CLAUDE.md`, and `AGENTS.md` are Boost-generated locally by `php artisan boost:update` and
+  already gitignored — never force-add them.
 - Keep pull request descriptions compact and concise: what changed and why, in a few lines. No filler.
 - For visual changes, include screenshots or concrete before/after examples in the PR description.

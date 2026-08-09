@@ -172,6 +172,10 @@ class WorkbenchServiceProvider extends ServiceProvider
 
     private function redirectBoostSkillsToPackageRoot(): void
     {
+        if (base_path() === package_path()) {
+            return;
+        }
+
         $skeleton = ltrim(str_replace(package_path(), '', base_path()), '/');
         $upToPackageRoot = str_repeat('../', substr_count($skeleton, '/') + 1);
 
