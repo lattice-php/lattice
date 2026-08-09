@@ -44,7 +44,7 @@ describe("Lattice table component in a browser", () => {
     expect(getComputedStyle(mobileLabel as HTMLElement).display).toBe("none");
   });
 
-  it("contains horizontal overflow inside table-scroll instead of a flex ancestor", async () => {
+  it("contains horizontal overflow inside table-grid-scroll instead of a flex ancestor", async () => {
     const wideNode = node({
       columns: Array.from({ length: 8 }, (_, index) =>
         col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
@@ -64,12 +64,78 @@ describe("Lattice table component in a browser", () => {
     );
 
     const table = screen.getByRole("table").element();
-    const scroll = table.closest('[data-slot="table-scroll"]') as HTMLElement;
-    const wrapper = scroll.closest('[data-slot="table"]') as HTMLElement;
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const wrapper = table.closest('[data-slot="table"]') as HTMLElement;
     const ancestor = wrapper.parentElement as HTMLElement;
 
     expect(ancestor.scrollWidth).toBeLessThanOrEqual(ancestor.clientWidth + 1);
-    expect(scroll.scrollWidth).toBeGreaterThan(scroll.clientWidth);
+    expect(gridScroll.scrollWidth).toBeGreaterThan(gridScroll.clientWidth);
+  });
+
+  it("keeps the toolbar, filter bar, and sort bar pinned instead of scrolling with the grid", async () => {
+    const wideNode = node({
+      columns: Array.from({ length: 8 }, (_, index) =>
+        col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
+      ),
+      data: [
+        Object.fromEntries([
+          ["id", 1],
+          ...Array.from({ length: 8 }, (_, index) => [`col${index}`, `Value ${index}`]),
+        ]),
+      ],
+      searchable: true,
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const wrapper = gridScroll.closest('[data-slot="table"]') as HTMLElement;
+    const toolbar = wrapper.querySelector('[data-slot="table-toolbar"]') as HTMLElement;
+    const toolbarLeftBefore = toolbar.getBoundingClientRect().left;
+
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+
+    expect(toolbar.getBoundingClientRect().left).toBe(toolbarLeftBefore);
+  });
+
+  it("keeps table-grid-scroll as the containing block so the sr-only actions label scrolls with it instead of leaking page overflow", async () => {
+    const wideNode = node({
+      columns: Array.from({ length: 8 }, (_, index) =>
+        col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
+      ),
+      data: [
+        Object.fromEntries([
+          ["id", 1],
+          ...Array.from({ length: 8 }, (_, index) => [`col${index}`, `Value ${index}`]),
+          ["actions", [{ type: "unregistered-test-action", id: "a1", props: {} }]],
+        ]),
+      ],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const wrapper = table.closest('[data-slot="table"]') as HTMLElement;
+    const ancestor = wrapper.parentElement as HTMLElement;
+
+    // The sr-only actions label has no explicit position, so it falls back to
+    // its static layout position within its containing block. If that
+    // containing block is an ancestor outside table-grid-scroll (the actual
+    // scrolling element), the label renders at a fixed page coordinate that
+    // ignores scrollLeft entirely, leaking page-level horizontal overflow.
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+
+    expect(ancestor.scrollWidth).toBeLessThanOrEqual(ancestor.clientWidth + 1);
   });
 
   it("keeps the header background painted behind every column even though the header row's own box is narrower than its grid tracks", async () => {
