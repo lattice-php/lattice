@@ -70,7 +70,7 @@ export function FormFieldFrame({
           {label}
         </Label>
         {required && (
-          <span aria-hidden="true" className="ml-0.5 text-lt-danger">
+          <span aria-hidden="true" className="ml-0.5 leading-none text-lt-danger">
             *
           </span>
         )}
