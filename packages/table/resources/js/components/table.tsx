@@ -152,10 +152,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
 
   return (
     <div data-slot="table" data-lattice-component={node.id} className="relative min-w-0">
-      <div
-        data-slot="table-scroll"
-        className="relative overflow-x-auto rounded-lt-sm border border-lt-border"
-      >
+      <div data-slot="table-scroll" className="rounded-lt-sm border border-lt-border">
         {hasToolbar && (
           <div
             data-slot="table-toolbar"
@@ -235,231 +232,239 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             onClear={clearSort}
           />
         )}
-        <div
-          ref={resizeRootRef}
-          className="min-w-full text-base"
-          role="table"
-          style={{ "--lattice-table-columns": gridTemplateColumns } as never}
-        >
-          <div data-slot="table-header" role="rowgroup">
-            <div
-              className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
-              role="row"
-            >
-              {hasExpandable && (
-                <div
-                  className={cn(
-                    "bg-lt-muted/50 px-2 py-3",
-                    !hasFilters && "border-b border-lt-border",
-                  )}
-                  role="columnheader"
-                  aria-hidden="true"
-                />
-              )}
-              {hasBulkActions && (
-                <div
-                  className={cn(
-                    "flex items-center bg-lt-muted/50 px-4 py-3",
-                    !hasFilters && "border-b border-lt-border",
-                  )}
-                  role="columnheader"
-                >
-                  <Checkbox
-                    aria-label={t("table.select-all-rows", "Select all rows")}
-                    data-test="select-all"
-                    checked={selection.allSelected}
-                    onCheckedChange={() => selection.toggleAll()}
-                  />
-                </div>
-              )}
-              {visibleColumns.map((column, index) => (
-                <ColumnHeader
-                  column={column}
-                  key={column.key}
-                  processing={processing}
-                  resizeHandleProps={
-                    resizingEnabled ? getResizeHandleProps(sizingColumns[index]) : undefined
-                  }
-                  sort={sort}
-                  query={query}
-                  bottomBordered={!hasFilters}
-                />
-              ))}
-              {hasTrailingUtility && (
-                <div
-                  className={cn(
-                    "flex items-center justify-end gap-2 bg-lt-muted/50 px-4 py-2 align-middle font-semibold text-lt-fg",
-                    !hasFilters && "border-b border-lt-border",
-                  )}
-                  role="columnheader"
-                >
-                  <span className="sr-only">
-                    {node.props?.actionsLabel ?? t("table.actions", "Actions")}
-                  </span>
-                </div>
-              )}
-            </div>
-            {hasFilters && (
+        <div data-slot="table-grid-scroll" className="relative overflow-x-auto">
+          <div
+            ref={resizeRootRef}
+            className="min-w-full text-base"
+            role="table"
+            style={{ "--lattice-table-columns": gridTemplateColumns } as never}
+          >
+            <div data-slot="table-header" role="rowgroup">
               <div
                 className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
                 role="row"
               >
                 {hasExpandable && (
                   <div
-                    className="border-t border-b border-lt-border bg-lt-muted/50 px-2 py-2"
-                    role="cell"
+                    className={cn(
+                      "bg-lt-muted/50 px-2 py-3",
+                      !hasFilters && "border-b border-lt-border",
+                    )}
+                    role="columnheader"
+                    aria-hidden="true"
                   />
                 )}
                 {hasBulkActions && (
                   <div
-                    className="border-t border-b border-lt-border bg-lt-muted/50 px-4 py-2"
-                    role="cell"
-                  />
-                )}
-                {visibleColumns.map((column) => (
-                  <div
-                    key={column.key}
-                    className="min-w-0 border-t border-b border-lt-border bg-lt-muted/50 px-2 py-2"
-                    role="cell"
-                  >
-                    {column.props.filter != null && (
-                      <ColumnFilterControl
-                        column={column}
-                        clauses={filterEntries.filter((entry) => entry.clause.field === column.key)}
-                        processing={processing}
-                        onAdd={addFilter}
-                        onUpdate={updateFilter}
-                        onRemove={removeFilter}
-                        onReplace={replaceColumnFilters}
-                        onSearch={(query, signal) =>
-                          searchFilterOptions(`column:${column.key}`, query, signal)
-                        }
-                      />
+                    className={cn(
+                      "flex items-center bg-lt-muted/50 px-4 py-3",
+                      !hasFilters && "border-b border-lt-border",
                     )}
+                    role="columnheader"
+                  >
+                    <Checkbox
+                      aria-label={t("table.select-all-rows", "Select all rows")}
+                      data-test="select-all"
+                      checked={selection.allSelected}
+                      onCheckedChange={() => selection.toggleAll()}
+                    />
                   </div>
+                )}
+                {visibleColumns.map((column, index) => (
+                  <ColumnHeader
+                    column={column}
+                    key={column.key}
+                    processing={processing}
+                    resizeHandleProps={
+                      resizingEnabled ? getResizeHandleProps(sizingColumns[index]) : undefined
+                    }
+                    sort={sort}
+                    query={query}
+                    bottomBordered={!hasFilters}
+                  />
                 ))}
                 {hasTrailingUtility && (
                   <div
-                    className="border-t border-b border-lt-border bg-lt-muted/50 px-4 py-2"
-                    role="cell"
-                  />
+                    className={cn(
+                      "flex items-center justify-end gap-2 bg-lt-muted/50 px-4 py-2 align-middle font-semibold text-lt-fg",
+                      !hasFilters && "border-b border-lt-border",
+                    )}
+                    role="columnheader"
+                  >
+                    <span className="sr-only">
+                      {node.props?.actionsLabel ?? t("table.actions", "Actions")}
+                    </span>
+                  </div>
                 )}
               </div>
-            )}
-          </div>
-          <div role="rowgroup">
-            {!hasLoaded ? (
-              <div className="p-4 text-lt-muted-fg" role="row">
-                <div role="cell">{t("table.loading", "Loading rows...")}</div>
-              </div>
-            ) : rowEntries.length === 0 ? (
-              <div data-slot="table-empty" className="p-8 text-center text-lt-muted-fg" role="row">
-                <div role="cell">{node.props?.emptyLabel ?? t("table.empty", "No results")}</div>
-              </div>
-            ) : (
-              rowEntries.map(({ row, actions, detail, key }) => {
-                const expanded = detail != null && isExpanded(key);
-                const detailId = `${nodeIdentity(node) ?? "table"}-row-detail-${key}`;
-
-                return (
-                  <Fragment key={key}>
+              {hasFilters && (
+                <div
+                  className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
+                  role="row"
+                >
+                  {hasExpandable && (
                     <div
-                      data-slot="table-row"
-                      className={`grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)] ${
-                        striped ? "odd:bg-lt-muted/30" : ""
-                      }`}
-                      role="row"
+                      className="border-t border-b border-lt-border bg-lt-muted/50 px-2 py-2"
+                      role="cell"
+                    />
+                  )}
+                  {hasBulkActions && (
+                    <div
+                      className="border-t border-b border-lt-border bg-lt-muted/50 px-4 py-2"
+                      role="cell"
+                    />
+                  )}
+                  {visibleColumns.map((column) => (
+                    <div
+                      key={column.key}
+                      className="min-w-0 border-t border-b border-lt-border bg-lt-muted/50 px-2 py-2"
+                      role="cell"
                     >
-                      {hasExpandable && (
-                        <div className="flex items-center px-2 py-lt-cell-y" role="cell">
-                          {detail && (
-                            <button
-                              type="button"
-                              data-test={`row-expand-${key}`}
-                              aria-expanded={expanded}
-                              aria-controls={detailId}
-                              aria-label={t("table.row-detail.toggle", "Toggle detail")}
-                              className="inline-flex size-6 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg"
-                              onClick={() => toggleRow(key)}
-                            >
-                              <Icon
-                                name="chevron-down"
-                                aria-hidden="true"
-                                className={cn(
-                                  "size-lt-icon-md transition-transform",
-                                  !expanded && "-rotate-90",
-                                )}
-                              />
-                            </button>
+                      {column.props.filter != null && (
+                        <ColumnFilterControl
+                          column={column}
+                          clauses={filterEntries.filter(
+                            (entry) => entry.clause.field === column.key,
                           )}
-                        </div>
-                      )}
-                      {hasBulkActions && (
-                        <div className="flex items-center px-lt-cell-x py-lt-cell-y" role="cell">
-                          <Checkbox
-                            aria-label={t("table.select-row", "Select row {{key}}", { key })}
-                            data-test={`select-row-${key}`}
-                            checked={selection.isSelected(key)}
-                            onCheckedChange={() => selection.toggle(key)}
-                          />
-                        </div>
-                      )}
-                      {visibleColumns.map((column) => (
-                        <div
-                          key={column.key}
-                          data-slot="table-cell"
-                          className={cn(
-                            "grid min-w-0 content-center gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y",
-                            alignText(column.props.align),
-                            alignJustifyItems(column.props.align),
-                          )}
-                          role="cell"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="text-xs font-medium text-lt-muted-fg md:hidden"
-                          >
-                            {column.props.label}
-                          </span>
-                          <div
-                            data-slot="table-cell-content"
-                            className="min-w-0 max-w-full overflow-hidden truncate"
-                          >
-                            <ColumnCell column={column} row={row} />
-                          </div>
-                        </div>
-                      ))}
-                      {hasTrailingUtility && (
-                        <div
-                          className={cn(
-                            "items-center justify-start gap-2 px-lt-cell-x py-lt-cell-y md:justify-end",
-                            actions.length > 0 ? "flex" : "hidden md:flex",
-                          )}
-                          role="cell"
-                        >
-                          {actions.map((action, actionIndex) => (
-                            <RenderNode
-                              key={action.key ?? action.id ?? actionIndex}
-                              node={action}
-                            />
-                          ))}
-                        </div>
+                          processing={processing}
+                          onAdd={addFilter}
+                          onUpdate={updateFilter}
+                          onRemove={removeFilter}
+                          onReplace={replaceColumnFilters}
+                          onSearch={(query, signal) =>
+                            searchFilterOptions(`column:${column.key}`, query, signal)
+                          }
+                        />
                       )}
                     </div>
-                    {expanded && detail && (
+                  ))}
+                  {hasTrailingUtility && (
+                    <div
+                      className="border-t border-b border-lt-border bg-lt-muted/50 px-4 py-2"
+                      role="cell"
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+            <div role="rowgroup">
+              {!hasLoaded ? (
+                <div className="p-4 text-lt-muted-fg" role="row">
+                  <div role="cell">{t("table.loading", "Loading rows...")}</div>
+                </div>
+              ) : rowEntries.length === 0 ? (
+                <div
+                  data-slot="table-empty"
+                  className="p-8 text-center text-lt-muted-fg"
+                  role="row"
+                >
+                  <div role="cell">{node.props?.emptyLabel ?? t("table.empty", "No results")}</div>
+                </div>
+              ) : (
+                rowEntries.map(({ row, actions, detail, key }) => {
+                  const expanded = detail != null && isExpanded(key);
+                  const detailId = `${nodeIdentity(node) ?? "table"}-row-detail-${key}`;
+
+                  return (
+                    <Fragment key={key}>
                       <div
-                        id={detailId}
-                        role="region"
-                        data-slot="table-row-detail"
-                        className="border-b border-lt-border bg-lt-muted/20 px-lt-cell-x py-lt-cell-y"
+                        data-slot="table-row"
+                        className={`grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)] ${
+                          striped ? "odd:bg-lt-muted/30" : ""
+                        }`}
+                        role="row"
                       >
-                        <Renderer nodes={[detail]} />
+                        {hasExpandable && (
+                          <div className="flex items-center px-2 py-lt-cell-y" role="cell">
+                            {detail && (
+                              <button
+                                type="button"
+                                data-test={`row-expand-${key}`}
+                                aria-expanded={expanded}
+                                aria-controls={detailId}
+                                aria-label={t("table.row-detail.toggle", "Toggle detail")}
+                                className="inline-flex size-6 items-center justify-center rounded-lt-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg"
+                                onClick={() => toggleRow(key)}
+                              >
+                                <Icon
+                                  name="chevron-down"
+                                  aria-hidden="true"
+                                  className={cn(
+                                    "size-lt-icon-md transition-transform",
+                                    !expanded && "-rotate-90",
+                                  )}
+                                />
+                              </button>
+                            )}
+                          </div>
+                        )}
+                        {hasBulkActions && (
+                          <div className="flex items-center px-lt-cell-x py-lt-cell-y" role="cell">
+                            <Checkbox
+                              aria-label={t("table.select-row", "Select row {{key}}", { key })}
+                              data-test={`select-row-${key}`}
+                              checked={selection.isSelected(key)}
+                              onCheckedChange={() => selection.toggle(key)}
+                            />
+                          </div>
+                        )}
+                        {visibleColumns.map((column) => (
+                          <div
+                            key={column.key}
+                            data-slot="table-cell"
+                            className={cn(
+                              "grid min-w-0 content-center gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y",
+                              alignText(column.props.align),
+                              alignJustifyItems(column.props.align),
+                            )}
+                            role="cell"
+                          >
+                            <span
+                              aria-hidden="true"
+                              className="text-xs font-medium text-lt-muted-fg md:hidden"
+                            >
+                              {column.props.label}
+                            </span>
+                            <div
+                              data-slot="table-cell-content"
+                              className="min-w-0 max-w-full overflow-hidden truncate"
+                            >
+                              <ColumnCell column={column} row={row} />
+                            </div>
+                          </div>
+                        ))}
+                        {hasTrailingUtility && (
+                          <div
+                            className={cn(
+                              "items-center justify-start gap-2 px-lt-cell-x py-lt-cell-y md:justify-end",
+                              actions.length > 0 ? "flex" : "hidden md:flex",
+                            )}
+                            role="cell"
+                          >
+                            {actions.map((action, actionIndex) => (
+                              <RenderNode
+                                key={action.key ?? action.id ?? actionIndex}
+                                node={action}
+                              />
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </Fragment>
-                );
-              })
-            )}
+                      {expanded && detail && (
+                        <div
+                          id={detailId}
+                          role="region"
+                          data-slot="table-row-detail"
+                          className="border-b border-lt-border bg-lt-muted/20 px-lt-cell-x py-lt-cell-y"
+                        >
+                          <Renderer nodes={[detail]} />
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })
+              )}
+            </div>
           </div>
         </div>
         {hasLoaded && (
