@@ -24,10 +24,8 @@ final readonly class PatternSegments implements ValidationRule
     ) {}
 
     /**
-     * Normalizes a submitted value into a segment array: an already-decoded
-     * array as-is, or the client's actual wire format — a JSON-encoded string
-     * carried in the field's single hidden `<input>` — decoded. Null when
-     * neither shape applies.
+     * Decodes a submitted value into a segment array — already an array, or
+     * the client's JSON-encoded wire string. Null if neither.
      *
      * @return array<int, mixed>|null
      */

@@ -125,12 +125,9 @@ class PatternInput extends Field
     }
 
     /**
-     * Decodes the client's wire value (a JSON-encoded string, or already an
-     * array for programmatic construction) before validation, so nested rule
-     * paths built in {@see nestedRules()} — e.g. `pattern.0.config.padding` —
-     * can actually traverse it. An undecodable value passes through
-     * unchanged, so {@see PatternSegments} still fails it with its own
-     * "must be an array" message rather than this silently swallowing it.
+     * Decodes the wire value before validation so {@see nestedRules()}'s
+     * dot-path keys can traverse it. Passes an undecodable value through
+     * unchanged, so {@see PatternSegments} still reports its own failure.
      */
     #[\Override]
     public function normalizeInput(mixed $value): mixed

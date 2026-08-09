@@ -502,11 +502,8 @@ abstract class Field extends Component
 
     /**
      * Normalize this field's raw request value before {@see FieldValidator}
-     * builds the Validator — override when the client's wire format needs
-     * decoding before Laravel's dot-path rules can traverse it (e.g. a field
-     * whose value arrives as one JSON-encoded string but validates nested
-     * keys within it, like a token's own config). Defaults to a no-op; most
-     * fields' rules operate on the raw value directly.
+     * builds the Validator — override when the wire format needs decoding
+     * before dot-path rules can traverse it. No-op by default.
      */
     public function normalizeInput(mixed $value): mixed
     {

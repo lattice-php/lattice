@@ -57,11 +57,7 @@ final class FieldValidator
             if ($serverValue) {
                 Arr::set($input, $path, $field->resolvedValue());
             } elseif (Arr::has($input, $path)) {
-                // Normalize before the Validator sees $input, not after: a
-                // field's own nestedRules() below builds dot-path rule keys
-                // (e.g. a PatternInput token's `pattern.0.config.padding`)
-                // that only resolve if $input already holds the decoded
-                // shape those paths traverse.
+                // nestedRules() below builds dot-path rule keys that need $input already decoded.
                 Arr::set($input, $path, $field->normalizeInput(Arr::get($input, $path)));
             }
 

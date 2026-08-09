@@ -41,9 +41,7 @@ it('casts a submitted pattern into text and token segments', function (): void {
 });
 
 it('casts a submitted pattern encoded as the client\'s JSON wire string', function (): void {
-    // The field submits one hidden <input> whose value is JSON.stringify(segments)
-    // (packages/form/resources/js/pattern-input/field.tsx) — a native array in a
-    // Request is a test convenience, never what a real browser sends.
+    // Real submissions arrive as JSON.stringify(segments) (pattern-input/field.tsx), not a native array.
     $request = Request::create('/', 'POST', ['pattern' => json_encode([
         ['type' => 'text', 'value' => 'RE-'],
         ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '5']],
