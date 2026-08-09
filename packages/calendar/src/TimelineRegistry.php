@@ -17,7 +17,7 @@ final class TimelineRegistry extends DefinitionRegistry
     /**
      * Events for the requested `[from, to)` window, `to` exclusive.
      *
-     * @return array{events: list<array<string, mixed>>}
+     * @return array{events: list<EntryData>}
      */
     public function response(string $key, Request $request, ?TimelineDefinition $definition = null): array
     {
@@ -31,7 +31,7 @@ final class TimelineRegistry extends DefinitionRegistry
         }
 
         return ['events' => array_map(
-            static fn (Entry $entry): array => $entry->jsonSerialize(),
+            static fn (Entry $entry): EntryData => $entry->data(),
             $this->entryList($definition->events($from, $until)),
         )];
     }
@@ -43,7 +43,9 @@ final class TimelineRegistry extends DefinitionRegistry
         }
 
         try {
-            return CarbonImmutable::createFromFormat('Y-m-d', $value)?->startOfDay();
+            $date = CarbonImmutable::createFromFormat('Y-m-d', $value)?->startOfDay();
+
+            return $date?->format('Y-m-d') === $value ? $date : null;
         } catch (Throwable) {
             return null;
         }

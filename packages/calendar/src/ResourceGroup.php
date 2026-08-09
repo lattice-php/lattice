@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Calendar;
 
 use Closure;
-use JsonSerializable;
 
-final class ResourceGroup implements JsonSerializable
+final class ResourceGroup
 {
     /**
      * @var Closure(): list<array{id: string|int, label: string}>|list<array{id: string|int, label: string}>
@@ -33,23 +32,20 @@ final class ResourceGroup implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @return array{key: string, label: string, resources: list<array{id: string, label: string}>}
-     */
-    public function jsonSerialize(): array
+    public function data(): ResourceGroupData
     {
         $resources = $this->resources instanceof Closure ? ($this->resources)() : $this->resources;
 
-        return [
-            'key' => $this->key,
-            'label' => $this->label,
-            'resources' => array_map(
+        return new ResourceGroupData(
+            $this->key,
+            $this->label,
+            array_map(
                 static fn (array $resource): array => [
                     'id' => (string) $resource['id'],
                     'label' => (string) $resource['label'],
                 ],
                 $resources,
             ),
-        ];
+        );
     }
 }

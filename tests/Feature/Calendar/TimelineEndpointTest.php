@@ -82,6 +82,15 @@ it('rejects a malformed from/to', function (): void {
     )->assertStatus(422);
 });
 
+it('rejects an invalid calendar date', function (string $date): void {
+    $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
+
+    getJson(
+        $timeline['props']['endpoint'].'?from='.$date.'&to=2027-02-01',
+        ['X-Lattice-Ref' => $timeline['props']['ref']],
+    )->assertStatus(422);
+})->with(['2026-02-31', '2026-13-01', '2026-00-10']);
+
 it('rejects a missing from/to', function (): void {
     $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
 

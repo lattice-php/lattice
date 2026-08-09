@@ -7,7 +7,9 @@ use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use InvalidArgumentException;
 use Lattice\Calendar\Entry;
+use Lattice\Calendar\EntryData;
 use Lattice\Calendar\ResourceGroup;
+use Lattice\Calendar\ResourceGroupData;
 use Lattice\Calendar\TimelineDefinition;
 use Lattice\Calendar\TimelineRegistry;
 use Lattice\Core\Attributes\AsComponent;
@@ -23,9 +25,15 @@ class Timeline extends Component implements InteractiveComponent
 
     public ?string $endpoint = null;
 
-    public ?string $from = null;
+    public string $from;
 
     public int $days = 90;
+
+    /** @var list<ResourceGroupData> */
+    public array $groups = [];
+
+    /** @var list<EntryData> */
+    public array $events = [];
 
     private ?TimelineDefinition $definition = null;
 
@@ -87,22 +95,22 @@ class Timeline extends Component implements InteractiveComponent
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    #[SerializationHook(priority: 300)]
-    protected function serialiseBoard(array $data): array
+    #[SerializationHook(priority: 190)]
+    protected function prepareBoard(array $data): array
     {
-        $from = $this->from !== null
+        $from = isset($this->from)
             ? CarbonImmutable::parse($this->from)
             : CarbonImmutable::today()->startOfWeek()->subWeek();
 
-        $data['props']['from'] = $from->format('Y-m-d');
+        $this->from = $from->format('Y-m-d');
 
-        $data['props']['groups'] = $this->definition instanceof TimelineDefinition
-            ? array_map(fn (ResourceGroup $group): array => $group->jsonSerialize(), $this->definition->groups())
+        $this->groups = $this->definition instanceof TimelineDefinition
+            ? array_map(fn (ResourceGroup $group): ResourceGroupData => $group->data(), $this->definition->groups())
             : [];
 
-        $data['props']['events'] = $this->definition instanceof TimelineDefinition
+        $this->events = $this->definition instanceof TimelineDefinition
             ? array_map(
-                fn (Entry $entry): array => $entry->jsonSerialize(),
+                fn (Entry $entry): EntryData => $entry->data(),
                 $this->entryList($this->definition->events($from, $from->addDays($this->days))),
             )
             : [];

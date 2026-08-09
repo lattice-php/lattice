@@ -56,15 +56,15 @@ it('throws when an entry end is before its start', function (): void {
 })->throws(InvalidArgumentException::class);
 
 it('serializes an entry color', function (): void {
-    $entry = Entry::make('e1', 'r1', '2026-08-01', '2026-08-02')->color('blue')->jsonSerialize();
+    $entry = wire(Entry::make('e1', 'r1', '2026-08-01', '2026-08-02')->color('blue')->data());
 
     expect($entry['color'])->toBe(['kind' => 'named', 'value' => 'blue', 'dark' => null]);
 });
 
-it('omits color when unset', function (): void {
-    $entry = Entry::make('e1', 'r1', '2026-08-01', '2026-08-02')->jsonSerialize();
+it('serializes a null color when unset', function (): void {
+    $entry = wire(Entry::make('e1', 'r1', '2026-08-01', '2026-08-02')->data());
 
-    expect($entry)->not->toHaveKey('color');
+    expect($entry['color'])->toBeNull();
 });
 
 it('hides the timeline when the definition denies authorization', function (): void {
