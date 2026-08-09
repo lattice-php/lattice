@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Workbench\App\Timelines;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Lattice\Calendar\AsTimeline;
+use Lattice\Calendar\TimelineAdapter;
 use Lattice\Calendar\TimelineDefinition;
 
 #[AsTimeline('denied')]
@@ -17,13 +17,8 @@ final class DeniedTimeline extends TimelineDefinition
         return false;
     }
 
-    public function groups(): array
+    public function adapter(): TimelineAdapter
     {
-        return [];
-    }
-
-    public function events(CarbonImmutable $from, CarbonImmutable $until): iterable
-    {
-        return [];
+        return app(ProjectPlanTimelineAdapter::class);
     }
 }

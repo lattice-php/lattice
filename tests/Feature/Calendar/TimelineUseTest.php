@@ -18,12 +18,14 @@ it('builds an interactive timeline from a definition', function (): void {
         ->and($node['props']['ref'])->toBeString()
         ->and($node['props']['from'])->toBe($today->format('Y-m-d'))
         ->and($node['props']['days'])->toBe(10)
-        ->and(array_column($node['props']['groups'], 'key'))->toBe(['projects', 'employees'])
+        ->and(array_column($node['props']['groups'], 'key'))->toBe(['resources'])
         ->and($node['props']['groups'][0]['resources'])->toBe([
-            ['id' => 'website-relaunch', 'label' => 'Website Relaunch'],
-            ['id' => 'mobile-app', 'label' => 'Mobile App'],
+            ['id' => 'team-website', 'label' => 'Website Team'],
+            ['id' => 'team-mobile', 'label' => 'Mobile Team'],
+            ['id' => 'anna', 'label' => 'Anna Bauer'],
+            ['id' => 'ben', 'label' => 'Ben Krüger'],
         ])
-        ->and(array_column($node['props']['events'], 'id'))->toContain('website-kickoff', 'mobile-planning', 'anna-website', 'ben-mobile');
+        ->and(array_column($node['props']['events'], 'id'))->toContain('website-team', 'website-anna', 'mobile-team', 'mobile-ben');
 });
 
 it('defaults from to the start of last week when not set', function (): void {

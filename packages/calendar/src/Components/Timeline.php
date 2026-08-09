@@ -10,6 +10,7 @@ use Lattice\Calendar\Entry;
 use Lattice\Calendar\EntryData;
 use Lattice\Calendar\ResourceGroup;
 use Lattice\Calendar\ResourceGroupData;
+use Lattice\Calendar\TimelineAdapter;
 use Lattice\Calendar\TimelineDefinition;
 use Lattice\Calendar\TimelineRegistry;
 use Lattice\Core\Attributes\AsComponent;
@@ -101,17 +102,18 @@ class Timeline extends Component implements InteractiveComponent
         $from = isset($this->from)
             ? CarbonImmutable::parse($this->from)
             : CarbonImmutable::today()->startOfWeek()->subWeek();
+        $adapter = $this->definition?->adapter();
 
         $this->from = $from->format('Y-m-d');
 
-        $this->groups = $this->definition instanceof TimelineDefinition
-            ? array_map(fn (ResourceGroup $group): ResourceGroupData => $group->data(), $this->definition->groups())
+        $this->groups = $adapter instanceof TimelineAdapter
+            ? array_map(fn (ResourceGroup $group): ResourceGroupData => $group->data(), $adapter->groups())
             : [];
 
-        $this->events = $this->definition instanceof TimelineDefinition
+        $this->events = $adapter instanceof TimelineAdapter
             ? array_map(
                 fn (Entry $entry): EntryData => $entry->data(),
-                $this->entryList($this->definition->events($from, $from->addDays($this->days))),
+                $this->entryList($adapter->events($from, $from->addDays($this->days))),
             )
             : [];
 

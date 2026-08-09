@@ -21,6 +21,10 @@ final readonly class TimelineController
     {
         [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->timelines, 'timeline', $timeline);
 
-        return response()->json($this->timelines->response($timeline, $request, $definition));
+        $data = $request->isMethod('patch')
+            ? $this->timelines->reschedule($request, $definition)
+            : $this->timelines->response($timeline, $request, $definition);
+
+        return response()->json($data);
     }
 }

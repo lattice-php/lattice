@@ -27,7 +27,7 @@ final class TimelinePage extends WorkbenchPage
                 ->gap(Gap::ExtraLarge)
                 ->schema([
                     Heading::make($this->title()),
-                    Text::make('A read-only resource-planning board rendered by the lattice-php/calendar component package.'),
+                    Text::make('Drag an existing assignment to reschedule it across teams and employees.'),
                     Timeline::use(ProjectPlanTimeline::class),
                 ]),
         ]);

@@ -1,36 +1,36 @@
-import { useCallback as e, useMemo as t, useRef as n, useState as r } from "react";
-import { Fragment as i, jsx as a, jsxs as o } from "react/jsx-runtime";
+import { useCallback as e, useEffect as t, useMemo as n, useRef as r, useState as i } from "react";
+import { Fragment as a, jsx as o, jsxs as s } from "react/jsx-runtime";
 //#region \0rolldown/runtime.js
-var s = Object.defineProperty, c = Object.getOwnPropertyDescriptor, l = Object.getOwnPropertyNames, u = Object.prototype.hasOwnProperty, d = (e, t, n) => () => {
+var c = Object.defineProperty, l = Object.getOwnPropertyDescriptor, u = Object.getOwnPropertyNames, d = Object.prototype.hasOwnProperty, f = (e, t, n) => () => {
 	if (n) throw n[0];
 	try {
 		return e && (t = e(e = 0)), t;
 	} catch (e) {
 		throw n = [e], e;
 	}
-}, f = (e, t) => {
+}, p = (e, t) => {
 	let n = {};
-	for (var r in e) s(n, r, {
+	for (var r in e) c(n, r, {
 		get: e[r],
 		enumerable: !0
 	});
-	return t || s(n, Symbol.toStringTag, { value: "Module" }), n;
-}, p = (e, t, n, r) => {
-	if (t && typeof t == "object" || typeof t == "function") for (var i = l(t), a = 0, o = i.length, d; a < o; a++) d = i[a], !u.call(e, d) && d !== n && s(e, d, {
-		get: ((e) => t[e]).bind(null, d),
-		enumerable: !(r = c(t, d)) || r.enumerable
+	return t || c(n, Symbol.toStringTag, { value: "Module" }), n;
+}, m = (e, t, n, r) => {
+	if (t && typeof t == "object" || typeof t == "function") for (var i = u(t), a = 0, o = i.length, s; a < o; a++) s = i[a], !d.call(e, s) && s !== n && c(e, s, {
+		get: ((e) => t[e]).bind(null, s),
+		enumerable: !(r = l(t, s)) || r.enumerable
 	});
 	return e;
-}, m = (e, t, n) => (p(e, t, "default"), n && p(n, t, "default")), h = /* @__PURE__ */ f({});
-import * as g from "@lattice-php/lattice/runtime";
-m(h, g);
-var _ = d((() => {}));
+}, h = (e, t, n) => (m(e, t, "default"), n && m(n, t, "default")), g = /* @__PURE__ */ p({});
+import * as _ from "@lattice-php/lattice/runtime";
+h(g, _);
+var v = f((() => {}));
 //#endregion
 //#region resources/js/date-axis.ts
-function v(e) {
+function y(e) {
 	return /* @__PURE__ */ new Date(`${e}T12:00:00Z`);
 }
-function y(e, t) {
+function b(e, t) {
 	let n = [], r = null, i = 0;
 	for (let a = 0; a < e; a++) {
 		let e = t(a);
@@ -46,13 +46,13 @@ function y(e, t) {
 		label: r
 	}), n;
 }
-function b(e, t, n, r) {
+function x(e, t, n, r) {
 	let i = new Intl.DateTimeFormat(n, {
 		month: "long",
 		year: "numeric"
 	}), a = [];
 	for (let n = 0; n < t; n++) {
-		let t = (0, h.addDays)(e, n), i = v(t), o = i.getUTCDay();
+		let t = (0, g.addDays)(e, n), i = y(t), o = i.getUTCDay();
 		a.push({
 			index: n,
 			date: t,
@@ -65,11 +65,11 @@ function b(e, t, n, r) {
 	return {
 		start: e,
 		days: a,
-		weeks: y(t, (e) => String((0, h.isoWeek)(a[e].date))),
-		months: y(t, (e) => i.format(v(a[e].date)))
+		weeks: b(t, (e) => String((0, g.isoWeek)(a[e].date))),
+		months: b(t, (e) => i.format(y(a[e].date)))
 	};
 }
-function x(e) {
+function S(e) {
 	let t = [...e].sort((e, t) => e.start - t.start || t.span - e.span || e.id.localeCompare(t.id)), n = [], r = [];
 	for (let e of t) {
 		let t = e.start + e.span, i = n.findIndex((t) => t <= e.start);
@@ -83,12 +83,12 @@ function x(e) {
 		laneCount: n.length
 	};
 }
-var S = d((() => {
-	_();
+var C = f((() => {
+	v();
 }));
 //#endregion
 //#region resources/js/timeline-state.ts
-function C(e) {
+function w(e) {
 	if (e.length === 0) return [];
 	let t = [...e].sort((e, t) => e[0] < t[0] ? -1 : +(e[0] > t[0])), n = [[t[0][0], t[0][1]]];
 	for (let [e, r] of t.slice(1)) {
@@ -97,53 +97,111 @@ function C(e) {
 	}
 	return n;
 }
-function w(e, t, n) {
+function T(e, t, n) {
 	if (t >= n) return [];
-	let r = C(e), i = [], a = t;
+	let r = w(e), i = [], a = t;
 	for (let [e, t] of r) if (!(t <= a) && (e >= n || (e > a && i.push([a, e]), a = t > a ? t < n ? t : n : a, a >= n))) break;
 	return a < n && i.push([a, n]), i;
 }
-function T({ endpoint: i, componentRef: a, initialEvents: o, initialFrom: s, days: c }) {
-	let [l, u] = r(() => new Map(o.map((e) => [e.id, e]))), [d, f] = r(!1), p = n([[s, (0, h.addDays)(s, c)]]), m = n(/* @__PURE__ */ new Map()), g = e((e, t) => {
-		if (!i || !a) return;
-		let n = w(p.current, e, t);
-		if (n.length === 0) return;
-		let r = n[0][0], o = n[n.length - 1][1], s = `${r}:${o}`;
-		if (m.current.has(s)) return;
-		let c = (0, h.apiJson)(`${i}?from=${r}&to=${o}`, { ref: a }).then(({ events: e }) => {
-			p.current = C([...p.current, [r, o]]), u((t) => {
+function E(e) {
+	return typeof e == "object" && !!e && !Array.isArray(e);
+}
+function D(e) {
+	if (!E(e) || !E(e.event)) return null;
+	let t = e.event;
+	return typeof t.id != "string" || typeof t.resourceId != "string" || typeof t.start != "string" || typeof t.end != "string" || typeof t.label != "string" ? null : t;
+}
+function O(e) {
+	if (!E(e)) return null;
+	if (E(e.errors)) {
+		for (let t of Object.values(e.errors)) if (Array.isArray(t)) {
+			let e = t.find((e) => typeof e == "string");
+			if (e) return e;
+		}
+	}
+	return typeof e.message == "string" && e.message !== "" ? e.message : null;
+}
+function k({ endpoint: t, componentRef: a, initialEvents: o, initialFrom: s, days: c }) {
+	let [l, u] = i(() => new Map(o.map((e) => [e.id, e]))), [d, f] = i(!1), [p, m] = i(/* @__PURE__ */ new Set()), h = r([[s, (0, g.addDays)(s, c)]]), _ = r(/* @__PURE__ */ new Map()), v = r(/* @__PURE__ */ new Set()), y = e((e, n) => {
+		if (!t || !a) return;
+		let r = T(h.current, e, n);
+		if (r.length === 0) return;
+		let i = r[0][0], o = r[r.length - 1][1], s = `${i}:${o}`;
+		if (_.current.has(s)) return;
+		let c = (0, g.apiJson)(`${t}?from=${i}&to=${o}`, { ref: a }).then(({ events: e }) => {
+			h.current = w([...h.current, [i, o]]), u((t) => {
 				let n = new Map(t);
 				for (let t of e) n.set(t.id, t);
 				return n;
 			});
 		}).catch(() => {}).finally(() => {
-			m.current.delete(s), f(m.current.size > 0);
+			_.current.delete(s), f(_.current.size > 0);
 		});
-		m.current.set(s, c), f(!0);
-	}, [a, i]), _ = e((e) => {
+		_.current.set(s, c), f(!0);
+	}, [a, t]), b = e((e) => {
 		let t = [];
 		for (let n of l.values()) n.resourceId === e && t.push(n);
 		return t;
-	}, [l]);
-	return t(() => ({
+	}, [l]), x = e(async (e) => {
+		let n = l.get(e.id);
+		if (!t || !a || !n || v.current.has(e.id)) return {
+			accepted: !1,
+			message: null
+		};
+		v.current.add(e.id), m(new Set(v.current)), u((t) => new Map(t).set(e.id, {
+			...n,
+			...e
+		}));
+		try {
+			let r = await (0, g.apiFetch)(t, {
+				body: JSON.stringify(e),
+				method: "PATCH",
+				ref: a,
+				throwOnError: !1
+			}), i = await r.json().catch(() => null), o = r.ok ? D(i) : null;
+			return o?.id === e.id ? (u((t) => new Map(t).set(e.id, o)), {
+				accepted: !0,
+				message: null
+			}) : (u((e) => new Map(e).set(n.id, n)), {
+				accepted: !1,
+				message: O(i)
+			});
+		} catch {
+			return u((e) => new Map(e).set(n.id, n)), {
+				accepted: !1,
+				message: null
+			};
+		} finally {
+			v.current.delete(e.id), m(new Set(v.current));
+		}
+	}, [
+		a,
+		t,
+		l
+	]), S = e((e) => p.has(e), [p]);
+	return n(() => ({
 		events: l,
-		eventsForResource: _,
-		ensureRange: g,
-		loading: d
+		eventsForResource: b,
+		ensureRange: y,
+		isRescheduling: S,
+		loading: d,
+		reschedule: x
 	}), [
 		l,
-		_,
-		g,
-		d
+		b,
+		y,
+		S,
+		d,
+		x
 	]);
 }
-var E = d((() => {
-	_();
-})), D = /* @__PURE__ */ f({ default: () => I });
-function O(e, t, n, r) {
+var A = f((() => {
+	v();
+})), j = /* @__PURE__ */ p({ default: () => H });
+function M(e, t, n, r) {
 	let i = [];
 	for (let a of t(e)) {
-		let e = Math.max(0, (0, h.daysBetween)(n, a.start)), t = Math.min(r, (0, h.daysBetween)(n, a.end)) - e;
+		let e = Math.max(0, (0, g.daysBetween)(n, a.start)), t = Math.min(r, (0, g.daysBetween)(n, a.end)) - e;
 		t > 0 && i.push({
 			id: a.id,
 			start: e,
@@ -151,219 +209,365 @@ function O(e, t, n, r) {
 			event: a
 		});
 	}
-	return x(i);
+	return S(i);
 }
-function k({ collapsed: e, days: t, eventsForResource: n, from: r, group: s, onToggle: c, t: l }) {
-	return /* @__PURE__ */ o(i, { children: [
-		/* @__PURE__ */ o("div", {
+function N({ canReschedule: e, collapsed: t, dayWidth: n, days: r, eventsForResource: i, from: c, group: l, isRescheduling: u, onReschedule: d, onToggle: f, resources: p, t: m }) {
+	return /* @__PURE__ */ s(a, { children: [
+		/* @__PURE__ */ s("div", {
 			className: "lt-timeline-sticky-col flex items-center gap-1.5 border-t border-lt-border bg-lt-muted px-2 py-1.5 text-sm font-medium",
-			children: [/* @__PURE__ */ a("button", {
-				"aria-expanded": !e,
-				"aria-label": e ? l("calendar.expand-group", "Expand {{label}}", { label: s.label }) : l("calendar.collapse-group", "Collapse {{label}}", { label: s.label }),
-				onClick: c,
+			children: [/* @__PURE__ */ o("button", {
+				"aria-expanded": !t,
+				"aria-label": t ? m("calendar.expand-group", "Expand {{label}}", { label: l.label }) : m("calendar.collapse-group", "Collapse {{label}}", { label: l.label }),
+				onClick: f,
 				type: "button",
-				children: /* @__PURE__ */ a(h.Icon, {
-					className: (0, h.cn)("size-lt-icon-sm shrink-0 transition-transform", !e && "rotate-90"),
+				children: /* @__PURE__ */ o(g.Icon, {
+					className: (0, g.cn)("size-lt-icon-sm shrink-0 transition-transform", !t && "rotate-90"),
 					name: "chevron-right"
 				})
-			}), /* @__PURE__ */ a("span", { children: s.label })]
+			}), /* @__PURE__ */ o("span", { children: l.label })]
 		}),
-		/* @__PURE__ */ a("div", { className: "lt-timeline-group-header-canvas border-t border-lt-border bg-lt-muted" }),
-		e ? null : s.resources.map((e) => /* @__PURE__ */ a(A, {
-			days: t,
-			eventsForResource: n,
-			from: r,
-			resource: e
-		}, e.id))
+		/* @__PURE__ */ o("div", { className: "lt-timeline-group-header-canvas border-t border-lt-border bg-lt-muted" }),
+		t ? null : l.resources.map((t) => /* @__PURE__ */ o(P, {
+			canReschedule: e,
+			dayWidth: n,
+			days: r,
+			eventsForResource: i,
+			from: c,
+			isRescheduling: u,
+			onReschedule: d,
+			resource: t,
+			resources: p,
+			t: m
+		}, t.id))
 	] });
 }
-function A({ days: e, eventsForResource: t, from: n, resource: r }) {
-	let { bars: s, laneCount: c } = O(r.id, t, n, e), l = `calc(${Math.max(c, 1)} * var(--lt-timeline-lane-height))`;
-	return /* @__PURE__ */ o(i, { children: [/* @__PURE__ */ a("div", {
+function P({ canReschedule: e, dayWidth: n, days: c, eventsForResource: l, from: u, isRescheduling: d, onReschedule: f, resource: p, resources: m, t: h }) {
+	let { bars: _, laneCount: v } = M(p.id, l, u, c), y = `calc(${Math.max(v, 1)} * var(--lt-timeline-lane-height))`, b = r(null), [x, S] = i(!1);
+	return t(() => {
+		let t = b.current;
+		if (!(!t || !e)) return (0, g.dropTargetForElements)({
+			canDrop: ({ source: e }) => e.data.type === V,
+			element: t,
+			getData: ({ element: e, input: t, source: r }) => {
+				let i = typeof r.data.grabOffsetDays == "number" ? r.data.grabOffsetDays : 0, a = Math.floor((t.clientX - e.getBoundingClientRect().left) / n) - i;
+				return {
+					resourceId: p.id,
+					start: (0, g.addDays)(u, a),
+					type: V
+				};
+			},
+			onDragEnter: () => S(!0),
+			onDragLeave: () => S(!1),
+			onDrop: ({ self: e, source: t }) => {
+				S(!1);
+				let n = t.data.id, r = t.data.durationDays, i = e.data.resourceId, a = e.data.start;
+				typeof n == "string" && typeof r == "number" && typeof i == "string" && typeof a == "string" && f({
+					id: n,
+					resourceId: i,
+					start: a,
+					end: (0, g.addDays)(a, r)
+				});
+			}
+		});
+	}, [
+		e,
+		n,
+		u,
+		f,
+		p.id
+	]), /* @__PURE__ */ s(a, { children: [/* @__PURE__ */ o("div", {
 		className: "lt-timeline-sticky-col flex items-center border-t border-lt-border px-2 text-sm text-lt-fg",
-		style: { height: l },
-		children: r.label
-	}), /* @__PURE__ */ o("div", {
-		className: "lt-timeline-resource-canvas border-t border-lt-border",
-		style: { height: l },
-		children: [/* @__PURE__ */ a("div", {
+		style: { height: y },
+		children: p.label
+	}), /* @__PURE__ */ s("div", {
+		className: (0, g.cn)("lt-timeline-resource-canvas border-t border-lt-border", x && "bg-lt-primary/10"),
+		"data-test": `timeline-resource-${p.id}`,
+		ref: b,
+		style: { height: y },
+		children: [/* @__PURE__ */ o("div", {
 			className: "lt-timeline-weekend-strip",
 			"aria-hidden": "true"
-		}), s.map((e) => {
-			let t = (0, h.toneProps)((0, h.coerceColor)(e.event.color) ?? (0, h.namedColor)("primary"));
-			return /* @__PURE__ */ a("div", {
-				className: (0, h.cn)("lt-timeline-bar rounded-lt-xs px-1.5 py-1 text-xs", t.className),
-				style: {
-					left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
-					width: `calc(var(--lt-timeline-day-width) * ${e.span})`,
-					top: `calc(${e.lane} * var(--lt-timeline-lane-height))`,
-					height: "var(--lt-timeline-lane-height)",
-					...t.style
-				},
-				title: e.event.label,
-				children: e.event.label
-			}, e.id);
-		})]
+		}), _.map((t) => /* @__PURE__ */ o(F, {
+			bar: t,
+			canReschedule: e,
+			dayWidth: n,
+			days: c,
+			from: u,
+			isRescheduling: d(t.id),
+			onReschedule: f,
+			resource: p,
+			resources: m,
+			t: h
+		}, t.id))]
 	})] });
 }
-var j, M, N, P, F, I, L = d((() => {
-	_(), S(), E(), j = 10, M = 64, N = 24, P = 1.25, F = 7, I = ({ node: e }) => {
-		let n = (0, h.nodeIdentity)(e), { t: i, locale: s } = (0, h.useT)("calendar"), [c, l] = r(e.props.from), [u, d] = r(N), [f, p] = r(/* @__PURE__ */ new Set()), [m] = r(() => (0, h.todayISO)((0, h.currentTimezone)())), { days: g } = e.props, { eventsForResource: _, ensureRange: v, loading: y } = T({
-			endpoint: e.props.endpoint,
-			componentRef: e.props.ref,
-			initialEvents: e.props.events,
-			initialFrom: e.props.from,
-			days: g
-		}), x = t(() => b(c, g, s, m), [
-			c,
-			g,
-			s,
-			m
-		]), S = x.days.length > 0 ? (x.days[0].weekday + 6) % 7 : 0, C = (0, h.daysBetween)(c, m), w = C >= 0 && C < g, E = t(() => new Intl.DateTimeFormat(s, { weekday: "short" }), [s]);
-		function D(e) {
-			l(e), v(e, (0, h.addDays)(e, g));
+function F({ bar: e, canReschedule: n, dayWidth: a, days: s, from: c, isRescheduling: l, onReschedule: u, resource: d, resources: f, t: p }) {
+	let m = r(null), [h, _] = i(!1), v = (0, g.daysBetween)(e.event.start, e.event.end), y = Math.max(0, (0, g.daysBetween)(e.event.start, c)), b = (0, g.toneProps)((0, g.coerceColor)(e.event.color) ?? (0, g.namedColor)("primary"));
+	t(() => {
+		let t = m.current;
+		if (!(!t || !n)) return (0, g.draggable)({
+			canDrag: () => !l,
+			element: t,
+			getInitialData: ({ element: t, input: n }) => ({
+				durationDays: v,
+				grabOffsetDays: Math.max(0, Math.min(v - 1, y + Math.floor((n.clientX - t.getBoundingClientRect().left) / a))),
+				id: e.id,
+				type: V
+			}),
+			onDragStart: () => {
+				_(!0), (0, g.announce)(p("calendar.dragging", "Moving {{label}}. Drop on a resource row.", { label: e.event.label }));
+			},
+			onDrop: () => _(!1)
+		});
+	}, [
+		e.event.label,
+		e.id,
+		n,
+		a,
+		v,
+		y,
+		l,
+		p
+	]);
+	function x(t) {
+		if (!n || l || !t.ctrlKey || !t.shiftKey) return;
+		let r = e.event.resourceId, i = e.event.start, a = f.findIndex((e) => e.id === r);
+		switch (t.key) {
+			case "ArrowLeft":
+				i = (0, g.addDays)(i, -1);
+				break;
+			case "ArrowRight":
+				i = (0, g.addDays)(i, 1);
+				break;
+			case "ArrowUp":
+				r = f[a - 1]?.id ?? r;
+				break;
+			case "ArrowDown":
+				r = f[a + 1]?.id ?? r;
+				break;
+			default: return;
 		}
-		function O(e) {
-			p((t) => {
+		let o = (0, g.addDays)(i, v);
+		i < c || o > (0, g.addDays)(c, s) || (t.preventDefault(), u({
+			id: e.id,
+			resourceId: r,
+			start: i,
+			end: o
+		}));
+	}
+	return /* @__PURE__ */ o("button", {
+		"aria-disabled": !n || l,
+		"aria-keyshortcuts": "Control+Shift+ArrowLeft Control+Shift+ArrowRight Control+Shift+ArrowUp Control+Shift+ArrowDown",
+		"aria-label": p("calendar.entry-label", "{{label}}, {{resource}}, {{start}} to {{end}}. Use Control Shift and arrow keys to reschedule.", {
+			end: e.event.end,
+			label: e.event.label,
+			resource: d.label,
+			start: e.event.start
+		}),
+		className: (0, g.cn)("lt-timeline-bar cursor-grab rounded-lt-xs px-1.5 py-1 text-left text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary", b.className, h && "opacity-60"),
+		"data-resource-id": e.event.resourceId,
+		"data-start": e.event.start,
+		"data-test": `timeline-entry-${e.id}`,
+		onKeyDown: x,
+		ref: m,
+		style: {
+			left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
+			width: `calc(var(--lt-timeline-day-width) * ${e.span})`,
+			top: `calc(${e.lane} * var(--lt-timeline-lane-height))`,
+			height: "var(--lt-timeline-lane-height)",
+			...b.style
+		},
+		title: e.event.label,
+		type: "button",
+		children: e.event.label
+	});
+}
+var I, L, R, z, B, V, H, U = f((() => {
+	v(), C(), A(), I = 10, L = 64, R = 24, z = 1.25, B = 7, V = "lattice-calendar-entry", H = ({ node: t }) => {
+		let r = (0, g.nodeIdentity)(t), { t: a, locale: c } = (0, g.useT)("calendar"), [l, u] = i(t.props.from), [d, f] = i(R), [p, m] = i(/* @__PURE__ */ new Set()), [h] = i(() => (0, g.todayISO)((0, g.currentTimezone)())), { days: _ } = t.props, [v, y] = i(null), { events: b, eventsForResource: S, ensureRange: C, isRescheduling: w, loading: T, reschedule: E } = k({
+			endpoint: t.props.endpoint,
+			componentRef: t.props.ref,
+			initialEvents: t.props.events,
+			initialFrom: t.props.from,
+			days: _
+		}), D = n(() => t.props.groups.flatMap((e) => e.resources), [t.props.groups]), O = n(() => x(l, _, c, h), [
+			l,
+			_,
+			c,
+			h
+		]), A = O.days.length > 0 ? (O.days[0].weekday + 6) % 7 : 0, j = (0, g.daysBetween)(l, h), M = j >= 0 && j < _, P = n(() => new Intl.DateTimeFormat(c, { weekday: "short" }), [c]);
+		function F(e) {
+			u(e), C(e, (0, g.addDays)(e, _));
+		}
+		function V(e) {
+			m((t) => {
 				let n = new Set(t);
 				return n.has(e) ? n.delete(e) : n.add(e), n;
 			});
 		}
-		let A = {
-			"--lt-timeline-day-width": `${u}px`,
-			"--lt-timeline-canvas-w": `calc(var(--lt-timeline-day-width) * ${g})`,
-			"--lt-timeline-weekend-offset": S
+		let H = e(async (e) => {
+			let t = b.get(e.id);
+			if (!t || t.resourceId === e.resourceId && t.start === e.start && t.end === e.end) return;
+			y(null);
+			let n = await E(e);
+			if (n.accepted) {
+				(0, g.announce)(a("calendar.rescheduled", "Rescheduled {{label}}", { label: t.label }));
+				return;
+			}
+			let r = n.message ?? a("calendar.reschedule-failed", "Could not reschedule {{label}}", { label: t.label });
+			y(r), (0, g.announce)(r);
+		}, [
+			b,
+			E,
+			a
+		]), U = {
+			"--lt-timeline-day-width": `${d}px`,
+			"--lt-timeline-canvas-w": `calc(var(--lt-timeline-day-width) * ${_})`,
+			"--lt-timeline-weekend-offset": A
 		};
-		return /* @__PURE__ */ o("div", {
+		return /* @__PURE__ */ s("div", {
 			className: "lt-timeline",
-			"data-lattice-component": n,
-			children: [/* @__PURE__ */ o("div", {
-				className: "mb-2 flex items-center gap-1",
-				children: [
-					/* @__PURE__ */ a("button", {
-						"aria-label": i("calendar.previous", "Previous"),
-						className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
-						onClick: () => D((0, h.addDays)(c, -7)),
-						type: "button",
-						children: /* @__PURE__ */ a(h.Icon, {
-							className: "size-lt-icon-sm",
-							name: "chevron-left"
-						})
-					}),
-					/* @__PURE__ */ a("button", {
-						"aria-label": i("calendar.next", "Next"),
-						className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
-						onClick: () => D((0, h.addDays)(c, F)),
-						type: "button",
-						children: /* @__PURE__ */ a(h.Icon, {
-							className: "size-lt-icon-sm",
-							name: "chevron-right"
-						})
-					}),
-					/* @__PURE__ */ a("button", {
-						className: "rounded-lt-sm px-2 py-1 text-sm hover:bg-lt-muted",
-						onClick: () => D((0, h.addDays)(m, -7)),
-						type: "button",
-						children: i("calendar.today", "Today")
-					}),
-					/* @__PURE__ */ o("div", {
-						className: "ml-auto flex items-center gap-1",
-						children: [/* @__PURE__ */ a("button", {
-							"aria-label": i("calendar.zoom-out", "Zoom out"),
-							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
-							disabled: u <= j,
-							onClick: () => d((e) => Math.max(j, e / P)),
-							type: "button",
-							children: /* @__PURE__ */ a(h.Icon, {
-								className: "size-lt-icon-sm",
-								name: "minus"
-							})
-						}), /* @__PURE__ */ a("button", {
-							"aria-label": i("calendar.zoom-in", "Zoom in"),
-							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
-							disabled: u >= M,
-							onClick: () => d((e) => Math.min(M, e * P)),
-							type: "button",
-							children: /* @__PURE__ */ a(h.Icon, {
-								className: "size-lt-icon-sm",
-								name: "plus"
-							})
-						})]
-					})
-				]
-			}), /* @__PURE__ */ a("div", {
-				"aria-busy": y,
-				className: "lt-timeline-scroll rounded-lt-sm border border-lt-border",
-				children: /* @__PURE__ */ o("div", {
-					className: "lt-timeline-grid",
-					style: A,
+			"data-lattice-component": r,
+			children: [
+				/* @__PURE__ */ s("div", {
+					className: "mb-2 flex items-center gap-1",
 					children: [
-						/* @__PURE__ */ a("div", { className: (0, h.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-months lt-timeline-header-cell") }),
-						/* @__PURE__ */ a("div", {
-							className: (0, h.cn)("lt-timeline-sticky-row lt-timeline-row-months lt-timeline-header-cell"),
-							children: x.months.map((e) => /* @__PURE__ */ a("div", {
-								className: "lt-timeline-segment flex items-center border-l border-lt-border px-2 text-xs font-medium text-lt-fg",
-								style: {
-									left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
-									width: `calc(var(--lt-timeline-day-width) * ${e.span})`
-								},
-								children: e.label
-							}, `${e.start}-${e.label}`))
-						}),
-						/* @__PURE__ */ a("div", { className: (0, h.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-weeks lt-timeline-header-cell") }),
-						/* @__PURE__ */ a("div", {
-							className: (0, h.cn)("lt-timeline-sticky-row lt-timeline-row-weeks lt-timeline-header-cell"),
-							children: x.weeks.map((e) => /* @__PURE__ */ o("div", {
-								className: "lt-timeline-segment flex items-center border-l border-lt-border px-2 text-xs text-lt-muted-fg",
-								style: {
-									left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
-									width: `calc(var(--lt-timeline-day-width) * ${e.span})`
-								},
-								children: [
-									i("calendar.week", "CW"),
-									" ",
-									e.label
-								]
-							}, `${e.start}-${e.label}`))
-						}),
-						/* @__PURE__ */ a("div", { className: (0, h.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-days lt-timeline-header-cell") }),
-						/* @__PURE__ */ a("div", {
-							className: (0, h.cn)("lt-timeline-sticky-row lt-timeline-row-days lt-timeline-header-cell"),
-							children: /* @__PURE__ */ a("div", {
-								className: "lt-timeline-days-row",
-								children: x.days.map((e) => /* @__PURE__ */ o("div", {
-									className: (0, h.cn)("lt-timeline-day flex flex-col items-center justify-center border-l border-lt-border text-xs", e.isWeekend && "bg-lt-muted text-lt-muted-fg", e.isToday && "font-semibold text-lt-primary"),
-									children: [/* @__PURE__ */ a("span", { children: E.format(/* @__PURE__ */ new Date(`${e.date}T12:00:00Z`)) }), /* @__PURE__ */ a("span", { children: e.dayOfMonth })]
-								}, e.date))
+						/* @__PURE__ */ o("button", {
+							"aria-label": a("calendar.previous", "Previous"),
+							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
+							onClick: () => F((0, g.addDays)(l, -7)),
+							type: "button",
+							children: /* @__PURE__ */ o(g.Icon, {
+								className: "size-lt-icon-sm",
+								name: "chevron-left"
 							})
 						}),
-						e.props.groups.map((e) => /* @__PURE__ */ a(k, {
-							collapsed: f.has(e.key),
-							days: g,
-							eventsForResource: _,
-							from: c,
-							group: e,
-							onToggle: () => O(e.key),
-							t: i
-						}, e.key)),
-						w ? /* @__PURE__ */ a("div", {
-							"aria-hidden": "true",
-							className: "lt-timeline-today-marker",
-							style: { left: `calc(var(--lt-timeline-label-w) + var(--lt-timeline-day-width) * ${C})` }
-						}) : null
+						/* @__PURE__ */ o("button", {
+							"aria-label": a("calendar.next", "Next"),
+							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
+							onClick: () => F((0, g.addDays)(l, B)),
+							type: "button",
+							children: /* @__PURE__ */ o(g.Icon, {
+								className: "size-lt-icon-sm",
+								name: "chevron-right"
+							})
+						}),
+						/* @__PURE__ */ o("button", {
+							className: "rounded-lt-sm px-2 py-1 text-sm hover:bg-lt-muted",
+							onClick: () => F((0, g.addDays)(h, -7)),
+							type: "button",
+							children: a("calendar.today", "Today")
+						}),
+						/* @__PURE__ */ s("div", {
+							className: "ml-auto flex items-center gap-1",
+							children: [/* @__PURE__ */ o("button", {
+								"aria-label": a("calendar.zoom-out", "Zoom out"),
+								className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
+								disabled: d <= I,
+								onClick: () => f((e) => Math.max(I, e / z)),
+								type: "button",
+								children: /* @__PURE__ */ o(g.Icon, {
+									className: "size-lt-icon-sm",
+									name: "minus"
+								})
+							}), /* @__PURE__ */ o("button", {
+								"aria-label": a("calendar.zoom-in", "Zoom in"),
+								className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
+								disabled: d >= L,
+								onClick: () => f((e) => Math.min(L, e * z)),
+								type: "button",
+								children: /* @__PURE__ */ o(g.Icon, {
+									className: "size-lt-icon-sm",
+									name: "plus"
+								})
+							})]
+						})
 					]
+				}),
+				v ? /* @__PURE__ */ o("div", {
+					className: "mb-2 text-sm text-lt-danger",
+					role: "alert",
+					children: v
+				}) : null,
+				/* @__PURE__ */ o("div", {
+					"aria-busy": T || [...b.keys()].some((e) => w(e)),
+					className: "lt-timeline-scroll rounded-lt-sm border border-lt-border",
+					children: /* @__PURE__ */ s("div", {
+						className: "lt-timeline-grid",
+						style: U,
+						children: [
+							/* @__PURE__ */ o("div", { className: (0, g.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-months lt-timeline-header-cell") }),
+							/* @__PURE__ */ o("div", {
+								className: (0, g.cn)("lt-timeline-sticky-row lt-timeline-row-months lt-timeline-header-cell"),
+								children: O.months.map((e) => /* @__PURE__ */ o("div", {
+									className: "lt-timeline-segment flex items-center border-l border-lt-border px-2 text-xs font-medium text-lt-fg",
+									style: {
+										left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
+										width: `calc(var(--lt-timeline-day-width) * ${e.span})`
+									},
+									children: e.label
+								}, `${e.start}-${e.label}`))
+							}),
+							/* @__PURE__ */ o("div", { className: (0, g.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-weeks lt-timeline-header-cell") }),
+							/* @__PURE__ */ o("div", {
+								className: (0, g.cn)("lt-timeline-sticky-row lt-timeline-row-weeks lt-timeline-header-cell"),
+								children: O.weeks.map((e) => /* @__PURE__ */ s("div", {
+									className: "lt-timeline-segment flex items-center border-l border-lt-border px-2 text-xs text-lt-muted-fg",
+									style: {
+										left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
+										width: `calc(var(--lt-timeline-day-width) * ${e.span})`
+									},
+									children: [
+										a("calendar.week", "CW"),
+										" ",
+										e.label
+									]
+								}, `${e.start}-${e.label}`))
+							}),
+							/* @__PURE__ */ o("div", { className: (0, g.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-days lt-timeline-header-cell") }),
+							/* @__PURE__ */ o("div", {
+								className: (0, g.cn)("lt-timeline-sticky-row lt-timeline-row-days lt-timeline-header-cell"),
+								children: /* @__PURE__ */ o("div", {
+									className: "lt-timeline-days-row",
+									children: O.days.map((e) => /* @__PURE__ */ s("div", {
+										className: (0, g.cn)("lt-timeline-day flex flex-col items-center justify-center border-l border-lt-border text-xs", e.isWeekend && "bg-lt-muted text-lt-muted-fg", e.isToday && "font-semibold text-lt-primary"),
+										children: [/* @__PURE__ */ o("span", { children: P.format(/* @__PURE__ */ new Date(`${e.date}T12:00:00Z`)) }), /* @__PURE__ */ o("span", { children: e.dayOfMonth })]
+									}, e.date))
+								})
+							}),
+							t.props.groups.map((e) => /* @__PURE__ */ o(N, {
+								collapsed: p.has(e.key),
+								days: _,
+								eventsForResource: S,
+								from: l,
+								group: e,
+								isRescheduling: w,
+								onReschedule: H,
+								onToggle: () => V(e.key),
+								resources: D,
+								t: a,
+								canReschedule: t.props.endpoint !== null && t.props.ref !== null,
+								dayWidth: d
+							}, e.key)),
+							M ? /* @__PURE__ */ o("div", {
+								"aria-hidden": "true",
+								className: "lt-timeline-today-marker",
+								style: { left: `calc(var(--lt-timeline-label-w) + var(--lt-timeline-day-width) * ${j})` }
+							}) : null
+						]
+					})
 				})
-			})]
+			]
 		});
 	};
 }));
 //#endregion
 //#region resources/js/plugin.ts
-_();
-var R = {
+v();
+var W = {
 	name: "lattice/calendar",
-	components: { timeline: (0, h.lazyComponent)(() => Promise.resolve().then(() => (L(), D))) },
+	components: { timeline: (0, g.lazyComponent)(() => Promise.resolve().then(() => (U(), j))) },
 	i18n: { namespace: "calendar" }
 };
 //#endregion
-export { R as default };
+export { W as default };

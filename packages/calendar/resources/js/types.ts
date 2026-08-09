@@ -23,6 +23,11 @@ export type TimelineEventData = {
   color?: unknown;
 };
 
+export type TimelineRescheduleRequest = Pick<
+  TimelineEventData,
+  "id" | "resourceId" | "start" | "end"
+>;
+
 export type TimelineWireProps = {
   groups: TimelineGroupData[];
   events: TimelineEventData[];

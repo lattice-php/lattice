@@ -26,7 +26,7 @@ final class CalendarServiceProvider extends ServiceProvider
         // its endpoint itself, mirroring core's group conventions
         // (config lattice.timelines.{middleware,endpoint}).
         Route::middleware(config('lattice.timelines.middleware', ['web', 'auth']))
-            ->get((string) config('lattice.timelines.endpoint', 'lattice/timelines/{timeline}'), TimelineController::class)
+            ->match(['get', 'patch'], (string) config('lattice.timelines.endpoint', 'lattice/timelines/{timeline}'), TimelineController::class)
             ->where('timeline', '.*')
             ->name('lattice.timelines.show');
     }

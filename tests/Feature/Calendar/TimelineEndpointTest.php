@@ -7,6 +7,7 @@ use Lattice\Core\Contracts\SignsComponentReferences;
 use Workbench\App\Timelines\ProjectPlanTimeline;
 
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\patchJson;
 
 it('returns events for the requested window', function (): void {
     $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
@@ -21,7 +22,49 @@ it('returns events for the requested window', function (): void {
 
     $response->assertOk();
 
-    expect(array_column($response->json('events'), 'id'))->toContain('website-kickoff');
+    expect(array_column($response->json('events'), 'id'))->toContain('website-team');
+});
+
+it('atomically reschedules one assignment without adding another resource', function (): void {
+    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
+    $today = CarbonImmutable::today();
+    $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
+
+    patchJson($timeline['props']['endpoint'], [
+        'id' => 'website-anna',
+        'resourceId' => 'ben',
+        'start' => $today->addDay()->format('Y-m-d'),
+        'end' => $today->addDays(6)->format('Y-m-d'),
+    ], ['X-Lattice-Ref' => $timeline['props']['ref']])
+        ->assertOk()
+        ->assertJsonPath('event.id', 'website-anna')
+        ->assertJsonPath('event.resourceId', 'ben')
+        ->assertJsonPath('event.start', $today->addDay()->format('Y-m-d'))
+        ->assertJsonPath('event.end', $today->addDays(6)->format('Y-m-d'));
+
+    $response = getJson(
+        $timeline['props']['endpoint'].'?from='.$today->format('Y-m-d').'&to='.$today->addDays(7)->format('Y-m-d'),
+        ['X-Lattice-Ref' => $timeline['props']['ref']],
+    );
+
+    $response
+        ->assertJsonFragment(['id' => 'website-team', 'resourceId' => 'team-website'])
+        ->assertJsonFragment(['id' => 'website-anna', 'resourceId' => 'ben']);
+});
+
+it('returns the adapter translated message when a reschedule is rejected', function (): void {
+    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
+    $today = CarbonImmutable::today();
+    $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
+
+    patchJson($timeline['props']['endpoint'], [
+        'id' => 'website-anna',
+        'resourceId' => 'missing',
+        'start' => $today->format('Y-m-d'),
+        'end' => $today->addDays(5)->format('Y-m-d'),
+    ], ['X-Lattice-Ref' => $timeline['props']['ref']])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.resourceId.0', 'This planning resource is unavailable.');
 });
 
 it('rejects a request without a ref', function (): void {

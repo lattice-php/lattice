@@ -25,6 +25,7 @@ use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
 use Workbench\App\Support\TypeScript\BaseProfile;
+use Workbench\App\Timelines\ProjectPlanTimelineAdapter;
 
 use function Orchestra\Testbench\package_path;
 
@@ -42,6 +43,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         config(['app.faker_locale' => self::FAKER_LOCALE]);
 
         $this->keepLatticeEndpointsPublic();
+        $this->app->singleton(ProjectPlanTimelineAdapter::class);
 
         // Rebind so lattice:typescript regenerates the package's own built-in artifacts.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);

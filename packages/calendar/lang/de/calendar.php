@@ -10,4 +10,8 @@ return [
     'next' => 'Weiter',
     'collapse-group' => ':label einklappen',
     'expand-group' => ':label ausklappen',
+    'dragging' => ':label wird verschoben. Auf einer Ressourcenzeile ablegen.',
+    'entry-label' => ':label, :resource, :start bis :end. Zum Umplanen Strg, Umschalt und die Pfeiltasten verwenden.',
+    'rescheduled' => ':label wurde umgeplant',
+    'reschedule-failed' => ':label konnte nicht umgeplant werden',
 ];

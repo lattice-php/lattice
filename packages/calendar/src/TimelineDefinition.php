@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Lattice\Calendar;
 
-use Carbon\CarbonImmutable;
 use Lattice\Core\Definition;
 
 /**
@@ -14,13 +13,5 @@ use Lattice\Core\Definition;
  */
 abstract class TimelineDefinition extends Definition
 {
-    /**
-     * @return list<ResourceGroup>
-     */
-    abstract public function groups(): array;
-
-    /**
-     * @return iterable<Entry>
-     */
-    abstract public function events(CarbonImmutable $from, CarbonImmutable $until): iterable;
+    abstract public function adapter(): TimelineAdapter;
 }

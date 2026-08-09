@@ -10,4 +10,8 @@ return [
     'next' => 'Next',
     'collapse-group' => 'Collapse :label',
     'expand-group' => 'Expand :label',
+    'dragging' => 'Moving :label. Drop on a resource row.',
+    'entry-label' => ':label, :resource, :start to :end. Use Control Shift and arrow keys to reschedule.',
+    'rescheduled' => 'Rescheduled :label',
+    'reschedule-failed' => 'Could not reschedule :label',
 ];

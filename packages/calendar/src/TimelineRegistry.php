@@ -32,8 +32,14 @@ final class TimelineRegistry extends DefinitionRegistry
 
         return ['events' => array_map(
             static fn (Entry $entry): EntryData => $entry->data(),
-            $this->entryList($definition->events($from, $until)),
+            $this->entryList($definition->adapter()->events($from, $until)),
         )];
+    }
+
+    /** @return array{event: EntryData} */
+    public function reschedule(Request $request, TimelineDefinition $definition): array
+    {
+        return ['event' => $definition->adapter()->reschedule($request)->data()];
     }
 
     private function parseDate(string $value): ?CarbonImmutable
