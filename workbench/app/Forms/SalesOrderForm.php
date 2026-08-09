@@ -46,11 +46,7 @@ class SalesOrderForm extends FormDefinition
                     )
                     ->rules(['required']),
                 Choice::make('status', __('workbench.commerce.sales-orders.fields.status'))
-                    ->options([
-                        Choice::option(__('workbench.commerce.sales-orders.status.draft'), SalesOrderStatus::Draft->value),
-                        Choice::option(__('workbench.commerce.sales-orders.status.placed'), SalesOrderStatus::Placed->value),
-                        Choice::option(__('workbench.commerce.sales-orders.status.cancelled'), SalesOrderStatus::Cancelled->value),
-                    ])
+                    ->enum(SalesOrderStatus::class)
                     ->value(SalesOrderStatus::Draft->value, editable: true)
                     ->rules(['required', Rule::enum(SalesOrderStatus::class)]),
             ]),
