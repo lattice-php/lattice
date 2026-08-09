@@ -241,20 +241,29 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
           role="table"
           style={{ "--lattice-table-columns": gridTemplateColumns } as never}
         >
-          <div
-            data-slot="table-header"
-            className="border-b border-lt-border bg-lt-muted/50"
-            role="rowgroup"
-          >
+          <div data-slot="table-header" role="rowgroup">
             <div
               className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
               role="row"
             >
               {hasExpandable && (
-                <div className="px-2 py-3" role="columnheader" aria-hidden="true" />
+                <div
+                  className={cn(
+                    "bg-lt-muted/50 px-2 py-3",
+                    !hasFilters && "border-b border-lt-border",
+                  )}
+                  role="columnheader"
+                  aria-hidden="true"
+                />
               )}
               {hasBulkActions && (
-                <div className="flex items-center px-4 py-3" role="columnheader">
+                <div
+                  className={cn(
+                    "flex items-center bg-lt-muted/50 px-4 py-3",
+                    !hasFilters && "border-b border-lt-border",
+                  )}
+                  role="columnheader"
+                >
                   <Checkbox
                     aria-label={t("table.select-all-rows", "Select all rows")}
                     data-test="select-all"
@@ -273,11 +282,15 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   }
                   sort={sort}
                   query={query}
+                  bottomBordered={!hasFilters}
                 />
               ))}
               {hasTrailingUtility && (
                 <div
-                  className="flex items-center justify-end gap-2 px-4 py-2 align-middle font-semibold text-lt-fg"
+                  className={cn(
+                    "flex items-center justify-end gap-2 bg-lt-muted/50 px-4 py-2 align-middle font-semibold text-lt-fg",
+                    !hasFilters && "border-b border-lt-border",
+                  )}
                   role="columnheader"
                 >
                   <span className="sr-only">
@@ -288,13 +301,27 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
             </div>
             {hasFilters && (
               <div
-                className="hidden min-w-full border-t border-lt-border md:grid md:grid-cols-[var(--lattice-table-columns)]"
+                className="hidden min-w-full md:grid md:grid-cols-[var(--lattice-table-columns)]"
                 role="row"
               >
-                {hasExpandable && <div className="px-2 py-2" role="cell" />}
-                {hasBulkActions && <div className="px-4 py-2" role="cell" />}
+                {hasExpandable && (
+                  <div
+                    className="border-t border-b border-lt-border bg-lt-muted/50 px-2 py-2"
+                    role="cell"
+                  />
+                )}
+                {hasBulkActions && (
+                  <div
+                    className="border-t border-b border-lt-border bg-lt-muted/50 px-4 py-2"
+                    role="cell"
+                  />
+                )}
                 {visibleColumns.map((column) => (
-                  <div key={column.key} className="min-w-0 px-2 py-2" role="cell">
+                  <div
+                    key={column.key}
+                    className="min-w-0 border-t border-b border-lt-border bg-lt-muted/50 px-2 py-2"
+                    role="cell"
+                  >
                     {column.props.filter != null && (
                       <ColumnFilterControl
                         column={column}
@@ -311,7 +338,12 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     )}
                   </div>
                 ))}
-                {hasTrailingUtility && <div className="px-4 py-2" role="cell" />}
+                {hasTrailingUtility && (
+                  <div
+                    className="border-t border-b border-lt-border bg-lt-muted/50 px-4 py-2"
+                    role="cell"
+                  />
+                )}
               </div>
             )}
           </div>
