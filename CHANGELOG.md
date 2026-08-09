@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.47.1](https://github.com/lattice-php/lattice/compare/0.47.0...0.47.1) (2026-08-09)
+
+
+### Bug Fixes
+
+* **form:** decode PatternInput's JSON-string wire value before validating ([#435](https://github.com/lattice-php/lattice/issues/435)) ([8e9d9a3](https://github.com/lattice-php/lattice/commit/8e9d9a3c9148b600cc2e648e273a1a9dacbc0e35))
+
 ## [0.47.0](https://github.com/lattice-php/lattice/compare/0.46.0...0.47.0) (2026-08-09)
 
 
