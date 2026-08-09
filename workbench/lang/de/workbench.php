@@ -260,6 +260,14 @@ return [
         'password' => [
             'confirmation' => 'Bestätigung',
         ],
+        'pattern-input' => [
+            'title' => 'Nummernmuster',
+            'number' => 'Fortlaufende Nummer',
+            'padding' => 'Auffüllung',
+            'year' => 'Jahr (4-stellig)',
+            'month' => 'Monat',
+            'customer-prefix' => 'Kundenkürzel',
+        ],
         'repeater' => [
             'add-section' => 'Abschnitt hinzufügen',
             'lines' => 'Zeilen',
@@ -403,6 +411,7 @@ return [
         'field-number' => 'Zahl',
         'field-otp' => 'OTP',
         'field-password' => 'Passwort',
+        'field-pattern-input' => 'Muster-Eingabe',
         'field-repeater' => 'Repeater',
         'field-rich-editor' => 'Rich-Editor',
         'field-select' => 'Select',
@@ -623,6 +632,10 @@ return [
             'password' => [
                 'description' => 'Maskierte Eingabe, optional mit Bestätigung.',
                 'title' => 'Passwort',
+            ],
+            'pattern-input' => [
+                'description' => 'Freitext gemischt mit typisierten, konfigurierbaren Bausteinen.',
+                'title' => 'Muster-Eingabe',
             ],
             'repeater' => [
                 'description' => 'Wiederholbare Zeilen mit festem Kind-Schema.',
