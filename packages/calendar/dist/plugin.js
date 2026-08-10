@@ -197,8 +197,24 @@ function k({ endpoint: t, componentRef: a, initialEvents: o, initialFrom: s, day
 }
 var A = f((() => {
 	v();
-})), j = /* @__PURE__ */ p({ default: () => H });
-function M(e, t, n, r) {
+})), j = /* @__PURE__ */ p({ default: () => K });
+function M(e) {
+	return e === "start" || e === "end";
+}
+function N(e, t, n) {
+	return t === "start" ? {
+		id: e.id,
+		resourceId: e.resourceId,
+		start: n < e.end ? n : (0, g.addDays)(e.end, -1),
+		end: e.end
+	} : {
+		id: e.id,
+		resourceId: e.resourceId,
+		start: e.start,
+		end: n > e.start ? n : (0, g.addDays)(e.start, 1)
+	};
+}
+function P(e, t, n, r) {
 	let i = [];
 	for (let a of t(e)) {
 		let e = Math.max(0, (0, g.daysBetween)(n, a.start)), t = Math.min(r, (0, g.daysBetween)(n, a.end)) - e;
@@ -211,7 +227,7 @@ function M(e, t, n, r) {
 	}
 	return S(i);
 }
-function N({ canReschedule: e, collapsed: t, dayWidth: n, days: r, eventsForResource: i, from: c, group: l, isRescheduling: u, onReschedule: d, onToggle: f, resources: p, t: m }) {
+function F({ canReschedule: e, collapsed: t, dayWidth: n, days: r, eventsForResource: i, from: c, group: l, isRescheduling: u, onReschedule: d, onToggle: f, resources: p, t: m }) {
 	return /* @__PURE__ */ s(a, { children: [
 		/* @__PURE__ */ s("div", {
 			className: "lt-timeline-sticky-col flex items-center gap-1.5 border-t border-lt-border bg-lt-muted px-2 py-1.5 text-sm font-medium",
@@ -227,7 +243,7 @@ function N({ canReschedule: e, collapsed: t, dayWidth: n, days: r, eventsForReso
 			}), /* @__PURE__ */ o("span", { children: l.label })]
 		}),
 		/* @__PURE__ */ o("div", { className: "lt-timeline-group-header-canvas border-t border-lt-border bg-lt-muted" }),
-		t ? null : l.resources.map((t) => /* @__PURE__ */ o(P, {
+		t ? null : l.resources.map((t) => /* @__PURE__ */ o(I, {
 			canReschedule: e,
 			dayWidth: n,
 			days: r,
@@ -241,25 +257,42 @@ function N({ canReschedule: e, collapsed: t, dayWidth: n, days: r, eventsForReso
 		}, t.id))
 	] });
 }
-function P({ canReschedule: e, dayWidth: n, days: c, eventsForResource: l, from: u, isRescheduling: d, onReschedule: f, resource: p, resources: m, t: h }) {
-	let { bars: _, laneCount: v } = M(p.id, l, u, c), y = `calc(${Math.max(v, 1)} * var(--lt-timeline-lane-height))`, b = r(null), [x, S] = i(!1);
+function I({ canReschedule: e, dayWidth: n, days: c, eventsForResource: l, from: u, isRescheduling: d, onReschedule: f, resource: p, resources: m, t: h }) {
+	let { bars: _, laneCount: v } = P(p.id, l, u, c), y = `calc(${Math.max(v, 1)} * var(--lt-timeline-lane-height))`, b = r(null), [x, S] = i(!1);
 	return t(() => {
 		let t = b.current;
 		if (!(!t || !e)) return (0, g.dropTargetForElements)({
-			canDrop: ({ source: e }) => e.data.type === V,
+			canDrop: ({ source: e }) => e.data.type === W || e.data.type === G && e.data.resourceId === p.id,
 			element: t,
 			getData: ({ element: e, input: t, source: r }) => {
+				if (r.data.type === G) {
+					let i = typeof r.data.grabOffsetPx == "number" ? r.data.grabOffsetPx : 0, a = Math.round((t.clientX - e.getBoundingClientRect().left - i) / n);
+					return {
+						boundary: (0, g.addDays)(u, a),
+						type: G
+					};
+				}
 				let i = typeof r.data.grabOffsetDays == "number" ? r.data.grabOffsetDays : 0, a = Math.floor((t.clientX - e.getBoundingClientRect().left) / n) - i;
 				return {
 					resourceId: p.id,
 					start: (0, g.addDays)(u, a),
-					type: V
+					type: W
 				};
 			},
 			onDragEnter: () => S(!0),
 			onDragLeave: () => S(!1),
 			onDrop: ({ self: e, source: t }) => {
-				S(!1);
+				if (S(!1), t.data.type === G) {
+					let { edge: n, end: r, id: i, resourceId: a, start: o } = t.data, s = e.data.boundary;
+					if (!M(n) || typeof s != "string" || typeof r != "string" || typeof i != "string" || typeof a != "string" || typeof o != "string") return;
+					f(N({
+						id: i,
+						resourceId: a,
+						start: o,
+						end: r
+					}, n, s));
+					return;
+				}
 				let n = t.data.id, r = t.data.durationDays, i = e.data.resourceId, a = e.data.start;
 				typeof n == "string" && typeof r == "number" && typeof i == "string" && typeof a == "string" && f({
 					id: n,
@@ -287,7 +320,7 @@ function P({ canReschedule: e, dayWidth: n, days: c, eventsForResource: l, from:
 		children: [/* @__PURE__ */ o("div", {
 			className: "lt-timeline-weekend-strip",
 			"aria-hidden": "true"
-		}), _.map((t) => /* @__PURE__ */ o(F, {
+		}), _.map((t) => /* @__PURE__ */ o(L, {
 			bar: t,
 			canReschedule: e,
 			dayWidth: n,
@@ -301,37 +334,38 @@ function P({ canReschedule: e, dayWidth: n, days: c, eventsForResource: l, from:
 		}, t.id))]
 	})] });
 }
-function F({ bar: e, canReschedule: n, dayWidth: a, days: s, from: c, isRescheduling: l, onReschedule: u, resource: d, resources: f, t: p }) {
-	let m = r(null), [h, _] = i(!1), v = (0, g.daysBetween)(e.event.start, e.event.end), y = Math.max(0, (0, g.daysBetween)(e.event.start, c)), b = (0, g.toneProps)((0, g.coerceColor)(e.event.color) ?? (0, g.namedColor)("primary"));
+function L({ bar: e, canReschedule: n, dayWidth: a, days: c, from: l, isRescheduling: u, onReschedule: d, resource: f, resources: p, t: m }) {
+	let h = r(null), _ = r(null), [v, y] = i(!1), b = (0, g.daysBetween)(e.event.start, e.event.end), x = Math.max(0, (0, g.daysBetween)(e.event.start, l)), S = (0, g.addDays)(l, c), C = (0, g.toneProps)((0, g.coerceColor)(e.event.color) ?? (0, g.namedColor)("primary"));
 	t(() => {
-		let t = m.current;
-		if (!(!t || !n)) return (0, g.draggable)({
-			canDrag: () => !l,
+		let t = h.current, r = _.current;
+		if (!(!t || !r || !n)) return (0, g.draggable)({
+			canDrag: () => !u,
+			dragHandle: r,
 			element: t,
 			getInitialData: ({ element: t, input: n }) => ({
-				durationDays: v,
-				grabOffsetDays: Math.max(0, Math.min(v - 1, y + Math.floor((n.clientX - t.getBoundingClientRect().left) / a))),
+				durationDays: b,
+				grabOffsetDays: Math.max(0, Math.min(b - 1, x + Math.floor((n.clientX - t.getBoundingClientRect().left) / a))),
 				id: e.id,
-				type: V
+				type: W
 			}),
 			onDragStart: () => {
-				_(!0), (0, g.announce)(p("calendar.dragging", "Moving {{label}}. Drop on a resource row.", { label: e.event.label }));
+				y(!0), (0, g.announce)(m("calendar.dragging", "Moving {{label}}. Drop on a resource row.", { label: e.event.label }));
 			},
-			onDrop: () => _(!1)
+			onDrop: () => y(!1)
 		});
 	}, [
 		e.event.label,
 		e.id,
 		n,
 		a,
-		v,
-		y,
-		l,
-		p
+		b,
+		x,
+		u,
+		m
 	]);
-	function x(t) {
-		if (!n || l || !t.ctrlKey || !t.shiftKey) return;
-		let r = e.event.resourceId, i = e.event.start, a = f.findIndex((e) => e.id === r);
+	function w(t) {
+		if (!n || u || !t.ctrlKey || !t.shiftKey) return;
+		let r = e.event.resourceId, i = e.event.start, a = p.findIndex((e) => e.id === r);
 		switch (t.key) {
 			case "ArrowLeft":
 				i = (0, g.addDays)(i, -1);
@@ -340,51 +374,131 @@ function F({ bar: e, canReschedule: n, dayWidth: a, days: s, from: c, isReschedu
 				i = (0, g.addDays)(i, 1);
 				break;
 			case "ArrowUp":
-				r = f[a - 1]?.id ?? r;
+				r = p[a - 1]?.id ?? r;
 				break;
 			case "ArrowDown":
-				r = f[a + 1]?.id ?? r;
+				r = p[a + 1]?.id ?? r;
 				break;
 			default: return;
 		}
-		let o = (0, g.addDays)(i, v);
-		i < c || o > (0, g.addDays)(c, s) || (t.preventDefault(), u({
+		let o = (0, g.addDays)(i, b);
+		i < l || o > (0, g.addDays)(l, c) || (t.preventDefault(), d({
 			id: e.id,
 			resourceId: r,
 			start: i,
 			end: o
 		}));
 	}
-	return /* @__PURE__ */ o("button", {
-		"aria-disabled": !n || l,
-		"aria-keyshortcuts": "Control+Shift+ArrowLeft Control+Shift+ArrowRight Control+Shift+ArrowUp Control+Shift+ArrowDown",
-		"aria-label": p("calendar.entry-label", "{{label}}, {{resource}}, {{start}} to {{end}}. Use Control Shift and arrow keys to reschedule.", {
-			end: e.event.end,
-			label: e.event.label,
-			resource: d.label,
-			start: e.event.start
-		}),
-		className: (0, g.cn)("lt-timeline-bar cursor-grab rounded-lt-xs px-1.5 py-1 text-left text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary", b.className, h && "opacity-60"),
-		"data-resource-id": e.event.resourceId,
-		"data-start": e.event.start,
-		"data-test": `timeline-entry-${e.id}`,
-		onKeyDown: x,
-		ref: m,
+	return /* @__PURE__ */ s("div", {
+		className: (0, g.cn)("lt-timeline-bar rounded-lt-xs", C.className, v && "opacity-60"),
+		ref: h,
 		style: {
 			left: `calc(var(--lt-timeline-day-width) * ${e.start})`,
 			width: `calc(var(--lt-timeline-day-width) * ${e.span})`,
 			top: `calc(${e.lane} * var(--lt-timeline-lane-height))`,
 			height: "var(--lt-timeline-lane-height)",
-			...b.style
+			...C.style
 		},
-		title: e.event.label,
-		type: "button",
-		children: e.event.label
+		children: [
+			/* @__PURE__ */ o("button", {
+				"aria-disabled": !n || u,
+				"aria-keyshortcuts": "Control+Shift+ArrowLeft Control+Shift+ArrowRight Control+Shift+ArrowUp Control+Shift+ArrowDown",
+				"aria-label": m("calendar.entry-label", "{{label}}, {{resource}}, {{start}} to {{end}}. Use Control Shift and arrow keys to reschedule.", {
+					end: e.event.end,
+					label: e.event.label,
+					resource: f.label,
+					start: e.event.start
+				}),
+				className: (0, g.cn)("h-full w-full overflow-hidden rounded-lt-xs px-1.5 py-1 text-left text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary", n && "cursor-grab"),
+				"data-end": e.event.end,
+				"data-resource-id": e.event.resourceId,
+				"data-start": e.event.start,
+				"data-test": `timeline-entry-${e.id}`,
+				onKeyDown: w,
+				ref: _,
+				title: e.event.label,
+				type: "button",
+				children: e.event.label
+			}),
+			n && e.event.start >= l ? /* @__PURE__ */ o(R, {
+				edge: "start",
+				event: e.event,
+				from: l,
+				isRescheduling: u,
+				onReschedule: d,
+				t: m,
+				until: S
+			}) : null,
+			n && e.event.end <= S ? /* @__PURE__ */ o(R, {
+				edge: "end",
+				event: e.event,
+				from: l,
+				isRescheduling: u,
+				onReschedule: d,
+				t: m,
+				until: S
+			}) : null
+		]
 	});
 }
-var I, L, R, z, B, V, H, U = f((() => {
-	v(), C(), A(), I = 10, L = 64, R = 24, z = 1.25, B = 7, V = "lattice-calendar-entry", H = ({ node: t }) => {
-		let r = (0, g.nodeIdentity)(t), { t: a, locale: c } = (0, g.useT)("calendar"), [l, u] = i(t.props.from), [d, f] = i(R), [p, m] = i(/* @__PURE__ */ new Set()), [h] = i(() => (0, g.todayISO)((0, g.currentTimezone)())), { days: _ } = t.props, [v, y] = i(null), { events: b, eventsForResource: S, ensureRange: C, isRescheduling: w, loading: T, reschedule: E } = k({
+function R({ edge: e, event: n, from: a, isRescheduling: s, onReschedule: c, t: l, until: u }) {
+	let d = r(null), [f, p] = i(!1), m = e === "start" ? n.start : n.end;
+	t(() => {
+		let t = d.current;
+		if (t) return (0, g.draggable)({
+			canDrag: () => !s,
+			element: t,
+			getInitialData: ({ element: t, input: r }) => {
+				let i = t.getBoundingClientRect();
+				return {
+					edge: e,
+					end: n.end,
+					grabOffsetPx: r.clientX - (i.left + i.width / 2),
+					id: n.id,
+					resourceId: n.resourceId,
+					start: n.start,
+					type: G
+				};
+			},
+			onDragStart: () => {
+				p(!0), (0, g.announce)(l(e === "start" ? "calendar.resizing-start" : "calendar.resizing-end", e === "start" ? "Resizing start of {{label}}." : "Resizing end of {{label}}.", { label: n.label }));
+			},
+			onDrop: () => p(!1)
+		});
+	}, [
+		e,
+		n,
+		s,
+		l
+	]);
+	function h(t) {
+		if (s) return;
+		let r = t.key === "ArrowLeft" ? -1 : +(t.key === "ArrowRight");
+		if (r === 0) return;
+		let i = (0, g.addDays)(m, r);
+		e === "start" && i < a || e === "end" && i > u || (t.preventDefault(), c(N(n, e, i)));
+	}
+	let _ = (0, g.daysBetween)(a, m), v = e === "start" ? 0 : (0, g.daysBetween)(a, n.start) + 1, y = e === "start" ? (0, g.daysBetween)(a, n.end) - 1 : (0, g.daysBetween)(a, u);
+	return /* @__PURE__ */ o("div", {
+		"aria-disabled": s,
+		"aria-keyshortcuts": "ArrowLeft ArrowRight",
+		"aria-label": l(e === "start" ? "calendar.resize-start" : "calendar.resize-end", e === "start" ? "Resize start of {{label}}" : "Resize end of {{label}}", { label: n.label }),
+		"aria-orientation": "vertical",
+		"aria-valuemax": y,
+		"aria-valuemin": v,
+		"aria-valuenow": _,
+		"aria-valuetext": m,
+		className: (0, g.cn)("absolute inset-y-0 z-[2] w-2 cursor-ew-resize touch-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary after:absolute after:inset-y-1 after:left-1/2 after:w-px after:-translate-x-1/2 after:bg-current after:opacity-50", e === "start" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2", f && "opacity-60"),
+		"data-test": `timeline-resize-${e}-${n.id}`,
+		onKeyDown: h,
+		ref: d,
+		role: "separator",
+		tabIndex: 0
+	});
+}
+var z, B, V, H, U, W, G, K, q = f((() => {
+	v(), C(), A(), z = 10, B = 64, V = 24, H = 1.25, U = 7, W = "lattice-calendar-entry", G = "lattice-calendar-entry-resize", K = ({ node: t }) => {
+		let r = (0, g.nodeIdentity)(t), { t: a, locale: c } = (0, g.useT)("calendar"), [l, u] = i(t.props.from), [d, f] = i(V), [p, m] = i(/* @__PURE__ */ new Set()), [h] = i(() => (0, g.todayISO)((0, g.currentTimezone)())), { days: _ } = t.props, [v, y] = i(null), { events: b, eventsForResource: S, ensureRange: C, isRescheduling: w, loading: T, reschedule: E } = k({
 			endpoint: t.props.endpoint,
 			componentRef: t.props.ref,
 			initialEvents: t.props.events,
@@ -395,17 +509,17 @@ var I, L, R, z, B, V, H, U = f((() => {
 			_,
 			c,
 			h
-		]), A = O.days.length > 0 ? (O.days[0].weekday + 6) % 7 : 0, j = (0, g.daysBetween)(l, h), M = j >= 0 && j < _, P = n(() => new Intl.DateTimeFormat(c, { weekday: "short" }), [c]);
-		function F(e) {
+		]), A = O.days.length > 0 ? (O.days[0].weekday + 6) % 7 : 0, j = (0, g.daysBetween)(l, h), M = j >= 0 && j < _, N = n(() => new Intl.DateTimeFormat(c, { weekday: "short" }), [c]);
+		function P(e) {
 			u(e), C(e, (0, g.addDays)(e, _));
 		}
-		function V(e) {
+		function I(e) {
 			m((t) => {
 				let n = new Set(t);
 				return n.has(e) ? n.delete(e) : n.add(e), n;
 			});
 		}
-		let H = e(async (e) => {
+		let L = e(async (e) => {
 			let t = b.get(e.id);
 			if (!t || t.resourceId === e.resourceId && t.start === e.start && t.end === e.end) return;
 			y(null);
@@ -420,7 +534,7 @@ var I, L, R, z, B, V, H, U = f((() => {
 			b,
 			E,
 			a
-		]), U = {
+		]), R = {
 			"--lt-timeline-day-width": `${d}px`,
 			"--lt-timeline-canvas-w": `calc(var(--lt-timeline-day-width) * ${_})`,
 			"--lt-timeline-weekend-offset": A
@@ -435,7 +549,7 @@ var I, L, R, z, B, V, H, U = f((() => {
 						/* @__PURE__ */ o("button", {
 							"aria-label": a("calendar.previous", "Previous"),
 							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
-							onClick: () => F((0, g.addDays)(l, -7)),
+							onClick: () => P((0, g.addDays)(l, -7)),
 							type: "button",
 							children: /* @__PURE__ */ o(g.Icon, {
 								className: "size-lt-icon-sm",
@@ -445,7 +559,7 @@ var I, L, R, z, B, V, H, U = f((() => {
 						/* @__PURE__ */ o("button", {
 							"aria-label": a("calendar.next", "Next"),
 							className: "rounded-lt-sm p-1.5 hover:bg-lt-muted",
-							onClick: () => F((0, g.addDays)(l, B)),
+							onClick: () => P((0, g.addDays)(l, U)),
 							type: "button",
 							children: /* @__PURE__ */ o(g.Icon, {
 								className: "size-lt-icon-sm",
@@ -454,7 +568,7 @@ var I, L, R, z, B, V, H, U = f((() => {
 						}),
 						/* @__PURE__ */ o("button", {
 							className: "rounded-lt-sm px-2 py-1 text-sm hover:bg-lt-muted",
-							onClick: () => F((0, g.addDays)(h, -7)),
+							onClick: () => P((0, g.addDays)(h, -7)),
 							type: "button",
 							children: a("calendar.today", "Today")
 						}),
@@ -463,8 +577,8 @@ var I, L, R, z, B, V, H, U = f((() => {
 							children: [/* @__PURE__ */ o("button", {
 								"aria-label": a("calendar.zoom-out", "Zoom out"),
 								className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
-								disabled: d <= I,
-								onClick: () => f((e) => Math.max(I, e / z)),
+								disabled: d <= z,
+								onClick: () => f((e) => Math.max(z, e / H)),
 								type: "button",
 								children: /* @__PURE__ */ o(g.Icon, {
 									className: "size-lt-icon-sm",
@@ -473,8 +587,8 @@ var I, L, R, z, B, V, H, U = f((() => {
 							}), /* @__PURE__ */ o("button", {
 								"aria-label": a("calendar.zoom-in", "Zoom in"),
 								className: "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40",
-								disabled: d >= L,
-								onClick: () => f((e) => Math.min(L, e * z)),
+								disabled: d >= B,
+								onClick: () => f((e) => Math.min(B, e * H)),
 								type: "button",
 								children: /* @__PURE__ */ o(g.Icon, {
 									className: "size-lt-icon-sm",
@@ -494,7 +608,7 @@ var I, L, R, z, B, V, H, U = f((() => {
 					className: "lt-timeline-scroll rounded-lt-sm border border-lt-border",
 					children: /* @__PURE__ */ s("div", {
 						className: "lt-timeline-grid",
-						style: U,
+						style: R,
 						children: [
 							/* @__PURE__ */ o("div", { className: (0, g.cn)("lt-timeline-sticky-col lt-timeline-sticky-row lt-timeline-corner lt-timeline-row-months lt-timeline-header-cell") }),
 							/* @__PURE__ */ o("div", {
@@ -531,19 +645,19 @@ var I, L, R, z, B, V, H, U = f((() => {
 									className: "lt-timeline-days-row",
 									children: O.days.map((e) => /* @__PURE__ */ s("div", {
 										className: (0, g.cn)("lt-timeline-day flex flex-col items-center justify-center border-l border-lt-border text-xs", e.isWeekend && "bg-lt-muted text-lt-muted-fg", e.isToday && "font-semibold text-lt-primary"),
-										children: [/* @__PURE__ */ o("span", { children: P.format(/* @__PURE__ */ new Date(`${e.date}T12:00:00Z`)) }), /* @__PURE__ */ o("span", { children: e.dayOfMonth })]
+										children: [/* @__PURE__ */ o("span", { children: N.format(/* @__PURE__ */ new Date(`${e.date}T12:00:00Z`)) }), /* @__PURE__ */ o("span", { children: e.dayOfMonth })]
 									}, e.date))
 								})
 							}),
-							t.props.groups.map((e) => /* @__PURE__ */ o(N, {
+							t.props.groups.map((e) => /* @__PURE__ */ o(F, {
 								collapsed: p.has(e.key),
 								days: _,
 								eventsForResource: S,
 								from: l,
 								group: e,
 								isRescheduling: w,
-								onReschedule: H,
-								onToggle: () => V(e.key),
+								onReschedule: L,
+								onToggle: () => I(e.key),
 								resources: D,
 								t: a,
 								canReschedule: t.props.endpoint !== null && t.props.ref !== null,
@@ -564,10 +678,10 @@ var I, L, R, z, B, V, H, U = f((() => {
 //#endregion
 //#region resources/js/plugin.ts
 v();
-var W = {
+var J = {
 	name: "lattice/calendar",
-	components: { timeline: (0, g.lazyComponent)(() => Promise.resolve().then(() => (U(), j))) },
+	components: { timeline: (0, g.lazyComponent)(() => Promise.resolve().then(() => (q(), j))) },
 	i18n: { namespace: "calendar" }
 };
 //#endregion
-export { W as default };
+export { J as default };

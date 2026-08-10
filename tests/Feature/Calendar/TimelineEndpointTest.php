@@ -52,6 +52,34 @@ it('atomically reschedules one assignment without adding another resource', func
         ->assertJsonFragment(['id' => 'website-anna', 'resourceId' => 'ben']);
 });
 
+it('resizes an assignment without changing its planning resource', function (): void {
+    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
+    $today = CarbonImmutable::today();
+    $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
+
+    patchJson($timeline['props']['endpoint'], [
+        'id' => 'website-anna',
+        'resourceId' => 'anna',
+        'start' => $today->addDay()->format('Y-m-d'),
+        'end' => $today->addDays(5)->format('Y-m-d'),
+    ], ['X-Lattice-Ref' => $timeline['props']['ref']])
+        ->assertOk()
+        ->assertJsonPath('event.resourceId', 'anna')
+        ->assertJsonPath('event.start', $today->addDay()->format('Y-m-d'))
+        ->assertJsonPath('event.end', $today->addDays(5)->format('Y-m-d'));
+
+    getJson(
+        $timeline['props']['endpoint'].'?from='.$today->format('Y-m-d').'&to='.$today->addDays(7)->format('Y-m-d'),
+        ['X-Lattice-Ref' => $timeline['props']['ref']],
+    )
+        ->assertJsonFragment([
+            'id' => 'website-anna',
+            'resourceId' => 'anna',
+            'start' => $today->addDay()->format('Y-m-d'),
+            'end' => $today->addDays(5)->format('Y-m-d'),
+        ]);
+});
+
 it('returns the adapter translated message when a reschedule is rejected', function (): void {
     $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
     $today = CarbonImmutable::today();

@@ -38,6 +38,9 @@ const DEFAULT_DAY_WIDTH = 24;
 const ZOOM_FACTOR = 1.25;
 const NAV_STEP_DAYS = 7;
 const TIMELINE_DRAG_TYPE = "lattice-calendar-entry";
+const TIMELINE_RESIZE_TYPE = "lattice-calendar-entry-resize";
+
+type ResizeEdge = "start" | "end";
 
 type Translate = (key: string, defaultValue?: string, options?: Record<string, unknown>) => string;
 
@@ -47,6 +50,32 @@ type Bar = {
   span: number;
   event: TimelineEventData;
 };
+
+function isResizeEdge(value: unknown): value is ResizeEdge {
+  return value === "start" || value === "end";
+}
+
+function resizeRequest(
+  event: Pick<TimelineEventData, "id" | "resourceId" | "start" | "end">,
+  edge: ResizeEdge,
+  boundary: string,
+): TimelineRescheduleRequest {
+  if (edge === "start") {
+    return {
+      id: event.id,
+      resourceId: event.resourceId,
+      start: boundary < event.end ? boundary : addDays(event.end, -1),
+      end: event.end,
+    };
+  }
+
+  return {
+    id: event.id,
+    resourceId: event.resourceId,
+    start: event.start,
+    end: boundary > event.start ? boundary : addDays(event.start, 1),
+  };
+}
 
 function barsForResource(
   resourceId: string,
@@ -431,9 +460,24 @@ function TimelineResourceRow({
     }
 
     return dropTargetForElements({
-      canDrop: ({ source }) => source.data.type === TIMELINE_DRAG_TYPE,
+      canDrop: ({ source }) =>
+        source.data.type === TIMELINE_DRAG_TYPE ||
+        (source.data.type === TIMELINE_RESIZE_TYPE && source.data.resourceId === resource.id),
       element,
       getData: ({ element: target, input, source }) => {
+        if (source.data.type === TIMELINE_RESIZE_TYPE) {
+          const grabOffsetPx =
+            typeof source.data.grabOffsetPx === "number" ? source.data.grabOffsetPx : 0;
+          const boundaryIndex = Math.round(
+            (input.clientX - target.getBoundingClientRect().left - grabOffsetPx) / dayWidth,
+          );
+
+          return {
+            boundary: addDays(from, boundaryIndex),
+            type: TIMELINE_RESIZE_TYPE,
+          };
+        }
+
         const grabOffsetDays =
           typeof source.data.grabOffsetDays === "number" ? source.data.grabOffsetDays : 0;
         const targetIndex = Math.floor(
@@ -451,6 +495,26 @@ function TimelineResourceRow({
       onDragLeave: () => setDropActive(false),
       onDrop: ({ self, source }) => {
         setDropActive(false);
+
+        if (source.data.type === TIMELINE_RESIZE_TYPE) {
+          const { edge, end, id, resourceId, start } = source.data;
+          const boundary = self.data.boundary;
+
+          if (
+            !isResizeEdge(edge) ||
+            typeof boundary !== "string" ||
+            typeof end !== "string" ||
+            typeof id !== "string" ||
+            typeof resourceId !== "string" ||
+            typeof start !== "string"
+          ) {
+            return;
+          }
+
+          void onReschedule(resizeRequest({ id, resourceId, start, end }, edge, boundary));
+
+          return;
+        }
 
         const id = source.data.id;
         const durationDays = source.data.durationDays;
@@ -532,21 +596,25 @@ function TimelineBar({
   resources: TimelineResourceData[];
   t: Translate;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const moveHandleRef = useRef<HTMLButtonElement>(null);
   const [dragging, setDragging] = useState(false);
   const durationDays = daysBetween(bar.event.start, bar.event.end);
   const hiddenStartDays = Math.max(0, daysBetween(bar.event.start, from));
+  const until = addDays(from, days);
   const tone = toneProps(coerceColor(bar.event.color) ?? namedColor("primary"));
 
   useEffect(() => {
-    const element = ref.current;
+    const element = barRef.current;
+    const dragHandle = moveHandleRef.current;
 
-    if (!element || !canReschedule) {
+    if (!element || !dragHandle || !canReschedule) {
       return;
     }
 
     return draggable({
       canDrag: () => !isRescheduling,
+      dragHandle,
       element,
       getInitialData: ({ element: source, input }) => ({
         durationDays,
@@ -619,29 +687,9 @@ function TimelineBar({
   }
 
   return (
-    <button
-      aria-disabled={!canReschedule || isRescheduling}
-      aria-keyshortcuts="Control+Shift+ArrowLeft Control+Shift+ArrowRight Control+Shift+ArrowUp Control+Shift+ArrowDown"
-      aria-label={t(
-        "calendar.entry-label",
-        "{{label}}, {{resource}}, {{start}} to {{end}}. Use Control Shift and arrow keys to reschedule.",
-        {
-          end: bar.event.end,
-          label: bar.event.label,
-          resource: resource.label,
-          start: bar.event.start,
-        },
-      )}
-      className={cn(
-        "lt-timeline-bar cursor-grab rounded-lt-xs px-1.5 py-1 text-left text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary",
-        tone.className,
-        dragging && "opacity-60",
-      )}
-      data-resource-id={bar.event.resourceId}
-      data-start={bar.event.start}
-      data-test={`timeline-entry-${bar.id}`}
-      onKeyDown={onKeyDown}
-      ref={ref}
+    <div
+      className={cn("lt-timeline-bar rounded-lt-xs", tone.className, dragging && "opacity-60")}
+      ref={barRef}
       style={{
         left: `calc(var(--lt-timeline-day-width) * ${bar.start})`,
         width: `calc(var(--lt-timeline-day-width) * ${bar.span})`,
@@ -649,11 +697,172 @@ function TimelineBar({
         height: "var(--lt-timeline-lane-height)",
         ...tone.style,
       }}
-      title={bar.event.label}
-      type="button"
     >
-      {bar.event.label}
-    </button>
+      <button
+        aria-disabled={!canReschedule || isRescheduling}
+        aria-keyshortcuts="Control+Shift+ArrowLeft Control+Shift+ArrowRight Control+Shift+ArrowUp Control+Shift+ArrowDown"
+        aria-label={t(
+          "calendar.entry-label",
+          "{{label}}, {{resource}}, {{start}} to {{end}}. Use Control Shift and arrow keys to reschedule.",
+          {
+            end: bar.event.end,
+            label: bar.event.label,
+            resource: resource.label,
+            start: bar.event.start,
+          },
+        )}
+        className={cn(
+          "h-full w-full overflow-hidden rounded-lt-xs px-1.5 py-1 text-left text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary",
+          canReschedule && "cursor-grab",
+        )}
+        data-end={bar.event.end}
+        data-resource-id={bar.event.resourceId}
+        data-start={bar.event.start}
+        data-test={`timeline-entry-${bar.id}`}
+        onKeyDown={onKeyDown}
+        ref={moveHandleRef}
+        title={bar.event.label}
+        type="button"
+      >
+        {bar.event.label}
+      </button>
+
+      {canReschedule && bar.event.start >= from ? (
+        <TimelineResizeHandle
+          edge="start"
+          event={bar.event}
+          from={from}
+          isRescheduling={isRescheduling}
+          onReschedule={onReschedule}
+          t={t}
+          until={until}
+        />
+      ) : null}
+
+      {canReschedule && bar.event.end <= until ? (
+        <TimelineResizeHandle
+          edge="end"
+          event={bar.event}
+          from={from}
+          isRescheduling={isRescheduling}
+          onReschedule={onReschedule}
+          t={t}
+          until={until}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function TimelineResizeHandle({
+  edge,
+  event,
+  from,
+  isRescheduling,
+  onReschedule,
+  t,
+  until,
+}: {
+  edge: ResizeEdge;
+  event: TimelineEventData;
+  from: string;
+  isRescheduling: boolean;
+  onReschedule: (request: TimelineRescheduleRequest) => Promise<void>;
+  t: Translate;
+  until: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [resizing, setResizing] = useState(false);
+  const value = edge === "start" ? event.start : event.end;
+
+  useEffect(() => {
+    const element = ref.current;
+
+    if (!element) {
+      return;
+    }
+
+    return draggable({
+      canDrag: () => !isRescheduling,
+      element,
+      getInitialData: ({ element: source, input }) => {
+        const rect = source.getBoundingClientRect();
+
+        return {
+          edge,
+          end: event.end,
+          grabOffsetPx: input.clientX - (rect.left + rect.width / 2),
+          id: event.id,
+          resourceId: event.resourceId,
+          start: event.start,
+          type: TIMELINE_RESIZE_TYPE,
+        };
+      },
+      onDragStart: () => {
+        setResizing(true);
+        announce(
+          t(
+            edge === "start" ? "calendar.resizing-start" : "calendar.resizing-end",
+            edge === "start" ? "Resizing start of {{label}}." : "Resizing end of {{label}}.",
+            { label: event.label },
+          ),
+        );
+      },
+      onDrop: () => setResizing(false),
+    });
+  }, [edge, event, isRescheduling, t]);
+
+  function onKeyDown(keyboardEvent: KeyboardEvent<HTMLDivElement>): void {
+    if (isRescheduling) {
+      return;
+    }
+
+    const delta =
+      keyboardEvent.key === "ArrowLeft" ? -1 : keyboardEvent.key === "ArrowRight" ? 1 : 0;
+
+    if (delta === 0) {
+      return;
+    }
+
+    const boundary = addDays(value, delta);
+
+    if ((edge === "start" && boundary < from) || (edge === "end" && boundary > until)) {
+      return;
+    }
+
+    keyboardEvent.preventDefault();
+    void onReschedule(resizeRequest(event, edge, boundary));
+  }
+
+  const currentIndex = daysBetween(from, value);
+  const minimum = edge === "start" ? 0 : daysBetween(from, event.start) + 1;
+  const maximum = edge === "start" ? daysBetween(from, event.end) - 1 : daysBetween(from, until);
+
+  return (
+    <div
+      aria-disabled={isRescheduling}
+      aria-keyshortcuts="ArrowLeft ArrowRight"
+      aria-label={t(
+        edge === "start" ? "calendar.resize-start" : "calendar.resize-end",
+        edge === "start" ? "Resize start of {{label}}" : "Resize end of {{label}}",
+        { label: event.label },
+      )}
+      aria-orientation="vertical"
+      aria-valuemax={maximum}
+      aria-valuemin={minimum}
+      aria-valuenow={currentIndex}
+      aria-valuetext={value}
+      className={cn(
+        "absolute inset-y-0 z-[2] w-2 cursor-ew-resize touch-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary after:absolute after:inset-y-1 after:left-1/2 after:w-px after:-translate-x-1/2 after:bg-current after:opacity-50",
+        edge === "start" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2",
+        resizing && "opacity-60",
+      )}
+      data-test={`timeline-resize-${edge}-${event.id}`}
+      onKeyDown={onKeyDown}
+      ref={ref}
+      role="separator"
+      tabIndex={0}
+    />
   );
 }
 

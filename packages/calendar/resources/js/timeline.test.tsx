@@ -176,4 +176,58 @@ describe("TimelineComponent", () => {
     const canvas = container.querySelector(".lt-timeline-resource-canvas") as HTMLElement;
     expect(canvas.style.height).toBe("calc(2 * var(--lt-timeline-lane-height))");
   });
+
+  it("resizes either edge by keyboard without changing the resource or opposite edge", async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        jsonResponse({
+          event: makeEvent({ start: addDays(initialFrom, 1) }),
+        }),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          event: makeEvent({ start: addDays(initialFrom, 1), end: addDays(initialFrom, 3) }),
+        }),
+      );
+    renderTimeline();
+
+    fireEvent.keyDown(screen.getByRole("separator", { name: "Resize start of Design review" }), {
+      key: "ArrowRight",
+    });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+      id: "e1",
+      resourceId: "r1",
+      start: addDays(initialFrom, 1),
+      end: addDays(initialFrom, 2),
+    });
+
+    fireEvent.keyDown(screen.getByRole("separator", { name: "Resize end of Design review" }), {
+      key: "ArrowRight",
+    });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    expect(JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body))).toEqual({
+      id: "e1",
+      resourceId: "r1",
+      start: addDays(initialFrom, 1),
+      end: addDays(initialFrom, 3),
+    });
+  });
+
+  it("keeps at least one grid interval when resizing by keyboard", () => {
+    renderTimeline({ events: [makeEvent({ end: addDays(initialFrom, 1) })] });
+
+    fireEvent.keyDown(screen.getByRole("separator", { name: "Resize start of Design review" }), {
+      key: "ArrowRight",
+    });
+    fireEvent.keyDown(screen.getByRole("separator", { name: "Resize end of Design review" }), {
+      key: "ArrowLeft",
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });

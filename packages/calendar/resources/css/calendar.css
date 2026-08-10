@@ -105,7 +105,6 @@
 .lt-timeline-bar {
   background-color: var(--lt-tone-bg, var(--lt-primary));
   color: var(--lt-tone-fg, var(--lt-primary-fg));
-  overflow: hidden;
   position: absolute;
   white-space: nowrap;
 }

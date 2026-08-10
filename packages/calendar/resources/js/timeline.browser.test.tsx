@@ -53,6 +53,10 @@ function resource(id: string) {
   return page.getByTestId(`timeline-resource-${id}`);
 }
 
+function resizeHandle(edge: "start" | "end") {
+  return page.getByTestId(`timeline-resize-${edge}-assignment-1`);
+}
+
 async function dragToTeam(): Promise<void> {
   const target = resource("team-website");
   const rect = target.element().getBoundingClientRect();
@@ -163,5 +167,132 @@ describe("timeline rescheduling in a browser", () => {
       start: "2026-01-03",
       end: "2026-01-05",
     });
+  });
+
+  it("resizes the start on its existing resource without moving the end", async () => {
+    const updated = { ...initialEvent, start: "2026-01-03" };
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ event: updated }));
+    vi.stubGlobal("fetch", fetchMock);
+    await renderTimeline();
+
+    await userEvent.dragAndDrop(resizeHandle("start"), resource("anna"), {
+      targetPosition: { x: 48, y: 16 },
+    });
+
+    await expect.element(entry()).toHaveAttribute("data-start", "2026-01-03");
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({
+      id: "assignment-1",
+      resourceId: "anna",
+      start: "2026-01-03",
+      end: "2026-01-04",
+    });
+  });
+
+  it("keeps one grid interval when resizing the end past the start", async () => {
+    const updated = { ...initialEvent, end: "2026-01-03" };
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ event: updated }));
+    vi.stubGlobal("fetch", fetchMock);
+    await renderTimeline();
+
+    await userEvent.dragAndDrop(resizeHandle("end"), resource("anna"), {
+      targetPosition: { x: 1, y: 16 },
+    });
+
+    await expect.element(entry()).toHaveAttribute("data-end", "2026-01-03");
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({
+      id: "assignment-1",
+      resourceId: "anna",
+      start: "2026-01-02",
+      end: "2026-01-03",
+    });
+  });
+
+  it("does not turn a resize-handle drag onto another row into an assignment move", async () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    vi.stubGlobal("fetch", fetchMock);
+    await renderTimeline();
+
+    await userEvent.dragAndDrop(resizeHandle("end"), resource("team-website"), {
+      targetPosition: { x: 96, y: 16 },
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    await expect.element(entry()).toHaveAttribute("data-resource-id", "anna");
+  });
+
+  it("preserves an off-screen start while resizing the visible end", async () => {
+    const clippedEvent = { ...initialEvent, start: "2025-12-31", end: "2026-01-03" };
+    const updated = { ...clippedEvent, end: "2026-01-04" };
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ event: updated }));
+    vi.stubGlobal("fetch", fetchMock);
+    await renderTimeline({ events: [clippedEvent] });
+
+    await userEvent.dragAndDrop(resizeHandle("end"), resource("anna"), {
+      targetPosition: { x: 72, y: 16 },
+    });
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toMatchObject({
+      resourceId: "anna",
+      start: "2025-12-31",
+      end: "2026-01-04",
+    });
+  });
+
+  it("uses canvas coordinates when resizing after horizontal scrolling", async () => {
+    const scrolledEvent = {
+      ...initialEvent,
+      start: "2026-02-05",
+      end: "2026-02-07",
+    };
+    const updated = { ...scrolledEvent, end: "2026-02-08" };
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ event: updated }));
+    vi.stubGlobal("fetch", fetchMock);
+    const { container } = await renderTimeline({ days: 60, events: [scrolledEvent] });
+    const scroller = container.querySelector(".lt-timeline-scroll") as HTMLElement;
+    scroller.scrollLeft = 720;
+
+    await expect.poll(() => scroller.scrollLeft).toBeGreaterThan(0);
+    await userEvent.dragAndDrop(resizeHandle("end"), resource("anna"), {
+      targetPosition: { x: 912, y: 16 },
+    });
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toMatchObject({
+      resourceId: "anna",
+      start: "2026-02-05",
+      end: "2026-02-08",
+    });
+  });
+
+  it("rolls a rejected resize back and displays the translated rejection", async () => {
+    let rejectRequest: ((response: Response) => void) | undefined;
+    const fetchMock = vi.fn<typeof fetch>().mockImplementation(
+      () =>
+        new Promise<Response>((resolve) => {
+          rejectRequest = resolve;
+        }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    await renderTimeline();
+
+    await userEvent.dragAndDrop(resizeHandle("end"), resource("anna"), {
+      targetPosition: { x: 96, y: 16 },
+    });
+
+    await expect.element(entry()).toHaveAttribute("data-end", "2026-01-05");
+
+    rejectRequest?.(
+      jsonResponse({ errors: { end: ["This assignment cannot end then."] } }, { status: 422 }),
+    );
+
+    await expect.element(entry()).toHaveAttribute("data-end", "2026-01-04");
+    await expect
+      .element(page.getByRole("alert"))
+      .toHaveTextContent("This assignment cannot end then.");
   });
 });
