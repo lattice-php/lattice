@@ -28,7 +28,7 @@ import { uiComponents } from "@lattice-php/ui";
 // extra.lattice.discover, not just the ones this workbench emits a module
 // for), so their node types are legitimately part of it and are acknowledged
 // here rather than belonging to a registered plugin's union.
-type OptInNodeType = "api-reference" | "media.library" | "signature" | "tree";
+type OptInNodeType = "api-reference" | "media.library" | "signature" | "timeline" | "tree";
 
 // Compile-time totality: every generated NodeType must belong to a registered
 // plugin's union, or be an acknowledged opt-in package above. A new PHP

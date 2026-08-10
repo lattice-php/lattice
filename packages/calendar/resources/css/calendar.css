@@ -1,0 +1,120 @@
+@source "../js";
+
+/*
+ * Structural layout only — sticky positioning, the grid track sizes, and the
+ * weekend/today paint that depends on the day-width custom property. Visual
+ * detail (spacing, borders, typography, hover states) stays as Tailwind
+ * utilities on the elements in timeline.tsx.
+ */
+
+.lt-timeline {
+  --lt-timeline-lane-height: 2rem;
+  --lt-timeline-header-row-h: 2rem;
+  --lt-timeline-label-w: 12rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.lt-timeline-scroll {
+  overflow: auto;
+  position: relative;
+}
+
+.lt-timeline-grid {
+  display: grid;
+  grid-template-columns: var(--lt-timeline-label-w) var(--lt-timeline-canvas-w);
+  min-width: 100%;
+  position: relative;
+  width: max-content;
+}
+
+.lt-timeline-sticky-col {
+  background-color: var(--lt-surface);
+  left: 0;
+  position: sticky;
+  z-index: var(--lt-z-sticky, 2);
+}
+
+.lt-timeline-sticky-row {
+  background-color: var(--lt-surface);
+  position: sticky;
+  z-index: var(--lt-z-sticky, 2);
+}
+
+.lt-timeline-corner {
+  z-index: calc(var(--lt-z-sticky, 2) + 1);
+}
+
+.lt-timeline-row-months {
+  top: 0;
+}
+
+.lt-timeline-row-weeks {
+  top: var(--lt-timeline-header-row-h);
+}
+
+.lt-timeline-row-days {
+  top: calc(var(--lt-timeline-header-row-h) * 2);
+}
+
+.lt-timeline-header-cell {
+  height: var(--lt-timeline-header-row-h);
+  overflow: hidden;
+}
+
+.lt-timeline-segment {
+  bottom: 0;
+  position: absolute;
+  top: 0;
+}
+
+.lt-timeline-days-row {
+  display: flex;
+  height: 100%;
+}
+
+.lt-timeline-day {
+  flex: 0 0 var(--lt-timeline-day-width);
+  width: var(--lt-timeline-day-width);
+}
+
+.lt-timeline-group-header-canvas,
+.lt-timeline-resource-canvas {
+  position: relative;
+}
+
+.lt-timeline-weekend-strip {
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent calc(var(--lt-timeline-day-width) * 5),
+    color-mix(in oklab, var(--lt-fg) 6%, transparent) calc(var(--lt-timeline-day-width) * 5),
+    color-mix(in oklab, var(--lt-fg) 6%, transparent) calc(var(--lt-timeline-day-width) * 7)
+  );
+  background-position-x: calc(
+    var(--lt-timeline-day-width) * var(--lt-timeline-weekend-offset, 0) * -1
+  );
+  background-repeat: repeat-x;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.lt-timeline-bar {
+  background-color: var(--lt-tone-bg, var(--lt-primary));
+  color: var(--lt-tone-fg, var(--lt-primary-fg));
+  position: absolute;
+  white-space: nowrap;
+}
+
+.lt-timeline-today-marker {
+  background-color: var(--lt-danger);
+  bottom: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 2px;
+  z-index: 1;
+}

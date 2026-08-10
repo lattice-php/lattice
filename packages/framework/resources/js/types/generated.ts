@@ -11,6 +11,7 @@ export type BrowserToken = {
   readonly scopes: string[];
   readonly tokenType: string;
 };
+export type CalendarNodeType = "timeline";
 export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
 export type ChatBox = {
@@ -224,6 +225,7 @@ export type NodeType =
   | "table"
   | "tabs"
   | "text"
+  | "timeline"
   | "tooltip"
   | "topbar"
   | "tree"

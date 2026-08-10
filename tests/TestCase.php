@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
+use Lattice\Calendar\CalendarServiceProvider;
+use Lattice\Calendar\Components\Timeline;
 use Lattice\LatticeServiceProvider;
 use Lattice\Media\MediaServiceProvider;
 use Lattice\Support\Testing\InteractsWithLatticeComponents;
@@ -69,12 +71,22 @@ abstract class TestCase extends BaseTestCase
         return $this->sealLatticeComponent($build);
     }
 
+    /**
+     * @param  \Closure(): Timeline  $build
+     * @return array<string, mixed>
+     */
+    public function sealTimeline(\Closure $build): array
+    {
+        return $this->sealLatticeComponent($build);
+    }
+
     /** @return array<int, class-string> */
     protected function getPackageProviders($app): array
     {
         return [
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
+            CalendarServiceProvider::class,
             MediaServiceProvider::class,
             TreeServiceProvider::class,
             I18NextServiceProvider::class,

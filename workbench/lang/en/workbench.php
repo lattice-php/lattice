@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 return [
+    'calendar' => [
+        'assignment-unavailable' => 'This assignment is unavailable.',
+        'resource-unavailable' => 'This planning resource is unavailable.',
+    ],
     'appearance' => [
         'dark' => 'Dark',
         'label' => 'Appearance',

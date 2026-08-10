@@ -1,0 +1,192 @@
+---
+title: Calendar
+description: Resource-planning timeline (Plantafel) with assignment rescheduling, lazy window fetching, and overlap lanes.
+---
+
+The calendar package renders a resource-planning timeline — a "Plantafel" board of resource rows
+(projects, employees, rooms, anything with an ID) against a day-granular date axis, with entries
+drawn as bars. It ships a sticky month/calendar-week/day header, zoom, prev/next/today navigation
+with lazy window fetching, collapsible resource groups, and automatic lane-stacking for
+overlapping entries. Existing assignments can be moved to another resource or date using drag and
+drop or the keyboard. The calendar does not create entries or prescribe how they are stored.
+
+## Installation
+
+```bash
+composer require lattice-php/calendar
+```
+
+That is the whole integration: the package ships its React renderer as source, and the
+`lattice()` Vite plugin compiles it into your app's bundle via `virtual:lattice/plugins`
+(see [Component packages](/extending/component-packages/)). The PHP classes are picked up by
+Lattice's discovery and TypeScript generation automatically.
+[No-build apps](/introduction/no-build/) use the precompiled module the package also ships:
+run `php artisan lattice:assets` after installation.
+
+:::note
+There is no npm package — Composer is the only install.
+:::
+
+## Usage
+
+Implement one `TimelineAdapter` for the host application. It returns the resource rows and entries
+for a requested `[$from, $until)` window (`$until` exclusive), then validates and persists
+reschedule requests using the application's own storage and business rules:
+
+```php
+use Carbon\CarbonImmutable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Lattice\Calendar\AsTimeline;
+use Lattice\Calendar\Entry;
+use Lattice\Calendar\ResourceGroup;
+use Lattice\Calendar\TimelineAdapter;
+use Lattice\Calendar\TimelineDefinition;
+
+final class ProjectPlanTimelineAdapter implements TimelineAdapter
+{
+    public function groups(): array
+    {
+        return [
+            ResourceGroup::make('projects', 'Projects')->resources([
+                ['id' => 'website-relaunch', 'label' => 'Website Relaunch'],
+                ['id' => 'mobile-app', 'label' => 'Mobile App'],
+            ]),
+            ResourceGroup::make('employees', 'Employees')->resources(
+                fn (): array => Employee::query()->select('id', 'name as label')->get()->toArray(),
+            ),
+        ];
+    }
+
+    public function events(CarbonImmutable $from, CarbonImmutable $until): iterable
+    {
+        return Assignment::query()
+            ->where('starts_at', '<', $until)
+            ->where('ends_at', '>', $from)
+            ->get()
+            ->map(fn (Assignment $assignment): Entry => Entry::make(
+                (string) $assignment->id,
+                (string) $assignment->resource_id,
+                $assignment->starts_at,
+                $assignment->ends_at,
+            )->label($assignment->title)->color($assignment->color));
+    }
+
+    public function reschedule(Request $request): Entry
+    {
+        $data = $request->validate([
+            'id' => ['required', 'string'],
+            'resourceId' => ['required', 'string', Rule::exists(Resource::class, 'id')],
+            'start' => ['required', 'date_format:Y-m-d'],
+            'end' => ['required', 'date_format:Y-m-d', 'after:start'],
+        ]);
+
+        return DB::transaction(function () use ($data): Entry {
+            $assignment = Assignment::query()->findOrFail($data['id']);
+            $assignment->update([
+                'resource_id' => $data['resourceId'],
+                'starts_at' => $data['start'],
+                'ends_at' => $data['end'],
+            ]);
+
+            return Entry::make(
+                (string) $assignment->id,
+                (string) $assignment->resource_id,
+                $assignment->starts_at,
+                $assignment->ends_at,
+            )->label($assignment->title)->color($assignment->color);
+        });
+    }
+}
+
+#[AsTimeline('project-plan')]
+final class ProjectPlanTimeline extends TimelineDefinition
+{
+    public function adapter(): TimelineAdapter
+    {
+        return app(ProjectPlanTimelineAdapter::class);
+    }
+}
+```
+
+`ResourceGroup::make($key, $label)->resources()` takes either an inline list of
+`['id' => ..., 'label' => ...]` rows or a closure returning the same shape — evaluated once per
+render/fetch, so an Eloquent-backed group can query at read time.
+
+The adapter is the only application-facing contract. The calendar package does not depend on
+Eloquent or a particular storage model. The adapter owns authorization rules beyond the
+definition's `authorize()`, validation, translations, persistence, and transactions. Validation
+failures can use Laravel's normal translated validation response; the board restores the previous
+position and displays the returned message.
+
+Render it with `Timeline::use()`:
+
+```php
+use Lattice\Calendar\Components\Timeline;
+
+Timeline::use(ProjectPlanTimeline::class)
+    ->from('2026-08-01')
+    ->days(90);
+```
+
+Without `->from()`, the board opens on the start of the current week minus one week, so "today"
+sits inside the initial page rather than at its edge. `->days()` sets the initially rendered
+window (default 90) — navigating and zooming fetch more as needed, see below.
+
+### Entries
+
+`Entry::make($id, $resourceId, $start, $end)` is day-granular and **`$end` is exclusive** — a
+one-day entry has `$end` one day after `$start`, same convention as the `events()` window. Dates
+accept a `DateTimeInterface` or a `Y-m-d` string. `->label()` sets the bar text and
+`->color()` accepts any Lattice color (see [Enums reference](/advanced/enums/)); entries left
+uncolored render in the theme's primary tone.
+
+Entries on the same resource that overlap in time are not stacked by the server — the client
+assigns them to lanes automatically and grows the row to fit, so `events()` can simply return
+whatever overlaps.
+
+Each `Entry` represents one resource assignment. If one logical event belongs to several
+resources, return one entry per assignment with a stable, unique entry ID. Moving one of those
+entries replaces that assignment's resource, start, and end together; the other assignments are
+unchanged.
+
+### Rescheduling
+
+Drag an entry to a resource row to change its resource and dates in one operation. Keyboard users
+can focus an entry and press <kbd>Control</kbd>+<kbd>Shift</kbd> with an arrow key: left/right moves
+by one day and up/down moves to the adjacent resource. The client updates immediately while the
+adapter runs, then either applies the returned entry or rolls back and announces the adapter's
+translated error message.
+
+## Navigation, zoom, and lazy loading
+
+The header is sticky in three rows — month, calendar week, and day — with weekend columns
+striped and a marker line for today. Toolbar controls: `‹`/`›` step the visible window by a week,
+**Today** recenters on it, and `−`/`+` zoom the day column width (10–64px) without changing how
+many days are loaded. Resource groups collapse independently via their chevron.
+
+Navigating past the initially rendered `days` window fetches the missing range from the
+definition's endpoint, merging it into what is already loaded client-side rather than re-fetching
+already-seen days — the same signed-reference pattern Lattice tables and trees use. The package
+registers its own route (there is no core routes seam), following Lattice's group conventions:
+`config('lattice.timelines.middleware', ['web', 'auth'])` and
+`config('lattice.timelines.endpoint', 'lattice/timelines/{timeline}')`.
+
+`GET lattice/timelines/{timeline}?from=Y-m-d&to=Y-m-d` (`to` exclusive) re-resolves the
+definition from its sealed reference and calls `adapter()->events($from, $to)` again —
+`authorize()` on the
+definition gates both the initial render and every window fetch, mirroring
+[trees](/packages/tree/#lazy-loading) and the [signing machinery](/core/authorization/) behind
+them.
+
+`PATCH lattice/timelines/{timeline}` accepts `id`, `resourceId`, `start`, and `end`, then calls
+`adapter()->reschedule($request)`. Its success response contains the updated entry. Failed Laravel
+validation responses are forwarded without replacing their translated message.
+
+## Translations
+
+The component's strings ship with inline English defaults. With
+[laravel-i18next](https://github.com/bambamboole/laravel-i18next) enabled, the plugin's `calendar`
+namespace is loaded automatically and serves the bundled `en`/`de` translations (override them
+like any Laravel package translation — see [Internationalization](/core/i18n/)).
