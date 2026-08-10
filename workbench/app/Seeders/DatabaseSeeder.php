@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(ProjectPlanAssignmentSeeder::class);
+
         $electronics = Category::factory()->create(['name' => 'Electronics']);
         $laptops = Category::factory()->childOf($electronics)->create(['name' => 'Laptops']);
         Category::factory()->childOf($laptops)->create(['name' => 'Ultrabooks']);

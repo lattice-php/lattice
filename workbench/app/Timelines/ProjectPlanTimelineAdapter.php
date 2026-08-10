@@ -5,16 +5,15 @@ namespace Workbench\App\Timelines;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Lattice\Calendar\Entry;
 use Lattice\Calendar\ResourceGroup;
 use Lattice\Calendar\TimelineAdapter;
+use Workbench\App\Models\ProjectPlanAssignment;
 
 final class ProjectPlanTimelineAdapter implements TimelineAdapter
 {
-    /** @var array<string, Entry> */
-    private array $entries = [];
-
     /** @return list<ResourceGroup> */
     public function groups(): array
     {
@@ -25,37 +24,41 @@ final class ProjectPlanTimelineAdapter implements TimelineAdapter
 
     public function events(CarbonImmutable $from, CarbonImmutable $until): iterable
     {
-        return array_values(array_filter(
-            $this->entries(),
-            static fn (Entry $entry): bool => $entry->start < $until->format('Y-m-d') && $entry->end > $from->format('Y-m-d'),
-        ));
+        return ProjectPlanAssignment::query()
+            ->where('starts_on', '<', $until->format('Y-m-d'))
+            ->where('ends_on', '>', $from->format('Y-m-d'))
+            ->orderBy('id')
+            ->get()
+            ->map($this->entry(...));
     }
 
     public function reschedule(Request $request): Entry
     {
-        $entries = $this->entries();
         $resourceIds = array_column($this->resources(), 'id');
+
+        /** @var array{id: string, resourceId: string, start: string, end: string} $data */
         $data = $request->validate([
-            'id' => ['required', 'string', Rule::in(array_keys($entries))],
+            'id' => ['required', 'string', Rule::exists(ProjectPlanAssignment::class, 'id')],
             'resourceId' => ['required', 'string', Rule::in($resourceIds)],
             'start' => ['required', 'date_format:Y-m-d'],
             'end' => ['required', 'date_format:Y-m-d', 'after:start'],
         ], [
-            'id.in' => __('workbench.calendar.assignment-unavailable'),
+            'id.exists' => __('workbench.calendar.assignment-unavailable'),
             'resourceId.in' => __('workbench.calendar.resource-unavailable'),
         ]);
 
-        $previous = $entries[$data['id']];
-        $updated = Entry::make($previous->id, $data['resourceId'], $data['start'], $data['end'])
-            ->label($previous->label);
+        $assignment = DB::transaction(function () use ($data): ProjectPlanAssignment {
+            $assignment = ProjectPlanAssignment::query()->lockForUpdate()->findOrFail($data['id']);
+            $assignment->update([
+                'resource_id' => $data['resourceId'],
+                'starts_on' => $data['start'],
+                'ends_on' => $data['end'],
+            ]);
 
-        if ($previous->color !== null) {
-            $updated->color($previous->color);
-        }
+            return $assignment;
+        });
 
-        $this->entries[$updated->id] = $updated;
-
-        return $updated;
+        return $this->entry($assignment);
     }
 
     /** @return list<array{id: string, label: string}> */
@@ -69,29 +72,19 @@ final class ProjectPlanTimelineAdapter implements TimelineAdapter
         ];
     }
 
-    /** @return array<string, Entry> */
-    private function entries(): array
+    private function entry(ProjectPlanAssignment $assignment): Entry
     {
-        if ($this->entries !== []) {
-            return $this->entries;
+        $entry = Entry::make(
+            $assignment->id,
+            $assignment->resource_id,
+            $assignment->starts_on,
+            $assignment->ends_on,
+        )->label($assignment->label);
+
+        if ($assignment->color !== null) {
+            $entry->color($assignment->color);
         }
 
-        $today = CarbonImmutable::today();
-        $this->entries = [
-            'website-team' => Entry::make('website-team', 'team-website', $today, $today->addDays(5))
-                ->label('Website Relaunch')
-                ->color('blue'),
-            'website-anna' => Entry::make('website-anna', 'anna', $today, $today->addDays(5))
-                ->label('Website Relaunch')
-                ->color('green'),
-            'mobile-team' => Entry::make('mobile-team', 'team-mobile', $today->addDay(), $today->addDays(6))
-                ->label('Mobile App')
-                ->color('purple'),
-            'mobile-ben' => Entry::make('mobile-ben', 'ben', $today->addDays(2), $today->addDays(6))
-                ->label('Mobile App')
-                ->color('orange'),
-        ];
-
-        return $this->entries;
+        return $entry;
     }
 }

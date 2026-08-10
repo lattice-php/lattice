@@ -4,11 +4,16 @@ declare(strict_types=1);
 use Carbon\CarbonImmutable;
 use Lattice\Calendar\Components\Timeline;
 use Lattice\Calendar\Entry;
+use Workbench\App\Seeders\ProjectPlanAssignmentSeeder;
 use Workbench\App\Timelines\DeniedTimeline;
 use Workbench\App\Timelines\ProjectPlanTimeline;
 
-it('builds an interactive timeline from a definition', function (): void {
+beforeEach(function (): void {
     $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
+    app(ProjectPlanAssignmentSeeder::class)->run();
+});
+
+it('builds an interactive timeline from a definition', function (): void {
     $today = CarbonImmutable::today();
 
     $node = wire(Timeline::use(ProjectPlanTimeline::class)->from($today)->days(10));
@@ -29,15 +34,12 @@ it('builds an interactive timeline from a definition', function (): void {
 });
 
 it('defaults from to the start of last week when not set', function (): void {
-    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
-
     $node = wire(Timeline::use(ProjectPlanTimeline::class));
 
     expect($node['props']['from'])->toBe('2026-08-03');
 });
 
 it('does not serialize events outside the requested window', function (): void {
-    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
     $today = CarbonImmutable::today();
 
     $node = wire(Timeline::use(ProjectPlanTimeline::class)->from($today->addDays(30))->days(5));

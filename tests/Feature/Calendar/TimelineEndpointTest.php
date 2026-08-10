@@ -4,13 +4,19 @@ declare(strict_types=1);
 use Carbon\CarbonImmutable;
 use Lattice\Calendar\Components\Timeline;
 use Lattice\Core\Contracts\SignsComponentReferences;
+use Workbench\App\Seeders\ProjectPlanAssignmentSeeder;
 use Workbench\App\Timelines\ProjectPlanTimeline;
+use Workbench\App\Timelines\ProjectPlanTimelineAdapter;
 
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\patchJson;
 
-it('returns events for the requested window', function (): void {
+beforeEach(function (): void {
     $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
+    app(ProjectPlanAssignmentSeeder::class)->run();
+});
+
+it('returns events for the requested window', function (): void {
     $today = CarbonImmutable::today();
 
     $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
@@ -25,8 +31,7 @@ it('returns events for the requested window', function (): void {
     expect(array_column($response->json('events'), 'id'))->toContain('website-team');
 });
 
-it('atomically reschedules one assignment without adding another resource', function (): void {
-    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
+it('persists an atomic reschedule when the adapter is reconstructed', function (): void {
     $today = CarbonImmutable::today();
     $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
 
@@ -42,18 +47,35 @@ it('atomically reschedules one assignment without adding another resource', func
         ->assertJsonPath('event.start', $today->addDay()->format('Y-m-d'))
         ->assertJsonPath('event.end', $today->addDays(6)->format('Y-m-d'));
 
+    $adapter = app(ProjectPlanTimelineAdapter::class);
+    app()->forgetInstance(ProjectPlanTimelineAdapter::class);
+    expect(app(ProjectPlanTimelineAdapter::class))->not->toBe($adapter);
+
     $response = getJson(
         $timeline['props']['endpoint'].'?from='.$today->format('Y-m-d').'&to='.$today->addDays(7)->format('Y-m-d'),
         ['X-Lattice-Ref' => $timeline['props']['ref']],
     );
 
-    $response
-        ->assertJsonFragment(['id' => 'website-team', 'resourceId' => 'team-website'])
-        ->assertJsonFragment(['id' => 'website-anna', 'resourceId' => 'ben']);
+    $response->assertJsonFragment(['id' => 'website-team', 'resourceId' => 'team-website']);
+
+    $response->assertJsonPath('events', static function (mixed $events) use ($today): bool {
+        if (! is_array($events)) {
+            return false;
+        }
+
+        foreach ($events as $event) {
+            if (is_array($event) && ($event['id'] ?? null) === 'website-anna') {
+                return ($event['resourceId'] ?? null) === 'ben'
+                    && ($event['start'] ?? null) === $today->addDay()->format('Y-m-d')
+                    && ($event['end'] ?? null) === $today->addDays(6)->format('Y-m-d');
+            }
+        }
+
+        return false;
+    });
 });
 
 it('resizes an assignment without changing its planning resource', function (): void {
-    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
     $today = CarbonImmutable::today();
     $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
 
@@ -81,7 +103,6 @@ it('resizes an assignment without changing its planning resource', function (): 
 });
 
 it('returns the adapter translated message when a reschedule is rejected', function (): void {
-    $this->travelTo(CarbonImmutable::parse('2026-08-13 09:00:00'));
     $today = CarbonImmutable::today();
     $timeline = $this->sealTimeline(fn (): Timeline => Timeline::use(ProjectPlanTimeline::class));
 
