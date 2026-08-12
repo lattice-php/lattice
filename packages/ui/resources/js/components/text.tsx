@@ -28,7 +28,6 @@ const TextComponent: RendererComponent<"text"> = ({ node }) => {
     <p
       className={cn(
         "m-0",
-        "max-w-2xl",
         textAlignments[align] ?? textAlignments.left,
         textSizes[node.props.size],
       )}
