@@ -35,7 +35,7 @@
         "lattice-php/tree": "@dev",
         "league/flysystem-aws-s3-v3": "^3.34",
         "orchestra/testbench": "^10.0 || ^11.0",
-        "pestphp/pest": "^5.0",
+        "pestphp/pest": "^5.1",
         "pestphp/pest-plugin-browser": "^5.0",
         "pestphp/pest-plugin-laravel": "^5.0",
         "pestphp/pest-plugin-phpstan": "^5.0",
@@ -67,16 +67,17 @@
             "npm run format",
             "@types"
         ],
-        "test": "./vendor/bin/pest --testsuite Arch,Unit,Feature",
-        "test:parallel": "./vendor/bin/pest --testsuite Arch,Unit,Feature --parallel",
-        "test:coverage": "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; mkdir -p coverage_phpunit; $runner ./vendor/bin/pest --testsuite Arch,Unit,Feature --parallel --coverage --coverage-clover coverage_phpunit/clover.xml --log-junit coverage_phpunit/pest.junit.xml",
+        "test": "./vendor/bin/pest",
+        "test:parallel": "./vendor/bin/pest --parallel",
+        "test:tia": "./vendor/bin/pest --parallel --tia",
+        "test:coverage": "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; mkdir -p coverage_phpunit; $runner ./vendor/bin/pest --parallel --coverage --coverage-clover coverage_phpunit/clover.xml --log-junit coverage_phpunit/pest.junit.xml",
         "test:browser": [
             "Composer\\Config::disableProcessTimeout",
-            "./vendor/bin/pest --testsuite Browser"
+            "./vendor/bin/pest -c phpunit.browser.xml.dist"
         ],
         "test:browser:coverage": [
             "Composer\\Config::disableProcessTimeout",
-            "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; mkdir -p coverage_phpunit; $runner ./vendor/bin/pest --testsuite Browser --coverage --coverage-clover coverage_phpunit/browser-clover.xml --log-junit coverage_phpunit/pest-browser.junit.xml"
+            "runner=; command -v herd >/dev/null 2>&1 && runner='herd coverage'; mkdir -p coverage_phpunit; $runner ./vendor/bin/pest -c phpunit.browser.xml.dist --coverage --coverage-clover coverage_phpunit/browser-clover.xml --log-junit coverage_phpunit/pest-browser.junit.xml"
         ],
         "post-autoload-dump": [
             "@clear",
