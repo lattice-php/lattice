@@ -1,5 +1,47 @@
 # Changelog
 
+## [0.48.0](https://github.com/lattice-php/lattice/compare/0.47.1...0.48.0) (2026-08-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ui:** Text and Heading fill their container. Wrap them in a sized container where a reading measure matters.
+* **core:** PageContainer is removed. #[AsPage(container:)] is now #[AsPage(width: PageWidth::...)] and Page::container() is Page::width(). PageContainer::Default maps to PageWidth::Full; pages that relied on Centered for vertical centring need a layout or a full-height stack.
+* **form:** Form::fullWidth() is removed and forms fill their container. Wrap a form in a sized container to cap its measure.
+
+### Features
+
+* add lattice-php/calendar package with read-only Timeline component ([09a260d](https://github.com/lattice-php/lattice/commit/09a260d0f4ea4b6a6a146df6706fa8adbd27c397))
+* add lattice-php/calendar package with read-only Timeline component ([904feb2](https://github.com/lattice-php/lattice/commit/904feb2afae70dc908b6b27206b797dec3bf6394))
+* **calendar:** reschedule timeline assignments ([eabbda2](https://github.com/lattice-php/lattice/commit/eabbda239ea9320afa4e6cfb1c8f70aef88be9db))
+* **calendar:** resize timeline assignments ([07cc8d4](https://github.com/lattice-php/lattice/commit/07cc8d4c0de4aff77ef1ea275c9db185633e1524))
+* **core:** replace PageContainer with a page width scale ([fdb9b34](https://github.com/lattice-php/lattice/commit/fdb9b34775b436272b90290c2269d5119d6be05b))
+* **form:** stop forms from constraining their own width ([e824a15](https://github.com/lattice-php/lattice/commit/e824a15c0052506aec6b8c8db5fa1292b2ffa677))
+* **ui:** add a description list for label/value rows ([#441](https://github.com/lattice-php/lattice/issues/441)) ([00e6aa3](https://github.com/lattice-php/lattice/commit/00e6aa38ffde7cfbf4f16b075568cc5497e84f47))
+* **ui:** add the presentational options apps were hand-rolling raw HTML for ([4f4aeb5](https://github.com/lattice-php/lattice/commit/4f4aeb5f5065197cbdc3ff85486a430db38ce8af))
+* **ui:** stop text and heading from capping their own width ([3231308](https://github.com/lattice-php/lattice/commit/3231308dbf86f09466f583c9b1ba84c1300e4362))
+
+
+### Bug Fixes
+
+* **api-reference:** stop dropping detail the document already carries ([5c33198](https://github.com/lattice-php/lattice/commit/5c3319826a7df6d514ac25c811b8eca27f15e10c))
+* **api-reference:** stop dropping detail the document already carries ([133950f](https://github.com/lattice-php/lattice/commit/133950f978fc16af7ab0598e483a098bc6315ef8))
+* **calendar:** persist workbench timeline assignments ([4d13cf5](https://github.com/lattice-php/lattice/commit/4d13cf5239db792137f9cedfcffdd57f20274d34))
+* **ci:** alias @lattice-php/calendar/css for composer-less builds ([142919c](https://github.com/lattice-php/lattice/commit/142919cb308cbd3282ad9edeff3caf0d0b3744ed))
+* register @lattice-php/calendar workspace in package-lock ([a5fe54e](https://github.com/lattice-php/lattice/commit/a5fe54e05e7175269f6f5d4ec0cd568e8b1417d6))
+* **typescript:** pipe generated files through oxfmt stdin ([#444](https://github.com/lattice-php/lattice/issues/444)) ([c781693](https://github.com/lattice-php/lattice/commit/c7816939a9dd012d4c3cf240c6000f12014ee350))
+
+
+### Refactoring
+
+* move plain-date helpers into ui and derive today from the app timezone ([30a67ae](https://github.com/lattice-php/lattice/commit/30a67ae84e55ee1afbd29b824d6d44cefa133b9a))
+* rename ui format/plain-date to format/temporal ([00734e8](https://github.com/lattice-php/lattice/commit/00734e8622e93941ac7b09da3a854a21c2051b32))
+
+
+### Documentation
+
+* document containers as the sole owner of width ([251eb70](https://github.com/lattice-php/lattice/commit/251eb7075ec7b94114b456dc2c1b1eb4bbd0c16d))
+
 ## [0.47.1](https://github.com/lattice-php/lattice/compare/0.47.0...0.47.1) (2026-08-09)
 
 
