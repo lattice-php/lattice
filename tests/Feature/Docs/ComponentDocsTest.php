@@ -7,6 +7,10 @@ use Lattice\Ui\Components\Avatar;
 use Lattice\Ui\Components\Badge;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Card;
+use Lattice\Ui\Components\DescriptionList;
+use Lattice\Ui\Components\Entries\BooleanEntry;
+use Lattice\Ui\Components\Entries\DateEntry;
+use Lattice\Ui\Components\Entries\TextEntry;
 use Lattice\Ui\Components\Grid;
 use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Image;
@@ -20,6 +24,7 @@ use Lattice\Ui\Components\Tab;
 use Lattice\Ui\Components\Tabs;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Components\Tooltip;
+use Lattice\Ui\Enums\DateTimeStyle;
 use Lattice\Ui\Enums\Emphasis;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\Orientation;
@@ -202,6 +207,40 @@ describe('docs fixtures', function (): void {
                 ]),
                 Tab::make('history', 'History')->schema([
                     Text::make('Recent activity for the team.'),
+                ]),
+            ]),
+        ]));
+    });
+
+    it('matches the description list example fixture', function (): void {
+        assertFixtureMatches('components.description-list', Wire::toWire([
+            Card::make('Account')->schema([
+                DescriptionList::make()
+                    ->bleed()
+                    ->record([
+                        'name' => 'Ada Lovelace',
+                        'email' => 'ada@example.com',
+                        'joined_at' => '1843-07-01',
+                        'is_active' => true,
+                    ])
+                    ->schema([
+                        TextEntry::make('name'),
+                        TextEntry::make('email')->copyable(),
+                        DateEntry::make('joined_at', 'Joined')->style(DateTimeStyle::Long),
+                        BooleanEntry::make('is_active', 'Active'),
+                    ]),
+            ]),
+        ]));
+    });
+
+    it('matches the description list disclosure example fixture', function (): void {
+        assertFixtureMatches('components.description-list-disclosure', Wire::toWire([
+            Card::make('Login')->schema([
+                DescriptionList::make()->bleed()->schema([
+                    TextEntry::make('email')->value('ada@example.com'),
+                    TextEntry::make('password')
+                        ->value('••••••••')
+                        ->disclosure([Text::make('A form to change the password goes here.')]),
                 ]),
             ]),
         ]));

@@ -1,0 +1,73 @@
+[
+    {
+        "props": {
+            "description": null,
+            "headerActions": [],
+            "title": "Account",
+            "tooltip": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "bleed": true,
+                    "divided": true,
+                    "emptyLabel": null,
+                    "semantic": "description-list"
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "copyable": false,
+                            "description": null,
+                            "label": "Name",
+                            "name": "name",
+                            "placeholder": null,
+                            "value": "Ada Lovelace"
+                        },
+                        "type": "entry.text"
+                    },
+                    {
+                        "props": {
+                            "copyable": true,
+                            "description": null,
+                            "label": "Email",
+                            "name": "email",
+                            "placeholder": null,
+                            "value": "ada@example.com"
+                        },
+                        "type": "entry.text"
+                    },
+                    {
+                        "props": {
+                            "description": null,
+                            "format": {
+                                "dateStyle": "long",
+                                "kind": "date",
+                                "month": null,
+                                "timeStyle": null,
+                                "year": null
+                            },
+                            "label": "Joined",
+                            "name": "joined_at",
+                            "value": "1843-07-01"
+                        },
+                        "type": "entry.date"
+                    },
+                    {
+                        "props": {
+                            "description": null,
+                            "falseIcon": "x",
+                            "label": "Active",
+                            "name": "is_active",
+                            "trueIcon": "check",
+                            "value": true
+                        },
+                        "type": "entry.boolean"
+                    }
+                ],
+                "type": "description-list"
+            }
+        ],
+        "type": "card"
+    }
+]

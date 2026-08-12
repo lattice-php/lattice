@@ -10,6 +10,8 @@ use Lattice\Ui\Components\Badge;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\CodeBlock;
 use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\DescriptionList;
+use Lattice\Ui\Components\Entries\TextEntry;
 use Lattice\Ui\Components\FloatingPanel;
 use Lattice\Ui\Components\Grid;
 use Lattice\Ui\Components\Heading;
@@ -400,3 +402,28 @@ test('full column spans normalize to the default breakpoint', function (): void 
 test('column spans reject values that are neither positive integers nor full', function (): void {
     Text::make('hello')->columnSpan('wide');
 })->throws(InvalidArgumentException::class);
+
+test('a description list hands its record to entries that were not given a value', function (): void {
+    $payload = wire(DescriptionList::make('summary')
+        ->record(['name' => 'Ada Lovelace', 'email' => 'ada@example.test'])
+        ->schema([
+            TextEntry::make('name'),
+            TextEntry::make('email')->value('override@example.test'),
+        ]));
+
+    expect($payload['schema'][0]['props']['value'])->toBe('Ada Lovelace')
+        ->and($payload['schema'][1]['props']['value'])->toBe('override@example.test');
+});
+
+test('a description list drops to list semantics once an entry can disclose', function (): void {
+    $plain = wire(DescriptionList::make('plain')->schema([
+        TextEntry::make('name'),
+    ]));
+
+    $disclosing = wire(DescriptionList::make('disclosing')->schema([
+        TextEntry::make('password')->disclosure([Text::make('Editor')]),
+    ]));
+
+    expect($plain['props']['semantic'])->toBe('description-list')
+        ->and($disclosing['props']['semantic'])->toBe('list');
+});

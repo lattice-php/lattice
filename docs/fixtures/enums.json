@@ -687,6 +687,32 @@
         "name": "Emphasis",
         "namespace": "Lattice\\Ui\\Enums"
     },
+    "Lattice\\Ui\\Enums\\EntryType": {
+        "cases": [
+            {
+                "name": "Badge",
+                "value": "entry.badge"
+            },
+            {
+                "name": "Boolean",
+                "value": "entry.boolean"
+            },
+            {
+                "name": "Component",
+                "value": "entry.component"
+            },
+            {
+                "name": "Date",
+                "value": "entry.date"
+            },
+            {
+                "name": "Text",
+                "value": "entry.text"
+            }
+        ],
+        "name": "EntryType",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
     "Lattice\\Ui\\Enums\\FloatingPlacement": {
         "cases": [
             {

@@ -13,6 +13,21 @@ export type Badge = {
   color: Color | null;
   label: string;
 };
+export type BadgeEntry = {
+  color: Color | null;
+  description: string | null;
+  label: string | null;
+  name: string;
+  value: unknown;
+};
+export type BooleanEntry = {
+  description: string | null;
+  falseIcon: string;
+  label: string | null;
+  name: string;
+  trueIcon: string;
+  value: unknown;
+};
 export type Breakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type Button = {
   action: Node | null;
@@ -85,6 +100,12 @@ export type Collapsible = {
   trigger: Node[];
 };
 export type ColumnWidth = "xs" | "sm" | "md" | "lg" | "xl";
+export type ComponentEntry = {
+  description: string | null;
+  label: string | null;
+  name: string;
+  value: unknown;
+};
 export type ComponentPropsMap = {
   avatar: Avatar;
   badge: Badge;
@@ -93,6 +114,12 @@ export type ComponentPropsMap = {
   chart: Chart;
   "code-block": CodeBlock;
   collapsible: Collapsible;
+  "description-list": DescriptionList;
+  "entry.badge": BadgeEntry;
+  "entry.boolean": BooleanEntry;
+  "entry.component": ComponentEntry;
+  "entry.date": DateEntry;
+  "entry.text": TextEntry;
   "floating-panel": FloatingPanel;
   grid: Grid;
   heading: Heading;
@@ -111,6 +138,13 @@ export type ComponentPropsMap = {
   text: Text;
   tooltip: Tooltip;
 };
+export type DateEntry = {
+  description: string | null;
+  format: DateFormat;
+  label: string | null;
+  name: string;
+  value: unknown;
+};
 export type DateFormat = {
   dateStyle: DateTimeStyle | null;
   kind: string;
@@ -119,6 +153,12 @@ export type DateFormat = {
   year: string | null;
 };
 export type DateTimeStyle = "full" | "long" | "medium" | "short";
+export type DescriptionList = {
+  bleed: boolean;
+  divided: boolean;
+  emptyLabel: string | null;
+  semantic: string;
+};
 export type Download = {
   readonly url: string;
 };
@@ -204,6 +244,12 @@ export type NodeType =
   | "chart"
   | "code-block"
   | "collapsible"
+  | "description-list"
+  | "entry.badge"
+  | "entry.boolean"
+  | "entry.component"
+  | "entry.date"
+  | "entry.text"
   | "floating-panel"
   | "grid"
   | "heading"
@@ -333,6 +379,14 @@ export type Text = {
   size: Size;
   text: string;
 };
+export type TextEntry = {
+  copyable: boolean;
+  description: string | null;
+  label: string | null;
+  name: string;
+  placeholder: string | null;
+  value: unknown;
+};
 export type Toast = {
   action: Node | null;
   dismissible: boolean;
@@ -361,6 +415,12 @@ export type UiNodeType =
   | "chart"
   | "code-block"
   | "collapsible"
+  | "description-list"
+  | "entry.badge"
+  | "entry.boolean"
+  | "entry.component"
+  | "entry.date"
+  | "entry.text"
   | "floating-panel"
   | "grid"
   | "heading"
