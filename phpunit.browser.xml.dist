@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Browser tests live in their own config so the default `pest` run is a full run:
+     Pest's Test Impact Analysis (tia) disables itself on testsuite-filtered runs. -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
-         cacheDirectory=".phpunit.cache"
+         cacheDirectory=".phpunit.browser.cache"
          failOnRisky="true"
          failOnWarning="true">
     <testsuites>
-        <testsuite name="Arch">
-            <file>tests/ArchTest.php</file>
-        </testsuite>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
-        </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
-            <file>tests/StandalonePackagesTest.php</file>
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
         </testsuite>
     </testsuites>
     <source>
