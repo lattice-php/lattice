@@ -46,6 +46,13 @@ import type {
   SecuritySchemeRef,
 } from "./types";
 
+type OAuthFlowDefinition = {
+  authorizationUrl?: string;
+  tokenUrl?: string;
+  refreshUrl?: string;
+  scopes?: Record<string, string>;
+};
+
 type SecuritySchemeDefinition = {
   type?: string;
   scheme?: string;
@@ -53,6 +60,8 @@ type SecuritySchemeDefinition = {
   in?: string;
   name?: string;
   description?: string | null;
+  openIdConnectUrl?: string;
+  flows?: Record<string, OAuthFlowDefinition>;
 };
 
 export type TwoColumnBreakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
@@ -596,6 +605,7 @@ function SecuritySchemeRow({
     (components as { securitySchemes?: Record<string, SecuritySchemeDefinition> } | null)
       ?.securitySchemes ?? {};
   const definition = definitions[scheme.name] ?? null;
+  const descriptions = scopeDescriptions(definition);
 
   return (
     <li className="border-b border-lt-border py-2 last:border-b-0">
@@ -610,19 +620,71 @@ function SecuritySchemeRow({
             : "No access token is configured for live requests."
           : "This authentication scheme is not supported for live requests."}
       </p>
+      <OAuthFlowList flows={definition?.flows} />
       {scheme.scopes.length > 0 ? (
-        <div className="mt-1 flex flex-wrap gap-1">
+        <ul className="mt-1 flex flex-col gap-1">
           {scheme.scopes.map((scope) => (
-            <code
-              key={scope}
-              className="rounded-lt-xs bg-lt-muted px-1.5 py-0.5 text-xs text-lt-muted-fg"
-            >
-              {scope}
-            </code>
+            <li key={scope} className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-xs">
+              <code className="rounded-lt-xs bg-lt-muted px-1.5 py-0.5 text-lt-muted-fg">
+                {scope}
+              </code>
+              {descriptions[scope] ? (
+                <span className="text-lt-muted-fg">{descriptions[scope]}</span>
+              ) : null}
+            </li>
           ))}
-        </div>
+        </ul>
       ) : null}
     </li>
+  );
+}
+
+/**
+ * A scope means the same thing in every flow that offers it, so the descriptions are
+ * read as one catalog rather than per flow.
+ */
+function scopeDescriptions(definition: SecuritySchemeDefinition | null): Record<string, string> {
+  return Object.values(definition?.flows ?? {}).reduce<Record<string, string>>(
+    (descriptions, flow) => ({ ...descriptions, ...flow.scopes }),
+    {},
+  );
+}
+
+const OAUTH_FLOW_URLS: Array<{
+  key: "authorizationUrl" | "tokenUrl" | "refreshUrl";
+  label: string;
+}> = [
+  { key: "authorizationUrl", label: "Authorize" },
+  { key: "tokenUrl", label: "Token" },
+  { key: "refreshUrl", label: "Refresh" },
+];
+
+function OAuthFlowList({
+  flows,
+}: {
+  flows: Record<string, OAuthFlowDefinition> | undefined;
+}): React.ReactNode {
+  const entries = Object.entries(flows ?? {});
+
+  if (entries.length === 0) return null;
+
+  return (
+    <dl className="mt-1 flex flex-col gap-0.5 text-xs text-lt-muted-fg">
+      {entries.map(([flow, definition]) => (
+        <div key={flow} className="flex flex-wrap items-baseline gap-x-2">
+          <dt className="font-medium">{flow}</dt>
+          {OAUTH_FLOW_URLS.map(({ key, label }) => {
+            const url = definition[key];
+
+            return typeof url === "string" && url !== "" ? (
+              <dd key={key} className="min-w-0 break-all">
+                {label}: <span className="font-mono">{url}</span>
+              </dd>
+            ) : null;
+          })}
+        </div>
+      ))}
+    </dl>
   );
 }
 

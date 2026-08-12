@@ -91,6 +91,49 @@ describe("buildSchemaRows", () => {
     expect(byName.kind.details).toEqual(['const: "widget"', "writeOnly"]);
   });
 
+  it("keeps keywords written next to a $ref", () => {
+    const rows = buildSchemaRows(
+      {
+        type: "object",
+        properties: {
+          node: {
+            description: "The node this one hangs off.",
+            deprecated: true,
+            $ref: "#/components/schemas/Node",
+          },
+          plain: { $ref: "#/components/schemas/Node" },
+        },
+      },
+      components,
+    );
+    const node = rows.find((row) => row.name === "node")!;
+    const plain = rows.find((row) => row.name === "plain")!;
+
+    expect(node.description).toBe("The node this one hangs off.");
+    expect(node.details).toContain("deprecated");
+    expect(node.typeLabel).toBe("object");
+    expect(node.children.map((row) => row.name)).toEqual(plain.children.map((row) => row.name));
+    expect(plain.description).toBeNull();
+  });
+
+  it("lets the outermost $ref sibling win over a nested one", () => {
+    const rows = buildSchemaRows(
+      {
+        type: "object",
+        properties: { alias: { description: "Outer", $ref: "#/components/schemas/Alias" } },
+      },
+      {
+        schemas: {
+          Alias: { description: "Inner", $ref: "#/components/schemas/Target" },
+          Target: { type: "string", description: "Target" },
+        },
+      },
+    );
+
+    expect(rows[0]!.description).toBe("Outer");
+    expect(rows[0]!.typeLabel).toBe("string");
+  });
+
   it("merges allOf branches for display", () => {
     const rows = buildSchemaRows(
       {

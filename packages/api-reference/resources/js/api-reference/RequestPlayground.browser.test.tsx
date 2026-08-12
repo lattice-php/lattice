@@ -643,6 +643,54 @@ describe("RequestPlayground", () => {
     );
   });
 
+  it("explains the required oauth2 scopes and where a token comes from", async () => {
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          requests: [],
+          security: [
+            {
+              schemes: [
+                {
+                  name: "oauth2",
+                  scopes: ["widgets:read", "widgets:write"],
+                  type: "oauth2",
+                  scheme: null,
+                },
+              ],
+            },
+          ],
+        })}
+        baseUrl="https://api.example.test"
+        token={REAL_TOKEN}
+        components={{
+          securitySchemes: {
+            oauth2: {
+              type: "oauth2",
+              flows: {
+                authorizationCode: {
+                  authorizationUrl: "https://auth.example.test/oauth/authorize",
+                  tokenUrl: "https://auth.example.test/oauth/token",
+                  scopes: {
+                    "widgets:read": "View widgets",
+                    "widgets:write": "Create and change widgets",
+                  },
+                },
+              },
+            },
+          },
+        }}
+      />,
+    );
+
+    await expect.element(screen.getByText("View widgets")).toBeVisible();
+    await expect.element(screen.getByText("Create and change widgets")).toBeVisible();
+    await expect
+      .element(screen.getByText("https://auth.example.test/oauth/authorize"))
+      .toBeVisible();
+    await expect.element(screen.getByText("https://auth.example.test/oauth/token")).toBeVisible();
+  });
+
   it("marks unsupported live-request authentication schemes", async () => {
     const screen = await render(
       <RequestPlayground
