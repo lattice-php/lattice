@@ -39,3 +39,13 @@ available it falls back to the person's initials, and with no name at all it sho
 ```php
 Avatar::make()->name('Ada Lovelace')->size(Size::Xl);
 ```
+
+## Shape
+
+`->shape(AvatarShape $shape)` clips the avatar to a circle (the default) or to the theme's corner
+radius. Reach for `Rounded` where the avatar sits among other rounded surfaces — a user menu next to
+cards and buttons, say — so it does not read as the one round element in the row.
+
+```php
+Avatar::make()->name('Ada Lovelace')->shape(AvatarShape::Rounded);
+```

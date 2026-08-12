@@ -499,6 +499,20 @@
         "name": "Align",
         "namespace": "Lattice\\Ui\\Enums"
     },
+    "Lattice\\Ui\\Enums\\AvatarShape": {
+        "cases": [
+            {
+                "name": "Circle",
+                "value": "circle"
+            },
+            {
+                "name": "Rounded",
+                "value": "rounded"
+            }
+        ],
+        "name": "AvatarShape",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
     "Lattice\\Ui\\Enums\\Breakpoint": {
         "cases": [
             {

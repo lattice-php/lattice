@@ -5,6 +5,7 @@ namespace Lattice\Ui\Components;
 
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Ui\Concerns\HasSize;
+use Lattice\Ui\Enums\AvatarShape;
 
 #[AsComponent('avatar')]
 class Avatar extends Component
@@ -14,6 +15,8 @@ class Avatar extends Component
     public ?string $src = null;
 
     public ?string $name = null;
+
+    public AvatarShape $shape = AvatarShape::Circle;
 
     public static function make(?string $src = null, ?string $key = null): static
     {
@@ -33,6 +36,13 @@ class Avatar extends Component
     public function name(?string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function shape(AvatarShape $shape): static
+    {
+        $this->shape = $shape;
 
         return $this;
     }

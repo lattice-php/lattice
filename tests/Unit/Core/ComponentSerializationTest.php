@@ -20,6 +20,7 @@ use Lattice\Ui\Components\Progress;
 use Lattice\Ui\Components\Separator;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\AvatarShape;
 use Lattice\Ui\Enums\CodeBlockLanguage;
 use Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Ui\Enums\Gap;
@@ -36,25 +37,28 @@ test('lattice component factories stay open for extension', function (): void {
         ->and(new ReflectionClass(Badge::class)->isFinal())->toBeFalse();
 });
 
-test('avatars serialize their source, name, and size with sensible defaults', function (): void {
+test('avatars serialize their source, name, shape, and size with sensible defaults', function (): void {
     expect(wire(Avatar::make()))
         ->toMatchArray([
             'type' => 'avatar',
             'props' => [
                 'src' => null,
                 'name' => null,
+                'shape' => 'circle',
                 'size' => 'md',
             ],
         ]);
 
     expect(wire(Avatar::make('https://example.test/a.png')
         ->name('Ada Lovelace')
+        ->shape(AvatarShape::Rounded)
         ->size(Size::Lg)))
         ->toMatchArray([
             'type' => 'avatar',
             'props' => [
                 'src' => 'https://example.test/a.png',
                 'name' => 'Ada Lovelace',
+                'shape' => 'rounded',
                 'size' => 'lg',
             ],
         ]);
@@ -131,17 +135,17 @@ test('code blocks reject non-positive maximum heights', function (): void {
     CodeBlock::make('plain')->maxHeight(0);
 })->throws(InvalidArgumentException::class);
 
-test('separators default to horizontal and serialize their orientation', function (): void {
+test('separators default to horizontal and serialize their orientation and bleed', function (): void {
     expect(wire(Separator::make()))
         ->toMatchArray([
             'type' => 'separator',
-            'props' => ['orientation' => 'horizontal'],
+            'props' => ['orientation' => 'horizontal', 'bleed' => false],
         ]);
 
-    expect(wire(Separator::make()->orientation(Orientation::Vertical)))
+    expect(wire(Separator::make()->orientation(Orientation::Vertical)->bleed()))
         ->toMatchArray([
             'type' => 'separator',
-            'props' => ['orientation' => 'vertical'],
+            'props' => ['orientation' => 'vertical', 'bleed' => true],
         ]);
 });
 

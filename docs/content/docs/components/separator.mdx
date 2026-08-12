@@ -34,3 +34,18 @@ A vertical separator fills the height of its row — use it between inline items
 ]);`}
   fixture="components.separator-vertical"
 />
+
+## Bleed
+
+Inside a gutter-padded panel such as a [`Card`](/components/layout/#card) or
+[`Section`](/components/section-collapsible/), a separator stops at the padding and reads as a rule
+floating inside the panel rather than dividing it. `->bleed()` extends it across the gutter so it
+meets both edges:
+
+```php
+Card::make('Account')->schema([
+    $this->row('Name', $user->name),
+    Separator::make()->bleed(),
+    $this->row('Email', $user->email),
+]);
+```
