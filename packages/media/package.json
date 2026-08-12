@@ -15,8 +15,8 @@
     "@lattice-php/lattice": "0.47.1",
     "@lattice-php/table": "0.47.1",
     "@lattice-php/ui": "0.47.1",
-    "@tiptap/core": "^3.26.0",
-    "@tiptap/react": "^3.26.0",
-    "@tiptap/starter-kit": "^3.26.0"
+    "@tiptap/core": "^3.30.0",
+    "@tiptap/react": "^3.30.0",
+    "@tiptap/starter-kit": "^3.30.0"
   }
 }
