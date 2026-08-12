@@ -450,31 +450,6 @@ describe("Lattice form schema components", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("drops the centering and max-width classes when fullWidth is set", () => {
-    const formNode = fakeNode({
-      id: "full-width-form",
-      props: { action: "/items", fullWidth: true },
-      type: "form",
-    });
-
-    render(<FormComponent node={formNode}>{null}</FormComponent>);
-
-    expect(document.querySelector("form")).not.toHaveClass("mx-auto", "max-w-2xl");
-    expect(document.querySelector("form")).toHaveClass("flex", "w-full", "flex-col", "gap-6");
-  });
-
-  it("keeps the centering and max-width classes by default", () => {
-    const formNode = fakeNode({
-      id: "default-width-form",
-      props: { action: "/items" },
-      type: "form",
-    });
-
-    render(<FormComponent node={formNode}>{null}</FormComponent>);
-
-    expect(document.querySelector("form")).toHaveClass("mx-auto", "max-w-2xl");
-  });
-
   it("renders custom submit buttons, substituting the managed submit button", () => {
     const registry = createRegistry({
       components: { button: eagerComponent(ButtonComponent) },

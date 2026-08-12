@@ -33,14 +33,7 @@ it('serializes the form container wire shape', function (): void {
         'resetOnSuccess' => ['email'],
         'resetOnError' => true,
         'state' => ['email' => 'a@b.c'],
-        'fullWidth' => false,
     ]);
     expect($payload)->toHaveKey('schema');
     expect($payload['props'])->not->toHaveKey('context');
-});
-
-it('serializes the fullWidth flag on form components', function (): void {
-    expect(wire(Form::make('demo'))['props']['fullWidth'])->toBeFalse();
-    expect(wire(Form::make('demo')->fullWidth())['props']['fullWidth'])->toBeTrue();
-    expect(wire(Form::make('demo')->fullWidth(false))['props']['fullWidth'])->toBeFalse();
 });
