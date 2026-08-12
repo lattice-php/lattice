@@ -1,0 +1,79 @@
+---
+title: Description list
+description: Label/value rows describing one subject, optionally expanding to reveal an editor.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+
+`DescriptionList::make()` lays out label/value pairs for a single subject — the read-only counterpart
+to a [form](/forms/overview/). Give it a record and each entry reads its own value from it:
+
+<ComponentExample
+  php={`Card::make('Account')->schema([
+    DescriptionList::make()->bleed()->record($user)->schema([
+        TextEntry::make('name'),
+        TextEntry::make('email')->copyable(),
+        DateEntry::make('joined_at', 'Joined')->style(DateTimeStyle::Long),
+        BooleanEntry::make('is_active', 'Active'),
+    ]),
+]);`}
+  fixture="components.description-list"
+/>
+
+An entry's label defaults to its name in headline case (`joined_at` → `Joined at`); pass a second
+argument to override it. Without `->record()`, or for any entry that should not read from it, set the
+value outright with `->value('…')` — which also accepts a Closure resolved against the render
+context.
+
+## Entries
+
+| Entry            | Renders                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| `TextEntry`      | The value as text. `->copyable()` adds a copy affordance, `->placeholder('—')` covers an empty value. |
+| `DateEntry`      | A localised date. `->style(DateTimeStyle::…)` or `->dateTime()`.                                      |
+| `BooleanEntry`   | A check or cross icon. `->icons($true, $false)` swaps them.                                           |
+| `BadgeEntry`     | The value as a [badge](/components/layout/); `->color(…)` tints it.                                   |
+| `ComponentEntry` | Any component as the value — a stack, a segmented control, whatever the schema can express.           |
+
+`ComponentEntry` is the escape hatch when a value is not a formatted scalar:
+
+```php
+ComponentEntry::make('appearance', __('Theme'))
+    ->value(SegmentedControl::make('appearance')->options([...])),
+```
+
+## Dividers and bleed
+
+Rows are separated by hairlines; `->divided(false)` turns them off. Inside a padded panel such as a
+[`Card`](/components/layout/#card) the lines stop at the gutter — `->bleed()` runs them to the panel
+edge while the rows stay aligned with the rest of its content.
+
+## Disclosure
+
+An entry with `->disclosure([...])` turns its row into a toggle that reveals the content beneath it.
+The typical body is the form that edits the value the row displays:
+
+<ComponentExample
+  php={`Card::make('Login')->schema([
+    DescriptionList::make()->bleed()->schema([
+        TextEntry::make('email')->value('ada@example.com'),
+        TextEntry::make('password')
+            ->value('••••••••')
+            ->disclosure([Form::use(PasswordForm::class)]),
+    ]),
+]);`}
+  fixture="components.description-list-disclosure"
+/>
+
+<Info>
+  A list of plain entries renders as a `<dl>` of `<dt>`/`<dd>` pairs, so a screen reader announces
+  each label with its value. One entry with a disclosure switches the whole list to `role="list"`:
+  the row becomes the toggle, and a `<button>` may not wrap a `<dt>`/`<dd>` pair. The server decides
+  this, so the markup never depends on render order.
+</Info>
+
+## Empty state
+
+`->emptyLabel('No memberships yet')` covers a list whose entries all resolved to nothing — building
+rows from a collection that turned out empty, for instance.

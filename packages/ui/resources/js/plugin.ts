@@ -8,6 +8,7 @@ import CardComponent from "./components/card";
 import ChartComponent from "./components/chart";
 import CodeBlockComponent from "./components/code-block";
 import CollapsibleComponent from "./components/collapsible";
+import DescriptionListComponent from "./components/description-list";
 import FloatingPanelComponent from "./components/floating-panel";
 import GridComponent from "./components/grid";
 import HeadingComponent from "./components/heading";
@@ -24,6 +25,13 @@ import StackComponent from "./components/stack";
 import TabComponent, { TabsComponent } from "./components/tabs";
 import TextComponent from "./components/text";
 import TooltipComponent from "./components/tooltip";
+import {
+  BadgeEntryComponent,
+  BooleanEntryComponent,
+  ComponentEntryComponent,
+  DateEntryComponent,
+  TextEntryComponent,
+} from "./entries";
 
 export const uiComponents: Plugin = {
   components: {
@@ -34,6 +42,12 @@ export const uiComponents: Plugin = {
     chart: eagerComponent(ChartComponent),
     "code-block": eagerComponent(CodeBlockComponent),
     collapsible: eagerComponent(CollapsibleComponent),
+    "description-list": eagerComponent(DescriptionListComponent),
+    "entry.badge": eagerComponent(BadgeEntryComponent),
+    "entry.boolean": eagerComponent(BooleanEntryComponent),
+    "entry.component": eagerComponent(ComponentEntryComponent),
+    "entry.date": eagerComponent(DateEntryComponent),
+    "entry.text": eagerComponent(TextEntryComponent),
     "floating-panel": eagerComponent(FloatingPanelComponent),
     grid: eagerComponent(GridComponent),
     heading: eagerComponent(HeadingComponent),

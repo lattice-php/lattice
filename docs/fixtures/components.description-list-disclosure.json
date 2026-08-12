@@ -1,0 +1,58 @@
+[
+    {
+        "props": {
+            "description": null,
+            "headerActions": [],
+            "title": "Login",
+            "tooltip": null
+        },
+        "schema": [
+            {
+                "props": {
+                    "bleed": true,
+                    "divided": true,
+                    "emptyLabel": null,
+                    "semantic": "list"
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "copyable": false,
+                            "description": null,
+                            "label": "Email",
+                            "name": "email",
+                            "placeholder": null,
+                            "value": "ada@example.com"
+                        },
+                        "type": "entry.text"
+                    },
+                    {
+                        "props": {
+                            "copyable": false,
+                            "description": null,
+                            "label": "Password",
+                            "name": "password",
+                            "placeholder": null,
+                            "value": "••••••••"
+                        },
+                        "schema": [
+                            {
+                                "props": {
+                                    "align": null,
+                                    "color": null,
+                                    "copyable": false,
+                                    "size": "md",
+                                    "text": "A form to change the password goes here."
+                                },
+                                "type": "text"
+                            }
+                        ],
+                        "type": "entry.text"
+                    }
+                ],
+                "type": "description-list"
+            }
+        ],
+        "type": "card"
+    }
+]

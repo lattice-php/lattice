@@ -91,6 +91,7 @@ export default defineConfig({
             { label: "Overview", link: "/components/overview/" },
             { label: "Layout", link: "/components/layout/" },
             { label: "Section & Collapsible", link: "/components/section-collapsible/" },
+            { label: "Description list", link: "/components/description-list/" },
             { label: "Separator", link: "/components/separator/" },
             { label: "Floating panel", link: "/components/floating-panel/" },
             { label: "Text & badges", link: "/components/text/" },
