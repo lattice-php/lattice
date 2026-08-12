@@ -1,5 +1,55 @@
 # Upgrade Guide
 
+## 0.47 → 0.48
+
+Width is now decided by containers alone. Components that used to pin their own measure fill
+whatever contains them, and a page states its measure once.
+
+### Pages declare a width
+
+`PageContainer` is gone. `#[AsPage(container:)]` becomes `#[AsPage(width:)]` and takes a
+`PageWidth` (`Full`, `Large`, `Medium`, `Small`); `Page::container()` becomes `Page::width()`.
+
+```diff
+-#[AsPage(route: '/products', layout: PageLayout::App, container: PageContainer::Default)]
++#[AsPage(route: '/products', layout: PageLayout::App, width: PageWidth::Full)]
+```
+
+`PageContainer::Default` maps to `PageWidth::Full`, and `Full` is now what a page inherits when it
+declares no width — so most `container:` arguments can simply be dropped. It used to be `Centered`,
+which is why nearly every page spelled the argument out.
+
+`PageContainer::Centered` has no direct replacement: besides its max width it centred the page
+vertically, applied a wider padding step and added a `<main>` wrapper. Vertical centring belongs to
+a layout — give the layout a full-height stack, the way the auth layouts already do:
+
+```php
+Stack::make('auth-shell')->height(Height::Screen)->justify(Justify::Center)->align(Align::Center)
+```
+
+The page container also used to drop its padding when a page rendered without a layout. Padding is
+now always applied and scales by breakpoint, so standalone pages no longer sit flush against the
+viewport edge.
+
+### Forms, text and headings fill their container
+
+`Form::fullWidth()` is removed; forms always fill their container. `Text` and `Heading` no longer
+cap themselves at `max-w-2xl`/`max-w-3xl`. Where a reading measure matters, set it on the page or
+wrap the content:
+
+```diff
+-Form::use(ProfileForm::class)->fullWidth()
++Form::use(ProfileForm::class)
+```
+
+```php
+#[AsPage(route: '/products/create', width: PageWidth::Medium)]   // whole page shares the measure
+Stack::make('editor')->width(Width::Medium)->schema([...])       // or one zone of it
+```
+
+Pages that relied on the form's implicit `max-w-2xl` need one of the two above, or their inputs
+stretch to the full content width.
+
 ## 0.42 → 0.43
 
 `#[AsPage(middleware: ...)]` now **merges after** the `lattice.pages.middleware` config default

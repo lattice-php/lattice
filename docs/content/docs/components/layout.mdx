@@ -11,6 +11,23 @@ and nest them freely. This page covers the three you reach for most; the disclos
 ([Section & Collapsible](/components/section-collapsible/)) and the corner-pinned
 [Floating panel](/components/floating-panel/) have their own pages.
 
+## Who decides width
+
+Containers do — never the content. A form, a heading, a paragraph and a table all fill whatever
+contains them, so the same definition looks right in a card, a tab, a grid column and a modal
+without knowing which one it landed in.
+
+That leaves two places to set a measure:
+
+- **The page**, via [`#[AsPage(width: PageWidth::…)]`](/core/pages/). Caps the whole page and
+  centres it in the layout slot, so a heading and the form beneath it stay aligned.
+- **A container in the schema**, via `Stack::make()->width(Width::…)`, when one zone of a page needs
+  a narrower measure than the rest — a settings form beside a full-width table, say.
+
+Forget both and content stretches to the full content width. That is the intended failure mode: a
+stretched form is obvious on sight, whereas a component quietly overriding its container's layout is
+not.
+
 ## Stack
 
 `Stack::make()` lays children out in one direction with a consistent gap. It defaults to a vertical
