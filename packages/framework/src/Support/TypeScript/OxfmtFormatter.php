@@ -11,6 +11,11 @@ use Symfony\Component\Process\Process;
  * falling back to the package checkout for local development. A missing binary
  * is a no-op: the byte-exact snapshot test catches any formatting divergence,
  * and the PHP CI test jobs deliberately run without node_modules.
+ *
+ * Files are piped through stdin instead of formatted with --write: since oxfmt
+ * 0.63 ignore rules (including the git root's .gitignore) apply to explicitly
+ * passed paths, and generated files regularly live in gitignored directories —
+ * the Testbench skeleton here, generated type folders in consumer apps.
  */
 final readonly class OxfmtFormatter
 {
@@ -29,11 +34,22 @@ final readonly class OxfmtFormatter
             return;
         }
 
-        $process = new Process([$binary, '--write', ...$files]);
-        $process->run();
+        foreach ($files as $file) {
+            $contents = file_get_contents($file);
 
-        if (! $process->isSuccessful()) {
-            throw new ProcessFailedException($process);
+            if ($contents === false) {
+                continue;
+            }
+
+            $process = new Process([$binary, '--stdin-filepath='.$file]);
+            $process->setInput($contents);
+            $process->run();
+
+            if (! $process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
+            file_put_contents($file, $process->getOutput());
         }
     }
 
