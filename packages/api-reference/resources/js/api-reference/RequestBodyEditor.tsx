@@ -1,4 +1,4 @@
-import { useId, useMemo } from "react";
+import { useId, useMemo, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/form";
 import { Button, Input, NativeSelect, Textarea } from "@lattice-php/ui";
 import { exampleFromSchema } from "./schema-example";
@@ -18,6 +18,11 @@ type FieldSchema =
       description: string | null;
       initialValue: unknown;
       items: FieldSchema;
+    }
+  | {
+      kind: "json";
+      description: string | null;
+      initialValue: unknown;
     }
   | {
       kind: "string" | "number" | "integer" | "boolean";
@@ -205,6 +210,18 @@ function BodyField({
     );
   }
 
+  if (schema.kind === "json") {
+    return (
+      <JsonField
+        schema={schema}
+        path={path}
+        required={required}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  }
+
   const label = pathLabel(path);
 
   return (
@@ -283,6 +300,75 @@ function BodyField({
   );
 }
 
+function JsonField({
+  schema,
+  path,
+  required,
+  value,
+  onChange,
+}: {
+  schema: Extract<FieldSchema, { kind: "json" }>;
+  path: Path;
+  required: boolean;
+  value: unknown;
+  onChange: (path: Path, value: unknown) => void;
+}): React.ReactNode {
+  const id = `body-${useId().replaceAll(/[^a-zA-Z0-9_-]/g, "")}`;
+  const label = pathLabel(path);
+  const serialized = prettyJson(value);
+  const [emitted, setEmitted] = useState(serialized);
+  const [draft, setDraft] = useState(serialized);
+
+  if (emitted !== serialized) {
+    setEmitted(serialized);
+    setDraft(serialized);
+  }
+
+  return (
+    <FormFieldFrame
+      id={id}
+      label={label}
+      required={required}
+      helperText={schema.description ?? undefined}
+      error={parseJsonField(draft).valid ? undefined : "Enter valid JSON."}
+      className="min-w-0 @xl:col-span-2"
+    >
+      {(controlProps) => (
+        <Textarea
+          {...controlProps}
+          value={draft}
+          required={required}
+          data-field-key={`body:${label}`}
+          className="min-h-24 font-mono"
+          onChange={(event) => {
+            setDraft(event.target.value);
+
+            const parsed = parseJsonField(event.target.value);
+            if (!parsed.valid) {
+              return;
+            }
+
+            setEmitted(prettyJson(parsed.value));
+            onChange(path, parsed.value);
+          }}
+        />
+      )}
+    </FormFieldFrame>
+  );
+}
+
+function parseJsonField(text: string): { valid: boolean; value: unknown } {
+  if (text.trim() === "") {
+    return { valid: true, value: undefined };
+  }
+
+  try {
+    return { valid: true, value: JSON.parse(text) as unknown };
+  } catch {
+    return { valid: false, value: undefined };
+  }
+}
+
 function normalizeFieldSchema(
   schema: unknown,
   components: unknown,
@@ -307,6 +393,19 @@ function normalizeFieldSchema(
       components,
       new Set([...visitedRefs, schema.$ref]),
     );
+
+    return normalized === null
+      ? null
+      : {
+          ...normalized,
+          description: stringValue(schema.description) ?? normalized.description,
+          initialValue: exampleFromSchema(schema, components),
+        };
+  }
+
+  const nullableBranch = nullableUnionBranch(schema);
+  if (nullableBranch !== null) {
+    const normalized = normalizeFieldSchema(nullableBranch, components, visitedRefs);
 
     return normalized === null
       ? null
@@ -401,12 +500,15 @@ function normalizeObjectProperties(
       continue;
     }
 
-    const normalized = normalizeFieldSchema(propertySchema, components, visitedRefs);
-    if (normalized === null) {
-      return null;
-    }
+    const normalized =
+      normalizeFieldSchema(propertySchema, components, visitedRefs) ??
+      rawJsonFieldSchema(propertySchema, components);
 
-    normalizedProperties.push({ name, required: required.has(name), schema: normalized });
+    normalizedProperties.push({
+      name,
+      required: required.has(name) && !isNullableSchema(propertySchema),
+      schema: normalized,
+    });
   }
 
   return {
@@ -415,6 +517,38 @@ function normalizeObjectProperties(
     initialValue: exampleFromSchema(schema, components),
     properties: normalizedProperties,
   };
+}
+
+function rawJsonFieldSchema(
+  schema: unknown,
+  components: unknown,
+): Extract<FieldSchema, { kind: "json" }> {
+  return {
+    kind: "json",
+    description: isRecord(schema) ? stringValue(schema.description) : null,
+    initialValue: exampleFromSchema(schema, components),
+  };
+}
+
+function nullableUnionBranch(schema: Record<string, unknown>): unknown {
+  const branches = Array.isArray(schema.oneOf) ? schema.oneOf : schema.anyOf;
+  if (!Array.isArray(branches)) {
+    return null;
+  }
+
+  const valueBranches = branches.filter((branch) => !isNullSchema(branch));
+
+  return valueBranches.length === 1 && valueBranches.length < branches.length
+    ? valueBranches[0]
+    : null;
+}
+
+function isNullSchema(schema: unknown): boolean {
+  return isRecord(schema) && schema.type === "null";
+}
+
+function isNullableSchema(schema: unknown): boolean {
+  return isRecord(schema) && nullableUnionBranch(schema) !== null;
 }
 
 function mergeObjects(
@@ -455,6 +589,8 @@ function initialValue(schema: FieldSchema): unknown {
       return {};
     case "array":
       return [];
+    case "json":
+      return null;
     case "boolean":
       return false;
     case "number":

@@ -271,6 +271,131 @@ describe("RequestPlayground", () => {
     await expect.element(screen.getByLabelText("JSON body")).toBeVisible();
   });
 
+  it("edits nullable enum properties as optional selects", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response("{}", { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          paramGroups: [],
+          requests: [
+            bodyContract({
+              schema: {
+                type: "object",
+                required: ["name", "salutation"],
+                properties: {
+                  name: { type: "string", example: "Ada" },
+                  accountType: { $ref: "#/components/schemas/AccountType" },
+                  salutation: {
+                    anyOf: [{ $ref: "#/components/schemas/Salutation" }, { type: "null" }],
+                  },
+                },
+              },
+            }),
+          ],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={{
+          schemas: {
+            AccountType: { type: "string", enum: ["person", "company"] },
+            Salutation: { type: "string", enum: ["mr", "ms"] },
+          },
+        }}
+      />,
+    );
+
+    await screen.getByLabelText("accountType").selectOptions("company");
+    await screen.getByLabelText("salutation").selectOptions("ms");
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+      name: "Ada",
+      accountType: "company",
+      salutation: "ms",
+    });
+    fetchMock.mockClear();
+
+    await screen.getByLabelText("salutation").selectOptions("Not set");
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).not.toHaveProperty("salutation");
+  });
+
+  it("degrades only the unrepresentable property to raw JSON", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response("{}", { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          paramGroups: [],
+          requests: [
+            bodyContract({
+              schema: {
+                type: "object",
+                required: ["name"],
+                properties: {
+                  name: { type: "string", example: "Desk" },
+                  metadata: { oneOf: [{ type: "string" }, { type: "integer" }] },
+                },
+              },
+            }),
+          ],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={null}
+      />,
+    );
+
+    const metadata = screen.getByLabelText("metadata");
+
+    await screen.getByLabelText("name").fill("Lamp");
+    await metadata.fill("{ nope");
+
+    await expect.element(screen.getByText("Enter valid JSON.")).toBeVisible();
+    await expect.element(metadata).toHaveValue("{ nope");
+
+    await metadata.fill('{"weight":3}');
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+      name: "Lamp",
+      metadata: { weight: 3 },
+    });
+  });
+
+  it("keeps raw JSON editing when the body schema is not an object", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response("{}", { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          paramGroups: [],
+          requests: [bodyContract({ schema: { type: "array", items: { type: "string" } } })],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={null}
+      />,
+    );
+
+    await screen.getByLabelText("JSON body").fill('["office","sale"]');
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual(["office", "sale"]);
+  });
+
   it("builds Laravel Query Builder filters, sorts, includes, and fields", async () => {
     const filter = parameter({ name: "filter[name]", location: "query" });
     const sort = parameter({
