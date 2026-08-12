@@ -54,7 +54,7 @@ describe("lattice Vite helper under SSR", () => {
           errors: {},
           lattice: {
             breadcrumbs: [{ label: "Dashboard", href: "/" }],
-            container: "default",
+            width: "full",
             layout: { key: "app", schema: [] },
             listeners: [],
             schema: [

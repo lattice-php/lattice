@@ -138,5 +138,5 @@ it('exposes the page payload entry point', function (): void {
     $payload = builtDocument()['$defs']['PagePayload'];
 
     expect($payload['properties']['schema'])->toBe(['type' => 'array', 'items' => ['$ref' => '#/$defs/Node'], 'readOnly' => true])
-        ->and($payload['required'])->toContain('title', 'layout', 'container', 'breadcrumbs', 'schema', 'listeners');
+        ->and($payload['required'])->toContain('title', 'layout', 'width', 'breadcrumbs', 'schema', 'listeners');
 });

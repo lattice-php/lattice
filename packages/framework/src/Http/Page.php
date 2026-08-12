@@ -12,8 +12,8 @@ use Inertia\Response;
 use Lattice\Core\Authorization;
 use Lattice\Core\Breadcrumb;
 use Lattice\Core\Contracts\PageContract;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\PageMetadata;
 use Lattice\Core\Support\Wire;
@@ -63,10 +63,10 @@ abstract class Page implements PageContract, Responsable
     }
 
     /**
-     * Resolve the page's container at request time. Returning a non-null value
+     * Resolve the page's width at request time. Returning a non-null value
      * takes precedence over the #[AsPage] attribute; null defers to it.
      */
-    public function container(): PageContainer|string|null
+    public function width(): PageWidth|string|null
     {
         return null;
     }
@@ -143,12 +143,12 @@ abstract class Page implements PageContract, Responsable
     {
         $metadata = PageMetadata::for($this);
         $layout = $this->layout() ?? $metadata->layout;
-        $container = $this->container() ?? $metadata->container;
+        $width = $this->width() ?? $metadata->width;
 
         $payload = new PagePayload(
             title: $schema->resolvedTitle() ?? $this->title(),
             layout: $this->resolveLayout($layout, $request),
-            container: $this->serializePageMetadata($container),
+            width: $this->serializePageMetadata($width),
             breadcrumbs: $schema->resolvedBreadcrumbs() ?? $this->breadcrumbs(),
             schema: $schema->renderable(),
             listeners: $this->resolveListeners(),

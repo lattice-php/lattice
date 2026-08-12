@@ -1,4 +1,4 @@
-import type { Breadcrumb, PageContainer as GeneratedPageContainer } from "@lattice-php/core";
+import type { Breadcrumb, PageWidth as GeneratedPageWidth } from "@lattice-php/core";
 import type { NodeType, PageLayoutPayload, PagePayload as GeneratedPagePayload } from "./generated";
 
 export type * from "@lattice-php/core";
@@ -7,11 +7,11 @@ export type LayoutPayload = PageLayoutPayload;
 
 export type PageBreadcrumb = Breadcrumb;
 
-export type PagePayload = Omit<GeneratedPagePayload, "container"> & {
-  container: PageContainer;
+export type PagePayload = Omit<GeneratedPagePayload, "width"> & {
+  width: PageWidth;
 };
 
-export type PageContainer = GeneratedPageContainer | (string & {});
+export type PageWidth = GeneratedPageWidth | (string & {});
 
 export type { NodeType };
-export type KnownPageContainer = GeneratedPageContainer;
+export type KnownPageWidth = GeneratedPageWidth;

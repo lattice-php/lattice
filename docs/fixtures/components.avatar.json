@@ -13,6 +13,7 @@
             {
                 "props": {
                     "name": "Ada Lovelace",
+                    "shape": "circle",
                     "size": "md",
                     "src": "https://i.pravatar.cc/96?img=13"
                 },
@@ -21,6 +22,7 @@
             {
                 "props": {
                     "name": "Grace Hopper",
+                    "shape": "circle",
                     "size": "md",
                     "src": null
                 },
@@ -29,6 +31,7 @@
             {
                 "props": {
                     "name": "Katherine Johnson",
+                    "shape": "circle",
                     "size": "lg",
                     "src": null
                 },
@@ -37,6 +40,7 @@
             {
                 "props": {
                     "name": null,
+                    "shape": "circle",
                     "size": "md",
                     "src": null
                 },

@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Workbench\App\Pages;
 
 use Lattice\Core\Attributes\AsPage;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\PasswordInput;
 use Lattice\Form\Components\TextInput;
@@ -16,11 +16,13 @@ use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Align;
 use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Height;
+use Lattice\Ui\Enums\Justify;
 use Lattice\Ui\Enums\Width;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Support\Logo;
 
-#[AsPage(route: '/login', name: 'login', layout: PageLayout::None, container: PageContainer::Centered, middleware: ['web'])]
+#[AsPage(route: '/login', name: 'login', layout: PageLayout::None, width: PageWidth::Small, middleware: ['web'])]
 final class LoginPage extends BasePage
 {
     public function title(): string
@@ -33,6 +35,8 @@ final class LoginPage extends BasePage
         return $schema->schema([
             Stack::make('login-page')
                 ->align(Align::Center)
+                ->justify(Justify::Center)
+                ->height(Height::Screen)
                 ->gap(Gap::Small)
                 ->width(Width::Fill)
                 ->schema([

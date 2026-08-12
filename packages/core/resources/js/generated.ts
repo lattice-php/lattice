@@ -43,5 +43,5 @@ export type Op =
   | "after"
   | "empty"
   | "filled";
-export type PageContainer = "centered" | "default";
 export type PageLayout = "app" | "auth" | "none";
+export type PageWidth = "full" | "lg" | "md" | "sm";

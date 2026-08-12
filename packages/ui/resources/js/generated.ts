@@ -4,9 +4,11 @@ import type { Effect } from "@lattice-php/ui/effects/types";
 export type Align = "center" | "left" | "start" | "stretch";
 export type Avatar = {
   name: string | null;
+  shape: AvatarShape;
   size: Size;
   src: string | null;
 };
+export type AvatarShape = "circle" | "rounded";
 export type Badge = {
   color: Color | null;
   label: string;
@@ -292,6 +294,7 @@ export type SegmentedControl = {
   value: string | null;
 };
 export type Separator = {
+  bleed: boolean;
   orientation: Orientation;
 };
 export type Side = "start" | "end";

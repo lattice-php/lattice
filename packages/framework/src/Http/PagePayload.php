@@ -24,7 +24,7 @@ final readonly class PagePayload
     public function __construct(
         public ?string $title,
         public ?PageLayoutPayload $layout,
-        public string $container,
+        public string $width,
         public array $breadcrumbs,
         public array $schema,
         public array $listeners,

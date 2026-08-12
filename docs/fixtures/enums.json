@@ -173,20 +173,6 @@
         "name": "Op",
         "namespace": "Lattice\\Core\\Enums"
     },
-    "Lattice\\Core\\Enums\\PageContainer": {
-        "cases": [
-            {
-                "name": "Centered",
-                "value": "centered"
-            },
-            {
-                "name": "Default",
-                "value": "default"
-            }
-        ],
-        "name": "PageContainer",
-        "namespace": "Lattice\\Core\\Enums"
-    },
     "Lattice\\Core\\Enums\\PageLayout": {
         "cases": [
             {
@@ -203,6 +189,28 @@
             }
         ],
         "name": "PageLayout",
+        "namespace": "Lattice\\Core\\Enums"
+    },
+    "Lattice\\Core\\Enums\\PageWidth": {
+        "cases": [
+            {
+                "name": "Full",
+                "value": "full"
+            },
+            {
+                "name": "Large",
+                "value": "lg"
+            },
+            {
+                "name": "Medium",
+                "value": "md"
+            },
+            {
+                "name": "Small",
+                "value": "sm"
+            }
+        ],
+        "name": "PageWidth",
         "namespace": "Lattice\\Core\\Enums"
     },
     "Lattice\\Form\\Enums\\FieldType": {
@@ -489,6 +497,20 @@
             }
         ],
         "name": "Align",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
+    "Lattice\\Ui\\Enums\\AvatarShape": {
+        "cases": [
+            {
+                "name": "Circle",
+                "value": "circle"
+            },
+            {
+                "name": "Rounded",
+                "value": "rounded"
+            }
+        ],
+        "name": "AvatarShape",
         "namespace": "Lattice\\Ui\\Enums"
     },
     "Lattice\\Ui\\Enums\\Breakpoint": {

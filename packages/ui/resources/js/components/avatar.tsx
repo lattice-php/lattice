@@ -41,7 +41,7 @@ function UserGlyph() {
 }
 
 const AvatarComponent: RendererComponent<"avatar"> = ({ node }) => {
-  const { src, name, size } = node.props;
+  const { src, name, shape, size } = node.props;
   const label = name ?? undefined;
 
   return (
@@ -50,7 +50,8 @@ const AvatarComponent: RendererComponent<"avatar"> = ({ node }) => {
       role={src ? undefined : "img"}
       aria-label={src ? undefined : label}
       className={cn(
-        "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-lt-muted font-medium text-lt-muted-fg select-none",
+        "inline-flex shrink-0 items-center justify-center overflow-hidden bg-lt-muted font-medium text-lt-muted-fg select-none",
+        shape === "rounded" ? "rounded-lt" : "rounded-full",
         sizeClass[size],
       )}
     >

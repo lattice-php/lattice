@@ -22,6 +22,7 @@
             },
             {
                 "props": {
+                    "bleed": false,
                     "orientation": "vertical"
                 },
                 "type": "separator"
@@ -38,6 +39,7 @@
             },
             {
                 "props": {
+                    "bleed": false,
                     "orientation": "vertical"
                 },
                 "type": "separator"

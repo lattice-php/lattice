@@ -4,13 +4,13 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Core\Attributes\AsPage;
 use Lattice\Core\Breadcrumb;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Http\Page;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\PageSchema;
 
-test('pages serialize layout and container metadata', function (): void {
+test('pages serialize layout and width metadata', function (): void {
     $defaultPage = new class extends Page
     {
         public function render(PageSchema $schema): PageSchema
@@ -19,7 +19,7 @@ test('pages serialize layout and container metadata', function (): void {
         }
     };
 
-    $configuredPage = new #[AsPage(container: PageContainer::Default)] class extends Page
+    $configuredPage = new #[AsPage(width: PageWidth::Medium)] class extends Page
     {
         public function render(PageSchema $schema): PageSchema
         {
@@ -28,9 +28,9 @@ test('pages serialize layout and container metadata', function (): void {
     };
 
     expect($defaultPage->toArray($defaultPage->render(PageSchema::make()), new Request))
-        ->toMatchArray(['layout' => null, 'container' => 'centered'])
+        ->toMatchArray(['layout' => null, 'width' => 'full'])
         ->and($configuredPage->toArray($configuredPage->render(PageSchema::make()), new Request))
-        ->toMatchArray(['layout' => null, 'container' => 'default']);
+        ->toMatchArray(['layout' => null, 'width' => 'md']);
 });
 
 test('the layout() method takes precedence over the page attribute', function (): void {
@@ -51,22 +51,22 @@ test('the layout() method takes precedence over the page attribute', function ()
         ->toMatchArray(['layout' => null]);
 });
 
-test('the container() method takes precedence over the page attribute', function (): void {
-    $page = new #[AsPage(container: PageContainer::Default)] class extends Page
+test('the width() method takes precedence over the page attribute', function (): void {
+    $page = new #[AsPage(width: PageWidth::Full)] class extends Page
     {
-        public function container(): PageContainer
+        public function width(): PageWidth
         {
-            return PageContainer::Centered;
+            return PageWidth::Small;
         }
 
         public function render(PageSchema $schema): PageSchema
         {
-            return $schema->component(Text::make('Method container'));
+            return $schema->component(Text::make('Method width'));
         }
     };
 
     expect($page->toArray($page->render(PageSchema::make()), new Request))
-        ->toMatchArray(['container' => 'centered']);
+        ->toMatchArray(['width' => 'sm']);
 });
 
 test('pages serialize breadcrumb metadata', function (): void {
