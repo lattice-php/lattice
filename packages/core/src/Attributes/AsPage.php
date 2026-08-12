@@ -8,8 +8,8 @@ use Attribute;
 use BackedEnum;
 use Lattice\Core\Authorization;
 use Lattice\Core\Contracts\DeclaresGate;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class AsPage implements DeclaresGate
@@ -27,7 +27,7 @@ final readonly class AsPage implements DeclaresGate
         public ?string $route = null,
         public ?string $name = null,
         public PageLayout|string|null $layout = null,
-        public PageContainer|string|null $container = null,
+        public PageWidth|string|null $width = null,
         public array|string|null $middleware = null,
         string|BackedEnum|array $can = [],
     ) {

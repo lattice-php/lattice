@@ -8,34 +8,30 @@ type Props = {
   lattice: PagePayload;
 };
 
-export default function Page({ lattice }: Props) {
-  const content = <Renderer nodes={lattice.schema} />;
+const pageWidths: Record<string, string> = {
+  full: "max-w-none",
+  lg: "max-w-4xl",
+  md: "max-w-2xl",
+  sm: "max-w-md",
+};
 
+export default function Page({ lattice }: Props) {
   return (
     <>
       <Head title={lattice.title ?? undefined} />
 
       <RealtimeListeners listeners={lattice.listeners} />
 
-      {lattice.container === "centered" ? (
-        <main className="min-h-svh bg-lt-bg text-lt-fg">
-          <div
-            data-test="lattice-centered-container"
-            className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-6 py-12 sm:px-8 lg:px-10"
-          >
-            {content}
-          </div>
-        </main>
-      ) : (
-        <div
-          data-test="lattice-default-container"
-          className={cn("w-full", {
-            "px-4 py-6": lattice.layout !== null,
-          })}
-        >
-          {content}
-        </div>
-      )}
+      <div
+        data-test="lattice-page-container"
+        data-page-width={lattice.width}
+        className={cn(
+          "mx-auto w-full px-4 py-6 sm:px-6 lg:px-8",
+          pageWidths[lattice.width] ?? pageWidths.full,
+        )}
+      >
+        <Renderer nodes={lattice.schema} />
+      </div>
     </>
   );
 }

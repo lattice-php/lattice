@@ -6,7 +6,7 @@ export function payload(lattice: Partial<PagePayload> = {}): PagePayload {
     breadcrumbs: [],
     listeners: [],
     schema: [],
-    container: "default",
+    width: "full",
     layout: null,
     title: "Lattice",
     ...lattice,

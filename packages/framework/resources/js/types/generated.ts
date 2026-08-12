@@ -261,11 +261,11 @@ export type PageLayoutPayload = {
 };
 export type PagePayload = {
   readonly breadcrumbs: Breadcrumb[];
-  readonly container: string;
   readonly layout: PageLayoutPayload | null;
   readonly listeners: Listen[];
   readonly schema: Node[];
   readonly title: string | null;
+  readonly width: string;
 };
 export type RemoteAccess = {
   readonly audience: string;

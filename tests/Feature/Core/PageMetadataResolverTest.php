@@ -5,13 +5,13 @@ declare(strict_types=1);
 use Illuminate\Filesystem\Filesystem;
 use Lattice\Core\Attributes\AsPage;
 use Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Core\PageMetadataResolver;
 use Lattice\Http\Page as BasePage;
 use Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 
-#[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
+#[AsPage(layout: PageLayout::App, width: PageWidth::Full)]
 abstract class ResolverBasePage extends BasePage {}
 
 #[AsPage(route: '/resolver', name: 'resolver.index')]

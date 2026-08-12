@@ -20,32 +20,11 @@ describe("Page", () => {
               type: "text",
             },
           ],
-          container: "centered",
         })}
       />,
     );
 
     expect(screen.getByText("Package rendered")).toBeVisible();
-    expect(screen.getByTestId("lattice-centered-container")).toBeVisible();
-  });
-
-  it("renders the default container for app shell pages", () => {
-    render(
-      <Page
-        lattice={payload({
-          schema: [
-            {
-              props: { text: "Inside the app shell" },
-              type: "text",
-            },
-          ],
-          layout: { key: "app", schema: [] },
-        })}
-      />,
-    );
-
-    expect(screen.getByText("Inside the app shell")).toBeVisible();
-    expect(screen.getByTestId("lattice-default-container")).toBeVisible();
   });
 
   it("uses a provided registry for app and package extensions", () => {

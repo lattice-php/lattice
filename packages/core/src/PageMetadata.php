@@ -6,8 +6,8 @@ namespace Lattice\Core;
 
 use Lattice\Core\Attributes\AsPage;
 use Lattice\Core\Contracts\PageContract;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Core\Support\Wire;
 use Spatie\Attributes\Attributes;
 
@@ -27,7 +27,7 @@ final readonly class PageMetadata
         public ?string $route,
         public string $name,
         public PageLayout|string $layout,
-        public PageContainer|string $container,
+        public PageWidth|string $width,
         public ?array $middleware,
         public array $can,
     ) {}
@@ -50,7 +50,7 @@ final readonly class PageMetadata
             route: $own?->route,
             name: self::resolveName($class, $own),
             layout: self::inherited($class, fn (AsPage $a): PageLayout|string|null => $a->layout) ?? PageLayout::None,
-            container: self::inherited($class, fn (AsPage $a): PageContainer|string|null => $a->container) ?? PageContainer::Centered,
+            width: self::inherited($class, fn (AsPage $a): PageWidth|string|null => $a->width) ?? PageWidth::Full,
             middleware: self::inheritedMiddleware($class),
             can: $own?->can() ?? [],
         );
@@ -68,7 +68,7 @@ final readonly class PageMetadata
     }
 
     /**
-     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can: array<int, string>}
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can: array<int, string>}
      */
     public function toArray(): array
     {
@@ -78,7 +78,7 @@ final readonly class PageMetadata
             'name' => $this->name,
             'middleware' => $this->middleware,
             'layout' => $this->serialize($this->layout),
-            'container' => $this->serialize($this->container),
+            'width' => $this->serialize($this->width),
             'can' => $this->can,
         ];
     }
@@ -87,7 +87,7 @@ final readonly class PageMetadata
      * `can` defaults for descriptors cached by a manifest built before it
      * existed, so an upgrade works without regenerating the discovery cache.
      *
-     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can?: array<int, string>}  $descriptor
+     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can?: array<int, string>}  $descriptor
      */
     public static function fromArray(array $descriptor): self
     {
@@ -96,13 +96,13 @@ final readonly class PageMetadata
             route: $descriptor['route'],
             name: $descriptor['name'],
             layout: $descriptor['layout'],
-            container: $descriptor['container'],
+            width: $descriptor['width'],
             middleware: $descriptor['middleware'],
             can: $descriptor['can'] ?? [],
         );
     }
 
-    private function serialize(PageLayout|PageContainer|string $value): string
+    private function serialize(PageLayout|PageWidth|string $value): string
     {
         return Wire::scalar($value);
     }
@@ -115,7 +115,7 @@ final readonly class PageMetadata
 
     /**
      * @param  class-string<PageContract>  $class
-     * @param  callable(AsPage): (PageLayout|PageContainer|array<int,string>|string|null)  $value
+     * @param  callable(AsPage): (PageLayout|PageWidth|array<int,string>|string|null)  $value
      */
     private static function inherited(string $class, callable $value): mixed
     {

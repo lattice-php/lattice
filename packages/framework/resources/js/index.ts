@@ -66,14 +66,14 @@ export type { Emphasis } from "@lattice-php/ui/button";
 export type { ReloadComponentEvent } from "@lattice-php/core/event-names";
 export type {
   ComponentProps,
-  KnownPageContainer,
+  KnownPageWidth,
   LayoutPayload,
   Node,
   NodeProps,
   NodeType,
-  PageContainer,
   PageBreadcrumb,
   PagePayload,
+  PageWidth,
   ComponentPropsOf,
   RendererComponent,
   RendererComponentModule,

@@ -46,11 +46,11 @@ final class DiscoveryManifest
 
     /**
      * @param  class-string  $class
-     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can?: array<int, string>}|null
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can?: array<int, string>}|null
      */
     public function descriptorFor(string $class): ?array
     {
-        /** @var array<class-string, array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, container: string, can?: array<int, string>}> $pages */
+        /** @var array<class-string, array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can?: array<int, string>}> $pages */
         $pages = $this->resolve()['pages'] ?? [];
 
         return $pages[$class] ?? null;

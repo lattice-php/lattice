@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 use Lattice\Core\Attributes\AsPage;
 use Lattice\Core\Discovery\DiscoveryManifest;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Core\PageMetadata;
 use Lattice\Http\Page as BasePage;
 use Lattice\Tests\Fixtures\Discovery\DiscoveredDemoPage;
 
-#[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
+#[AsPage(layout: PageLayout::App, width: PageWidth::Full)]
 abstract class FixtureBasePage extends BasePage {}
 
 #[AsPage(route: '/products', name: 'products.index')]
@@ -22,19 +22,19 @@ final class FixtureEditPage extends FixtureBasePage {}
 #[AsPage(route: '/', middleware: 'web')]
 final class FixtureHomePage extends FixtureBasePage {}
 
-#[AsPage(route: '/standalone', container: PageContainer::Centered)]
+#[AsPage(route: '/standalone', width: PageWidth::Small)]
 final class FixtureStandalonePage extends FixtureBasePage {}
 
 #[AsPage(route: '/guarded', can: 'manage-widgets')]
 final class FixtureGuardedPage extends FixtureBasePage {}
 
-test('metadata inherits layout and container from a base AsPage attribute', function (): void {
+test('metadata inherits layout and width from a base AsPage attribute', function (): void {
     $meta = PageMetadata::for(FixtureProductsPage::class);
 
     expect($meta->route)->toBe('/products')
         ->and($meta->name)->toBe('products.index')
         ->and($meta->layout)->toBe(PageLayout::App)
-        ->and($meta->container)->toBe(PageContainer::Default)
+        ->and($meta->width)->toBe(PageWidth::Full)
         ->and($meta->middleware)->toBeNull();
 });
 
@@ -47,8 +47,8 @@ test('metadata falls back to the class name for the root route', function (): vo
         ->and(PageMetadata::for(FixtureHomePage::class)->middleware)->toBe(['web']);
 });
 
-test('a concrete page overrides an inherited container', function (): void {
-    expect(PageMetadata::for(FixtureStandalonePage::class)->container)->toBe(PageContainer::Centered);
+test('a concrete page overrides an inherited width', function (): void {
+    expect(PageMetadata::for(FixtureStandalonePage::class)->width)->toBe(PageWidth::Small);
 });
 
 test('a page without any attribute resolves to defaults', function (): void {
@@ -58,7 +58,7 @@ test('a page without any attribute resolves to defaults', function (): void {
 
     expect($meta->route)->toBeNull()
         ->and($meta->layout)->toBe(PageLayout::None)
-        ->and($meta->container)->toBe(PageContainer::Centered)
+        ->and($meta->width)->toBe(PageWidth::Full)
         ->and($meta->middleware)->toBeNull();
 });
 
@@ -70,7 +70,7 @@ test('page metadata round-trips through an array descriptor', function (): void 
         'route' => '/products/{product}/edit',
         'name' => 'products.edit',
         'layout' => 'app',
-        'container' => 'default',
+        'width' => 'full',
     ]);
 
     $rebuilt = PageMetadata::fromArray($descriptor);
@@ -78,7 +78,7 @@ test('page metadata round-trips through an array descriptor', function (): void 
     expect($rebuilt->class)->toBe(FixtureEditPage::class)
         ->and($rebuilt->route)->toBe('/products/{product}/edit')
         ->and($rebuilt->layout)->toBe('app')
-        ->and($rebuilt->container)->toBe('default');
+        ->and($rebuilt->width)->toBe('full');
 });
 
 test('a declared ability round-trips through the descriptor', function (): void {

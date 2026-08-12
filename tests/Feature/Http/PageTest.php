@@ -139,7 +139,7 @@ test('workbench pages serialize package component trees for inertia', function (
         ->component('lattice/page')
         ->where('lattice.title', 'Lattice Workbench')
         ->where('lattice.layout.key', 'app')
-        ->where('lattice.container', 'default')
+        ->where('lattice.width', 'full')
         ->where('lattice.schema.0.key', 'workbench-page')
         ->where('lattice.schema.0.schema.2.props.text', 'Dashboard charts')
         ->etc());

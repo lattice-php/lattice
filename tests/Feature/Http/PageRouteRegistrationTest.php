@@ -6,8 +6,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
 use Lattice\Core\Attributes\AsPage;
-use Lattice\Core\Enums\PageContainer;
 use Lattice\Core\Enums\PageLayout;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\PageMetadata;
 use Lattice\Http\Page as BasePage;
@@ -15,7 +15,7 @@ use Lattice\LatticeServiceProvider;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\PageSchema;
 
-#[AsPage(layout: PageLayout::App, container: PageContainer::Default)]
+#[AsPage(layout: PageLayout::App, width: PageWidth::Full)]
 abstract class RegBasePage extends BasePage {}
 
 #[AsPage(route: '/widgets', name: 'widgets.index', middleware: 'web')]
