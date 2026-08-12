@@ -36,7 +36,11 @@ describe("initialRequestValues", () => {
       parameter({ name: "direct", example: 42, schema: { type: "integer", example: 1 } }),
       parameter({ name: "schema-example", schema: { type: "string", example: "shown" } }),
       parameter({ name: "default", schema: { type: "boolean", default: false } }),
-      parameter({ name: "enum", schema: { type: "string", enum: ["active", "disabled"] } }),
+      parameter({
+        name: "enum",
+        required: true,
+        schema: { type: "string", enum: ["active", "disabled"] },
+      }),
       parameter({
         name: "array",
         example: ["roles", "rolesCount"],
@@ -52,6 +56,21 @@ describe("initialRequestValues", () => {
       "query:enum": "active",
       "query:array": "roles,rolesCount",
       "query:empty": "",
+    });
+  });
+
+  it("leaves an optional enum parameter unset so it stays out of the request", () => {
+    const params = [
+      parameter({ name: "status", schema: { type: "string", enum: ["active", "disabled"] } }),
+      parameter({
+        name: "documented",
+        schema: { type: "string", enum: ["active", "disabled"], example: "disabled" },
+      }),
+    ];
+
+    expect(initialRequestValues(operation(params)).parameters).toEqual({
+      "query:status": "",
+      "query:documented": "disabled",
     });
   });
 

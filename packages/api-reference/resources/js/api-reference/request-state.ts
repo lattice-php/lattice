@@ -62,11 +62,9 @@ function initialParameterValue(param: Param): string {
     }
   }
 
-  if (Array.isArray(param.schema.enum)) {
-    return scalarString(param.schema.enum[0]) ?? "";
-  }
-
-  return "";
+  return param.required && Array.isArray(param.schema.enum)
+    ? (scalarString(param.schema.enum[0]) ?? "")
+    : "";
 }
 
 function parameterString(value: unknown): string | null {

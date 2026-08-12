@@ -69,19 +69,33 @@ function mergeInto(target: Schema, source: Schema): void {
   }
 }
 
+/**
+ * In OpenAPI 3.1 a `$ref` no longer replaces its object: keywords written next to it
+ * apply on top of the referenced schema, and the outermost wins. Generators lean on
+ * that to describe a property whose type is a shared component.
+ */
 function resolveSchema(schema: Schema, components: Schema | null, refs: Set<string>): Schema {
   let current = schema;
+  let siblings: Schema = {};
+
   while (current.$ref !== undefined) {
     const resolved = lookupRef(current.$ref, components);
-    if (resolved === null || refs.has(resolved.name)) {
-      return resolved === null ? {} : current;
+    if (resolved === null) {
+      return siblings;
+    }
+    if (refs.has(resolved.name)) {
+      return { ...current, ...siblings };
     }
     refs.add(resolved.name);
+    siblings = { ...refSiblings(current), ...siblings };
     current = resolved.schema;
   }
 
   if (!Array.isArray(current.allOf)) {
-    return current;
+    const resolvedSchema = { ...current };
+    mergeInto(resolvedSchema, siblings);
+
+    return resolvedSchema;
   }
 
   const { allOf, ...rest } = current;
@@ -93,7 +107,15 @@ function resolveSchema(schema: Schema, components: Schema | null, refs: Set<stri
     }
   }
   mergeInto(merged, resolveSchema(rest, components, refs));
+  mergeInto(merged, siblings);
   return merged;
+}
+
+function refSiblings(schema: Schema): Schema {
+  const siblings = { ...schema };
+  delete siblings.$ref;
+
+  return siblings;
 }
 
 function typeLabel(schema: Schema, components: Schema | null): string {
