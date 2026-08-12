@@ -18,6 +18,7 @@ use Lattice\Layouts\Components\Sidebar;
 use Lattice\Layouts\Components\Topbar;
 use Lattice\Layouts\LayoutDefinition;
 use Lattice\Notifications\Components\Notifications;
+use Lattice\Search\Components\SearchBox;
 use Lattice\Ui\Components\Badge;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\FloatingPanel;
@@ -189,6 +190,7 @@ class AppLayout extends LayoutDefinition
                 ->icon('panel-left')
                 ->emphasis(Emphasis::Ghost)
                 ->effects(Effects::toggleSidebar('app-sidebar')),
+            SearchBox::make('global-search'),
             Stack::make('topbar-end')
                 ->direction(StackDirection::Row)
                 ->align(Align::Center)

@@ -190,7 +190,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [action, core, form, framework, table, tree, ui]
+        package: [action, core, form, framework, search, table, tree, ui]
     steps:
       - uses: actions/checkout@v6
 

@@ -56,7 +56,8 @@ it('dumps missing React lattice keys back into the package lang file', function 
         expect(waitForLatticeBrowserTestTranslation($file, 'editor.italic'))
             ->toBe('i18next-form.editor.italic')
             ->and(File::exists(package_path('workbench/lang/en/language.php')))->toBeFalse()
-            ->and(File::exists(package_path('workbench/lang/en/status.php')))->toBeFalse();
+            ->and(File::exists(package_path('workbench/lang/en/status.php')))->toBeFalse()
+            ->and(File::exists(package_path('packages/framework/lang/en.json')))->toBeFalse();
     } finally {
         try {
             $page->script('window.location.assign("/")');

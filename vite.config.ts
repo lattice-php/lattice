@@ -193,6 +193,7 @@ export default defineConfig({
       "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),
       "@lattice-php/form": path.resolve(import.meta.dirname, "packages/form/resources/js"),
       "@lattice-php/media": path.resolve(import.meta.dirname, "packages/media/resources/js"),
+      "@lattice-php/search": path.resolve(import.meta.dirname, "packages/search/resources/js"),
       "@lattice-php/signature-example/css": path.resolve(
         import.meta.dirname,
         "packages/signature-example/resources/css/signature-example.css",

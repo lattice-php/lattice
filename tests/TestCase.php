@@ -12,6 +12,7 @@ use Lattice\Calendar\CalendarServiceProvider;
 use Lattice\Calendar\Components\Timeline;
 use Lattice\LatticeServiceProvider;
 use Lattice\Media\MediaServiceProvider;
+use Lattice\Search\SearchServiceProvider;
 use Lattice\Support\Testing\InteractsWithLatticeComponents;
 use Lattice\Tree\Tree;
 use Lattice\Tree\TreeServiceProvider;
@@ -88,6 +89,7 @@ abstract class TestCase extends BaseTestCase
             LatticeServiceProvider::class,
             CalendarServiceProvider::class,
             MediaServiceProvider::class,
+            SearchServiceProvider::class,
             TreeServiceProvider::class,
             I18NextServiceProvider::class,
             WorkbenchServiceProvider::class,

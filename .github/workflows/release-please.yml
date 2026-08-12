@@ -80,6 +80,8 @@ jobs:
             repository: framework
           - directory: packages/media
             repository: media
+          - directory: packages/search
+            repository: search
           - directory: packages/table
             repository: table
           - directory: packages/tree

@@ -45,12 +45,14 @@ export const iconNames = [
   "loader-2",
   "minus",
   "more-horizontal",
+  "package",
   "panel-left",
   "pencil",
   "pencil-line",
   "plug",
   "plus",
   "quote",
+  "receipt",
   "rotate-ccw",
   "rows-3",
   "search",
@@ -63,6 +65,7 @@ export const iconNames = [
   "table",
   "trash-2",
   "underline",
+  "users",
   "x",
 ] as const;
 
@@ -114,12 +117,14 @@ declare module "@lattice-php/ui" {
     "loader-2": true;
     minus: true;
     "more-horizontal": true;
+    package: true;
     "panel-left": true;
     pencil: true;
     "pencil-line": true;
     plug: true;
     plus: true;
     quote: true;
+    receipt: true;
     "rotate-ccw": true;
     "rows-3": true;
     search: true;
@@ -132,6 +137,7 @@ declare module "@lattice-php/ui" {
     table: true;
     "trash-2": true;
     underline: true;
+    users: true;
     x: true;
   }
 }

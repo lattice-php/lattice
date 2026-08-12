@@ -19,6 +19,7 @@ node_modules
 /packages/*/dist
 !/packages/calendar/dist
 !/packages/media/dist
+!/packages/search/dist
 !/packages/tree/dist
 /dist-docs
 /myreport

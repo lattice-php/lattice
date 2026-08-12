@@ -23,6 +23,8 @@
       "@lattice-php/form/*": ["./packages/form/resources/js/*"],
       "@lattice-php/media": ["./packages/media/resources/js/plugin.ts"],
       "@lattice-php/media/*": ["./packages/media/resources/js/*"],
+      "@lattice-php/search": ["./packages/search/resources/js/index.ts"],
+      "@lattice-php/search/*": ["./packages/search/resources/js/*"],
       "@lattice-php/table": ["./packages/table/resources/js/index.ts"],
       "@lattice-php/table/*": ["./packages/table/resources/js/*"],
       "@lattice-php/ui": ["./packages/ui/resources/js/index.ts"],
