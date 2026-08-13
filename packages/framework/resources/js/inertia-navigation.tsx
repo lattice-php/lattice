@@ -2,11 +2,15 @@ import { Link, router } from "@inertiajs/react";
 import type { Plugin } from "@lattice-php/core/registry";
 import { effectHandler } from "@lattice-php/ui/effects/registry";
 import type { NavigationAdapter, NavLinkProps } from "@lattice-php/ui/navigation";
+import type { ComponentProps } from "react";
 
-function InertiaLink({ href, method = "get", ...props }: NavLinkProps) {
+function InertiaLink({ href, method = "get", children, ...props }: NavLinkProps) {
+  // NavLinkProps types handlers against HTMLAnchorElement; Inertia's Link
+  // types them against Element. Same events at runtime, so the cast only
+  // bridges React's generic variance.
   return (
-    <Link href={href} method={method} {...props}>
-      {props.children}
+    <Link href={href} method={method} {...(props as ComponentProps<typeof Link>)}>
+      {children}
     </Link>
   );
 }

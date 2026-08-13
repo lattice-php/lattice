@@ -7,6 +7,7 @@ import { useT } from "@lattice-php/ui/i18n";
 import { useExtensionRegistry } from "@lattice-php/core/registry-context";
 import type { RendererComponent } from "@lattice-php/core";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
 import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
@@ -131,6 +132,7 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
       error={errors[errorKey]}
       helperText={node.props.helperText ?? undefined}
       tooltip={node.props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(node.props.labelAction)}
       label={node.props.label ?? ""}
       id={domName}
       required={required}

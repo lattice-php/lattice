@@ -4,6 +4,7 @@ import {
   FormFieldFrame,
   type FormFieldControlProps,
 } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { fieldProps } from "@lattice-php/form/lib/field-props";
 import {
   type ControlledField,
@@ -30,6 +31,7 @@ export function SimpleField({
       error={field.error}
       helperText={fieldProps(node).helperText ?? undefined}
       tooltip={fieldProps(node).tooltip ?? undefined}
+      labelAction={fieldLabelAction(fieldProps(node).labelAction)}
       label={label}
       id={field.name}
       required={field.required}

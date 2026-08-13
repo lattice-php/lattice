@@ -6,6 +6,7 @@ import { type Editor, EditorContent, type JSONContent, useEditor } from "@tiptap
 import type { RendererComponent } from "@lattice-php/core";
 import type { PatternTokenData } from "@lattice-php/form/types";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
 import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
@@ -199,6 +200,7 @@ const PatternInputField: RendererComponent<"field.pattern-input"> = ({ node }) =
       error={errors[errorKey]}
       helperText={node.props.helperText ?? undefined}
       tooltip={node.props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(node.props.labelAction)}
       label={node.props.label ?? ""}
       id={domName}
       required={required}

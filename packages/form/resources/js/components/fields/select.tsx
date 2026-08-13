@@ -9,6 +9,7 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { materializeSchema } from "@lattice-php/core/materialize";
 import type { Option, RendererComponent } from "@lattice-php/core";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { fieldDomName } from "@lattice-php/form/lib/field-dom-name";
 import { postFormAction } from "@lattice-php/form/lib/form-transport";
@@ -182,6 +183,7 @@ export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => 
       error={errors[errorKey]}
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(props.labelAction)}
       label={props.label ?? ""}
       id={domName}
       required={required}

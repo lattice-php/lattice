@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { Option, RendererComponent } from "@lattice-php/core";
 import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useControlledField } from "@lattice-php/form/hooks/use-controlled-field";
 import { useResolvedNode } from "@lattice-php/form/hooks/resolved-nodes";
 import { useSeedDefault } from "@lattice-php/form/hooks/use-seed-default";
@@ -28,6 +29,7 @@ export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => 
       error={error}
       helperText={node.props.helperText ?? undefined}
       tooltip={node.props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(node.props.labelAction)}
       label={node.props.label ?? ""}
       id={name}
       required={required}
