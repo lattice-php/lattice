@@ -1,26 +1,20 @@
 import { page, userEvent } from "vitest/browser";
 import { expect, it } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/core";
+import { createRegistry, eagerComponent, Renderer } from "@lattice-php/core";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, TextProbe } from "@lattice-php/core/test-support";
-import MapComponent from "./map";
-import OpenStreetMap from "./openstreetmap";
+import mapPlugin from "./plugin";
 import type { MapWireProps, MarkerData } from "./types";
 import "../css/map.css";
 
 const transparentTile =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'/%3E";
 
-const registry = createRegistry({
+const registry = createRegistry(mapPlugin, {
   components: {
     text: eagerComponent(TextProbe),
   },
-  extensions: {
-    "map.providers": {
-      openstreetmap: OpenStreetMap,
-    },
-  },
-  name: "test/map",
+  name: "test/map-content",
 });
 
 function marker(id: string, label: string, latitude: number, longitude: number): MarkerData {
@@ -58,7 +52,7 @@ async function renderMap(extra: Partial<MapWireProps> = {}) {
     },
   });
 
-  return renderWithRegistry(<MapComponent node={node}>{null}</MapComponent>, registry);
+  return renderWithRegistry(<Renderer nodes={[node]} />, registry);
 }
 
 it("opens server-selected popup content and switches it through a real marker click", async () => {
@@ -70,4 +64,17 @@ it("opens server-selected popup content and switches it through a real marker cl
 
   await expect.element(page.getByText("Hamburg office content")).toBeVisible();
   await expect.element(page.getByText("Berlin office content")).not.toBeInTheDocument();
+});
+
+it("reports invalid provider configuration without leaving the map pending", async () => {
+  await renderMap({
+    provider: {
+      maximumZoom: 19,
+      minimumZoom: 1,
+      name: "openstreetmap",
+      options: {},
+    },
+  });
+
+  await expect.element(page.getByRole("alert")).toHaveTextContent("The map could not be loaded.");
 });
