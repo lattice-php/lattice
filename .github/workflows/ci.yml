@@ -172,6 +172,27 @@ jobs:
           node-version: lts/*
           cache: npm
 
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      # The workbench build discovers component packages (and their icon dirs)
+      # through vendor/composer/installed.json, so the sprite check below needs
+      # the composer dependencies installed.
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
       - run: npm ci
 
       - name: Upload per-package bundle analysis to Codecov
