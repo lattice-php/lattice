@@ -59,6 +59,22 @@ more naturally for short tips. It renders muted, below the input and above any v
   values={{ slug: "" }}
 />
 
+## Label action
+
+`->labelAction()` renders a component at the end of the field's label row — typically a link, such
+as a "Forgot password?" link beside a password field:
+
+```php
+use Lattice\Ui\Components\Link;
+
+PasswordInput::make('password', 'Password')
+    ->labelAction(Link::make('Forgot password?')->href(route('password.request')));
+```
+
+Any component works in the slot, so a badge or a button carrying an action fits the same way.
+Fields without a label row — `HiddenInput`, `Checkbox`, and fields rendered inside a repeater's
+table layout — drop the label action.
+
 ## Required
 
 `->required()` marks the field as required, adding the indicator and a `required` validation rule.
