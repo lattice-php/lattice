@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
-import { apiReferenceNode, parameter, requestContract } from "../test-support";
-import ApiReference from "./ApiReference";
+import { parameter, requestContract } from "../test-support";
+import { ApiReference } from "./ApiReference";
 import { RequestPlayground } from "./RequestPlayground";
 import type { Contract, Operation } from "./types";
 
@@ -742,16 +742,7 @@ describe("RequestPlayground", () => {
       },
     };
     const screen = await render(
-      <ApiReference
-        node={apiReferenceNode({
-          spec,
-          defaultOperation: "get-widgets",
-          hideHeader: true,
-          token: REAL_TOKEN,
-        })}
-      >
-        {null}
-      </ApiReference>,
+      <ApiReference spec={spec} defaultOperation="get-widgets" hideHeader token={REAL_TOKEN} />,
     );
     const serverPicker = screen.getByLabelText("Select server");
     const snippet = screen.getByLabelText("Request snippet", { exact: true });

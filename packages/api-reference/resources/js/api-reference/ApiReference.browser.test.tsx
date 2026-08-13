@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render } from "vitest-browser-react";
-import { apiReferenceNode } from "../test-support";
-import ApiReference from "./ApiReference";
+import { ApiReference } from "./ApiReference";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -13,44 +12,40 @@ describe("ApiReference", () => {
 
     const screen = await render(
       <ApiReference
-        node={apiReferenceNode({
-          defaultOperation: "get-products",
-          hideHeader: true,
-          spec: {
-            openapi: "3.1.0",
-            info: { title: "Catalog", version: "1.0.0" },
-            servers: [
-              { url: "https://api.example.test", description: "Production" },
-              { url: "https://sandbox.example.test", description: "Sandbox" },
-            ],
-            paths: {
-              "/products": {
-                get: {
-                  summary: "List products",
-                  description:
-                    "Browse the product catalog and inspect the current availability of every item.\n\nUse filters to narrow the result set.",
-                  tags: ["Products"],
-                  responses: { "200": { description: "OK" } },
-                },
-                post: {
-                  summary: "Create product",
-                  tags: ["Products"],
-                  responses: { "201": { description: "Created" } },
-                },
+        defaultOperation="get-products"
+        hideHeader
+        spec={{
+          openapi: "3.1.0",
+          info: { title: "Catalog", version: "1.0.0" },
+          servers: [
+            { url: "https://api.example.test", description: "Production" },
+            { url: "https://sandbox.example.test", description: "Sandbox" },
+          ],
+          paths: {
+            "/products": {
+              get: {
+                summary: "List products",
+                description:
+                  "Browse the product catalog and inspect the current availability of every item.\n\nUse filters to narrow the result set.",
+                tags: ["Products"],
+                responses: { "200": { description: "OK" } },
               },
-              "/orders": {
-                get: {
-                  summary: "List orders",
-                  tags: ["Products", "Orders"],
-                  responses: { "200": { description: "OK" } },
-                },
+              post: {
+                summary: "Create product",
+                tags: ["Products"],
+                responses: { "201": { description: "Created" } },
+              },
+            },
+            "/orders": {
+              get: {
+                summary: "List orders",
+                tags: ["Products", "Orders"],
+                responses: { "200": { description: "OK" } },
               },
             },
           },
-        })}
-      >
-        {null}
-      </ApiReference>,
+        }}
+      />,
     );
 
     const listProducts = screen.getByRole("button", { name: /^List products/ });
@@ -120,30 +115,26 @@ describe("ApiReference", () => {
 
     const screen = await render(
       <ApiReference
-        node={apiReferenceNode({
-          defaultOperation: "get-products",
-          hideBaseUrl: true,
-          spec: {
-            openapi: "3.1.0",
-            info: { title: "Catalog", version: "1.0.0" },
-            servers: [
-              { url: "https://api.example.test", description: "Production" },
-              { url: "https://sandbox.example.test", description: "Sandbox" },
-            ],
-            paths: {
-              "/products": {
-                get: {
-                  summary: "List products",
-                  tags: ["Products"],
-                  responses: { "200": { description: "OK" } },
-                },
+        defaultOperation="get-products"
+        hideBaseUrl
+        spec={{
+          openapi: "3.1.0",
+          info: { title: "Catalog", version: "1.0.0" },
+          servers: [
+            { url: "https://api.example.test", description: "Production" },
+            { url: "https://sandbox.example.test", description: "Sandbox" },
+          ],
+          paths: {
+            "/products": {
+              get: {
+                summary: "List products",
+                tags: ["Products"],
+                responses: { "200": { description: "OK" } },
               },
             },
           },
-        })}
-      >
-        {null}
-      </ApiReference>,
+        }}
+      />,
     );
 
     const copyUrl = screen.getByRole("button", { name: "Copy List products URL" });
@@ -162,32 +153,30 @@ describe("ApiReference", () => {
     );
     const screen = await render(
       <ApiReference
-        node={apiReferenceNode({
-          defaultOperation: "get-products",
-          hideHeader: true,
-          spec: {
-            openapi: "3.1.0",
-            info: { title: "Catalog", version: "1.0.0" },
-            paths: {
-              "/products": {
-                get: {
-                  summary: "List products",
-                  tags: ["Products"],
-                  parameters: [
-                    {
-                      name: "per_page",
-                      in: "query",
-                      description: "The number of products per page.",
-                      schema: { type: "integer", default: 15 },
-                    },
-                  ],
-                  responses: {
-                    "200": {
-                      description: "OK",
-                      content: {
-                        "application/json": {
-                          schema: { type: "object", properties: responseProperties },
-                        },
+        defaultOperation="get-products"
+        hideHeader
+        spec={{
+          openapi: "3.1.0",
+          info: { title: "Catalog", version: "1.0.0" },
+          paths: {
+            "/products": {
+              get: {
+                summary: "List products",
+                tags: ["Products"],
+                parameters: [
+                  {
+                    name: "per_page",
+                    in: "query",
+                    description: "The number of products per page.",
+                    schema: { type: "integer", default: 15 },
+                  },
+                ],
+                responses: {
+                  "200": {
+                    description: "OK",
+                    content: {
+                      "application/json": {
+                        schema: { type: "object", properties: responseProperties },
                       },
                     },
                   },
@@ -195,10 +184,8 @@ describe("ApiReference", () => {
               },
             },
           },
-        })}
-      >
-        {null}
-      </ApiReference>,
+        }}
+      />,
     );
 
     const parameter = screen.getByLabelText("per_page");
@@ -213,5 +200,92 @@ describe("ApiReference", () => {
           parameter.element().getBoundingClientRect().bottom,
       )
       .toBeLessThan(96);
+  });
+
+  it("delegates selection to the host when controlled", async () => {
+    window.history.replaceState(null, "", window.location.pathname);
+
+    const onOperationChange = vi.fn();
+    const screen = await render(
+      <ApiReference
+        hideHeader
+        selectedOperation="post-products"
+        onOperationChange={onOperationChange}
+        spec={{
+          openapi: "3.1.0",
+          info: { title: "Catalog", version: "1.0.0" },
+          paths: {
+            "/products": {
+              get: {
+                summary: "List products",
+                tags: ["Products"],
+                responses: { "200": { description: "OK" } },
+              },
+              post: {
+                summary: "Create product",
+                tags: ["Products"],
+                responses: { "201": { description: "Created" } },
+              },
+            },
+          },
+        }}
+      />,
+    );
+
+    const listProducts = screen.getByRole("button", { name: /^List products/ });
+    const createProduct = screen.getByRole("button", { name: /^Create product/ });
+
+    await expect.element(createProduct).toHaveAttribute("aria-expanded", "true");
+    await expect.element(listProducts).toHaveAttribute("aria-expanded", "false");
+
+    await listProducts.click();
+
+    expect(onOperationChange).toHaveBeenCalledWith("get-products");
+    await expect.element(createProduct).toHaveAttribute("aria-expanded", "true");
+    await expect.element(listProducts).toHaveAttribute("aria-expanded", "false");
+    expect(window.location.hash).toBe("");
+  });
+
+  it("leaves location.hash alone when deep linking is disabled", async () => {
+    window.history.replaceState(null, "", `${window.location.pathname}#get-products`);
+
+    const screen = await render(
+      <ApiReference
+        hideHeader
+        deepLinking={false}
+        defaultOperation="post-products"
+        spec={{
+          openapi: "3.1.0",
+          info: { title: "Catalog", version: "1.0.0" },
+          paths: {
+            "/products": {
+              get: {
+                summary: "List products",
+                tags: ["Products"],
+                responses: { "200": { description: "OK" } },
+              },
+              post: {
+                summary: "Create product",
+                tags: ["Products"],
+                responses: { "201": { description: "Created" } },
+              },
+            },
+          },
+        }}
+      />,
+    );
+
+    const listProducts = screen.getByRole("button", { name: /^List products/ });
+    const createProduct = screen.getByRole("button", { name: /^Create product/ });
+
+    await expect.element(createProduct).toHaveAttribute("aria-expanded", "true");
+
+    await listProducts.click();
+
+    await expect.element(listProducts).toHaveAttribute("aria-expanded", "true");
+    await expect.element(createProduct).toHaveAttribute("aria-expanded", "false");
+    expect(window.location.hash).toBe("#get-products");
+
+    window.history.replaceState(null, "", window.location.pathname);
   });
 });
