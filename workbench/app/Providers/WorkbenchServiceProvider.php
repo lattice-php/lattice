@@ -16,11 +16,13 @@ use Laravel\Boost\Support\Config;
 use Laravel\Roster\ProjectManager;
 use Laravel\Roster\ProjectScan;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Search\Contracts\SearchHistoryRecorder;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Theme\Swatch;
 use Lattice\Theme\Theme;
 use Workbench\App\Http\Middleware\ShareReverbConnection;
 use Workbench\App\Models\User;
+use Workbench\App\Search\SessionSearchHistoryRecorder;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
@@ -44,6 +46,7 @@ class WorkbenchServiceProvider extends ServiceProvider
 
         $this->keepLatticeEndpointsPublic();
         $this->app->singleton(ProjectPlanTimelineAdapter::class);
+        $this->app->singleton(SearchHistoryRecorder::class, SessionSearchHistoryRecorder::class);
 
         // Rebind so lattice:typescript regenerates the package's own built-in artifacts.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
@@ -143,6 +146,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             'lattice.tables.middleware' => ['web'],
             'lattice.fragments.middleware' => ['web'],
             'lattice.remote-sources.middleware' => ['web'],
+            'lattice.search.middleware' => ['web'],
             'lattice.actions.middleware' => ['web'],
             'lattice.bulk-actions.middleware' => ['web'],
             'lattice.trees.middleware' => ['web'],

@@ -19,6 +19,8 @@ use Lattice\Core\LatticeRegistry;
  * @method static void remoteSources(class-string<\Lattice\Remote\RemoteSourceDefinition>|array<int, class-string<\Lattice\Remote\RemoteSourceDefinition>> $remoteSources)
  * @method static void remoteSourceResolver(callable $resolver)
  * @method static \Lattice\Remote\RemoteSourceRegistry remoteSourceRegistry()
+ * @method static void searchProviders(class-string<\Lattice\Search\Contracts\SearchResultProvider>|array<int, class-string<\Lattice\Search\Contracts\SearchResultProvider>> $providers)
+ * @method static \Lattice\Search\SearchProviderRegistry searchProviderRegistry()
  * @method static void extend(string $name, \Closure $factory, int $priority = 0)
  * @method static void theme(\Lattice\Theme\Theme|\Closure $theme)
  * @method static void translations(string $namespace, string $path)

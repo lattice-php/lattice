@@ -221,6 +221,12 @@ export type NodeType =
   | "progress"
   | "raw-block"
   | "remote.data-list"
+  | "search.box"
+  | "search.categories"
+  | "search.input"
+  | "search.preview"
+  | "search.recent"
+  | "search.results"
   | "section"
   | "segmented-control"
   | "separator"
@@ -283,6 +289,13 @@ export type RemoteAccess = {
   readonly tokenEndpoint: string;
 };
 export type RemoteNodeType = "remote.data-list";
+export type SearchNodeType =
+  | "search.box"
+  | "search.categories"
+  | "search.input"
+  | "search.preview"
+  | "search.recent"
+  | "search.results";
 export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;

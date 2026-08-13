@@ -9,6 +9,7 @@ const artifacts = [
     manifest: "dist-standalone/manifest.json",
     module: "dist-standalone/plugin.js",
   },
+  { package: "packages/search", manifest: "dist/manifest.json", module: "dist/plugin.js" },
 ];
 
 let failed = false;

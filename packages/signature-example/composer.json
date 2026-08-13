@@ -3,6 +3,11 @@
     "description": "Example third-party package contributing a custom Lattice component via Composer only.",
     "type": "library",
     "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "lattice-php/core": "self.version",
+        "lattice-php/ui": "self.version"
+    },
     "autoload": {
         "psr-4": {
             "Lattice\\SignatureExample\\": "src/"

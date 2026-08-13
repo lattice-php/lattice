@@ -52,6 +52,7 @@ it('publishes standalone modules from discovered component packages', function (
             'plugins/lattice-php/api-reference.js',
             'plugins/lattice-php/calendar.js',
             'plugins/lattice-php/media.js',
+            'plugins/lattice-php/search.js',
             'plugins/lattice-php/signature-example.js',
             'plugins/lattice-php/tree.js',
         ])
