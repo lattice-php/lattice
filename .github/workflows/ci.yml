@@ -214,7 +214,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [action, core, form, framework, search, table, tree, ui]
+        package: [action, chat, core, form, framework, search, table, tree, ui]
     steps:
       - uses: actions/checkout@v6
 
@@ -313,12 +313,14 @@ jobs:
           composer types
           git add --intent-to-add \
             packages/framework/resources/js/types/generated.ts \
+            packages/chat/resources/js/generated.ts \
             packages/form/resources/js/generated.ts \
             packages/table/resources/js/generated.ts \
             packages/action/resources/js/generated.ts \
             packages/ui/resources/js/generated.ts
           git diff --exit-code -- \
             packages/framework/resources/js/types/generated.ts \
+            packages/chat/resources/js/generated.ts \
             packages/form/resources/js/generated.ts \
             packages/table/resources/js/generated.ts \
             packages/action/resources/js/generated.ts \
