@@ -1,4 +1,6 @@
-import { Badge, CopyButton, InfoTooltip } from "@lattice-php/ui";
+import { Badge } from "@lattice-php/ui/badge";
+import { CopyButton } from "@lattice-php/ui/copyable-text";
+import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 import { httpMethodColor } from "./http-method-color";
 import { operationUrl } from "./request-builder";
 import type { Operation } from "./types";

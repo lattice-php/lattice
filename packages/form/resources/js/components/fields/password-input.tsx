@@ -1,6 +1,7 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { testIdentity } from "@lattice-php/core/test-id";
 import { AffixGroup } from "@lattice-php/ui/affix-group";
+import { TextLink } from "@lattice-php/ui/text-link";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import PasswordInput from "@lattice-php/ui/password-input";
 import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
@@ -33,7 +34,16 @@ export const PasswordInputComponent: RendererComponent<"field.password-input"> =
         helperText={props.helperText ?? undefined}
         tooltip={props.tooltip ?? undefined}
         label={props.label ?? ""}
-        labelAction={props.labelAction ?? undefined}
+        labelAction={
+          props.labelAction && (
+            <TextLink
+              href={props.labelAction.href}
+              tabIndex={props.labelAction.tabIndex ?? undefined}
+            >
+              {props.labelAction.label}
+            </TextLink>
+          )
+        }
         id={field.name}
         required={field.required}
       >

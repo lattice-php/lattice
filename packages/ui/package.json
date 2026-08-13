@@ -68,6 +68,11 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
+  "peerDependenciesMeta": {
+    "@inertiajs/react": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "vitest-browser-react": "^2.2.0"
   }

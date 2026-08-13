@@ -1,17 +1,15 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react";
-import { FormFieldFrame } from "@lattice-php/form";
-import {
-  Badge,
-  Button,
-  CodeBlock,
-  Combobox,
-  CopyButton,
-  InfoTooltip,
-  Input,
-  NativeSelect,
-  SegmentedPills,
-  Spinner,
-} from "@lattice-php/ui";
+import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { Badge } from "@lattice-php/ui/badge";
+import { Button } from "@lattice-php/ui/button";
+import { Combobox } from "@lattice-php/ui/combobox";
+import { CodeBlock } from "@lattice-php/ui/components/code-block";
+import { CopyButton } from "@lattice-php/ui/copyable-text";
+import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
+import { Input } from "@lattice-php/ui/input";
+import { NativeSelect } from "@lattice-php/ui/native-select";
+import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
+import { Spinner } from "@lattice-php/ui/spinner";
 import { SchemaView } from "../schema/SchemaView";
 import { executeRequest, type ExecutedResponse, type ExecutionError } from "./execute-request";
 import { LiveResponsePanel, responseBadgeColor } from "./LiveResponsePanel";
