@@ -185,8 +185,10 @@ public function render(PageSchema $schema, Request $request, RemoteSourceRegistr
 }
 ```
 
-The manifest is a tree of `{ "type", "id", "props", "schema" }` nodes. A remote-capable node only
-needs to declare its `audience` and `scopes` — the consumer stamps the trusted `remote` access:
+The manifest is a tree of `{ "type", "id", "props", "schema" }` nodes; its published contract is
+`#/$defs/RemoteManifest` in the [wire protocol schema](/advanced/wire-protocol/), so a provider can
+validate a manifest before serving it. A remote-capable node only needs to declare its `audience`
+and `scopes` — the consumer stamps the trusted `remote` access:
 
 ```json
 {

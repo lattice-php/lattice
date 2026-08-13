@@ -17,6 +17,7 @@ use Laravel\Roster\ProjectManager;
 use Laravel\Roster\ProjectScan;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Search\Contracts\SearchHistoryRecorder;
+use Lattice\Support\Schema\SchemaProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Theme\Swatch;
 use Lattice\Theme\Theme;
@@ -26,6 +27,7 @@ use Workbench\App\Search\SessionSearchHistoryRecorder;
 use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
+use Workbench\App\Support\Schema\BaseSchemaProfile;
 use Workbench\App\Support\TypeScript\BaseProfile;
 use Workbench\App\Timelines\ProjectPlanTimelineAdapter;
 
@@ -48,8 +50,9 @@ class WorkbenchServiceProvider extends ServiceProvider
         $this->app->singleton(ProjectPlanTimelineAdapter::class);
         $this->app->singleton(SearchHistoryRecorder::class, SessionSearchHistoryRecorder::class);
 
-        // Rebind so lattice:typescript regenerates the package's own built-in artifacts.
+        // Rebind so lattice:typescript/lattice:schema regenerate the package's own built-in artifacts.
         $this->app->bind(TypeScriptProfile::class, BaseProfile::class);
+        $this->app->bind(SchemaProfile::class, BaseSchemaProfile::class);
         $this->useWorkbenchDatabase();
         $this->readBoostConfigFromPackageRoot();
         $this->serveLatticeTranslations();

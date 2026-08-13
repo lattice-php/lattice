@@ -93,6 +93,7 @@
     "./svg-sprite-client": {
       "types": "./dist/svg-sprite-client.d.ts"
     },
+    "./schema/lattice.schema.json": "./resources/schema/lattice.schema.json",
     "./vite": {
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.js"
@@ -104,7 +105,8 @@
   },
   "files": [
     "dist",
-    "dist-standalone"
+    "dist-standalone",
+    "resources/schema"
   ],
   "publishConfig": {
     "access": "public"

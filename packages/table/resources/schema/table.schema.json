@@ -1,0 +1,2777 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/table/v1.json",
+  "title": "Lattice table wire types",
+  "$defs": {
+    "BadgeColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "colors": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "dark": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "readOnly": true
+                  },
+                  "kind": {
+                    "$ref": "#/$defs/ColorKind",
+                    "readOnly": true
+                  },
+                  "value": {
+                    "type": "string",
+                    "readOnly": true
+                  }
+                },
+                "required": [
+                  "dark",
+                  "kind",
+                  "value"
+                ],
+                "x-lattice": {
+                  "kind": "value-object",
+                  "php": "Lattice\\Core\\Color"
+                }
+              },
+              "x-lattice": {
+                "keys": "integer|string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "colors",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "options",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.badge",
+        "php": "Lattice\\Table\\Columns\\BadgeColumn"
+      }
+    },
+    "BooleanColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "options",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.boolean",
+        "php": "Lattice\\Table\\Columns\\BooleanColumn"
+      }
+    },
+    "ColorKind": {
+      "type": "string",
+      "enum": [
+        "named",
+        "css"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Core\\Enums\\ColorKind"
+      }
+    },
+    "Column": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "options",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "common-props",
+        "family": "column",
+        "php": "Lattice\\Table\\Columns\\Column"
+      }
+    },
+    "ColumnAlign": {
+      "type": "string",
+      "enum": [
+        "start",
+        "center",
+        "end"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Table\\Enums\\ColumnAlign"
+      }
+    },
+    "ColumnFilter": {
+      "type": "object",
+      "properties": {
+        "clauseOptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ColumnFilterOption"
+          },
+          "readOnly": true
+        },
+        "control": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FilterControl"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "readOnly": true
+        },
+        "defaultOperator": {
+          "type": "string",
+          "enum": [
+            "contains",
+            "starts_with",
+            "ends_with",
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "before",
+            "after",
+            "empty",
+            "filled"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Core\\Enums\\Op"
+          },
+          "readOnly": true
+        },
+        "multiple": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "contains",
+              "starts_with",
+              "ends_with",
+              "eq",
+              "neq",
+              "gt",
+              "gte",
+              "lt",
+              "lte",
+              "in",
+              "not_in",
+              "before",
+              "after",
+              "empty",
+              "filled"
+            ],
+            "x-lattice": {
+              "kind": "enum",
+              "php": "Lattice\\Core\\Enums\\Op"
+            }
+          },
+          "readOnly": true
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          },
+          "readOnly": true
+        },
+        "searchable": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/FilterType",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "clauseOptions",
+        "control",
+        "defaultOperator",
+        "multiple",
+        "operators",
+        "options",
+        "searchable",
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\Columns\\ColumnFilter"
+      }
+    },
+    "ColumnFilterOption": {
+      "type": "object",
+      "properties": {
+        "clauses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ColumnFilterOptionClause"
+          },
+          "readOnly": true
+        },
+        "label": {
+          "type": "string",
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "clauses",
+        "label",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\Columns\\ColumnFilterOption"
+      }
+    },
+    "ColumnFilterOptionClause": {
+      "type": "object",
+      "properties": {
+        "operator": {
+          "type": "string",
+          "enum": [
+            "contains",
+            "starts_with",
+            "ends_with",
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "before",
+            "after",
+            "empty",
+            "filled"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Core\\Enums\\Op"
+          },
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "operator",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\Columns\\ColumnFilterOptionClause"
+      }
+    },
+    "ColumnNode": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "column"
+      }
+    },
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "DateRangeFilter": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "filter",
+        "wireType": "filter.date-range",
+        "php": "Lattice\\Table\\Filters\\DateRangeFilter"
+      }
+    },
+    "Filter": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "common-props",
+        "family": "filter",
+        "php": "Lattice\\Table\\Filters\\Filter"
+      }
+    },
+    "FilterClause": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string",
+          "readOnly": true
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "contains",
+            "starts_with",
+            "ends_with",
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "before",
+            "after",
+            "empty",
+            "filled"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Core\\Enums\\Op"
+          },
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "field",
+        "operator",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\FilterClause"
+      }
+    },
+    "FilterControl": {
+      "type": "string",
+      "enum": [
+        "filter.select",
+        "filter.ternary",
+        "filter.date-range",
+        "filter.toggle"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Table\\Enums\\FilterControl"
+      }
+    },
+    "FilterIndicator": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "type": "string",
+          "readOnly": true
+        },
+        "label": {
+          "type": "string",
+          "readOnly": true
+        },
+        "value": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "filter",
+        "label",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\Filters\\FilterIndicator"
+      }
+    },
+    "FilterNode": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "filter"
+      }
+    },
+    "FilterType": {
+      "type": "string",
+      "enum": [
+        "text",
+        "number",
+        "date",
+        "boolean"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Table\\Enums\\FilterType"
+      }
+    },
+    "IconColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "colors": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "dark": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "readOnly": true
+                  },
+                  "kind": {
+                    "$ref": "#/$defs/ColorKind",
+                    "readOnly": true
+                  },
+                  "value": {
+                    "type": "string",
+                    "readOnly": true
+                  }
+                },
+                "required": [
+                  "dark",
+                  "kind",
+                  "value"
+                ],
+                "x-lattice": {
+                  "kind": "value-object",
+                  "php": "Lattice\\Core\\Color"
+                }
+              },
+              "x-lattice": {
+                "keys": "integer|string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "icons": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "x-lattice": {
+                "keys": "integer|string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "colors",
+        "filter",
+        "hiddenByDefault",
+        "icon",
+        "icons",
+        "label",
+        "options",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.icon",
+        "php": "Lattice\\Table\\Columns\\IconColumn"
+      }
+    },
+    "ImageColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "circular": {
+          "type": "boolean"
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "previewable": {
+          "type": "boolean"
+        },
+        "size": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "circular",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "options",
+        "previewable",
+        "size",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.image",
+        "php": "Lattice\\Table\\Columns\\ImageColumn"
+      }
+    },
+    "MoneyColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "copyable": {
+          "type": "boolean"
+        },
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "currencyField": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "maximumFractionDigits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "minimumFractionDigits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "copyable",
+        "currency",
+        "currencyField",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "maximumFractionDigits",
+        "minimumFractionDigits",
+        "options",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.money",
+        "php": "Lattice\\Table\\Columns\\MoneyColumn"
+      }
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "NumberColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "compact": {
+          "type": "boolean"
+        },
+        "copyable": {
+          "type": "boolean"
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "maximumFractionDigits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "minimumFractionDigits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "percent",
+                "kilogram",
+                "gram",
+                "kilometer",
+                "meter",
+                "byte",
+                "kilobyte",
+                "megabyte",
+                "gigabyte",
+                "millisecond",
+                "second",
+                "minute",
+                "hour",
+                "celsius",
+                "fahrenheit"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\NumberFormatUnit"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "compact",
+        "copyable",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "maximumFractionDigits",
+        "minimumFractionDigits",
+        "options",
+        "sortable",
+        "toggleable",
+        "unit",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.number",
+        "php": "Lattice\\Table\\Columns\\NumberColumn"
+      }
+    },
+    "PaginationType": {
+      "type": "string",
+      "enum": [
+        "none",
+        "simple",
+        "table",
+        "infinite"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Table\\Enums\\PaginationType"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
+    "SelectFilter": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "multiple": {
+          "type": "boolean"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "placeholder": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "searchable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "label",
+        "multiple",
+        "options",
+        "placeholder",
+        "searchable"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "filter",
+        "wireType": "filter.select",
+        "php": "Lattice\\Table\\Filters\\SelectFilter"
+      }
+    },
+    "SortDirection": {
+      "type": "string",
+      "enum": [
+        "asc",
+        "desc"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Table\\Enums\\SortDirection"
+      }
+    },
+    "StackColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "options",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.stack",
+        "php": "Lattice\\Table\\Columns\\StackColumn"
+      }
+    },
+    "Table": {
+      "type": "object",
+      "properties": {
+        "actionsLabel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bulkActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ColumnNode"
+          }
+        },
+        "data": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emptyLabel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FilterNode"
+          }
+        },
+        "layout": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lazy": {
+          "type": "boolean"
+        },
+        "pagination": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TablePagination"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "perPageOptions": {
+          "type": "array",
+          "items": {
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "query": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TableQuery"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resizableColumns": {
+          "type": "boolean"
+        },
+        "resizeIndicator": {
+          "type": "boolean"
+        },
+        "searchable": {
+          "type": "boolean"
+        },
+        "striped": {
+          "type": "boolean"
+        },
+        "toolbar": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
+        }
+      },
+      "required": [
+        "actionsLabel",
+        "bulkActions",
+        "columns",
+        "data",
+        "emptyLabel",
+        "endpoint",
+        "filters",
+        "layout",
+        "lazy",
+        "pagination",
+        "perPageOptions",
+        "query",
+        "ref",
+        "resizableColumns",
+        "resizeIndicator",
+        "searchable",
+        "striped",
+        "toolbar"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "table",
+        "domain": "Table",
+        "php": "Lattice\\Table\\Components\\Table"
+      }
+    },
+    "TablePagination": {
+      "type": "object",
+      "properties": {
+        "currentPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "from": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "hasMore": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "lastPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "mode": {
+          "$ref": "#/$defs/PaginationType",
+          "readOnly": true
+        },
+        "nextPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "perPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "to": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "total": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": [
+        "currentPage",
+        "from",
+        "hasMore",
+        "lastPage",
+        "mode",
+        "nextPage",
+        "perPage",
+        "to",
+        "total"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\TablePagination"
+      }
+    },
+    "TableQuery": {
+      "type": "object",
+      "properties": {
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FilterClause"
+          },
+          "readOnly": true
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PaginationType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "readOnly": true
+        },
+        "page": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "perPage": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "search": {
+          "type": "string",
+          "readOnly": true
+        },
+        "sorts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TableSort"
+          },
+          "readOnly": true
+        },
+        "tableFilterIndicators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FilterIndicator"
+          },
+          "readOnly": true
+        },
+        "tableFilters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "readOnly": true
+        }
+      },
+      "required": [
+        "filters",
+        "mode",
+        "page",
+        "perPage",
+        "search",
+        "sorts",
+        "tableFilterIndicators",
+        "tableFilters"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\TableQuery"
+      }
+    },
+    "TableResult": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "readOnly": true
+        },
+        "pagination": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TablePagination"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "readOnly": true
+        },
+        "query": {
+          "$ref": "#/$defs/TableQuery",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "data",
+        "pagination",
+        "query"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\TableResult"
+      }
+    },
+    "TableSort": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "$ref": "#/$defs/SortDirection",
+          "readOnly": true
+        },
+        "key": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "direction",
+        "key"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Table\\TableSort"
+      }
+    },
+    "TernaryFilter": {
+      "type": "object",
+      "properties": {
+        "falseLabel": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "trueLabel": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "falseLabel",
+        "label",
+        "placeholder",
+        "trueLabel"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "filter",
+        "wireType": "filter.ternary",
+        "php": "Lattice\\Table\\Filters\\TernaryFilter"
+      }
+    },
+    "TextColumn": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "$ref": "#/$defs/ColumnAlign"
+        },
+        "badge": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "colorKey": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "colorKey"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "copyable": {
+          "type": "boolean"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "dateStyle": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "full",
+                        "long",
+                        "medium",
+                        "short"
+                      ],
+                      "x-lattice": {
+                        "kind": "enum",
+                        "php": "Lattice\\Ui\\Enums\\DateTimeStyle"
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "timeStyle": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "full",
+                        "long",
+                        "medium",
+                        "short"
+                      ],
+                      "x-lattice": {
+                        "kind": "enum",
+                        "php": "Lattice\\Ui\\Enums\\DateTimeStyle"
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "dateStyle",
+                "timeStyle"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ColumnFilter"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hiddenByDefault": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "link": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "external": {
+                  "type": "boolean"
+                },
+                "href": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "external",
+                "href"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "multiple": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "sortable": {
+          "type": "boolean"
+        },
+        "toggleable": {
+          "type": "boolean"
+        },
+        "width": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        }
+      },
+      "required": [
+        "align",
+        "badge",
+        "copyable",
+        "date",
+        "filter",
+        "hiddenByDefault",
+        "label",
+        "link",
+        "multiple",
+        "options",
+        "sortable",
+        "toggleable",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "column",
+        "wireType": "column.text",
+        "php": "Lattice\\Table\\Columns\\TextColumn"
+      }
+    },
+    "ToggleFilter": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "filter",
+        "wireType": "filter.toggle",
+        "php": "Lattice\\Table\\Filters\\ToggleFilter"
+      }
+    },
+    "column:column.badge": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.badge"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BadgeColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.badge",
+        "php": "Lattice\\Table\\Columns\\BadgeColumn"
+      }
+    },
+    "column:column.boolean": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.boolean"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BooleanColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.boolean",
+        "php": "Lattice\\Table\\Columns\\BooleanColumn"
+      }
+    },
+    "column:column.icon": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.icon"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/IconColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.icon",
+        "php": "Lattice\\Table\\Columns\\IconColumn"
+      }
+    },
+    "column:column.image": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.image"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ImageColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.image",
+        "php": "Lattice\\Table\\Columns\\ImageColumn"
+      }
+    },
+    "column:column.money": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.money"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MoneyColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.money",
+        "php": "Lattice\\Table\\Columns\\MoneyColumn"
+      }
+    },
+    "column:column.number": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.number"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/NumberColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.number",
+        "php": "Lattice\\Table\\Columns\\NumberColumn"
+      }
+    },
+    "column:column.stack": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.stack"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/StackColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.stack",
+        "php": "Lattice\\Table\\Columns\\StackColumn"
+      }
+    },
+    "column:column.text": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "column.text"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TextColumn"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "column",
+        "wireType": "column.text",
+        "php": "Lattice\\Table\\Columns\\TextColumn"
+      }
+    },
+    "filter:filter.date-range": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "filter.date-range"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/DateRangeFilter"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "filter",
+        "wireType": "filter.date-range",
+        "php": "Lattice\\Table\\Filters\\DateRangeFilter"
+      }
+    },
+    "filter:filter.select": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "filter.select"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SelectFilter"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "filter",
+        "wireType": "filter.select",
+        "php": "Lattice\\Table\\Filters\\SelectFilter"
+      }
+    },
+    "filter:filter.ternary": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "filter.ternary"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TernaryFilter"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "filter",
+        "wireType": "filter.ternary",
+        "php": "Lattice\\Table\\Filters\\TernaryFilter"
+      }
+    },
+    "filter:filter.toggle": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "filter.toggle"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ToggleFilter"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "filter",
+        "wireType": "filter.toggle",
+        "php": "Lattice\\Table\\Filters\\ToggleFilter"
+      }
+    },
+    "node:table": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "table"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Table"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "table",
+        "php": "Lattice\\Table\\Components\\Table"
+      }
+    }
+  },
+  "x-lattice": {
+    "domains": {
+      "TableNodeType": [
+        "table"
+      ],
+      "NodeType": [
+        "table"
+      ],
+      "ColumnNodeType": [
+        "column.badge",
+        "column.boolean",
+        "column.icon",
+        "column.image",
+        "column.money",
+        "column.number",
+        "column.stack",
+        "column.text"
+      ],
+      "FilterNodeType": [
+        "filter.date-range",
+        "filter.select",
+        "filter.ternary",
+        "filter.toggle"
+      ]
+    },
+    "families": {
+      "component": {
+        "envelope": "Node",
+        "strict": "#/$defs/ComponentNode",
+        "propsInterface": "ComponentProps",
+        "propsMap": "ComponentPropsMap",
+        "types": {
+          "table": {
+            "node": "#/$defs/node:table",
+            "props": "#/$defs/Table",
+            "domain": "Table",
+            "interactive": true
+          }
+        }
+      },
+      "effect": {
+        "envelope": "Effect",
+        "strict": "#/$defs/EffectStrict",
+        "propsInterface": "EffectProps",
+        "propsMap": "EffectPropsMap",
+        "types": {}
+      },
+      "editor-extension": {
+        "envelope": "EditorExtension",
+        "strict": "#/$defs/EditorExtensionStrict",
+        "propsInterface": "EditorExtensionProps",
+        "propsMap": "EditorExtensionPropsMap",
+        "types": {}
+      },
+      "column": {
+        "envelope": "ColumnNode",
+        "strict": "#/$defs/ColumnNodeStrict",
+        "propsInterface": "ColumnProps",
+        "propsMap": "ColumnPropsMap",
+        "types": {
+          "column.badge": {
+            "node": "#/$defs/column:column.badge",
+            "props": "#/$defs/BadgeColumn"
+          },
+          "column.boolean": {
+            "node": "#/$defs/column:column.boolean",
+            "props": "#/$defs/BooleanColumn"
+          },
+          "column.icon": {
+            "node": "#/$defs/column:column.icon",
+            "props": "#/$defs/IconColumn"
+          },
+          "column.image": {
+            "node": "#/$defs/column:column.image",
+            "props": "#/$defs/ImageColumn"
+          },
+          "column.money": {
+            "node": "#/$defs/column:column.money",
+            "props": "#/$defs/MoneyColumn"
+          },
+          "column.number": {
+            "node": "#/$defs/column:column.number",
+            "props": "#/$defs/NumberColumn"
+          },
+          "column.stack": {
+            "node": "#/$defs/column:column.stack",
+            "props": "#/$defs/StackColumn",
+            "container": true
+          },
+          "column.text": {
+            "node": "#/$defs/column:column.text",
+            "props": "#/$defs/TextColumn"
+          }
+        }
+      },
+      "filter": {
+        "envelope": "FilterNode",
+        "strict": "#/$defs/FilterNodeStrict",
+        "propsInterface": "FilterProps",
+        "propsMap": "FilterPropsMap",
+        "types": {
+          "filter.date-range": {
+            "node": "#/$defs/filter:filter.date-range",
+            "props": "#/$defs/DateRangeFilter"
+          },
+          "filter.select": {
+            "node": "#/$defs/filter:filter.select",
+            "props": "#/$defs/SelectFilter"
+          },
+          "filter.ternary": {
+            "node": "#/$defs/filter:filter.ternary",
+            "props": "#/$defs/TernaryFilter"
+          },
+          "filter.toggle": {
+            "node": "#/$defs/filter:filter.toggle",
+            "props": "#/$defs/ToggleFilter"
+          }
+        }
+      }
+    }
+  }
+}

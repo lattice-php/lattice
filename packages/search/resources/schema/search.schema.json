@@ -1,0 +1,766 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/search/v1.json",
+  "title": "Lattice search wire types",
+  "$defs": {
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "RecordSelectionResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/SearchResult",
+          "readOnly": true
+        },
+        "state": {
+          "$ref": "#/$defs/RecordSelectionState",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "data",
+        "state"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\RecordSelectionResponse"
+      }
+    },
+    "RecordSelectionState": {
+      "type": "object",
+      "properties": {
+        "recorded": {
+          "type": "boolean",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "recorded"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\RecordSelectionState"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
+    "SearchBox": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string"
+        },
+        "perPage": {
+          "type": "integer"
+        },
+        "placeholder": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shortcut": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "endpoint",
+        "perPage",
+        "placeholder",
+        "shortcut",
+        "title"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "search.box",
+        "domain": "Search",
+        "php": "Lattice\\Search\\Components\\SearchBox"
+      }
+    },
+    "SearchCategories": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false,
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "search.categories",
+        "domain": "Search",
+        "php": "Lattice\\Search\\Components\\SearchCategories"
+      }
+    },
+    "SearchCategory": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "label": {
+          "type": "string",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "count",
+        "icon",
+        "label",
+        "name"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\SearchCategory"
+      }
+    },
+    "SearchInput": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false,
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "search.input",
+        "domain": "Search",
+        "php": "Lattice\\Search\\Components\\SearchInput"
+      }
+    },
+    "SearchMode": {
+      "type": "string",
+      "enum": [
+        "results",
+        "recent"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Search\\Enums\\SearchMode"
+      }
+    },
+    "SearchPagination": {
+      "type": "object",
+      "properties": {
+        "hasMore": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "nextPage": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "page": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "perPage": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "total": {
+          "type": "integer",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "hasMore",
+        "nextPage",
+        "page",
+        "perPage",
+        "total"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\SearchPagination"
+      }
+    },
+    "SearchPreview": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false,
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "search.preview",
+        "domain": "Search",
+        "php": "Lattice\\Search\\Components\\SearchPreview"
+      }
+    },
+    "SearchRecent": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false,
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "search.recent",
+        "domain": "Search",
+        "php": "Lattice\\Search\\Components\\SearchRecent"
+      }
+    },
+    "SearchResponse": {
+      "type": "object",
+      "properties": {
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SearchCategory"
+          },
+          "readOnly": true
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SearchResult"
+          },
+          "readOnly": true
+        },
+        "pagination": {
+          "$ref": "#/$defs/SearchPagination",
+          "readOnly": true
+        },
+        "state": {
+          "$ref": "#/$defs/SearchState",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "categories",
+        "data",
+        "pagination",
+        "state"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\SearchResponse"
+      }
+    },
+    "SearchResult": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/SearchResultCategory",
+          "readOnly": true
+        },
+        "item": {
+          "$ref": "#/$defs/SearchResultItem",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "category",
+        "item"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\SearchResult"
+      }
+    },
+    "SearchResultCategory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\SearchResultCategory"
+      }
+    },
+    "SearchResultItem": {
+      "type": "object",
+      "properties": {
+        "additionalInfo": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "badge": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "id": {
+          "type": "string",
+          "readOnly": true
+        },
+        "link": {
+          "type": "string",
+          "readOnly": true
+        },
+        "subtitle": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "title": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "additionalInfo",
+        "badge",
+        "id",
+        "link",
+        "subtitle",
+        "title"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\SearchResultItem"
+      }
+    },
+    "SearchResults": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": false,
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "search.results",
+        "domain": "Search",
+        "php": "Lattice\\Search\\Components\\SearchResults"
+      }
+    },
+    "SearchState": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "countsIncluded": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "mode": {
+          "$ref": "#/$defs/SearchMode",
+          "readOnly": true
+        },
+        "perPage": {
+          "type": "integer",
+          "readOnly": true
+        },
+        "query": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "category",
+        "countsIncluded",
+        "mode",
+        "perPage",
+        "query"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Search\\SearchState"
+      }
+    },
+    "node:search.box": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "search.box"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SearchBox"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "search.box",
+        "php": "Lattice\\Search\\Components\\SearchBox"
+      }
+    },
+    "node:search.categories": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "search.categories"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SearchCategories"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "search.categories",
+        "php": "Lattice\\Search\\Components\\SearchCategories"
+      }
+    },
+    "node:search.input": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "search.input"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SearchInput"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "search.input",
+        "php": "Lattice\\Search\\Components\\SearchInput"
+      }
+    },
+    "node:search.preview": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "search.preview"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SearchPreview"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "search.preview",
+        "php": "Lattice\\Search\\Components\\SearchPreview"
+      }
+    },
+    "node:search.recent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "search.recent"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SearchRecent"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "search.recent",
+        "php": "Lattice\\Search\\Components\\SearchRecent"
+      }
+    },
+    "node:search.results": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "search.results"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SearchResults"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "search.results",
+        "php": "Lattice\\Search\\Components\\SearchResults"
+      }
+    }
+  },
+  "x-lattice": {
+    "domains": {
+      "SearchNodeType": [
+        "search.box",
+        "search.categories",
+        "search.input",
+        "search.preview",
+        "search.recent",
+        "search.results"
+      ],
+      "NodeType": [
+        "search.box",
+        "search.categories",
+        "search.input",
+        "search.preview",
+        "search.recent",
+        "search.results"
+      ]
+    },
+    "families": {
+      "component": {
+        "envelope": "Node",
+        "strict": "#/$defs/ComponentNode",
+        "propsInterface": "ComponentProps",
+        "propsMap": "ComponentPropsMap",
+        "types": {
+          "search.box": {
+            "node": "#/$defs/node:search.box",
+            "props": "#/$defs/SearchBox",
+            "domain": "Search",
+            "container": true
+          },
+          "search.categories": {
+            "node": "#/$defs/node:search.categories",
+            "props": "#/$defs/SearchCategories",
+            "domain": "Search"
+          },
+          "search.input": {
+            "node": "#/$defs/node:search.input",
+            "props": "#/$defs/SearchInput",
+            "domain": "Search"
+          },
+          "search.preview": {
+            "node": "#/$defs/node:search.preview",
+            "props": "#/$defs/SearchPreview",
+            "domain": "Search"
+          },
+          "search.recent": {
+            "node": "#/$defs/node:search.recent",
+            "props": "#/$defs/SearchRecent",
+            "domain": "Search"
+          },
+          "search.results": {
+            "node": "#/$defs/node:search.results",
+            "props": "#/$defs/SearchResults",
+            "domain": "Search"
+          }
+        }
+      },
+      "effect": {
+        "envelope": "Effect",
+        "strict": "#/$defs/EffectStrict",
+        "propsInterface": "EffectProps",
+        "propsMap": "EffectPropsMap",
+        "types": {}
+      },
+      "editor-extension": {
+        "envelope": "EditorExtension",
+        "strict": "#/$defs/EditorExtensionStrict",
+        "propsInterface": "EditorExtensionProps",
+        "propsMap": "EditorExtensionPropsMap",
+        "types": {}
+      },
+      "column": {
+        "envelope": "ColumnNode",
+        "strict": "#/$defs/ColumnNodeStrict",
+        "propsInterface": "ColumnProps",
+        "propsMap": "ColumnPropsMap",
+        "types": {}
+      },
+      "filter": {
+        "envelope": "FilterNode",
+        "strict": "#/$defs/FilterNodeStrict",
+        "propsInterface": "FilterProps",
+        "propsMap": "FilterPropsMap",
+        "types": {}
+      }
+    }
+  }
+}
