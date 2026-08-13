@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { ActionInteractionProvider } from "@lattice-php/action/components/action-trigger-provider";
 import type { Registry } from "@lattice-php/core/registry";
 import { RegistryContext } from "@lattice-php/core/registry-context";
-import { useFlashEffects } from "@lattice-php/ui/effects/use-flash-effects";
+import { useFlashEffects } from "./effects/use-flash-effects";
 import { NavigationProvider } from "@lattice-php/ui/navigation";
 import { EventBridge } from "./event-bridge";
 import { inertiaNavigation } from "./inertia-navigation";

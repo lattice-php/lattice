@@ -61,7 +61,6 @@ export * from "./effects/dispatch";
 export * from "./effects/registry";
 export * from "./effects/run-action";
 export * from "./effects/use-effect-dispatcher";
-export * from "./effects/use-flash-effects";
 export * from "./format/format-context";
 export * from "./format/value";
 export { uiComponents } from "./plugin";
