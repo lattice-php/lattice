@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.1](https://github.com/lattice-php/lattice/compare/0.48.0...0.48.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* **api-reference:** render nullable enum properties as body fields ([#445](https://github.com/lattice-php/lattice/issues/445)) ([a4327fd](https://github.com/lattice-php/lattice/commit/a4327fd66eea69fcf9711410d8506a6ace0c79a2))
+
 ## [0.48.0](https://github.com/lattice-php/lattice/compare/0.47.1...0.48.0) (2026-08-12)
 
 
