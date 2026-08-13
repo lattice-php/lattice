@@ -1,17 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Support\Wire;
+namespace Lattice\Core\Wire;
 
 use Illuminate\Support\Str;
-use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\WireEnvelope;
+use Lattice\Core\Contracts\FormRootComponent;
 use Lattice\Core\Facades\Lattice;
-use Lattice\Form\Components\Form;
-use Lattice\Remote\RemoteSchemaResolver;
-use Lattice\Support\TypeScript\DiscoveredComponent;
-use Lattice\Support\TypeScript\WireTypeDiscovery;
-use Lattice\Support\TypeScript\WireTypeManifest;
 use LogicException;
 use ReflectionClass;
 use ReflectionEnum;
@@ -202,6 +197,81 @@ final class WireModelBuilder
         }
 
         return ['documents' => $documents, 'defOrigins' => $defOrigins];
+    }
+
+    /**
+     * Consumer-mode: builds ONLY the root/app source's own document,
+     * reflecting just its discover dirs. A prop typed with an installed
+     * package's class resolves to that class's def name — read from a
+     * name index built off THEIR COMMITTED schema documents, vendor PHP is
+     * never reflected here — as a local `$defs` pointer a later flattening
+     * step can dereference against the installed packages' committed
+     * `$defs`.
+     *
+     * @param  list<WireSource>  $installed  every non-root source (framework included), read from disk
+     * @return array<string, mixed>
+     */
+    public function buildRootDocument(WireSource $root, array $installed): array
+    {
+        $manifest = $this->discover($root->dirs);
+        $rootNames = $this->defNames($manifest);
+        $this->guardUniqueNames($rootNames);
+
+        $this->appClasses = $this->classSet($manifest);
+
+        $classOrigins = [];
+
+        // Not `array_keys($rootNames)`: `defNames()` also assigns a bare
+        // name to every marker family's reference class (e.g. `Column`)
+        // unconditionally, whether or not the app discovered anything from
+        // that family — attributing a BUILT-IN class like
+        // `Lattice\Table\Columns\Column` to the app's own origin would make
+        // `document()` re-emit table's own common-props def a second time,
+        // under the app's document, with no guarantee it renders identically
+        // to table's committed one once both land in the same flat `$defs`.
+        foreach (array_keys($this->appClasses) as $class) {
+            $classOrigins[$class] = $root->shortName;
+        }
+
+        $names = [...$rootNames, ...$this->externalNames($installed)];
+
+        return $this->document($root, $manifest, $names, $this->markers(), $this->nodeDefs($manifest), $classOrigins);
+    }
+
+    /**
+     * The class → def-name index `buildRootDocument()` resolves a root prop
+     * typed with an installed package's class against, built by reading
+     * every installed source's committed `$defs` (each def's `x-lattice.php`
+     * annotation gives back its owning class) — no reflection.
+     *
+     * @param  list<WireSource>  $installed
+     * @return array<class-string, string>
+     */
+    private function externalNames(array $installed): array
+    {
+        $names = [];
+
+        foreach ($installed as $source) {
+            if (! is_file($source->schemaPath())) {
+                continue;
+            }
+
+            $document = json_decode((string) file_get_contents($source->schemaPath()), true);
+
+            if (! is_array($document) || ! is_array($document['$defs'] ?? null)) {
+                continue;
+            }
+
+            foreach ($document['$defs'] as $name => $def) {
+                $class = is_array($def) ? $def['x-lattice']['php'] ?? null : null;
+
+                if (is_string($class) && is_string($name) && (class_exists($class) || enum_exists($class))) {
+                    $names[$class] = $name;
+                }
+            }
+        }
+
+        return $names;
     }
 
     /**
@@ -841,6 +911,7 @@ final class WireModelBuilder
         $byDomain = [];
         $columnTypes = [];
         $filterTypes = [];
+        $formRootType = null;
 
         foreach ($manifest->components as $component) {
             if ($component->category === 'column') {
@@ -862,7 +933,9 @@ final class WireModelBuilder
             // namespace (e.g. Media's MediaPicker) must join FormNodeType
             // instead of colliding with it — Str::singular('Forms') is 'Form'.
             if (Str::singular($component->domain) === 'Form') {
-                if ($component->class !== Form::class) {
+                if (is_a($component->class, FormRootComponent::class, true)) {
+                    $formRootType = $component->type;
+                } else {
                     $fieldTypes[] = $component->type;
                 }
             } elseif ($component->domain !== '') {
@@ -876,13 +949,11 @@ final class WireModelBuilder
         // no Form component at all — only add the Form domain unions when
         // this manifest actually discovered one, so an unrelated origin
         // doesn't get a spurious `FormNodeType = "form"` of its own.
-        $hasForm = array_any($manifest->components, static fn (DiscoveredComponent $c): bool => $c->class === Form::class);
-
-        if ($fieldTypes !== [] || $hasForm) {
+        if ($fieldTypes !== [] || $formRootType !== null) {
             sort($fieldTypes);
             $domains['FormFieldNodeType'] = $fieldTypes;
 
-            $formTypes = $hasForm ? [...$fieldTypes, AsComponent::wireTypeForClass(Form::class)] : $fieldTypes;
+            $formTypes = $formRootType !== null ? [...$fieldTypes, $formRootType] : $fieldTypes;
             sort($formTypes);
             $domains['FormNodeType'] = $formTypes;
         }
@@ -940,7 +1011,7 @@ final class WireModelBuilder
      */
     private function remoteManifestNodeDef(): array
     {
-        $remoteCapable = array_keys(RemoteSchemaResolver::EXTERNAL_URL_PROPS);
+        $remoteCapable = array_keys(RemoteManifestRules::EXTERNAL_URL_PROPS);
         sort($remoteCapable);
 
         return [
@@ -951,7 +1022,7 @@ final class WireModelBuilder
                 'key' => ['type' => 'string'],
                 'props' => [
                     'type' => 'object',
-                    'propertyNames' => ['not' => ['enum' => RemoteSchemaResolver::FORBIDDEN_PROP_KEYS]],
+                    'propertyNames' => ['not' => ['enum' => RemoteManifestRules::FORBIDDEN_PROP_KEYS]],
                 ],
                 'schema' => ['type' => 'array', 'items' => ['$ref' => '#/$defs/RemoteManifestNode']],
             ],

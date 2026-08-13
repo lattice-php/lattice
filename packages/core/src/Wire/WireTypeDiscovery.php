@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Support\TypeScript;
+namespace Lattice\Core\Wire;
 
 use Lattice\Core\Attributes\AsWireNode;
 use Lattice\Core\Attributes\TypeScript;

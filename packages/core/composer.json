@@ -11,7 +11,8 @@
         "illuminate/routing": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
         "spatie/php-attribute-reader": "^1.1",
-        "spatie/php-structure-discoverer": "^2.4"
+        "spatie/php-structure-discoverer": "^2.4",
+        "symfony/type-info": "^7.0 || ^8.0"
     },
     "autoload": {
         "psr-4": {

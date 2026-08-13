@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Support\Wire;
+namespace Lattice\Core\Wire;
 
 /**
  * The name tables a wire model fragment resolves against: class-string →

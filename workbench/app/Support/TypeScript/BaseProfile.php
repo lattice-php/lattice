@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace Workbench\App\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
+use Lattice\Core\Wire\WireModelBuilder;
+use Lattice\Core\Wire\WireSourceCatalog;
 use Lattice\Support\TypeScript\ImportResolver;
 use Lattice\Support\TypeScript\OxfmtFormatter;
 use Lattice\Support\TypeScript\SchemaTypeScriptEmitter;
 use Lattice\Support\TypeScript\TypeScriptProfile;
-use Lattice\Support\Wire\WireModelBuilder;
-use Lattice\Support\Wire\WireSourceCatalog;
 
 /**
  * The package's own dev profile: regenerates the built-in TypeScript modules

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Support\Wire;
+namespace Lattice\Core\Wire;
 
 use Composer\InstalledVersions;
 use ReflectionClass;
