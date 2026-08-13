@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.50.0](https://github.com/lattice-php/lattice/compare/0.49.0...0.50.0) (2026-08-13)
+
+
+### Features
+
+* **docs:** per-package bundle analysis and complete release dist refresh ([#450](https://github.com/lattice-php/lattice/issues/450)) ([3d5f0f0](https://github.com/lattice-php/lattice/commit/3d5f0f03ad54d2b0363665e0ddf75837facc007e))
+
 ## [0.49.0](https://github.com/lattice-php/lattice/compare/0.48.1...0.49.0) (2026-08-13)
 
 
