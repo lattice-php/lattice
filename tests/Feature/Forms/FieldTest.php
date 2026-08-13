@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Lattice\Form\Components\Field;
 use Lattice\Form\FormData;
+use Lattice\Ui\Components\Link;
 
 function makeField(string $name = 'price', string $label = 'Price'): Field
 {
@@ -69,4 +70,19 @@ it('serializes a tooltip, defaulting to null when not set', function (): void {
     $field = makeField()->tooltip('See <a href="/docs">the docs</a>.');
 
     expect(wire($field)['props']['tooltip'])->toBe('See <a href="/docs">the docs</a>.');
+});
+
+it('serializes a label action as a wire node, defaulting to null', function (): void {
+    expect(wire(makeField())['props']['labelAction'])->toBeNull();
+
+    $props = wire(makeField()->labelAction(Link::make('Need help?')->href('/help')))['props'];
+
+    expect($props['labelAction']['type'])->toBe('link')
+        ->and($props['labelAction']['props'])->toMatchArray(['label' => 'Need help?', 'href' => '/help']);
+});
+
+it('serializes a hidden label action to null', function (): void {
+    $field = makeField()->labelAction(Link::make('Need help?')->href('/help')->hidden());
+
+    expect(wire($field)['props']['labelAction'])->toBeNull();
 });

@@ -1,5 +1,46 @@
 # Upgrade Guide
 
+## 0.49 → 0.50
+
+`@lattice-php/api-reference` is now also published to npm for standalone React/Astro use, and two
+refactors carry breaking changes: label actions are components on every field, and
+`@lattice-php/ui` navigates through an adapter instead of importing Inertia.
+
+### Label actions are components on every field
+
+`->labelAction()` moved from `PasswordInput` to the shared `Field` base and takes a component
+instead of label/href strings:
+
+```diff
+-PasswordInput::make('password', 'Password')
+-    ->labelAction('Forgot password?', route('password.request'), 3);
++PasswordInput::make('password', 'Password')
++    ->labelAction(Link::make('Forgot password?')->href(route('password.request'))->tabIndex(3));
+```
+
+The `Lattice\Form\Components\LabelAction` value object and the generated `LabelAction` TypeScript
+type (exported from `@lattice-php/form`) are removed; the wire prop is a regular node. Every field
+now serializes `labelAction` (`null` when unset), so consumers asserting exact wire shapes gain a
+key. On the JS side, `FormFieldFrame`'s `labelAction` prop takes a rendered `ReactNode`.
+
+### ui navigates through an adapter
+
+`@lattice-php/ui` no longer imports `@inertiajs/react` — its peer dependency is gone. Links and
+programmatic visits resolve through `NavigationProvider`/`useNavigation`
+(`@lattice-php/ui/navigation`); without a provider, links render as plain anchors and visits are
+full page loads. Lattice apps need no change: `createLatticeApp` and `<Provider>` seed an
+Inertia-backed adapter.
+
+- `TextLink` takes anchor props plus `method`. Inertia-specific props (`preserveScroll`, `data`,
+  `only`, …) moved behind the adapter.
+- The built-in `redirect` and `reload-page` effects default to `window.location`. The framework
+  registry overrides them with SPA handlers; apps passing a hand-rolled registry to
+  `createLatticeApp` should include `navigationPlugin` (exported from the runtime and
+  `@lattice-php/lattice`) to keep SPA behavior.
+- `useFlashEffects` moved from `@lattice-php/ui` to the framework package.
+- Standalone consumers of ui components can seed their own router via
+  `<NavigationProvider adapter={...}>`.
+
 ## 0.47 → 0.48
 
 Width is now decided by containers alone. Components that used to pin their own measure fill

@@ -1,4 +1,3 @@
-import { router } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
 import { nodeIdentity, Renderer } from "@lattice-php/core";
@@ -15,6 +14,7 @@ import {
 import type { TreeItemInstruction } from "@lattice-php/lattice/dnd";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
+import { useNavigation } from "@lattice-php/ui/navigation";
 import type { TreeNodeData } from "./types";
 import { ROOTS_KEY, TreeContext, useTreeContext, useTreeState } from "./tree-context";
 
@@ -80,6 +80,7 @@ function TreeItem({
     unregister,
   } = useTreeContext();
   const { t } = useT("tree");
+  const { visit } = useNavigation();
   const ref = useRef<HTMLLIElement>(null);
   const rowRef = useRef<HTMLDivElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -390,7 +391,7 @@ function TreeItem({
           return;
         }
         if (node.href) {
-          router.visit(node.href);
+          visit(node.href);
         } else {
           const trigger = bodyRef.current?.querySelector("button");
 

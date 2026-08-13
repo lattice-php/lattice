@@ -2,8 +2,12 @@ import type { RenderResult } from "@testing-library/react";
 import { vi } from "vitest";
 import { createRegistry, eagerComponent, type RendererComponent } from "@lattice-php/core";
 import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
+import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
 import type { TreeNodeData } from "./types";
 import TreeComponent from "./tree";
+
+/** Spy the tree suites assert keyboard navigation against. */
+export const treeVisit = vi.fn<(url: string) => void>();
 
 export const moveAction = fakeNode({
   props: { endpoint: "/lattice/actions/move", method: "post", ref: "move-ref" },
@@ -89,7 +93,12 @@ export function renderTree(props: Record<string, unknown>, id = "t1"): RenderRes
     type: "tree",
   });
 
-  return renderWithRegistry(<TreeComponent node={node}>{null}</TreeComponent>, testRegistry);
+  return renderWithRegistry(
+    <NavigationProvider adapter={{ ...defaultNavigation, visit: treeVisit }}>
+      <TreeComponent node={node}>{null}</TreeComponent>
+    </NavigationProvider>,
+    testRegistry,
+  );
 }
 
 /**

@@ -1,6 +1,7 @@
 import { Icon } from "@lattice-php/ui/icons";
 import type { Node, RendererComponent } from "@lattice-php/core";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
 import { ROW_ID_KEY } from "./repeater-rows";
@@ -56,6 +57,7 @@ export const RepeaterComponent: RendererComponent<"field.repeater"> = ({ node })
       error={errors[path]}
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(props.labelAction)}
       label={props.label ?? ""}
       id={path}
       required={required}

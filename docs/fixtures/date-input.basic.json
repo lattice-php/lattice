@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Birthday",
+            "labelAction": null,
             "max": "2026-01-01",
             "min": null,
             "name": "birthday",

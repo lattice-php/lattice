@@ -17,7 +17,6 @@ node_modules
 /tests/Browser/FailureScreenshots
 /dist
 /packages/*/dist
-!/packages/api-reference/dist
 !/packages/calendar/dist
 !/packages/media/dist
 !/packages/tree/dist

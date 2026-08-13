@@ -1,10 +1,8 @@
 import InputError from "@lattice-php/ui/input-error";
 import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
-import { TextLink } from "@lattice-php/ui/text-link";
 import { Label } from "@lattice-php/ui/label";
 import { useInTableCell } from "@lattice-php/form/hooks/row-layout-context";
 import { cn } from "@lattice-php/ui/lib/utils";
-import type { LabelAction } from "@lattice-php/form/types";
 import type { ComponentProps, ReactNode } from "react";
 
 export type FormFieldControlProps = {
@@ -21,7 +19,7 @@ type FormFieldFrameProps = Omit<ComponentProps<"div">, "children" | "id"> & {
   helperText?: string;
   id: string;
   label: string;
-  labelAction?: LabelAction;
+  labelAction?: ReactNode;
   required?: boolean;
   tooltip?: string;
 };
@@ -75,15 +73,7 @@ export function FormFieldFrame({
           </span>
         )}
         <InfoTooltip content={tooltip} />
-        {labelAction && (
-          <TextLink
-            href={labelAction.href}
-            tabIndex={labelAction.tabIndex ?? undefined}
-            className="ml-auto text-sm"
-          >
-            {labelAction.label}
-          </TextLink>
-        )}
+        {labelAction && <span className="ml-auto text-sm">{labelAction}</span>}
       </div>
 
       {control}

@@ -1,8 +1,9 @@
-import { Link } from "@inertiajs/react";
-import type { ComponentProps } from "react";
 import { cn } from "./lib/utils";
+import { useNavigation, type NavLinkProps } from "./navigation";
 
-export function TextLink({ className = "", children, ...props }: ComponentProps<typeof Link>) {
+export function TextLink({ className = "", children, ...props }: NavLinkProps) {
+  const { Link } = useNavigation();
+
   return (
     <Link
       className={cn(

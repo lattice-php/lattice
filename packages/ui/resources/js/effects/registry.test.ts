@@ -1,43 +1,34 @@
-import { router } from "@inertiajs/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { effect } from "@lattice-php/ui/test/effect-fixture";
 import { builtinEffectHandlers } from "./registry";
 
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
-);
-
 const setLocale = vi.hoisted(() => vi.fn<(locale: string) => void>());
 vi.mock("../i18n/locale", () => ({ setLocale }));
 
 afterEach(() => {
-  vi.mocked(router.reload).mockReset();
-  vi.mocked(router.visit).mockReset();
   setLocale.mockReset();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
 
 describe("builtinEffectHandlers", () => {
-  it("reloadPage calls router.reload() by default", () => {
-    builtinEffectHandlers["reload-page"](effect("reload-page", { full: false }));
-    expect(router.reload).toHaveBeenCalledOnce();
-  });
-
-  it("reloadPage calls window.location.reload() when full is set", () => {
+  it("reloadPage reloads the window", () => {
     const reload = vi.fn();
     vi.stubGlobal("location", { ...window.location, reload });
 
-    builtinEffectHandlers["reload-page"](effect("reload-page", { full: true }));
+    builtinEffectHandlers["reload-page"](effect("reload-page", { full: false }));
 
     expect(reload).toHaveBeenCalledOnce();
-    expect(router.reload).not.toHaveBeenCalled();
   });
 
-  it("redirect visits the url", () => {
+  it("redirect assigns the url to the window location", () => {
+    const assign = vi.fn();
+    vi.stubGlobal("location", { ...window.location, assign });
+
     builtinEffectHandlers.redirect(effect("redirect", { url: "/next" }));
-    expect(router.visit).toHaveBeenCalledWith("/next");
+
+    expect(assign).toHaveBeenCalledWith("/next");
   });
 
   it("download creates an anchor, sets href, clicks it, and removes it", () => {

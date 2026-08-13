@@ -1,4 +1,5 @@
 import { createRegistry } from "@lattice-php/core/registry";
+import { navigationPlugin } from "./inertia-navigation";
 import type {
   ActionNodeType,
   ChatNodeType,
@@ -59,4 +60,5 @@ export const registry = createRegistry(
   chatComponents,
   notificationsComponents,
   remoteComponents,
+  navigationPlugin,
 );

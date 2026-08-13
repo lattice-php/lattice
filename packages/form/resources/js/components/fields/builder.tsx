@@ -2,6 +2,7 @@ import type { Node, RendererComponent } from "@lattice-php/core";
 import type { RowTemplateData } from "@lattice-php/form/generated";
 import { useT } from "@lattice-php/ui/i18n";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
 import { AddRowMenu, type AddRowOption } from "./add-row-menu";
@@ -63,6 +64,7 @@ export const BuilderComponent: RendererComponent<"field.builder"> = ({ node }) =
       error={errors[path]}
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(props.labelAction)}
       label={props.label ?? ""}
       id={path}
       required={required}

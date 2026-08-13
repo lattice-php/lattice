@@ -12,6 +12,7 @@
             "emptyLabel": "No options",
             "helperText": null,
             "label": "Languages",
+            "labelAction": null,
             "multiple": true,
             "name": "languages",
             "optionSchema": null,

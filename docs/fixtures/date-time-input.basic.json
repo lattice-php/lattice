@@ -11,6 +11,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Starts at",
+            "labelAction": null,
             "max": null,
             "min": null,
             "name": "starts_at",

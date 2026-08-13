@@ -4,8 +4,11 @@ import { expect, it } from "vitest";
 
 const hostExternals = ["react", "react-dom", "react/jsx-runtime", "@lattice-php/lattice/runtime"];
 
-it("dist/plugin.js only imports the standalone host externals", () => {
-  const artifact = readFileSync(path.resolve(import.meta.dirname, "../../dist/plugin.js"), "utf8");
+it("dist-standalone/plugin.js only imports the standalone host externals", () => {
+  const artifact = readFileSync(
+    path.resolve(import.meta.dirname, "../../dist-standalone/plugin.js"),
+    "utf8",
+  );
   const specifiers = [...artifact.matchAll(/^import\b[^"'\n]*(["'])([^"'\n]+)\1/gm)].map(
     (match) => match[2],
   );
@@ -22,10 +25,10 @@ it("dist/plugin.js only imports the standalone host externals", () => {
 // Evaluating the bundle under gate load (vitest concurrent with composer
 // check) can exceed the default 5s.
 it(
-  "dist/plugin.js exports the plugin object against the runtime barrel",
+  "dist-standalone/plugin.js exports the plugin object against the runtime barrel",
   { timeout: 30_000 },
   async () => {
-    const { default: plugin } = (await import("../../dist/plugin.js")) as {
+    const { default: plugin } = (await import("../../dist-standalone/plugin.js")) as {
       default: { name: string; components: Record<string, unknown> };
     };
 

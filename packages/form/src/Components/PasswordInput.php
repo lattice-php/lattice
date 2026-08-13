@@ -22,19 +22,10 @@ class PasswordInput extends Field
 
     public ?string $passwordRules = null;
 
-    public ?LabelAction $labelAction = null;
-
     /**
      * @var array{label: string, name: string, placeholder: string}|null
      */
     public ?array $confirmation = null;
-
-    public function labelAction(string $label, string $href, ?int $tabIndex = null): static
-    {
-        $this->labelAction = new LabelAction($href, $label, $tabIndex);
-
-        return $this;
-    }
 
     public function passwordRules(string $passwordRules): static
     {

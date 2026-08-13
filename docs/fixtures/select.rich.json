@@ -12,6 +12,7 @@
             "emptyLabel": "No options",
             "helperText": null,
             "label": "Customer",
+            "labelAction": null,
             "multiple": false,
             "name": "customer",
             "optionSchema": [

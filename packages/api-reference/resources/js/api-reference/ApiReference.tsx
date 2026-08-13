@@ -1,17 +1,41 @@
-// Side-effect import: loads the ComponentProps augmentation in programs whose
-// tsconfig include misses types.ts (the docs app), so node.props stays typed.
-import "../types";
 import { useEffect, useMemo, useState } from "react";
-import type { RendererComponent } from "@lattice-php/lattice";
 import { Icon } from "@lattice-php/ui/icons";
-import { Badge, CopyButton } from "@lattice-php/ui";
+import { Badge } from "@lattice-php/ui/badge";
+import { CopyButton } from "@lattice-php/ui/copyable-text";
 import { httpMethodColor } from "./http-method-color";
 import { operationToMarkdown } from "./operation-markdown";
 import { OperationView } from "./OperationView";
 import { buildNavigation, filterNavigationByTags, parseOperation } from "./parse";
 import { operationUrl } from "./request-builder";
+import type { TwoColumnBreakpoint } from "./RequestPlayground";
 import { ServerPicker } from "./ServerPicker";
 import type { ApiInfo, Navigation } from "./types";
+
+export type ApiReferenceProps = {
+  /** Inline OpenAPI 3.x document. */
+  spec?: unknown;
+  /** URL to fetch the OpenAPI document from instead of passing it inline. */
+  url?: string | null;
+  /** Render a single operation instead of the grouped navigation. */
+  operation?: string | null;
+  /** Only show operations carrying one of these tags. */
+  tags?: string[] | null;
+  /** Operation to expand initially when no deep link targets one. */
+  defaultOperation?: string | null;
+  hideHeader?: boolean;
+  hideBaseUrl?: boolean;
+  /** Overrides the spec's info.title in the header. */
+  title?: string | null;
+  expandDepth?: number;
+  twoColumnBreakpoint?: TwoColumnBreakpoint;
+  /** Pre-fills the playground's bearer token. */
+  token?: string | null;
+  /** Controls the expanded operation; pair with onOperationChange. */
+  selectedOperation?: string | null;
+  onOperationChange?: (id: string) => void;
+  /** Sync the expanded operation with location.hash. Ignored when controlled. */
+  deepLinking?: boolean;
+};
 
 function firstSummaryId(navigation: Navigation | null): string | null {
   if (!navigation) return null;
@@ -25,6 +49,8 @@ function firstSummaryId(navigation: Navigation | null): string | null {
 }
 
 function currentHashId(): string | null {
+  if (typeof window === "undefined") return null;
+
   const hash = window.location.hash.slice(1);
 
   return hash === "" ? null : hash;
@@ -44,25 +70,30 @@ function InfoHeader({ title, info }: { title: string | null; info: ApiInfo }): R
   );
 }
 
-const ApiReference: RendererComponent<"api-reference"> = ({ node }) => {
-  const {
-    spec: inlineSpec,
-    url,
-    operation,
-    tags,
-    defaultOperation,
-    hideHeader,
-    hideBaseUrl,
-    title = null,
-    expandDepth,
-    twoColumnBreakpoint,
-    token = null,
-  } = node.props;
-
+export function ApiReference({
+  spec: inlineSpec = null,
+  url = null,
+  operation = null,
+  tags = null,
+  defaultOperation = null,
+  hideHeader = false,
+  hideBaseUrl = false,
+  title = null,
+  expandDepth = 2,
+  twoColumnBreakpoint = "lg",
+  token = null,
+  selectedOperation,
+  onOperationChange,
+  deepLinking = true,
+}: ApiReferenceProps): React.ReactNode {
+  const controlled = selectedOperation !== undefined;
   const [spec, setSpec] = useState<unknown>(inlineSpec ?? null);
   const [loading, setLoading] = useState<boolean>(Boolean(url));
   const [error, setError] = useState<string | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(() => currentHashId());
+  const [internalSelectedId, setInternalSelectedId] = useState<string | null>(() =>
+    deepLinking ? currentHashId() : null,
+  );
+  const selectedId = controlled ? selectedOperation : internalSelectedId;
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [collapsedOperationKey, setCollapsedOperationKey] = useState<string | null>(null);
   const [selectedRootServerUrl, setSelectedRootServerUrl] = useState<string | null>(null);
@@ -128,11 +159,12 @@ const ApiReference: RendererComponent<"api-reference"> = ({ node }) => {
   }, [spec, activeOperationId, selectedRootServerUrl, selectedOperationServerUrls]);
 
   useEffect(() => {
-    if (selectedId !== null || !navigation) return;
+    if (controlled || selectedId !== null || !navigation) return;
 
-    const initial = currentHashId() ?? defaultOperation ?? firstSummaryId(navigation);
-    if (initial) setSelectedId(initial);
-  }, [navigation, selectedId, defaultOperation]);
+    const initial =
+      (deepLinking ? currentHashId() : null) ?? defaultOperation ?? firstSummaryId(navigation);
+    if (initial) setInternalSelectedId(initial);
+  }, [controlled, navigation, selectedId, defaultOperation, deepLinking]);
 
   useEffect(() => {
     if (!navigation || navigation.servers.some((server) => server.url === selectedRootServerUrl))
@@ -143,18 +175,24 @@ const ApiReference: RendererComponent<"api-reference"> = ({ node }) => {
   }, [navigation, selectedRootServerUrl]);
 
   useEffect(() => {
+    if (controlled || !deepLinking) return;
+
     function onHashChange(): void {
-      setSelectedId(currentHashId());
+      setInternalSelectedId(currentHashId());
     }
 
     window.addEventListener("hashchange", onHashChange);
 
     return () => window.removeEventListener("hashchange", onHashChange);
-  }, []);
+  }, [controlled, deepLinking]);
 
   function selectOperation(id: string): void {
-    setSelectedId(id);
-    window.location.hash = id;
+    onOperationChange?.(id);
+
+    if (controlled) return;
+
+    setInternalSelectedId(id);
+    if (deepLinking) window.location.hash = id;
   }
 
   function toggleOperation(groupId: string, id: string): void {
@@ -331,6 +369,4 @@ const ApiReference: RendererComponent<"api-reference"> = ({ node }) => {
       </div>
     </div>
   );
-};
-
-export default ApiReference;
+}

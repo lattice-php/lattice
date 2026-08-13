@@ -12,6 +12,7 @@
             "emptyLabel": "No options",
             "helperText": null,
             "label": "Country",
+            "labelAction": null,
             "multiple": false,
             "name": "country",
             "optionSchema": null,

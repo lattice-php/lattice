@@ -12,6 +12,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Email address",
+            "labelAction": null,
             "name": "email",
             "placeholder": "you@example.com",
             "prefillRefreshOn": null,

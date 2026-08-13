@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Lattice\Core\Support\Wire;
 use Lattice\Form\Components\PasswordInput;
+use Lattice\Ui\Components\Link;
 
 describe('docs fixtures', function (): void {
     it('matches the password input examples fixture', function (): void {
@@ -18,24 +19,14 @@ describe('docs fixtures', function (): void {
     });
 });
 
-it('serializes a label action to the wire shape', function (): void {
+it('serializes a label action as a wire node', function (): void {
     $props = wire(PasswordInput::make('password', 'Password')
-        ->labelAction('Forgot password?', '/forgot', 3))['props'];
+        ->labelAction(Link::make('Forgot password?')->href('/forgot')->tabIndex(3)))['props'];
 
-    expect($props['labelAction'])->toBe([
-        'href' => '/forgot',
-        'label' => 'Forgot password?',
-        'tabIndex' => 3,
-    ]);
-});
-
-it('serializes a label action tabIndex as null when omitted', function (): void {
-    $props = wire(PasswordInput::make('password', 'Password')
-        ->labelAction('Forgot password?', '/forgot'))['props'];
-
-    expect($props['labelAction'])->toBe([
-        'href' => '/forgot',
-        'label' => 'Forgot password?',
-        'tabIndex' => null,
-    ]);
+    expect($props['labelAction']['type'])->toBe('link')
+        ->and($props['labelAction']['props'])->toMatchArray([
+            'label' => 'Forgot password?',
+            'href' => '/forgot',
+            'tabIndex' => 3,
+        ]);
 });

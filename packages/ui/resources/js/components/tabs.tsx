@@ -1,4 +1,3 @@
-import { router } from "@inertiajs/react";
 import {
   createContext,
   useCallback,
@@ -12,6 +11,7 @@ import type { KeyboardEvent, ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
 import type { Tab } from "../generated";
 import { cn } from "../lib/utils";
+import { useNavigation } from "../navigation";
 import { pillClassName } from "../pill";
 import { UI_NAMESPACE, useT } from "../i18n";
 
@@ -102,6 +102,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   const isVertical = orientation === "vertical";
   const alignment = node.props.alignment;
   const isStretched = !isVertical && alignment === "stretch";
+  const { visit } = useNavigation();
   const serverActiveValue = node.props.activeValue;
   const defaultValue = node.props.defaultValue ?? firstValue;
   const tablistRef = useRef<HTMLDivElement>(null);
@@ -112,7 +113,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   const selectTab = useCallback(
     (tab: TabItem): void => {
       if (tab.confirm?.required) {
-        router.visit(queryUrl(queryKey, tab.value), {
+        visit(queryUrl(queryKey, tab.value), {
           preserveScroll: true,
         });
 
@@ -122,7 +123,7 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
       setActiveTabValue(tab.value);
       replaceQueryValue(queryKey, tab.value);
     },
-    [queryKey],
+    [queryKey, visit],
   );
 
   const selectTabValue = useCallback(

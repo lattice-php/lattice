@@ -2,6 +2,7 @@ import type { RendererComponent } from "@lattice-php/core";
 import { testIdentity } from "@lattice-php/core/test-id";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { toBoolean } from "@lattice-php/form/lib/conditions";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { fieldDomName } from "@lattice-php/form/lib/field-dom-name";
@@ -37,6 +38,7 @@ export const ToggleComponent: RendererComponent<"field.toggle"> = ({ node }) => 
       error={errors[errorKey]}
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(props.labelAction)}
       label={props.label ?? ""}
       id={name}
       required={required}

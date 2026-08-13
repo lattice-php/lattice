@@ -1,10 +1,10 @@
-import { Link } from "@inertiajs/react";
 import { IconRenderer } from "../icons";
 import { Button, buttonVariants } from "../button";
 import type { Emphasis, Variant } from "../button";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "../click-behavior";
+import { useNavigation } from "../navigation";
 
 export type { Emphasis, Variant };
 
@@ -14,6 +14,7 @@ const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
   const emphasis = node.props.emphasis ?? "solid";
   const testId = nodeIdentity(node);
   const behavior = useClickBehavior(node.props);
+  const { Link } = useNavigation();
   const size = icon ? "icon" : "md";
   const content = icon ? (
     <>
@@ -40,7 +41,7 @@ const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
   if (behavior.kind === "navigate") {
     return (
       <Button asChild data-test={testId} emphasis={emphasis} variant={variant} size={size}>
-        <Link href={behavior.href} method={behavior.method}>
+        <Link href={behavior.href} method={behavior.method ?? undefined}>
           {content}
         </Link>
       </Button>

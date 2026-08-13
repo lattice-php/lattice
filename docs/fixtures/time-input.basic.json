@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Start time",
+            "labelAction": null,
             "max": "18:00",
             "min": "08:00",
             "name": "starts_at",

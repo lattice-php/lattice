@@ -21,4 +21,11 @@ describe("lattice component registry", () => {
       expect(registry.components[type]?.mode).toBe("eager");
     }
   });
+
+  it("overrides the redirect and reload-page effects with SPA handlers", () => {
+    expect(registry.extensions.effects).toMatchObject({
+      redirect: expect.any(Function),
+      "reload-page": expect.any(Function),
+    });
+  });
 });

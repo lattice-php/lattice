@@ -1,17 +1,73 @@
 {
   "name": "@lattice-php/api-reference",
   "version": "0.49.0",
-  "private": true,
-  "description": "Dev workspace for the API reference component package; ships to consumers via Composer, not npm.",
+  "description": "Interactive OpenAPI reference component with request playground, for Lattice apps or any React frontend.",
+  "license": "MIT",
+  "author": "Manuel Christlieb <manuel@christlieb.eu>",
   "type": "module",
+  "homepage": "https://latticephp.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lattice-php/lattice.git",
+    "directory": "packages/api-reference"
+  },
+  "bugs": {
+    "url": "https://github.com/lattice-php/lattice/issues"
+  },
+  "keywords": [
+    "openapi",
+    "api-reference",
+    "react",
+    "laravel",
+    "lattice"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./css": "./dist/api-reference.css",
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "dist-standalone"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build:standalone": "vite build",
+    "build": "vite build",
+    "build:plugin": "npm run build",
+    "build:sprite": "node scripts/generate-sprite.mjs",
+    "build:standalone": "vite build --mode standalone",
+    "prepack": "npm run build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@lattice-php/core": "0.49.0",
     "@lattice-php/form": "0.49.0",
-    "@lattice-php/lattice": "0.49.0",
     "@lattice-php/ui": "0.49.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@lattice-php/vite-svg-sprite": "^0.3.0"
   }
 }

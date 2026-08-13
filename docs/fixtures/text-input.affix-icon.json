@@ -12,6 +12,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Search",
+            "labelAction": null,
             "name": "search",
             "placeholder": null,
             "prefillRefreshOn": null,

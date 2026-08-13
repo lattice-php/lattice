@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": "Show this item publicly.",
             "label": "Published",
+            "labelAction": null,
             "name": "published",
             "prefillRefreshOn": null,
             "prefillResetOn": null,

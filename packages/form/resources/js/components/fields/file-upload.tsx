@@ -6,6 +6,7 @@ import { IconButton } from "@lattice-php/ui/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
 import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
@@ -258,6 +259,7 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
       error={errors[errorKey]}
       helperText={props.helperText ?? undefined}
       tooltip={props.tooltip ?? undefined}
+      labelAction={fieldLabelAction(props.labelAction)}
       label={props.label ?? ""}
       id={inputId}
       required={required}

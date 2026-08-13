@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Age",
+            "labelAction": null,
             "max": 120,
             "min": 0,
             "name": "age",

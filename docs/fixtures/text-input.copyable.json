@@ -12,6 +12,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "API key",
+            "labelAction": null,
             "name": "api_key",
             "placeholder": null,
             "prefillRefreshOn": null,

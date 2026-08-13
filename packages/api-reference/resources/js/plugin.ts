@@ -1,8 +1,10 @@
 import { lazyComponent, type Plugin } from "@lattice-php/core/registry";
 
-export default {
+const plugin: Plugin = {
   name: "api-reference",
   components: {
-    "api-reference": lazyComponent(() => import("./api-reference/ApiReference")),
+    "api-reference": lazyComponent(() => import("./api-reference/lattice")),
   },
-} satisfies Plugin;
+};
+
+export default plugin;

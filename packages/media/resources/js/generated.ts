@@ -33,6 +33,7 @@ export type MediaPicker = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   maxFiles: number | null;
   multiple: boolean;
   name: string;

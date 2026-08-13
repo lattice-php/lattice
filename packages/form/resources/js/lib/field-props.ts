@@ -18,6 +18,7 @@ type FieldProps = Partial<
     | "editablePrefill"
     | "helperText"
     | "label"
+    | "labelAction"
     | "name"
     | "prefillRefreshOn"
     | "prefillResetOn"

@@ -230,6 +230,8 @@ describe("Lattice action component", () => {
     const toastListener = vi.fn<(event: Event) => void>();
     const reloadListener = vi.fn<(event: Event) => void>();
     const reloadPageListener = vi.fn<(event: Event) => void>();
+    const pageReload = vi.fn();
+    vi.stubGlobal("location", { ...window.location, reload: pageReload });
 
     window.addEventListener("lattice:toast", toastListener);
     window.addEventListener("lattice:reload-component", reloadListener);
@@ -252,7 +254,7 @@ describe("Lattice action component", () => {
     await waitFor(() => {
       expect(toastListener).toHaveBeenCalledTimes(1);
       expect(reloadListener).toHaveBeenCalledTimes(1);
-      expect(router.reload).toHaveBeenCalledTimes(1);
+      expect(pageReload).toHaveBeenCalledTimes(1);
     });
 
     expect(reloadPageListener).not.toHaveBeenCalled();
@@ -266,7 +268,7 @@ describe("Lattice action component", () => {
     expect(reloadEvent.detail).toEqual({
       component: "settings.profile",
     });
-    expect(router.reload).toHaveBeenCalledWith();
+    expect(pageReload).toHaveBeenCalledWith();
 
     window.removeEventListener("lattice:toast", toastListener);
     window.removeEventListener("lattice:reload-component", reloadListener);

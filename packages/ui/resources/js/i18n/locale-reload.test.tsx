@@ -1,38 +1,43 @@
 import { render } from "@testing-library/react";
-import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
+import { defaultNavigation, NavigationProvider } from "../navigation";
 import { LocaleReload } from "./locale-reload";
 
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
-);
+const visit = vi.fn();
+
+function withNavigation(children: ReactNode) {
+  return (
+    <NavigationProvider adapter={{ ...defaultNavigation, visit }}>{children}</NavigationProvider>
+  );
+}
 
 describe("LocaleReload", () => {
   beforeEach(() => {
-    vi.mocked(router.visit).mockReset();
+    visit.mockReset();
     window.history.pushState({}, "", "/");
   });
 
-  it("reloads the current Inertia page when the locale changes", () => {
+  it("revisits the current page when the locale changes", () => {
     window.history.pushState({}, "", "/settings?tab=profile");
     const href = window.location.href;
 
-    render(<LocaleReload />);
+    render(withNavigation(<LocaleReload />));
 
     window.dispatchEvent(new CustomEvent("lattice:locale-change", { detail: { locale: "de" } }));
 
-    expect(router.visit).toHaveBeenCalledWith(href, {
+    expect(visit).toHaveBeenCalledWith(href, {
       preserveScroll: true,
       preserveState: true,
     });
   });
 
   it("allows the reload visit options to be adjusted", () => {
-    render(<LocaleReload preserveScroll={false} preserveState={false} />);
+    render(withNavigation(<LocaleReload preserveScroll={false} preserveState={false} />));
 
     window.dispatchEvent(new CustomEvent("lattice:locale-change", { detail: { locale: "de" } }));
 
-    expect(router.visit).toHaveBeenCalledWith(window.location.href, {
+    expect(visit).toHaveBeenCalledWith(window.location.href, {
       preserveScroll: false,
       preserveState: false,
     });

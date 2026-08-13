@@ -12,6 +12,7 @@
             "helperText": null,
             "image": true,
             "label": "Avatar",
+            "labelAction": null,
             "maxFiles": null,
             "maxSize": 2048,
             "multiple": false,

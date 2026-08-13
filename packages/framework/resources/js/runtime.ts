@@ -1,5 +1,7 @@
 export * from "./index";
 export { router } from "@inertiajs/react";
+export { inertiaNavigation, navigationPlugin } from "./inertia-navigation";
+export { defaultNavigation, NavigationProvider, useNavigation } from "@lattice-php/ui/navigation";
 export { runAction } from "@lattice-php/action";
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
 export { RenderNode } from "@lattice-php/core/renderer";
@@ -12,19 +14,27 @@ export { useTable } from "@lattice-php/table/hooks/use-table";
 export { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 export { getBulkActions } from "@lattice-php/table/lib/bulk";
 export {
+  Badge,
   Button,
   Checkbox,
   cn,
+  CodeBlock,
+  Combobox,
   ConfirmDialog,
+  CopyButton,
   Dialog,
   DialogContent,
   DialogHeader,
   formatDateValue,
   IconButton,
+  InfoTooltip,
   Input,
   Label,
   NativeSelect,
   PreviewableImage,
+  SegmentedPills,
+  Spinner,
+  Textarea,
   useDebouncedCallback,
   useFormatContext,
   usePersistentState,

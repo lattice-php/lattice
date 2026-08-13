@@ -9,6 +9,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Tag color",
+            "labelAction": null,
             "name": "color",
             "palette": [
                 "#ef4444",

@@ -38,6 +38,7 @@
             ],
             "helperText": null,
             "label": "Summary",
+            "labelAction": null,
             "name": "summary",
             "placeholder": null,
             "prefillRefreshOn": null,

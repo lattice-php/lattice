@@ -19,6 +19,7 @@ export type Builder = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   layout: RowLayout;
   maxItems: number | null;
   minItems: number | null;
@@ -45,6 +46,7 @@ export type Checkbox = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
@@ -64,6 +66,7 @@ export type Choice = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   options: Option[];
   prefillRefreshOn: string[] | null;
@@ -83,6 +86,7 @@ export type ColorPicker = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   palette: string[];
   placeholder: string | null;
@@ -132,6 +136,7 @@ export type DateInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   max: string | null;
   min: string | null;
   name: string;
@@ -154,6 +159,7 @@ export type DateTimeInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   max: string | null;
   min: string | null;
   name: string;
@@ -246,6 +252,7 @@ export type FileUpload = {
   helperText: string | null;
   image: boolean;
   label: string | null;
+  labelAction: Node | null;
   maxFiles: number | null;
   maxSize: number | null;
   multiple: boolean;
@@ -331,6 +338,7 @@ export type HiddenInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
@@ -338,11 +346,6 @@ export type HiddenInput = {
   required: boolean;
   tooltip: string | null;
   value: unknown;
-};
-export type LabelAction = {
-  readonly href: string;
-  readonly label: string;
-  readonly tabIndex: number | null;
 };
 export type NodeType =
   | "field.builder"
@@ -377,6 +380,7 @@ export type NumberInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   max: number | null;
   min: number | null;
   name: string;
@@ -403,6 +407,7 @@ export type OtpInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   length: number;
   name: string;
   prefillRefreshOn: string[] | null;
@@ -428,7 +433,7 @@ export type PasswordInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
-  labelAction: LabelAction | null;
+  labelAction: Node | null;
   name: string;
   passwordRules: string | null;
   placeholder: string | null;
@@ -451,6 +456,7 @@ export type PatternInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
@@ -479,6 +485,7 @@ export type Repeater = {
   itemLabel: string | null;
   itemLabels: (string | null)[] | null;
   label: string | null;
+  labelAction: Node | null;
   layout: RowLayout;
   maxItems: number | null;
   minItems: number | null;
@@ -509,6 +516,7 @@ export type RichEditor = {
   extensions: EditorExtension[];
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   placeholder: string | null;
   prefillRefreshOn: string[] | null;
@@ -544,6 +552,7 @@ export type Select = {
   emptyLabel: string;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   multiple: boolean;
   name: string;
   optionSchema: Node[] | null;
@@ -577,6 +586,7 @@ export type TextInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   placeholder: string | null;
   prefillRefreshOn: string[] | null;
@@ -600,6 +610,7 @@ export type Textarea = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   placeholder: string | null;
   prefillRefreshOn: string[] | null;
@@ -621,6 +632,7 @@ export type TimeInput = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   max: string | null;
   min: string | null;
   name: string;
@@ -643,6 +655,7 @@ export type Toggle = {
   editablePrefill: boolean;
   helperText: string | null;
   label: string | null;
+  labelAction: Node | null;
   name: string;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;

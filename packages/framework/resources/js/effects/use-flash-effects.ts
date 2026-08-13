@@ -1,7 +1,7 @@
 import { router } from "@inertiajs/react";
 import { useEffect } from "react";
-import { getActionEffects } from "./dispatch";
-import { useEffectDispatcher } from "./use-effect-dispatcher";
+import { getActionEffects } from "@lattice-php/ui/effects/dispatch";
+import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 
 type InertiaFlashEvent = CustomEvent<{
   flash?: {
