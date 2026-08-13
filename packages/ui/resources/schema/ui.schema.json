@@ -1,0 +1,4258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/ui/v1.json",
+  "title": "Lattice ui wire types",
+  "$defs": {
+    "Align": {
+      "type": "string",
+      "enum": [
+        "center",
+        "left",
+        "start",
+        "stretch"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Align"
+      }
+    },
+    "Avatar": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shape": {
+          "$ref": "#/$defs/AvatarShape"
+        },
+        "size": {
+          "$ref": "#/$defs/Size"
+        },
+        "src": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "shape",
+        "size",
+        "src"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "avatar",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Avatar"
+      }
+    },
+    "AvatarShape": {
+      "type": "string",
+      "enum": [
+        "circle",
+        "rounded"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\AvatarShape"
+      }
+    },
+    "Badge": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "dark": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "kind": {
+                  "$ref": "#/$defs/ColorKind",
+                  "readOnly": true
+                },
+                "value": {
+                  "type": "string",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "dark",
+                "kind",
+                "value"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Color"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "color",
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "badge",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Badge"
+      }
+    },
+    "BadgeEntry": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "dark": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "kind": {
+                  "$ref": "#/$defs/ColorKind",
+                  "readOnly": true
+                },
+                "value": {
+                  "type": "string",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "dark",
+                "kind",
+                "value"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Color"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": [
+        "color",
+        "description",
+        "label",
+        "name",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "entry.badge",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Entries\\BadgeEntry"
+      }
+    },
+    "BooleanEntry": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "falseIcon": {
+          "type": "string"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "trueIcon": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": [
+        "description",
+        "falseIcon",
+        "label",
+        "name",
+        "trueIcon",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "entry.boolean",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Entries\\BooleanEntry"
+      }
+    },
+    "Breakpoint": {
+      "type": "string",
+      "enum": [
+        "default",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Breakpoint"
+      }
+    },
+    "Button": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "buttonType": {
+          "$ref": "#/$defs/ButtonType"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          }
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Emphasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "href": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HttpMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Variant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "buttonType",
+        "effects",
+        "emphasis",
+        "href",
+        "icon",
+        "label",
+        "method",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "button",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
+    "ButtonType": {
+      "type": "string",
+      "enum": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ButtonType"
+      }
+    },
+    "Callout": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dismissible": {
+          "type": "boolean"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Translatable"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "title": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Translatable"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unique": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant": {
+          "$ref": "#/$defs/Variant"
+        }
+      },
+      "required": [
+        "action",
+        "dismissible",
+        "message",
+        "title",
+        "unique",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "callout",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\Callout"
+      }
+    },
+    "Card": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "headerActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tooltip": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "description",
+        "headerActions",
+        "title",
+        "tooltip"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "card",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Card"
+      }
+    },
+    "Chart": {
+      "type": "object",
+      "properties": {
+        "categoryFormat": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DateFormat"
+            },
+            {
+              "$ref": "#/$defs/NumberFormat"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "categoryKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "grid": {
+          "type": "boolean"
+        },
+        "height": {
+          "type": "integer"
+        },
+        "legend": {
+          "type": "boolean"
+        },
+        "series": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ChartSeries"
+          }
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tooltip": {
+          "type": "boolean"
+        },
+        "valueFormat": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NumberFormat"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "xAxis": {
+          "type": "boolean"
+        },
+        "yAxis": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "categoryFormat",
+        "categoryKey",
+        "data",
+        "description",
+        "grid",
+        "height",
+        "legend",
+        "series",
+        "title",
+        "tooltip",
+        "valueFormat",
+        "xAxis",
+        "yAxis"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "chart",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Chart"
+      }
+    },
+    "ChartSeries": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "dark": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "kind": {
+                  "$ref": "#/$defs/ColorKind",
+                  "readOnly": true
+                },
+                "value": {
+                  "type": "string",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "dark",
+                "kind",
+                "value"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Color"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "readOnly": true
+        },
+        "dataKey": {
+          "type": "string",
+          "readOnly": true
+        },
+        "innerRadius": {
+          "type": "string",
+          "readOnly": true
+        },
+        "maxValue": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "readOnly": true
+        },
+        "nameKey": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "stackId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/ChartSeriesType",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "color",
+        "dataKey",
+        "innerRadius",
+        "maxValue",
+        "name",
+        "nameKey",
+        "stackId",
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Ui\\Values\\ChartSeries"
+      }
+    },
+    "ChartSeriesType": {
+      "type": "string",
+      "enum": [
+        "area",
+        "bar",
+        "distribution",
+        "gauge",
+        "line",
+        "pie"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ChartSeriesType"
+      }
+    },
+    "CloseModal": {
+      "type": "object",
+      "properties": {
+        "modal": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": [
+        "modal"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "close-modal",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\CloseModal"
+      }
+    },
+    "CodeBlock": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "copyable": {
+          "type": "boolean"
+        },
+        "language": {
+          "$ref": "#/$defs/CodeBlockLanguage"
+        },
+        "lineNumbers": {
+          "type": "boolean"
+        },
+        "maxHeight": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "wrap": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "copyable",
+        "language",
+        "lineNumbers",
+        "maxHeight",
+        "wrap"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "code-block",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\CodeBlock"
+      }
+    },
+    "CodeBlockLanguage": {
+      "type": "string",
+      "enum": [
+        "text",
+        "json",
+        "javascript",
+        "shell",
+        "php"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\CodeBlockLanguage"
+      }
+    },
+    "Collapsible": {
+      "type": "object",
+      "properties": {
+        "collapsed": {
+          "type": "boolean"
+        },
+        "rememberState": {
+          "type": "boolean"
+        },
+        "tooltip": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trigger": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
+        }
+      },
+      "required": [
+        "collapsed",
+        "rememberState",
+        "tooltip",
+        "trigger"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "collapsible",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Collapsible"
+      }
+    },
+    "ColorKind": {
+      "type": "string",
+      "enum": [
+        "named",
+        "css"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Core\\Enums\\ColorKind"
+      }
+    },
+    "ColumnWidth": {
+      "type": "string",
+      "enum": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+      }
+    },
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "ComponentEntry": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": [
+        "description",
+        "label",
+        "name",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "entry.component",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Entries\\ComponentEntry"
+      }
+    },
+    "DateEntry": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "format": {
+          "$ref": "#/$defs/DateFormat"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "required": [
+        "description",
+        "format",
+        "label",
+        "name",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "entry.date",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Entries\\DateEntry"
+      }
+    },
+    "DateFormat": {
+      "type": "object",
+      "properties": {
+        "dateStyle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DateTimeStyle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "month": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "timeStyle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DateTimeStyle"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "year": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "dateStyle",
+        "kind",
+        "month",
+        "timeStyle",
+        "year"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Ui\\Values\\DateFormat"
+      }
+    },
+    "DateTimeStyle": {
+      "type": "string",
+      "enum": [
+        "full",
+        "long",
+        "medium",
+        "short"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\DateTimeStyle"
+      }
+    },
+    "DescriptionList": {
+      "type": "object",
+      "properties": {
+        "bleed": {
+          "type": "boolean"
+        },
+        "divided": {
+          "type": "boolean"
+        },
+        "emptyLabel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "semantic": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "bleed",
+        "divided",
+        "emptyLabel",
+        "semantic"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "description-list",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\DescriptionList"
+      }
+    },
+    "Download": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "download",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\Download"
+      }
+    },
+    "Effect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "effect"
+      }
+    },
+    "Emphasis": {
+      "type": "string",
+      "enum": [
+        "solid",
+        "outline",
+        "ghost",
+        "link"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Emphasis"
+      }
+    },
+    "FloatingPanel": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "offset": {
+          "type": "integer"
+        },
+        "placement": {
+          "$ref": "#/$defs/FloatingPlacement"
+        },
+        "trigger": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
+        }
+      },
+      "required": [
+        "label",
+        "offset",
+        "placement",
+        "trigger"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "floating-panel",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\FloatingPanel"
+      }
+    },
+    "FloatingPlacement": {
+      "type": "string",
+      "enum": [
+        "bottom-end",
+        "bottom-start",
+        "top-end",
+        "top-start"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\FloatingPlacement"
+      }
+    },
+    "Gap": {
+      "type": "string",
+      "enum": [
+        "none",
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Gap"
+      }
+    },
+    "Grid": {
+      "type": "object",
+      "properties": {
+        "columns": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": [
+                  "integer",
+                  "string"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "columns"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "grid",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Grid"
+      }
+    },
+    "Heading": {
+      "type": "object",
+      "properties": {
+        "copyable": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "integer"
+        },
+        "text": {
+          "type": "string"
+        },
+        "tooltip": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "copyable",
+        "level",
+        "text",
+        "tooltip"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "heading",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Heading"
+      }
+    },
+    "Height": {
+      "type": "string",
+      "enum": [
+        "full",
+        "screen"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Height"
+      }
+    },
+    "HttpMethod": {
+      "type": "string",
+      "enum": [
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\HttpMethod"
+      }
+    },
+    "Icon": {
+      "type": "object",
+      "properties": {
+        "class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "dark": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "kind": {
+                  "$ref": "#/$defs/ColorKind",
+                  "readOnly": true
+                },
+                "value": {
+                  "type": "string",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "dark",
+                "kind",
+                "value"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Color"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "size": {
+          "$ref": "#/$defs/Size"
+        }
+      },
+      "required": [
+        "class",
+        "color",
+        "name",
+        "size"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "icon",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Icon"
+      }
+    },
+    "Image": {
+      "type": "object",
+      "properties": {
+        "alt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "circular": {
+          "type": "boolean"
+        },
+        "previewable": {
+          "type": "boolean"
+        },
+        "size": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "src": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "alt",
+        "circular",
+        "previewable",
+        "size",
+        "src"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "image",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Image"
+      }
+    },
+    "Justify": {
+      "type": "string",
+      "enum": [
+        "start",
+        "center",
+        "end",
+        "between",
+        "around",
+        "evenly"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Justify"
+      }
+    },
+    "Link": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          }
+        },
+        "href": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HttpMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prefix": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "suffix": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "icon": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "text": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "icon",
+                "text"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Support\\Affix"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tabIndex": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "effects",
+        "href",
+        "icon",
+        "label",
+        "method",
+        "prefix",
+        "suffix",
+        "tabIndex"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "link",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Link"
+      }
+    },
+    "LocaleChange": {
+      "type": "object",
+      "properties": {
+        "locale": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "locale"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "locale-change",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\LocaleChange"
+      }
+    },
+    "Modal": {
+      "type": "object",
+      "properties": {
+        "closeLabel": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "height": {
+          "$ref": "#/$defs/ModalHeight"
+        },
+        "open": {
+          "type": "boolean"
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "side": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Side"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "width": {
+          "$ref": "#/$defs/ModalWidth"
+        }
+      },
+      "required": [
+        "closeLabel",
+        "description",
+        "height",
+        "open",
+        "ref",
+        "side",
+        "title",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "modal",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Modal"
+      }
+    },
+    "ModalHeight": {
+      "type": "string",
+      "enum": [
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ModalHeight"
+      }
+    },
+    "ModalWidth": {
+      "type": "string",
+      "enum": [
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ModalWidth"
+      }
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "NumberFormat": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": "string"
+        },
+        "maximumFractionDigits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "minimumFractionDigits": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "notation": {
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NumberFormatUnit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "currency",
+        "kind",
+        "maximumFractionDigits",
+        "minimumFractionDigits",
+        "notation",
+        "unit"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Ui\\Values\\NumberFormat"
+      }
+    },
+    "NumberFormatUnit": {
+      "type": "string",
+      "enum": [
+        "percent",
+        "kilogram",
+        "gram",
+        "kilometer",
+        "meter",
+        "byte",
+        "kilobyte",
+        "megabyte",
+        "gigabyte",
+        "millisecond",
+        "second",
+        "minute",
+        "hour",
+        "celsius",
+        "fahrenheit"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\NumberFormatUnit"
+      }
+    },
+    "OpenModal": {
+      "type": "object",
+      "properties": {
+        "modal": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "modal"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "open-modal",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\OpenModal"
+      }
+    },
+    "Orientation": {
+      "type": "string",
+      "enum": [
+        "horizontal",
+        "vertical"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Orientation"
+      }
+    },
+    "Placement": {
+      "type": "string",
+      "enum": [
+        "top",
+        "bottom",
+        "right"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Placement"
+      }
+    },
+    "Progress": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "dark": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "kind": {
+                  "$ref": "#/$defs/ColorKind",
+                  "readOnly": true
+                },
+                "value": {
+                  "type": "string",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "dark",
+                "kind",
+                "value"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Color"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max": {
+          "type": "number"
+        },
+        "shape": {
+          "$ref": "#/$defs/ProgressShape"
+        },
+        "showValue": {
+          "type": "boolean"
+        },
+        "size": {
+          "$ref": "#/$defs/Size"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "color",
+        "max",
+        "shape",
+        "showValue",
+        "size",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "progress",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Progress"
+      }
+    },
+    "ProgressShape": {
+      "type": "string",
+      "enum": [
+        "bar",
+        "circle"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ProgressShape"
+      }
+    },
+    "RawBlock": {
+      "type": "object",
+      "properties": {
+        "html": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "html"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "raw-block",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\RawBlock"
+      }
+    },
+    "Redirect": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "redirect",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\Redirect"
+      }
+    },
+    "ReloadComponent": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "component"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "reload-component",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\ReloadComponent"
+      }
+    },
+    "ReloadPage": {
+      "type": "object",
+      "properties": {
+        "full": {
+          "type": "boolean",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "full"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "reload-page",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\ReloadPage"
+      }
+    },
+    "ResetForm": {
+      "type": "object",
+      "properties": {
+        "form": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": [
+        "form"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "reset-form",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\ResetForm"
+      }
+    },
+    "RetractCallout": {
+      "type": "object",
+      "properties": {
+        "unique": {
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "unique"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "retract-callout",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\RetractCallout"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
+    "Section": {
+      "type": "object",
+      "properties": {
+        "collapsed": {
+          "type": "boolean"
+        },
+        "collapsible": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "headerActions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
+        },
+        "rememberState": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tooltip": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "collapsed",
+        "collapsible",
+        "description",
+        "headerActions",
+        "rememberState",
+        "title",
+        "tooltip"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "section",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Section"
+      }
+    },
+    "SegmentedControl": {
+      "type": "object",
+      "properties": {
+        "emits": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "readOnly": true
+              },
+              "label": {
+                "type": "string",
+                "readOnly": true
+              },
+              "value": {
+                "type": "string",
+                "readOnly": true
+              }
+            },
+            "required": [
+              "data",
+              "label",
+              "value"
+            ],
+            "x-lattice": {
+              "kind": "value-object",
+              "php": "Lattice\\Core\\Option"
+            }
+          }
+        },
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "emits",
+        "label",
+        "name",
+        "options",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "segmented-control",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\SegmentedControl"
+      }
+    },
+    "Separator": {
+      "type": "object",
+      "properties": {
+        "bleed": {
+          "type": "boolean"
+        },
+        "orientation": {
+          "$ref": "#/$defs/Orientation"
+        }
+      },
+      "required": [
+        "bleed",
+        "orientation"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "separator",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Separator"
+      }
+    },
+    "Side": {
+      "type": "string",
+      "enum": [
+        "start",
+        "end"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Side"
+      }
+    },
+    "Size": {
+      "type": "string",
+      "enum": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl",
+        "3xl",
+        "4xl"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Size"
+      }
+    },
+    "Stack": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Align"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "direction": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StackDirection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "float": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Side"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gap": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Gap"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "height": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Height"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "justify": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Justify"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "width": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Width"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "align",
+        "direction",
+        "float",
+        "gap",
+        "height",
+        "justify",
+        "width"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "stack",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Stack"
+      }
+    },
+    "StackDirection": {
+      "type": "string",
+      "enum": [
+        "row",
+        "column"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\StackDirection"
+      }
+    },
+    "Tab": {
+      "type": "object",
+      "properties": {
+        "confirm": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "redirectUrl": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "timeout": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "redirectUrl",
+                "required",
+                "timeout"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "confirm",
+        "label",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "tab",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Tab"
+      }
+    },
+    "Tabs": {
+      "type": "object",
+      "properties": {
+        "activeValue": {
+          "type": "string"
+        },
+        "alignment": {
+          "$ref": "#/$defs/TabsAlignment"
+        },
+        "defaultValue": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "orientation": {
+          "$ref": "#/$defs/Orientation"
+        },
+        "queryKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "activeValue",
+        "alignment",
+        "defaultValue",
+        "orientation",
+        "queryKey"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "tabs",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Tabs"
+      }
+    },
+    "TabsAlignment": {
+      "type": "string",
+      "enum": [
+        "start",
+        "center",
+        "end",
+        "stretch"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\TabsAlignment"
+      }
+    },
+    "Text": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Align"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "dark": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "readOnly": true
+                },
+                "kind": {
+                  "$ref": "#/$defs/ColorKind",
+                  "readOnly": true
+                },
+                "value": {
+                  "type": "string",
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "dark",
+                "kind",
+                "value"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Core\\Color"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "copyable": {
+          "type": "boolean"
+        },
+        "size": {
+          "$ref": "#/$defs/Size"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "align",
+        "color",
+        "copyable",
+        "size",
+        "text"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "text",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Text"
+      }
+    },
+    "TextEntry": {
+      "type": "object",
+      "properties": {
+        "copyable": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "placeholder": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {}
+      },
+      "required": [
+        "copyable",
+        "description",
+        "label",
+        "name",
+        "placeholder",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "entry.text",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Entries\\TextEntry"
+      }
+    },
+    "Toast": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dismissible": {
+          "type": "boolean"
+        },
+        "duration": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "message": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Translatable"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "persistent": {
+          "type": "boolean"
+        },
+        "variant": {
+          "$ref": "#/$defs/Variant"
+        }
+      },
+      "required": [
+        "action",
+        "dismissible",
+        "duration",
+        "message",
+        "persistent",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "toast",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\Toast"
+      }
+    },
+    "ToggleSidebar": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": [
+        "target"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "effect",
+        "wireType": "toggle-sidebar",
+        "php": "Lattice\\Ui\\Effects\\Builtin\\ToggleSidebar"
+      }
+    },
+    "Tooltip": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trigger": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Node"
+          }
+        }
+      },
+      "required": [
+        "content",
+        "trigger"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "tooltip",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Tooltip"
+      }
+    },
+    "Translatable": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "payload": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "replacements": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "number",
+              "integer",
+              "string"
+            ]
+          }
+        }
+      },
+      "required": [
+        "key",
+        "payload",
+        "replacements"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Ui\\I18n\\Values\\Translatable"
+      }
+    },
+    "Variant": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "secondary",
+        "success",
+        "info",
+        "warning",
+        "danger"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Variant"
+      }
+    },
+    "Width": {
+      "type": "string",
+      "enum": [
+        "full",
+        "auto",
+        "sm",
+        "md",
+        "lg",
+        "fill"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Width"
+      }
+    },
+    "effect:callout": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "callout"
+        },
+        "props": {
+          "$ref": "#/$defs/Callout"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "callout"
+      }
+    },
+    "effect:close-modal": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "close-modal"
+        },
+        "props": {
+          "$ref": "#/$defs/CloseModal"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "close-modal"
+      }
+    },
+    "effect:download": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "download"
+        },
+        "props": {
+          "$ref": "#/$defs/Download"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "download"
+      }
+    },
+    "effect:locale-change": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "locale-change"
+        },
+        "props": {
+          "$ref": "#/$defs/LocaleChange"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "locale-change"
+      }
+    },
+    "effect:open-modal": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "open-modal"
+        },
+        "props": {
+          "$ref": "#/$defs/OpenModal"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "open-modal"
+      }
+    },
+    "effect:redirect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "redirect"
+        },
+        "props": {
+          "$ref": "#/$defs/Redirect"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "redirect"
+      }
+    },
+    "effect:reload-component": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "reload-component"
+        },
+        "props": {
+          "$ref": "#/$defs/ReloadComponent"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "reload-component"
+      }
+    },
+    "effect:reload-page": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "reload-page"
+        },
+        "props": {
+          "$ref": "#/$defs/ReloadPage"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "reload-page"
+      }
+    },
+    "effect:reset-form": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "reset-form"
+        },
+        "props": {
+          "$ref": "#/$defs/ResetForm"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "reset-form"
+      }
+    },
+    "effect:retract-callout": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "retract-callout"
+        },
+        "props": {
+          "$ref": "#/$defs/RetractCallout"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "retract-callout"
+      }
+    },
+    "effect:toast": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "toast"
+        },
+        "props": {
+          "$ref": "#/$defs/Toast"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "toast"
+      }
+    },
+    "effect:toggle-sidebar": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "toggle-sidebar"
+        },
+        "props": {
+          "$ref": "#/$defs/ToggleSidebar"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "effect",
+        "wireType": "toggle-sidebar"
+      }
+    },
+    "node:avatar": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "avatar"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Avatar"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "avatar",
+        "php": "Lattice\\Ui\\Components\\Avatar"
+      }
+    },
+    "node:badge": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "badge"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Badge"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "badge",
+        "php": "Lattice\\Ui\\Components\\Badge"
+      }
+    },
+    "node:button": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "button"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Button"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "button",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
+    "node:card": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "card"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Card"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "card",
+        "php": "Lattice\\Ui\\Components\\Card"
+      }
+    },
+    "node:chart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "chart"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Chart"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "chart",
+        "php": "Lattice\\Ui\\Components\\Chart"
+      }
+    },
+    "node:code-block": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "code-block"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CodeBlock"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "code-block",
+        "php": "Lattice\\Ui\\Components\\CodeBlock"
+      }
+    },
+    "node:collapsible": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "collapsible"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Collapsible"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "collapsible",
+        "php": "Lattice\\Ui\\Components\\Collapsible"
+      }
+    },
+    "node:description-list": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "description-list"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/DescriptionList"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "description-list",
+        "php": "Lattice\\Ui\\Components\\DescriptionList"
+      }
+    },
+    "node:entry.badge": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "entry.badge"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BadgeEntry"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "entry.badge",
+        "php": "Lattice\\Ui\\Components\\Entries\\BadgeEntry"
+      }
+    },
+    "node:entry.boolean": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "entry.boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BooleanEntry"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "entry.boolean",
+        "php": "Lattice\\Ui\\Components\\Entries\\BooleanEntry"
+      }
+    },
+    "node:entry.component": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "entry.component"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ComponentEntry"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "entry.component",
+        "php": "Lattice\\Ui\\Components\\Entries\\ComponentEntry"
+      }
+    },
+    "node:entry.date": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "entry.date"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/DateEntry"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "entry.date",
+        "php": "Lattice\\Ui\\Components\\Entries\\DateEntry"
+      }
+    },
+    "node:entry.text": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "entry.text"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TextEntry"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "entry.text",
+        "php": "Lattice\\Ui\\Components\\Entries\\TextEntry"
+      }
+    },
+    "node:floating-panel": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "floating-panel"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/FloatingPanel"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "floating-panel",
+        "php": "Lattice\\Ui\\Components\\FloatingPanel"
+      }
+    },
+    "node:grid": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "grid"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Grid"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "grid",
+        "php": "Lattice\\Ui\\Components\\Grid"
+      }
+    },
+    "node:heading": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "heading"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Heading"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "heading",
+        "php": "Lattice\\Ui\\Components\\Heading"
+      }
+    },
+    "node:icon": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "icon"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Icon"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "icon",
+        "php": "Lattice\\Ui\\Components\\Icon"
+      }
+    },
+    "node:image": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "image"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Image"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "image",
+        "php": "Lattice\\Ui\\Components\\Image"
+      }
+    },
+    "node:link": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "link"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Link"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "link",
+        "php": "Lattice\\Ui\\Components\\Link"
+      }
+    },
+    "node:modal": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "modal"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Modal"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "modal",
+        "php": "Lattice\\Ui\\Components\\Modal"
+      }
+    },
+    "node:progress": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "progress"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Progress"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "progress",
+        "php": "Lattice\\Ui\\Components\\Progress"
+      }
+    },
+    "node:raw-block": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "raw-block"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/RawBlock"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "raw-block",
+        "php": "Lattice\\Ui\\Components\\RawBlock"
+      }
+    },
+    "node:section": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "section"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Section"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "section",
+        "php": "Lattice\\Ui\\Components\\Section"
+      }
+    },
+    "node:segmented-control": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "segmented-control"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/SegmentedControl"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "segmented-control",
+        "php": "Lattice\\Ui\\Components\\SegmentedControl"
+      }
+    },
+    "node:separator": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "separator"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Separator"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "separator",
+        "php": "Lattice\\Ui\\Components\\Separator"
+      }
+    },
+    "node:stack": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "stack"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Stack"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "stack",
+        "php": "Lattice\\Ui\\Components\\Stack"
+      }
+    },
+    "node:tab": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "tab"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Tab"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "tab",
+        "php": "Lattice\\Ui\\Components\\Tab"
+      }
+    },
+    "node:tabs": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "tabs"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Tabs"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "tabs",
+        "php": "Lattice\\Ui\\Components\\Tabs"
+      }
+    },
+    "node:text": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "text"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Text"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "text",
+        "php": "Lattice\\Ui\\Components\\Text"
+      }
+    },
+    "node:tooltip": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "tooltip"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Tooltip"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "tooltip",
+        "php": "Lattice\\Ui\\Components\\Tooltip"
+      }
+    }
+  },
+  "x-lattice": {
+    "domains": {
+      "UiNodeType": [
+        "avatar",
+        "badge",
+        "button",
+        "card",
+        "chart",
+        "code-block",
+        "collapsible",
+        "description-list",
+        "entry.badge",
+        "entry.boolean",
+        "entry.component",
+        "entry.date",
+        "entry.text",
+        "floating-panel",
+        "grid",
+        "heading",
+        "icon",
+        "image",
+        "link",
+        "modal",
+        "progress",
+        "raw-block",
+        "section",
+        "segmented-control",
+        "separator",
+        "stack",
+        "tab",
+        "tabs",
+        "text",
+        "tooltip"
+      ],
+      "NodeType": [
+        "avatar",
+        "badge",
+        "button",
+        "card",
+        "chart",
+        "code-block",
+        "collapsible",
+        "description-list",
+        "entry.badge",
+        "entry.boolean",
+        "entry.component",
+        "entry.date",
+        "entry.text",
+        "floating-panel",
+        "grid",
+        "heading",
+        "icon",
+        "image",
+        "link",
+        "modal",
+        "progress",
+        "raw-block",
+        "section",
+        "segmented-control",
+        "separator",
+        "stack",
+        "tab",
+        "tabs",
+        "text",
+        "tooltip"
+      ]
+    },
+    "families": {
+      "component": {
+        "envelope": "Node",
+        "strict": "#/$defs/ComponentNode",
+        "propsInterface": "ComponentProps",
+        "propsMap": "ComponentPropsMap",
+        "types": {
+          "avatar": {
+            "node": "#/$defs/node:avatar",
+            "props": "#/$defs/Avatar",
+            "domain": "Ui"
+          },
+          "badge": {
+            "node": "#/$defs/node:badge",
+            "props": "#/$defs/Badge",
+            "domain": "Ui"
+          },
+          "button": {
+            "node": "#/$defs/node:button",
+            "props": "#/$defs/Button",
+            "domain": "Ui"
+          },
+          "card": {
+            "node": "#/$defs/node:card",
+            "props": "#/$defs/Card",
+            "domain": "Ui",
+            "container": true
+          },
+          "chart": {
+            "node": "#/$defs/node:chart",
+            "props": "#/$defs/Chart",
+            "domain": "Ui"
+          },
+          "code-block": {
+            "node": "#/$defs/node:code-block",
+            "props": "#/$defs/CodeBlock",
+            "domain": "Ui"
+          },
+          "collapsible": {
+            "node": "#/$defs/node:collapsible",
+            "props": "#/$defs/Collapsible",
+            "domain": "Ui",
+            "container": true
+          },
+          "description-list": {
+            "node": "#/$defs/node:description-list",
+            "props": "#/$defs/DescriptionList",
+            "domain": "Ui",
+            "container": true
+          },
+          "entry.badge": {
+            "node": "#/$defs/node:entry.badge",
+            "props": "#/$defs/BadgeEntry",
+            "domain": "Ui",
+            "container": true
+          },
+          "entry.boolean": {
+            "node": "#/$defs/node:entry.boolean",
+            "props": "#/$defs/BooleanEntry",
+            "domain": "Ui",
+            "container": true
+          },
+          "entry.component": {
+            "node": "#/$defs/node:entry.component",
+            "props": "#/$defs/ComponentEntry",
+            "domain": "Ui",
+            "container": true
+          },
+          "entry.date": {
+            "node": "#/$defs/node:entry.date",
+            "props": "#/$defs/DateEntry",
+            "domain": "Ui",
+            "container": true
+          },
+          "entry.text": {
+            "node": "#/$defs/node:entry.text",
+            "props": "#/$defs/TextEntry",
+            "domain": "Ui",
+            "container": true
+          },
+          "floating-panel": {
+            "node": "#/$defs/node:floating-panel",
+            "props": "#/$defs/FloatingPanel",
+            "domain": "Ui",
+            "container": true
+          },
+          "grid": {
+            "node": "#/$defs/node:grid",
+            "props": "#/$defs/Grid",
+            "domain": "Ui",
+            "container": true
+          },
+          "heading": {
+            "node": "#/$defs/node:heading",
+            "props": "#/$defs/Heading",
+            "domain": "Ui"
+          },
+          "icon": {
+            "node": "#/$defs/node:icon",
+            "props": "#/$defs/Icon",
+            "domain": "Ui"
+          },
+          "image": {
+            "node": "#/$defs/node:image",
+            "props": "#/$defs/Image",
+            "domain": "Ui"
+          },
+          "link": {
+            "node": "#/$defs/node:link",
+            "props": "#/$defs/Link",
+            "domain": "Ui"
+          },
+          "modal": {
+            "node": "#/$defs/node:modal",
+            "props": "#/$defs/Modal",
+            "domain": "Ui",
+            "container": true,
+            "interactive": true
+          },
+          "progress": {
+            "node": "#/$defs/node:progress",
+            "props": "#/$defs/Progress",
+            "domain": "Ui"
+          },
+          "raw-block": {
+            "node": "#/$defs/node:raw-block",
+            "props": "#/$defs/RawBlock",
+            "domain": "Ui"
+          },
+          "section": {
+            "node": "#/$defs/node:section",
+            "props": "#/$defs/Section",
+            "domain": "Ui",
+            "container": true
+          },
+          "segmented-control": {
+            "node": "#/$defs/node:segmented-control",
+            "props": "#/$defs/SegmentedControl",
+            "domain": "Ui"
+          },
+          "separator": {
+            "node": "#/$defs/node:separator",
+            "props": "#/$defs/Separator",
+            "domain": "Ui"
+          },
+          "stack": {
+            "node": "#/$defs/node:stack",
+            "props": "#/$defs/Stack",
+            "domain": "Ui",
+            "container": true
+          },
+          "tab": {
+            "node": "#/$defs/node:tab",
+            "props": "#/$defs/Tab",
+            "domain": "Ui",
+            "container": true
+          },
+          "tabs": {
+            "node": "#/$defs/node:tabs",
+            "props": "#/$defs/Tabs",
+            "domain": "Ui",
+            "container": true
+          },
+          "text": {
+            "node": "#/$defs/node:text",
+            "props": "#/$defs/Text",
+            "domain": "Ui"
+          },
+          "tooltip": {
+            "node": "#/$defs/node:tooltip",
+            "props": "#/$defs/Tooltip",
+            "domain": "Ui"
+          }
+        }
+      },
+      "effect": {
+        "envelope": "Effect",
+        "strict": "#/$defs/EffectStrict",
+        "propsInterface": "EffectProps",
+        "propsMap": "EffectPropsMap",
+        "types": {
+          "callout": {
+            "node": "#/$defs/effect:callout",
+            "props": "#/$defs/Callout"
+          },
+          "close-modal": {
+            "node": "#/$defs/effect:close-modal",
+            "props": "#/$defs/CloseModal"
+          },
+          "download": {
+            "node": "#/$defs/effect:download",
+            "props": "#/$defs/Download"
+          },
+          "locale-change": {
+            "node": "#/$defs/effect:locale-change",
+            "props": "#/$defs/LocaleChange"
+          },
+          "open-modal": {
+            "node": "#/$defs/effect:open-modal",
+            "props": "#/$defs/OpenModal"
+          },
+          "redirect": {
+            "node": "#/$defs/effect:redirect",
+            "props": "#/$defs/Redirect"
+          },
+          "reload-component": {
+            "node": "#/$defs/effect:reload-component",
+            "props": "#/$defs/ReloadComponent"
+          },
+          "reload-page": {
+            "node": "#/$defs/effect:reload-page",
+            "props": "#/$defs/ReloadPage"
+          },
+          "reset-form": {
+            "node": "#/$defs/effect:reset-form",
+            "props": "#/$defs/ResetForm"
+          },
+          "retract-callout": {
+            "node": "#/$defs/effect:retract-callout",
+            "props": "#/$defs/RetractCallout"
+          },
+          "toast": {
+            "node": "#/$defs/effect:toast",
+            "props": "#/$defs/Toast"
+          },
+          "toggle-sidebar": {
+            "node": "#/$defs/effect:toggle-sidebar",
+            "props": "#/$defs/ToggleSidebar"
+          }
+        }
+      },
+      "editor-extension": {
+        "envelope": "EditorExtension",
+        "strict": "#/$defs/EditorExtensionStrict",
+        "propsInterface": "EditorExtensionProps",
+        "propsMap": "EditorExtensionPropsMap",
+        "types": {}
+      },
+      "column": {
+        "envelope": "ColumnNode",
+        "strict": "#/$defs/ColumnNodeStrict",
+        "propsInterface": "ColumnProps",
+        "propsMap": "ColumnPropsMap",
+        "types": {}
+      },
+      "filter": {
+        "envelope": "FilterNode",
+        "strict": "#/$defs/FilterNodeStrict",
+        "propsInterface": "FilterProps",
+        "propsMap": "FilterPropsMap",
+        "types": {}
+      }
+    }
+  }
+}

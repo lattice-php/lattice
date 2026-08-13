@@ -1,0 +1,1164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/action/v1.json",
+  "title": "Lattice action wire types",
+  "$defs": {
+    "Action": {
+      "type": "object",
+      "properties": {
+        "confirmation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Confirmation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "solid",
+                "outline",
+                "ghost",
+                "link"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Emphasis"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "form": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/node:form"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lazyForm": {
+          "type": "boolean"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "get",
+                "post",
+                "put",
+                "patch",
+                "delete"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\HttpMethod"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalSide": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "start",
+                "end"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Side"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalWidth": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "sm",
+                "md",
+                "lg",
+                "xl",
+                "2xl",
+                "3xl"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\ModalWidth"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "info",
+                "warning",
+                "danger"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Variant"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "confirmation",
+        "emphasis",
+        "endpoint",
+        "form",
+        "icon",
+        "label",
+        "lazyForm",
+        "method",
+        "modalSide",
+        "modalWidth",
+        "ref",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "action",
+        "domain": "Actions",
+        "php": "Lattice\\Actions\\Components\\Action"
+      }
+    },
+    "ActionGroup": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "orientation": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "horizontal",
+                "vertical"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Orientation"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "label",
+        "orientation",
+        "ref"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "action.group",
+        "domain": "Actions",
+        "php": "Lattice\\Actions\\Components\\ActionGroup"
+      }
+    },
+    "ActionResult": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "additionalProperties": true,
+          "readOnly": true
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          },
+          "readOnly": true
+        }
+      },
+      "required": [
+        "data",
+        "effects"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Actions\\ActionResult"
+      }
+    },
+    "BulkAction": {
+      "type": "object",
+      "properties": {
+        "confirmation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Confirmation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "solid",
+                "outline",
+                "ghost",
+                "link"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Emphasis"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "form": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/node:form"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lazyForm": {
+          "type": "boolean"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "get",
+                "post",
+                "put",
+                "patch",
+                "delete"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\HttpMethod"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalSide": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "start",
+                "end"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Side"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modalWidth": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "sm",
+                "md",
+                "lg",
+                "xl",
+                "2xl",
+                "3xl"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\ModalWidth"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "info",
+                "warning",
+                "danger"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Variant"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "confirmation",
+        "emphasis",
+        "endpoint",
+        "form",
+        "icon",
+        "label",
+        "lazyForm",
+        "method",
+        "modalSide",
+        "modalWidth",
+        "ref",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "action.bulk",
+        "domain": "Actions",
+        "php": "Lattice\\Actions\\Components\\BulkAction"
+      }
+    },
+    "Button": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "buttonType": {
+          "$ref": "#/$defs/ButtonType"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Effect"
+          }
+        },
+        "emphasis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Emphasis"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "href": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HttpMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "variant": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Variant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "buttonType",
+        "effects",
+        "emphasis",
+        "href",
+        "icon",
+        "label",
+        "method",
+        "variant"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "button",
+        "domain": "Ui",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
+    "ButtonType": {
+      "type": "string",
+      "enum": [
+        "button",
+        "submit",
+        "reset"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\ButtonType"
+      }
+    },
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Confirmation": {
+      "type": "object",
+      "properties": {
+        "cancelLabel": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "confirmLabel": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "readOnly": true
+        }
+      },
+      "required": [
+        "cancelLabel",
+        "confirmLabel",
+        "description",
+        "title"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Actions\\Confirmation"
+      }
+    },
+    "Effect": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "effect"
+      }
+    },
+    "Emphasis": {
+      "type": "string",
+      "enum": [
+        "solid",
+        "outline",
+        "ghost",
+        "link"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Emphasis"
+      }
+    },
+    "Form": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "errorBag": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "get",
+                "post",
+                "put",
+                "patch",
+                "delete"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\HttpMethod"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "precognitive": {
+          "type": "boolean"
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resetOnError": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resetOnSuccess": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "submitButton": {
+          "type": "boolean"
+        },
+        "submitButtons": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/node:button"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submitEmphasis": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "solid",
+                "outline",
+                "ghost",
+                "link"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Emphasis"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submitJustify": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "start",
+                "center",
+                "end",
+                "between",
+                "around",
+                "evenly"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Justify"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submitLabel": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "submitVariant": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "primary",
+                "secondary",
+                "success",
+                "info",
+                "warning",
+                "danger"
+              ],
+              "x-lattice": {
+                "kind": "enum",
+                "php": "Lattice\\Ui\\Enums\\Variant"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validationSummaryLabel": {
+          "type": "string"
+        },
+        "validationTimeout": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "action",
+        "errorBag",
+        "method",
+        "precognitive",
+        "ref",
+        "resetOnError",
+        "resetOnSuccess",
+        "state",
+        "status",
+        "submitButton",
+        "submitButtons",
+        "submitEmphasis",
+        "submitJustify",
+        "submitLabel",
+        "submitVariant",
+        "validationSummaryLabel",
+        "validationTimeout"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "form",
+        "domain": "Form",
+        "php": "Lattice\\Form\\Components\\Form"
+      }
+    },
+    "HttpMethod": {
+      "type": "string",
+      "enum": [
+        "get",
+        "post",
+        "put",
+        "patch",
+        "delete"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\HttpMethod"
+      }
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
+    "Variant": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "secondary",
+        "success",
+        "info",
+        "warning",
+        "danger"
+      ],
+      "x-lattice": {
+        "kind": "enum",
+        "php": "Lattice\\Ui\\Enums\\Variant"
+      }
+    },
+    "node:action": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "action"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Action"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "action",
+        "php": "Lattice\\Actions\\Components\\Action"
+      }
+    },
+    "node:action.bulk": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "action.bulk"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/BulkAction"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "action.bulk",
+        "php": "Lattice\\Actions\\Components\\BulkAction"
+      }
+    },
+    "node:action.group": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "action.group"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/ActionGroup"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "action.group",
+        "php": "Lattice\\Actions\\Components\\ActionGroup"
+      }
+    },
+    "node:button": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "button"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Button"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "button",
+        "php": "Lattice\\Ui\\Components\\Button"
+      }
+    },
+    "node:form": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "form"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Form"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "form",
+        "php": "Lattice\\Form\\Components\\Form"
+      }
+    }
+  },
+  "x-lattice": {
+    "domains": {
+      "ActionNodeType": [
+        "action",
+        "action.bulk",
+        "action.group"
+      ],
+      "NodeType": [
+        "action",
+        "action.bulk",
+        "action.group"
+      ]
+    },
+    "families": {
+      "component": {
+        "envelope": "Node",
+        "strict": "#/$defs/ComponentNode",
+        "propsInterface": "ComponentProps",
+        "propsMap": "ComponentPropsMap",
+        "types": {
+          "action": {
+            "node": "#/$defs/node:action",
+            "props": "#/$defs/Action",
+            "domain": "Actions",
+            "interactive": true
+          },
+          "action.bulk": {
+            "node": "#/$defs/node:action.bulk",
+            "props": "#/$defs/BulkAction",
+            "domain": "Actions",
+            "interactive": true
+          },
+          "action.group": {
+            "node": "#/$defs/node:action.group",
+            "props": "#/$defs/ActionGroup",
+            "domain": "Actions",
+            "container": true,
+            "interactive": true
+          }
+        }
+      },
+      "effect": {
+        "envelope": "Effect",
+        "strict": "#/$defs/EffectStrict",
+        "propsInterface": "EffectProps",
+        "propsMap": "EffectPropsMap",
+        "types": {}
+      },
+      "editor-extension": {
+        "envelope": "EditorExtension",
+        "strict": "#/$defs/EditorExtensionStrict",
+        "propsInterface": "EditorExtensionProps",
+        "propsMap": "EditorExtensionPropsMap",
+        "types": {}
+      },
+      "column": {
+        "envelope": "ColumnNode",
+        "strict": "#/$defs/ColumnNodeStrict",
+        "propsInterface": "ColumnProps",
+        "propsMap": "ColumnPropsMap",
+        "types": {}
+      },
+      "filter": {
+        "envelope": "FilterNode",
+        "strict": "#/$defs/FilterNodeStrict",
+        "propsInterface": "FilterProps",
+        "propsMap": "FilterPropsMap",
+        "types": {}
+      }
+    }
+  }
+}

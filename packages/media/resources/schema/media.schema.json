@@ -1,0 +1,639 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lattice-php.dev/schema/media/v1.json",
+  "title": "Lattice media wire types",
+  "$defs": {
+    "CommonNodeProps": {
+      "type": "object",
+      "properties": {
+        "dataBindings": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hideWhenCollapsed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string",
+          "readOnly": true
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "contains",
+            "starts_with",
+            "ends_with",
+            "eq",
+            "neq",
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "in",
+            "not_in",
+            "before",
+            "after",
+            "empty",
+            "filled"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Core\\Enums\\Op"
+          },
+          "readOnly": true
+        },
+        "value": {
+          "readOnly": true
+        }
+      },
+      "required": [
+        "field",
+        "operator",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "value-object",
+        "php": "Lattice\\Form\\Conditions\\Condition"
+      }
+    },
+    "EditorMediaImage": {
+      "type": "object",
+      "properties": {
+        "conversions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "library": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/node:media.library"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversions",
+        "library"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "editor-extension",
+        "wireType": "media-image",
+        "php": "Lattice\\Media\\Forms\\RichEditor\\MediaImage"
+      }
+    },
+    "MediaLibrary": {
+      "type": "object",
+      "properties": {
+        "accept": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "picker": {
+          "type": "boolean"
+        },
+        "signed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "accept",
+        "picker",
+        "signed"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "media.library",
+        "domain": "Media",
+        "php": "Lattice\\Media\\Components\\MediaLibrary"
+      }
+    },
+    "MediaPicker": {
+      "type": "object",
+      "properties": {
+        "columnWidth": {
+          "type": "string",
+          "enum": [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+          ],
+          "x-lattice": {
+            "kind": "enum",
+            "php": "Lattice\\Ui\\Enums\\ColumnWidth"
+          }
+        },
+        "conditions": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "disabled": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                },
+                "readOnly": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                },
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                },
+                "visible": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Condition"
+                  },
+                  "readOnly": true
+                }
+              },
+              "required": [
+                "disabled",
+                "readOnly",
+                "required",
+                "visible"
+              ],
+              "x-lattice": {
+                "kind": "value-object",
+                "php": "Lattice\\Form\\Conditions\\FieldConditions"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependsOnAny": {
+          "type": "boolean"
+        },
+        "dependsOnKeys": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "editablePrefill": {
+          "type": "boolean"
+        },
+        "helperText": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "labelAction": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Node"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "maxFiles": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "multiple": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "prefillRefreshOn": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prefillResetOn": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "readOnly": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "selected": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "mime_type": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "preview_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "values": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "id",
+                  "mime_type",
+                  "name",
+                  "preview_url",
+                  "url",
+                  "values"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tooltip": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "value": {}
+      },
+      "required": [
+        "columnWidth",
+        "conditions",
+        "dependsOnAny",
+        "dependsOnKeys",
+        "disabled",
+        "editablePrefill",
+        "helperText",
+        "label",
+        "labelAction",
+        "maxFiles",
+        "multiple",
+        "name",
+        "prefillRefreshOn",
+        "prefillResetOn",
+        "readOnly",
+        "required",
+        "selected",
+        "tooltip",
+        "value"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "component",
+        "wireType": "field.media-picker",
+        "domain": "Forms",
+        "php": "Lattice\\Media\\Forms\\Components\\MediaPicker"
+      }
+    },
+    "MediaTypeFilter": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "x-lattice": {
+        "kind": "props",
+        "family": "filter",
+        "wireType": "filter.media-type",
+        "php": "Lattice\\Media\\Tables\\Filters\\MediaTypeFilter"
+      }
+    },
+    "Node": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "x-lattice": {
+        "kind": "envelope",
+        "family": "component"
+      }
+    },
+    "Schema": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Node"
+      }
+    },
+    "editor-extension:media-image": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "media-image"
+        },
+        "props": {
+          "$ref": "#/$defs/EditorMediaImage"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "editor-extension",
+        "wireType": "media-image"
+      }
+    },
+    "filter:filter.media-type": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "filter.media-type"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MediaTypeFilter"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "key",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "filter",
+        "wireType": "filter.media-type",
+        "php": "Lattice\\Media\\Tables\\Filters\\MediaTypeFilter"
+      }
+    },
+    "node:field.media-picker": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "field.media-picker"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MediaPicker"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "field.media-picker",
+        "php": "Lattice\\Media\\Forms\\Components\\MediaPicker"
+      }
+    },
+    "node:media.library": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "media.library"
+        },
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "props": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MediaLibrary"
+            },
+            {
+              "$ref": "#/$defs/CommonNodeProps"
+            }
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/Schema"
+        }
+      },
+      "required": [
+        "type",
+        "props"
+      ],
+      "x-lattice": {
+        "kind": "strict",
+        "family": "component",
+        "wireType": "media.library",
+        "php": "Lattice\\Media\\Components\\MediaLibrary"
+      }
+    }
+  },
+  "x-lattice": {
+    "domains": {
+      "FormFieldNodeType": [
+        "field.media-picker"
+      ],
+      "FormNodeType": [
+        "field.media-picker"
+      ],
+      "MediumNodeType": [
+        "media.library"
+      ],
+      "NodeType": [
+        "field.media-picker",
+        "media.library"
+      ],
+      "FilterNodeType": [
+        "filter.media-type"
+      ]
+    },
+    "families": {
+      "component": {
+        "envelope": "Node",
+        "strict": "#/$defs/ComponentNode",
+        "propsInterface": "ComponentProps",
+        "propsMap": "ComponentPropsMap",
+        "types": {
+          "field.media-picker": {
+            "node": "#/$defs/node:field.media-picker",
+            "props": "#/$defs/MediaPicker",
+            "domain": "Forms"
+          },
+          "media.library": {
+            "node": "#/$defs/node:media.library",
+            "props": "#/$defs/MediaLibrary",
+            "domain": "Media",
+            "container": true
+          }
+        }
+      },
+      "effect": {
+        "envelope": "Effect",
+        "strict": "#/$defs/EffectStrict",
+        "propsInterface": "EffectProps",
+        "propsMap": "EffectPropsMap",
+        "types": {}
+      },
+      "editor-extension": {
+        "envelope": "EditorExtension",
+        "strict": "#/$defs/EditorExtensionStrict",
+        "propsInterface": "EditorExtensionProps",
+        "propsMap": "EditorExtensionPropsMap",
+        "types": {
+          "media-image": {
+            "node": "#/$defs/editor-extension:media-image",
+            "props": "#/$defs/EditorMediaImage"
+          }
+        }
+      },
+      "column": {
+        "envelope": "ColumnNode",
+        "strict": "#/$defs/ColumnNodeStrict",
+        "propsInterface": "ColumnProps",
+        "propsMap": "ColumnPropsMap",
+        "types": {}
+      },
+      "filter": {
+        "envelope": "FilterNode",
+        "strict": "#/$defs/FilterNodeStrict",
+        "propsInterface": "FilterProps",
+        "propsMap": "FilterPropsMap",
+        "types": {
+          "filter.media-type": {
+            "node": "#/$defs/filter:filter.media-type",
+            "props": "#/$defs/MediaTypeFilter"
+          }
+        }
+      }
+    }
+  }
+}
