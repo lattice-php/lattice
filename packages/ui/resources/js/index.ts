@@ -43,6 +43,7 @@ export { default as InputError } from "./input-error";
 export * from "./input-otp";
 export * from "./label";
 export * from "./native-select";
+export * from "./navigation";
 export { default as PasswordInput } from "./password-input";
 export * from "./popover";
 export * from "./segmented-pills";
