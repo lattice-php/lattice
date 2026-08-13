@@ -1,5 +1,7 @@
 export * from "./index";
 export { router } from "@inertiajs/react";
+export { inertiaNavigation, navigationPlugin } from "./inertia-navigation";
+export { defaultNavigation, NavigationProvider, useNavigation } from "@lattice-php/ui/navigation";
 export { runAction } from "@lattice-php/action";
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
 export { RenderNode } from "@lattice-php/core/renderer";

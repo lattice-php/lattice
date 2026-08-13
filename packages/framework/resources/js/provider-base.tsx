@@ -3,7 +3,9 @@ import { ActionInteractionProvider } from "@lattice-php/action/components/action
 import type { Registry } from "@lattice-php/core/registry";
 import { RegistryContext } from "@lattice-php/core/registry-context";
 import { useFlashEffects } from "@lattice-php/ui/effects/use-flash-effects";
+import { NavigationProvider } from "@lattice-php/ui/navigation";
 import { EventBridge } from "./event-bridge";
+import { inertiaNavigation } from "./inertia-navigation";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
 import { SpriteProvider } from "@lattice-php/ui/icons/sprite";
 import { Toaster } from "./toast";
@@ -28,13 +30,15 @@ export function ProviderBase({
 
   return (
     <RegistryContext.Provider value={registry}>
-      <ActionInteractionProvider>
-        <SpriteProvider sprite={sprite}>
-          {children}
-          <EventBridge onAppearanceChange={updateAppearance} />
-          {toaster ? <Toaster /> : null}
-        </SpriteProvider>
-      </ActionInteractionProvider>
+      <NavigationProvider adapter={inertiaNavigation}>
+        <ActionInteractionProvider>
+          <SpriteProvider sprite={sprite}>
+            {children}
+            <EventBridge onAppearanceChange={updateAppearance} />
+            {toaster ? <Toaster /> : null}
+          </SpriteProvider>
+        </ActionInteractionProvider>
+      </NavigationProvider>
     </RegistryContext.Provider>
   );
 }
