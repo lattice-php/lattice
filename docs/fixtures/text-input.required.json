@@ -12,6 +12,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Team name",
+            "labelAction": null,
             "name": "name",
             "placeholder": "My team",
             "prefillRefreshOn": null,

@@ -12,6 +12,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Slug",
+            "labelAction": null,
             "name": "slug",
             "placeholder": null,
             "prefillRefreshOn": null,

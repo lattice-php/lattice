@@ -12,6 +12,7 @@
             "editablePrefill": false,
             "helperText": "Used in the public URL for your team.",
             "label": "Slug",
+            "labelAction": null,
             "name": "slug",
             "placeholder": null,
             "prefillRefreshOn": null,

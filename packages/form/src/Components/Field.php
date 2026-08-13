@@ -26,6 +26,8 @@ abstract class Field extends Component
 
     public ?string $helperText = null;
 
+    public ?Component $labelAction = null;
+
     public ColumnWidth $columnWidth = ColumnWidth::Md;
 
     public mixed $value = null;
@@ -123,6 +125,17 @@ abstract class Field extends Component
     public function helperText(string $helperText): static
     {
         $this->helperText = $helperText;
+
+        return $this;
+    }
+
+    /**
+     * A component rendered at the end of the field's label row, such as a
+     * "Forgot password?" link beside a password field.
+     */
+    public function labelAction(Component $action): static
+    {
+        $this->labelAction = $action;
 
         return $this;
     }
@@ -568,6 +581,7 @@ abstract class Field extends Component
 
         $props['dependsOnKeys'] = $keys === [] ? null : array_keys($keys);
         $props['dependsOnAny'] = $this->valueResolver instanceof Closure;
+        $props['labelAction'] = $this->labelAction?->shouldRender() ? $this->labelAction : null;
 
         return $props;
     }

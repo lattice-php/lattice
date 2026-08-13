@@ -14,7 +14,6 @@ export type {
   Form,
   FormNodeType,
   HiddenInput,
-  LabelAction,
   NumberInput,
   PasswordInput,
   PatternInput,

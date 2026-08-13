@@ -12,6 +12,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Price",
+            "labelAction": null,
             "name": "price",
             "placeholder": null,
             "prefillRefreshOn": null,

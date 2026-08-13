@@ -9,6 +9,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Number pattern",
+            "labelAction": null,
             "name": "pattern",
             "prefillRefreshOn": null,
             "prefillResetOn": null,
@@ -31,6 +32,7 @@
                                 "editablePrefill": false,
                                 "helperText": null,
                                 "label": "Padding",
+                                "labelAction": null,
                                 "name": "padding",
                                 "options": [
                                     {

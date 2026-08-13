@@ -125,6 +125,7 @@
             ],
             "helperText": null,
             "label": "Article",
+            "labelAction": null,
             "name": "article",
             "placeholder": "Write your article…",
             "prefillRefreshOn": null,

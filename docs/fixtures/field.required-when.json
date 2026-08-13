@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Country",
+            "labelAction": null,
             "name": "country",
             "options": [
                 {
@@ -62,6 +63,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "VAT ID",
+            "labelAction": null,
             "name": "vat",
             "placeholder": null,
             "prefillRefreshOn": null,

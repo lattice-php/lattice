@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Bio",
+            "labelAction": null,
             "name": "bio",
             "placeholder": "Tell us about yourself",
             "prefillRefreshOn": null,

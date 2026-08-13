@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Satisfaction",
+            "labelAction": null,
             "max": 10,
             "min": 0,
             "name": "satisfaction",

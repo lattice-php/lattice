@@ -10,6 +10,7 @@
             "editablePrefill": false,
             "helperText": null,
             "label": "Subscribe to the newsletter",
+            "labelAction": null,
             "name": "newsletter",
             "prefillRefreshOn": null,
             "prefillResetOn": null,

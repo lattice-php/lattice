@@ -12,6 +12,7 @@
             "emptyLabel": "No options",
             "helperText": null,
             "label": "Keywords",
+            "labelAction": null,
             "multiple": true,
             "name": "keywords",
             "optionSchema": null,
