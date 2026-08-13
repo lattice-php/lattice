@@ -61,6 +61,49 @@ $product->firstMediaUrl('gallery');
 
 Validate submitted ids with `Lattice\Media\Rules\AttachableMedia`.
 
+## Categories
+
+A category partitions the media pool itself — unlike a collection, which groups attachments per
+record. Scope a library or picker to one and its listing shows only that category's media while
+every upload through it is stamped with the category:
+
+```php
+MediaLibrary::make()->category('imports');
+
+MediaPicker::make('file')->category('imports');
+```
+
+An unscoped library or picker shows only uncategorized media, so a categorized pool — import
+files, say — never surfaces next to regular media anywhere it was not explicitly requested.
+
+:::note
+The scope travels in the sealed component reference, not as a request parameter — a client cannot
+widen or switch it.
+:::
+
+## Upload-only picking
+
+`uploadOnly()` skips the library entirely: the button opens the file dialog directly and the
+fresh upload becomes the picked value. No browse endpoint is exposed for the field, so existing
+media stay invisible. Combined with a category and an upload label this makes a self-contained
+"upload an import file" field:
+
+```php
+MediaPicker::make('file')
+    ->category('imports')
+    ->uploadOnly()
+    ->uploadLabel(__('imports.upload'));
+```
+
+## Labels
+
+Both buttons a picker renders can be relabeled: `pickerLabel()` names the trigger that opens the
+browse dialog, `uploadLabel()` (also on `MediaLibrary`) names the upload button:
+
+```php
+MediaPicker::make('file')->pickerLabel('Choose import')->uploadLabel('Upload import file');
+```
+
 ## Rich editor images
 
 The package registers a `media-image` [rich editor](/forms/fields/rich-editor/) extension.
