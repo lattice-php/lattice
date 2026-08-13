@@ -78,3 +78,25 @@ it("reports invalid provider configuration without leaving the map pending", asy
 
   await expect.element(page.getByRole("alert")).toHaveTextContent("The map could not be loaded.");
 });
+
+it("automatically centers a single marker for interaction", async () => {
+  await renderMap({
+    features: [marker("munich", "Munich office", 48.1372, 11.5756)],
+  });
+
+  await userEvent.click(page.getByRole("button", { name: "Munich office" }));
+
+  await expect.element(page.getByText("Munich office content")).toBeVisible();
+});
+
+it("uses the server-provided center and zoom for an interactive marker", async () => {
+  await renderMap({
+    center: { latitude: 48.1372, longitude: 11.5756 },
+    features: [marker("munich", "Munich office", 48.1372, 11.5756)],
+    zoom: 16,
+  });
+
+  await userEvent.click(page.getByRole("button", { name: "Munich office" }));
+
+  await expect.element(page.getByText("Munich office content")).toBeVisible();
+});
