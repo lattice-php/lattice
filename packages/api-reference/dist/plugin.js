@@ -43,74 +43,74 @@ var b = f((() => {}));
 function x(e) {
 	return typeof e == "object" && !!e && !Array.isArray(e);
 }
-function ee(e) {
+function S(e) {
 	return JSON.stringify(e, null, 2) ?? "";
 }
-function te(e) {
+function ee(e) {
 	return typeof e == "object" && !!e && "name" in e && e.name === "AbortError";
 }
-function S(e) {
+function C(e) {
 	return [e.status, e.mediaType].filter((e) => !!e).join(" ") || "default";
 }
-var C = f((() => {}));
+var w = f((() => {}));
 //#endregion
 //#region resources/js/api-reference/schema-example.ts
-function w(e, t) {
-	return D(e, t, /* @__PURE__ */ new Set(), "complete");
-}
 function T(e, t) {
-	return E(e, t, "complete");
+	return k(e, t, /* @__PURE__ */ new Set(), "complete");
 }
-function ne(e, t) {
-	return E(e, t, "request");
+function E(e, t) {
+	return O(e, t, "complete");
 }
-function E(e, t, n) {
+function D(e, t) {
+	return O(e, t, "request");
+}
+function O(e, t, n) {
 	let r = e.examples.find((e) => e.value !== void 0);
-	return r === void 0 ? D(e.schema, t, /* @__PURE__ */ new Set(), n) : r.value;
+	return r === void 0 ? k(e.schema, t, /* @__PURE__ */ new Set(), n) : r.value;
 }
-function D(e, t, n, r) {
+function k(e, t, n, r) {
 	if (!x(e)) return null;
 	let i = e.example;
 	if (i !== void 0) return i;
 	if (Array.isArray(e.examples) && e.examples.length > 0) return e.examples[0];
 	let a = e.default;
-	return a === void 0 ? e.const === void 0 ? Array.isArray(e.enum) && e.enum.length > 0 ? e.enum[0] : j([
-		re(e, t, n, r),
-		...O(e.allOf, t, n, r),
-		k(e, t, n, r),
-		A(e, t, n, r)
+	return a === void 0 ? e.const === void 0 ? Array.isArray(e.enum) && e.enum.length > 0 ? e.enum[0] : N([
+		te(e, t, n, r),
+		...A(e.allOf, t, n, r),
+		j(e, t, n, r),
+		M(e, t, n, r)
 	]) : e.const : a;
 }
-function re(e, t, n, r) {
-	let i = N(e);
+function te(e, t, n, r) {
+	let i = F(e);
 	if (i === null || n.has(i)) return null;
-	let a = ie(i, t);
+	let a = ne(i, t);
 	if (a === null) return null;
 	n.add(i);
-	let o = D(a, t, n, r);
+	let o = k(a, t, n, r);
 	return n.delete(i), o;
 }
-function O(e, t, n, r) {
-	return Array.isArray(e) ? e.map((e) => D(e, t, n, r)) : [];
+function A(e, t, n, r) {
+	return Array.isArray(e) ? e.map((e) => k(e, t, n, r)) : [];
 }
-function k(e, t, n, r) {
+function j(e, t, n, r) {
 	let i = Array.isArray(e.oneOf) ? e.oneOf : e.anyOf;
 	if (!Array.isArray(i)) return null;
 	for (let e of i) {
-		let i = D(e, t, n, r);
+		let i = k(e, t, n, r);
 		if (i !== null) return i;
 	}
 	return null;
 }
-function A(e, t, n, r) {
+function M(e, t, n, r) {
 	let i = Array.isArray(e.type) ? e.type.find((e) => e !== "null") : e.type;
-	return i === "object" || x(e.properties) ? P(e.properties, e.required, t, n, r) : i === "array" ? [D(e.items, t, n, r)] : i === "string" ? M(e.format) : i === "integer" || i === "number" ? 0 : i !== "boolean" && null;
+	return i === "object" || x(e.properties) ? I(e.properties, e.required, t, n, r) : i === "array" ? [k(e.items, t, n, r)] : i === "string" ? P(e.format) : i === "integer" || i === "number" ? 0 : i !== "boolean" && null;
 }
-function j(e) {
+function N(e) {
 	let t = e.filter(x);
 	return t.length > 0 ? Object.assign({}, ...t) : e.find((e) => e !== null) ?? null;
 }
-function M(e) {
+function P(e) {
 	switch (e) {
 		case "email": return "user@example.com";
 		case "uri":
@@ -121,25 +121,25 @@ function M(e) {
 		default: return "string";
 	}
 }
-function N(e) {
-	return typeof e.$ref != "string" || !e.$ref.startsWith(F) ? null : e.$ref;
+function F(e) {
+	return typeof e.$ref != "string" || !e.$ref.startsWith(L) ? null : e.$ref;
 }
-function ie(e, t) {
+function ne(e, t) {
 	if (!x(t) || !x(t.schemas)) return null;
 	let n = e.slice(21);
 	return n === "" || !(n in t.schemas) ? null : t.schemas[n];
 }
-function P(e, t, n, r, i) {
+function I(e, t, n, r, i) {
 	if (!x(e)) return {};
 	let a = new Set(Array.isArray(t) ? t.filter((e) => typeof e == "string") : []);
-	return Object.fromEntries(Object.entries(e).filter(([e, t]) => i === "complete" || a.has(e) && (!x(t) || t.readOnly !== !0)).map(([e, t]) => [e, D(t, n, r, i)]));
+	return Object.fromEntries(Object.entries(e).filter(([e, t]) => i === "complete" || a.has(e) && (!x(t) || t.readOnly !== !0)).map(([e, t]) => [e, k(t, n, r, i)]));
 }
-var F, I = f((() => {
-	C(), F = "#/components/schemas/";
+var L, R = f((() => {
+	w(), L = "#/components/schemas/";
 }));
 //#endregion
 //#region resources/js/api-reference/parameter-schema.ts
-function L(e) {
+function z(e) {
 	if (!x(e)) return "any";
 	if (typeof e.$ref == "string") return e.$ref.split("/").pop() ?? "ref";
 	for (let [t, n] of [
@@ -148,106 +148,106 @@ function L(e) {
 		["allOf", " & "]
 	]) {
 		let r = e[t];
-		if (Array.isArray(r) && r.length > 0) return [...new Set(r.map(L))].join(n);
+		if (Array.isArray(r) && r.length > 0) return [...new Set(r.map(z))].join(n);
 	}
-	return Array.isArray(e.type) ? e.type.join(" | ") : typeof e.type == "string" ? e.type === "array" && e.items ? `${L(e.items)}[]` : e.type : Array.isArray(e.enum) ? "enum" : "any";
+	return Array.isArray(e.type) ? e.type.join(" | ") : typeof e.type == "string" ? e.type === "array" && e.items ? `${z(e.items)}[]` : e.type : Array.isArray(e.enum) ? "enum" : "any";
 }
-function ae(e) {
-	return x(e) ? Array.isArray(e.enum) ? e.enum.map(oe) : e.type === "array" && x(e.items) && Array.isArray(e.items.enum) ? e.items.enum.map(oe) : [] : [];
+function re(e) {
+	return x(e) ? Array.isArray(e.enum) ? e.enum.map(ie) : e.type === "array" && x(e.items) && Array.isArray(e.items.enum) ? e.items.enum.map(ie) : [] : [];
 }
-function oe(e) {
+function ie(e) {
 	return typeof e == "string" ? e : JSON.stringify(e) ?? String(e);
 }
-var R = f((() => {
-	C();
+var B = f((() => {
+	w();
 }));
 //#endregion
 //#region resources/js/api-reference/operation-markdown.ts
-function se(e, t) {
+function ae(e, t) {
 	return [
 		[
 			`# ${e.summary.title}`,
 			`\`${e.summary.method} ${e.summary.path}\``,
 			e.description
 		].filter((e) => !!e).join("\n\n"),
-		z(e.security),
-		le(e.paramGroups.flatMap((e) => e.params)),
-		fe(e.requests, t),
-		me(e.responses, t)
+		oe(e.security),
+		ce(e.paramGroups.flatMap((e) => e.params)),
+		de(e.requests, t),
+		pe(e.responses, t)
 	].filter((e) => !!e).join("\n\n");
 }
-function z(e) {
-	return e.length === 0 ? null : ["## Authorization", e.map((e) => ce(e)).map((e, t) => t === 0 ? `- ${e}` : `- OR\n- ${e}`).join("\n")].join("\n\n");
+function oe(e) {
+	return e.length === 0 ? null : ["## Authorization", e.map((e) => se(e)).map((e, t) => t === 0 ? `- ${e}` : `- OR\n- ${e}`).join("\n")].join("\n\n");
 }
-function ce(e) {
+function se(e) {
 	return e.schemes.length === 0 ? "optional authentication" : e.schemes.map((e) => e.scopes.length > 0 ? `${e.name} (${e.scopes.join(", ")})` : e.name).join(" + ");
 }
-function le(e) {
-	return e.length === 0 ? null : ["## Parameters", ue(e)].join("\n\n");
+function ce(e) {
+	return e.length === 0 ? null : ["## Parameters", le(e)].join("\n\n");
 }
-function ue(e) {
+function le(e) {
 	return [
 		"| Name | In | Type | Required | Description |",
 		"| --- | --- | --- | --- | --- |",
-		...e.map((e) => `| ${B(e.name)} | ${B(e.location)} | ${B(L(e.schema))} | ${e.required ? "yes" : "no"} | ${B(de(e))} |`)
+		...e.map((e) => `| ${ve(e.name)} | ${ve(e.location)} | ${ve(z(e.schema))} | ${e.required ? "yes" : "no"} | ${ve(ue(e))} |`)
 	].join("\n");
 }
-function de(e) {
-	let t = ae(e.schema), n = t.length === 0 ? null : `Available values: ${t.map((e) => `\`${e}\``).join(", ")}`, r = [e.description, n].filter((e) => !!e);
+function ue(e) {
+	let t = re(e.schema), n = t.length === 0 ? null : `Available values: ${t.map((e) => `\`${e}\``).join(", ")}`, r = [e.description, n].filter((e) => !!e);
 	return r.length === 0 ? null : r.join("\n");
 }
-function fe(e, t) {
-	return e.length === 0 ? null : ["## Request body", ...e.map((e) => pe(e, t))].join("\n\n");
+function de(e, t) {
+	return e.length === 0 ? null : ["## Request body", ...e.map((e) => fe(e, t))].join("\n\n");
 }
-function pe(e, t) {
+function fe(e, t) {
 	return [
 		e.mediaType ? `**Content-Type:** \`${e.mediaType}\`` : "**Content-Type:** unspecified",
 		e.title,
-		ge(e, t, 3)
+		he(e, t, 3)
 	].filter((e) => !!e).join("\n\n");
+}
+function pe(e, t) {
+	return e.length === 0 ? null : ["## Responses", ...e.map((e) => me(e, t))].join("\n\n");
 }
 function me(e, t) {
-	return e.length === 0 ? null : ["## Responses", ...e.map((e) => he(e, t))].join("\n\n");
-}
-function he(e, t) {
 	return [
-		`### ${S(e)}`,
+		`### ${C(e)}`,
 		e.title,
-		e.headers.length > 0 ? ["#### Headers", ue(e.headers)].join("\n\n") : null,
-		ge(e, t, 4)
+		e.headers.length > 0 ? ["#### Headers", le(e.headers)].join("\n\n") : null,
+		he(e, t, 4)
 	].filter((e) => !!e).join("\n\n");
 }
-function ge(e, t, n) {
+function he(e, t, n) {
 	let r = [];
-	e.schema !== null && r.push([`${"#".repeat(n)} Schema`, ve(e.schema)].filter((e) => !!e).join("\n\n"));
+	e.schema !== null && r.push([`${"#".repeat(n)} Schema`, _e(e.schema)].filter((e) => !!e).join("\n\n"));
 	let i = e.examples.length > 0 ? e.examples : e.schema === null ? [] : [{
 		name: null,
 		summary: null,
-		value: e.role === "request" ? ne(e, t) : T(e, t)
+		value: e.role === "request" ? D(e, t) : E(e, t)
 	}];
-	r.push(...i.map((e) => _e(e, n)));
+	r.push(...i.map((e) => ge(e, n)));
 	let a = r.filter((e) => !!e);
 	return a.length === 0 ? null : a.join("\n\n");
 }
-function _e(e, t) {
+function ge(e, t) {
 	let n = e.name ? `Example: ${e.name}` : "Example";
 	return [
 		`${"#".repeat(t)} ${n}`,
 		e.summary,
 		e.description,
 		e.externalValue ? `[Open external example](${e.externalValue})` : null,
-		ve(e.value)
+		_e(e.value)
 	].filter((e) => !!e).join("\n\n");
 }
-function ve(e) {
+function _e(e) {
 	let t = JSON.stringify(e, null, 2);
 	return t === void 0 ? null : `\`\`\`json\n${t}\n\`\`\``;
 }
-function B(e) {
+function ve(e) {
 	return (e ?? "").replaceAll("|", "\\|").replaceAll(/\r?\n/g, "<br>");
 }
 var ye = f((() => {
-	I(), R(), C();
+	R(), B(), w();
 }));
 //#endregion
 //#region resources/js/api-reference/parse.ts
@@ -755,7 +755,7 @@ async function ct(e, t) {
 			contentType: r.headers.get("content-type")
 		};
 	} catch (e) {
-		if (te(e)) throw e;
+		if (ee(e)) throw e;
 		return {
 			kind: "error",
 			message: "Request failed. Check the browser console and CORS configuration."
@@ -770,7 +770,7 @@ function lt(e) {
 	}
 }
 var ut = f((() => {
-	C();
+	w();
 }));
 //#endregion
 //#region resources/js/api-reference/LiveResponsePanel.tsx
@@ -880,7 +880,7 @@ function gt(e, t) {
 	} : {
 		parameters: n,
 		mediaType: r.mediaType,
-		body: ee(ne(r, t))
+		body: S(D(r, t))
 	};
 }
 function _t(e) {
@@ -902,7 +902,7 @@ function yt(e) {
 	return typeof e == "string" ? e : typeof e == "number" || typeof e == "boolean" ? String(e) : null;
 }
 var bt = f((() => {
-	I(), C();
+	R(), w();
 }));
 //#endregion
 //#region resources/js/api-reference/request-builder.ts
@@ -1052,7 +1052,7 @@ function zt(e) {
 	return Object.keys(e.parameters).length > 0 || e.body !== null || e.request !== null;
 }
 var Bt, Vt, Ht, Ut = f((() => {
-	bt(), C(), Bt = /* @__PURE__ */ new Set([
+	bt(), w(), Bt = /* @__PURE__ */ new Set([
 		"accept-charset",
 		"accept-encoding",
 		"access-control-request-headers",
@@ -1139,7 +1139,7 @@ var Gt = f((() => {
 //#endregion
 //#region resources/js/api-reference/RequestBodyEditor.tsx
 function Kt({ idPrefix: e, schema: t, components: r, value: i, required: a, error: c, onChange: l }) {
-	let u = n(() => J(t, r, /* @__PURE__ */ new Set()), [r, t]), d = tn(i);
+	let u = n(() => J(t, r, /* @__PURE__ */ new Set()), [r, t]), d = cn(i);
 	if (u?.kind !== "object" || !x(d)) return /* @__PURE__ */ o(g.FormFieldFrame, {
 		id: `${e}-request-body`,
 		label: "JSON body",
@@ -1156,7 +1156,7 @@ function Kt({ idPrefix: e, schema: t, components: r, value: i, required: a, erro
 	});
 	let f = d;
 	function p(e, t) {
-		l(ee(Qt(f, e, t)));
+		l(S(an(f, e, t)));
 	}
 	return /* @__PURE__ */ s("fieldset", {
 		"aria-label": "JSON body fields",
@@ -1251,12 +1251,19 @@ function Jt({ schema: e, path: n, required: r, value: i, onChange: a }) {
 					size: "sm",
 					className: "self-start",
 					"aria-label": `Add ${Y(n)} item`,
-					onClick: () => a(n, [...t, Zt(e.items)]),
+					onClick: () => a(n, [...t, rn(e.items)]),
 					children: "Add item"
 				})
 			]
 		});
 	}
+	if (e.kind === "json") return /* @__PURE__ */ o(Yt, {
+		schema: e,
+		path: n,
+		required: r,
+		value: i,
+		onChange: a
+	});
 	let l = Y(n);
 	return /* @__PURE__ */ o(g.FormFieldFrame, {
 		id: c,
@@ -1266,20 +1273,20 @@ function Jt({ schema: e, path: n, required: r, value: i, onChange: a }) {
 		className: "min-w-0",
 		children: (t) => e.enumValues.length > 0 ? /* @__PURE__ */ s(g.NativeSelect, {
 			...t,
-			value: sn(i),
+			value: pn(i),
 			required: r,
 			"data-field-key": `body:${l}`,
 			onChange: (t) => {
-				let i = e.enumValues.find((e) => sn(e) === t.target.value);
+				let i = e.enumValues.find((e) => pn(e) === t.target.value);
 				a(n, t.target.value === "" && !r ? void 0 : i);
 			},
 			children: [r ? null : /* @__PURE__ */ o("option", {
 				value: "",
 				children: "Not set"
 			}), e.enumValues.map((e) => /* @__PURE__ */ o("option", {
-				value: sn(e),
+				value: pn(e),
 				children: String(e)
-			}, sn(e)))]
+			}, pn(e)))]
 		}) : e.kind === "boolean" ? /* @__PURE__ */ s(g.NativeSelect, {
 			...t,
 			value: typeof i == "boolean" ? String(i) : "",
@@ -1302,12 +1309,12 @@ function Jt({ schema: e, path: n, required: r, value: i, onChange: a }) {
 			]
 		}) : /* @__PURE__ */ o(g.Input, {
 			...t,
-			type: an(e),
+			type: dn(e),
 			value: typeof i == "string" || typeof i == "number" ? i : "",
 			required: r,
 			min: e.minimum ?? void 0,
 			max: e.maximum ?? void 0,
-			step: on(e),
+			step: fn(e),
 			minLength: e.minLength ?? void 0,
 			maxLength: e.maxLength ?? void 0,
 			pattern: e.pattern ?? void 0,
@@ -1319,42 +1326,91 @@ function Jt({ schema: e, path: n, required: r, value: i, onChange: a }) {
 		})
 	});
 }
+function Yt({ schema: e, path: n, required: r, value: a, onChange: s }) {
+	let c = `body-${t().replaceAll(/[^a-zA-Z0-9_-]/g, "")}`, l = Y(n), u = S(a), [d, f] = i(u), [p, m] = i(u);
+	return d !== u && (f(u), m(u)), /* @__PURE__ */ o(g.FormFieldFrame, {
+		id: c,
+		label: l,
+		required: r,
+		helperText: e.description ?? void 0,
+		error: Xt(p).valid ? void 0 : "Enter valid JSON.",
+		className: "min-w-0 @xl:col-span-2",
+		children: (e) => /* @__PURE__ */ o(g.Textarea, {
+			...e,
+			value: p,
+			required: r,
+			"data-field-key": `body:${l}`,
+			className: "min-h-24 font-mono",
+			onChange: (e) => {
+				m(e.target.value);
+				let t = Xt(e.target.value);
+				t.valid && (f(S(t.value)), s(n, t.value));
+			}
+		})
+	});
+}
+function Xt(e) {
+	if (e.trim() === "") return {
+		valid: !0,
+		value: void 0
+	};
+	try {
+		return {
+			valid: !0,
+			value: JSON.parse(e)
+		};
+	} catch {
+		return {
+			valid: !1,
+			value: void 0
+		};
+	}
+}
 function J(e, t, n) {
 	if (!x(e)) return null;
 	if (typeof e.$ref == "string") {
 		if (!e.$ref.startsWith("#/components/schemas/") || n.has(e.$ref)) return null;
-		let r = nn(e.$ref, t);
+		let r = ln(e.$ref, t);
 		if (r === null) return null;
 		let i = J(r, t, /* @__PURE__ */ new Set([...n, e.$ref]));
 		return i === null ? null : {
 			...i,
 			description: X(e.description) ?? i.description,
-			initialValue: w(e, t)
+			initialValue: T(e, t)
+		};
+	}
+	let r = $t(e);
+	if (r !== null) {
+		let i = J(r, t, n);
+		return i === null ? null : {
+			...i,
+			description: X(e.description) ?? i.description,
+			initialValue: T(e, t)
 		};
 	}
 	if ("oneOf" in e || "anyOf" in e) return null;
 	if (Array.isArray(e.allOf)) {
-		let r = e.allOf.map((e) => J(e, t, n)), i = Yt(e, t, n);
-		return r.some((e) => e?.kind !== "object") || i === null ? null : Xt([...r, i], e, t);
+		let r = e.allOf.map((e) => J(e, t, n)), i = Zt(e, t, n);
+		return r.some((e) => e?.kind !== "object") || i === null ? null : nn([...r, i], e, t);
 	}
-	let r = rn(e);
-	if (r === "object" || x(e.properties)) return Yt(e, t, n);
-	if (r === "array") {
+	let i = un(e);
+	if (i === "object" || x(e.properties)) return Zt(e, t, n);
+	if (i === "array") {
 		let r = J(e.items, t, n);
 		return r === null ? null : {
 			kind: "array",
 			description: X(e.description),
-			initialValue: w(e, t),
+			initialValue: T(e, t),
 			items: r
 		};
 	}
-	if (!cn(r)) return null;
-	let i = Array.isArray(e.enum) && e.enum.every(ln) ? e.enum : [];
-	return Array.isArray(e.enum) && i.length !== e.enum.length ? null : {
-		kind: r,
+	if (!mn(i)) return null;
+	let a = Array.isArray(e.enum) && e.enum.every(hn) ? e.enum : [];
+	return Array.isArray(e.enum) && a.length !== e.enum.length ? null : {
+		kind: i,
 		description: X(e.description),
-		initialValue: w(e, t),
-		enumValues: i,
+		initialValue: T(e, t),
+		enumValues: a,
 		format: X(e.format),
 		minimum: Z(e.minimum),
 		maximum: Z(e.maximum),
@@ -1364,27 +1420,45 @@ function J(e, t, n) {
 		pattern: X(e.pattern)
 	};
 }
-function Yt(e, t, n) {
+function Zt(e, t, n) {
 	if (e.additionalProperties === !0 || x(e.additionalProperties)) return null;
 	let r = x(e.properties) ? e.properties : {}, i = new Set(Array.isArray(e.required) ? e.required.filter((e) => typeof e == "string") : []), a = [];
 	for (let [e, o] of Object.entries(r)) {
 		if (x(o) && o.readOnly === !0) continue;
-		let r = J(o, t, n);
-		if (r === null) return null;
+		let r = J(o, t, n) ?? Qt(o, t);
 		a.push({
 			name: e,
-			required: i.has(e),
+			required: i.has(e) && !tn(o),
 			schema: r
 		});
 	}
 	return {
 		kind: "object",
 		description: X(e.description),
-		initialValue: w(e, t),
+		initialValue: T(e, t),
 		properties: a
 	};
 }
-function Xt(e, t, n) {
+function Qt(e, t) {
+	return {
+		kind: "json",
+		description: x(e) ? X(e.description) : null,
+		initialValue: T(e, t)
+	};
+}
+function $t(e) {
+	let t = Array.isArray(e.oneOf) ? e.oneOf : e.anyOf;
+	if (!Array.isArray(t)) return null;
+	let n = t.filter((e) => !en(e));
+	return n.length === 1 && n.length < t.length ? n[0] : null;
+}
+function en(e) {
+	return x(e) && e.type === "null";
+}
+function tn(e) {
+	return x(e) && $t(e) !== null;
+}
+function nn(e, t, n) {
 	let r = /* @__PURE__ */ new Map();
 	for (let t of e) for (let e of t.properties) {
 		let t = r.get(e.name);
@@ -1396,41 +1470,42 @@ function Xt(e, t, n) {
 	return {
 		kind: "object",
 		description: X(t.description) ?? e.find((e) => e.description)?.description ?? null,
-		initialValue: w(t, n),
+		initialValue: T(t, n),
 		properties: [...r.values()]
 	};
 }
-function Zt(e) {
+function rn(e) {
 	if (e.initialValue !== null && e.initialValue !== void 0) return structuredClone(e.initialValue);
 	switch (e.kind) {
 		case "object": return {};
 		case "array": return [];
+		case "json": return null;
 		case "boolean": return !1;
 		case "number":
 		case "integer": return 0;
 		case "string": return "";
 	}
 }
-function Qt(e, t, n) {
+function an(e, t, n) {
 	let r = structuredClone(e), i = r;
 	for (let e = 0; e < t.length - 1; e += 1) {
-		let n = t[e], r = t[e + 1], a = $t(i, n);
-		!x(a) && !Array.isArray(a) && en(i, n, typeof r == "number" ? [] : {}), i = $t(i, n);
+		let n = t[e], r = t[e + 1], a = on(i, n);
+		!x(a) && !Array.isArray(a) && sn(i, n, typeof r == "number" ? [] : {}), i = on(i, n);
 	}
 	let a = t[t.length - 1];
-	return a === void 0 ? x(n) ? n : r : (n === void 0 ? Array.isArray(i) && typeof a == "number" ? i.splice(a, 1) : Array.isArray(i) || delete i[String(a)] : en(i, a, n), r);
+	return a === void 0 ? x(n) ? n : r : (n === void 0 ? Array.isArray(i) && typeof a == "number" ? i.splice(a, 1) : Array.isArray(i) || delete i[String(a)] : sn(i, a, n), r);
 }
-function $t(e, t) {
+function on(e, t) {
 	return Array.isArray(e) ? typeof t == "number" ? e[t] : void 0 : e[String(t)];
 }
-function en(e, t, n) {
+function sn(e, t, n) {
 	if (Array.isArray(e)) {
 		typeof t == "number" && (e[t] = n);
 		return;
 	}
 	e[String(t)] = n;
 }
-function tn(e) {
+function cn(e) {
 	try {
 		return e.trim() === "" ? {} : JSON.parse(e);
 	} catch {
@@ -1440,15 +1515,15 @@ function tn(e) {
 function Y(e) {
 	return e.reduce((e, t) => typeof t == "number" ? `${e}[${t}]` : e === "" ? t : `${e}.${t}`, "");
 }
-function nn(e, t) {
+function ln(e, t) {
 	if (!x(t) || !x(t.schemas)) return null;
 	let n = e.slice(21);
 	return n in t.schemas ? t.schemas[n] : null;
 }
-function rn(e) {
+function un(e) {
 	return Array.isArray(e.type) ? e.type.find((e) => e !== "null") : e.type;
 }
-function an(e) {
+function dn(e) {
 	if (e.kind === "number" || e.kind === "integer") return "number";
 	switch (e.format) {
 		case "email": return "email";
@@ -1459,13 +1534,13 @@ function an(e) {
 		default: return "text";
 	}
 }
-function on(e) {
+function fn(e) {
 	return e.multipleOf === null ? e.kind === "integer" ? 1 : e.kind === "number" ? "any" : void 0 : e.multipleOf;
 }
-function sn(e) {
-	return ln(e) ? `${typeof e}:${String(e)}` : "";
+function pn(e) {
+	return hn(e) ? `${typeof e}:${String(e)}` : "";
 }
-function cn(e) {
+function mn(e) {
 	return typeof e == "string" && [
 		"string",
 		"number",
@@ -1473,7 +1548,7 @@ function cn(e) {
 		"boolean"
 	].includes(e);
 }
-function ln(e) {
+function hn(e) {
 	return typeof e == "string" || typeof e == "number" || typeof e == "boolean";
 }
 function X(e) {
@@ -1482,18 +1557,18 @@ function X(e) {
 function Z(e) {
 	return typeof e == "number" && Number.isFinite(e) ? e : null;
 }
-var un = f((() => {
-	v(), I(), C();
+var gn = f((() => {
+	v(), R(), w();
 }));
 //#endregion
 //#region resources/js/api-reference/SnippetPanel.tsx
-function dn({ idPrefix: e, language: t, snippet: n, onLanguageChange: r }) {
+function _n({ idPrefix: e, language: t, snippet: n, onLanguageChange: r }) {
 	return /* @__PURE__ */ s("section", {
 		className: "flex flex-col gap-3",
 		children: [/* @__PURE__ */ o(g.SegmentedPills, {
 			name: `${e}-request-snippet-language`,
 			ariaLabel: "Snippet language",
-			options: fn,
+			options: vn,
 			value: t,
 			onSelect: (e) => r(e)
 		}), /* @__PURE__ */ o(g.CodeBlock, {
@@ -1505,8 +1580,8 @@ function dn({ idPrefix: e, language: t, snippet: n, onLanguageChange: r }) {
 		})]
 	});
 }
-var fn, pn = f((() => {
-	v(), fn = [{
+var vn, yn = f((() => {
+	v(), vn = [{
 		label: "cURL",
 		value: "curl",
 		data: null
@@ -1518,24 +1593,24 @@ var fn, pn = f((() => {
 }));
 //#endregion
 //#region resources/js/api-reference/snippets/curl.ts
-function mn(e) {
+function bn(e) {
 	return `'${e.replaceAll("'", "'\"'\"'")}'`;
 }
-var hn, gn = f((() => {
-	hn = {
+var xn, Sn = f((() => {
+	xn = {
 		id: "curl",
 		label: "cURL",
 		generate(e) {
 			let t = [
-				`--request ${mn(e.method)}`,
-				`--url ${mn(e.url)}`,
-				...Object.entries(e.headers).map(([e, t]) => `--header ${mn(`${e}: ${t}`)}`)
+				`--request ${bn(e.method)}`,
+				`--url ${bn(e.url)}`,
+				...Object.entries(e.headers).map(([e, t]) => `--header ${bn(`${e}: ${t}`)}`)
 			];
-			return e.body !== null && t.push(`--data ${mn(e.body)}`), t.length === 2 ? `curl ${t.join(" ")}` : t.map((e, n) => `${n === 0 ? "curl " : "  "}${e}${n === t.length - 1 ? "" : " \\"}`).join("\n");
+			return e.body !== null && t.push(`--data ${bn(e.body)}`), t.length === 2 ? `curl ${t.join(" ")}` : t.map((e, n) => `${n === 0 ? "curl " : "  "}${e}${n === t.length - 1 ? "" : " \\"}`).join("\n");
 		}
 	};
-})), _n, vn = f((() => {
-	_n = {
+})), Cn, wn = f((() => {
+	Cn = {
 		id: "javascript",
 		label: "JavaScript",
 		generate(e) {
@@ -1551,8 +1626,8 @@ var hn, gn = f((() => {
 }));
 //#endregion
 //#region resources/js/api-reference/RequestPlayground.tsx
-function yn({ param: e, control: t }) {
-	let n = ae(e.schema), r = t ? "grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 py-3 sm:grid-cols-[minmax(0,3fr)_minmax(12rem,2fr)] sm:items-start" : "grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-2", i = !!e.description || n.length > 0;
+function Tn({ param: e, control: t }) {
+	let n = re(e.schema), r = t ? "grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-2 py-3 sm:grid-cols-[minmax(0,3fr)_minmax(12rem,2fr)] sm:items-start" : "grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1 py-2", i = !!e.description || n.length > 0;
 	return /* @__PURE__ */ s("li", {
 		className: `border-b border-lt-border last:border-b-0 ${r}`,
 		children: [
@@ -1575,7 +1650,7 @@ function yn({ param: e, control: t }) {
 			}),
 			/* @__PURE__ */ o("span", {
 				className: "col-start-2 row-start-1 justify-self-end rounded-lt-xs bg-lt-muted px-2 py-1 text-xs text-lt-muted-fg",
-				children: L(e.schema)
+				children: z(e.schema)
 			}),
 			i ? /* @__PURE__ */ s("div", {
 				className: `col-span-2 min-w-0${t ? " sm:col-span-1 sm:col-start-1 sm:row-start-2" : ""}`,
@@ -1594,16 +1669,16 @@ function yn({ param: e, control: t }) {
 		]
 	});
 }
-function bn({ group: e, idPrefix: t, values: n, errors: r, onChange: i }) {
+function En({ group: e, idPrefix: t, values: n, errors: r, onChange: i }) {
 	let a = e.location === "path" || e.location === "query";
 	return /* @__PURE__ */ s("div", {
 		className: "mb-4",
 		children: [/* @__PURE__ */ s("h3", {
 			className: "mb-1 text-xs font-semibold uppercase tracking-wide text-lt-muted-fg",
 			children: [e.location, " parameters"]
-		}), /* @__PURE__ */ o("ul", { children: e.params.map((s) => /* @__PURE__ */ o(yn, {
+		}), /* @__PURE__ */ o("ul", { children: e.params.map((s) => /* @__PURE__ */ o(Tn, {
 			param: s,
-			control: a && Bn(e.location, s) ? /* @__PURE__ */ o(Q, {
+			control: a && Kn(e.location, s) ? /* @__PURE__ */ o(Q, {
 				inline: !0,
 				idPrefix: t,
 				param: s,
@@ -1614,7 +1689,7 @@ function bn({ group: e, idPrefix: t, values: n, errors: r, onChange: i }) {
 		}, `${s.location}-${s.name}`)) })]
 	});
 }
-function xn(e) {
+function Dn(e) {
 	let t = e.paramGroups.flatMap((e) => e.params).filter((e) => e.location === "query");
 	return [
 		{
@@ -1631,7 +1706,7 @@ function xn(e) {
 		}
 	].filter((e) => e.params.length > 0);
 }
-function Sn({ group: e, idPrefix: t, values: n, errors: r, onChange: i }) {
+function On({ group: e, idPrefix: t, values: n, errors: r, onChange: i }) {
 	return /* @__PURE__ */ s("fieldset", {
 		className: "mb-4 rounded-lt-sm border border-lt-border p-3",
 		children: [/* @__PURE__ */ o("legend", {
@@ -1649,7 +1724,7 @@ function Sn({ group: e, idPrefix: t, values: n, errors: r, onChange: i }) {
 		})]
 	});
 }
-function Cn(e) {
+function kn(e) {
 	let t = e.paramGroups.flatMap((e) => e.params), n = t.find((e) => e.location === "header" && e.name.toLowerCase() === "x-pagination") ?? null, r = (e) => t.find((t) => t.location === "query" && t.name === e) ?? null, i = r("page"), a = r("cursor"), o = r("per_page");
 	return o === null || i === null && a === null ? null : {
 		mode: n,
@@ -1658,7 +1733,7 @@ function Cn(e) {
 		perPage: o
 	};
 }
-function wn({ parameters: e, idPrefix: t, values: n, errors: r, onModeChange: i, onChange: a }) {
+function An({ parameters: e, idPrefix: t, values: n, errors: r, onModeChange: i, onChange: a }) {
 	let c = (e.mode === null ? e.page === null : n.parameters[K(e.mode)] === "cursor") ? [e.cursor, e.perPage] : [e.page, e.perPage];
 	return /* @__PURE__ */ s("fieldset", {
 		className: "mb-4 rounded-lt-sm border border-lt-border p-3",
@@ -1689,12 +1764,12 @@ function wn({ parameters: e, idPrefix: t, values: n, errors: r, onModeChange: i,
 		})]
 	});
 }
-function Tn({ name: e, schema: t, examples: r, components: a, noSchemaMessage: c, expandDepth: l, exampleLabel: u, maxHeight: d = 2400, defaultTab: f = "schema", generateExample: p = !1 }) {
+function jn({ name: e, schema: t, examples: r, components: a, noSchemaMessage: c, expandDepth: l, exampleLabel: u, maxHeight: d = 2400, defaultTab: f = "schema", generateExample: p = !1 }) {
 	let [m, h] = i(f), [_, v] = i(0), y = n(() => r.length > 0 || !p ? r : [{
 		name: null,
 		summary: null,
 		description: null,
-		value: w(t, a)
+		value: T(t, a)
 	}], [
 		a,
 		r,
@@ -1712,7 +1787,7 @@ function Tn({ name: e, schema: t, examples: r, components: a, noSchemaMessage: c
 		children: /* @__PURE__ */ o(g.SegmentedPills, {
 			name: e,
 			ariaLabel: "Schema or example",
-			options: Xn.map(({ key: e, label: t }) => ({
+			options: nr.map(({ key: e, label: t }) => ({
 				label: t,
 				value: e,
 				data: null
@@ -1766,7 +1841,7 @@ function Tn({ name: e, schema: t, examples: r, components: a, noSchemaMessage: c
 		})
 	] })] });
 }
-function En({ requests: e, components: t, expandDepth: n }) {
+function Mn({ requests: e, components: t, expandDepth: n }) {
 	return e.length === 0 ? null : /* @__PURE__ */ s("section", {
 		className: "mb-6",
 		children: [/* @__PURE__ */ o("h2", {
@@ -1777,7 +1852,7 @@ function En({ requests: e, components: t, expandDepth: n }) {
 			children: [/* @__PURE__ */ s("p", {
 				className: "mb-1 font-mono text-xs text-lt-muted-fg",
 				children: [e.mediaType ?? "unspecified media type", e.title ? ` — ${e.title}` : ""]
-			}), e.schema || e.examples.length > 0 ? /* @__PURE__ */ o(Tn, {
+			}), e.schema || e.examples.length > 0 ? /* @__PURE__ */ o(jn, {
 				name: `request-${e.mediaType ?? "none"}-${r}-tab`,
 				schema: e.schema,
 				examples: e.examples,
@@ -1792,10 +1867,10 @@ function En({ requests: e, components: t, expandDepth: n }) {
 		}, `${e.mediaType ?? "none"}-${r}`))]
 	});
 }
-function Dn({ responses: e, components: t, expandDepth: n }) {
+function Nn({ responses: e, components: t, expandDepth: n }) {
 	let [r, a] = i(null);
 	if (e.length === 0) return null;
-	let c = [...e].sort(On), l = c.find((e) => S(e) === r) ?? c[0], u = c.map(S);
+	let c = [...e].sort(Pn), l = c.find((e) => C(e) === r) ?? c[0], u = c.map(C);
 	return /* @__PURE__ */ s("section", { children: [
 		/* @__PURE__ */ o("h2", {
 			className: "mb-2 font-semibold text-lt-fg",
@@ -1826,10 +1901,10 @@ function Dn({ responses: e, components: t, expandDepth: n }) {
 				children: [/* @__PURE__ */ o("h3", {
 					className: "mb-1 text-xs font-semibold uppercase tracking-wide text-lt-muted-fg",
 					children: "Response headers"
-				}), /* @__PURE__ */ o("ul", { children: l.headers.map((e) => /* @__PURE__ */ o(yn, { param: e }, e.name)) })]
+				}), /* @__PURE__ */ o("ul", { children: l.headers.map((e) => /* @__PURE__ */ o(Tn, { param: e }, e.name)) })]
 			}) : null,
-			l.schema || l.examples.length > 0 ? /* @__PURE__ */ o(Tn, {
-				name: `response-${S(l)}-tab`,
+			l.schema || l.examples.length > 0 ? /* @__PURE__ */ o(jn, {
+				name: `response-${C(l)}-tab`,
 				schema: l.schema,
 				examples: l.examples,
 				components: t,
@@ -1839,18 +1914,18 @@ function Dn({ responses: e, components: t, expandDepth: n }) {
 				maxHeight: 800,
 				defaultTab: "example",
 				generateExample: !0
-			}, S(l)) : /* @__PURE__ */ o("p", {
+			}, C(l)) : /* @__PURE__ */ o("p", {
 				className: "text-lt-muted-fg",
 				children: "No response body."
 			})
 		] }) : null
 	] });
 }
-function On(e, t) {
-	let n = e.status ?? "default", r = t.status ?? "default", i = kn(n) - kn(r);
+function Pn(e, t) {
+	let n = e.status ?? "default", r = t.status ?? "default", i = Fn(n) - Fn(r);
 	return i !== 0 || n === r ? i : n.localeCompare(r, void 0, { numeric: !0 });
 }
-function kn(e) {
+function Fn(e) {
 	return {
 		2: 0,
 		3: 1,
@@ -1858,17 +1933,17 @@ function kn(e) {
 		5: 3
 	}[e[0]] ?? 4;
 }
-function An(e, t) {
+function In(e, t) {
 	return t ? t.type === "http" && t.scheme === "bearer" ? t.bearerFormat ? `HTTP Bearer (${t.bearerFormat})` : "HTTP Bearer" : t.type === "http" && t.scheme === "basic" ? "HTTP Basic" : t.type === "apiKey" ? `API key (${t.in}: ${t.name})` : t.type === "oauth2" ? "OAuth 2.0" : t.type === "openIdConnect" ? "OpenID Connect" : e : e;
 }
-function jn({ scheme: e, components: t, token: n }) {
-	let r = (t?.securitySchemes ?? {})[e.name] ?? null, i = Mn(r);
+function Ln({ scheme: e, components: t, token: n }) {
+	let r = (t?.securitySchemes ?? {})[e.name] ?? null, i = Rn(r);
 	return /* @__PURE__ */ s("li", {
 		className: "border-b border-lt-border py-2 last:border-b-0",
 		children: [
 			/* @__PURE__ */ o("span", {
 				className: "text-lt-fg",
-				children: An(e.name, r)
+				children: In(e.name, r)
 			}),
 			r?.description ? /* @__PURE__ */ o("p", {
 				className: "mt-0.5 text-xs text-lt-muted-fg",
@@ -1878,7 +1953,7 @@ function jn({ scheme: e, components: t, token: n }) {
 				className: "mt-0.5 text-xs text-lt-muted-fg",
 				children: St(e) ? n ? "Access token supplied by the host page." : "No access token is configured for live requests." : "This authentication scheme is not supported for live requests."
 			}),
-			/* @__PURE__ */ o(Nn, { flows: r?.flows }),
+			/* @__PURE__ */ o(zn, { flows: r?.flows }),
 			e.scopes.length > 0 ? /* @__PURE__ */ o("ul", {
 				className: "mt-1 flex flex-col gap-1",
 				children: e.scopes.map((e) => /* @__PURE__ */ s("li", {
@@ -1895,13 +1970,13 @@ function jn({ scheme: e, components: t, token: n }) {
 		]
 	});
 }
-function Mn(e) {
+function Rn(e) {
 	return Object.values(e?.flows ?? {}).reduce((e, t) => ({
 		...e,
 		...t.scopes
 	}), {});
 }
-function Nn({ flows: e }) {
+function zn({ flows: e }) {
 	let t = Object.entries(e ?? {});
 	return t.length === 0 ? null : /* @__PURE__ */ o("dl", {
 		className: "mt-1 flex flex-col gap-0.5 text-xs text-lt-muted-fg",
@@ -1910,7 +1985,7 @@ function Nn({ flows: e }) {
 			children: [/* @__PURE__ */ o("dt", {
 				className: "font-medium",
 				children: e
-			}), Zn.map(({ key: e, label: n }) => {
+			}), rr.map(({ key: e, label: n }) => {
 				let r = t[e];
 				return typeof r == "string" && r !== "" ? /* @__PURE__ */ s("dd", {
 					className: "min-w-0 break-all",
@@ -1927,17 +2002,17 @@ function Nn({ flows: e }) {
 		}, e))
 	});
 }
-function Pn({ requirement: e, components: t, token: n }) {
+function Bn({ requirement: e, components: t, token: n }) {
 	return e.schemes.length === 0 ? /* @__PURE__ */ o("p", {
 		className: "text-lt-muted-fg",
 		children: "Optional authentication"
-	}) : /* @__PURE__ */ o("ul", { children: e.schemes.map((e) => /* @__PURE__ */ o(jn, {
+	}) : /* @__PURE__ */ o("ul", { children: e.schemes.map((e) => /* @__PURE__ */ o(Ln, {
 		scheme: e,
 		components: t,
 		token: n
 	}, e.name)) });
 }
-function Fn({ security: e, components: t, token: n }) {
+function Vn({ security: e, components: t, token: n }) {
 	return e.length === 0 ? null : /* @__PURE__ */ s("section", {
 		className: "mb-6",
 		children: [/* @__PURE__ */ o("h2", {
@@ -1946,23 +2021,23 @@ function Fn({ security: e, components: t, token: n }) {
 		}), e.map((e, r) => /* @__PURE__ */ s("div", { children: [r > 0 ? /* @__PURE__ */ o("p", {
 			className: "my-2 text-xs font-semibold uppercase tracking-wide text-lt-muted-fg",
 			children: "OR"
-		}) : null, /* @__PURE__ */ o(Pn, {
+		}) : null, /* @__PURE__ */ o(Bn, {
 			requirement: e,
 			components: t,
 			token: n
 		})] }, r))]
 	});
 }
-function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d = 2, twoColumnBreakpoint: f = "lg", hideHeaderIdentity: p = !1 }) {
-	let m = `${a.summary.id}-${t().replaceAll(/[^a-zA-Z0-9_-]/g, "")}`, h = r(null), _ = r(null), [v, y] = i(() => zn(a, u)), [b, x] = i("curl"), [S, C] = i(!1), [w, T] = i(null), E = xn(a), D = Cn(a), re = /* @__PURE__ */ new Set([...E.flatMap((e) => e.params).map(K), ...D === null ? [] : [
-		D.mode,
-		D.page,
-		D.cursor,
-		D.perPage
-	].filter((e) => e !== null).map(K)]), O = a.paramGroups.map((e) => ({
+function Hn({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d = 2, twoColumnBreakpoint: f = "lg", hideHeaderIdentity: p = !1 }) {
+	let m = `${a.summary.id}-${t().replaceAll(/[^a-zA-Z0-9_-]/g, "")}`, h = r(null), _ = r(null), [v, y] = i(() => Gn(a, u)), [b, x] = i("curl"), [C, w] = i(!1), [T, E] = i(null), O = Dn(a), k = kn(a), te = /* @__PURE__ */ new Set([...O.flatMap((e) => e.params).map(K), ...k === null ? [] : [
+		k.mode,
+		k.page,
+		k.cursor,
+		k.perPage
+	].filter((e) => e !== null).map(K)]), A = a.paramGroups.map((e) => ({
 		...e,
-		params: e.params.filter((e) => !re.has(K(e)))
-	})).filter((e) => e.params.length > 0), k = ht(a), A = k.find((e) => e.mediaType === v.mediaType) ?? null, j = n(() => xt({
+		params: e.params.filter((e) => !te.has(K(e)))
+	})).filter((e) => e.params.length > 0), j = ht(a), M = j.find((e) => e.mediaType === v.mediaType) ?? null, N = n(() => xt({
 		operation: a,
 		baseUrl: c,
 		values: v,
@@ -1972,16 +2047,16 @@ function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d 
 		c,
 		v,
 		l
-	]), M = Rn(a), N = a.requests.length > 0 && k.length === 0, ie = A?.required ?? !1, P = Yn[f], F = n(() => {
-		if (j.request === null) return "";
-		let e = wt(j.request);
-		return b === "curl" ? hn.generate(e) : _n.generate(e);
-	}, [j, b]), I = n(() => se(a, u), [a, u]);
+	]), P = Wn(a), F = a.requests.length > 0 && j.length === 0, ne = M?.required ?? !1, I = tr[f], L = n(() => {
+		if (N.request === null) return "";
+		let e = wt(N.request);
+		return b === "curl" ? xn.generate(e) : Cn.generate(e);
+	}, [N, b]), R = n(() => ae(a, u), [a, u]);
 	e(() => () => {
 		let e = _.current;
 		_.current = null, e?.abort();
 	}, []);
-	function L(e, t) {
+	function z(e, t) {
 		let n = K(e);
 		y((e) => ({
 			...e,
@@ -1991,36 +2066,36 @@ function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d 
 			}
 		}));
 	}
-	function ae(e) {
-		if (D === null || D.mode === null) return;
-		let t = D.mode;
+	function re(e) {
+		if (k === null || k.mode === null) return;
+		let t = k.mode;
 		y((n) => {
 			let r = {
 				...n.parameters,
 				[K(t)]: e
 			};
-			return e === "cursor" && D.page !== null ? r[K(D.page)] = "" : D.cursor !== null && (r[K(D.cursor)] = ""), {
+			return e === "cursor" && k.page !== null ? r[K(k.page)] = "" : k.cursor !== null && (r[K(k.cursor)] = ""), {
 				...n,
 				parameters: r
 			};
 		});
 	}
-	function oe(e) {
+	function ie(e) {
 		y((t) => ({
 			...t,
 			body: e
 		}));
 	}
-	function R(e) {
-		let t = k.find((t) => t.mediaType === e);
+	function B(e) {
+		let t = j.find((t) => t.mediaType === e);
 		y((n) => ({
 			...n,
 			mediaType: e,
-			body: t === void 0 ? "" : ee(ne(t, u))
+			body: t === void 0 ? "" : S(D(t, u))
 		}));
 	}
-	async function z(e) {
-		if (e.preventDefault(), N) return;
+	async function oe(e) {
+		if (e.preventDefault(), F) return;
 		let t = xt({
 			operation: a,
 			baseUrl: c,
@@ -2028,24 +2103,24 @@ function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d 
 			token: l
 		});
 		if (t.errors !== null) {
-			let e = Ln(a, t.errors), n = h.current?.querySelectorAll("[data-field-key]") ?? [];
+			let e = Un(a, t.errors), n = h.current?.querySelectorAll("[data-field-key]") ?? [];
 			Array.from(n).find((t) => t.dataset.fieldKey === e)?.focus();
 			return;
 		}
 		_.current?.abort();
 		let n = new AbortController();
-		_.current = n, C(!0);
+		_.current = n, w(!0);
 		try {
 			let e = await ct(t.request, n.signal);
-			_.current === n && T(e);
+			_.current === n && E(e);
 		} catch (e) {
-			if (!te(e)) throw e;
+			if (!ee(e)) throw e;
 		} finally {
-			_.current === n && (_.current = null, C(!1));
+			_.current === n && (_.current = null, w(!1));
 		}
 	}
 	return /* @__PURE__ */ s("div", {
-		className: `grid min-w-0 items-start text-base ${P.grid}`,
+		className: `grid min-w-0 items-start text-base ${I.grid}`,
 		children: [/* @__PURE__ */ s("aside", {
 			ref: h,
 			"aria-label": "Request",
@@ -2056,47 +2131,47 @@ function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d 
 					baseUrl: c,
 					hideIdentity: p
 				}),
-				/* @__PURE__ */ o(Fn, {
+				/* @__PURE__ */ o(Vn, {
 					security: a.security,
 					components: u,
 					token: l
 				}),
-				O.length > 0 || E.length > 0 || D !== null ? /* @__PURE__ */ s("section", {
+				A.length > 0 || O.length > 0 || k !== null ? /* @__PURE__ */ s("section", {
 					className: "mb-6",
 					children: [
 						/* @__PURE__ */ o("h2", {
 							className: "mb-2 font-semibold text-lt-fg",
 							children: "Parameters"
 						}),
-						E.map((e) => /* @__PURE__ */ o(Sn, {
+						O.map((e) => /* @__PURE__ */ o(On, {
 							group: e,
 							idPrefix: m,
 							values: v,
-							errors: j.errors?.parameters ?? {},
-							onChange: L
+							errors: N.errors?.parameters ?? {},
+							onChange: z
 						}, e.label)),
-						D === null ? null : /* @__PURE__ */ o(wn, {
-							parameters: D,
+						k === null ? null : /* @__PURE__ */ o(An, {
+							parameters: k,
 							idPrefix: m,
 							values: v,
-							errors: j.errors?.parameters ?? {},
-							onModeChange: ae,
-							onChange: L
+							errors: N.errors?.parameters ?? {},
+							onModeChange: re,
+							onChange: z
 						}),
-						O.map((e) => /* @__PURE__ */ o(bn, {
+						A.map((e) => /* @__PURE__ */ o(En, {
 							group: e,
 							idPrefix: m,
 							values: v,
-							errors: j.errors?.parameters ?? {},
-							onChange: L
+							errors: N.errors?.parameters ?? {},
+							onChange: z
 						}, e.location))
 					]
 				}) : null,
 				/* @__PURE__ */ s("div", {
 					className: "flex flex-col gap-6",
 					children: [
-						O.filter((e) => !Vn(e.location)).map((e) => {
-							let t = e.params.filter((t) => Bn(e.location, t));
+						A.filter((e) => !qn(e.location)).map((e) => {
+							let t = e.params.filter((t) => Kn(e.location, t));
 							return t.length === 0 ? null : /* @__PURE__ */ s("section", {
 								className: "flex flex-col gap-3",
 								children: [/* @__PURE__ */ s("h3", {
@@ -2108,13 +2183,13 @@ function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d 
 										idPrefix: m,
 										param: e,
 										value: v.parameters[K(e)] ?? "",
-										error: j.errors?.parameters[K(e)] ?? null,
-										onChange: (t) => L(e, t)
+										error: N.errors?.parameters[K(e)] ?? null,
+										onChange: (t) => z(e, t)
 									}, K(e)))
 								})]
 							}, e.location);
 						}),
-						M.length > 0 || N ? /* @__PURE__ */ s("section", {
+						P.length > 0 || F ? /* @__PURE__ */ s("section", {
 							"aria-live": "polite",
 							className: "flex flex-col gap-2",
 							children: [/* @__PURE__ */ o("h3", {
@@ -2122,79 +2197,79 @@ function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d 
 								children: "Request limitations"
 							}), /* @__PURE__ */ s("ul", {
 								className: "flex flex-col gap-1 text-xs text-lt-danger",
-								children: [M.map(({ key: e, name: t, message: n }) => /* @__PURE__ */ s("li", { children: [
+								children: [P.map(({ key: e, name: t, message: n }) => /* @__PURE__ */ s("li", { children: [
 									t,
 									": ",
 									n
-								] }, e)), N ? /* @__PURE__ */ o("li", { children: "Only JSON request bodies can be sent from the playground." }) : null]
+								] }, e)), F ? /* @__PURE__ */ o("li", { children: "Only JSON request bodies can be sent from the playground." }) : null]
 							})]
 						}) : null,
-						k.length > 0 ? /* @__PURE__ */ s("section", {
+						j.length > 0 ? /* @__PURE__ */ s("section", {
 							className: "flex flex-col gap-3",
-							children: [k.length > 1 ? /* @__PURE__ */ o(g.FormFieldFrame, {
+							children: [j.length > 1 ? /* @__PURE__ */ o(g.FormFieldFrame, {
 								id: `${m}-request-media-type`,
 								label: "Content type",
 								className: "min-w-0 basis-full flex-1 sm:basis-48",
 								children: (e) => /* @__PURE__ */ o(g.NativeSelect, {
 									...e,
 									value: v.mediaType ?? "",
-									onChange: (e) => R(e.target.value),
-									children: k.map((e) => /* @__PURE__ */ o("option", {
+									onChange: (e) => B(e.target.value),
+									children: j.map((e) => /* @__PURE__ */ o("option", {
 										value: e.mediaType ?? "",
 										children: e.mediaType
 									}, e.mediaType))
 								})
-							}) : null, A === null ? null : /* @__PURE__ */ o(Kt, {
+							}) : null, M === null ? null : /* @__PURE__ */ o(Kt, {
 								idPrefix: m,
-								schema: A.schema,
+								schema: M.schema,
 								components: u,
 								value: v.body,
-								required: ie,
-								error: j.errors?.body ?? void 0,
-								onChange: oe
+								required: ne,
+								error: N.errors?.body ?? void 0,
+								onChange: ie
 							})]
 						}) : null,
-						j.errors?.request ? /* @__PURE__ */ o("p", {
+						N.errors?.request ? /* @__PURE__ */ o("p", {
 							className: "text-lt-danger",
-							children: j.errors.request
+							children: N.errors.request
 						}) : null,
 						/* @__PURE__ */ s("form", {
-							onSubmit: z,
+							onSubmit: oe,
 							className: "flex flex-wrap items-center gap-3",
 							children: [/* @__PURE__ */ s(g.Button, {
 								type: "submit",
-								disabled: S || N,
-								children: [S ? /* @__PURE__ */ o(g.Spinner, { className: "size-lt-icon-sm" }) : null, "Execute"]
+								disabled: C || F,
+								children: [C ? /* @__PURE__ */ o(g.Spinner, { className: "size-lt-icon-sm" }) : null, "Execute"]
 							}), p ? null : /* @__PURE__ */ o(g.CopyButton, {
-								value: I,
+								value: R,
 								label: "as Markdown",
 								testId: "copy-operation-markdown",
 								className: "ml-auto",
 								children: "Copy as Markdown"
 							})]
 						}),
-						/* @__PURE__ */ o(dt, { result: w })
+						/* @__PURE__ */ o(dt, { result: T })
 					]
 				})
 			]
 		}), /* @__PURE__ */ o("aside", {
 			"aria-label": "Reference",
-			className: `min-w-0 border-t border-lt-border p-6 ${P.reference}`,
+			className: `min-w-0 border-t border-lt-border p-6 ${I.reference}`,
 			children: /* @__PURE__ */ s("div", {
 				className: "flex flex-col gap-6",
 				children: [
-					/* @__PURE__ */ o(dn, {
+					/* @__PURE__ */ o(_n, {
 						idPrefix: m,
 						language: b,
-						snippet: F,
+						snippet: L,
 						onLanguageChange: x
 					}),
-					/* @__PURE__ */ o(En, {
+					/* @__PURE__ */ o(Mn, {
 						requests: a.requests,
 						components: u,
 						expandDepth: d
 					}),
-					/* @__PURE__ */ o(Dn, {
+					/* @__PURE__ */ o(Nn, {
 						responses: a.responses,
 						components: u,
 						expandDepth: d
@@ -2205,7 +2280,7 @@ function In({ operation: a, baseUrl: c, token: l, components: u, expandDepth: d 
 	});
 }
 function Q({ idPrefix: e, param: t, value: n, error: r, onChange: a, inline: c = !1 }) {
-	let l = K(t), u = `${e}-${Jn(l)}`, d = Hn(t), f = Un(d), p = n === "" ? [] : n.split(","), [m, h] = i(!1);
+	let l = K(t), u = `${e}-${er(l)}`, d = Jn(t), f = Yn(d), p = n === "" ? [] : n.split(","), [m, h] = i(!1);
 	function _(e) {
 		a(p.includes(e) ? p.filter((t) => t !== e).join(",") : [...p, e].join(","));
 	}
@@ -2274,12 +2349,12 @@ function Q({ idPrefix: e, param: t, value: n, error: r, onChange: a, inline: c =
 			]
 		}) : /* @__PURE__ */ o(g.Input, {
 			...e,
-			type: Wn(d),
+			type: Xn(d),
 			value: n,
 			required: t.required,
-			min: Gn(d),
-			max: Kn(d),
-			step: qn(d),
+			min: Zn(d),
+			max: Qn(d),
+			step: $n(d),
 			minLength: $(d.minLength),
 			maxLength: $(d.maxLength),
 			pattern: typeof d.pattern == "string" ? d.pattern : void 0,
@@ -2288,14 +2363,14 @@ function Q({ idPrefix: e, param: t, value: n, error: r, onChange: a, inline: c =
 		})
 	});
 }
-function Ln(e, t) {
+function Un(e, t) {
 	for (let n of e.paramGroups) for (let e of n.params) {
 		let r = K(e);
-		if (Bn(n.location, e) && t.parameters[r] !== void 0) return r;
+		if (Kn(n.location, e) && t.parameters[r] !== void 0) return r;
 	}
 	return t.body === null ? null : "body";
 }
-function Rn(e) {
+function Wn(e) {
 	return e.paramGroups.flatMap((e) => e.params.flatMap((e) => {
 		let t = K(e), n = kt(e);
 		return n === null ? [] : [{
@@ -2305,7 +2380,7 @@ function Rn(e) {
 		}];
 	}));
 }
-function zn(e, t) {
+function Gn(e, t) {
 	let n = gt(e, t), r = { ...n.parameters };
 	for (let t of e.paramGroups.flatMap((e) => e.params)) !t.required && kt(t) !== null && (r[K(t)] = "");
 	return {
@@ -2313,23 +2388,23 @@ function zn(e, t) {
 		parameters: r
 	};
 }
-function Bn(e, t) {
+function Kn(e, t) {
 	return [
 		"path",
 		"query",
 		"header"
 	].includes(e) && kt(t) === null;
 }
-function Vn(e) {
+function qn(e) {
 	return e === "path" || e === "query";
 }
-function Hn(e) {
+function Jn(e) {
 	return x(e.schema) ? e.schema : {};
 }
-function Un(e) {
+function Yn(e) {
 	return e.type !== "array" || !x(e.items) || !Array.isArray(e.items.enum) ? [] : e.items.enum.filter((e) => typeof e == "string");
 }
-function Wn(e) {
+function Xn(e) {
 	if (e.type === "number" || e.type === "integer") return "number";
 	switch (e.format) {
 		case "email": return "email";
@@ -2340,24 +2415,24 @@ function Wn(e) {
 		default: return "text";
 	}
 }
-function Gn(e) {
+function Zn(e) {
 	return $(e.minimum) ?? $(e.exclusiveMinimum);
 }
-function Kn(e) {
+function Qn(e) {
 	return $(e.maximum) ?? $(e.exclusiveMaximum);
 }
-function qn(e) {
+function $n(e) {
 	let t = $(e.multipleOf);
 	return t === void 0 ? e.type === "integer" ? 1 : e.type === "number" ? "any" : void 0 : t;
 }
 function $(e) {
 	return typeof e == "number" && Number.isFinite(e) ? e : void 0;
 }
-function Jn(e) {
+function er(e) {
 	return e.replaceAll(/[^a-zA-Z0-9_-]/g, "-");
 }
-var Yn, Xn, Zn, Qn = f((() => {
-	v(), st(), ut(), pt(), Gt(), ye(), R(), un(), Ut(), bt(), pn(), I(), gn(), vn(), C(), Yn = {
+var tr, nr, rr, ir = f((() => {
+	v(), st(), ut(), pt(), Gt(), ye(), B(), gn(), Ut(), bt(), yn(), R(), Sn(), wn(), w(), tr = {
 		default: {
 			grid: "grid-cols-[minmax(0,1fr)_minmax(22rem,32rem)]",
 			reference: "sticky top-0 border-l border-t-0"
@@ -2382,13 +2457,13 @@ var Yn, Xn, Zn, Qn = f((() => {
 			grid: "2xl:grid-cols-[minmax(0,1fr)_minmax(22rem,32rem)]",
 			reference: "2xl:sticky 2xl:top-0 2xl:border-l 2xl:border-t-0"
 		}
-	}, Xn = [{
+	}, nr = [{
 		key: "schema",
 		label: "Schema"
 	}, {
 		key: "example",
 		label: "Example"
-	}], Zn = [
+	}], rr = [
 		{
 			key: "authorizationUrl",
 			label: "Authorize"
@@ -2405,7 +2480,7 @@ var Yn, Xn, Zn, Qn = f((() => {
 }));
 //#endregion
 //#region resources/js/api-reference/OperationView.tsx
-function $n({ spec: e, operationId: t, baseUrl: r, token: i, expandDepth: a = 2, twoColumnBreakpoint: c = "lg", hideHeaderIdentity: l = !1 }) {
+function ar({ spec: e, operationId: t, baseUrl: r, token: i, expandDepth: a = 2, twoColumnBreakpoint: c = "lg", hideHeaderIdentity: l = !1 }) {
 	let u = n(() => t ? H(e, t, r ?? null) : null, [
 		e,
 		t,
@@ -2413,7 +2488,7 @@ function $n({ spec: e, operationId: t, baseUrl: r, token: i, expandDepth: a = 2,
 	]), d = e?.components ?? null;
 	return t ? u ? /* @__PURE__ */ o("div", {
 		className: "min-w-0 flex-1 overflow-y-auto",
-		children: /* @__PURE__ */ o(In, {
+		children: /* @__PURE__ */ o(Hn, {
 			operation: u,
 			baseUrl: u.serverUrl,
 			token: i ?? null,
@@ -2434,33 +2509,33 @@ function $n({ spec: e, operationId: t, baseUrl: r, token: i, expandDepth: a = 2,
 		children: "Select an operation to view its details."
 	});
 }
-var er = f((() => {
-	Ge(), Qn();
+var or = f((() => {
+	Ge(), ir();
 }));
 //#endregion
 //#region resources/js/api-reference/ServerPicker.tsx
-function tr(e) {
+function sr(e) {
 	return e.description ? `${e.description} — ${e.url}` : e.url;
 }
-function nr({ servers: e, selectedServerUrl: t, onServerChange: n }) {
+function cr({ servers: e, selectedServerUrl: t, onServerChange: n }) {
 	return e.length === 0 ? null : e.length === 1 ? /* @__PURE__ */ o("p", {
 		className: "truncate py-1 text-xs text-lt-muted-fg",
 		title: e[0].url,
-		children: tr(e[0])
+		children: sr(e[0])
 	}) : /* @__PURE__ */ o(g.NativeSelect, {
 		value: t ?? "",
 		onChange: (e) => n(e.target.value),
 		"aria-label": "Select server",
 		children: e.map((e) => /* @__PURE__ */ o("option", {
 			value: e.url,
-			children: tr(e)
+			children: sr(e)
 		}, e.url))
 	});
 }
-var rr = f((() => {
+var lr = f((() => {
 	v();
-})), ir = /* @__PURE__ */ p({ default: () => cr });
-function ar(e) {
+})), ur = /* @__PURE__ */ p({ default: () => mr });
+function dr(e) {
 	if (!e) return null;
 	for (let t of e.groups) {
 		let [e] = t.operationIds;
@@ -2468,11 +2543,11 @@ function ar(e) {
 	}
 	return null;
 }
-function or() {
+function fr() {
 	let e = window.location.hash.slice(1);
 	return e === "" ? null : e;
 }
-function sr({ title: e, info: t }) {
+function pr({ title: e, info: t }) {
 	let n = e ?? t.title;
 	return !n && !t.version && !t.description ? null : /* @__PURE__ */ s("header", {
 		className: "border-b border-lt-border py-6",
@@ -2492,113 +2567,113 @@ function sr({ title: e, info: t }) {
 		]
 	});
 }
-var cr, lr = f((() => {
-	v(), b(), ye(), er(), Ge(), Ut(), rr(), cr = ({ node: t }) => {
-		let { spec: r, url: c, operation: l, tags: u, defaultOperation: d, hideHeader: f, hideBaseUrl: p, title: m = null, expandDepth: h, twoColumnBreakpoint: _, token: v = null } = t.props, [b, x] = i(r ?? null), [ee, te] = i(!!c), [S, C] = i(null), [w, T] = i(() => or()), [ne, E] = i(null), [D, re] = i(null), [O, k] = i(null), [A, j] = i({});
+var mr, hr = f((() => {
+	v(), b(), ye(), or(), Ge(), Ut(), lr(), mr = ({ node: t }) => {
+		let { spec: r, url: c, operation: l, tags: u, defaultOperation: d, hideHeader: f, hideBaseUrl: p, title: m = null, expandDepth: h, twoColumnBreakpoint: _, token: v = null } = t.props, [b, x] = i(r ?? null), [S, ee] = i(!!c), [C, w] = i(null), [T, E] = i(() => fr()), [D, O] = i(null), [k, te] = i(null), [A, j] = i(null), [M, N] = i({});
 		e(() => {
 			if (!c) return;
 			let e = !0;
-			return te(!0), C(null), fetch(c).then((e) => {
+			return ee(!0), w(null), fetch(c).then((e) => {
 				if (!e.ok) throw Error(`Failed to fetch spec: ${e.status} ${e.statusText}`);
 				return e.json();
 			}).then((t) => {
 				e && x(t);
 			}).catch((t) => {
-				e && C(t instanceof Error ? t.message : String(t));
+				e && w(t instanceof Error ? t.message : String(t));
 			}).finally(() => {
-				e && te(!1);
+				e && ee(!1);
 			}), () => {
 				e = !1;
 			};
 		}, [c]);
-		let M = n(() => b ? De(b) : null, [b]), N = n(() => M && u?.length ? Be(M, u) : M, [M, u]), ie = b?.components ?? null, P = l ?? w, F = N?.groups.find((e) => e.id === ne && w && e.operationIds.includes(w))?.id ?? N?.groups.find((e) => w && e.operationIds.includes(w))?.id, I = n(() => {
-			if (!b || !P) return null;
-			let e = H(b, P);
+		let P = n(() => b ? De(b) : null, [b]), F = n(() => P && u?.length ? Be(P, u) : P, [P, u]), ne = b?.components ?? null, I = l ?? T, L = F?.groups.find((e) => e.id === D && T && e.operationIds.includes(T))?.id ?? F?.groups.find((e) => T && e.operationIds.includes(T))?.id, R = n(() => {
+			if (!b || !I) return null;
+			let e = H(b, I);
 			if (!e) return null;
-			let t = e.usesRootServers ? O : A[P] ?? null;
-			return H(b, P, t);
+			let t = e.usesRootServers ? A : M[I] ?? null;
+			return H(b, I, t);
 		}, [
 			b,
-			P,
-			O,
-			A
+			I,
+			A,
+			M
 		]);
 		e(() => {
-			if (w !== null || !N) return;
-			let e = or() ?? d ?? ar(N);
-			e && T(e);
+			if (T !== null || !F) return;
+			let e = fr() ?? d ?? dr(F);
+			e && E(e);
 		}, [
-			N,
-			w,
+			F,
+			T,
 			d
 		]), e(() => {
-			if (!N || N.servers.some((e) => e.url === O)) return;
-			let e = N.servers[0]?.url ?? null;
-			e && k(e);
-		}, [N, O]), e(() => {
+			if (!F || F.servers.some((e) => e.url === A)) return;
+			let e = F.servers[0]?.url ?? null;
+			e && j(e);
+		}, [F, A]), e(() => {
 			function e() {
-				T(or());
+				E(fr());
 			}
 			return window.addEventListener("hashchange", e), () => window.removeEventListener("hashchange", e);
 		}, []);
-		function L(e) {
-			T(e), window.location.hash = e;
+		function z(e) {
+			E(e), window.location.hash = e;
 		}
-		function ae(e, t) {
+		function re(e, t) {
 			let n = `${e}:${t}`;
-			if (t === w && e === F && D !== n) {
-				re(n);
+			if (t === T && e === L && k !== n) {
+				te(n);
 				return;
 			}
-			re(null), E(e), L(t);
+			te(null), O(e), z(t);
 		}
-		function oe(e) {
-			if (!P || I?.usesRootServers !== !1) {
-				k(e);
+		function ie(e) {
+			if (!I || R?.usesRootServers !== !1) {
+				j(e);
 				return;
 			}
-			j((t) => ({
+			N((t) => ({
 				...t,
-				[P]: e
+				[I]: e
 			}));
 		}
-		function R(e) {
+		function B(e) {
 			let t = H(b, e);
-			if (!t) return O;
-			let n = t.usesRootServers ? O : A[e] ?? null;
-			return H(b, e, n)?.serverUrl ?? O;
+			if (!t) return A;
+			let n = t.usesRootServers ? A : M[e] ?? null;
+			return H(b, e, n)?.serverUrl ?? A;
 		}
-		if (ee) return /* @__PURE__ */ o("div", {
+		if (S) return /* @__PURE__ */ o("div", {
 			className: "p-6 text-base text-lt-muted-fg",
 			children: "Loading API reference…"
 		});
-		if (S) return /* @__PURE__ */ o("div", {
+		if (C) return /* @__PURE__ */ o("div", {
 			className: "p-6 text-base text-lt-danger",
-			children: S
+			children: C
 		});
-		if (!b || !N) return /* @__PURE__ */ o("div", {
+		if (!b || !F) return /* @__PURE__ */ o("div", {
 			className: "p-6 text-base text-lt-muted-fg",
 			children: "No API specification provided."
 		});
-		let z = /* @__PURE__ */ s(a, { children: [f ? null : /* @__PURE__ */ o(sr, {
+		let oe = /* @__PURE__ */ s(a, { children: [f ? null : /* @__PURE__ */ o(pr, {
 			title: m,
-			info: N.info
-		}), I && !p ? /* @__PURE__ */ o("div", {
+			info: F.info
+		}), R && !p ? /* @__PURE__ */ o("div", {
 			className: "border-b border-lt-border py-3",
-			children: /* @__PURE__ */ o(nr, {
-				servers: I.servers,
-				selectedServerUrl: I.serverUrl,
-				onServerChange: oe
+			children: /* @__PURE__ */ o(cr, {
+				servers: R.servers,
+				selectedServerUrl: R.serverUrl,
+				onServerChange: ie
 			})
 		}) : null] });
 		return l ? /* @__PURE__ */ o("div", {
 			className: "flex w-full text-base",
 			children: /* @__PURE__ */ s("div", {
 				className: "flex min-w-0 flex-1 flex-col",
-				children: [z, /* @__PURE__ */ o($n, {
+				children: [oe, /* @__PURE__ */ o(ar, {
 					spec: b,
 					operationId: l,
-					baseUrl: R(l),
+					baseUrl: B(l),
 					token: v,
 					expandDepth: h,
 					twoColumnBreakpoint: _
@@ -2606,9 +2681,9 @@ var cr, lr = f((() => {
 			})
 		}) : /* @__PURE__ */ s("div", {
 			className: "flex min-w-0 w-full flex-col text-base",
-			children: [z, /* @__PURE__ */ o("div", {
+			children: [oe, /* @__PURE__ */ o("div", {
 				className: "flex flex-col gap-8 py-6",
-				children: N.groups.map((e) => /* @__PURE__ */ s("section", {
+				children: F.groups.map((e) => /* @__PURE__ */ s("section", {
 					"aria-labelledby": `api-reference-tag-${e.id}`,
 					children: [/* @__PURE__ */ o("h2", {
 						id: `api-reference-tag-${e.id}`,
@@ -2617,9 +2692,9 @@ var cr, lr = f((() => {
 					}), /* @__PURE__ */ o("div", {
 						className: "overflow-hidden rounded-lt border border-lt-border",
 						children: e.operationIds.map((t) => {
-							let n = N.summaries[t];
+							let n = F.summaries[t];
 							if (!n) return null;
-							let r = `${e.id}:${t}`, i = t === w && e.id === F && D !== r, a = `api-reference-operation-${e.id}-${t}`, c = R(t), l = Nt(c, n.path), u = H(b, t, c), d = u ? se(u, ie) : "";
+							let r = `${e.id}:${t}`, i = t === T && e.id === L && k !== r, a = `api-reference-operation-${e.id}-${t}`, c = B(t), l = Nt(c, n.path), u = H(b, t, c), d = u ? ae(u, ne) : "";
 							return /* @__PURE__ */ s("div", {
 								className: "border-b border-lt-border last:border-b-0",
 								children: [/* @__PURE__ */ s("div", {
@@ -2670,15 +2745,15 @@ var cr, lr = f((() => {
 										"aria-label": n.title,
 										"aria-expanded": i,
 										"aria-controls": a,
-										onClick: () => ae(e.id, t),
+										onClick: () => re(e.id, t),
 										className: "absolute inset-0 z-0 cursor-pointer transition-colors hover:bg-lt-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-lt-ring"
 									})]
 								}), i ? /* @__PURE__ */ o("div", {
 									id: a,
-									children: /* @__PURE__ */ o($n, {
+									children: /* @__PURE__ */ o(ar, {
 										spec: b,
 										operationId: t,
-										baseUrl: R(t),
+										baseUrl: B(t),
 										token: v,
 										expandDepth: h,
 										twoColumnBreakpoint: _,
@@ -2696,9 +2771,9 @@ var cr, lr = f((() => {
 //#endregion
 //#region resources/js/plugin.ts
 v();
-var ur = {
+var gr = {
 	name: "api-reference",
-	components: { "api-reference": (0, g.lazyComponent)(() => Promise.resolve().then(() => (lr(), ir))) }
+	components: { "api-reference": (0, g.lazyComponent)(() => Promise.resolve().then(() => (hr(), ur))) }
 };
 //#endregion
-export { ur as default };
+export { gr as default };
