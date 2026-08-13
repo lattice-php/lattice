@@ -1,12 +1,10 @@
 import inertia from "@inertiajs/vite";
-import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { svgSprite, writePhpEnum } from "@lattice-php/vite-svg-sprite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { playwright } from "@vitest/browser-playwright";
 import laravel from "laravel-vite-plugin";
 import path from "node:path";
-import Sonda from "sonda/vite";
 import {
   componentPackagesPlugin,
   discoverComponentPackages,
@@ -86,12 +84,6 @@ const latticeIcons = [
   "underline",
 ];
 
-// Sonda analyses the real app bundle (the workbench build). Gated behind an
-// env flag so it only runs for `npm run analyze` / the docs build, writing an
-// interactive report + JSON the bundle-size docs page reads at build time.
-const isSonda = process.env.SONDA === "1";
-const isCodecovBundle = !isVitest && process.env.CODECOV_BUNDLE === "1";
-
 export default defineConfig({
   plugins: [
     ...(isVitest
@@ -149,29 +141,6 @@ export default defineConfig({
     componentPackagesPlugin(componentPackages),
     react(),
     tailwindcss(),
-    ...(isSonda
-      ? [
-          Sonda({
-            format: ["html", "json"],
-            filename: "bundle-report",
-            outputDir: path.resolve(import.meta.dirname, "docs/generated"),
-            gzip: true,
-            deep: true,
-            open: false,
-          }),
-        ]
-      : []),
-    ...(isCodecovBundle
-      ? codecovVitePlugin({
-          enableBundleAnalysis: true,
-          bundleName: "lattice-workbench",
-          oidc: {
-            useGitHubOIDC: true,
-          },
-          dryRun: process.env.CODECOV_BUNDLE_DRY_RUN === "1",
-          telemetry: false,
-        })
-      : []),
   ],
   resolve: {
     alias: {
@@ -257,6 +226,7 @@ export default defineConfig({
         "packages/*/resources/js/generated.ts",
         "packages/*/resources/js/test/**",
         "packages/*/resources/js/**/*test-support.{ts,tsx}",
+        "packages/framework/resources/js/bench/**",
         "packages/framework/resources/js/types/**",
       ],
     },

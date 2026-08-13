@@ -159,7 +159,7 @@ jobs:
       - run: npm run build:standalone
 
   bundle-analysis:
-    name: Workbench Bundle Analysis
+    name: Bundle Analysis
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -172,12 +172,36 @@ jobs:
           node-version: lts/*
           cache: npm
 
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      - name: Resolve composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-8.4-${{ hashFiles('**/composer.json') }}
+          restore-keys: composer-${{ runner.os }}-8.4-
+
+      # The workbench build discovers component packages (and their icon dirs)
+      # through vendor/composer/installed.json, so the sprite check below needs
+      # the composer dependencies installed.
+      - run: composer install --prefer-dist --no-progress --no-interaction
+
       - run: npm ci
 
-      - name: Upload workbench bundle analysis to Codecov
+      - name: Upload per-package bundle analysis to Codecov
         env:
           CODECOV_BUNDLE: "1"
-        run: npm run build
+        run: npm run analyze:build
+
+      # The workbench build regenerates the sprite artifacts the diff below verifies.
+      - run: npm run build
 
       - name: Icons are up to date
         run: |

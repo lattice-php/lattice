@@ -1,9 +1,16 @@
 ---
 /**
- * Renders the current bundle composition from the Sonda JSON report, which is
- * regenerated on every docs build by `npm run analyze` (see package.json).
- * The numbers below are therefore always in sync with the latest build.
+ * Renders the bundle composition of one analyze target from its Sonda JSON
+ * report, regenerated on every docs build by `npm run analyze` (see
+ * package.json). `target="framework"` is the bench build of the npm package
+ * (peers external); every other target is that package's standalone artifact,
+ * which externalizes react and the lattice runtime, so the report shows the
+ * package's marginal cost.
  */
+type Props = {
+  target: "framework" | "tree" | "media" | "calendar" | "search" | "api-reference";
+};
+
 type Resource = {
   kind: "filesystem" | "sourcemap" | "chunk" | "asset";
   name: string;
@@ -25,11 +32,13 @@ type Segment = {
   color: string;
 };
 
-const reports = import.meta.glob<{ default: Report }>("../generated/bundle-report.json", {
+const { target } = Astro.props;
+
+const reports = import.meta.glob<{ default: Report }>("../generated/bundle-report-*.json", {
   eager: true,
 });
 
-const report = reports["../generated/bundle-report.json"]?.default ?? null;
+const report = reports[`../generated/bundle-report-${target}.json`]?.default ?? null;
 
 const palette = [
   "#6366f1",
@@ -46,24 +55,35 @@ const palette = [
   "#eab308",
 ];
 const remainderColor = "var(--sl-color-gray-4)";
-const ownName = "Lattice code";
 
 const kb = (bytes: number): string => `${(bytes / 1024).toFixed(1)} KB`;
 const pct = (value: number): string => `${value.toFixed(1)}%`;
 
+const latticeLabel = (pkg: string): string =>
+  pkg === "framework" ? "@lattice-php/lattice" : `@lattice-php/${pkg}`;
+const isLattice = (name: string): boolean => name.startsWith("@lattice-php/");
+
+// Chunk names are relative to the analyzed package's directory: the package's
+// own sources are `resources/js/...`, sibling packages resolve through the
+// monorepo aliases as `../<package>/resources/js/...`, and dependencies point
+// into `node_modules/`.
 function group(name: string): string {
-  if (name.includes("resources/js")) return ownName;
+  const sibling = name.match(/^\.\.\/([^/]+)\/resources\/js\//);
+  if (sibling) return latticeLabel(sibling[1]);
+  if (name.startsWith("resources/js/")) return latticeLabel(target);
+  if (name === "[unassigned]") return "Bundler runtime";
   const at = name.lastIndexOf("node_modules/");
-  if (at < 0) return "Application / other";
+  if (at < 0) return "Other";
   const rest = name.slice(at + "node_modules/".length);
   const pkg = rest.startsWith("@") ? rest.split("/").slice(0, 2).join("/") : rest.split("/")[0];
   if (pkg.startsWith("@tiptap") || pkg.startsWith("prosemirror") || pkg === "linkifyjs") {
     return "TipTap + ProseMirror";
   }
+  if (pkg.startsWith("@codemirror") || pkg.startsWith("@lezer")) return "CodeMirror";
   if (pkg.startsWith("@radix-ui") || pkg.startsWith("@floating-ui")) return "Radix UI";
-  if (pkg === "react" || pkg === "react-dom" || pkg === "scheduler") return "React / React-DOM";
   if (pkg === "i18next" || pkg.startsWith("i18next-") || pkg === "react-i18next") return "i18next";
-  if (pkg.startsWith("@inertiajs")) return "Inertia";
+  if (pkg.startsWith("@zag-js") || pkg.startsWith("@internationalized")) return "zag-js date picker";
+  if (pkg.startsWith("@atlaskit")) return "Pragmatic drag and drop";
   return pkg;
 }
 
@@ -90,13 +110,10 @@ if (report) {
 
   const ranked = [...agg.entries()]
     .map(([name, v]) => ({ name, ...v }))
-    .sort((a, b) => b.gzip - a.gzip);
+    .sort(
+      (a, b) => Number(isLattice(b.name)) - Number(isLattice(a.name)) || b.gzip - a.gzip,
+    );
   const top = ranked.slice(0, palette.length);
-
-  const own = top.findIndex((c) => c.name === ownName);
-  if (own > 0) {
-    top.unshift(top.splice(own, 1)[0]);
-  }
 
   segments = top.map((c, i) => ({
     name: c.name,
@@ -128,7 +145,7 @@ const fileLabel = (name: string): string => name.replace(/.*\/assets\//, "").rep
     <aside class="bundle-report-missing">
       <strong>Bundle report not generated.</strong> Run <code>npm run analyze</code> (or
       <code>npm run docs:build</code>, which runs it for you) to produce
-      <code>docs/public/bundle-report.json</code>.
+      <code>docs/generated/bundle-report-{target}.json</code>.
     </aside>
   ) : (
     <div class="bundle-report">
@@ -157,7 +174,7 @@ const fileLabel = (name: string): string => name.replace(/.*\/assets\//, "").rep
         </thead>
         <tbody>
           {segments.map((s) => (
-            <tr class={s.name === ownName ? "bundle-own" : undefined}>
+            <tr class={isLattice(s.name) ? "bundle-own" : undefined}>
               <td>
                 <span class="bundle-swatch" style={`background:${s.color}`} />
                 {s.name}
@@ -193,7 +210,7 @@ const fileLabel = (name: string): string => name.replace(/.*\/assets\//, "").rep
       </table>
 
       <p class="bundle-report-meta">
-        <a href="/bundle-report.html" target="_blank" rel="noopener">
+        <a href={`/bundle-report-${target}.html`} target="_blank" rel="noopener">
           Open the full interactive treemap ↗
         </a>{" "}
         · Generated by Sonda {report.metadata.version} on {generatedAt}.

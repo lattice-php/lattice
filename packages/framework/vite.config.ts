@@ -20,6 +20,7 @@ function libraryEntries(): string[] {
       // dts plugin and are exposed through types-only export conditions.
       .filter((file) => !file.startsWith("types/"))
       .filter((file) => !file.startsWith("standalone/"))
+      .filter((file) => !file.startsWith("bench/"))
       .map((file) => path.join(sourceRoot, file))
   );
 }
@@ -127,6 +128,7 @@ export default defineConfig(({ mode }) => {
                 "resources/js/**/test-support.*",
                 "resources/js/test/**",
                 "resources/js/standalone/**",
+                "resources/js/bench/**",
               ],
               compilerOptions: {
                 rootDir: sourceRoot,

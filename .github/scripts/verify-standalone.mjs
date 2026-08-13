@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 
 const artifacts = [
   { package: "packages/framework", manifest: "dist-standalone/manifest.json" },
+  { package: "packages/calendar", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   { package: "packages/tree", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   { package: "packages/media", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   {

@@ -24,7 +24,7 @@
     "build": "vite build",
     "build:lib": "npm run build --workspace @lattice-php/core && npm run build --workspace @lattice-php/ui && npm run build --workspace @lattice-php/form && npm run build --workspace @lattice-php/table && npm run build --workspace @lattice-php/action && npm run build --workspace @lattice-php/lattice && npm run build --workspace @lattice-php/api-reference",
     "build:lib:watch": "npm run build --workspace @lattice-php/lattice -- --watch",
-    "build:standalone": "npm run build:standalone --workspace @lattice-php/lattice --workspace @lattice-php/tree --workspace @lattice-php/media --workspace @lattice-php/api-reference --workspace @lattice-php/search",
+    "build:standalone": "npm run build:standalone --workspaces --if-present",
     "verify:standalone": "node .github/scripts/verify-standalone.mjs",
     "test": "vitest run",
     "test:browser": "vitest run --project browser",
@@ -44,7 +44,8 @@
     "versions:sync": "node .github/scripts/sync-package-versions.mjs",
     "format": "oxfmt --write \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "format:check": "oxfmt --check \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
-    "analyze": "SONDA=1 vite build && mkdir -p docs/public && cp docs/generated/bundle-report.html docs/public/bundle-report.html",
+    "analyze": "npm run analyze:build && mkdir -p docs/public && cp docs/generated/bundle-report-*.html docs/public",
+    "analyze:build": "npm run build:bench --workspace @lattice-php/lattice && SONDA=1 npm run build:standalone --workspace @lattice-php/tree --workspace @lattice-php/media --workspace @lattice-php/calendar --workspace @lattice-php/search --workspace @lattice-php/api-reference",
     "docs:dev": "npm run build:lib && npm run dev -w docs",
     "docs:build": "npm run build:lib && npm run analyze && npm run build -w docs",
     "docs:preview": "npm run preview -w docs"
