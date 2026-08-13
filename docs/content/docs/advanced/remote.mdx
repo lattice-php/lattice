@@ -117,7 +117,7 @@ request:
 ```php
 use Illuminate\Http\Request;
 use Lattice\Core\Attributes\AsRemoteSource;
-use Lattice\Remote\BrowserToken;
+use Lattice\Core\Remote\BrowserToken;
 use Lattice\Remote\RemoteSourceDefinition;
 
 #[AsRemoteSource('workbench.todos')]
@@ -222,8 +222,9 @@ import { remoteComponents } from "@lattice-php/lattice/remote";
 export const registry = createRegistry(/* …core plugins…, */ remoteComponents);
 ```
 
-A remote chat box needs `chatComponents` (from `@lattice-php/lattice/chat`) instead — it registers
-the `chat.box` type that remote chat reuses.
+A remote chat box needs the [chat package](/packages/chat/) instead — its plugin registers the
+`chat.box` type that remote chat reuses and is picked up automatically via
+`virtual:lattice/plugins`.
 
 ## Configuration
 
