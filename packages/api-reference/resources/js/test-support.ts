@@ -9,6 +9,7 @@ export function parameter(overrides: Partial<Param>): Param {
     required: false,
     deprecated: false,
     description: null,
+    tooltip: null,
     schema: { type: "string" },
     example: null,
     ...overrides,
@@ -46,6 +47,7 @@ export function operation(
     servers: [{ url: "https://api.example.test", description: null }],
     usesRootServers: true,
     description: null,
+    tooltip: null,
     tags: [],
     paramGroups: [
       { location: "path", params: params.filter((param) => param.location === "path") },

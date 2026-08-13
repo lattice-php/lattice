@@ -24,6 +24,7 @@ type RawParameter = {
   required?: boolean;
   deprecated?: boolean;
   description?: string | null;
+  "x-tooltip"?: string | null;
   schema?: unknown;
   example?: unknown;
   examples?: Record<string, RawExample>;
@@ -70,6 +71,7 @@ type RawOperation = {
   operationId?: string;
   summary?: string;
   description?: string | null;
+  "x-tooltip"?: string | null;
   tags?: string[];
   deprecated?: boolean;
   parameters?: RawParameter[];
@@ -256,6 +258,7 @@ function buildParam(spec: RawSpec, parameter: RawParameter): Param {
     required: Boolean(parameter.required),
     deprecated: Boolean(parameter.deprecated),
     description: parameter.description ?? null,
+    tooltip: parameter["x-tooltip"] ?? null,
     schema,
     example: parameterExample(spec, parameter, schema),
     ...(parameter.style === undefined ? {} : { style: parameter.style }),
@@ -540,6 +543,7 @@ export function parseOperation(
     servers,
     usesRootServers,
     description: operation.description ?? null,
+    tooltip: operation["x-tooltip"] ?? null,
     tags: operation.tags ?? [],
     paramGroups: buildParamGroups(spec, pathItem.parameters ?? [], operation.parameters ?? []),
     requests: buildRequests(spec, operation.requestBody),

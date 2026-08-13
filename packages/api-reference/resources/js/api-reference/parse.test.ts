@@ -203,6 +203,7 @@ describe("parseOperation", () => {
             required: true,
             deprecated: false,
             description: null,
+            tooltip: null,
             schema: { type: "string" },
             example: null,
           },
@@ -217,6 +218,7 @@ describe("parseOperation", () => {
             required: false,
             deprecated: false,
             description: null,
+            tooltip: null,
             schema: { type: "array", items: { type: "string", enum: ["roles", "rolesCount"] } },
             example: null,
             style: "form",
@@ -239,6 +241,38 @@ describe("parseOperation", () => {
     });
     expect(op.description).toBe("Fetches a single user by id.");
     expect(op.tags).toEqual(["Users", "Admin"]);
+  });
+
+  it("reads x-tooltip beside description on the operation and on the parameter itself", () => {
+    const op = parseOperation(
+      {
+        openapi: "3.1.0",
+        info: { title: "Tooltips API", version: "1.0.0", description: null },
+        paths: {
+          "/widgets": {
+            get: {
+              operationId: "getWidgets",
+              description: "Lists widgets.",
+              "x-tooltip": '<a href="/docs/widgets">Widget docs</a>',
+              parameters: [
+                {
+                  name: "filter[type]",
+                  in: "query",
+                  description: "Restricts the result set by type.",
+                  "x-tooltip": '<a href="/docs/filters">Filter docs</a>',
+                  schema: { type: "string", "x-tooltip": "<em>ignored</em>" },
+                },
+              ],
+              responses: { "200": { description: "OK" } },
+            },
+          },
+        },
+      },
+      "get-widgets",
+    )!;
+
+    expect(op.tooltip).toBe('<a href="/docs/widgets">Widget docs</a>');
+    expect(op.paramGroups[0]!.params[0]!.tooltip).toBe('<a href="/docs/filters">Filter docs</a>');
   });
 
   it("carries a parameter example", () => {
@@ -373,6 +407,7 @@ describe("parseOperation", () => {
             required: false,
             deprecated: false,
             description: "Page number",
+            tooltip: null,
             schema: { type: "integer" },
             example: null,
           },
@@ -873,6 +908,7 @@ describe("response headers", () => {
         required: false,
         deprecated: false,
         description: "Requests allowed per window",
+        tooltip: null,
         schema: { type: "integer" },
         example: null,
       },
@@ -882,6 +918,7 @@ describe("response headers", () => {
         required: true,
         deprecated: false,
         description: null,
+        tooltip: null,
         schema: { type: "integer" },
         example: null,
       },
@@ -927,6 +964,7 @@ describe("response headers", () => {
         required: false,
         deprecated: false,
         description: "Correlates logs to this request",
+        tooltip: null,
         schema: { type: "string" },
         example: null,
       },

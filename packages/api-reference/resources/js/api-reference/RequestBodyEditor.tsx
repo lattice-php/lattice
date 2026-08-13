@@ -1,6 +1,6 @@
 import { useId, useMemo, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/form";
-import { Button, Input, NativeSelect, Textarea } from "@lattice-php/ui";
+import { Button, InfoTooltip, Input, NativeSelect, Textarea } from "@lattice-php/ui";
 import { exampleFromSchema } from "./schema-example";
 import { isRecord, prettyJson } from "./utils";
 
@@ -10,23 +10,27 @@ type FieldSchema =
   | {
       kind: "object";
       description: string | null;
+      tooltip: string | null;
       initialValue: unknown;
       properties: Array<{ name: string; required: boolean; schema: FieldSchema }>;
     }
   | {
       kind: "array";
       description: string | null;
+      tooltip: string | null;
       initialValue: unknown;
       items: FieldSchema;
     }
   | {
       kind: "json";
       description: string | null;
+      tooltip: string | null;
       initialValue: unknown;
     }
   | {
       kind: "string" | "number" | "integer" | "boolean";
       description: string | null;
+      tooltip: string | null;
       initialValue: unknown;
       enumValues: Scalar[];
       format: string | null;
@@ -147,6 +151,7 @@ function BodyField({
         <legend className="px-1 text-xs font-semibold text-lt-muted-fg">
           {pathLabel(path)}
           {required ? <span className="text-lt-danger"> *</span> : null}
+          <InfoTooltip content={schema.tooltip} />
         </legend>
         {schema.description ? (
           <p className="mb-3 text-xs text-lt-muted-fg">{schema.description}</p>
@@ -164,6 +169,7 @@ function BodyField({
         <legend className="px-1 text-xs font-semibold text-lt-muted-fg">
           {pathLabel(path)}
           {required ? <span className="text-lt-danger"> *</span> : null}
+          <InfoTooltip content={schema.tooltip} />
         </legend>
         {schema.description ? (
           <p className="text-xs text-lt-muted-fg">{schema.description}</p>
@@ -230,6 +236,7 @@ function BodyField({
       label={label}
       required={required}
       helperText={schema.description ?? undefined}
+      tooltip={schema.tooltip ?? undefined}
       className="min-w-0"
     >
       {(controlProps) =>
@@ -330,6 +337,7 @@ function JsonField({
       label={label}
       required={required}
       helperText={schema.description ?? undefined}
+      tooltip={schema.tooltip ?? undefined}
       error={parseJsonField(draft).valid ? undefined : "Enter valid JSON."}
       className="min-w-0 @xl:col-span-2"
     >
@@ -399,6 +407,7 @@ function normalizeFieldSchema(
       : {
           ...normalized,
           description: stringValue(schema.description) ?? normalized.description,
+          tooltip: tooltipValue(schema) ?? normalized.tooltip,
           initialValue: exampleFromSchema(schema, components),
         };
   }
@@ -412,6 +421,7 @@ function normalizeFieldSchema(
       : {
           ...normalized,
           description: stringValue(schema.description) ?? normalized.description,
+          tooltip: tooltipValue(schema) ?? normalized.tooltip,
           initialValue: exampleFromSchema(schema, components),
         };
   }
@@ -448,6 +458,7 @@ function normalizeFieldSchema(
       : {
           kind: "array",
           description: stringValue(schema.description),
+          tooltip: tooltipValue(schema),
           initialValue: exampleFromSchema(schema, components),
           items,
         };
@@ -466,6 +477,7 @@ function normalizeFieldSchema(
   return {
     kind: type,
     description: stringValue(schema.description),
+    tooltip: tooltipValue(schema),
     initialValue: exampleFromSchema(schema, components),
     enumValues,
     format: stringValue(schema.format),
@@ -514,6 +526,7 @@ function normalizeObjectProperties(
   return {
     kind: "object",
     description: stringValue(schema.description),
+    tooltip: tooltipValue(schema),
     initialValue: exampleFromSchema(schema, components),
     properties: normalizedProperties,
   };
@@ -526,6 +539,7 @@ function rawJsonFieldSchema(
   return {
     kind: "json",
     description: isRecord(schema) ? stringValue(schema.description) : null,
+    tooltip: isRecord(schema) ? tooltipValue(schema) : null,
     initialValue: exampleFromSchema(schema, components),
   };
 }
@@ -574,6 +588,7 @@ function mergeObjects(
       stringValue(schema.description) ??
       objects.find((object) => object.description)?.description ??
       null,
+    tooltip: tooltipValue(schema) ?? objects.find((object) => object.tooltip)?.tooltip ?? null,
     initialValue: exampleFromSchema(schema, components),
     properties: [...properties.values()],
   };
@@ -748,6 +763,10 @@ function isScalar(value: unknown): value is Scalar {
 
 function stringValue(value: unknown): string | null {
   return typeof value === "string" ? value : null;
+}
+
+function tooltipValue(schema: Record<string, unknown>): string | null {
+  return stringValue(schema["x-tooltip"]);
 }
 
 function numberValue(value: unknown): number | null {

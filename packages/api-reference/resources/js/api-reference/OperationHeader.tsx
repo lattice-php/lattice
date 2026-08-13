@@ -1,4 +1,4 @@
-import { Badge, CopyButton } from "@lattice-php/ui";
+import { Badge, CopyButton, InfoTooltip } from "@lattice-php/ui";
 import { httpMethodColor } from "./http-method-color";
 import { operationUrl } from "./request-builder";
 import type { Operation } from "./types";
@@ -13,12 +13,7 @@ export function OperationHeader({
   hideIdentity?: boolean;
 }): React.ReactNode {
   if (hideIdentity) {
-    return operation.description ? (
-      <>
-        <p className="whitespace-pre-line text-lt-muted-fg">{operation.description}</p>
-        <hr className="my-8 border-lt-border" />
-      </>
-    ) : null;
+    return <OperationDetails operation={operation} />;
   }
 
   const url = operationUrl(baseUrl, operation.summary.path);
@@ -39,12 +34,29 @@ export function OperationHeader({
         {operation.summary.deprecated ? <Badge color="danger">deprecated</Badge> : null}
       </div>
       <h1 className="mt-2 text-lg font-semibold text-lt-fg">{operation.summary.title}</h1>
-      {operation.description ? (
-        <>
-          <p className="mt-1 whitespace-pre-line text-lt-muted-fg">{operation.description}</p>
-          <hr className="my-8 border-lt-border" />
-        </>
-      ) : null}
+      <OperationDetails operation={operation} className="mt-1" />
     </header>
+  );
+}
+
+function OperationDetails({
+  operation,
+  className = "",
+}: {
+  operation: Operation;
+  className?: string;
+}): React.ReactNode {
+  if (!operation.description && !operation.tooltip) {
+    return null;
+  }
+
+  return (
+    <>
+      <p className={`${className} whitespace-pre-line text-lt-muted-fg`}>
+        {operation.description}
+        <InfoTooltip content={operation.tooltip} />
+      </p>
+      <hr className="my-8 border-lt-border" />
+    </>
   );
 }
