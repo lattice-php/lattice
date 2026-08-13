@@ -1,5 +1,4 @@
 import { act, fireEvent, screen } from "@testing-library/react";
-import { router } from "@inertiajs/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   actionClicks,
@@ -8,15 +7,12 @@ import {
   sampleNodes as nodes,
   stubMoveFetch,
   treeNode,
+  treeVisit,
 } from "./test-support";
 import type { TreeNodeData } from "./types";
 
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
-);
-
 beforeEach(() => {
-  vi.mocked(router.visit).mockClear();
+  treeVisit.mockClear();
   actionClicks.length = 0;
 });
 
@@ -214,7 +210,7 @@ describe("Tree keyboard navigation", () => {
     expect(item("2")).toHaveFocus();
 
     fireEvent.keyDown(item("2"), { key: "Enter" });
-    expect(router.visit).toHaveBeenCalledWith("/c/2");
+    expect(treeVisit).toHaveBeenCalledWith("/c/2");
   });
 
   it("activates the focused node on Space by marking it active when it has no href", () => {
@@ -227,7 +223,7 @@ describe("Tree keyboard navigation", () => {
 
     fireEvent.keyDown(item("3"), { key: " " });
     expect(item("3")).toHaveAttribute("aria-selected", "true");
-    expect(router.visit).not.toHaveBeenCalled();
+    expect(treeVisit).not.toHaveBeenCalled();
   });
 
   it("excludes a node's action control from the page tab order", () => {
@@ -261,7 +257,7 @@ describe("Tree keyboard navigation", () => {
     fireEvent.keyDown(item("5"), { key: "Enter" });
 
     expect(actionClicks).toEqual(["Delete"]);
-    expect(router.visit).not.toHaveBeenCalled();
+    expect(treeVisit).not.toHaveBeenCalled();
   });
 
   it("triggers the focused node's action control on Space when it has no href", () => {
@@ -298,7 +294,7 @@ describe("Tree keyboard navigation", () => {
 
     fireEvent.keyDown(item("5"), { key: "Enter" });
 
-    expect(router.visit).toHaveBeenCalledWith("/c/5");
+    expect(treeVisit).toHaveBeenCalledWith("/c/5");
     expect(actionClicks).toEqual([]);
   });
 
