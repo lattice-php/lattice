@@ -47,7 +47,10 @@ function manifest(version: string): Plugin {
   };
 }
 
-export function standalonePluginConfig(packageRoot: string): UserConfig {
+export function standalonePluginConfig(
+  packageRoot: string,
+  options: { outDir?: string } = {},
+): UserConfig {
   const { version } = JSON.parse(readFileSync(path.join(packageRoot, "package.json"), "utf8")) as {
     version: string;
   };
@@ -67,7 +70,7 @@ export function standalonePluginConfig(packageRoot: string): UserConfig {
     // referencing process.env would throw in the browser.
     define: { "process.env.NODE_ENV": JSON.stringify("production") },
     build: {
-      outDir: "dist",
+      outDir: options.outDir ?? "dist",
       emptyOutDir: true,
       lib: {
         entry: path.join(packageRoot, "resources/js/plugin.ts"),

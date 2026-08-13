@@ -4,7 +4,11 @@ const artifacts = [
   { package: "packages/framework", manifest: "dist-standalone/manifest.json" },
   { package: "packages/tree", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   { package: "packages/media", manifest: "dist/manifest.json", module: "dist/plugin.js" },
-  { package: "packages/api-reference", manifest: "dist/manifest.json", module: "dist/plugin.js" },
+  {
+    package: "packages/api-reference",
+    manifest: "dist-standalone/manifest.json",
+    module: "dist-standalone/plugin.js",
+  },
 ];
 
 let failed = false;

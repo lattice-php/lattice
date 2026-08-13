@@ -9,7 +9,7 @@ import { apiReferenceNode } from "./test-support";
 // namespace, so a missing export only surfaces as `undefined` when a
 // component renders. This test mounts the committed artifact for real.
 it("the committed standalone artifact renders against the runtime barrel", async () => {
-  const { default: plugin } = (await import("../../dist/plugin.js")) as {
+  const { default: plugin } = (await import("../../dist-standalone/plugin.js")) as {
     default: { components: Record<string, LazyComponentRegistration> };
   };
 
