@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
-use Lattice\Support\Wire\WireSourceCatalog;
+use Lattice\Core\Wire\WireSourceCatalog;
 
 /**
  * @template TReturn

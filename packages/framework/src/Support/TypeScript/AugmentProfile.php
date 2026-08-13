@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Support\TypeScript;
 
 use Illuminate\Support\Facades\File;
-use Lattice\Support\Wire\WireModelBuilder;
-use Lattice\Support\Wire\WireSourceCatalog;
+use Lattice\Core\Wire\WireModelBuilder;
+use Lattice\Core\Wire\WireSourceCatalog;
 
 /**
  * Default profile: builds the app's effective wire model in memory and

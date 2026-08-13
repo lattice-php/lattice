@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Support\Wire\WireSourceCatalog;
+use Lattice\Core\Wire\WireSourceCatalog;
 
 it('discovers wire sources from installed packages with discover dirs', function (): void {
     $catalog = new WireSourceCatalog(

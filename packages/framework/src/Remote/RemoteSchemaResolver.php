@@ -8,26 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use JsonException;
 use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Wire\RemoteManifestRules;
 use Lattice\Ui\Components\Component;
 
 final readonly class RemoteSchemaResolver
 {
-    /**
-     * @var array<string, list<string>>
-     */
-    public const array EXTERNAL_URL_PROPS = [
-        'remote.data-list' => ['dataEndpoint'],
-        'chat.box' => ['streamEndpoint', 'historyEndpoint'],
-    ];
-
-    /**
-     * Server-trusted prop keys a remote manifest may never supply; the wire
-     * schema publishes the same list in the RemoteManifestNode contract.
-     *
-     * @var list<string>
-     */
-    public const array FORBIDDEN_PROP_KEYS = ['action', 'endpoint', 'ref', 'remote', 'tokenEndpoint'];
-
     public function __construct(
         private RemoteSchemaNormalizer $normalizer,
         private RemoteSourceRegistry $remoteSources,
@@ -146,12 +131,12 @@ final readonly class RemoteSchemaResolver
         $props = $node['props'] ?? [];
 
         if (is_array($props)) {
-            foreach (self::FORBIDDEN_PROP_KEYS as $forbidden) {
+            foreach (RemoteManifestRules::FORBIDDEN_PROP_KEYS as $forbidden) {
                 unset($props[$forbidden]);
             }
 
-            if (is_string($type) && array_key_exists($type, self::EXTERNAL_URL_PROPS)) {
-                foreach (self::EXTERNAL_URL_PROPS[$type] as $property) {
+            if (is_string($type) && array_key_exists($type, RemoteManifestRules::EXTERNAL_URL_PROPS)) {
+                foreach (RemoteManifestRules::EXTERNAL_URL_PROPS[$type] as $property) {
                     if (is_string($props[$property] ?? null)) {
                         $this->guardAllowedRemoteUrl($endpoint, $props[$property], $property);
                     }

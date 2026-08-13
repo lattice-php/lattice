@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Option;
+use Lattice\Core\Wire\DiscoveredComponent;
+use Lattice\Core\Wire\WireTypeDiscovery;
 use Lattice\Remote\Components\DataList;
-use Lattice\Support\TypeScript\DiscoveredComponent;
-use Lattice\Support\TypeScript\WireTypeDiscovery;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Tests\Fixtures\TypeScript\SampleColumn;
 use Lattice\Tests\Fixtures\TypeScript\SampleDualMarkedA;

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Core\Wire\WireModelBuilder;
+use Lattice\Core\Wire\WireSourceCatalog;
 use Lattice\Form\RichEditor\Extensions\Bold;
-use Lattice\Support\Wire\WireModelBuilder;
-use Lattice\Support\Wire\WireSourceCatalog;
 use Lattice\Ui\Enums\ButtonType;
 
 /**
