@@ -5,6 +5,7 @@ tableOfContents: false
 ---
 
 import ApiReferenceDemo from "@components/ApiReferenceDemo.tsx";
+import Info from "@components/Info.astro";
 
 {/* The reference needs ~1000px before its two-column layout makes sense. */}
 
@@ -56,10 +57,10 @@ package's components:
 ```
 
 :::note
-There is no npm package — Composer is the only install.
 [No-build apps](/introduction/no-build/) get the precompiled module via
 `php artisan lattice:assets`, but package stylesheets are not processed for standalone apps
-yet, so the reference currently renders unstyled there.
+yet, so the reference currently renders unstyled there. Outside Laravel, install the
+[npm package](#use-without-laravel) instead.
 :::
 
 ## Usage
@@ -158,3 +159,61 @@ ApiReference::make()
 `->token()` pre-fills `Authorization: Bearer` for operations whose security scheme accepts a
 bearer token. Requests are plain browser `fetch` calls, so the API must be same-origin or send
 CORS headers for the reference's origin.
+
+## Use without Laravel
+
+The renderer is published to npm as `@lattice-php/api-reference`, so any React frontend — an
+Astro docs site, a Vite SPA — renders the same reference without a Lattice backend:
+
+```bash
+npm install @lattice-php/api-reference
+```
+
+Import the stylesheet into your Tailwind v4 entry. It pulls in the Lattice design tokens and
+adds the `@source` directives that make your build scan the package's compiled components:
+
+```css
+@import "tailwindcss";
+@import "@lattice-php/api-reference/css";
+```
+
+Render the component with a decoded OpenAPI document, or a `url` the browser fetches:
+
+```tsx
+import { ApiReference } from "@lattice-php/api-reference";
+import spec from "./openapi.json";
+
+export default function ApiDocs() {
+  return <ApiReference spec={spec} />;
+}
+```
+
+Props mirror the PHP component — `operation`, `tags`, `defaultOperation`, `title`,
+`hideHeader`, `hideBaseUrl`, `expandDepth`, `twoColumnBreakpoint`, `token` — plus two
+selection controls:
+
+- `deepLinking` (default `true`) mirrors the expanded operation to `location.hash`. Pass
+  `false` when the host page owns the hash.
+- `selectedOperation` / `onOperationChange` switch the reference to controlled selection for
+  hosts with their own routing.
+
+Icons ship inside the package: the component provides its own sprite when no `SpriteProvider`
+is mounted above it, and a host-provided sprite always wins.
+
+### In Astro
+
+Mount the component as a React island. It renders on the server, so `client:load` prerenders
+the reference into the built HTML:
+
+```astro
+---
+import ApiDocs from "../components/ApiDocs";
+---
+
+<ApiDocs client:load />
+```
+
+<Info>
+  The pure OpenAPI helpers are exported too — `buildNavigation`, `parseOperation`, and
+  `buildRequest` — for building a custom UI on the same document reading.
+</Info>
