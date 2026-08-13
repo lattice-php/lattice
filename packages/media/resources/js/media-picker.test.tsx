@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import type { UploadTarget, UploadedMedia } from "./components/use-media-upload";
 import { createRegistry, eagerComponent, RegistryContext } from "@lattice-php/core";
 import type { RendererComponent, Schema } from "@lattice-php/core/types";
 import { FormProvider } from "@lattice-php/form/hooks/context";
@@ -9,6 +10,25 @@ import { fakeNode } from "@lattice-php/core/test-support";
 import { fakeFormContext } from "@lattice-php/form/test-support";
 import { libraryRow } from "./test-support";
 import MediaPickerComponent from "./media-picker";
+
+const upload = vi.hoisted(() => ({
+  lastTarget: undefined as
+    | undefined
+    | { endpoint: string; onUploaded?: (media: unknown[]) => void },
+  addFiles: vi.fn(),
+}));
+
+vi.mock("./components/use-media-upload", () => ({
+  useMediaUpload: (target: { endpoint: string }) => {
+    upload.lastTarget = target;
+
+    return { uploads: [], addFiles: upload.addFiles, retry: vi.fn(), dismiss: vi.fn() };
+  },
+}));
+
+function settleUpload(media: UploadedMedia[]): void {
+  act(() => (upload.lastTarget as UploadTarget).onUploaded?.(media));
+}
 
 const CaptionField: RendererComponent<"field.text-input"> = ({ node }) => {
   const scope = useFieldScope();
@@ -42,6 +62,22 @@ function librarySchema(rows: ReturnType<typeof libraryRow>[]): Schema {
       type: "media.library",
       props: { picker: true, accept: null, signed: false },
       schema: [{ type: "table", props: { columns: [], data: rows } }],
+    },
+  ] as Schema;
+}
+
+function uploadOnlySchema(label: string | null = null): Schema {
+  return [
+    {
+      type: "media.library",
+      props: { picker: true, accept: "text/csv", signed: false },
+      schema: [
+        {
+          type: "action",
+          key: "media-upload",
+          props: { endpoint: "/lattice/actions/media.upload", ref: "ref-upload", label },
+        },
+      ],
     },
   ] as Schema;
 }
@@ -334,6 +370,53 @@ describe("MediaPickerComponent", () => {
     const input = screen.getByTestId("caption-input");
     expect(input).toHaveAttribute("name", "gallery[0][caption]");
     expect(input).toHaveValue("Front");
+  });
+
+  it("prefers the wire pickerLabel over the translated trigger label", () => {
+    renderPicker({ pickerLabel: "Choose import" });
+
+    expect(screen.getByTestId("media-picker-open")).toHaveTextContent("Choose import");
+  });
+
+  it("upload-only mode picks the settled upload without offering the library", () => {
+    const { container } = renderPicker({ uploadOnly: true, selected: [] }, uploadOnlySchema());
+
+    expect(screen.queryByTestId("media-picker-open")).toBeNull();
+    expect(screen.queryByTestId("media-picker-dialog")).toBeNull();
+
+    settleUpload([
+      { id: 42, name: "import.csv", url: null, preview_url: null, mime_type: "text/csv" },
+    ]);
+
+    expect(container.querySelector('input[type="hidden"][name="cover"]')).toHaveValue("42");
+    expect(screen.getByTestId("media-picker-item")).toHaveTextContent("import.csv");
+  });
+
+  it("upload-only single mode replaces the previous pick with the fresh upload", () => {
+    const { container } = renderPicker({ uploadOnly: true }, uploadOnlySchema());
+
+    settleUpload([
+      { id: 42, name: "import.csv", url: null, preview_url: null, mime_type: "text/csv" },
+    ]);
+
+    expect(container.querySelector('input[type="hidden"][name="cover"]')).toHaveValue("42");
+    expect(screen.getAllByTestId("media-picker-item")).toHaveLength(1);
+  });
+
+  it("upload-only mode labels the button from the upload action and forwards the file selection", () => {
+    renderPicker({ uploadOnly: true, selected: [] }, uploadOnlySchema("Upload import file"));
+
+    const button = screen.getByTestId("media-picker-upload");
+    expect(button).toHaveTextContent("Upload import file");
+    expect(upload.lastTarget?.endpoint).toBe("/lattice/actions/media.upload");
+
+    const input = screen.getByTestId("media-picker-upload-input");
+    expect(input).toHaveAttribute("accept", "text/csv");
+
+    const selected = new File(["a;b"], "rows.csv", { type: "text/csv" });
+    fireEvent.change(input, { target: { files: [selected] } });
+
+    expect(upload.addFiles).toHaveBeenCalledWith(expect.objectContaining({ 0: selected }));
   });
 
   it("omits per-item template fields when the picker is disabled", () => {

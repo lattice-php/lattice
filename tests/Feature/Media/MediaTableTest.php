@@ -59,6 +59,35 @@ test('search matches names and the type filter narrows by mime prefix', function
         ->assertJsonPath('data.0.name', 'photo.jpg');
 });
 
+test('an unscoped table hides categorized media', function (): void {
+    Media::factory()->create(['name' => 'photo.jpg']);
+    Media::factory()->create(['name' => 'import.csv', 'category' => 'imports']);
+
+    $this->loadTable(MediaTable::class)
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'photo.jpg');
+});
+
+test('a sealed category context narrows the table to that category', function (): void {
+    Media::factory()->create(['name' => 'photo.jpg']);
+    Media::factory()->create(['name' => 'import.csv', 'category' => 'imports']);
+    Media::factory()->create(['name' => 'report.csv', 'category' => 'exports']);
+
+    $this->loadTable(MediaTable::class, context: ['category' => 'imports'])
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'import.csv');
+});
+
+test('request parameters cannot widen the category scope beyond the sealed context', function (): void {
+    Media::factory()->create(['name' => 'import.csv', 'category' => 'imports']);
+
+    $this->loadTable(MediaTable::class, ['category' => 'imports'])
+        ->assertOk()
+        ->assertJsonCount(0, 'data');
+});
+
 test('guests cannot query the media table', function (): void {
     $ref = $this->latticeRef(wire(Table::use(MediaTable::class)));
 

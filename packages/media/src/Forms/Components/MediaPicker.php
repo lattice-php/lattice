@@ -23,6 +23,10 @@ class MediaPicker extends Field implements ProvidesRowFields
 
     public ?int $maxFiles = null;
 
+    public ?string $pickerLabel = null;
+
+    public bool $uploadOnly = false;
+
     /** @var list<Field> */
     protected array $attachmentFields = [];
 
@@ -56,6 +60,58 @@ class MediaPicker extends Field implements ProvidesRowFields
         $this->maxFiles = $maxFiles;
 
         return $this;
+    }
+
+    /**
+     * Scope the picker to one category: the browse dialog lists only that
+     * category's media and every upload is stamped with it. Without a
+     * category the picker sees only uncategorized media.
+     */
+    public function category(?string $category): static
+    {
+        $this->library()->category($category);
+
+        return $this;
+    }
+
+    /** The label of the button opening the browse dialog. */
+    public function pickerLabel(string $label): static
+    {
+        $this->pickerLabel = $label;
+
+        return $this;
+    }
+
+    public function uploadLabel(string $label): static
+    {
+        $this->library()->uploadLabel($label);
+
+        return $this;
+    }
+
+    /**
+     * Skip the library entirely: the button opens the file dialog directly
+     * and the fresh upload is picked as the value. No browse endpoint is
+     * exposed, so other media stay invisible. The button is labeled by
+     * uploadLabel().
+     */
+    public function uploadOnly(bool $uploadOnly = true): static
+    {
+        $this->uploadOnly = $uploadOnly;
+        $this->library()->uploadOnly($uploadOnly);
+
+        return $this;
+    }
+
+    protected function library(): MediaLibrary
+    {
+        foreach ($this->children as $child) {
+            if ($child instanceof MediaLibrary) {
+                return $child;
+            }
+        }
+
+        throw new LogicException('The media picker lost its embedded media library.');
     }
 
     /**

@@ -227,6 +227,40 @@ test('a signed upload ends with a real derivative object on s3', function (): vo
     }
 })->group('rustfs');
 
+test('a sealed category context stamps every multipart upload', function (): void {
+    $this->callAction(
+        UploadMediaAction::class,
+        ['files' => [UploadedFile::fake()->image('import.jpg')]],
+        ['category' => 'imports'],
+    )->assertOk();
+
+    expect(Media::query()->sole()->category)->toBe('imports');
+});
+
+test('signed uploads inherit the sealed category once finalized', function (): void {
+    config()->set('media.signed_uploads', true);
+    Storage::disk('public')->put('tmp/abc123.jpg', 'bytes');
+
+    $this->callAction(UploadMediaAction::class, ['files' => ['tmp/abc123.jpg']], ['category' => 'imports'])
+        ->assertOk();
+
+    expect(Media::query()->sole()->category)->toBe('imports');
+});
+
+test('the upload response carries full display descriptors', function (): void {
+    $response = $this->callAction(UploadMediaAction::class, [
+        'files' => [UploadedFile::fake()->image('team.jpg', 100, 100)],
+    ])->assertOk();
+
+    $media = Media::query()->sole();
+
+    $response->assertJsonPath('data.media.0.id', $media->getKey())
+        ->assertJsonPath('data.media.0.name', 'team.jpg')
+        ->assertJsonPath('data.media.0.mime_type', 'image/jpeg')
+        ->assertJsonPath('data.media.0.url', $media->url())
+        ->assertJsonPath('data.media.0.preview_url', $media->previewUrl());
+});
+
 test('multipart uploads queue their conversions', function (): void {
     Bus::fake();
 

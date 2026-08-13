@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
@@ -54,6 +55,39 @@ test('the media picker carries the library as its child schema', function (): vo
         ->and($node['props']['multiple'])->toBeFalse()
         ->and($node['schema'][0]['type'])->toBe('media.library')
         ->and($node['schema'][0]['props']['picker'])->toBeTrue();
+});
+
+test('picker fluents reach the wire props and the embedded library', function (): void {
+    $node = wire(
+        MediaPicker::make('file')
+            ->category('imports')
+            ->uploadOnly()
+            ->uploadLabel('Upload import file')
+            ->pickerLabel('Choose import'),
+    );
+
+    expect($node['props']['uploadOnly'])->toBeTrue()
+        ->and($node['props']['pickerLabel'])->toBe('Choose import');
+
+    $library = $node['schema'][0];
+
+    expect($library['type'])->toBe('media.library')
+        ->and($library['schema'])->toHaveCount(1)
+        ->and($library['schema'][0]['key'])->toBe('media-upload')
+        ->and($library['schema'][0]['props']['label'])->toBe('Upload import file');
+});
+
+test('an upload through a category-scoped picker stamps the category', function (): void {
+    $node = wire(MediaPicker::make('file')->category('imports'));
+    $upload = (array) collect((array) $node['schema'][0]['schema'])->firstWhere('key', 'media-upload');
+
+    $this->postJson(
+        $upload['props']['endpoint'],
+        ['files' => [UploadedFile::fake()->image('import.jpg')]],
+        $this->latticeHeaders($upload),
+    )->assertOk();
+
+    expect(Media::query()->sole()->category)->toBe('imports');
 });
 
 test('the attachable rule rejects unknown ids and accepts existing media', function (): void {

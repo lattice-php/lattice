@@ -18,6 +18,7 @@ use Throwable;
  * @property string $path
  * @property string $name
  * @property string $mime_type
+ * @property string|null $category
  * @property int $size
  * @property array{width?: int, height?: int, alt?: string, conversions?: array<string, array{path: string, width: int, height: int}>}|null $meta
  * @property-read int|null $width

@@ -78,11 +78,21 @@ final class MediaTable extends EloquentTableDefinition
     }
 
     /**
+     * The category scope rides the sealed context, so a client request can
+     * never widen it. Unscoped instances see only uncategorized media:
+     * categorized pools surface exclusively through a library that asks for
+     * them.
+     *
      * @return Builder<Media>
      */
     public function builder(TableQuery $query): Builder
     {
         $builder = Media::modelQuery()->withCount('attachments');
+        $category = $this->contextStringOrNull('category');
+
+        $category === null
+            ? $builder->whereNull('category')
+            : $builder->where('category', $category);
 
         if ($query->sorts === []) {
             $builder->latest('id');
