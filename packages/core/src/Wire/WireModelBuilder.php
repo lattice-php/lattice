@@ -160,9 +160,18 @@ final class WireModelBuilder
      * compile-time totality check needs, since only the full manifest knows
      * about every origin's node types.
      *
+     * `$includeFrameworkEnvelope` opts the framework document into the
+     * recursive envelope core, strict unions, and the remote-manifest
+     * contract — the JSON Schema fan-out needs those as real, resolvable
+     * `$defs` since the format has no hand-written counterpart to fall back
+     * on. The TypeScript emitter's own `buildAll()` callers leave this off:
+     * `Node`/`Schema`/`ColumnNode`/`FilterNode`/`Effect`/`EditorExtension`
+     * are hand-written in `@lattice-php/core`/`@lattice-php/ui`, and emitting
+     * generated counterparts here would shadow those imports.
+     *
      * @return array{documents: array<string, array<string, mixed>>, defOrigins: array<string, string>}
      */
-    public function buildAll(): array
+    public function buildAll(bool $includeFrameworkEnvelope = false): array
     {
         $this->appClasses = [];
 
@@ -185,7 +194,7 @@ final class WireModelBuilder
         $documents = [];
 
         foreach ($sources as $source) {
-            $documents[$source->shortName] = $this->document($source, $manifest, $names, $markers, $nodeDefs, $classOrigins);
+            $documents[$source->shortName] = $this->document($source, $manifest, $names, $markers, $nodeDefs, $classOrigins, $includeFrameworkEnvelope);
         }
 
         $defOrigins = [];
@@ -288,6 +297,7 @@ final class WireModelBuilder
         array $markers,
         array $nodeDefs,
         array $classOrigins,
+        bool $includeFrameworkEnvelope = false,
     ): array {
         $context = new WireModelContext($names, $nodeDefs, $markers);
         $mapper = new PropertyTypeMapper($context);
@@ -344,14 +354,30 @@ final class WireModelBuilder
             }
         }
 
+        if ($isFramework && $includeFrameworkEnvelope) {
+            foreach ($this->envelopeDefs() as $name => $def) {
+                $defs[$name] = $def;
+            }
+
+            foreach ($this->strictUnionDefs($manifest, $context) as $name => $def) {
+                $defs[$name] = $def;
+            }
+
+            $defs['RemoteManifest'] = $this->remoteManifestDef();
+            $defs['RemoteManifestNode'] = $this->remoteManifestNodeDef();
+        }
+
         ksort($defs);
 
         $catalogManifest = $isFramework ? $manifest : $originManifest;
 
         return [
+            '$schema' => 'https://json-schema.org/draft/2020-12/schema',
             '$id' => $source->schemaId(),
+            'title' => $isFramework ? 'Lattice wire protocol' : sprintf('Lattice %s wire types', $source->shortName),
             '$defs' => $defs,
             'x-lattice' => [
+                ...($isFramework && $includeFrameworkEnvelope ? ['protocolVersion' => self::PROTOCOL_VERSION] : []),
                 'domains' => $this->domainsCatalog($catalogManifest),
                 'families' => $this->familiesCatalog($originManifest, $names, $context),
             ],
