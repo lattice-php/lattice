@@ -111,6 +111,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "build:bench": "vite build --config vite.bench.ts",
     "build:standalone": "vite build --mode standalone",
     "prepack": "npm run build",
     "typecheck": "tsc --noEmit"

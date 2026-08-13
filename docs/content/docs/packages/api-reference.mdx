@@ -5,6 +5,7 @@ tableOfContents: false
 ---
 
 import ApiReferenceDemo from "@components/ApiReferenceDemo.tsx";
+import BundleReport from "@components/BundleReport.astro";
 import Info from "@components/Info.astro";
 
 {/* The reference needs ~1000px before its two-column layout makes sense. */}
@@ -217,3 +218,11 @@ import ApiDocs from "../components/ApiDocs";
   The pure OpenAPI helpers are exported too — `buildNavigation`, `parseOperation`, and
   `buildRequest` — for building a custom UI on the same document reading.
 </Info>
+
+## Bundle size
+
+The breakdown below measures the package's built plugin — React and the
+[framework runtime](/advanced/bundle-size/) are external, so this is exactly what the API reference
+adds on top of an app that already ships Lattice. It is regenerated on every docs build.
+
+<BundleReport target="api-reference" />

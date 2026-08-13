@@ -159,7 +159,7 @@ jobs:
       - run: npm run build:standalone
 
   bundle-analysis:
-    name: Workbench Bundle Analysis
+    name: Bundle Analysis
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -174,10 +174,13 @@ jobs:
 
       - run: npm ci
 
-      - name: Upload workbench bundle analysis to Codecov
+      - name: Upload per-package bundle analysis to Codecov
         env:
           CODECOV_BUNDLE: "1"
-        run: npm run build
+        run: npm run analyze:build
+
+      # The workbench build regenerates the sprite artifacts the diff below verifies.
+      - run: npm run build
 
       - name: Icons are up to date
         run: |

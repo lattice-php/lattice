@@ -3,6 +3,8 @@ title: Tree
 description: Hierarchy rendering from inline nodes, callbacks, or Eloquent sources, with keyboard navigation, actions, drag-and-drop moving, and lazy loading.
 ---
 
+import BundleReport from "@components/BundleReport.astro";
+
 The tree package renders hierarchies from inline nodes, callbacks, or Eloquent
 adjacency-list sources — with full keyboard navigation (roving tabindex, typeahead), per-node
 icons, badges, links, and actions, and lazy child loading over a signed endpoint. Registered
@@ -172,3 +174,11 @@ The component's strings ship with inline English defaults. With
 [laravel-i18next](https://github.com/bambamboole/laravel-i18next) enabled, the plugin's `tree`
 namespace is loaded automatically and serves the bundled `en`/`de` translations (override them
 like any Laravel package translation — see [Internationalization](/core/i18n/)).
+
+## Bundle size
+
+The breakdown below measures the package's built plugin — React and the
+[framework runtime](/advanced/bundle-size/) are external, so this is exactly what the tree package
+adds on top of an app that already ships Lattice. It is regenerated on every docs build.
+
+<BundleReport target="tree" />

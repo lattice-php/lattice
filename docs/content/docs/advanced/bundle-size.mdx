@@ -12,10 +12,18 @@ reflects the current `main`.
 
 ## What is measured
 
-The numbers come from the **workbench app build** (`vite build`) — a realistic app that exercises every
-Lattice feature — not the published package. The npm package itself ships unminified ES modules with
-React, Inertia, Radix, and TipTap [externalized](https://vite.dev/guide/build#library-mode); your app's
-bundler tree-shakes and minifies them, so the app build is the honest measure of what a user downloads.
+The numbers come from a **bench build of the npm package**: a minimal consumer entry that calls
+`createLatticeApp()` with the default registry (every built-in component), compiled as a production
+app build — tree-shaken and minified, exactly like your own Vite build. The package's peer
+dependencies (React, React-DOM, Inertia, Echo) are external, because your app ships them whether or
+not it uses Lattice. What remains is Lattice's marginal cost: its own code across
+`@lattice-php/core`, `ui`, `form`, `table`, and `action`, plus the third-party dependencies it
+brings along.
+
+First-party packages are measured separately — each package page ([Tree](/packages/tree/),
+[Media](/packages/media/), [Calendar](/packages/calendar/),
+[API Reference](/packages/api-reference/)) carries its own breakdown of what that package adds on
+top of the framework.
 
 ## Code splitting
 
@@ -24,24 +32,23 @@ dependency from inside the component (`React.lazy` + dynamic `import()`), so tha
 when the component renders:
 
 - The **rich editor** loads TipTap + ProseMirror.
+- The **code editor** loads CodeMirror.
 - The **chart** loads Recharts.
 - The **date** inputs load their zag-js date picker.
+- The **i18n bootstrap** loads i18next only when the backend shares the `lattice.i18n` prop.
 
-:::note
-React, React-DOM, and Inertia are **peer dependencies**: your app already ships them, so they are not
-Lattice's marginal cost even though they show up in the entry chunk below.
-:::
+The "Emitted JavaScript files" table below shows this split: the entry chunk and its few static
+imports are what every visitor downloads; the rest arrives on demand.
 
 ## Live breakdown
 
-<BundleReport />
+<BundleReport target="framework" />
 
 ## Stylesheet
 
 The breakdown above is JavaScript only. Lattice also ships a stylesheet you import into your Tailwind
 entry with `@import "@lattice-php/lattice/css"`. The source file is small — theme tokens plus a few
 component styles — but it carries an `@source` directive, so your own Tailwind build scans Lattice's
-components and generates the utility classes they use. The compiled CSS Lattice contributes to the
-workbench app (the same build measured above, exercising every feature) lands in the tens of kilobytes
-raw — a handful gzipped — and like the JS its real cost depends on which components you actually render
+components and generates the utility classes they use. The compiled CSS lands in the tens of
+kilobytes raw — a handful gzipped — and its real cost depends on which components you actually render
 and your own Tailwind configuration.

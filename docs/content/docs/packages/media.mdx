@@ -3,6 +3,8 @@ title: Media
 description: Uploadable, searchable file library with a React grid, a detail slideout, queued image conversions, and a form field that attaches media to any model.
 ---
 
+import BundleReport from "@components/BundleReport.astro";
+
 The media package is a first-party media library — an uploadable, searchable file library with a
 React grid, a detail slideout for renaming and alt text, bulk delete, and a form field that
 attaches media to any model through a polymorphic pivot.
@@ -196,3 +198,11 @@ The components' strings ship with inline English defaults. With
 [laravel-i18next](https://github.com/bambamboole/laravel-i18next) enabled, the plugin's `media`
 namespace is loaded automatically and serves the bundled `en`/`de` translations (override them
 like any Laravel package translation — see [Internationalization](/core/i18n/)).
+
+## Bundle size
+
+The breakdown below measures the package's built plugin — React and the
+[framework runtime](/advanced/bundle-size/) are external, so this is exactly what the media package
+adds on top of an app that already ships Lattice. It is regenerated on every docs build.
+
+<BundleReport target="media" />

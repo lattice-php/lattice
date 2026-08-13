@@ -21,12 +21,13 @@ node_modules
 !/packages/media/dist
 !/packages/search/dist
 !/packages/tree/dist
+/packages/*/dist-analyze
 /dist-docs
 /myreport
 .astro/
 /.sonda
 /docs/generated
-/docs/public/bundle-report.html
+/docs/public/bundle-report-*.html
 .phpstorm.meta.php
 _ide_helper.php
 /packages/framework/resources/js/types/typescript-transformer-manifest.json
