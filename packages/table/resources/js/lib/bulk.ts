@@ -1,4 +1,4 @@
-import type { Method } from "@inertiajs/core";
+import type { HttpMethod } from "@lattice-php/ui/types";
 import type { Node } from "@lattice-php/core/types";
 import type { Emphasis, Variant } from "@lattice-php/ui/button";
 import { translate } from "@lattice-php/ui/i18n";
@@ -17,7 +17,7 @@ type BulkActionProps = {
   endpoint: string | null;
   form: Node | null;
   label: string | null;
-  method: Method | null;
+  method: HttpMethod | null;
   modalSide: Side | null;
   modalWidth: ModalWidth | null;
   ref: string | null;
@@ -27,7 +27,7 @@ type BulkActionProps = {
 export type BulkAction = {
   id: string;
   label: string;
-  method: Method;
+  method: HttpMethod;
   endpoint: string;
   ref: string;
   variant: Variant | null;

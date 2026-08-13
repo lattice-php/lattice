@@ -1,4 +1,4 @@
-import type { Method } from "@inertiajs/core";
+import type { HttpMethod } from "./generated";
 import { createContext, useContext, type ReactNode } from "react";
 import type { Node } from "@lattice-php/core/types";
 import { getActionEffects } from "./effects/dispatch";
@@ -8,7 +8,7 @@ import type { Effect } from "./effects/types";
 type ActionNode = Node<"action" | "action.bulk">;
 
 export type ClickBehavior =
-  | { kind: "navigate"; href: string; method: Method }
+  | { kind: "navigate"; href: string; method: HttpMethod }
   | { kind: "action"; action: ActionNode }
   | { kind: "effects"; onClick: () => void }
   | { kind: "none" };
@@ -58,7 +58,7 @@ export function ActionTrigger({
 
 export function useClickBehavior(props: {
   href?: string | null;
-  method?: Method | null;
+  method?: HttpMethod | null;
   action?: Node | null;
   effects?: Effect[] | null;
 }): ClickBehavior {
