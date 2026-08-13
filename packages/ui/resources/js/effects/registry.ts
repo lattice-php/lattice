@@ -1,4 +1,3 @@
-import { router } from "@inertiajs/react";
 import type { EffectOf, EffectProps, EffectPropsMap, EffectPropsOf } from "./types";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useExtensionRegistry } from "@lattice-php/core/registry-context";
@@ -52,8 +51,10 @@ function bridge<TType extends keyof EffectPropsMap & string>(event: string): Eff
  * effectHandler performs.
  */
 const typedBuiltinHandlers: { [K in keyof EffectPropsMap]: EffectHandler<K> } = {
-  "reload-page": (effect) => (effect.props.full ? window.location.reload() : router.reload()),
-  redirect: (effect) => router.visit(effect.props.url),
+  // Full-page defaults; the framework registry overrides both with SPA
+  // handlers via the effects extension.
+  "reload-page": () => window.location.reload(),
+  redirect: (effect) => window.location.assign(effect.props.url),
   download: (effect) => triggerDownload(effect.props.url),
   "locale-change": (effect) => setLocale(effect.props.locale),
   toast: bridge<"toast">(LATTICE_EVENT.toast),
