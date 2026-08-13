@@ -1,14 +1,19 @@
 import { fireEvent, screen } from "@testing-library/react";
-import { router } from "@inertiajs/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, TextProbe } from "@lattice-php/core/test-support";
+import type { ReactNode } from "react";
+import { defaultNavigation, NavigationProvider } from "../navigation";
 import TabComponent, { TabsComponent } from "./tabs";
 
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
-);
+const visit = vi.fn();
+
+function withNavigation(children: ReactNode) {
+  return (
+    <NavigationProvider adapter={{ ...defaultNavigation, visit }}>{children}</NavigationProvider>
+  );
+}
 
 const registry = createRegistry({
   components: {
@@ -32,28 +37,30 @@ function renderTabs(
   tabs = [tab("Overview", "overview"), tab("Details", "details"), tab("History", "history")],
 ) {
   return renderWithRegistry(
-    <Renderer
-      nodes={[
-        {
-          schema: tabs,
-          props: {
-            alignment: "stretch",
-            defaultValue: "overview",
-            orientation: "horizontal",
-            queryKey: "tabs",
-            ...tabsProps,
+    withNavigation(
+      <Renderer
+        nodes={[
+          {
+            schema: tabs,
+            props: {
+              alignment: "stretch",
+              defaultValue: "overview",
+              orientation: "horizontal",
+              queryKey: "tabs",
+              ...tabsProps,
+            },
+            type: "tabs",
           },
-          type: "tabs",
-        },
-      ]}
-    />,
+        ]}
+      />,
+    ),
     registry,
   );
 }
 
 describe("Lattice tabs component", () => {
   beforeEach(() => {
-    vi.mocked(router.visit).mockClear();
+    visit.mockClear();
     window.history.replaceState({}, "", "/settings");
   });
 
@@ -70,7 +77,7 @@ describe("Lattice tabs component", () => {
     expect(screen.getByText("Details panel")).toBeVisible();
     expect(screen.getByText("Overview panel")).not.toBeVisible();
     expect(window.location.search).toBe("?tabs=details");
-    expect(router.visit).not.toHaveBeenCalled();
+    expect(visit).not.toHaveBeenCalled();
   });
 
   it("uses the configured query key for the initial active tab and url updates", () => {
@@ -94,7 +101,7 @@ describe("Lattice tabs component", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: "Details" }));
 
-    expect(router.visit).toHaveBeenCalledWith("/settings?tabs=details", {
+    expect(visit).toHaveBeenCalledWith("/settings?tabs=details", {
       preserveScroll: true,
     });
     expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute("aria-selected", "true");
