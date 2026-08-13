@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.51.0](https://github.com/lattice-php/lattice/compare/0.50.0...0.51.0) (2026-08-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* move the wire model into core ([#454](https://github.com/lattice-php/lattice/issues/454))
+
+### Bug Fixes
+
+* **api-reference:** ship a self-contained tsconfig for composer installs ([#452](https://github.com/lattice-php/lattice/issues/452)) ([bc4d3c8](https://github.com/lattice-php/lattice/commit/bc4d3c8d6431072318c402a104b0840cea5632d4))
+
+
+### Refactoring
+
+* move the wire model into core ([#454](https://github.com/lattice-php/lattice/issues/454)) ([8a528c8](https://github.com/lattice-php/lattice/commit/8a528c82f95fa7ac95edd4762e9212bb6fa3bb2a))
+
 ## [0.50.0](https://github.com/lattice-php/lattice/compare/0.49.0...0.50.0) (2026-08-13)
 
 
