@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.0](https://github.com/lattice-php/lattice/compare/0.48.1...0.49.0) (2026-08-13)
+
+
+### Features
+
+* **api-reference:** render the x-tooltip extension ([#447](https://github.com/lattice-php/lattice/issues/447)) ([72099d0](https://github.com/lattice-php/lattice/commit/72099d07541e8a5a36a7d4592e01e506091262b9))
+
 ## [0.48.1](https://github.com/lattice-php/lattice/compare/0.48.0...0.48.1) (2026-08-13)
 
 
