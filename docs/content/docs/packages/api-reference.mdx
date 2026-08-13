@@ -113,6 +113,35 @@ for embedding one endpoint's documentation inside another page.
 The selected operation is mirrored to the URL hash, so operation links deep-link and survive
 reloads.
 
+## Tooltips
+
+Alongside `description`, which renders as prose, the reference reads an `x-tooltip` extension —
+a short piece of HTML, typically a link to deeper documentation, revealed from an info button
+next to the field. Write it as a sibling of `description` on a schema property, a parameter (at
+parameter level, not inside its `schema`), or an operation:
+
+```json
+{
+  "summary": "List users",
+  "description": "Returns every user in the account.",
+  "x-tooltip": "<a href=\"https://docs.example.com/users\">User guide</a>",
+  "parameters": [
+    {
+      "name": "filter[type]",
+      "in": "query",
+      "description": "Restricts the result set by type.",
+      "x-tooltip": "<a href=\"https://docs.example.com/filtering\">Filtering guide</a>"
+    }
+  ]
+}
+```
+
+:::danger[x-tooltip HTML is rendered unsanitized]
+Tooltip content is injected as raw HTML. A document you do not control — in particular one
+loaded over `->url()` from a third party — can therefore inject arbitrary markup into the page.
+Only point the reference at documents you trust.
+:::
+
 ## Request playground
 
 Every operation carries a playground: path, query, and header parameters render as typed

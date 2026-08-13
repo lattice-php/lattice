@@ -28,6 +28,7 @@ export type Param = {
   required: boolean;
   deprecated: boolean;
   description: string | null;
+  tooltip: string | null;
   schema: unknown;
   example: unknown;
   style?: string | null;
@@ -56,6 +57,7 @@ export type Operation = {
   servers: Server[];
   usesRootServers: boolean;
   description: string | null;
+  tooltip: string | null;
   tags: string[];
   paramGroups: ParamGroup[];
   requests: Contract[];

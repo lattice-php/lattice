@@ -6,6 +6,7 @@ import {
   CodeBlock,
   Combobox,
   CopyButton,
+  InfoTooltip,
   Input,
   NativeSelect,
   SegmentedPills,
@@ -112,6 +113,7 @@ function ParamRow({
         <span className="min-w-0 break-words font-mono text-lt-fg">{param.name}</span>
         {param.required ? <span className="text-lt-danger">*</span> : null}
         {param.deprecated ? <Badge color="danger">deprecated</Badge> : null}
+        <InfoTooltip content={param.tooltip} />
       </div>
       <span className="col-start-2 row-start-1 justify-self-end rounded-lt-xs bg-lt-muted px-2 py-1 text-xs text-lt-muted-fg">
         {parameterTypeLabel(param.schema)}
@@ -1130,6 +1132,7 @@ function RequestParameterField({
       label={param.name}
       required={param.required}
       helperText={inline ? undefined : (param.description ?? undefined)}
+      tooltip={inline ? undefined : (param.tooltip ?? undefined)}
       error={error ?? undefined}
       className={
         inline ? "min-w-0 [&>div:first-child]:sr-only" : "min-w-0 basis-full flex-1 sm:basis-48"

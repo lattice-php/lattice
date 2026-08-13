@@ -14,6 +14,7 @@ const operation: Operation = {
   servers: [{ url: "https://api.example.test", description: null }],
   usesRootServers: true,
   description: "Creates a widget.",
+  tooltip: null,
   tags: [],
   security: [
     {
@@ -34,6 +35,7 @@ const operation: Operation = {
           required: true,
           deprecated: false,
           description: "Widget identifier",
+          tooltip: null,
           schema: { type: "string" },
           example: null,
         },
@@ -48,6 +50,7 @@ const operation: Operation = {
           required: false,
           deprecated: false,
           description: null,
+          tooltip: null,
           schema: { type: "array", items: { type: "string", enum: ["roles", "rolesCount"] } },
           example: null,
         },
@@ -81,6 +84,7 @@ const operation: Operation = {
           required: false,
           deprecated: false,
           description: "Correlates the request",
+          tooltip: null,
           schema: { type: "string" },
           example: null,
         },

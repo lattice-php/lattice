@@ -49,6 +49,7 @@ function playgroundOperation(overrides: Partial<Operation> = {}): Operation {
       deprecated: false,
     },
     description: null,
+    tooltip: null,
     tags: [],
     paramGroups: [
       { location: "path", params: [id] },
@@ -901,5 +902,144 @@ describe("RequestPlayground", () => {
     await screen.unmount();
 
     expect(signal.aborted).toBe(true);
+  });
+
+  it("opens a path parameter's tooltip as markup while keeping its description as text", async () => {
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          paramGroups: [
+            {
+              location: "path",
+              params: [
+                parameter({
+                  name: "id",
+                  location: "path",
+                  required: true,
+                  example: "42",
+                  description: "The widget identifier.",
+                  tooltip: '<a href="https://docs.example.test/ids">Identifier format</a>',
+                }),
+              ],
+            },
+          ],
+          requests: [],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={null}
+      />,
+    );
+
+    await expect.element(screen.getByText("The widget identifier.")).toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: "Identifier format" }))
+      .not.toBeInTheDocument();
+
+    await screen.getByRole("button", { name: "More information" }).click();
+
+    const link = screen.getByRole("link", { name: "Identifier format" });
+    await expect.element(link).toBeVisible();
+    await expect.element(link).toHaveAttribute("href", "https://docs.example.test/ids");
+  });
+
+  it("opens a grouped query parameter's tooltip as markup from its label", async () => {
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          paramGroups: [
+            {
+              location: "query",
+              params: [
+                parameter({
+                  name: "filter[type]",
+                  location: "query",
+                  description: "Restricts the result set by type.",
+                  tooltip: '<a href="https://docs.example.test/filters">Filtering guide</a>',
+                }),
+              ],
+            },
+          ],
+          requests: [],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={null}
+      />,
+    );
+
+    await expect.element(screen.getByText("Restricts the result set by type.")).toBeVisible();
+    await expect
+      .element(screen.getByRole("link", { name: "Filtering guide" }))
+      .not.toBeInTheDocument();
+
+    await screen.getByRole("button", { name: "More information" }).click();
+
+    const link = screen.getByRole("link", { name: "Filtering guide" });
+    await expect.element(link).toBeVisible();
+    await expect.element(link).toHaveAttribute("href", "https://docs.example.test/filters");
+  });
+
+  it("opens request body tooltips written plainly, beside a $ref, and on a nullable wrapper", async () => {
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          paramGroups: [],
+          requests: [
+            bodyContract({
+              schema: {
+                type: "object",
+                required: ["name", "accountType"],
+                properties: {
+                  name: {
+                    type: "string",
+                    example: "Ada",
+                    description: "Shown on invoices.",
+                    "x-tooltip": '<a href="https://docs.example.test/names">Naming rules</a>',
+                  },
+                  accountType: {
+                    $ref: "#/components/schemas/AccountType",
+                    "x-tooltip": '<a href="https://docs.example.test/accounts">Account types</a>',
+                  },
+                  salutation: {
+                    anyOf: [{ $ref: "#/components/schemas/Salutation" }, { type: "null" }],
+                    "x-tooltip": '<a href="https://docs.example.test/salutations">Salutations</a>',
+                  },
+                },
+              },
+            }),
+          ],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={{
+          schemas: {
+            AccountType: { type: "string", enum: ["person", "company"] },
+            Salutation: { type: "string", enum: ["mr", "ms"] },
+          },
+        }}
+      />,
+    );
+    const bodyFields = screen.getByLabelText("JSON body fields");
+    const [plain, behindRef, nullableWrapper] = bodyFields
+      .getByRole("button", { name: "More information" })
+      .all();
+
+    await expect.element(bodyFields.getByText("Shown on invoices.")).toBeVisible();
+
+    await plain!.click();
+    await expect
+      .element(screen.getByRole("link", { name: "Naming rules" }))
+      .toHaveAttribute("href", "https://docs.example.test/names");
+
+    await behindRef!.click();
+    await expect
+      .element(screen.getByRole("link", { name: "Account types" }))
+      .toHaveAttribute("href", "https://docs.example.test/accounts");
+
+    await nullableWrapper!.click();
+    await expect
+      .element(screen.getByRole("link", { name: "Salutations" }))
+      .toHaveAttribute("href", "https://docs.example.test/salutations");
   });
 });
