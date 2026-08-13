@@ -180,7 +180,9 @@ jobs:
         run: npm run build
 
       - name: Icons are up to date
-        run: git diff --exit-code -- packages/ui/resources/icons packages/ui/src/Enums/Icon.php workbench/resources/js/sprite-icons.ts
+        run: |
+          npm run build:sprite --workspace @lattice-php/api-reference
+          git diff --exit-code -- packages/ui/resources/icons packages/ui/src/Enums/Icon.php workbench/resources/js/sprite-icons.ts packages/api-reference/resources/js/icons/sprite.generated.ts
 
   package-install:
     name: Package installs standalone (${{ matrix.package }})
