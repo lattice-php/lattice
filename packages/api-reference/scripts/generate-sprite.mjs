@@ -1,4 +1,5 @@
 import { buildSprite } from "@lattice-php/vite-svg-sprite";
+import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -22,4 +23,7 @@ export const sprite: SpriteValue = {
 
 mkdirSync(path.dirname(outFile), { recursive: true });
 writeFileSync(outFile, content);
+// The pre-commit hook formats staged files with oxfmt; format here too so a
+// CI regeneration byte-matches the committed file.
+execFileSync("npx", ["oxfmt", outFile], { stdio: "ignore" });
 console.log(`Wrote ${path.relative(packageRoot, outFile)} (${ids.length} icons)`);
