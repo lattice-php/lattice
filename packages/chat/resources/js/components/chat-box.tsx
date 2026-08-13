@@ -2,15 +2,12 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { apiFetch, remoteJson } from "@lattice-php/core/api";
 import { testIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import type { ChatBox as ChatBoxProps } from "@lattice-php/lattice/types/generated";
+import type { ChatBox as ChatBoxProps } from "../generated";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
-import {
-  createRemoteNdjsonChatTransport,
-  ndjsonChatTransport,
-} from "@lattice-php/lattice/chat/lib/transport";
-import { useChat } from "@lattice-php/lattice/chat/hooks/use-chat";
-import type { ChatMessage } from "@lattice-php/lattice/chat/types";
+import { createRemoteNdjsonChatTransport, ndjsonChatTransport } from "../lib/transport";
+import { useChat } from "../hooks/use-chat";
+import type { ChatMessage } from "../types";
 import { MessageList } from "./message-list";
 import { PromptInput } from "./prompt-input";
 
@@ -18,7 +15,7 @@ type ChatHistoryResponse = { messages: ChatMessage[] };
 
 export const ChatBox: RendererComponent<"chat.box"> = ({ node }) => {
   const props: ChatBoxProps = node.props;
-  const { t } = useT("lattice");
+  const { t } = useT("chat");
   const transport = useMemo(
     () => (props.remote ? createRemoteNdjsonChatTransport(props.remote) : ndjsonChatTransport),
     [props.remote],
@@ -75,7 +72,7 @@ export const ChatBox: RendererComponent<"chat.box"> = ({ node }) => {
     >
       <div className="flex items-center border-b border-lt-border px-3 py-2">
         <span className="text-sm font-medium text-lt-fg">
-          {props.title ?? t("common.chat.title", "Chat")}
+          {props.title ?? t("chat.title", "Chat")}
         </span>
       </div>
       <div className="flex-1 overflow-y-auto">

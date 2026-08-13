@@ -51,6 +51,7 @@ it('publishes standalone modules from discovered component packages', function (
         ->and($manifest['plugins'])->toBe([
             'plugins/lattice-php/api-reference.js',
             'plugins/lattice-php/calendar.js',
+            'plugins/lattice-php/chat.js',
             'plugins/lattice-php/media.js',
             'plugins/lattice-php/search.js',
             'plugins/lattice-php/signature-example.js',

@@ -2,7 +2,6 @@ import { createRegistry } from "@lattice-php/core/registry";
 import { navigationPlugin } from "./inertia-navigation";
 import type {
   ActionNodeType,
-  ChatNodeType,
   FormNodeType,
   FragmentNodeType,
   LayoutNodeType,
@@ -13,7 +12,6 @@ import type {
   UiNodeType,
 } from "@lattice-php/lattice/types/generated";
 import { actionComponents } from "@lattice-php/action/plugin";
-import { chatComponents } from "./chat/plugin";
 import { formComponents } from "@lattice-php/form";
 import { fragmentComponents } from "./fragments/plugin";
 import { layoutComponents } from "./layout/plugin";
@@ -31,6 +29,9 @@ import { uiComponents } from "@lattice-php/ui";
 // here rather than belonging to a registered plugin's union.
 type OptInNodeType =
   | "api-reference"
+  | "chat.box"
+  | "chat.part.text"
+  | "chat.part.tool-call"
   | "media.library"
   | "search.box"
   | "search.categories"
@@ -47,7 +48,6 @@ type OptInNodeType =
 // domain fails here until its plugin exists (or it's added to the opt-in list).
 type RegisteredNodeType =
   | ActionNodeType
-  | ChatNodeType
   | FormNodeType
   | FragmentNodeType
   | LayoutNodeType
@@ -68,7 +68,6 @@ export const registry = createRegistry(
   formComponents,
   layoutComponents,
   tableComponents,
-  chatComponents,
   notificationsComponents,
   remoteComponents,
   navigationPlugin,

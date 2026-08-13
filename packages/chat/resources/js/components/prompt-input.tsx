@@ -16,7 +16,7 @@ export function PromptInput({
   disabled = false,
   placeholder,
 }: PromptInputProps): ReactNode {
-  const { t } = useT("lattice");
+  const { t } = useT("chat");
   const [value, setValue] = useState("");
 
   function submit(): void {
@@ -39,7 +39,7 @@ export function PromptInput({
   return (
     <div className="flex items-end gap-2 border-t border-lt-border p-3">
       <textarea
-        aria-label={t("common.chat.input-label", "Message input")}
+        aria-label={t("chat.input-label", "Message input")}
         className={cn(
           "min-h-[2.5rem] flex-1 resize-none rounded-lt-sm border border-lt-input bg-lt-bg px-3 py-2 text-sm text-lt-fg placeholder:text-lt-muted-fg focus:outline-none focus:ring-[length:var(--lt-ring-width)] focus:ring-lt-ring/50 disabled:bg-lt-disabled disabled:text-lt-disabled-fg",
         )}
@@ -59,7 +59,7 @@ export function PromptInput({
         size="sm"
         type="button"
       >
-        {t("common.chat.send", "Send")}
+        {t("chat.send", "Send")}
       </Button>
     </div>
   );

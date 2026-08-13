@@ -1,5 +1,9 @@
 import type { Node } from "@lattice-php/core/types";
-import type { ChatMessage, ChatRole } from "@lattice-php/lattice/types/generated";
+import type { ChatMessage, ChatRole, ComponentPropsMap } from "./generated";
+
+declare module "@lattice-php/core" {
+  interface ComponentProps extends ComponentPropsMap {}
+}
 
 export type { ChatMessage, ChatRole };
 

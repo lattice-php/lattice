@@ -1,8 +1,6 @@
 import "./types/core-augmentation";
 
 export { registry } from "./registry";
-export { useChat } from "./chat/hooks/use-chat";
-export { chatComponents } from "./chat/plugin";
 export {
   getActionEffects,
   isActionEffect,
@@ -48,16 +46,6 @@ export {
   loadPluginModules,
 } from "@lattice-php/core/registry";
 export type { Plugin, Registry } from "@lattice-php/core/registry";
-export type { UseChatOptions } from "./chat/hooks/use-chat";
-export type {
-  ChatFrame,
-  ChatMessage,
-  ChatRole,
-  ChatStatus,
-  ChatTransport,
-  ChatTransportRequest,
-  UseChatReturn,
-} from "./chat/types";
 export { Renderer } from "@lattice-php/core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "@lattice-php/core/component-ref";
 export { withHeaders } from "@lattice-php/core/headers";

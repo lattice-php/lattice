@@ -36,10 +36,6 @@
       "types": "./dist/appearance/index.d.ts",
       "import": "./dist/appearance/index.js"
     },
-    "./chat": {
-      "types": "./dist/chat/index.d.ts",
-      "import": "./dist/chat/index.js"
-    },
     "./dnd": {
       "types": "./dist/dnd/index.d.ts",
       "import": "./dist/dnd/index.js"

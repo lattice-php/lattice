@@ -7,21 +7,7 @@ export type Breadcrumbs = Record<string, never>;
 export type CalendarNodeType = "timeline";
 export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
-export type ChatBox = {
-  fill: boolean;
-  historyEndpoint: string | null;
-  placeholder: string | null;
-  remote: RemoteAccess | null;
-  streamEndpoint: string | null;
-  title: string | null;
-};
-export type ChatMessage = {
-  readonly id: string;
-  readonly parts: Node[];
-  readonly role: ChatRole;
-};
 export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
-export type ChatRole = "user" | "assistant" | "system";
 export type ColumnNodeType =
   | "column.badge"
   | "column.boolean"
@@ -34,9 +20,6 @@ export type ColumnNodeType =
 export type ComponentPropsMap = {
   breadcrumbs: Breadcrumbs;
   callouts: Callouts;
-  "chat.box": ChatBox;
-  "chat.part.text": TextPart;
-  "chat.part.tool-call": ToolCallPart;
   dropdown: Dropdown;
   fragment: Fragment;
   menu: Menu;
@@ -286,13 +269,6 @@ export type Sidebar = {
 };
 export type SignatureExampleNodeType = "signature";
 export type TableNodeType = "table";
-export type TextPart = {
-  text: string;
-};
-export type ToolCallPart = {
-  args: Record<string, unknown>;
-  name: string;
-};
 export type Topbar = {
   sticky: boolean;
 };

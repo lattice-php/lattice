@@ -11,6 +11,7 @@ env:
 
 providers:
   - Lattice\LatticeServiceProvider
+  - Lattice\Chat\ChatServiceProvider
   - Lattice\Media\MediaServiceProvider
   - Lattice\Tree\TreeServiceProvider
   - Inertia\ServiceProvider
