@@ -31,6 +31,7 @@
         "lattice-php/calendar": "@dev",
         "lattice-php/chat": "@dev",
         "lattice-php/lattice": "@dev",
+        "lattice-php/map": "@dev",
         "lattice-php/media": "@dev",
         "lattice-php/search": "@dev",
         "lattice-php/signature-example": "@dev",

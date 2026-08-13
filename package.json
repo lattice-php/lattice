@@ -45,7 +45,7 @@
     "format": "oxfmt --write \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "format:check": "oxfmt --check \"workbench/resources/js/**/*.{ts,tsx}\" \"packages/*/resources/js/**/*.{ts,tsx}\" \"docs/**/*.{ts,tsx,md,mdx}\"",
     "analyze": "npm run analyze:build && mkdir -p docs/public && cp docs/generated/bundle-report-*.html docs/public",
-    "analyze:build": "npm run build:bench --workspace @lattice-php/lattice && SONDA=1 npm run build:standalone --workspace @lattice-php/tree --workspace @lattice-php/media --workspace @lattice-php/calendar --workspace @lattice-php/chat --workspace @lattice-php/search --workspace @lattice-php/api-reference",
+    "analyze:build": "npm run build:bench --workspace @lattice-php/lattice && SONDA=1 npm run build:standalone --workspace @lattice-php/tree --workspace @lattice-php/media --workspace @lattice-php/map --workspace @lattice-php/calendar --workspace @lattice-php/chat --workspace @lattice-php/search --workspace @lattice-php/api-reference",
     "docs:dev": "npm run build:lib && npm run dev -w docs",
     "docs:build": "npm run build:lib && npm run analyze && npm run build -w docs",
     "docs:preview": "npm run preview -w docs"

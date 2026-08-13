@@ -426,6 +426,7 @@ return [
         'groups' => 'Groups',
         'home' => 'Home',
         'log-out' => 'Log out',
+        'map' => 'Map',
         'media' => 'Media',
         'media-picker' => 'Media picker',
         'modals' => 'Modals',
@@ -445,6 +446,21 @@ return [
         'wizard' => 'Wizard',
     ],
     'pages' => [
+        'map' => [
+            'heading' => 'Map',
+            'description' => 'Server-driven markers with complete Lattice component trees inside their popups.',
+            'open-in-openstreetmap' => 'Open in OpenStreetMap',
+            'berlin' => [
+                'label' => 'Berlin office',
+                'heading' => 'Berlin office',
+                'description' => 'The initial popup is opened by the server configuration.',
+            ],
+            'potsdam' => [
+                'label' => 'Potsdam studio',
+                'heading' => 'Potsdam studio',
+                'description' => 'Clicking this marker renders a different server-provided schema.',
+            ],
+        ],
         'charts' => [
             'channels' => [
                 'direct' => 'Direct',
