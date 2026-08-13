@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Remote;
+namespace Lattice\Core\Remote;
 
 use Lattice\Core\Attributes\TypeScript;
 

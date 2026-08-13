@@ -5,6 +5,7 @@ namespace Lattice\Remote;
 
 use Illuminate\Http\Request;
 use Lattice\Core\Definition;
+use Lattice\Core\Remote\BrowserToken;
 use Lattice\Ui\Components\Component;
 
 abstract class RemoteSourceDefinition extends Definition

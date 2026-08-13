@@ -6,6 +6,13 @@ export type Breadcrumb = {
   readonly href: string;
   readonly title: string;
 };
+export type BrowserToken = {
+  readonly accessToken: string;
+  readonly audience: string;
+  readonly expiresIn: number;
+  readonly scopes: string[];
+  readonly tokenType: string;
+};
 export type Color = {
   readonly dark: string | null;
   readonly kind: ColorKind;
@@ -45,3 +52,12 @@ export type Op =
   | "filled";
 export type PageLayout = "app" | "auth" | "none";
 export type PageWidth = "full" | "lg" | "md" | "sm";
+export type RemoteAccess = {
+  readonly audience: string;
+  readonly nodeId: string;
+  readonly nodeType: string;
+  readonly ref: string;
+  readonly scopes: string[];
+  readonly source: string;
+  readonly tokenEndpoint: string;
+};

@@ -1,16 +1,9 @@
-import type { Affix, Breadcrumb, Node } from "@lattice-php/core";
+import type { Affix, Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
 import type { HttpMethod, Placement, Size, Translatable, Variant } from "@lattice-php/ui";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type Breadcrumbs = Record<string, never>;
-export type BrowserToken = {
-  readonly accessToken: string;
-  readonly audience: string;
-  readonly expiresIn: number;
-  readonly scopes: string[];
-  readonly tokenType: string;
-};
 export type CalendarNodeType = "timeline";
 export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
@@ -278,15 +271,6 @@ export type PagePayload = {
   readonly schema: Node[];
   readonly title: string | null;
   readonly width: string;
-};
-export type RemoteAccess = {
-  readonly audience: string;
-  readonly nodeId: string;
-  readonly nodeType: string;
-  readonly ref: string;
-  readonly scopes: string[];
-  readonly source: string;
-  readonly tokenEndpoint: string;
 };
 export type RemoteNodeType = "remote.data-list";
 export type SearchNodeType =

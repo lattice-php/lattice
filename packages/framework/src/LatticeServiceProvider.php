@@ -26,6 +26,7 @@ use Lattice\Console\Commands\TypeScriptCommand;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\AsLayout;
 use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Core\Contracts\ResolvesRemoteSourceEndpoints;
 use Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Discovery\DiscoveryManifest;
@@ -96,6 +97,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
         $this->app->singleton(LayoutRegistry::class);
         $this->app->singleton(PageRegistry::class);
         $this->app->singleton(RemoteSourceRegistry::class);
+        $this->app->bind(ResolvesRemoteSourceEndpoints::class, RemoteSourceRegistry::class);
         $this->app->singleton(StandaloneAssets::class);
         $this->app->singleton(ThemeRenderer::class);
 

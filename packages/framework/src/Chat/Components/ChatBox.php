@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Chat\Components;
 
 use Lattice\Core\Attributes\AsComponent;
-use Lattice\Remote\Components\RemoteComponent;
+use Lattice\Ui\Components\RemoteComponent;
 use Lattice\Ui\Concerns\HasPlaceholder;
 
 /**
