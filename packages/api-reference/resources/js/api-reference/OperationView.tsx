@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { RemoteAccess } from "@lattice-php/core/api";
+import type { ResolveAccessToken } from "./access-token";
 import { parseOperation } from "./parse";
 import { RequestPlayground, type TwoColumnBreakpoint } from "./RequestPlayground";
 
@@ -9,6 +10,7 @@ type OperationViewProps = {
   baseUrl?: string | null;
   token?: string | null;
   remoteTokens?: RemoteAccess[] | null;
+  resolveAccessToken?: ResolveAccessToken | null;
   expandDepth?: number;
   twoColumnBreakpoint?: TwoColumnBreakpoint;
   hideHeaderIdentity?: boolean;
@@ -20,6 +22,7 @@ export function OperationView({
   baseUrl,
   token,
   remoteTokens,
+  resolveAccessToken,
   expandDepth = 2,
   twoColumnBreakpoint = "lg",
   hideHeaderIdentity = false,
@@ -54,6 +57,7 @@ export function OperationView({
         baseUrl={operation.serverUrl}
         token={token ?? null}
         remoteTokens={remoteTokens ?? null}
+        resolveAccessToken={resolveAccessToken ?? null}
         components={components}
         expandDepth={expandDepth}
         twoColumnBreakpoint={twoColumnBreakpoint}

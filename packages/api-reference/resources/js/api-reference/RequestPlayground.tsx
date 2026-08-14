@@ -17,6 +17,11 @@ import { NativeSelect } from "@lattice-php/ui/native-select";
 import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
 import { Spinner } from "@lattice-php/ui/spinner";
 import { SchemaView } from "../schema/SchemaView";
+import {
+  cachedAccessTokens,
+  type AccessTokenRequest,
+  type ResolveAccessToken,
+} from "./access-token";
 import { executeRequest, type ExecutedResponse, type ExecutionError } from "./execute-request";
 import { LiveResponsePanel, responseBadgeColor } from "./LiveResponsePanel";
 import { OperationHeader } from "./OperationHeader";
@@ -601,7 +606,7 @@ function securitySchemeLabel(name: string, definition: SecuritySchemeDefinition 
 
 function accessTokenDescription(authMode: PlaygroundAuthMode): string {
   switch (authMode) {
-    case "remote":
+    case "lazy":
       return "A scoped access token is fetched automatically when you execute a request. If that fails, sign in again.";
     case "static":
       return "Access token supplied by the host page.";
@@ -768,13 +773,14 @@ type RequestPlaygroundProps = {
   baseUrl: string | null;
   token: string | null;
   remoteTokens?: RemoteAccess[] | null;
+  resolveAccessToken?: ResolveAccessToken | null;
   components: unknown;
   expandDepth?: number;
   twoColumnBreakpoint?: TwoColumnBreakpoint;
   hideHeaderIdentity?: boolean;
 };
 
-export type PlaygroundAuthMode = "remote" | "static" | "none";
+export type PlaygroundAuthMode = "lazy" | "static" | "none";
 
 const REDACTED_TOKEN = "<YOUR_TOKEN>";
 
@@ -793,7 +799,7 @@ function remoteAccessForScopes(
   );
 }
 
-async function remoteTokenErrorMessage(error: unknown): Promise<string> {
+async function accessTokenErrorMessage(error: unknown): Promise<string> {
   if (error instanceof ApiError) {
     try {
       const data: unknown = await error.response.clone().json();
@@ -808,6 +814,10 @@ async function remoteTokenErrorMessage(error: unknown): Promise<string> {
     return `Fetching an access token failed (HTTP ${error.response.status}). Sign in again and retry.`;
   }
 
+  if (error instanceof Error && error.message !== "") {
+    return error.message;
+  }
+
   return "Fetching an access token failed. Check your session and try again.";
 }
 
@@ -816,6 +826,7 @@ export function RequestPlayground({
   baseUrl,
   token,
   remoteTokens = null,
+  resolveAccessToken = null,
   components,
   expandDepth = 2,
   twoColumnBreakpoint = "lg",
@@ -854,9 +865,43 @@ export function RequestPlayground({
     () => remoteAccessForScopes(remoteTokens, tokenScopes),
     [remoteTokens, tokenScopes],
   );
+  // The host's callback may be a new function every render; route it through a
+  // ref so the cache wrapper (and its per-scope-set entries) survives renders.
+  const latestResolveAccessToken = useRef(resolveAccessToken);
+  useEffect(() => {
+    latestResolveAccessToken.current = resolveAccessToken;
+  });
+  const [callbackResolver] = useState(() =>
+    cachedAccessTokens((request) => {
+      const resolve = latestResolveAccessToken.current;
+
+      if (resolve === null) {
+        throw new Error("No access token resolver is configured.");
+      }
+
+      return resolve(request);
+    }),
+  );
+  const tokenResolver = useMemo(() => {
+    if (resolveAccessToken !== null && tokenScopes !== null) {
+      return callbackResolver;
+    }
+
+    if (remoteAccess !== null) {
+      return async ({ forceRefresh }: AccessTokenRequest): Promise<string> => {
+        if (forceRefresh) {
+          invalidateRemoteToken(remoteAccess);
+        }
+
+        return (await remoteToken(remoteAccess)).accessToken;
+      };
+    }
+
+    return null;
+  }, [resolveAccessToken, tokenScopes, callbackResolver, remoteAccess]);
   const authMode: PlaygroundAuthMode =
-    remoteAccess !== null ? "remote" : token !== null && token !== "" ? "static" : "none";
-  const previewToken = authMode === "remote" ? REDACTED_TOKEN : token;
+    tokenResolver !== null ? "lazy" : token !== null && token !== "" ? "static" : "none";
+  const previewToken = authMode === "lazy" ? REDACTED_TOKEN : token;
   const buildResult = useMemo(
     () => buildRequest({ operation, baseUrl, values, token: previewToken }),
     [operation, baseUrl, values, previewToken],
@@ -963,11 +1008,11 @@ export function RequestPlayground({
     try {
       let executionToken = token;
 
-      if (remoteAccess !== null) {
+      if (tokenResolver !== null && tokenScopes !== null) {
         try {
-          executionToken = (await remoteToken(remoteAccess)).accessToken;
+          executionToken = await tokenResolver({ scopes: tokenScopes, forceRefresh: false });
         } catch (error: unknown) {
-          const message = await remoteTokenErrorMessage(error);
+          const message = await accessTokenErrorMessage(error);
 
           if (activeControllerRef.current === controller) {
             setLiveResult({ kind: "error", message });
@@ -985,15 +1030,18 @@ export function RequestPlayground({
 
       let nextResult = await executeRequest(result.request, controller.signal);
 
-      if (remoteAccess !== null && nextResult.kind === "response" && nextResult.status === 401) {
-        invalidateRemoteToken(remoteAccess);
-
+      if (
+        tokenResolver !== null &&
+        tokenScopes !== null &&
+        nextResult.kind === "response" &&
+        nextResult.status === 401
+      ) {
         try {
           const refreshed = buildRequest({
             operation,
             baseUrl,
             values,
-            token: (await remoteToken(remoteAccess)).accessToken,
+            token: await tokenResolver({ scopes: tokenScopes, forceRefresh: true }),
           });
 
           if (refreshed.errors === null) {
