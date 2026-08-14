@@ -254,7 +254,7 @@ function I({ onSubmit: e, disabled: t = !1, placeholder: n }) {
 	return /* @__PURE__ */ o("div", {
 		className: "flex items-end gap-2 border-t border-lt-border p-3",
 		children: [/* @__PURE__ */ a("textarea", {
-			"aria-label": r("input-label", "Message input"),
+			"aria-label": r("chat.input-label", "Message input"),
 			className: (0, h.cn)("min-h-[2.5rem] flex-1 resize-none rounded-lt-sm border border-lt-input bg-lt-bg px-3 py-2 text-sm text-lt-fg placeholder:text-lt-muted-fg focus:outline-none focus:ring-[length:var(--lt-ring-width)] focus:ring-lt-ring/50 disabled:bg-lt-disabled disabled:text-lt-disabled-fg"),
 			"data-slot": "prompt-input",
 			"data-test": (0, h.testIdentity)("chat-input"),
@@ -270,7 +270,7 @@ function I({ onSubmit: e, disabled: t = !1, placeholder: n }) {
 			onClick: l,
 			size: "sm",
 			type: "button",
-			children: r("send", "Send")
+			children: r("chat.send", "Send")
 		})]
 	});
 }
@@ -312,7 +312,7 @@ var L = d((() => {
 					className: "flex items-center border-b border-lt-border px-3 py-2",
 					children: /* @__PURE__ */ a("span", {
 						className: "text-sm font-medium text-lt-fg",
-						children: s.title ?? c("title", "Chat")
+						children: s.title ?? c("chat.title", "Chat")
 					})
 				}),
 				/* @__PURE__ */ a("div", {
