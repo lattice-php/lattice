@@ -159,6 +159,10 @@ export default defineConfig({
       ),
       "@lattice-php/calendar": path.resolve(import.meta.dirname, "packages/calendar/resources/js"),
       "@lattice-php/chat": path.resolve(import.meta.dirname, "packages/chat/resources/js"),
+      "@lattice-php/map/css": path.resolve(
+        import.meta.dirname,
+        "packages/map/resources/css/map.css",
+      ),
       "@lattice-php/map": path.resolve(import.meta.dirname, "packages/map/resources/js"),
       "@lattice-php/tree": path.resolve(import.meta.dirname, "packages/tree/resources/js"),
       "@lattice-php/core": path.resolve(import.meta.dirname, "packages/core/resources/js"),

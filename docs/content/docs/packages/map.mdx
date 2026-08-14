@@ -27,6 +27,13 @@ app — load on demand the first time a page renders a map, so pages without a m
 Leaflet. For a [no-build app](/introduction/no-build/), run `php artisan lattice:assets` after
 installation; it publishes the same self-contained renderer as a single standalone plugin.
 
+In an app with a build step, import the map stylesheet in your application CSS — it positions the
+Leaflet panes and themes the controls, markers, and popups with the Lattice design tokens:
+
+```css
+@import "@lattice-php/map/css";
+```
+
 ## Usage
 
 ```php
