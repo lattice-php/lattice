@@ -37,6 +37,7 @@ export type MediaPicker = {
   maxFiles: number | null;
   multiple: boolean;
   name: string;
+  pickerLabel: string | null;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
@@ -52,6 +53,7 @@ export type MediaPicker = {
       }[]
     | null;
   tooltip: string | null;
+  uploadOnly: boolean;
   value: unknown;
 };
 export type MediaTypeFilter = {

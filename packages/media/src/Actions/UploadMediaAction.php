@@ -63,17 +63,29 @@ final class UploadMediaAction extends FormActionDefinition
         return $validated;
     }
 
+    /**
+     * The payload carries full display descriptors, not bare ids: an
+     * upload-only picker selects the fresh rows straight from this response
+     * without a follow-up fetch.
+     */
     public function handle(Request $request): ActionResult
     {
         $data = $this->validate($request);
-        $ids = [];
+        $media = array_map(
+            // A sync queue has already generated the conversions by now, on its
+            // own instances — refresh so the descriptors see them.
+            static fn (Media $item): array => [
+                'id' => (int) $item->refresh()->getKey(),
+                'name' => $item->name,
+                'url' => $item->url(),
+                'preview_url' => $item->previewUrl(),
+                'mime_type' => $item->mime_type,
+            ],
+            $this->storeUploads($data['files'] ?? []),
+        );
 
-        foreach ($this->storeUploads($data['files'] ?? []) as $media) {
-            $ids[] = $media->getKey();
-        }
-
-        return ActionResult::success(['media' => $ids])
-            ->toast(__('media::media.actions.upload.toast', ['count' => count($ids)]), Variant::Success)
+        return ActionResult::success(['media' => $media])
+            ->toast(__('media::media.actions.upload.toast', ['count' => count($media)]), Variant::Success)
             ->reloadComponent('media.library');
     }
 
@@ -128,6 +140,7 @@ final class UploadMediaAction extends FormActionDefinition
                 'path' => $path,
                 'name' => $file->getClientOriginalName(),
                 'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
+                'category' => $this->contextStringOrNull('category'),
                 'size' => $file->getSize(),
                 'uploaded_by' => auth()->id(),
             ]);
@@ -144,6 +157,7 @@ final class UploadMediaAction extends FormActionDefinition
                     'path' => $upload['path'],
                     'name' => $upload['name'],
                     'mime_type' => $upload['mime_type'] ?? 'application/octet-stream',
+                    'category' => $this->contextStringOrNull('category'),
                     'size' => $upload['size'] ?? 0,
                     'uploaded_by' => auth()->id(),
                 ]);

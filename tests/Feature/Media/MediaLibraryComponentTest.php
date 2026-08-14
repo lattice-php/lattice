@@ -179,6 +179,41 @@ test('signed uploads cannot enforce dimension rules because the server never see
     expect(Media::query()->count())->toBe(1);
 });
 
+test('a category scope narrows the listing and stamps every upload', function (): void {
+    Media::factory()->create(['name' => 'photo.jpg']);
+    Media::factory()->create(['name' => 'import.csv', 'category' => 'imports']);
+
+    $node = wire(MediaLibrary::make()->category('imports'));
+    $table = (array) collect((array) $node['schema'])->firstWhere('type', 'table');
+
+    $this->latticeGet($table['props']['endpoint'], $table)
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.name', 'import.csv');
+
+    $upload = uploadNode($node);
+
+    $this->postJson(
+        $upload['props']['endpoint'],
+        ['files' => [UploadedFile::fake()->image('fresh.jpg')]],
+        $this->latticeHeaders($upload),
+    )->assertOk();
+
+    expect(Media::query()->where('name', 'fresh.jpg')->sole()->category)->toBe('imports');
+});
+
+test('upload-only mode composes just the upload action', function (): void {
+    $node = wire(MediaLibrary::make()->picker()->uploadOnly());
+
+    expect($node['schema'])->toHaveCount(1)
+        ->and($node['schema'][0]['key'])->toBe('media-upload');
+});
+
+test('an upload label override reaches the upload action node', function (): void {
+    expect(uploadNode(wire(MediaLibrary::make()->uploadLabel('Import file')))['props']['label'])
+        ->toBe('Import file');
+});
+
 test('an instance accept narrows what the upload endpoint takes', function (): void {
     Storage::fake('public');
 

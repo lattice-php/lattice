@@ -13,10 +13,10 @@ import type { BulkAction } from "@lattice-php/table/lib/bulk";
 import type { TableNode } from "@lattice-php/table/types";
 import { Button } from "@lattice-php/ui/button";
 import { Checkbox } from "@lattice-php/ui/checkbox";
-import { IconButton } from "@lattice-php/ui/icon-button";
 import { Input } from "@lattice-php/ui/input";
 import { NativeSelect } from "@lattice-php/ui/native-select";
 import { DetailPanel } from "./detail-panel";
+import { UploadList } from "./upload-list";
 import { useMediaUpload } from "./use-media-upload";
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -187,48 +187,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
         )}
       </div>
 
-      {uploads.length > 0 && (
-        <ul className="flex flex-wrap gap-2">
-          {uploads.map((item) => (
-            <li
-              className="flex max-w-64 items-center gap-2 rounded-lt-sm border border-lt-border bg-lt-surface px-2 py-1 text-sm"
-              key={item.id}
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-lt-fg">{item.name}</span>
-                {item.status === "error" && (
-                  <span
-                    className="block truncate text-xs text-lt-danger"
-                    data-test="media-upload-reason"
-                  >
-                    {item.reason ?? t("media.library.upload-failed", "Upload failed")}
-                  </span>
-                )}
-              </span>
-              {item.status === "error" ? (
-                <>
-                  <IconButton
-                    data-test="media-upload-retry"
-                    icon="rotate-ccw"
-                    label={t("media.library.upload-retry", "Retry {{name}}", { name: item.name })}
-                    onClick={() => retry(item)}
-                  />
-                  <IconButton
-                    data-test="media-upload-dismiss"
-                    icon="x"
-                    label={t("media.library.upload-dismiss", "Dismiss {{name}}", {
-                      name: item.name,
-                    })}
-                    onClick={() => dismiss(item.id)}
-                  />
-                </>
-              ) : (
-                <span className="text-lt-muted-fg">{`${item.progress}%`}</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      <UploadList dismiss={dismiss} retry={retry} uploads={uploads} />
 
       {rows.length === 0 && table.hasLoaded ? (
         <p className="py-12 text-center text-sm text-lt-muted-fg" data-test="media-empty">

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Media\Models\Media;
 use RuntimeException;
+use Throwable;
 
 final class GenerateMediaConversions implements ShouldQueue
 {
@@ -58,13 +59,19 @@ final class GenerateMediaConversions implements ShouldQueue
             return;
         }
 
-        $generated = $this->media->conversions();
+        $generated = $this->withBackfilledSizes($this->media->conversions());
         $missing = array_diff_key($this->conversions(), $generated);
 
         // Nothing to generate still leaves the dimensions to record: a media
         // converted before this column existed, or one whose conversions were
-        // all renamed away, only learns its size from the probe below.
+        // all renamed away, only learns its size from the probe below. Byte
+        // sizes are cheaper — a map recorded before they existed learns them
+        // from disk stats alone, without ever reading the source.
         if ($missing === [] && $this->media->width !== null) {
+            if ($generated !== $this->media->conversions()) {
+                $this->media->mergeMeta(['conversions' => $generated]);
+            }
+
             return;
         }
 
@@ -127,7 +134,7 @@ final class GenerateMediaConversions implements ShouldQueue
      * gets a fresh instance over the same bytes rather than a shared one.
      *
      * @param  Closure(Image): mixed  $conversion  what the consumer promises is only checked at runtime
-     * @return array{path: string, width: int, height: int}
+     * @return array{path: string, width: int, height: int, size: int}
      */
     private function generate(string $name, Closure $conversion, string $bytes): array
     {
@@ -143,7 +150,33 @@ final class GenerateMediaConversions implements ShouldQueue
             throw new RuntimeException("Storing the [{$name}] media conversion at [{$path}] failed.");
         }
 
-        return ['path' => $path, 'width' => $image->width(), 'height' => $image->height()];
+        return [
+            'path' => $path,
+            'width' => $image->width(),
+            'height' => $image->height(),
+            'size' => Storage::disk($this->media->disk)->size($path),
+        ];
+    }
+
+    /**
+     * @param  array<string, array{path: string, width: int, height: int, size?: int}>  $generated
+     * @return array<string, array{path: string, width: int, height: int, size?: int}>
+     */
+    private function withBackfilledSizes(array $generated): array
+    {
+        foreach ($generated as $name => $conversion) {
+            if (isset($conversion['size'])) {
+                continue;
+            }
+
+            try {
+                $generated[$name]['size'] = Storage::disk($this->media->disk)->size($conversion['path']);
+            } catch (Throwable) {
+                // A derivative gone from the disk keeps its entry size-less; --force rebuilds it.
+            }
+        }
+
+        return $generated;
     }
 
     /**

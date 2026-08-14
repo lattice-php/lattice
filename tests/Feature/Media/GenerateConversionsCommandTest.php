@@ -111,6 +111,21 @@ test('missing covers a complete map whose dimensions were never recorded', funct
         ->and($media->conversions())->toBe($map);
 });
 
+test('missing covers a complete map whose byte sizes were never recorded', function (): void {
+    $media = fakeImageMedia();
+    artisan('media:conversions')->assertSuccessful();
+    $media->refresh();
+
+    $sizeless = $media->conversions();
+    unset($sizeless['thumb']['size']);
+    $media->mergeMeta(['conversions' => $sizeless]);
+
+    artisan('media:conversions --missing')->assertSuccessful();
+
+    expect($media->refresh()->conversions()['thumb']['size'] ?? null)
+        ->toBe(Storage::disk('public')->size('media/conversions/source-thumb.webp'));
+});
+
 test('a media whose stored mime is generic is still reached by the command', function (): void {
     $media = fakeImageMedia();
     $media->update(['mime_type' => 'application/octet-stream']);

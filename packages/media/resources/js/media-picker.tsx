@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { RenderNode } from "@lattice-php/core";
-import type { RendererComponent } from "@lattice-php/core/types";
+import type { Node, RendererComponent } from "@lattice-php/core/types";
 import { SimpleField } from "@lattice-php/form/components/fields/simple-field";
 import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 import { translate, useT } from "@lattice-php/ui/i18n";
@@ -8,6 +8,8 @@ import { Button } from "@lattice-php/ui/button";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/dialog";
 import { IconButton } from "@lattice-php/ui/icon-button";
 import { LibraryView, type MediaRow } from "./components/library-view";
+import { UploadList } from "./components/upload-list";
+import { useMediaUpload, type UploadedMedia } from "./components/use-media-upload";
 
 type Picked = {
   id: number;
@@ -25,7 +27,9 @@ const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node })
   const [picked, setPicked] = useState<Picked[]>(
     (props.selected ?? []).map((entry) => ({ ...entry, values: entry.values ?? {} })),
   );
-  const libraryNode = node.schema?.find((child) => child.type === "media.library");
+  const libraryNode = node.schema?.find((child) => child.type === "media.library") as
+    | Node<"media.library">
+    | undefined;
   const template = node.schema?.filter((child) => child.type !== "media.library") ?? [];
   const hasFields = template.length > 0;
   const multiple = props.multiple;
@@ -122,17 +126,36 @@ const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node })
               </ul>
             )}
 
-            <Button
-              className="self-start"
-              data-test="media-picker-open"
-              disabled={locked}
-              onClick={() => setOpen(true)}
-              type="button"
-            >
-              {t("media.picker.open", "Choose from library")}
-            </Button>
+            {props.uploadOnly ? (
+              <UploadOnlyPicker
+                disabled={locked}
+                libraryNode={libraryNode}
+                multiple={multiple}
+                onUploaded={(media) => {
+                  const incoming = media.map((item) => ({ ...item, values: {} }));
+                  const merged = multiple
+                    ? [
+                        ...picked.filter((entry) => !incoming.some((item) => item.id === entry.id)),
+                        ...incoming,
+                      ]
+                    : incoming.slice(0, 1);
 
-            {open && libraryNode && (
+                  apply(multiple && maxFiles !== null ? merged.slice(0, maxFiles) : merged);
+                }}
+              />
+            ) : (
+              <Button
+                className="self-start"
+                data-test="media-picker-open"
+                disabled={locked}
+                onClick={() => setOpen(true)}
+                type="button"
+              >
+                {props.pickerLabel ?? t("media.picker.open", "Choose from library")}
+              </Button>
+            )}
+
+            {open && !props.uploadOnly && libraryNode && (
               <Dialog onOpenChange={setOpen} open>
                 <DialogContent
                   aria-describedby={undefined}
@@ -177,5 +200,64 @@ const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node })
     </SimpleField>
   );
 };
+
+/**
+ * The upload-only face of the picker: the button opens the file dialog
+ * directly and the settled batch is picked via onUploaded — the library grid
+ * never renders, so other media stay out of sight.
+ */
+function UploadOnlyPicker({
+  libraryNode,
+  multiple,
+  disabled,
+  onUploaded,
+}: {
+  libraryNode: Node<"media.library"> | undefined;
+  multiple: boolean;
+  disabled: boolean;
+  onUploaded: (media: UploadedMedia[]) => void;
+}) {
+  const { t } = useT("media");
+  const uploadNode = libraryNode?.schema?.find((child) => child.key === "media-upload") as
+    | Node<"action">
+    | undefined;
+  const { uploads, addFiles, retry, dismiss } = useMediaUpload({
+    endpoint: uploadNode?.props.endpoint ?? "",
+    ref: uploadNode?.props.ref ?? "",
+    signed: libraryNode?.props.signed ?? false,
+    onUploaded,
+  });
+  const fileInput = useRef<HTMLInputElement>(null);
+  const label = uploadNode?.props.label ?? t("media.actions.upload.label", "Upload");
+  const busy = uploads.some((item) => item.status === "uploading");
+
+  return (
+    <>
+      <Button
+        className="self-start"
+        data-test="media-picker-upload"
+        disabled={disabled || busy}
+        onClick={() => fileInput.current?.click()}
+        type="button"
+      >
+        {label}
+      </Button>
+      <input
+        accept={libraryNode?.props.accept ?? undefined}
+        aria-label={label}
+        className="sr-only"
+        data-test="media-picker-upload-input"
+        multiple={multiple}
+        onChange={(event) => {
+          addFiles(event.target.files);
+          event.target.value = "";
+        }}
+        ref={fileInput}
+        type="file"
+      />
+      <UploadList dismiss={dismiss} retry={retry} uploads={uploads} />
+    </>
+  );
+}
 
 export default MediaPickerComponent;
