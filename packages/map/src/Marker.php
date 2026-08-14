@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Lattice\Map;
 
+use BackedEnum;
 use InvalidArgumentException;
+use Lattice\Core\Color;
+use Lattice\Core\Enums\ColorName;
+use Lattice\Core\Support\Wire;
 use Lattice\Ui\Components\Component;
 
 final class Marker
@@ -17,6 +21,10 @@ final class Marker
     private array $schema = [];
 
     private bool $open = false;
+
+    private ?string $icon = null;
+
+    private ?Color $color = null;
 
     public readonly string $id;
 
@@ -72,6 +80,20 @@ final class Marker
         return $this;
     }
 
+    public function icon(BackedEnum|string $icon): self
+    {
+        $this->icon = Wire::scalar($icon);
+
+        return $this;
+    }
+
+    public function color(Color|ColorName|string $color): self
+    {
+        $this->color = Color::from($color);
+
+        return $this;
+    }
+
     public function data(): MarkerData
     {
         if (! $this->position instanceof CoordinateData) {
@@ -89,6 +111,8 @@ final class Marker
             label: $this->label,
             schema: $this->schema,
             open: $this->open,
+            icon: $this->icon,
+            color: $this->color,
         );
     }
 }

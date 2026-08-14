@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Workbench\App\Pages\Components;
 
 use Lattice\Core\Attributes\AsPage;
+use Lattice\Core\Enums\ColorName;
 use Lattice\Map\Components\Map;
 use Lattice\Map\Marker;
 use Lattice\Ui\Components\Heading;
@@ -12,6 +13,7 @@ use Lattice\Ui\Components\Link;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Icon;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
@@ -32,6 +34,7 @@ final class MapPage extends WorkbenchPage
                     Heading::make(__('workbench.pages.map.heading')),
                     Text::make(__('workbench.pages.map.description')),
                     Map::make('offices')
+                        ->height(600)
                         ->markers([
                             Marker::make('berlin')
                                 ->position(52.5208, 13.4095)
@@ -47,6 +50,8 @@ final class MapPage extends WorkbenchPage
                                 ->open(),
                             Marker::make('potsdam')
                                 ->position(52.4009, 13.0591)
+                                ->icon(Icon::Bell)
+                                ->color(ColorName::Warning)
                                 ->label(__('workbench.pages.map.potsdam.label'))
                                 ->popup([
                                     Stack::make('potsdam-popup')->gap(Gap::Small)->schema([

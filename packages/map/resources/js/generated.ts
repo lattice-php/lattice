@@ -1,4 +1,4 @@
-import type { Node } from "@lattice-php/core";
+import type { Color, Node } from "@lattice-php/core";
 
 export type ComponentPropsMap = {
   map: Map;
@@ -25,6 +25,8 @@ export type MapProviderData = {
   readonly options: Record<string, unknown>;
 };
 export type MarkerData = {
+  readonly color: Color | null;
+  readonly icon: string | null;
   readonly id: string;
   readonly label: string;
   readonly open: boolean;

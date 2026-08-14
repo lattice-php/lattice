@@ -38,11 +38,13 @@ Leaflet panes and themes the controls, markers, and popups with the Lattice desi
 
 ```php
 use Lattice\Actions\Components\Action;
+use Lattice\Core\Enums\ColorName;
 use Lattice\Map\Components\Map;
 use Lattice\Map\Marker;
 use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Icon;
 
 Map::make('offices')
     ->markers([
@@ -60,6 +62,8 @@ Map::make('offices')
         Marker::make('hamburg')
             ->position(53.5511, 9.9937)
             ->label('Hamburg office')
+            ->icon(Icon::Bell)
+            ->color(ColorName::Warning)
             ->popup([
                 Heading::make('Hamburg office', 3),
                 Text::make('Speicherstadt'),
@@ -70,6 +74,10 @@ Map::make('offices')
 `->open()` marks one popup for automatic opening after the map initializes. Only one marker may be
 open initially, and marker IDs must be unique. Labels supply each marker's accessible name even
 when the popup schema renders different text.
+
+`->icon()` replaces the pin's dot with any Lattice icon (a `Lattice\Ui\Enums\Icon` case, or the
+sprite id of an app-registered icon), and `->color()` tints the pin with a named Lattice color or
+a CSS color. Markers without either keep the primary pin with the plain dot.
 
 Without an explicit center, one marker opens at a practical street-level zoom and several markers
 are fitted into view. An empty map shows the world. Override the viewport and controls when needed:
@@ -85,7 +93,9 @@ Map::make('service-area')
 ```
 
 Scroll-wheel zoom is disabled by default so a map embedded in a page does not capture normal page
-scrolling. Zoom values must fit both the general `0–24` range and the active provider's range.
+scrolling — holding Cmd/Ctrl while scrolling (or a trackpad pinch) still zooms the map;
+`->scrollZoom()` makes the plain wheel zoom too. Zoom values must fit both the general `0–24`
+range and the active provider's range.
 
 ## OpenStreetMap Tiles
 

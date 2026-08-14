@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Lang;
+use Lattice\Core\Enums\ColorName;
 use Lattice\Map\Components\Map;
 use Lattice\Map\Contracts\MapProvider;
 use Lattice\Map\MapProviderData;
@@ -10,6 +11,7 @@ use Lattice\Map\MapProviderRegistry;
 use Lattice\Map\Marker;
 use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Icon;
 
 it('serializes provider-neutral map data with marker popup schemas', function (): void {
     config()->set('map.providers.openstreetmap.tile_url', 'https://tiles.example.test/{z}/{x}/{y}.png');
@@ -24,6 +26,8 @@ it('serializes provider-neutral map data with marker popup schemas', function ()
                 Marker::make('berlin')
                     ->position(52.52, 13.405)
                     ->label('Berlin office')
+                    ->icon(Icon::Bell)
+                    ->color(ColorName::Warning)
                     ->popup([
                         Heading::make('Berlin office'),
                         Text::make('Alexanderplatz 1'),
@@ -52,6 +56,8 @@ it('serializes provider-neutral map data with marker popup schemas', function ()
             'position' => ['latitude' => 52.52, 'longitude' => 13.405],
             'label' => 'Berlin office',
             'open' => true,
+            'icon' => 'bell',
+            'color' => ['kind' => 'named', 'value' => 'warning', 'dark' => null],
         ])
         ->and(array_column($node['props']['features'][0]['schema'], 'type'))->toBe(['heading', 'text']);
 });

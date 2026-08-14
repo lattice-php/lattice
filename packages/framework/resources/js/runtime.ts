@@ -6,6 +6,7 @@ export { runAction } from "@lattice-php/action";
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
 export { useExtensionRegistry } from "@lattice-php/core/registry-context";
 export { RenderNode } from "@lattice-php/core/renderer";
+export { coerceColor, toneProps } from "@lattice-php/ui/lib/color";
 export { nodeIdentity } from "@lattice-php/core/test-id";
 export { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 export { SimpleField } from "@lattice-php/form/components/fields/simple-field";

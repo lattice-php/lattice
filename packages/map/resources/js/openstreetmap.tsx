@@ -3,6 +3,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Node } from "@lattice-php/core";
 import { Renderer } from "@lattice-php/core";
 import { useT } from "@lattice-php/ui/i18n";
+import { IconRenderer } from "@lattice-php/ui/icons";
+import { coerceColor, toneProps } from "@lattice-php/ui/lib/color";
 import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 import type { MapProviderProps } from "./provider-registry";
 import type { MarkerData } from "./types";
@@ -17,6 +19,12 @@ type PopupPortal = {
   id: string;
   schema: Node[];
   update: () => void;
+};
+
+type MarkerIcon = {
+  host: HTMLElement;
+  icon: string;
+  id: string;
 };
 
 function PopupSchema({ portal }: { portal: PopupPortal }) {
@@ -77,6 +85,25 @@ function setInitialView(
   map.setView([0, 0], node.props.zoom ?? 2);
 }
 
+function styleMarkerPin(element: HTMLElement | undefined, feature: MarkerData): HTMLElement | null {
+  const pin = element?.querySelector<HTMLElement>(".lt-map-marker__pin") ?? null;
+  const color = coerceColor(feature.color);
+
+  if (pin && color) {
+    const tone = toneProps(color);
+
+    if (tone.className) {
+      pin.classList.add(...tone.className.split(" "));
+    }
+
+    for (const [property, value] of Object.entries(tone.style ?? {})) {
+      pin.style.setProperty(property, String(value));
+    }
+  }
+
+  return pin;
+}
+
 function addMarker(
   leaflet: typeof import("leaflet"),
   map: LeafletMap,
@@ -84,10 +111,14 @@ function addMarker(
   closePopupLabel: () => string,
   openMarker: (marker: LeafletMarker) => void,
   setPopup: (portal: PopupPortal | null) => void,
+  addIcon: (markerIcon: MarkerIcon) => void,
 ): void {
+  const pinClass = feature.icon
+    ? "lt-map-marker__pin lt-map-marker__pin--icon"
+    : "lt-map-marker__pin";
   const icon = leaflet.divIcon({
     className: "lt-map-marker",
-    html: '<span class="lt-map-marker__pin" aria-hidden="true"></span>',
+    html: `<span class="${pinClass}" aria-hidden="true"></span>`,
     iconAnchor: [14, 36],
     iconSize: [28, 36],
     popupAnchor: [0, -34],
@@ -101,7 +132,13 @@ function addMarker(
   });
 
   marker.addTo(map);
-  marker.getElement()?.setAttribute("aria-label", feature.label);
+  const element = marker.getElement();
+  element?.setAttribute("aria-label", feature.label);
+  const pin = styleMarkerPin(element, feature);
+
+  if (pin && feature.icon) {
+    addIcon({ host: pin, icon: feature.icon, id: feature.id });
+  }
 
   if (feature.schema.length > 0) {
     const host = document.createElement("div");
@@ -136,6 +173,7 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
   const container = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [popup, setPopup] = useState<PopupPortal | null>(null);
+  const [markerIcons, setMarkerIcons] = useState<MarkerIcon[]>([]);
 
   useEffect(() => {
     const element = container.current;
@@ -151,9 +189,11 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
     let observedWidth = element.clientWidth;
     let observedHeight = element.clientHeight;
     let markerToOpen: LeafletMarker | null = null;
+    let cooperativeWheel: ((event: WheelEvent) => void) | null = null;
 
     setStatus("loading");
     setPopup(null);
+    setMarkerIcons([]);
 
     void import("leaflet")
       .then((leaflet) => {
@@ -176,6 +216,28 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
           })
           .addTo(map);
 
+        if (!node.props.scrollZoom) {
+          // Cooperative gestures: plain scrolling keeps scrolling the page,
+          // but Cmd/Ctrl+wheel (and trackpad pinch, which browsers report as
+          // ctrl+wheel) zooms the map by toggling Leaflet's own handler.
+          cooperativeWheel = (event) => {
+            const wheelZoom = map?.scrollWheelZoom;
+
+            if (event.metaKey || event.ctrlKey) {
+              wheelZoom?.enable();
+            } else {
+              wheelZoom?.disable();
+            }
+          };
+          element.addEventListener("wheel", cooperativeWheel, { capture: true, passive: true });
+        }
+
+        // Layers only initialize their DOM elements once the map has a view,
+        // so the view must be set before markers are added and styled.
+        setInitialView(leaflet, map, node);
+
+        const icons: MarkerIcon[] = [];
+
         for (const feature of node.props.features) {
           addMarker(
             leaflet,
@@ -186,10 +248,11 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
               markerToOpen = marker;
             },
             setPopup,
+            (markerIcon) => icons.push(markerIcon),
           );
         }
 
-        setInitialView(leaflet, map, node);
+        setMarkerIcons(icons);
         markerToOpen?.openPopup();
         resizeObserver = new ResizeObserver(([entry]) => {
           const { height, width } = entry.contentRect;
@@ -225,6 +288,9 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
       if (resizeFrame !== null) {
         cancelAnimationFrame(resizeFrame);
       }
+      if (cooperativeWheel) {
+        element.removeEventListener("wheel", cooperativeWheel, { capture: true });
+      }
       map?.remove();
     };
   }, [node, t]);
@@ -253,6 +319,13 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
         </div>
       )}
       {popup && createPortal(<PopupSchema portal={popup} />, popup.host, popup.id)}
+      {markerIcons.map((markerIcon) =>
+        createPortal(
+          <IconRenderer icon={markerIcon.icon} />,
+          markerIcon.host,
+          `marker-icon-${markerIcon.id}`,
+        ),
+      )}
     </div>
   );
 }

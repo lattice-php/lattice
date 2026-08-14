@@ -34,14 +34,23 @@ const distRegistry = createRegistry(distPlugin as Plugin, {
   name: "test/map-content",
 });
 
-function marker(id: string, label: string, latitude: number, longitude: number): MarkerData {
+function marker(
+  id: string,
+  label: string,
+  latitude: number,
+  longitude: number,
+  extra: Partial<MarkerData> = {},
+): MarkerData {
   return {
+    color: null,
+    icon: null,
     id,
     label,
     open: id === "berlin",
     position: { latitude, longitude },
     schema: [{ props: { text: `${label} content` }, type: "text" }],
     type: "marker",
+    ...extra,
   };
 }
 
@@ -110,6 +119,30 @@ it("reports invalid provider configuration without leaving the map pending", asy
   });
 
   await expect.element(page.getByRole("alert")).toHaveTextContent("The map could not be loaded.");
+});
+
+it("renders a per-marker icon inside a toned pin", async () => {
+  await renderMap({
+    features: [
+      marker("munich", "Munich office", 48.1372, 11.5756, {
+        color: { dark: null, kind: "named", value: "warning" },
+        icon: "bell",
+      }),
+    ],
+  });
+
+  await expect
+    .poll(() => document.querySelector(".lt-map-marker__pin--icon use")?.getAttribute("href"))
+    .toContain("bell");
+  await expect
+    .poll(() =>
+      document.querySelector(".lt-map-marker__pin")?.classList.contains("lt-tone-warning"),
+    )
+    .toBe(true);
+
+  await userEvent.click(page.getByRole("button", { name: "Munich office" }));
+
+  await expect.element(page.getByText("Munich office content")).toBeVisible();
 });
 
 it("automatically centers a single marker for interaction", async () => {

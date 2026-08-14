@@ -2701,7 +2701,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 		function sr(e, t, n) {
 			return new or(e, t, n);
 		}
-		var cr = rr.extend({
+		var Q = rr.extend({
 			options: {
 				smoothFactor: 1,
 				noClip: !1
@@ -2788,11 +2788,11 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				return !1;
 			}
 		});
-		function lr(e, t) {
-			return new cr(e, t);
+		function cr(e, t) {
+			return new Q(e, t);
 		}
-		cr._flat = zn;
-		var ur = cr.extend({
+		Q._flat = zn;
+		var lr = Q.extend({
 			options: { fill: !0 },
 			isEmpty: function() {
 				return !this._latlngs.length || !this._latlngs[0].length;
@@ -2802,11 +2802,11 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				return wn(this._defaultShape(), this._map.options.crs);
 			},
 			_convertLatLngs: function(e) {
-				var t = cr.prototype._convertLatLngs.call(this, e), n = t.length;
+				var t = Q.prototype._convertLatLngs.call(this, e), n = t.length;
 				return n >= 2 && t[0] instanceof A && t[0].equals(t[n - 1]) && t.pop(), t;
 			},
 			_setLatLngs: function(e) {
-				cr.prototype._setLatLngs.call(this, e), Y(this._latlngs) && (this._latlngs = [this._latlngs]);
+				Q.prototype._setLatLngs.call(this, e), Y(this._latlngs) && (this._latlngs = [this._latlngs]);
 			},
 			_defaultShape: function() {
 				return Y(this._latlngs[0]) ? this._latlngs[0] : this._latlngs[0][0];
@@ -2828,13 +2828,13 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				var t = !1, n, r, i, a, o, s, c, l;
 				if (!this._pxBounds || !this._pxBounds.contains(e)) return !1;
 				for (a = 0, c = this._parts.length; a < c; a++) for (n = this._parts[a], o = 0, l = n.length, s = l - 1; o < l; s = o++) r = n[o], i = n[s], r.y > e.y != i.y > e.y && e.x < (i.x - r.x) * (e.y - r.y) / (i.y - r.y) + r.x && (t = !t);
-				return t || cr.prototype._containsPoint.call(this, e, !0);
+				return t || Q.prototype._containsPoint.call(this, e, !0);
 			}
 		});
-		function dr(e, t) {
-			return new ur(e, t);
+		function ur(e, t) {
+			return new lr(e, t);
 		}
-		var fr = Z.extend({
+		var dr = Z.extend({
 			initialize: function(e, t) {
 				p(this, t), this._layers = {}, e && this.addData(e);
 			},
@@ -2846,8 +2846,8 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				}
 				var a = this.options;
 				if (a.filter && !a.filter(e)) return this;
-				var o = pr(e, a);
-				return o ? (o.feature = br(e), o.defaultOptions = o.options, this.resetStyle(o), a.onEachFeature && a.onEachFeature(e, o), this.addLayer(o)) : this;
+				var o = fr(e, a);
+				return o ? (o.feature = yr(e), o.defaultOptions = o.options, this.resetStyle(o), a.onEachFeature && a.onEachFeature(e, o), this.addLayer(o)) : this;
 			},
 			resetStyle: function(e) {
 				return e === void 0 ? this.eachLayer(this.resetStyle, this) : (e.options = n({}, e.defaultOptions), this._setLayerStyle(e, this.options.style), this);
@@ -2861,21 +2861,21 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				e.setStyle && (typeof t == "function" && (t = t(e.feature)), e.setStyle(t));
 			}
 		});
-		function pr(e, t) {
-			var n = e.type === "Feature" ? e.geometry : e, r = n ? n.coordinates : null, i = [], a = t && t.pointToLayer, o = t && t.coordsToLatLng || hr, s, c, l, u;
+		function fr(e, t) {
+			var n = e.type === "Feature" ? e.geometry : e, r = n ? n.coordinates : null, i = [], a = t && t.pointToLayer, o = t && t.coordsToLatLng || mr, s, c, l, u;
 			if (!r && !n) return null;
 			switch (n.type) {
-				case "Point": return s = o(r), mr(a, e, s, t);
+				case "Point": return s = o(r), pr(a, e, s, t);
 				case "MultiPoint":
-					for (l = 0, u = r.length; l < u; l++) s = o(r[l]), i.push(mr(a, e, s, t));
+					for (l = 0, u = r.length; l < u; l++) s = o(r[l]), i.push(pr(a, e, s, t));
 					return new Z(i);
 				case "LineString":
-				case "MultiLineString": return c = gr(r, n.type === "LineString" ? 0 : 1, o), new cr(c, t);
+				case "MultiLineString": return c = hr(r, n.type === "LineString" ? 0 : 1, o), new Q(c, t);
 				case "Polygon":
-				case "MultiPolygon": return c = gr(r, n.type === "Polygon" ? 1 : 2, o), new ur(c, t);
+				case "MultiPolygon": return c = hr(r, n.type === "Polygon" ? 1 : 2, o), new lr(c, t);
 				case "GeometryCollection":
 					for (l = 0, u = n.geometries.length; l < u; l++) {
-						var d = pr({
+						var d = fr({
 							geometry: n.geometries[l],
 							type: "Feature",
 							properties: e.properties
@@ -2885,59 +2885,59 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 					return new Z(i);
 				case "FeatureCollection":
 					for (l = 0, u = n.features.length; l < u; l++) {
-						var f = pr(n.features[l], t);
+						var f = fr(n.features[l], t);
 						f && i.push(f);
 					}
 					return new Z(i);
 				default: throw Error("Invalid GeoJSON object.");
 			}
 		}
-		function mr(e, t, n, r) {
+		function pr(e, t, n, r) {
 			return e ? e(t, n) : new tr(n, r && r.markersInheritOptions && r);
 		}
-		function hr(e) {
+		function mr(e) {
 			return new A(e[1], e[0], e[2]);
 		}
-		function gr(e, t, n) {
-			for (var r = [], i = 0, a = e.length, o; i < a; i++) o = t ? gr(e[i], t - 1, n) : (n || hr)(e[i]), r.push(o);
+		function hr(e, t, n) {
+			for (var r = [], i = 0, a = e.length, o; i < a; i++) o = t ? hr(e[i], t - 1, n) : (n || mr)(e[i]), r.push(o);
 			return r;
 		}
-		function _r(e, t) {
+		function gr(e, t) {
 			return e = j(e), e.alt === void 0 ? [u(e.lng, t), u(e.lat, t)] : [
 				u(e.lng, t),
 				u(e.lat, t),
 				u(e.alt, t)
 			];
 		}
-		function vr(e, t, n, r) {
-			for (var i = [], a = 0, o = e.length; a < o; a++) i.push(t ? vr(e[a], Y(e[a]) ? 0 : t - 1, n, r) : _r(e[a], r));
+		function _r(e, t, n, r) {
+			for (var i = [], a = 0, o = e.length; a < o; a++) i.push(t ? _r(e[a], Y(e[a]) ? 0 : t - 1, n, r) : gr(e[a], r));
 			return !t && n && i.length > 0 && i.push(i[0].slice()), i;
 		}
-		function yr(e, t) {
-			return e.feature ? n({}, e.feature, { geometry: t }) : br(t);
+		function vr(e, t) {
+			return e.feature ? n({}, e.feature, { geometry: t }) : yr(t);
 		}
-		function br(e) {
+		function yr(e) {
 			return e.type === "Feature" || e.type === "FeatureCollection" ? e : {
 				type: "Feature",
 				properties: {},
 				geometry: e
 			};
 		}
-		var xr = { toGeoJSON: function(e) {
-			return yr(this, {
+		var br = { toGeoJSON: function(e) {
+			return vr(this, {
 				type: "Point",
-				coordinates: _r(this.getLatLng(), e)
+				coordinates: gr(this.getLatLng(), e)
 			});
 		} };
-		tr.include(xr), or.include(xr), ir.include(xr), cr.include({ toGeoJSON: function(e) {
-			var t = !Y(this._latlngs), n = vr(this._latlngs, +!!t, !1, e);
-			return yr(this, {
+		tr.include(br), or.include(br), ir.include(br), Q.include({ toGeoJSON: function(e) {
+			var t = !Y(this._latlngs), n = _r(this._latlngs, +!!t, !1, e);
+			return vr(this, {
 				type: (t ? "Multi" : "") + "LineString",
 				coordinates: n
 			});
-		} }), ur.include({ toGeoJSON: function(e) {
-			var t = !Y(this._latlngs), n = t && !Y(this._latlngs[0]), r = vr(this._latlngs, n ? 2 : +!!t, !0, e);
-			return t || (r = [r]), yr(this, {
+		} }), lr.include({ toGeoJSON: function(e) {
+			var t = !Y(this._latlngs), n = t && !Y(this._latlngs[0]), r = _r(this._latlngs, n ? 2 : +!!t, !0, e);
+			return t || (r = [r]), vr(this, {
 				type: (n ? "Multi" : "") + "Polygon",
 				coordinates: r
 			});
@@ -2946,7 +2946,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				var t = [];
 				return this.eachLayer(function(n) {
 					t.push(n.toGeoJSON(e).geometry.coordinates);
-				}), yr(this, {
+				}), vr(this, {
 					type: "MultiPoint",
 					coordinates: t
 				});
@@ -2960,11 +2960,11 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 						var i = t.toGeoJSON(e);
 						if (n) r.push(i.geometry);
 						else {
-							var a = br(i);
+							var a = yr(i);
 							a.type === "FeatureCollection" ? r.push.apply(r, a.features) : r.push(a);
 						}
 					}
-				}), n ? yr(this, {
+				}), n ? vr(this, {
 					geometries: r,
 					type: "GeometryCollection"
 				}) : {
@@ -2973,10 +2973,10 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				};
 			}
 		});
-		function Sr(e, t) {
-			return new fr(e, t);
+		function xr(e, t) {
+			return new dr(e, t);
 		}
-		var Cr = Sr, wr = X.extend({
+		var Sr = xr, Cr = X.extend({
 			options: {
 				opacity: 1,
 				alt: "",
@@ -3059,9 +3059,9 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			getCenter: function() {
 				return this._bounds.getCenter();
 			}
-		}), Tr = function(e, t, n) {
-			return new wr(e, t, n);
-		}, Er = wr.extend({
+		}), wr = function(e, t, n) {
+			return new Cr(e, t, n);
+		}, Tr = Cr.extend({
 			options: {
 				autoplay: !0,
 				loop: !0,
@@ -3083,17 +3083,17 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				}
 			}
 		});
-		function Dr(e, t, n) {
-			return new Er(e, t, n);
+		function Er(e, t, n) {
+			return new Tr(e, t, n);
 		}
-		var Or = wr.extend({ _initImage: function() {
+		var Dr = Cr.extend({ _initImage: function() {
 			var e = this._image = this._url;
 			R(e, "leaflet-image-layer"), this._zoomAnimated && R(e, "leaflet-zoom-animated"), this.options.className && R(e, this.options.className), e.onselectstart = l, e.onmousemove = l;
 		} });
-		function kr(e, t, n) {
-			return new Or(e, t, n);
+		function Or(e, t, n) {
+			return new Dr(e, t, n);
 		}
-		var Q = X.extend({
+		var $ = X.extend({
 			options: {
 				interactive: !1,
 				offset: [0, 0],
@@ -3202,7 +3202,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			var i = n;
 			return i instanceof e ? (p(i, r), i._source = this) : (i = t && !r ? t : new e(r, this), i.setContent(n)), i;
 		} });
-		var Ar = Q.extend({
+		var kr = $.extend({
 			options: {
 				pane: "popupPane",
 				offset: [0, 7],
@@ -3220,16 +3220,16 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				className: ""
 			},
 			openOn: function(e) {
-				return e = arguments.length ? e : this._source._map, !e.hasLayer(this) && e._popup && e._popup.options.autoClose && e.removeLayer(e._popup), e._popup = this, Q.prototype.openOn.call(this, e);
+				return e = arguments.length ? e : this._source._map, !e.hasLayer(this) && e._popup && e._popup.options.autoClose && e.removeLayer(e._popup), e._popup = this, $.prototype.openOn.call(this, e);
 			},
 			onAdd: function(e) {
-				Q.prototype.onAdd.call(this, e), e.fire("popupopen", { popup: this }), this._source && (this._source.fire("popupopen", { popup: this }, !0), this._source instanceof rr || this._source.on("preclick", $t));
+				$.prototype.onAdd.call(this, e), e.fire("popupopen", { popup: this }), this._source && (this._source.fire("popupopen", { popup: this }, !0), this._source instanceof rr || this._source.on("preclick", $t));
 			},
 			onRemove: function(e) {
-				Q.prototype.onRemove.call(this, e), e.fire("popupclose", { popup: this }), this._source && (this._source.fire("popupclose", { popup: this }, !0), this._source instanceof rr || this._source.off("preclick", $t));
+				$.prototype.onRemove.call(this, e), e.fire("popupclose", { popup: this }), this._source && (this._source.fire("popupclose", { popup: this }, !0), this._source instanceof rr || this._source.off("preclick", $t));
 			},
 			getEvents: function() {
-				var e = Q.prototype.getEvents.call(this);
+				var e = $.prototype.getEvents.call(this);
 				return (this.options.closeOnClick === void 0 ? this._map.options.closePopupOnClick : this.options.closeOnClick) && (e.preclick = this.close), this.options.keepInView && (e.moveend = this._adjustPan), e;
 			},
 			_initLayout: function() {
@@ -3268,19 +3268,19 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			_getAnchor: function() {
 				return T(this._source && this._source._getPopupAnchor ? this._source._getPopupAnchor() : [0, 0]);
 			}
-		}), jr = function(e, t) {
-			return new Ar(e, t);
+		}), Ar = function(e, t) {
+			return new kr(e, t);
 		};
 		K.mergeOptions({ closePopupOnClick: !0 }), K.include({
 			openPopup: function(e, t, n) {
-				return this._initOverlay(Ar, e, t, n).openOn(this), this;
+				return this._initOverlay(kr, e, t, n).openOn(this), this;
 			},
 			closePopup: function(e) {
 				return e = arguments.length ? e : this._popup, e && e.close(), this;
 			}
 		}), X.include({
 			bindPopup: function(e, t) {
-				return this._popup = this._initOverlay(Ar, this._popup, e, t), this._popupHandlersAdded ||= (this.on({
+				return this._popup = this._initOverlay(kr, this._popup, e, t), this._popupHandlersAdded ||= (this.on({
 					click: this._openPopup,
 					keypress: this._onKeyPress,
 					remove: this.closePopup,
@@ -3331,7 +3331,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				e.originalEvent.keyCode === 13 && this._openPopup(e);
 			}
 		});
-		var Mr = Q.extend({
+		var jr = $.extend({
 			options: {
 				pane: "tooltipPane",
 				offset: [0, 0],
@@ -3341,13 +3341,13 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				opacity: .9
 			},
 			onAdd: function(e) {
-				Q.prototype.onAdd.call(this, e), this.setOpacity(this.options.opacity), e.fire("tooltipopen", { tooltip: this }), this._source && (this.addEventParent(this._source), this._source.fire("tooltipopen", { tooltip: this }, !0));
+				$.prototype.onAdd.call(this, e), this.setOpacity(this.options.opacity), e.fire("tooltipopen", { tooltip: this }), this._source && (this.addEventParent(this._source), this._source.fire("tooltipopen", { tooltip: this }, !0));
 			},
 			onRemove: function(e) {
-				Q.prototype.onRemove.call(this, e), e.fire("tooltipclose", { tooltip: this }), this._source && (this.removeEventParent(this._source), this._source.fire("tooltipclose", { tooltip: this }, !0));
+				$.prototype.onRemove.call(this, e), e.fire("tooltipclose", { tooltip: this }), this._source && (this.removeEventParent(this._source), this._source.fire("tooltipclose", { tooltip: this }, !0));
 			},
 			getEvents: function() {
-				var e = Q.prototype.getEvents.call(this);
+				var e = $.prototype.getEvents.call(this);
 				return this.options.permanent || (e.preclick = this.close), e;
 			},
 			_initLayout: function() {
@@ -3374,19 +3374,19 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			_getAnchor: function() {
 				return T(this._source && this._source._getTooltipAnchor && !this.options.sticky ? this._source._getTooltipAnchor() : [0, 0]);
 			}
-		}), Nr = function(e, t) {
-			return new Mr(e, t);
+		}), Mr = function(e, t) {
+			return new jr(e, t);
 		};
 		K.include({
 			openTooltip: function(e, t, n) {
-				return this._initOverlay(Mr, e, t, n).openOn(this), this;
+				return this._initOverlay(jr, e, t, n).openOn(this), this;
 			},
 			closeTooltip: function(e) {
 				return e.close(), this;
 			}
 		}), X.include({
 			bindTooltip: function(e, t) {
-				return this._tooltip && this.isTooltipOpen() && this.unbindTooltip(), this._tooltip = this._initOverlay(Mr, this._tooltip, e, t), this._initTooltipInteractions(), this._tooltip.options.permanent && this._map && this._map.hasLayer(this) && this.openTooltip(), this;
+				return this._tooltip && this.isTooltipOpen() && this.unbindTooltip(), this._tooltip = this._initOverlay(jr, this._tooltip, e, t), this._initTooltipInteractions(), this._tooltip.options.permanent && this._map && this._map.hasLayer(this) && this.openTooltip(), this;
 			},
 			unbindTooltip: function() {
 				return this._tooltip &&= (this._initTooltipInteractions(!0), this.closeTooltip(), null), this;
@@ -3449,7 +3449,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				this._tooltip.options.sticky && e.originalEvent && (n = this._map.mouseEventToContainerPoint(e.originalEvent), r = this._map.containerPointToLayerPoint(n), t = this._map.layerPointToLatLng(r)), this._tooltip.setLatLng(t);
 			}
 		});
-		var Pr = Zn.extend({
+		var Nr = Zn.extend({
 			options: {
 				iconSize: [12, 12],
 				html: !1,
@@ -3468,11 +3468,11 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				return null;
 			}
 		});
-		function Fr(e) {
-			return new Pr(e);
+		function Pr(e) {
+			return new Nr(e);
 		}
 		Zn.Default = $n;
-		var Ir = X.extend({
+		var Fr = X.extend({
 			options: {
 				tileSize: 256,
 				opacity: 1,
@@ -3770,10 +3770,10 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				return !0;
 			}
 		});
-		function Lr(e) {
-			return new Ir(e);
+		function Ir(e) {
+			return new Fr(e);
 		}
-		var Rr = Ir.extend({
+		var Lr = Fr.extend({
 			options: {
 				minZoom: 0,
 				maxZoom: 18,
@@ -3841,16 +3841,16 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			},
 			_removeTile: function(e) {
 				var t = this._tiles[e];
-				if (t) return t.el.setAttribute("src", te), Ir.prototype._removeTile.call(this, e);
+				if (t) return t.el.setAttribute("src", te), Fr.prototype._removeTile.call(this, e);
 			},
 			_tileReady: function(e, t, n) {
-				if (!(!this._map || n && n.getAttribute("src") === te)) return Ir.prototype._tileReady.call(this, e, t, n);
+				if (!(!this._map || n && n.getAttribute("src") === te)) return Fr.prototype._tileReady.call(this, e, t, n);
 			}
 		});
-		function zr(e, t) {
-			return new Rr(e, t);
+		function Rr(e, t) {
+			return new Lr(e, t);
 		}
-		var Br = Rr.extend({
+		var zr = Lr.extend({
 			defaultWmsParams: {
 				service: "WMS",
 				request: "GetMap",
@@ -3875,7 +3875,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			onAdd: function(e) {
 				this._crs = this.options.crs || e.options.crs, this._wmsVersion = parseFloat(this.wmsParams.version);
 				var t = this._wmsVersion >= 1.3 ? "crs" : "srs";
-				this.wmsParams[t] = this._crs.code, Rr.prototype.onAdd.call(this, e);
+				this.wmsParams[t] = this._crs.code, Lr.prototype.onAdd.call(this, e);
 			},
 			getTileUrl: function(e) {
 				var t = this._tileCoordsToNwSe(e), n = this._crs, r = D(n.project(t[0]), n.project(t[1])), i = r.min, a = r.max, o = (this._wmsVersion >= 1.3 && this._crs === Kn ? [
@@ -3888,18 +3888,18 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 					i.y,
 					a.x,
 					a.y
-				]).join(","), s = Rr.prototype.getTileUrl.call(this, e);
+				]).join(","), s = Lr.prototype.getTileUrl.call(this, e);
 				return s + m(this.wmsParams, s, this.options.uppercase) + (this.options.uppercase ? "&BBOX=" : "&bbox=") + o;
 			},
 			setParams: function(e, t) {
 				return n(this.wmsParams, e), t || this.redraw(), this;
 			}
 		});
-		function Vr(e, t) {
-			return new Br(e, t);
+		function Br(e, t) {
+			return new zr(e, t);
 		}
-		Rr.WMS = Br, zr.wms = Vr;
-		var $ = X.extend({
+		Lr.WMS = zr, Rr.wms = Br;
+		var Vr = X.extend({
 			options: { padding: .1 },
 			initialize: function(e) {
 				p(this, e), o(this), this._layers = this._layers || {};
@@ -3942,17 +3942,17 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				var e = this.options.padding, t = this._map.getSize(), n = this._map.containerPointToLayerPoint(t.multiplyBy(-e)).round();
 				this._bounds = new E(n, n.add(t.multiplyBy(1 + e * 2)).round()), this._center = this._map.getCenter(), this._zoom = this._map.getZoom();
 			}
-		}), Hr = $.extend({
+		}), Hr = Vr.extend({
 			options: { tolerance: 0 },
 			getEvents: function() {
-				var e = $.prototype.getEvents.call(this);
+				var e = Vr.prototype.getEvents.call(this);
 				return e.viewprereset = this._onViewPreReset, e;
 			},
 			_onViewPreReset: function() {
 				this._postponeUpdatePaths = !0;
 			},
 			onAdd: function() {
-				$.prototype.onAdd.call(this), this._draw();
+				Vr.prototype.onAdd.call(this), this._draw();
 			},
 			_initContainer: function() {
 				var e = this._container = document.createElement("canvas");
@@ -3970,13 +3970,13 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			},
 			_update: function() {
 				if (!(this._map._animatingZoom && this._bounds)) {
-					$.prototype._update.call(this);
+					Vr.prototype._update.call(this);
 					var e = this._bounds, t = this._container, n = e.getSize(), r = P.retina ? 2 : 1;
 					V(t, e.min), t.width = r * n.x, t.height = r * n.y, t.style.width = n.x + "px", t.style.height = n.y + "px", P.retina && this._ctx.scale(2, 2), this._ctx.translate(-e.min.x, -e.min.y), this.fire("update");
 				}
 			},
 			_reset: function() {
-				$.prototype._reset.call(this), this._postponeUpdatePaths && (this._postponeUpdatePaths = !1, this._updatePaths());
+				Vr.prototype._reset.call(this), this._postponeUpdatePaths && (this._postponeUpdatePaths = !1, this._updatePaths());
 			},
 			_initPath: function(e) {
 				this._updateDashArray(e), this._layers[o(e)] = e;
@@ -4122,7 +4122,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				this._container = F("div", "leaflet-vml-container");
 			},
 			_update: function() {
-				this._map._animatingZoom || ($.prototype._update.call(this), this.fire("update"));
+				this._map._animatingZoom || (Vr.prototype._update.call(this), this.fire("update"));
 			},
 			_initPath: function(e) {
 				var t = e._container = Wr("shape");
@@ -4153,7 +4153,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			_bringToBack: function(e) {
 				Ot(e._container);
 			}
-		}, Kr = P.vml ? Wr : ge, qr = $.extend({
+		}, Kr = P.vml ? Wr : ge, qr = Vr.extend({
 			_initContainer: function() {
 				this._container = Kr("svg"), this._container.setAttribute("pointer-events", "none"), this._rootGroup = Kr("g"), this._container.appendChild(this._rootGroup);
 			},
@@ -4162,7 +4162,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			},
 			_update: function() {
 				if (!(this._map._animatingZoom && this._bounds)) {
-					$.prototype._update.call(this);
+					Vr.prototype._update.call(this);
 					var e = this._bounds, t = e.getSize(), n = this._container;
 					(!this._svgSize || !this._svgSize.equals(t)) && (this._svgSize = t, n.setAttribute("width", t.x), n.setAttribute("height", t.y)), V(n, e.min), n.setAttribute("viewBox", [
 						e.min.x,
@@ -4224,9 +4224,9 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				return this.options.preferCanvas && Ur(e) || Jr(e);
 			}
 		});
-		var Yr = ur.extend({
+		var Yr = lr.extend({
 			initialize: function(e, t) {
-				ur.prototype.initialize.call(this, this._boundsToLatLngs(e), t);
+				lr.prototype.initialize.call(this, this._boundsToLatLngs(e), t);
 			},
 			setBounds: function(e) {
 				return this.setLatLngs(this._boundsToLatLngs(e));
@@ -4243,7 +4243,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 		function Xr(e, t) {
 			return new Yr(e, t);
 		}
-		qr.create = Kr, qr.pointsToPath = _e, fr.geometryToLayer = pr, fr.coordsToLatLng = hr, fr.coordsToLatLngs = gr, fr.latLngToCoords = _r, fr.latLngsToCoords = vr, fr.getFeature = yr, fr.asFeature = br, K.mergeOptions({ boxZoom: !0 });
+		qr.create = Kr, qr.pointsToPath = _e, dr.geometryToLayer = fr, dr.coordsToLatLng = mr, dr.coordsToLatLngs = hr, dr.latLngToCoords = gr, dr.latLngsToCoords = _r, dr.getFeature = vr, dr.asFeature = yr, K.mergeOptions({ boxZoom: !0 });
 		var Zr = J.extend({
 			initialize: function(e) {
 				this._map = e, this._container = e._container, this._pane = e._panes.overlayPane, this._resetStateTimeout = 0, e.on("unload", this._destroy, this);
@@ -4602,13 +4602,13 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 				this._zooming = !1, x(this._animRequest), W(document, "touchmove", this._onTouchMove, this), W(document, "touchend touchcancel", this._onTouchEnd, this), this._map.options.zoomAnimation ? this._map._animateZoom(this._center, this._map._limitZoom(this._zoom), !0, this._map.options.zoomSnap) : this._map._resetView(this._center, this._map._limitZoom(this._zoom));
 			}
 		});
-		K.addInitHook("addHandler", "touchZoom", ii), K.BoxZoom = Zr, K.DoubleClickZoom = Qr, K.Drag = $r, K.Keyboard = ei, K.ScrollWheelZoom = ti, K.TapHold = ri, K.TouchZoom = ii, e.Bounds = E, e.Browser = P, e.CRS = M, e.Canvas = Hr, e.Circle = or, e.CircleMarker = ir, e.Class = S, e.Control = q, e.DivIcon = Pr, e.DivOverlay = Q, e.DomEvent = ln, e.DomUtil = Jt, e.Draggable = Sn, e.Evented = se, e.FeatureGroup = Z, e.GeoJSON = fr, e.GridLayer = Ir, e.Handler = J, e.Icon = Zn, e.ImageOverlay = wr, e.LatLng = A, e.LatLngBounds = O, e.Layer = X, e.LayerGroup = Jn, e.LineUtil = Vn, e.Map = K, e.Marker = tr, e.Mixin = bn, e.Path = rr, e.Point = w, e.PolyUtil = En, e.Polygon = ur, e.Polyline = cr, e.Popup = Ar, e.PosAnimation = un, e.Projection = Wn, e.Rectangle = Yr, e.Renderer = $, e.SVG = qr, e.SVGOverlay = Or, e.TileLayer = Rr, e.Tooltip = Mr, e.Transformation = fe, e.Util = ae, e.VideoOverlay = Er, e.bind = i, e.bounds = D, e.canvas = Ur, e.circle = sr, e.circleMarker = ar, e.control = fn, e.divIcon = Fr, e.extend = n, e.featureGroup = Xn, e.geoJSON = Sr, e.geoJson = Cr, e.gridLayer = Lr, e.icon = Qn, e.imageOverlay = Tr, e.latLng = j, e.latLngBounds = k, e.layerGroup = Yn, e.map = dn, e.marker = nr, e.point = T, e.polygon = dr, e.polyline = lr, e.popup = jr, e.rectangle = Xr, e.setOptions = p, e.stamp = o, e.svg = Jr, e.svgOverlay = kr, e.tileLayer = zr, e.tooltip = Nr, e.transformation = pe, e.version = t, e.videoOverlay = Dr;
+		K.addInitHook("addHandler", "touchZoom", ii), K.BoxZoom = Zr, K.DoubleClickZoom = Qr, K.Drag = $r, K.Keyboard = ei, K.ScrollWheelZoom = ti, K.TapHold = ri, K.TouchZoom = ii, e.Bounds = E, e.Browser = P, e.CRS = M, e.Canvas = Hr, e.Circle = or, e.CircleMarker = ir, e.Class = S, e.Control = q, e.DivIcon = Nr, e.DivOverlay = $, e.DomEvent = ln, e.DomUtil = Jt, e.Draggable = Sn, e.Evented = se, e.FeatureGroup = Z, e.GeoJSON = dr, e.GridLayer = Fr, e.Handler = J, e.Icon = Zn, e.ImageOverlay = Cr, e.LatLng = A, e.LatLngBounds = O, e.Layer = X, e.LayerGroup = Jn, e.LineUtil = Vn, e.Map = K, e.Marker = tr, e.Mixin = bn, e.Path = rr, e.Point = w, e.PolyUtil = En, e.Polygon = lr, e.Polyline = Q, e.Popup = kr, e.PosAnimation = un, e.Projection = Wn, e.Rectangle = Yr, e.Renderer = Vr, e.SVG = qr, e.SVGOverlay = Dr, e.TileLayer = Lr, e.Tooltip = jr, e.Transformation = fe, e.Util = ae, e.VideoOverlay = Tr, e.bind = i, e.bounds = D, e.canvas = Ur, e.circle = sr, e.circleMarker = ar, e.control = fn, e.divIcon = Pr, e.extend = n, e.featureGroup = Xn, e.geoJSON = xr, e.geoJson = Sr, e.gridLayer = Ir, e.icon = Qn, e.imageOverlay = wr, e.latLng = j, e.latLngBounds = k, e.layerGroup = Yn, e.map = dn, e.marker = nr, e.point = T, e.polygon = ur, e.polyline = cr, e.popup = Ar, e.rectangle = Xr, e.setOptions = p, e.stamp = o, e.svg = Jr, e.svgOverlay = Or, e.tileLayer = Rr, e.tooltip = Mr, e.transformation = pe, e.version = t, e.videoOverlay = Er;
 		var ai = window.L;
 		e.noConflict = function() {
 			return window.L = ai, this;
 		}, window.L = e;
 	}));
-})), b = /* @__PURE__ */ _({ default: () => C });
+})), b = /* @__PURE__ */ _({ default: () => se });
 function x({ portal: e }) {
 	return r(() => {
 		e.update();
@@ -4643,60 +4643,84 @@ function S(e, t, n) {
 	}
 	t.setView([0, 0], n.props.zoom ?? 2);
 }
-function oe(e, t, n, r, i, a) {
-	let o = e.divIcon({
+function oe(e, t) {
+	let n = e?.querySelector(".lt-map-marker__pin") ?? null, r = (0, v.coerceColor)(t.color);
+	if (n && r) {
+		let e = (0, v.toneProps)(r);
+		e.className && n.classList.add(...e.className.split(" "));
+		for (let [t, r] of Object.entries(e.style ?? {})) n.style.setProperty(t, String(r));
+	}
+	return n;
+}
+function C(e, t, n, r, i, a, o) {
+	let s = n.icon ? "lt-map-marker__pin lt-map-marker__pin--icon" : "lt-map-marker__pin", c = e.divIcon({
 		className: "lt-map-marker",
-		html: "<span class=\"lt-map-marker__pin\" aria-hidden=\"true\"></span>",
+		html: `<span class="${s}" aria-hidden="true"></span>`,
 		iconAnchor: [14, 36],
 		iconSize: [28, 36],
 		popupAnchor: [0, -34]
-	}), s = e.marker([n.position.latitude, n.position.longitude], {
+	}), l = e.marker([n.position.latitude, n.position.longitude], {
 		alt: n.label,
-		icon: o,
+		icon: c,
 		keyboard: !0,
 		riseOnHover: !0,
 		title: n.label
 	});
-	if (s.addTo(t), s.getElement()?.setAttribute("aria-label", n.label), n.schema.length > 0) {
+	l.addTo(t);
+	let u = l.getElement();
+	u?.setAttribute("aria-label", n.label);
+	let d = oe(u, n);
+	if (d && n.icon && o({
+		host: d,
+		icon: n.icon,
+		id: n.id
+	}), n.schema.length > 0) {
 		let e = document.createElement("div");
-		e.className = "lt-map-popup__content", s.bindPopup(e, {
+		e.className = "lt-map-popup__content", l.bindPopup(e, {
 			closeButton: !0,
 			maxWidth: 360,
 			minWidth: 180
-		}), s.on("popupopen", () => {
-			let t = s.getPopup(), i = r(), o = t?.getElement()?.querySelector(".leaflet-popup-close-button");
+		}), l.on("popupopen", () => {
+			let t = l.getPopup(), i = r(), o = t?.getElement()?.querySelector(".leaflet-popup-close-button");
 			o?.setAttribute("aria-label", i), o?.setAttribute("title", i), a({
 				host: e,
 				id: n.id,
 				schema: n.schema,
 				update: () => t?.update()
 			});
-		}), s.on("popupclose", () => a(null));
+		}), l.on("popupclose", () => a(null));
 	}
-	n.open && i(s);
+	n.open && i(l);
 }
-function C({ node: e }) {
-	let { t } = (0, v.useT)("map"), r = i(null), [l, u] = a("loading"), [d, f] = a(null);
+function se({ node: e }) {
+	let { t } = (0, v.useT)("map"), r = i(null), [l, u] = a("loading"), [d, f] = a(null), [p, m] = a([]);
 	return n(() => {
 		let n = r.current;
 		if (!n) return;
-		let i = !1, a = null, o = null, s = null, c = n.clientWidth, l = n.clientHeight, d = null;
-		return u("loading"), f(null), Promise.resolve().then(() => /* @__PURE__ */ ne(ie(), 1)).then((r) => {
+		let i = !1, a = null, o = null, s = null, c = n.clientWidth, l = n.clientHeight, d = null, p = null;
+		return u("loading"), f(null), m([]), Promise.resolve().then(() => /* @__PURE__ */ ne(ie(), 1)).then((r) => {
 			if (i) return;
-			let p = ae(e.props.provider.options);
+			let h = ae(e.props.provider.options);
 			a = r.map(n, {
 				attributionControl: !0,
 				scrollWheelZoom: e.props.scrollZoom,
 				zoomControl: e.props.navigationControls
-			}), r.tileLayer(p.tileUrl, {
-				attribution: p.attribution,
+			}), r.tileLayer(h.tileUrl, {
+				attribution: h.attribution,
 				maxZoom: e.props.provider.maximumZoom,
 				minZoom: e.props.provider.minimumZoom
-			}).addTo(a);
-			for (let n of e.props.features) oe(r, a, n, () => t("map.close-popup", "Close popup"), (e) => {
+			}).addTo(a), e.props.scrollZoom || (p = (e) => {
+				let t = a?.scrollWheelZoom;
+				e.metaKey || e.ctrlKey ? t?.enable() : t?.disable();
+			}, n.addEventListener("wheel", p, {
+				capture: !0,
+				passive: !0
+			})), S(r, a, e);
+			let g = [];
+			for (let n of e.props.features) C(r, a, n, () => t("map.close-popup", "Close popup"), (e) => {
 				d = e;
-			}, f);
-			S(r, a, e), d?.openPopup(), o = new ResizeObserver(([e]) => {
+			}, f, (e) => g.push(e));
+			m(g), d?.openPopup(), o = new ResizeObserver(([e]) => {
 				let { height: t, width: n } = e.contentRect;
 				(n !== c || t !== l) && (c = n, l = t, s === null && (s = requestAnimationFrame(() => {
 					s = null, a?.invalidateSize({ pan: !1 });
@@ -4705,7 +4729,7 @@ function C({ node: e }) {
 		}).catch(() => {
 			i || u("error");
 		}), () => {
-			i = !0, o?.disconnect(), s !== null && cancelAnimationFrame(s), a?.remove();
+			i = !0, o?.disconnect(), s !== null && cancelAnimationFrame(s), p && n.removeEventListener("wheel", p, { capture: !0 }), a?.remove();
 		};
 	}, [e, t]), /* @__PURE__ */ c("div", {
 		className: "lt-map",
@@ -4729,23 +4753,24 @@ function C({ node: e }) {
 				role: "alert",
 				children: t("map.error", "The map could not be loaded.")
 			}),
-			d && o(/* @__PURE__ */ s(x, { portal: d }), d.host, d.id)
+			d && o(/* @__PURE__ */ s(x, { portal: d }), d.host, d.id),
+			p.map((e) => o(/* @__PURE__ */ s(v.IconRenderer, { icon: e.icon }), e.host, `marker-icon-${e.id}`))
 		]
 	});
 }
-var se = h((() => {
+var w = h((() => {
 	y();
 }));
 //#endregion
 //#region resources/js/provider-registry.ts
-function w() {
-	return (0, v.useExtensionRegistry)(ce);
+function ce() {
+	return (0, v.useExtensionRegistry)(T);
 }
-var ce, T = h((() => {
-	y(), ce = "map.providers";
-})), E = /* @__PURE__ */ _({ default: () => D }), D, O = h((() => {
-	y(), T(), D = ({ node: t }) => {
-		let { t: n } = (0, v.useT)("map"), r = w()[t.props.provider.name];
+var T, E = h((() => {
+	y(), T = "map.providers";
+})), D = /* @__PURE__ */ _({ default: () => O }), O, k = h((() => {
+	y(), E(), O = ({ node: t }) => {
+		let { t: n } = (0, v.useT)("map"), r = ce()[t.props.provider.name];
 		return r ? /* @__PURE__ */ s(e, {
 			fallback: /* @__PURE__ */ s("div", {
 				className: "lt-map lt-map--pending",
@@ -4766,11 +4791,11 @@ var ce, T = h((() => {
 //#endregion
 //#region resources/js/plugin.ts
 y();
-var k = t(() => Promise.resolve().then(() => (se(), b))), A = {
+var A = t(() => Promise.resolve().then(() => (w(), b))), j = {
 	name: "lattice/map",
-	components: { map: (0, v.lazyComponent)(() => Promise.resolve().then(() => (O(), E))) },
-	extensions: { "map.providers": { openstreetmap: k } },
+	components: { map: (0, v.lazyComponent)(() => Promise.resolve().then(() => (k(), D))) },
+	extensions: { "map.providers": { openstreetmap: A } },
 	i18n: { namespace: "map" }
 };
 //#endregion
-export { A as default };
+export { j as default };

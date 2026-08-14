@@ -221,10 +221,10 @@
   display: block;
   width: 1.75rem;
   height: 1.75rem;
-  rotate: 45deg;
+  rotate: -45deg;
   border: 3px solid var(--lt-primary-fg);
   border-radius: 50% 50% 50% 0;
-  background: var(--lt-primary);
+  background: var(--lt-tone-fg, var(--lt-primary));
   box-shadow: 0 3px 8px color-mix(in oklab, var(--lt-fg) 30%, transparent);
 }
 
@@ -237,6 +237,20 @@
   border-radius: 50%;
   background: var(--lt-primary-fg);
   content: "";
+}
+
+.lt-map-marker__pin--icon::after {
+  content: none;
+}
+
+.lt-map-marker__pin--icon > * {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  rotate: 45deg;
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--lt-primary-fg);
 }
 
 .leaflet-marker-icon:focus-visible {

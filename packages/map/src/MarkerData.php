@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Map;
 
 use Lattice\Core\Attributes\TypeScript;
+use Lattice\Core\Color;
 use Lattice\Ui\Components\Component;
 
 #[TypeScript]
@@ -18,5 +19,7 @@ final readonly class MarkerData
         public string $label,
         public array $schema,
         public bool $open,
+        public ?string $icon = null,
+        public ?Color $color = null,
     ) {}
 }
