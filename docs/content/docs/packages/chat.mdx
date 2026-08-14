@@ -1,0 +1,56 @@
+---
+title: Chat
+description: A streaming chat box with pluggable message parts, served from your own endpoints.
+---
+
+import BundleReport from "@components/BundleReport.astro";
+
+The chat package adds a streaming chat box to Lattice. The `ChatBox` component reads history from
+and streams NDJSON responses to endpoints you control, and assistant messages are composed of
+**parts** — text and tool calls ship with the package, and applications add their own with the
+`#[AsChatPart]` attribute.
+
+```php
+use Lattice\Chat\Components\ChatBox;
+
+ChatBox::make('assistant')
+    ->title('Assistant')
+    ->streamEndpoint('/chat/stream')
+    ->historyEndpoint('/chat/history');
+```
+
+The stream endpoint answers with newline-delimited JSON frames (`text`, `part`, `done`, `error`);
+the box folds them into the conversation as they arrive. A chat box can also read from a
+[remote source](/advanced/remote/) — call `source()`/`audience()` on it.
+
+## Installation
+
+```bash
+composer require lattice-php/chat
+```
+
+That is the whole integration: the package ships its React renderer as source, and the
+`lattice()` Vite plugin compiles it into your app's bundle via `virtual:lattice/plugins`
+(see [Component packages](/extending/component-packages/)). The PHP classes are picked up by
+Lattice's discovery and TypeScript generation automatically.
+[No-build apps](/introduction/no-build/) use the precompiled module the package also ships:
+run `php artisan lattice:assets` after installation.
+
+:::note
+There is no npm package — Composer is the only install.
+:::
+
+## Translations
+
+The component's strings ship with inline English defaults. With
+[laravel-i18next](https://github.com/bambamboole/laravel-i18next) enabled, the plugin's `chat`
+namespace is loaded automatically and serves the bundled `en`/`de` translations (override them
+like any Laravel package translation — see [Internationalization](/core/i18n/)).
+
+## Bundle size
+
+The breakdown below measures the package's built plugin — React and the
+[framework runtime](/advanced/bundle-size/) are external, so this is exactly what the chat
+package adds on top of an app that already ships Lattice. It is regenerated on every docs build.
+
+<BundleReport target="chat" />

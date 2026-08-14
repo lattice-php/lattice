@@ -11,11 +11,6 @@ return [
     'action' => [
         'run' => 'Run action',
     ],
-    'chat' => [
-        'title' => 'Chat',
-        'send' => 'Send',
-        'input-label' => 'Message input',
-    ],
     'remote' => [
         'data-list' => [
             'loading' => 'Loading...',

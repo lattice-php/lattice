@@ -6,6 +6,7 @@ namespace Lattice\Remote\Components;
 use Lattice\Core\Attributes\AsRemoteComponent;
 use Lattice\Core\Contracts\ContainerComponent;
 use Lattice\Ui\Components\Concerns\HasChildSchema;
+use Lattice\Ui\Components\RemoteComponent;
 
 #[AsRemoteComponent('data-list')]
 final class DataList extends RemoteComponent implements ContainerComponent

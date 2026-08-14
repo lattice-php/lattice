@@ -196,6 +196,7 @@ export default defineConfig({
           items: [
             { label: "API Reference", link: "/packages/api-reference/" },
             { label: "Calendar", link: "/packages/calendar/" },
+            { label: "Chat", link: "/packages/chat/" },
             { label: "Media", link: "/packages/media/" },
             { label: "Search", link: "/packages/search/" },
             { label: "Tree", link: "/packages/tree/" },

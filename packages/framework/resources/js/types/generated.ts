@@ -1,34 +1,13 @@
-import type { Affix, Breadcrumb, Node } from "@lattice-php/core";
+import type { Affix, Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
 import type { HttpMethod, Placement, Size, Translatable, Variant } from "@lattice-php/ui";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type Breadcrumbs = Record<string, never>;
-export type BrowserToken = {
-  readonly accessToken: string;
-  readonly audience: string;
-  readonly expiresIn: number;
-  readonly scopes: string[];
-  readonly tokenType: string;
-};
 export type CalendarNodeType = "timeline";
 export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
-export type ChatBox = {
-  fill: boolean;
-  historyEndpoint: string | null;
-  placeholder: string | null;
-  remote: RemoteAccess | null;
-  streamEndpoint: string | null;
-  title: string | null;
-};
-export type ChatMessage = {
-  readonly id: string;
-  readonly parts: Node[];
-  readonly role: ChatRole;
-};
 export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
-export type ChatRole = "user" | "assistant" | "system";
 export type ColumnNodeType =
   | "column.badge"
   | "column.boolean"
@@ -41,9 +20,6 @@ export type ColumnNodeType =
 export type ComponentPropsMap = {
   breadcrumbs: Breadcrumbs;
   callouts: Callouts;
-  "chat.box": ChatBox;
-  "chat.part.text": TextPart;
-  "chat.part.tool-call": ToolCallPart;
   dropdown: Dropdown;
   fragment: Fragment;
   menu: Menu;
@@ -279,15 +255,6 @@ export type PagePayload = {
   readonly title: string | null;
   readonly width: string;
 };
-export type RemoteAccess = {
-  readonly audience: string;
-  readonly nodeId: string;
-  readonly nodeType: string;
-  readonly ref: string;
-  readonly scopes: string[];
-  readonly source: string;
-  readonly tokenEndpoint: string;
-};
 export type RemoteNodeType = "remote.data-list";
 export type SearchNodeType =
   | "search.box"
@@ -302,13 +269,6 @@ export type Sidebar = {
 };
 export type SignatureExampleNodeType = "signature";
 export type TableNodeType = "table";
-export type TextPart = {
-  text: string;
-};
-export type ToolCallPart = {
-  args: Record<string, unknown>;
-  name: string;
-};
 export type Topbar = {
   sticky: boolean;
 };

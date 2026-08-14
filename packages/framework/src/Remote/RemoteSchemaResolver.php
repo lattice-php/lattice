@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use JsonException;
 use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Core\Remote\RemoteAccess;
 use Lattice\Core\Wire\RemoteManifestRules;
 use Lattice\Ui\Components\Component;
 

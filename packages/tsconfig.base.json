@@ -14,6 +14,8 @@
     "paths": {
       "@lattice-php/action": ["./action/resources/js/index.ts"],
       "@lattice-php/action/*": ["./action/resources/js/*"],
+      "@lattice-php/chat": ["./chat/resources/js/index.ts"],
+      "@lattice-php/chat/*": ["./chat/resources/js/*"],
       "@lattice-php/core": ["./core/resources/js/index.ts"],
       "@lattice-php/core/*": ["./core/resources/js/*"],
       "@lattice-php/form": ["./form/resources/js/index.ts"],

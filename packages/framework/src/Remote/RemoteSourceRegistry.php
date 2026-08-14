@@ -6,13 +6,14 @@ namespace Lattice\Remote;
 use Illuminate\Contracts\Container\Container;
 use Lattice\Core\Attributes\AsRemoteSource;
 use Lattice\Core\Attributes\DefinitionAttribute;
+use Lattice\Core\Contracts\ResolvesRemoteSourceEndpoints;
 use Lattice\Core\DefinitionRegistry;
 use Lattice\Core\Exceptions\UnknownComponent;
 
 /**
  * @extends DefinitionRegistry<RemoteSourceDefinition>
  */
-final class RemoteSourceRegistry extends DefinitionRegistry
+final class RemoteSourceRegistry extends DefinitionRegistry implements ResolvesRemoteSourceEndpoints
 {
     /**
      * @var list<callable(string, Container): ?RemoteSourceDefinition>

@@ -1,11 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Remote\Components;
+namespace Lattice\Ui\Components;
 
-use Lattice\Remote\RemoteAccess;
-use Lattice\Remote\RemoteSourceRegistry;
-use Lattice\Ui\Components\Component;
+use Lattice\Core\Contracts\ResolvesRemoteSourceEndpoints;
+use Lattice\Core\Remote\RemoteAccess;
 use Lattice\Ui\Components\Concerns\SealsReferences;
 use LogicException;
 
@@ -71,7 +70,7 @@ abstract class RemoteComponent extends Component
                 scopes: $this->scopes,
                 nodeId: $id,
                 nodeType: $this->type(),
-                tokenEndpoint: app(RemoteSourceRegistry::class)->endpointFor($this->source),
+                tokenEndpoint: app(ResolvesRemoteSourceEndpoints::class)->endpointFor($this->source),
                 ref: $this->sealRef($id, [
                     'audience' => $this->audience,
                     'source' => $this->source,

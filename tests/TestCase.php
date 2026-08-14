@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\Calendar\CalendarServiceProvider;
 use Lattice\Calendar\Components\Timeline;
+use Lattice\Chat\ChatServiceProvider;
 use Lattice\LatticeServiceProvider;
 use Lattice\Media\MediaServiceProvider;
 use Lattice\Search\SearchServiceProvider;
@@ -88,6 +89,7 @@ abstract class TestCase extends BaseTestCase
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
             CalendarServiceProvider::class,
+            ChatServiceProvider::class,
             MediaServiceProvider::class,
             SearchServiceProvider::class,
             TreeServiceProvider::class,

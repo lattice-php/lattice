@@ -1,0 +1,33 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/chat",
+    "description": "Streaming chat components with pluggable message parts for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "lattice-php/core": "self.version",
+        "lattice-php/ui": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Chat\\": "src/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "plugin": "resources/js/plugin.ts",
+            "standalone": "dist/plugin.js",
+            "discover": ["src"]
+        },
+        "laravel": {
+            "providers": [
+                "Lattice\\Chat\\ChatServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

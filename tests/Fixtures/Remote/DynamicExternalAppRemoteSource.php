@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Tests\Fixtures\Remote;
 
 use Illuminate\Http\Request;
-use Lattice\Remote\BrowserToken;
+use Lattice\Core\Remote\BrowserToken;
 use Lattice\Remote\RemoteSchemaEndpoint;
 use Lattice\Remote\RemoteSourceDefinition;
 

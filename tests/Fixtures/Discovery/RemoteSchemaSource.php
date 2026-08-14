@@ -5,7 +5,7 @@ namespace Lattice\Tests\Fixtures\Discovery;
 
 use Illuminate\Http\Request;
 use Lattice\Core\Attributes\AsRemoteSource;
-use Lattice\Remote\BrowserToken;
+use Lattice\Core\Remote\BrowserToken;
 use Lattice\Remote\RemoteSchemaEndpoint;
 use Lattice\Remote\RemoteSourceDefinition;
 

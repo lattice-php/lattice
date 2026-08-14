@@ -7,6 +7,7 @@
  */
 
 import { latestRef, storeRefreshedRef } from "./component-ref";
+import type { BrowserToken, RemoteAccess } from "./generated";
 import { withHeaders, withRequestHeaders } from "./headers";
 
 export class ApiError extends Error {
@@ -31,23 +32,7 @@ export type ApiInit = Omit<RequestInit, "headers"> & {
   throwOnError?: boolean;
 };
 
-export type BrowserToken = {
-  readonly accessToken: string;
-  readonly audience: string;
-  readonly expiresIn: number;
-  readonly scopes: string[];
-  readonly tokenType: string;
-};
-
-export type RemoteAccess = {
-  readonly audience: string;
-  readonly nodeId: string;
-  readonly nodeType: string;
-  readonly ref: string;
-  readonly scopes: string[];
-  readonly source: string;
-  readonly tokenEndpoint: string;
-};
+export type { BrowserToken, RemoteAccess } from "./generated";
 
 export type RemoteInit = Omit<RequestInit, "credentials" | "headers"> & {
   headers?: Record<string, string>;
