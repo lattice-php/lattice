@@ -161,7 +161,27 @@ ApiReference::make()
 bearer token. Requests are plain browser `fetch` calls, so the API must be same-origin or send
 CORS headers for the reference's origin.
 
-## Use without Laravel
+### Lazy scoped tokens
+
+A static token exists for the whole page life and carries one fixed scope set. With a
+[remote source](/advanced/remote/) the playground instead fetches a short-lived
+access token scoped to exactly the operation being executed, the first time **Execute** is
+pressed:
+
+```php
+ApiReference::make('api-docs')
+    ->id('api-docs')
+    ->spec($document)
+    ->tokenSource('api-docs-tokens', audience: $tenant->slug);
+```
+
+`->tokenSource()` reads every operation's bearer scope set out of the inline spec and seals a
+signed remote token access per distinct set — the browser can only request exactly those scope
+combinations, anything else fails the ref check. On execute, the playground resolves a token
+through the source's `issueBrowserToken()` (cached per scope set until shortly before expiry,
+retried once on a 401), so no credential is minted just by opening the page. `audience` is
+sealed alongside the scopes and is the natural place for a tenant identifier. When both are
+configured, `tokenSource()` wins over `token()`.
 
 The renderer is published to npm as `@lattice-php/api-reference`, so any React frontend — an
 Astro docs site, a Vite SPA — renders the same reference without a Lattice backend:
