@@ -4,6 +4,7 @@ export { inertiaNavigation, navigationPlugin } from "./inertia-navigation";
 export { defaultNavigation, NavigationProvider, useNavigation } from "@lattice-php/ui/navigation";
 export { runAction } from "@lattice-php/action";
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
+export { useExtensionRegistry } from "@lattice-php/core/registry-context";
 export { RenderNode } from "@lattice-php/core/renderer";
 export { nodeIdentity } from "@lattice-php/core/test-id";
 export { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";

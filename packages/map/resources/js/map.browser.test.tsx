@@ -3,8 +3,10 @@ import { expect, it } from "vitest";
 import { createRegistry, eagerComponent, Renderer } from "@lattice-php/core";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, TextProbe } from "@lattice-php/core/test-support";
+import type { Plugin } from "@lattice-php/core";
 import mapPlugin from "./plugin";
 import composerPlugin from "./plugin.composer";
+import distPlugin from "../../dist/plugin.js";
 import type { MapWireProps, MarkerData } from "./types";
 import "../css/map.css";
 
@@ -19,6 +21,13 @@ const registry = createRegistry(mapPlugin, {
 });
 
 const composerRegistry = createRegistry(composerPlugin, {
+  components: {
+    text: eagerComponent(TextProbe),
+  },
+  name: "test/map-content",
+});
+
+const distRegistry = createRegistry(distPlugin as Plugin, {
   components: {
     text: eagerComponent(TextProbe),
   },
@@ -82,6 +91,12 @@ it("serves the same popup behavior through the Composer entry's prebuilt rendere
   await userEvent.click(page.getByRole("button", { name: "Hamburg office" }));
 
   await expect.element(page.getByText("Hamburg office content")).toBeVisible();
+});
+
+it("renders the standalone artifact's own map component against the runtime barrel", async () => {
+  await renderMap({}, distRegistry);
+
+  await expect.element(page.getByText("Berlin office content")).toBeVisible();
 });
 
 it("reports invalid provider configuration without leaving the map pending", async () => {
