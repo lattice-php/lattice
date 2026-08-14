@@ -75,8 +75,8 @@ final class Map extends Component
 
     public function height(int $height): static
     {
-        if ($height < 160 || $height > 1200) {
-            throw new InvalidArgumentException('Map height must be between 160 and 1200 pixels.');
+        if ($height < 160) {
+            throw new InvalidArgumentException('Map height must be at least 160 pixels.');
         }
 
         $this->height = $height;
@@ -113,7 +113,7 @@ final class Map extends Component
     #[SerializationHook(priority: 190)]
     protected function prepareMap(array $data): array
     {
-        $providerName = $this->providerName ?? (string) config('map.default_provider', 'openstreetmap');
+        $providerName = $this->providerName ?? (string) config('map.default_provider');
         $provider = app(MapProviderRegistry::class)->get($providerName);
         $features = array_map(
             static fn (Marker $marker): MarkerData => $marker->data(),

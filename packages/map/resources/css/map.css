@@ -143,6 +143,11 @@
 .leaflet-control {
   position: relative;
   z-index: 800;
+  margin: 0.75rem;
+  border: 1px solid var(--lt-border);
+  border-radius: var(--lt-radius);
+  background: var(--lt-popover);
+  box-shadow: var(--lt-shadow-sm);
   pointer-events: auto;
 }
 
@@ -167,14 +172,6 @@
 
 .leaflet-left {
   left: 0;
-}
-
-.leaflet-control {
-  margin: 0.75rem;
-  border: 1px solid var(--lt-border);
-  border-radius: var(--lt-radius);
-  background: var(--lt-popover);
-  box-shadow: var(--lt-shadow-sm);
 }
 
 .leaflet-control a {
