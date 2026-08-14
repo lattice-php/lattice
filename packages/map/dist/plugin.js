@@ -4693,7 +4693,7 @@ function C({ node: e }) {
 				maxZoom: e.props.provider.maximumZoom,
 				minZoom: e.props.provider.minimumZoom
 			}).addTo(a);
-			for (let n of e.props.features) oe(r, a, n, () => t("close-popup", "Close popup"), (e) => {
+			for (let n of e.props.features) oe(r, a, n, () => t("map.close-popup", "Close popup"), (e) => {
 				d = e;
 			}, f);
 			S(r, a, e), d?.openPopup(), o = new ResizeObserver(([e]) => {
@@ -4714,7 +4714,7 @@ function C({ node: e }) {
 		style: { height: e.props.height },
 		children: [
 			/* @__PURE__ */ s("div", {
-				"aria-label": t("label", "Map"),
+				"aria-label": t("map.label", "Map"),
 				className: "lt-map__canvas",
 				ref: r,
 				role: "region"
@@ -4722,12 +4722,12 @@ function C({ node: e }) {
 			l === "loading" && /* @__PURE__ */ s("div", {
 				className: "lt-map__message",
 				role: "status",
-				children: t("loading", "Loading map…")
+				children: t("map.loading", "Loading map…")
 			}),
 			l === "error" && /* @__PURE__ */ s("div", {
 				className: "lt-map__message lt-map__message--error",
 				role: "alert",
-				children: t("error", "The map could not be loaded.")
+				children: t("map.error", "The map could not be loaded.")
 			}),
 			d && o(/* @__PURE__ */ s(x, { portal: d }), d.host, d.id)
 		]
@@ -4752,14 +4752,14 @@ var ce, T = h((() => {
 				style: { height: t.props.height },
 				children: /* @__PURE__ */ s("span", {
 					role: "status",
-					children: n("loading", "Loading map…")
+					children: n("map.loading", "Loading map…")
 				})
 			}),
 			children: /* @__PURE__ */ s(r, { node: t })
 		}) : /* @__PURE__ */ s("div", {
 			className: "rounded-lt border border-lt-border bg-lt-muted p-4 text-sm text-lt-muted-fg",
 			role: "alert",
-			children: n("provider-missing", "Map provider “{{provider}}” is not available.", { provider: t.props.provider.name })
+			children: n("map.provider-missing", "Map provider “{{provider}}” is not available.", { provider: t.props.provider.name })
 		});
 	};
 }));

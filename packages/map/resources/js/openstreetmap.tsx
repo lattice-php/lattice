@@ -181,7 +181,7 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
             leaflet,
             map,
             feature,
-            () => t("close-popup", "Close popup"),
+            () => t("map.close-popup", "Close popup"),
             (marker) => {
               markerToOpen = marker;
             },
@@ -237,19 +237,19 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
       style={{ height: node.props.height }}
     >
       <div
-        aria-label={t("label", "Map")}
+        aria-label={t("map.label", "Map")}
         className="lt-map__canvas"
         ref={container}
         role="region"
       />
       {status === "loading" && (
         <div className="lt-map__message" role="status">
-          {t("loading", "Loading map…")}
+          {t("map.loading", "Loading map…")}
         </div>
       )}
       {status === "error" && (
         <div className="lt-map__message lt-map__message--error" role="alert">
-          {t("error", "The map could not be loaded.")}
+          {t("map.error", "The map could not be loaded.")}
         </div>
       )}
       {popup && createPortal(<PopupSchema portal={popup} />, popup.host, popup.id)}

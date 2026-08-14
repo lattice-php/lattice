@@ -14,7 +14,7 @@ const MapComponent: RendererComponent<"map"> = ({ node }) => {
         className="rounded-lt border border-lt-border bg-lt-muted p-4 text-sm text-lt-muted-fg"
         role="alert"
       >
-        {t("provider-missing", "Map provider “{{provider}}” is not available.", {
+        {t("map.provider-missing", "Map provider “{{provider}}” is not available.", {
           provider: node.props.provider.name,
         })}
       </div>
@@ -25,7 +25,7 @@ const MapComponent: RendererComponent<"map"> = ({ node }) => {
     <Suspense
       fallback={
         <div className="lt-map lt-map--pending" style={{ height: node.props.height }}>
-          <span role="status">{t("loading", "Loading map…")}</span>
+          <span role="status">{t("map.loading", "Loading map…")}</span>
         </div>
       }
     >
