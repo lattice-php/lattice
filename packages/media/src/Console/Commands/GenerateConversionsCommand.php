@@ -84,9 +84,14 @@ final class GenerateConversionsCommand extends Command
             return true;
         }
 
+        $generated = $media->conversions();
         $wanted = $names === [] ? array_keys($media->defaultConversions()) : $names;
 
-        return array_diff($wanted, array_keys($media->conversions())) !== [];
+        if (array_diff($wanted, array_keys($generated)) !== []) {
+            return true;
+        }
+
+        return array_any(array_intersect_key($generated, array_flip($wanted)), fn (array $conversion): bool => ! isset($conversion['size']));
     }
 
     /**

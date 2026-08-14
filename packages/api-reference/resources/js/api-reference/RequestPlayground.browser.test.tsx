@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
+import { clearRemoteTokenCache, type RemoteAccess } from "@lattice-php/core/api";
 import { parameter, requestContract } from "../test-support";
 import { ApiReference } from "./ApiReference";
 import { RequestPlayground } from "./RequestPlayground";
@@ -11,6 +12,7 @@ const REAL_TOKEN = "real-secret-token";
 afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
+  clearRemoteTokenCache();
 });
 
 function bodyContract(overrides: Partial<Contract> = {}): Contract {
@@ -1032,5 +1034,315 @@ describe("RequestPlayground", () => {
     await expect
       .element(screen.getByRole("link", { name: "Salutations" }))
       .toHaveAttribute("href", "https://docs.example.test/salutations");
+  });
+});
+
+describe("RequestPlayground remote token access", () => {
+  const FETCHED_TOKEN = "fetched-access-token";
+  const TOKEN_ENDPOINT = "https://api.example.test/lattice/remote-sources/api-docs-tokens/token";
+
+  function remoteAccess(overrides: Partial<RemoteAccess> = {}): RemoteAccess {
+    return {
+      source: "api-docs-tokens",
+      audience: "acme",
+      scopes: ["widgets:write"],
+      nodeId: "api-docs",
+      nodeType: "api-reference",
+      tokenEndpoint: TOKEN_ENDPOINT,
+      ref: "sealed-ref",
+      ...overrides,
+    };
+  }
+
+  function browserToken(accessToken: string): Response {
+    return new Response(
+      JSON.stringify({
+        accessToken,
+        tokenType: "Bearer",
+        expiresIn: 300,
+        audience: "acme",
+        scopes: ["widgets:write"],
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
+  function securedOperation(): Operation {
+    return playgroundOperation({
+      security: [
+        { schemes: [{ name: "oauth2", scopes: ["widgets:write"], type: "oauth2", scheme: null }] },
+      ],
+    });
+  }
+
+  function renderRemotePlayground(remote: RemoteAccess = remoteAccess()) {
+    return render(
+      <RequestPlayground
+        operation={securedOperation()}
+        baseUrl="https://api.example.test/v1"
+        token={null}
+        remoteTokens={[remote]}
+        components={{ securitySchemes: { oauth2: { type: "oauth2" } } }}
+        twoColumnBreakpoint="xl"
+      />,
+    );
+  }
+
+  it("fetches a scoped token before executing and keeps it out of the snippet", async () => {
+    const fetchMock = vi.fn((input: RequestInfo | URL, _init?: RequestInit) =>
+      Promise.resolve(
+        String(input) === TOKEN_ENDPOINT
+          ? browserToken(FETCHED_TOKEN)
+          : new Response('{"ok":true}', { status: 200, statusText: "OK" }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await renderRemotePlayground();
+
+    await expect
+      .element(
+        screen.getByText(
+          "A scoped access token is fetched automatically when you execute a request. If that fails, sign in again.",
+        ),
+      )
+      .toBeVisible();
+    await expect
+      .element(screen.getByLabelText("Request snippet", { exact: true }))
+      .toHaveTextContent("Bearer <YOUR_TOKEN>");
+
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(2);
+    const [tokenCall, apiCall] = fetchMock.mock.calls;
+    expect(String(tokenCall?.[0])).toBe(TOKEN_ENDPOINT);
+    expect(JSON.parse(String(tokenCall?.[1]?.body))).toMatchObject({
+      nodeId: "api-docs",
+      nodeType: "api-reference",
+      audience: "acme",
+      scopes: ["widgets:write"],
+    });
+    expect(new Headers(apiCall?.[1]?.headers).get("Authorization")).toBe(`Bearer ${FETCHED_TOKEN}`);
+    await expect.element(screen.getByText("200 OK")).toBeVisible();
+    await expect.element(screen.locator).not.toHaveTextContent(FETCHED_TOKEN);
+  });
+
+  it("reuses the cached token for repeated executes", async () => {
+    const fetchMock = vi.fn((input: RequestInfo | URL, _init?: RequestInit) =>
+      Promise.resolve(
+        String(input) === TOKEN_ENDPOINT
+          ? browserToken(FETCHED_TOKEN)
+          : new Response('{"ok":true}', { status: 200, statusText: "OK" }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await renderRemotePlayground();
+    const execute = screen.getByRole("button", { name: "Execute" });
+
+    await execute.click();
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(2);
+    await execute.click();
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(3);
+
+    const tokenCalls = fetchMock.mock.calls.filter((call) => String(call[0]) === TOKEN_ENDPOINT);
+    expect(tokenCalls).toHaveLength(1);
+  });
+
+  it("retries once with a fresh token when the API answers 401", async () => {
+    const apiResponses = [
+      new Response("{}", { status: 401, statusText: "Unauthorized" }),
+      new Response('{"ok":true}', { status: 200, statusText: "OK" }),
+    ];
+    const issuedTokens = ["stale-token", "fresh-token"];
+    const fetchMock = vi.fn((input: RequestInfo | URL, _init?: RequestInit) =>
+      Promise.resolve(
+        String(input) === TOKEN_ENDPOINT
+          ? browserToken(issuedTokens.shift() ?? "unexpected")
+          : (apiResponses.shift() ?? new Response("{}", { status: 500 })),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await renderRemotePlayground();
+
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.element(screen.getByText("200 OK")).toBeVisible();
+    const apiCalls = fetchMock.mock.calls.filter((call) => String(call[0]) !== TOKEN_ENDPOINT);
+    expect(apiCalls).toHaveLength(2);
+    expect(new Headers(apiCalls[0]?.[1]?.headers).get("Authorization")).toBe("Bearer stale-token");
+    expect(new Headers(apiCalls[1]?.[1]?.headers).get("Authorization")).toBe("Bearer fresh-token");
+  });
+
+  it("surfaces the token endpoint's error message and skips the API call", async () => {
+    const fetchMock = vi.fn((_input: RequestInfo | URL) =>
+      Promise.resolve(
+        new Response(JSON.stringify({ message: "Sign in again to use the playground." }), {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await renderRemotePlayground();
+
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.element(screen.getByText("Sign in again to use the playground.")).toBeVisible();
+    expect(fetchMock.mock.calls.some((call) => String(call[0]).includes("/widgets/"))).toBe(false);
+  });
+
+  it("resolves tokens through a host callback without any backend", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response('{"ok":true}', { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const resolveAccessToken = vi
+      .fn()
+      .mockResolvedValue({ accessToken: "callback-token", expiresIn: 300 });
+    const screen = await render(
+      <RequestPlayground
+        operation={securedOperation()}
+        baseUrl="https://api.example.test/v1"
+        token={REAL_TOKEN}
+        resolveAccessToken={resolveAccessToken}
+        components={{ securitySchemes: { oauth2: { type: "oauth2" } } }}
+        twoColumnBreakpoint="xl"
+      />,
+    );
+    const execute = screen.getByRole("button", { name: "Execute" });
+
+    await expect
+      .element(
+        screen.getByText(
+          "A scoped access token is fetched automatically when you execute a request. If that fails, sign in again.",
+        ),
+      )
+      .toBeVisible();
+    await expect
+      .element(screen.getByLabelText("Request snippet", { exact: true }))
+      .toHaveTextContent("Bearer <YOUR_TOKEN>");
+
+    await execute.click();
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+
+    expect(resolveAccessToken).toHaveBeenCalledWith({
+      scopes: ["widgets:write"],
+      forceRefresh: false,
+    });
+    expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("Authorization")).toBe(
+      "Bearer callback-token",
+    );
+
+    await execute.click();
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(2);
+    expect(resolveAccessToken).toHaveBeenCalledTimes(1);
+    await expect.element(screen.locator).not.toHaveTextContent("callback-token");
+  });
+
+  it("does not cache plain-string callback results", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response('{"ok":true}', { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const resolveAccessToken = vi.fn().mockResolvedValue("uncached-token");
+    const screen = await render(
+      <RequestPlayground
+        operation={securedOperation()}
+        baseUrl="https://api.example.test/v1"
+        token={null}
+        resolveAccessToken={resolveAccessToken}
+        components={{ securitySchemes: { oauth2: { type: "oauth2" } } }}
+        twoColumnBreakpoint="xl"
+      />,
+    );
+    const execute = screen.getByRole("button", { name: "Execute" });
+
+    await execute.click();
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    await execute.click();
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(2);
+
+    expect(resolveAccessToken).toHaveBeenCalledTimes(2);
+  });
+
+  it("retries once with forceRefresh when the API answers 401 in callback mode", async () => {
+    const apiResponses = [
+      new Response("{}", { status: 401, statusText: "Unauthorized" }),
+      new Response('{"ok":true}', { status: 200, statusText: "OK" }),
+    ];
+    const fetchMock = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
+      Promise.resolve(apiResponses.shift() ?? new Response("{}")),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const resolveAccessToken = vi
+      .fn()
+      .mockResolvedValueOnce({ accessToken: "stale-token", expiresIn: 300 })
+      .mockResolvedValueOnce({ accessToken: "fresh-token", expiresIn: 300 });
+    const screen = await render(
+      <RequestPlayground
+        operation={securedOperation()}
+        baseUrl="https://api.example.test/v1"
+        token={null}
+        resolveAccessToken={resolveAccessToken}
+        components={{ securitySchemes: { oauth2: { type: "oauth2" } } }}
+        twoColumnBreakpoint="xl"
+      />,
+    );
+
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.element(screen.getByText("200 OK")).toBeVisible();
+    expect(resolveAccessToken).toHaveBeenNthCalledWith(2, {
+      scopes: ["widgets:write"],
+      forceRefresh: true,
+    });
+    expect(new Headers(fetchMock.mock.calls[1]?.[1]?.headers).get("Authorization")).toBe(
+      "Bearer fresh-token",
+    );
+  });
+
+  it("surfaces a rejected callback and skips the API call", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const resolveAccessToken = vi.fn().mockRejectedValue(new Error("Token service unavailable."));
+    const screen = await render(
+      <RequestPlayground
+        operation={securedOperation()}
+        baseUrl="https://api.example.test/v1"
+        token={null}
+        resolveAccessToken={resolveAccessToken}
+        components={{ securitySchemes: { oauth2: { type: "oauth2" } } }}
+        twoColumnBreakpoint="xl"
+      />,
+    );
+
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.element(screen.getByText("Token service unavailable.")).toBeVisible();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("falls back to the static token when no remote access matches the operation scopes", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response('{"ok":true}', { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await render(
+      <RequestPlayground
+        operation={securedOperation()}
+        baseUrl="https://api.example.test/v1"
+        token={REAL_TOKEN}
+        remoteTokens={[remoteAccess({ scopes: ["other:scope"] })]}
+        components={{ securitySchemes: { oauth2: { type: "oauth2" } } }}
+        twoColumnBreakpoint="xl"
+      />,
+    );
+
+    await expect.element(screen.getByText("Access token supplied by the host page.")).toBeVisible();
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("Authorization")).toBe(
+      `Bearer ${REAL_TOKEN}`,
+    );
   });
 });

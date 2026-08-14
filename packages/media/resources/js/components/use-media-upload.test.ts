@@ -50,6 +50,21 @@ function file(name: string): File {
   return new File(["bytes"], name, { type: "image/jpeg" });
 }
 
+function mediaBody(ids: number[]): string {
+  return JSON.stringify({
+    data: {
+      media: ids.map((id) => ({
+        id,
+        name: `media-${id}.jpg`,
+        url: null,
+        preview_url: null,
+        mime_type: "image/jpeg",
+      })),
+    },
+    effects: [{ type: "reload-component", props: { component: "media.library" } }],
+  });
+}
+
 function renderUpload(signed = false) {
   return renderHook(() =>
     useMediaUpload({ endpoint: "/lattice/actions/media-upload", ref: "ref-1", signed }),
@@ -353,6 +368,108 @@ describe("useMediaUpload", () => {
     });
 
     expect(FakeXhr.instances).toEqual([]);
+  });
+
+  it("hands the settled batch's media descriptors to onUploaded once", async () => {
+    const onUploaded = vi.fn();
+    const { result } = renderHook(() =>
+      useMediaUpload({
+        endpoint: "/lattice/actions/media-upload",
+        ref: "ref-1",
+        signed: false,
+        onUploaded,
+      }),
+    );
+
+    act(() => result.current.addFiles([file("alpha.jpg"), file("beta.jpg")]));
+
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(2));
+    await act(async () => {
+      FakeXhr.instances[0].succeed(200, mediaBody([1]));
+      FakeXhr.instances[1].succeed(200, mediaBody([2]));
+    });
+
+    await waitFor(() => expect(onUploaded).toHaveBeenCalledTimes(1));
+
+    expect(onUploaded).toHaveBeenCalledWith([
+      expect.objectContaining({ id: 1, name: "media-1.jpg" }),
+      expect.objectContaining({ id: 2, name: "media-2.jpg" }),
+    ]);
+  });
+
+  it("keeps onUploaded silent when every file fails", async () => {
+    const onUploaded = vi.fn();
+    const { result } = renderHook(() =>
+      useMediaUpload({
+        endpoint: "/lattice/actions/media-upload",
+        ref: "ref-1",
+        signed: false,
+        onUploaded,
+      }),
+    );
+
+    act(() => result.current.addFiles([file("alpha.jpg")]));
+
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(1));
+    await act(async () => {
+      FakeXhr.instances[0].succeed(422, JSON.stringify({ message: "Too big." }));
+    });
+
+    await waitFor(() => expect(result.current.uploads[0].status).toBe("error"));
+
+    expect(onUploaded).not.toHaveBeenCalled();
+  });
+
+  it("dedupes the signed finalize batch so onUploaded sees each row once", async () => {
+    const onUploaded = vi.fn();
+    apiFetch
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            key: "tmp/a.jpg",
+            url: "https://storage.test/a",
+            headers: {},
+            method: "PUT",
+          }),
+          { status: 200 },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            key: "tmp/b.jpg",
+            url: "https://storage.test/b",
+            headers: {},
+            method: "PUT",
+          }),
+          { status: 200 },
+        ),
+      )
+      .mockResolvedValueOnce(new Response(mediaBody([1, 2]), { status: 200 }));
+
+    const { result } = renderHook(() =>
+      useMediaUpload({
+        endpoint: "/lattice/actions/media-upload",
+        ref: "ref-1",
+        signed: true,
+        onUploaded,
+      }),
+    );
+
+    act(() => result.current.addFiles([file("a.jpg"), file("b.jpg")]));
+
+    await waitFor(() => expect(FakeXhr.instances).toHaveLength(2));
+    await act(async () => {
+      FakeXhr.instances[0].succeed(204, "");
+      FakeXhr.instances[1].succeed(204, "");
+    });
+
+    await waitFor(() => expect(onUploaded).toHaveBeenCalledTimes(1));
+
+    expect(onUploaded.mock.calls[0][0]).toEqual([
+      expect.objectContaining({ id: 1 }),
+      expect.objectContaining({ id: 2 }),
+    ]);
   });
 
   it("ignores a null selection", () => {

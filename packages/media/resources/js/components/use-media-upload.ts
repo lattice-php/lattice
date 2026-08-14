@@ -17,10 +17,20 @@ export type UploadItem = {
   file: File;
 };
 
+export type UploadedMedia = {
+  id: number;
+  name: string;
+  url: string | null;
+  preview_url: string | null;
+  mime_type: string;
+};
+
 export type UploadTarget = {
   endpoint: string;
   ref: string;
   signed: boolean;
+  /** Called once per settled batch with the display descriptors of every stored upload. */
+  onUploaded?: (media: UploadedMedia[]) => void;
 };
 
 export type MediaUpload = {
@@ -32,11 +42,15 @@ export type MediaUpload = {
 
 type Settled = {
   ok: boolean;
-  body: { message?: string; errors?: Record<string, string[]> };
+  body: {
+    message?: string;
+    errors?: Record<string, string[]>;
+    data?: { media?: UploadedMedia[] };
+  };
   reload?: ActionEffect;
 };
 
-type Outcome = { ok: boolean; reload?: ActionEffect };
+type Outcome = { ok: boolean; reload?: ActionEffect; media?: UploadedMedia[] };
 
 /** Laravel reports a rejected file under `files.<index>`; `message` covers request-level failures. */
 function reasonFor({ body }: Settled, index: number): string | undefined {
@@ -50,7 +64,7 @@ function reasonFor({ body }: Settled, index: number): string | undefined {
  * batch has settled, brings the new rows into the grid — so `uploads` only
  * ever holds in-flight and failed files.
  */
-export function useMediaUpload({ endpoint, ref, signed }: UploadTarget): MediaUpload {
+export function useMediaUpload({ endpoint, ref, signed, onUploaded }: UploadTarget): MediaUpload {
   const dispatch = useEffectDispatcher();
   const { t } = useT("media");
   const [uploads, setUploads] = useState<UploadItem[]>([]);
@@ -127,7 +141,7 @@ export function useMediaUpload({ endpoint, ref, signed }: UploadTarget): MediaUp
 
     settle(item, settled, 0);
 
-    return { ok: settled.ok, reload: settled.reload };
+    return { ok: settled.ok, reload: settled.reload, media: settled.body.data?.media };
   }
 
   async function signAndPut(item: UploadItem): Promise<string | null> {
@@ -185,7 +199,12 @@ export function useMediaUpload({ endpoint, ref, signed }: UploadTarget): MediaUp
       .filter((_, index) => keys[index] !== null)
       .forEach((item, index) => settle(item, settled, index));
 
-    return keys.map((key) => ({ ok: key !== null && settled.ok, reload: settled.reload }));
+    // Every ok outcome carries the batch's media: the collector dedupes by id.
+    return keys.map((key) => ({
+      ok: key !== null && settled.ok,
+      reload: settled.reload,
+      media: key !== null && settled.ok ? settled.body.data?.media : undefined,
+    }));
   }
 
   async function run(items: UploadItem[]): Promise<void> {
@@ -209,6 +228,19 @@ export function useMediaUpload({ endpoint, ref, signed }: UploadTarget): MediaUp
       },
       ...(reload ? [reload] : []),
     ]);
+
+    const uploaded = [
+      ...new Map(
+        outcomes
+          .filter((outcome) => outcome.ok)
+          .flatMap((outcome) => outcome.media ?? [])
+          .map((item) => [item.id, item]),
+      ).values(),
+    ];
+
+    if (uploaded.length > 0) {
+      onUploaded?.(uploaded);
+    }
   }
 
   function addFiles(incoming: FileList | File[] | null): void {

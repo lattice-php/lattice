@@ -1,3 +1,4 @@
+import type { RemoteAccess } from "@lattice-php/core";
 import type { Breakpoint } from "@lattice-php/ui";
 
 export type ApiReference = {
@@ -6,6 +7,7 @@ export type ApiReference = {
   hideBaseUrl: boolean;
   hideHeader: boolean;
   operation: string | null;
+  remoteTokens: RemoteAccess[] | null;
   spec: Record<string, unknown>;
   tags: string[] | null;
   title: string | null;

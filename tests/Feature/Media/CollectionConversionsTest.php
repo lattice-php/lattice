@@ -91,7 +91,12 @@ test("the collection's conversion is generated on top of the defaults", function
 
     expect(array_keys($media->conversions()))->toEqualCanonicalizing(['thumb', 'card'])
         ->and($media->conversions()['card'] ?? null)
-        ->toBe(['path' => 'media/conversions/shot-card.webp', 'width' => 1200, 'height' => 800])
+        ->toBe([
+            'path' => 'media/conversions/shot-card.webp',
+            'width' => 1200,
+            'height' => 800,
+            'size' => Storage::disk('public')->size('media/conversions/shot-card.webp'),
+        ])
         ->and(Storage::disk('public')->exists((string) $media->conversionPath('thumb')))->toBeTrue()
         ->and(Storage::disk('public')->exists((string) $media->conversionPath('card')))->toBeTrue();
 });

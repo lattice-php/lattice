@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import type { RemoteAccess } from "@lattice-php/core/api";
 import { Icon } from "@lattice-php/ui/icons";
+import type { ResolveAccessToken } from "./access-token";
 import { Badge } from "@lattice-php/ui/badge";
 import { CopyButton } from "@lattice-php/ui/copyable-text";
 import { httpMethodColor } from "./http-method-color";
@@ -30,6 +32,10 @@ export type ApiReferenceProps = {
   twoColumnBreakpoint?: TwoColumnBreakpoint;
   /** Pre-fills the playground's bearer token. */
   token?: string | null;
+  /** Sealed per-scope-set token accesses; execute fetches a scoped token lazily. Wins over token. */
+  remoteTokens?: RemoteAccess[] | null;
+  /** Standalone hosts: fetch a scoped token on execute without a Lattice backend. Wins over remoteTokens and token. */
+  resolveAccessToken?: ResolveAccessToken | null;
   /** Controls the expanded operation; pair with onOperationChange. */
   selectedOperation?: string | null;
   onOperationChange?: (id: string) => void;
@@ -82,6 +88,8 @@ export function ApiReference({
   expandDepth = 2,
   twoColumnBreakpoint = "lg",
   token = null,
+  remoteTokens = null,
+  resolveAccessToken = null,
   selectedOperation,
   onOperationChange,
   deepLinking = true,
@@ -268,6 +276,8 @@ export function ApiReference({
             operationId={operation}
             baseUrl={selectedServerUrlFor(operation)}
             token={token}
+            remoteTokens={remoteTokens}
+            resolveAccessToken={resolveAccessToken}
             expandDepth={expandDepth}
             twoColumnBreakpoint={twoColumnBreakpoint}
           />
@@ -354,6 +364,8 @@ export function ApiReference({
                           operationId={id}
                           baseUrl={selectedServerUrlFor(id)}
                           token={token}
+                          remoteTokens={remoteTokens}
+                          resolveAccessToken={resolveAccessToken}
                           expandDepth={expandDepth}
                           twoColumnBreakpoint={twoColumnBreakpoint}
                           hideHeaderIdentity

@@ -161,7 +161,31 @@ ApiReference::make()
 bearer token. Requests are plain browser `fetch` calls, so the API must be same-origin or send
 CORS headers for the reference's origin.
 
-## Use without Laravel
+### Lazy scoped tokens
+
+A static token exists for the whole page life and carries one fixed scope set. With a
+[remote source](/advanced/remote/) the playground instead fetches a short-lived
+access token scoped to exactly the operation being executed, the first time **Execute** is
+pressed:
+
+```php
+ApiReference::make('api-docs')
+    ->id('api-docs')
+    ->spec($document)
+    ->tokenSource('api-docs-tokens', audience: $tenant->slug);
+```
+
+`->tokenSource()` reads every operation's bearer scope set out of the inline spec and seals a
+signed remote token access per distinct set — the browser can only request exactly those scope
+combinations, anything else fails the ref check. On execute, the playground resolves a token
+through the source's `issueBrowserToken()` (cached per scope set until shortly before expiry,
+retried once on a 401), so no credential is minted just by opening the page. `audience` is
+sealed alongside the scopes and is the natural place for a tenant identifier. When both are
+configured, `tokenSource()` wins over `token()`.
+
+`->tokenSource()` is the Laravel side of this mechanism; hosts without a Lattice backend get
+the same lazy-on-execute behaviour through the `resolveAccessToken` prop described under
+[Use without Laravel](#use-without-laravel).
 
 The renderer is published to npm as `@lattice-php/api-reference`, so any React frontend — an
 Astro docs site, a Vite SPA — renders the same reference without a Lattice backend:
@@ -189,9 +213,35 @@ export default function ApiDocs() {
 }
 ```
 
+For lazy per-operation tokens without any backend, pass `resolveAccessToken` — the playground
+calls it on **Execute** with the operation's bearer scope set and puts the result into the
+`Authorization` header:
+
+```tsx
+<ApiReference
+  spec={spec}
+  resolveAccessToken={async ({ scopes, forceRefresh }) => {
+    const response = await fetch("https://auth.example.com/playground-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ scopes }),
+    });
+    const { access_token, expires_in } = await response.json();
+
+    return { accessToken: access_token, expiresIn: expires_in };
+  }}
+/>
+```
+
+Return `expiresIn` (seconds) to let the playground cache the token per scope set until shortly
+before expiry; a plain string is never cached, so the host owns reuse. On a 401 the playground
+calls the resolver once more with `forceRefresh: true` and retries the request. A rejected
+promise's message is shown next to **Execute**. `resolveAccessToken` wins over `remoteTokens`
+and `token`.
+
 Props mirror the PHP component — `operation`, `tags`, `defaultOperation`, `title`,
-`hideHeader`, `hideBaseUrl`, `expandDepth`, `twoColumnBreakpoint`, `token` — plus two
-selection controls:
+`hideHeader`, `hideBaseUrl`, `expandDepth`, `twoColumnBreakpoint`, `token`,
+`resolveAccessToken` — plus two selection controls:
 
 - `deepLinking` (default `true`) mirrors the expanded operation to `location.hash`. Pass
   `false` when the host page owns the hash.

@@ -111,6 +111,28 @@ function operationAcceptsAccessToken(operation: Operation): boolean {
   );
 }
 
+/**
+ * The scope set a lazily fetched access token needs for this operation: the
+ * bearer scopes of the first bearer-capable security requirement, sorted and
+ * deduplicated. Mirrored by ApiReference::operationScopeSets() on the server,
+ * which seals a remote token access for every set this can return.
+ */
+export function operationTokenScopes(operation: Operation): string[] | null {
+  const requirement = operation.security.find((candidate) =>
+    candidate.schemes.some(isBearerAccessTokenScheme),
+  );
+
+  if (requirement === undefined) {
+    return null;
+  }
+
+  const scopes = requirement.schemes
+    .filter(isBearerAccessTokenScheme)
+    .flatMap((scheme) => scheme.scopes);
+
+  return [...new Set(scopes)].sort();
+}
+
 export function redactAuthorization(request: BuiltRequest): BuiltRequest {
   const headers = Object.fromEntries(
     Object.entries(request.headers).map(([name, value]) => [

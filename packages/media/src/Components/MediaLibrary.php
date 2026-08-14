@@ -24,6 +24,12 @@ final class MediaLibrary extends ContainerComponent
 
     protected ?string $disk = null;
 
+    protected ?string $category = null;
+
+    protected ?string $uploadLabel = null;
+
+    protected bool $uploadOnly = false;
+
     /** @var list<string> */
     protected array $uploadRules = [];
 
@@ -65,6 +71,37 @@ final class MediaLibrary extends ContainerComponent
     }
 
     /**
+     * Scope the library to one category: the list shows only that category's
+     * media and every upload is stamped with it. Without a category the
+     * library shows only uncategorized media, so categorized pools stay
+     * invisible everywhere they are not explicitly requested.
+     */
+    public function category(?string $category): static
+    {
+        $this->category = $category;
+
+        return $this->schema([]);
+    }
+
+    public function uploadLabel(string $label): static
+    {
+        $this->uploadLabel = $label;
+
+        return $this->schema([]);
+    }
+
+    /**
+     * Compose only the upload action: no table child means no browse endpoint
+     * exists for this instance at all, not merely a hidden grid.
+     */
+    public function uploadOnly(bool $uploadOnly = true): static
+    {
+        $this->uploadOnly = $uploadOnly;
+
+        return $this->schema([]);
+    }
+
+    /**
      * Validation rules every uploaded file must pass, on top of the accepted
      * types and the size cap.
      *
@@ -95,12 +132,20 @@ final class MediaLibrary extends ContainerComponent
     protected function resolvedChildren(): array
     {
         if ($this->children === []) {
-            $children = [
-                Table::use(MediaTable::class),
-                Action::use(UploadMediaAction::class, $this->uploadContext())->key('media-upload'),
-            ];
+            $upload = Action::use(UploadMediaAction::class, $this->uploadContext())->key('media-upload');
 
-            if (! $this->picker) {
+            if ($this->uploadLabel !== null) {
+                $upload->label($this->uploadLabel);
+            }
+
+            $children = $this->uploadOnly
+                ? [$upload]
+                : [
+                    Table::use(MediaTable::class, $this->category === null ? [] : ['category' => $this->category]),
+                    $upload,
+                ];
+
+            if (! $this->picker && ! $this->uploadOnly) {
                 $children[] = Action::use(UpdateMediaAction::class)->key('media-update');
                 $children[] = Action::use(DeleteMediaAction::class)->key('media-delete');
             }
@@ -130,6 +175,10 @@ final class MediaLibrary extends ContainerComponent
 
         if ($this->uploadRules !== []) {
             $context['upload_rules'] = $this->uploadRules;
+        }
+
+        if ($this->category !== null) {
+            $context['category'] = $this->category;
         }
 
         return $context;

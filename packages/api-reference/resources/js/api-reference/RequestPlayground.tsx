@@ -1,4 +1,10 @@
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react";
+import {
+  ApiError,
+  invalidateRemoteToken,
+  remoteToken,
+  type RemoteAccess,
+} from "@lattice-php/core/api";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { Badge } from "@lattice-php/ui/badge";
 import { Button } from "@lattice-php/ui/button";
@@ -11,6 +17,11 @@ import { NativeSelect } from "@lattice-php/ui/native-select";
 import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
 import { Spinner } from "@lattice-php/ui/spinner";
 import { SchemaView } from "../schema/SchemaView";
+import {
+  cachedAccessTokens,
+  type AccessTokenRequest,
+  type ResolveAccessToken,
+} from "./access-token";
 import { executeRequest, type ExecutedResponse, type ExecutionError } from "./execute-request";
 import { LiveResponsePanel, responseBadgeColor } from "./LiveResponsePanel";
 import { OperationHeader } from "./OperationHeader";
@@ -20,6 +31,7 @@ import { RequestBodyEditor } from "./RequestBodyEditor";
 import {
   buildRequest,
   isBearerAccessTokenScheme,
+  operationTokenScopes,
   parameterLimitation,
   redactAuthorization,
   type RequestErrors,
@@ -592,14 +604,25 @@ function securitySchemeLabel(name: string, definition: SecuritySchemeDefinition 
   return name;
 }
 
+function accessTokenDescription(authMode: PlaygroundAuthMode): string {
+  switch (authMode) {
+    case "lazy":
+      return "A scoped access token is fetched automatically when you execute a request. If that fails, sign in again.";
+    case "static":
+      return "Access token supplied by the host page.";
+    case "none":
+      return "No access token is configured for live requests.";
+  }
+}
+
 function SecuritySchemeRow({
   scheme,
   components,
-  token,
+  authMode,
 }: {
   scheme: SecuritySchemeRef;
   components: unknown;
-  token: string | null;
+  authMode: PlaygroundAuthMode;
 }): React.ReactNode {
   const definitions =
     (components as { securitySchemes?: Record<string, SecuritySchemeDefinition> } | null)
@@ -615,9 +638,7 @@ function SecuritySchemeRow({
       ) : null}
       <p className="mt-0.5 text-xs text-lt-muted-fg">
         {isBearerAccessTokenScheme(scheme)
-          ? token
-            ? "Access token supplied by the host page."
-            : "No access token is configured for live requests."
+          ? accessTokenDescription(authMode)
           : "This authentication scheme is not supported for live requests."}
       </p>
       <OAuthFlowList flows={definition?.flows} />
@@ -691,11 +712,11 @@ function OAuthFlowList({
 function SecurityRequirementRow({
   requirement,
   components,
-  token,
+  authMode,
 }: {
   requirement: SecurityRequirement;
   components: unknown;
-  token: string | null;
+  authMode: PlaygroundAuthMode;
 }): React.ReactNode {
   if (requirement.schemes.length === 0) {
     return <p className="text-lt-muted-fg">Optional authentication</p>;
@@ -708,7 +729,7 @@ function SecurityRequirementRow({
           key={scheme.name}
           scheme={scheme}
           components={components}
-          token={token}
+          authMode={authMode}
         />
       ))}
     </ul>
@@ -718,11 +739,11 @@ function SecurityRequirementRow({
 function SecuritySection({
   security,
   components,
-  token,
+  authMode,
 }: {
   security: SecurityRequirement[];
   components: unknown;
-  token: string | null;
+  authMode: PlaygroundAuthMode;
 }): React.ReactNode {
   if (security.length === 0) return null;
 
@@ -736,7 +757,11 @@ function SecuritySection({
               OR
             </p>
           ) : null}
-          <SecurityRequirementRow requirement={requirement} components={components} token={token} />
+          <SecurityRequirementRow
+            requirement={requirement}
+            components={components}
+            authMode={authMode}
+          />
         </div>
       ))}
     </section>
@@ -747,16 +772,61 @@ type RequestPlaygroundProps = {
   operation: Operation;
   baseUrl: string | null;
   token: string | null;
+  remoteTokens?: RemoteAccess[] | null;
+  resolveAccessToken?: ResolveAccessToken | null;
   components: unknown;
   expandDepth?: number;
   twoColumnBreakpoint?: TwoColumnBreakpoint;
   hideHeaderIdentity?: boolean;
 };
 
+export type PlaygroundAuthMode = "lazy" | "static" | "none";
+
+const REDACTED_TOKEN = "<YOUR_TOKEN>";
+
+function remoteAccessForScopes(
+  remoteTokens: RemoteAccess[] | null,
+  scopes: string[] | null,
+): RemoteAccess | null {
+  if (remoteTokens === null || scopes === null) {
+    return null;
+  }
+
+  const key = scopes.join(" ");
+
+  return (
+    remoteTokens.find((remote) => [...new Set(remote.scopes)].sort().join(" ") === key) ?? null
+  );
+}
+
+async function accessTokenErrorMessage(error: unknown): Promise<string> {
+  if (error instanceof ApiError) {
+    try {
+      const data: unknown = await error.response.clone().json();
+
+      if (isRecord(data) && typeof data.message === "string" && data.message !== "") {
+        return data.message;
+      }
+    } catch {
+      // Fall through to the generic message.
+    }
+
+    return `Fetching an access token failed (HTTP ${error.response.status}). Sign in again and retry.`;
+  }
+
+  if (error instanceof Error && error.message !== "") {
+    return error.message;
+  }
+
+  return "Fetching an access token failed. Check your session and try again.";
+}
+
 export function RequestPlayground({
   operation,
   baseUrl,
   token,
+  remoteTokens = null,
+  resolveAccessToken = null,
   components,
   expandDepth = 2,
   twoColumnBreakpoint = "lg",
@@ -790,9 +860,51 @@ export function RequestPlayground({
   const jsonContracts = jsonRequestContracts(operation);
   const selectedContract =
     jsonContracts.find((contract) => contract.mediaType === values.mediaType) ?? null;
+  const tokenScopes = useMemo(() => operationTokenScopes(operation), [operation]);
+  const remoteAccess = useMemo(
+    () => remoteAccessForScopes(remoteTokens, tokenScopes),
+    [remoteTokens, tokenScopes],
+  );
+  // The host's callback may be a new function every render; route it through a
+  // ref so the cache wrapper (and its per-scope-set entries) survives renders.
+  const latestResolveAccessToken = useRef(resolveAccessToken);
+  useEffect(() => {
+    latestResolveAccessToken.current = resolveAccessToken;
+  });
+  const [callbackResolver] = useState(() =>
+    cachedAccessTokens((request) => {
+      const resolve = latestResolveAccessToken.current;
+
+      if (resolve === null) {
+        throw new Error("No access token resolver is configured.");
+      }
+
+      return resolve(request);
+    }),
+  );
+  const tokenResolver = useMemo(() => {
+    if (resolveAccessToken !== null && tokenScopes !== null) {
+      return callbackResolver;
+    }
+
+    if (remoteAccess !== null) {
+      return async ({ forceRefresh }: AccessTokenRequest): Promise<string> => {
+        if (forceRefresh) {
+          invalidateRemoteToken(remoteAccess);
+        }
+
+        return (await remoteToken(remoteAccess)).accessToken;
+      };
+    }
+
+    return null;
+  }, [resolveAccessToken, tokenScopes, callbackResolver, remoteAccess]);
+  const authMode: PlaygroundAuthMode =
+    tokenResolver !== null ? "lazy" : token !== null && token !== "" ? "static" : "none";
+  const previewToken = authMode === "lazy" ? REDACTED_TOKEN : token;
   const buildResult = useMemo(
-    () => buildRequest({ operation, baseUrl, values, token }),
-    [operation, baseUrl, values, token],
+    () => buildRequest({ operation, baseUrl, values, token: previewToken }),
+    [operation, baseUrl, values, previewToken],
   );
   const nonInteractiveParameterLimitations = parameterLimitationsWithoutControls(operation);
   const hasUnsupportedRequestBody = operation.requests.length > 0 && jsonContracts.length === 0;
@@ -875,10 +987,10 @@ export function RequestPlayground({
       return;
     }
 
-    const result = buildRequest({ operation, baseUrl, values, token });
+    const validation = buildRequest({ operation, baseUrl, values, token: previewToken });
 
-    if (result.errors !== null) {
-      const fieldKey = firstErrorFieldKey(operation, result.errors);
+    if (validation.errors !== null) {
+      const fieldKey = firstErrorFieldKey(operation, validation.errors);
       const fields = playgroundRef.current?.querySelectorAll<HTMLElement>("[data-field-key]") ?? [];
 
       Array.from(fields)
@@ -894,7 +1006,54 @@ export function RequestPlayground({
     setIsLoading(true);
 
     try {
-      const nextResult = await executeRequest(result.request, controller.signal);
+      let executionToken = token;
+
+      if (tokenResolver !== null && tokenScopes !== null) {
+        try {
+          executionToken = await tokenResolver({ scopes: tokenScopes, forceRefresh: false });
+        } catch (error: unknown) {
+          const message = await accessTokenErrorMessage(error);
+
+          if (activeControllerRef.current === controller) {
+            setLiveResult({ kind: "error", message });
+          }
+
+          return;
+        }
+      }
+
+      const result = buildRequest({ operation, baseUrl, values, token: executionToken });
+
+      if (result.errors !== null) {
+        return;
+      }
+
+      let nextResult = await executeRequest(result.request, controller.signal);
+
+      if (
+        tokenResolver !== null &&
+        tokenScopes !== null &&
+        nextResult.kind === "response" &&
+        nextResult.status === 401
+      ) {
+        try {
+          const refreshed = buildRequest({
+            operation,
+            baseUrl,
+            values,
+            token: await tokenResolver({ scopes: tokenScopes, forceRefresh: true }),
+          });
+
+          if (refreshed.errors === null) {
+            nextResult = await executeRequest(refreshed.request, controller.signal);
+          }
+        } catch (error: unknown) {
+          if (isAbortError(error)) {
+            throw error;
+          }
+          // Keep the original 401 response when the token refresh fails too.
+        }
+      }
 
       if (activeControllerRef.current === controller) {
         setLiveResult(nextResult);
@@ -919,7 +1078,11 @@ export function RequestPlayground({
           baseUrl={baseUrl}
           hideIdentity={hideHeaderIdentity}
         />
-        <SecuritySection security={operation.security} components={components} token={token} />
+        <SecuritySection
+          security={operation.security}
+          components={components}
+          authMode={authMode}
+        />
         {parameterGroups.length > 0 || queryParameterGroups.length > 0 || pagination !== null ? (
           <section className="mb-6">
             <h2 className="mb-2 font-semibold text-lt-fg">Parameters</h2>
