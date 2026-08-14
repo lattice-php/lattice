@@ -20,7 +20,7 @@ use Throwable;
  * @property string $mime_type
  * @property string|null $category
  * @property int $size
- * @property array{width?: int, height?: int, alt?: string, conversions?: array<string, array{path: string, width: int, height: int}>}|null $meta
+ * @property array{width?: int, height?: int, alt?: string, conversions?: array<string, array{path: string, width: int, height: int, size?: int}>}|null $meta
  * @property-read int|null $width
  * @property-read int|null $height
  * @property-read string|null $alt
@@ -141,9 +141,11 @@ class Media extends Model
     }
 
     /**
-     * The generated derivative map, keyed by conversion name.
+     * The generated derivative map, keyed by conversion name. `size` (bytes)
+     * is absent on entries recorded before it existed until the job backfills
+     * them.
      *
-     * @return array<string, array{path: string, width: int, height: int}>
+     * @return array<string, array{path: string, width: int, height: int, size?: int}>
      */
     public function conversions(): array
     {

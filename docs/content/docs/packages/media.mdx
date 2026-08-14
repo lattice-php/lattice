@@ -138,7 +138,9 @@ after upload and after attach — as does anything stored under a generic mime t
 upload can record one for a real image; the job probes the bytes and skips what is not an image.
 `$media->previewConversion()` (`thumb` by default) is what the grid, the picker and the detail
 slideout preview; `$media->url('thumb')` reads any of them and falls back to the original when it
-was never generated.
+was never generated. Each derivative records its byte size in the conversion map alongside its
+path and dimensions; for maps recorded before sizes existed, `media:conversions --missing`
+backfills them from a disk stat without regenerating anything.
 
 Defaults live on the model. Subclass it, point `media.model` at your class, and return callbacks
 over Laravel's immutable `Illuminate\Image\Image` — each one must return the transformed image.

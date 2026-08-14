@@ -64,7 +64,12 @@ test('the default thumb conversion is generated and recorded', function (): void
     expect($media->width)->toBe(600)
         ->and($media->height)->toBe(400)
         ->and($media->conversions()['thumb'] ?? null)
-        ->toBe(['path' => 'media/conversions/source-thumb.webp', 'width' => 400, 'height' => 400])
+        ->toBe([
+            'path' => 'media/conversions/source-thumb.webp',
+            'width' => 400,
+            'height' => 400,
+            'size' => Storage::disk('public')->size('media/conversions/source-thumb.webp'),
+        ])
         ->and(Storage::disk('public')->get('media/conversions/source-thumb.webp'))->toStartWith('RIFF');
 });
 
@@ -89,6 +94,26 @@ test('a media with every conversion and its dimensions recorded never reads the 
     new GenerateMediaConversions($media)->handle();
 
     expect($media->refresh()->conversionPath('thumb'))->toBe('x.webp');
+});
+
+test('a size-less conversion entry is backfilled from a disk stat without reading the source', function (): void {
+    $media = fakeImageMedia();
+    writeToDisk('media/conversions/source-thumb.webp', 'RIFF-derivative-bytes');
+    $media->update(['meta' => [
+        'conversions' => ['thumb' => ['path' => 'media/conversions/source-thumb.webp', 'width' => 400, 'height' => 400]],
+        'width' => 320,
+        'height' => 200,
+    ]]);
+    unreadableDisk();
+
+    new GenerateMediaConversions($media)->handle();
+
+    expect($media->refresh()->conversions()['thumb'])->toBe([
+        'path' => 'media/conversions/source-thumb.webp',
+        'width' => 400,
+        'height' => 400,
+        'size' => strlen('RIFF-derivative-bytes'),
+    ]);
 });
 
 test('a complete map with no recorded dimensions is probed without touching the map', function (): void {
