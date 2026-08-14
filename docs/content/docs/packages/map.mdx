@@ -20,10 +20,12 @@ clustering are outside the initial API.
 composer require lattice-php/map
 ```
 
-Composer is the only install. The package ships a self-contained, precompiled renderer with
-Leaflet bundled inside it, while React and the Lattice runtime remain shared with the host app.
-The `lattice()` Vite plugin discovers the renderer and stylesheet through Composer. For a
-[no-build app](/introduction/no-build/), run `php artisan lattice:assets` after installation.
+Composer is the only install. The `lattice()` Vite plugin discovers the package through Composer
+and adds only a small entry to the app bundle: the map component and its precompiled renderer —
+with Leaflet bundled inside it, while React and the Lattice runtime remain shared with the host
+app — load on demand the first time a page renders a map, so pages without a map never pay for
+Leaflet. For a [no-build app](/introduction/no-build/), run `php artisan lattice:assets` after
+installation; it publishes the same self-contained renderer as a single standalone plugin.
 
 ## Usage
 
@@ -154,6 +156,7 @@ renderer change.
 ## Bundle Size
 
 The report measures the precompiled map plugin. It includes Leaflet but externalizes React and the
-[framework runtime](/advanced/bundle-size/), so it represents the package's additional JavaScript.
+[framework runtime](/advanced/bundle-size/), so it represents the package's additional JavaScript —
+loaded only when a page actually renders a map.
 
 <BundleReport target="map" />

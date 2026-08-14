@@ -19,7 +19,7 @@
     },
     "extra": {
         "lattice": {
-            "plugin": "dist/plugin.js",
+            "plugin": "resources/js/plugin.composer.ts",
             "standalone": "dist/plugin.js",
             "css": "resources/css/map.css",
             "discover": ["src"]

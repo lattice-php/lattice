@@ -4,6 +4,7 @@ import { createRegistry, eagerComponent, Renderer } from "@lattice-php/core";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, TextProbe } from "@lattice-php/core/test-support";
 import mapPlugin from "./plugin";
+import composerPlugin from "./plugin.composer";
 import type { MapWireProps, MarkerData } from "./types";
 import "../css/map.css";
 
@@ -11,6 +12,13 @@ const transparentTile =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'/%3E";
 
 const registry = createRegistry(mapPlugin, {
+  components: {
+    text: eagerComponent(TextProbe),
+  },
+  name: "test/map-content",
+});
+
+const composerRegistry = createRegistry(composerPlugin, {
   components: {
     text: eagerComponent(TextProbe),
   },
@@ -28,7 +36,7 @@ function marker(id: string, label: string, latitude: number, longitude: number):
   };
 }
 
-async function renderMap(extra: Partial<MapWireProps> = {}) {
+async function renderMap(extra: Partial<MapWireProps> = {}, into = registry) {
   const node = fakeNode({
     id: "office-map",
     type: "map",
@@ -52,7 +60,7 @@ async function renderMap(extra: Partial<MapWireProps> = {}) {
     },
   });
 
-  return renderWithRegistry(<Renderer nodes={[node]} />, registry);
+  return renderWithRegistry(<Renderer nodes={[node]} />, into);
 }
 
 it("opens server-selected popup content and switches it through a real marker click", async () => {
@@ -64,6 +72,16 @@ it("opens server-selected popup content and switches it through a real marker cl
 
   await expect.element(page.getByText("Hamburg office content")).toBeVisible();
   await expect.element(page.getByText("Berlin office content")).not.toBeInTheDocument();
+});
+
+it("serves the same popup behavior through the Composer entry's prebuilt renderer", async () => {
+  await renderMap({}, composerRegistry);
+
+  await expect.element(page.getByText("Berlin office content")).toBeVisible();
+
+  await userEvent.click(page.getByRole("button", { name: "Hamburg office" }));
+
+  await expect.element(page.getByText("Hamburg office content")).toBeVisible();
 });
 
 it("reports invalid provider configuration without leaving the map pending", async () => {
