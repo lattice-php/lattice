@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.52.0](https://github.com/lattice-php/lattice/compare/0.51.0...0.52.0) (2026-08-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Lattice\Remote\RemoteAccess and Lattice\Remote\BrowserToken are now Lattice\Core\Remote\RemoteAccess and Lattice\Core\Remote\BrowserToken; Lattice\Remote\Components\RemoteComponent is now Lattice\Ui\Components\RemoteComponent. RemoteAccess and BrowserToken moved from @lattice-php/lattice/types/generated to @lattice-php/core.
+
+### Features
+
+* add first-party map package ([#457](https://github.com/lattice-php/lattice/issues/457)) ([b3deda6](https://github.com/lattice-php/lattice/commit/b3deda6a6e3c22d0afe1e931cdb76433ad721bd4))
+* **api-reference:** lazy per-operation access tokens via remote sources ([#460](https://github.com/lattice-php/lattice/issues/460)) ([fbe772c](https://github.com/lattice-php/lattice/commit/fbe772cdcf31c8c8d9577105b5d5a272e5c27cc0))
+* **media:** categories, scoped pickers, label overrides, and an upload-only mode ([#456](https://github.com/lattice-php/lattice/issues/456)) ([cb68af6](https://github.com/lattice-php/lattice/commit/cb68af6d1e89a1db998f6c2ee8026675caf01a6c))
+
+
+### Refactoring
+
+* extract chat into the lattice-php/chat package ([#458](https://github.com/lattice-php/lattice/issues/458)) ([8bb5bc5](https://github.com/lattice-php/lattice/commit/8bb5bc5b519a9fdb0db0ae39259fab3bfb1d8a4e))
+
 ## [0.51.0](https://github.com/lattice-php/lattice/compare/0.50.0...0.51.0) (2026-08-13)
 
 
