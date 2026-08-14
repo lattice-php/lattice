@@ -1,0 +1,36 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lattice-php/map",
+    "description": "Provider-neutral interactive maps with server-driven markers and popup content for Lattice.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/config": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/contracts": "^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "lattice-php/core": "self.version",
+        "lattice-php/ui": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lattice\\Map\\": "src/"
+        }
+    },
+    "extra": {
+        "lattice": {
+            "plugin": "resources/js/plugin.composer.ts",
+            "standalone": "dist/plugin.js",
+            "css": "resources/css/map.css",
+            "discover": ["src"]
+        },
+        "laravel": {
+            "providers": [
+                "Lattice\\Map\\MapServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

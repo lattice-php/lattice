@@ -12,6 +12,7 @@ use Lattice\Calendar\CalendarServiceProvider;
 use Lattice\Calendar\Components\Timeline;
 use Lattice\Chat\ChatServiceProvider;
 use Lattice\LatticeServiceProvider;
+use Lattice\Map\MapServiceProvider;
 use Lattice\Media\MediaServiceProvider;
 use Lattice\Search\SearchServiceProvider;
 use Lattice\Support\Testing\InteractsWithLatticeComponents;
@@ -90,6 +91,7 @@ abstract class TestCase extends BaseTestCase
             LatticeServiceProvider::class,
             CalendarServiceProvider::class,
             ChatServiceProvider::class,
+            MapServiceProvider::class,
             MediaServiceProvider::class,
             SearchServiceProvider::class,
             TreeServiceProvider::class,

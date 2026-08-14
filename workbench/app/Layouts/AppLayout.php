@@ -44,6 +44,7 @@ use Workbench\App\Pages\Components\ChartsPage;
 use Workbench\App\Pages\Components\ChatPage;
 use Workbench\App\Pages\Components\CodeBlocksPage;
 use Workbench\App\Pages\Components\ContainersPage;
+use Workbench\App\Pages\Components\MapPage;
 use Workbench\App\Pages\Components\ModalsPage;
 use Workbench\App\Pages\Components\NotificationsPage;
 use Workbench\App\Pages\Components\ProgressPage;
@@ -164,6 +165,7 @@ class AppLayout extends LayoutDefinition
                     MenuItem::fromPage(ChartsPage::class)->key('charts')->label(__('workbench.navigation.charts')),
                     MenuItem::fromPage(ProgressPage::class)->key('progress')->label(__('workbench.navigation.progress')),
                     MenuItem::fromPage(ContainersPage::class)->key('containers')->label(__('workbench.navigation.containers')),
+                    MenuItem::fromPage(MapPage::class)->key('map')->label(__('workbench.navigation.map')),
                     MenuItem::fromPage(ModalsPage::class)->key('modals')->label(__('workbench.navigation.modals')),
                     MenuItem::fromPage(NotificationsPage::class)->key('notifications')->label(__('workbench.navigation.notifications')),
                     MenuItem::fromPage(ChatPage::class)->key('chat')->label(__('workbench.navigation.chat')),

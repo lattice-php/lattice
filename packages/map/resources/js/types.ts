@@ -1,0 +1,14 @@
+import type { ComponentPropsMap } from "./generated";
+
+declare module "@lattice-php/core" {
+  interface ComponentProps extends ComponentPropsMap {}
+}
+
+export type {
+  CoordinateData,
+  FeatureType,
+  Map as MapWireProps,
+  MapNodeType,
+  MapProviderData,
+  MarkerData,
+} from "./generated";

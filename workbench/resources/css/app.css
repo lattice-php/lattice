@@ -3,6 +3,7 @@
 @import "../../../packages/ui/resources/css/lattice.css";
 @import "@lattice-php/api-reference/css";
 @import "@lattice-php/calendar/css";
+@import "@lattice-php/map/css";
 @import "@lattice-php/signature-example/css";
 
 @source '../js';

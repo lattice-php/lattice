@@ -426,6 +426,7 @@ return [
         'groups' => 'Gruppen',
         'home' => 'Home',
         'log-out' => 'Abmelden',
+        'map' => 'Karte',
         'media' => 'Medien',
         'media-picker' => 'Medienauswahl',
         'modals' => 'Modals',
@@ -445,6 +446,21 @@ return [
         'wizard' => 'Assistent',
     ],
     'pages' => [
+        'map' => [
+            'heading' => 'Karte',
+            'description' => 'Serverseitige Marker mit vollständigen Lattice-Komponentenbäumen in ihren Popups.',
+            'open-in-openstreetmap' => 'In OpenStreetMap öffnen',
+            'berlin' => [
+                'label' => 'Büro Berlin',
+                'heading' => 'Büro Berlin',
+                'description' => 'Das erste Popup wird durch die Serverkonfiguration geöffnet.',
+            ],
+            'potsdam' => [
+                'label' => 'Studio Potsdam',
+                'heading' => 'Studio Potsdam',
+                'description' => 'Ein Klick auf diesen Marker rendert ein anderes serverseitig geliefertes Schema.',
+            ],
+        ],
         'charts' => [
             'channels' => [
                 'direct' => 'Direkt',

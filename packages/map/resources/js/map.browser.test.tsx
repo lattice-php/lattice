@@ -1,0 +1,168 @@
+import { page, userEvent } from "vitest/browser";
+import { expect, it } from "vitest";
+import { createRegistry, eagerComponent, Renderer } from "@lattice-php/core";
+import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
+import { fakeNode, TextProbe } from "@lattice-php/core/test-support";
+import type { Plugin } from "@lattice-php/core";
+import mapPlugin from "./plugin";
+import composerPlugin from "./plugin.composer";
+import distPlugin from "../../dist/plugin.js";
+import type { MapWireProps, MarkerData } from "./types";
+import "../css/map.css";
+
+const transparentTile =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'/%3E";
+
+const registry = createRegistry(mapPlugin, {
+  components: {
+    text: eagerComponent(TextProbe),
+  },
+  name: "test/map-content",
+});
+
+const composerRegistry = createRegistry(composerPlugin, {
+  components: {
+    text: eagerComponent(TextProbe),
+  },
+  name: "test/map-content",
+});
+
+const distRegistry = createRegistry(distPlugin as Plugin, {
+  components: {
+    text: eagerComponent(TextProbe),
+  },
+  name: "test/map-content",
+});
+
+function marker(
+  id: string,
+  label: string,
+  latitude: number,
+  longitude: number,
+  extra: Partial<MarkerData> = {},
+): MarkerData {
+  return {
+    color: null,
+    icon: null,
+    id,
+    label,
+    open: id === "berlin",
+    position: { latitude, longitude },
+    schema: [{ props: { text: `${label} content` }, type: "text" }],
+    type: "marker",
+    ...extra,
+  };
+}
+
+async function renderMap(extra: Partial<MapWireProps> = {}, into = registry) {
+  const node = fakeNode({
+    id: "office-map",
+    type: "map",
+    props: {
+      center: null,
+      features: [
+        marker("berlin", "Berlin office", 52.52, 13.405),
+        marker("hamburg", "Hamburg office", 53.5511, 9.9937),
+      ],
+      height: 420,
+      navigationControls: true,
+      provider: {
+        maximumZoom: 19,
+        minimumZoom: 1,
+        name: "openstreetmap",
+        options: { attribution: "OpenStreetMap contributors", tileUrl: transparentTile },
+      },
+      scrollZoom: false,
+      zoom: null,
+      ...extra,
+    },
+  });
+
+  return renderWithRegistry(<Renderer nodes={[node]} />, into);
+}
+
+it("opens server-selected popup content and switches it through a real marker click", async () => {
+  await renderMap();
+
+  await expect.element(page.getByText("Berlin office content")).toBeVisible();
+
+  await userEvent.click(page.getByRole("button", { name: "Hamburg office" }));
+
+  await expect.element(page.getByText("Hamburg office content")).toBeVisible();
+  await expect.element(page.getByText("Berlin office content")).not.toBeInTheDocument();
+});
+
+it("serves the same popup behavior through the Composer entry's prebuilt renderer", async () => {
+  await renderMap({}, composerRegistry);
+
+  await expect.element(page.getByText("Berlin office content")).toBeVisible();
+
+  await userEvent.click(page.getByRole("button", { name: "Hamburg office" }));
+
+  await expect.element(page.getByText("Hamburg office content")).toBeVisible();
+});
+
+it("renders the standalone artifact's own map component against the runtime barrel", async () => {
+  await renderMap({}, distRegistry);
+
+  await expect.element(page.getByText("Berlin office content")).toBeVisible();
+});
+
+it("reports invalid provider configuration without leaving the map pending", async () => {
+  await renderMap({
+    provider: {
+      maximumZoom: 19,
+      minimumZoom: 1,
+      name: "openstreetmap",
+      options: {},
+    },
+  });
+
+  await expect.element(page.getByRole("alert")).toHaveTextContent("The map could not be loaded.");
+});
+
+it("renders a per-marker icon inside a toned pin", async () => {
+  await renderMap({
+    features: [
+      marker("munich", "Munich office", 48.1372, 11.5756, {
+        color: { dark: null, kind: "named", value: "warning" },
+        icon: "bell",
+      }),
+    ],
+  });
+
+  await expect
+    .poll(() => document.querySelector(".lt-map-marker__pin--icon use")?.getAttribute("href"))
+    .toContain("bell");
+  await expect
+    .poll(() =>
+      document.querySelector(".lt-map-marker__pin")?.classList.contains("lt-tone-warning"),
+    )
+    .toBe(true);
+
+  await userEvent.click(page.getByRole("button", { name: "Munich office" }));
+
+  await expect.element(page.getByText("Munich office content")).toBeVisible();
+});
+
+it("automatically centers a single marker for interaction", async () => {
+  await renderMap({
+    features: [marker("munich", "Munich office", 48.1372, 11.5756)],
+  });
+
+  await userEvent.click(page.getByRole("button", { name: "Munich office" }));
+
+  await expect.element(page.getByText("Munich office content")).toBeVisible();
+});
+
+it("uses the server-provided center and zoom for an interactive marker", async () => {
+  await renderMap({
+    center: { latitude: 48.1372, longitude: 11.5756 },
+    features: [marker("munich", "Munich office", 48.1372, 11.5756)],
+    zoom: 16,
+  });
+
+  await userEvent.click(page.getByRole("button", { name: "Munich office" }));
+
+  await expect.element(page.getByText("Munich office content")).toBeVisible();
+});

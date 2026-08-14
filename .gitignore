@@ -19,6 +19,7 @@ node_modules
 /packages/*/dist
 !/packages/calendar/dist
 !/packages/chat/dist
+!/packages/map/dist
 !/packages/media/dist
 !/packages/search/dist
 !/packages/tree/dist

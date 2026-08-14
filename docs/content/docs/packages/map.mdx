@@ -1,0 +1,179 @@
+---
+title: Map
+description: Provider-neutral interactive maps with server-driven markers and Lattice component schemas in popups.
+---
+
+import BundleReport from "@components/BundleReport.astro";
+
+The map package renders interactive maps from server-defined features. The public PHP and wire
+APIs use coordinates, providers, and typed features rather than Leaflet concepts. OpenStreetMap is
+the built-in provider; another package can add a Google Maps provider without changing page
+definitions.
+
+The first release supports markers. A marker can display any Lattice component schema in a popup,
+including links, forms, and registered actions. Lines, polygons, editing, geocoding, routing, and
+clustering are outside the initial API.
+
+## Installation
+
+```bash
+composer require lattice-php/map
+```
+
+Composer is the only install. The `lattice()` Vite plugin discovers the package through Composer
+and adds only a small entry to the app bundle: the map component and its precompiled renderer —
+with Leaflet bundled inside it, while React and the Lattice runtime remain shared with the host
+app — load on demand the first time a page renders a map, so pages without a map never pay for
+Leaflet. For a [no-build app](/introduction/no-build/), run `php artisan lattice:assets` after
+installation; it publishes the same self-contained renderer as a single standalone plugin.
+
+In an app with a build step, import the map stylesheet in your application CSS — it positions the
+Leaflet panes and themes the controls, markers, and popups with the Lattice design tokens:
+
+```css
+@import "@lattice-php/map/css";
+```
+
+## Usage
+
+```php
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Enums\ColorName;
+use Lattice\Map\Components\Map;
+use Lattice\Map\Marker;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Icon;
+
+Map::make('offices')
+    ->markers([
+        Marker::make('berlin')
+            ->position(52.5200, 13.4050)
+            ->label('Berlin office')
+            ->popup([
+                Stack::make()->schema([
+                    Heading::make('Berlin office', 3),
+                    Text::make('Alexanderplatz 1'),
+                    Action::use(OpenOfficeAction::class),
+                ]),
+            ])
+            ->open(),
+        Marker::make('hamburg')
+            ->position(53.5511, 9.9937)
+            ->label('Hamburg office')
+            ->icon(Icon::Bell)
+            ->color(ColorName::Warning)
+            ->popup([
+                Heading::make('Hamburg office', 3),
+                Text::make('Speicherstadt'),
+            ]),
+    ]);
+```
+
+`->open()` marks one popup for automatic opening after the map initializes. Only one marker may be
+open initially, and marker IDs must be unique. Labels supply each marker's accessible name even
+when the popup schema renders different text.
+
+`->icon()` replaces the pin's dot with any Lattice icon (a `Lattice\Ui\Enums\Icon` case, or the
+sprite id of an app-registered icon), and `->color()` tints the pin with a named Lattice color or
+a CSS color. Markers without either keep the primary pin with the plain dot.
+
+Without an explicit center, one marker opens at a practical street-level zoom and several markers
+are fitted into view. An empty map shows the world. Override the viewport and controls when needed:
+
+```php
+Map::make('service-area')
+    ->center(latitude: 52.52, longitude: 13.405)
+    ->zoom(11)
+    ->height(520)
+    ->scrollZoom()
+    ->navigationControls(false)
+    ->markers($markers);
+```
+
+Scroll-wheel zoom is disabled by default so a map embedded in a page does not capture normal page
+scrolling — holding Cmd/Ctrl while scrolling (or a trackpad pinch) still zooms the map;
+`->scrollZoom()` makes the plain wheel zoom too. Zoom values must fit both the general `0–24`
+range and the active provider's range.
+
+## OpenStreetMap Tiles
+
+The built-in provider uses the public OpenStreetMap tile service and includes the required
+attribution. This default is convenient for development and modest interactive use, but the public
+service has no SLA and is not a free general-purpose CDN. Production applications must follow the
+[OpenStreetMap tile usage policy](https://operations.osmfoundation.org/policies/tiles/), keep
+attribution visible, and use a suitable commercial or self-hosted tile service when traffic or
+availability requirements demand it.
+
+Override the tile endpoint without changing map definitions:
+
+In `config/map.php`:
+
+```php
+return [
+    'default_provider' => 'openstreetmap',
+    'providers' => [
+        'openstreetmap' => [
+            'tile_url' => env('MAP_TILE_URL', 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+            'attribution' => '&copy; OpenStreetMap contributors',
+            'minimum_zoom' => 1,
+            'maximum_zoom' => 19,
+        ],
+    ],
+];
+```
+
+## Adding a Provider
+
+A provider has one server and one client registration. The server implementation returns its
+stable name, provider-specific browser options, and supported zoom range:
+
+```php
+use Lattice\Map\Contracts\MapProvider;
+use Lattice\Map\MapProviderData;
+use Lattice\Map\MapProviderRegistry;
+
+final class GoogleMapsProvider implements MapProvider
+{
+    public function data(): MapProviderData
+    {
+        return new MapProviderData(
+            name: 'google-maps',
+            options: ['apiKey' => config('services.google_maps.key')],
+            minimumZoom: 0,
+            maximumZoom: 22,
+        );
+    }
+}
+
+app(MapProviderRegistry::class)->register(app(GoogleMapsProvider::class));
+```
+
+Its Lattice plugin registers a React component under the matching `map.providers` key:
+
+```ts
+import type { Plugin } from "@lattice-php/core";
+import GoogleMap from "./google-map";
+
+export default {
+  name: "acme/google-maps",
+  extensions: {
+    "map.providers": {
+      "google-maps": GoogleMap,
+    },
+  },
+} satisfies Plugin;
+```
+
+Applications then select it with `Map::make()->provider('google-maps')`. The map component keeps
+the same markers, popup schemas, viewport, and controls contract; only the provider options and
+renderer change.
+
+## Bundle Size
+
+The report measures the precompiled map plugin. It includes Leaflet but externalizes React and the
+[framework runtime](/advanced/bundle-size/), so it represents the package's additional JavaScript —
+loaded only when a page actually renders a map.
+
+<BundleReport target="map" />

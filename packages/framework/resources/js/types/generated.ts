@@ -124,6 +124,7 @@ export type Listen = {
   events: string[];
   readonly visibility: ChannelVisibility;
 };
+export type MapNodeType = "map";
 export type MediumNodeType = "media.library";
 export type Menu = Record<string, never>;
 export type MenuItem = {
@@ -188,6 +189,7 @@ export type NodeType =
   | "icon"
   | "image"
   | "link"
+  | "map"
   | "media.library"
   | "menu"
   | "menu-item"

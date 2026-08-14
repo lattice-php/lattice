@@ -1,0 +1,20 @@
+{
+  "name": "@lattice-php/map",
+  "version": "0.51.0",
+  "private": true,
+  "description": "Dev workspace for the map component package; ships to consumers via Composer, not npm.",
+  "type": "module",
+  "scripts": {
+    "build:standalone": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lattice-php/core": "0.51.0",
+    "@lattice-php/lattice": "0.51.0",
+    "@lattice-php/ui": "0.51.0",
+    "leaflet": "1.9.4"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.20"
+  }
+}

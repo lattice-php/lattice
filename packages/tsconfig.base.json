@@ -22,6 +22,8 @@
       "@lattice-php/form/*": ["./form/resources/js/*"],
       "@lattice-php/lattice": ["./framework/resources/js/index.ts"],
       "@lattice-php/lattice/*": ["./framework/resources/js/*"],
+      "@lattice-php/map": ["./map/resources/js/index.ts"],
+      "@lattice-php/map/*": ["./map/resources/js/*"],
       "@lattice-php/media": ["./media/resources/js/plugin.ts"],
       "@lattice-php/media/*": ["./media/resources/js/*"],
       "@lattice-php/search": ["./search/resources/js/index.ts"],
