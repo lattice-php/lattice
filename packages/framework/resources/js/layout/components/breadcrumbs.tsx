@@ -17,7 +17,7 @@ const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
   return (
     <nav
       aria-label={t("common.breadcrumb", "Breadcrumb")}
-      className="min-w-0"
+      className="min-w-0 flex-1"
       data-lattice-component={nodeIdentity(node)}
     >
       <ol className="flex items-center gap-2 text-sm text-lt-muted-fg">

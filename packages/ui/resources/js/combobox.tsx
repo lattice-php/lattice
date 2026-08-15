@@ -128,7 +128,10 @@ function Combobox({
   }
 
   return (
-    <Popover open={open} onOpenChange={(next) => (next ? onOpenChange(true) : close())}>
+    // Modal so the popover owns the scroll lock: inside a modal dialog the
+    // dialog's lock would otherwise swallow wheel events over the portaled
+    // option list, leaving only the scrollbar draggable.
+    <Popover modal open={open} onOpenChange={(next) => (next ? onOpenChange(true) : close())}>
       <PopoverTrigger asChild>
         <button type="button" className={triggerClassName} {...triggerProps}>
           {trigger}
