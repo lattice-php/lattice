@@ -188,12 +188,23 @@ describe("Lattice tabs component", () => {
     expect(visit).not.toHaveBeenCalled();
   });
 
-  it("keeps the tablist on mobile with three or fewer tabs", () => {
+  it("keeps a horizontal tablist on mobile with three or fewer tabs", () => {
     stubMatchMedia(false);
     renderTabs();
 
     expect(screen.getByRole("tablist")).toBeInTheDocument();
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+  });
+
+  it("always collapses vertical tabs to a select on mobile", () => {
+    stubMatchMedia(false);
+    renderTabs({ orientation: "vertical" }, [
+      tab("Overview", "overview"),
+      tab("Details", "details"),
+    ]);
+
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Tabs" })).toHaveValue("overview");
   });
 
   it("visits the query url when the mobile select picks a confirmed tab", () => {

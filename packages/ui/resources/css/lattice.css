@@ -366,6 +366,22 @@
  * class scanning and the prebuilt standalone bundle.
  */
 @utility lt-grid {
+  /* Custom properties inherit, so a nested grid would otherwise pick up an
+     ancestor grid-item's span (e.g. a columnSpanFull card stretching every
+     field of a grid inside it). Reset at each grid boundary; inline values on
+     this element and its own items still win. */
+  --lt-grid-cols-default: initial;
+  --lt-grid-cols-sm: initial;
+  --lt-grid-cols-md: initial;
+  --lt-grid-cols-lg: initial;
+  --lt-grid-cols-xl: initial;
+  --lt-grid-cols-2xl: initial;
+  --lt-col-span-default: initial;
+  --lt-col-span-sm: initial;
+  --lt-col-span-md: initial;
+  --lt-col-span-lg: initial;
+  --lt-col-span-xl: initial;
+  --lt-col-span-2xl: initial;
   grid-template-columns: var(--lt-grid-cols-default, none);
 
   & > [data-slot="grid-item"] {

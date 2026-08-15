@@ -153,7 +153,9 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
   );
 
   const isDesktop = useMediaQuery("(min-width: 768px)", true);
-  const collapseToSelect = !isDesktop && tabs.length > SELECT_COLLAPSE_THRESHOLD;
+  // A side rail cannot work on a phone regardless of tab count, so vertical
+  // tabs always collapse below md; horizontal strips only when they overflow.
+  const collapseToSelect = !isDesktop && (isVertical || tabs.length > SELECT_COLLAPSE_THRESHOLD);
 
   const contextValue = useMemo(
     () => ({ activeValue, hasTablist: !collapseToSelect, setActiveValue: selectTabValue }),

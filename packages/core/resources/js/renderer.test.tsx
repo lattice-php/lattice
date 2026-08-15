@@ -140,6 +140,33 @@ describe("Renderer", () => {
     expect(screen.getByTestId("everywhere").parentElement).not.toHaveClass("contents");
   });
 
+  it("recovers a lazy component whose chunk fails to load once", async () => {
+    const LazyProbe: RendererComponent<"test.lazy"> = ({ node }) => (
+      <section>{node.props?.label as string | undefined}</section>
+    );
+    let attempts = 0;
+    const registry = createRegistry({
+      components: {
+        "test.lazy": lazyComponent<"test.lazy">(() => {
+          attempts++;
+
+          return attempts === 1
+            ? Promise.reject(new Error("Failed to fetch dynamically imported module"))
+            : Promise.resolve({ default: LazyProbe });
+        }),
+      },
+      name: "test",
+    });
+
+    renderWithRegistry(
+      <Renderer nodes={[{ id: "flaky-node", props: { label: "Recovered" }, type: "test.lazy" }]} />,
+      registry,
+    );
+
+    expect(await screen.findByText("Recovered", undefined, { timeout: 3000 })).toBeVisible();
+    expect(attempts).toBe(2);
+  });
+
   it("suspends to an empty fallback while a lazy chunk is loading", () => {
     const registry = createRegistry({
       components: {
