@@ -1,6 +1,6 @@
 ---
 name: worktrees
-description: Use when creating, preparing, listing, switching between, or removing git worktrees for the Lattice package, especially when multiple agents work in parallel. Covers safe multi-agent branch isolation, the sibling worktree layout, Testbench dependency setup, the required verification gates, and cleanup.
+description: Use when creating, preparing, listing, switching between, or removing git worktrees for the Lattice package, especially when multiple agents work in parallel. Covers the project worktree scripts, safe multi-agent branch isolation, the sibling layout, Testbench setup, verification gates, and cleanup.
 ---
 
 # Lattice Worktrees
@@ -55,42 +55,23 @@ Rules:
 - Pick a unique slug and branch name, usually `<task>-<short-slug>`. Do not reuse an existing
   `lattice-<slug>` path or existing branch unless the user explicitly asks.
 
-## Create
+## Create with the project script
 
-Create from a clean base branch (usually `main`) or current `HEAD`. Run from the repo root so `..`
-resolves to the parent directory:
+Use the project script from the repo root. It creates the sibling worktree from `main`; the branch
+defaults to the worktree name when omitted:
 
-```bash
-git fetch origin --prune
-git worktree add ../lattice-<slug> -b <branch> main
-cd ../lattice-<slug>
+```shell
+bin/create-worktree.sh <slug> [branch]
 ```
 
-Examples:
+The script creates `../lattice-<slug>`, installs Composer and npm dependencies, refreshes the
+Boost-generated local agent context, and builds the workbench frontend. Testbench provisions the
+`workbench/` skeleton and its SQLite database on demand; there is no Herd site, app `.env`, key
+generation, or manual migration step.
 
-```bash
-git worktree add ../lattice-dropdown -b feat/dropdown-collapsible main
-git worktree add ../lattice-current-fix -b fix/current-fix HEAD
-```
-
-Continue an existing branch only when that is the intent:
-
-```bash
-git worktree add ../lattice-<slug> <branch>
-```
-
-## Set up
-
-Each worktree needs its own ignored dependencies. Always install both stacks:
-
-```bash
-composer install
-npm install
-```
-
-That is the whole setup. Testbench provisions the `workbench/` skeleton and its SQLite database on
-demand (via `composer post-autoload-dump` and the test bootstrap); there is no app `.env`, key
-generation, or manual `migrate` step to run.
+Use raw `git worktree add` only when the script cannot express the requested operation, such as
+continuing an existing branch or intentionally branching from a commit other than `main`. Reproduce
+the script's dependency installation and build steps in that exceptional worktree.
 
 `npm install` refreshes the Laravel Boost guidelines and skills after the frontend package graph is
 installed, so package-detected skills such as React, Inertia, and Tailwind are available in fresh
@@ -140,19 +121,19 @@ git worktree list --porcelain
 
 Use porcelain output when deciding what belongs to another agent.
 
-## Remove
+## Remove with the project script
 
-Only remove a worktree that belongs to your task and has no needed changes.
+Only remove a worktree that belongs to your task and has no needed changes. Run from the main repo
+root:
 
-```bash
-cd <repo-root>
-git -C ../lattice-<slug> status --short
-git worktree remove ../lattice-<slug>
-git worktree prune
+```shell
+bin/delete-worktree.sh <slug>
 ```
 
-Never use `git worktree remove --force` unless the user explicitly says to discard that worktree's
-uncommitted changes.
+The script refuses dirty worktrees and deletes the associated branch only when Git considers it
+merged. Use `bin/delete-worktree.sh <slug> --force` only when the user explicitly says to discard
+that worktree's uncommitted changes and branch. Do not bypass the script with
+`git worktree remove --force`.
 
 ## Multi-Agent Safety
 
