@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Storage;
+use Lattice\Media\Models\Media;
 use Lattice\Pdf\Components\PdfViewer;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -100,6 +102,35 @@ it('serves the bundled worker artifact with immutable caching', function (): voi
 it('registers the worker route under the configured path', function (): void {
     expect(route('lattice.pdf.worker', absolute: false))->toBe('/lattice/pdf/worker.js');
 });
+
+it('serializes the sidebar toggle', function (): void {
+    $node = wire(PdfViewer::make()->url('https://files.example.test/manual.pdf')->sidebar(false));
+
+    expect($node['props']['sidebar'])->toBeFalse();
+});
+
+it('sources url and filename from a media attachment at serialization time', function (): void {
+    Storage::fake('public');
+    $media = Media::factory()->document()->create();
+
+    $node = wire(PdfViewer::make()->media($media->id));
+
+    expect($node['props']['url'])->toContain($media->path)
+        ->and($node['props']['filename'])->toBe($media->name);
+});
+
+it('keeps an explicit filename over the media name', function (): void {
+    Storage::fake('public');
+    $media = Media::factory()->document()->create();
+
+    $node = wire(PdfViewer::make()->media($media)->filename('handbook.pdf'));
+
+    expect($node['props']['filename'])->toBe('handbook.pdf');
+});
+
+it('rejects non-media objects as a media source', function (): void {
+    PdfViewer::make()->media(new stdClass);
+})->throws(InvalidArgumentException::class, 'PdfViewer::media() expects a media id or a');
 
 it('serves both bundled pdf locales', function (): void {
     expect(__('pdf::pdf.loading'))->toBe('Loading document…');
