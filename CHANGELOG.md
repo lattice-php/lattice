@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.54.0](https://github.com/lattice-php/lattice/compare/0.53.1...0.54.0) (2026-08-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **calendar:** The standalone Timeline API is removed. Timeline, TimelineDefinition, TimelineAdapter, AsTimeline, Entry, and EntryData are replaced by Calendar, CalendarDefinition, CalendarAdapter, AsCalendar, and CalendarEvent(Data); the endpoint moves from lattice/timelines/{timeline} to lattice/calendars/{calendar} and the config keys from lattice.timelines.* to lattice.calendars.*.
+
+### Features
+
+* **api-reference:** support Spectacular 0.25 schemas ([#471](https://github.com/lattice-php/lattice/issues/471)) ([0d714cd](https://github.com/lattice-php/lattice/commit/0d714cda1a9979c8e325211bf4e62eaaf182d4de))
+* **calendar:** month-view drag-to-reschedule ([#472](https://github.com/lattice-php/lattice/issues/472)) ([d50b0a2](https://github.com/lattice-php/lattice/commit/d50b0a2f6284df88fcb3329b93335514d12aa118))
+* **calendar:** replace the timeline component with a multi-view calendar ([#468](https://github.com/lattice-php/lattice/issues/468)) ([c7325ec](https://github.com/lattice-php/lattice/commit/c7325ec8a82e657f99fa197e506871ef9271fb23))
+* **media:** make media() without a collection span every attachment ([#469](https://github.com/lattice-php/lattice/issues/469)) ([0a934c5](https://github.com/lattice-php/lattice/commit/0a934c5fd1b87901e910da179904c0b843b1a16d))
+
 ## [0.53.1](https://github.com/lattice-php/lattice/compare/0.53.0...0.53.1) (2026-08-15)
 
 
