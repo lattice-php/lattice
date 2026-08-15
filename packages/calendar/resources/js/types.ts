@@ -1,38 +1,19 @@
-export type TimelineResourceData = {
-  id: string;
-  label: string;
-};
+export type {
+  Calendar as CalendarWireProps,
+  CalendarEventData,
+  CalendarView,
+  ResourceGroupData,
+} from "./generated";
+import type { Calendar, ResourceGroupData } from "./generated";
 
-export type TimelineGroupData = {
-  key: string;
-  label: string;
-  resources: TimelineResourceData[];
-};
+export type CalendarResourceData = ResourceGroupData["resources"][number];
 
-/**
- * `start` is inclusive, `end` is exclusive — matches the half-open interval
- * `date-axis.ts` and lane assignment expect, so a bar ending the same day
- * another starts on never overlaps it.
- */
-export type TimelineEventData = {
+export type CalendarActionNode = NonNullable<Calendar["eventAction"]>;
+
+/** Day-granular, half-open `[start, end)` — the shape the PATCH endpoint expects. */
+export type CalendarRescheduleRequest = {
   id: string;
   resourceId: string;
   start: string;
   end: string;
-  label: string;
-  color?: unknown;
-};
-
-export type TimelineRescheduleRequest = Pick<
-  TimelineEventData,
-  "id" | "resourceId" | "start" | "end"
->;
-
-export type TimelineWireProps = {
-  groups: TimelineGroupData[];
-  events: TimelineEventData[];
-  from: string;
-  days: number;
-  ref: string | null;
-  endpoint: string | null;
 };

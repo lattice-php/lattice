@@ -29,6 +29,7 @@ import { uiComponents } from "@lattice-php/ui";
 // here rather than belonging to a registered plugin's union.
 type OptInNodeType =
   | "api-reference"
+  | "calendar"
   | "chat.box"
   | "chat.part.text"
   | "chat.part.tool-call"
@@ -41,7 +42,6 @@ type OptInNodeType =
   | "search.recent"
   | "search.results"
   | "signature"
-  | "timeline"
   | "tree";
 
 // Compile-time totality: every generated NodeType must belong to a registered

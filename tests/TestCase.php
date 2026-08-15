@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
 use Lattice\Calendar\CalendarServiceProvider;
-use Lattice\Calendar\Components\Timeline;
+use Lattice\Calendar\Components\Calendar;
 use Lattice\Chat\ChatServiceProvider;
 use Lattice\LatticeServiceProvider;
 use Lattice\Map\MapServiceProvider;
@@ -75,10 +75,10 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * @param  \Closure(): Timeline  $build
+     * @param  \Closure(): Calendar  $build
      * @return array<string, mixed>
      */
-    public function sealTimeline(\Closure $build): array
+    public function sealCalendar(\Closure $build): array
     {
         return $this->sealLatticeComponent($build);
     }

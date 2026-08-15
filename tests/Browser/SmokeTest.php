@@ -31,6 +31,7 @@ it('renders every demo page without smoke failures', function (): void {
         '/components/notifications',
         '/components/progress',
         '/components/chat',
+        '/calendar',
         '/business-partners',
     ])->assertNoSmoke();
 });

@@ -13,9 +13,9 @@ final class CalendarServiceProvider extends ServiceProvider
     #[\Override]
     public function register(): void
     {
-        DiscoveryKinds::register('timelines', AsTimeline::class);
+        DiscoveryKinds::register('calendars', AsCalendar::class);
 
-        $this->app->singleton(TimelineRegistry::class);
+        $this->app->singleton(CalendarRegistry::class);
     }
 
     public function boot(): void
@@ -24,10 +24,10 @@ final class CalendarServiceProvider extends ServiceProvider
 
         // Core's routes file has no contribution seam, so the package registers
         // its endpoint itself, mirroring core's group conventions
-        // (config lattice.timelines.{middleware,endpoint}).
-        Route::middleware(config('lattice.timelines.middleware', ['web', 'auth']))
-            ->match(['get', 'patch'], (string) config('lattice.timelines.endpoint', 'lattice/timelines/{timeline}'), TimelineController::class)
-            ->where('timeline', '.*')
-            ->name('lattice.timelines.show');
+        // (config lattice.calendars.{middleware,endpoint}).
+        Route::middleware(config('lattice.calendars.middleware', ['web', 'auth']))
+            ->match(['get', 'patch'], (string) config('lattice.calendars.endpoint', 'lattice/calendars/{calendar}'), CalendarController::class)
+            ->where('calendar', '.*')
+            ->name('lattice.calendars.show');
     }
 }

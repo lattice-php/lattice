@@ -4,7 +4,7 @@ import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type Breadcrumbs = Record<string, never>;
-export type CalendarNodeType = "timeline";
+export type CalendarNodeType = "calendar";
 export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
 export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
@@ -148,6 +148,7 @@ export type NodeType =
   | "badge"
   | "breadcrumbs"
   | "button"
+  | "calendar"
   | "callouts"
   | "card"
   | "chart"
@@ -218,7 +219,6 @@ export type NodeType =
   | "table"
   | "tabs"
   | "text"
-  | "timeline"
   | "tooltip"
   | "topbar"
   | "tree"

@@ -7,4 +7,4 @@ use Attribute;
 use Lattice\Core\Attributes\DefinitionAttribute;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-final class AsTimeline extends DefinitionAttribute {}
+final class AsCalendar extends DefinitionAttribute {}

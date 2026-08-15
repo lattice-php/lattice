@@ -18,4 +18,10 @@ return [
     'entry-label' => ':label, :resource, :start to :end. Use Control Shift and arrow keys to reschedule.',
     'rescheduled' => 'Rescheduled :label',
     'reschedule-failed' => 'Could not reschedule :label',
+    'view-month' => 'Month',
+    'view-timeline' => 'Timeline',
+    'view-switcher-label' => 'Calendar view',
+    'more-events' => '+:count more',
+    'show-events-for-day' => 'Show all events on :date',
+    'event-chip-label' => ':label, :start to :end',
 ];

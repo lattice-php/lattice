@@ -18,4 +18,10 @@ return [
     'entry-label' => ':label, :resource, :start bis :end. Zum Umplanen Strg, Umschalt und die Pfeiltasten verwenden.',
     'rescheduled' => ':label wurde umgeplant',
     'reschedule-failed' => ':label konnte nicht umgeplant werden',
+    'view-month' => 'Monat',
+    'view-timeline' => 'Zeitleiste',
+    'view-switcher-label' => 'Kalenderansicht',
+    'more-events' => '+:count weitere',
+    'show-events-for-day' => 'Alle Termine am :date anzeigen',
+    'event-chip-label' => ':label, :start bis :end',
 ];

@@ -2,13 +2,14 @@
   "name": "@lattice-php/calendar",
   "version": "0.53.1",
   "private": true,
-  "description": "Dev workspace for the calendar component package; ships to consumers via Composer, not npm.",
+  "description": "Multi-view calendar component (month grid and resource timeline) for Lattice.",
   "type": "module",
   "scripts": {
     "build:standalone": "vite build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@lattice-php/action": "0.53.1",
     "@lattice-php/core": "0.53.1",
     "@lattice-php/lattice": "0.53.1",
     "@lattice-php/ui": "0.53.1"

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 return [
     'calendar' => [
+        'day-planned' => 'Planning :date.',
+        'event-shown' => 'Event :event opened.',
         'assignment-unavailable' => 'This assignment is unavailable.',
         'resource-unavailable' => 'This planning resource is unavailable.',
     ],

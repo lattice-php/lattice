@@ -1,16 +1,17 @@
 ---
 title: Calendar
-description: Resource-planning timeline (Plantafel) with assignment rescheduling, lazy window fetching, and overlap lanes.
+description: Multi-view calendar with a month grid and a resource-planning timeline, lazy window fetching, and server-driven actions.
 ---
 
 import BundleReport from "@components/BundleReport.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
 
-The calendar package renders a resource-planning timeline — a "Plantafel" board of resource rows
-(projects, employees, rooms, anything with an ID) against a day-granular date axis, with entries
-drawn as bars. It ships a sticky month/calendar-week/day header, zoom, prev/next/today navigation
-with lazy window fetching, collapsible resource groups, and automatic lane-stacking for
-overlapping entries. Existing assignments can be moved to another resource or date using drag and
-drop or the keyboard. The calendar does not create entries or prescribe how they are stored.
+The calendar package renders one `Calendar` component with switchable views over a single event
+source: a **month grid** with multi-day event spanning, per-day overflow, and keyboard navigation,
+and a resource-planning **timeline** ("Plantafel") of resource rows against a day-granular date
+axis with drag-to-reschedule. Both views share the same adapter, endpoint, and client-side event
+cache — switching views reuses everything already loaded.
 
 ## Installation
 
@@ -31,29 +32,102 @@ There is no npm package — Composer is the only install.
 
 ## Usage
 
-Implement one `TimelineAdapter` for the host application. It returns the resource rows and entries
-for a requested `[$from, $until)` window (`$until` exclusive), then validates and persists
-reschedule requests using the application's own storage and business rules:
+Implement one `CalendarAdapter` for the host application. Its single required method returns the
+events overlapping a requested `[$from, $until)` window (`$until` exclusive):
 
 ```php
 use Carbon\CarbonImmutable;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
-use Lattice\Calendar\AsTimeline;
-use Lattice\Calendar\Entry;
-use Lattice\Calendar\ResourceGroup;
-use Lattice\Calendar\TimelineAdapter;
-use Lattice\Calendar\TimelineDefinition;
+use Lattice\Calendar\AsCalendar;
+use Lattice\Calendar\CalendarAdapter;
+use Lattice\Calendar\CalendarDefinition;
+use Lattice\Calendar\CalendarEvent;
 
-final class ProjectPlanTimelineAdapter implements TimelineAdapter
+final class CompanyCalendarAdapter implements CalendarAdapter
+{
+    public function events(CarbonImmutable $from, CarbonImmutable $until): iterable
+    {
+        return Meeting::query()
+            ->where('starts_at', '<', $until)
+            ->where('ends_at', '>', $from)
+            ->get()
+            ->map(fn (Meeting $meeting): CalendarEvent => CalendarEvent::make(
+                (string) $meeting->id,
+                $meeting->starts_at->format('Y-m-d\TH:i:s'),
+                $meeting->ends_at->format('Y-m-d\TH:i:s'),
+            )->label($meeting->title)->color($meeting->color));
+    }
+}
+
+#[AsCalendar('company')]
+final class CompanyCalendar extends CalendarDefinition
+{
+    public function adapter(): CalendarAdapter
+    {
+        return app(CompanyCalendarAdapter::class);
+    }
+}
+```
+
+The adapter is the only application-facing contract. It owns authorization rules beyond the
+definition's `authorize()`, validation, translations, persistence, and transactions — the calendar
+package works with any storage model.
+
+Render it with `Calendar::use()`:
+
+```php
+use Lattice\Calendar\CalendarView;
+use Lattice\Calendar\Components\Calendar;
+
+Calendar::use(CompanyCalendar::class)
+    ->views([CalendarView::Month, CalendarView::Timeline])
+    ->defaultView(CalendarView::Month)
+    ->date('2026-08-01')
+    ->days(90);
+```
+
+`->views()` picks the enabled views (default: month only); with more than one, the client shows a
+view switcher. `->defaultView()` chooses the initially active view and falls back to the first
+enabled one. `->date()` anchors both views — the month view opens on that date's month, the
+timeline window starts on it (default: today). `->days()` sets the timeline's initially rendered
+window (default 90).
+
+### Events
+
+`CalendarEvent::make($id, $start, $end)` uses half-open bounds — **`$end` is exclusive**, the same
+convention as the `events()` window. The input format decides the event kind:
+
+- Plain `Y-m-d` strings make an **all-day** event; a one-day event has `$end` one day after
+  `$start`.
+- A datetime string or `DateTimeInterface` makes a **timed** event, normalized to
+  `Y-m-d\TH:i:s`. `->allDay()` overrides the inference either way.
+
+`->label()` sets the visible text and `->color()` accepts any Lattice color (see
+[Enums reference](/advanced/enums/)); uncolored events render in the theme's primary tone.
+`->context([...])` attaches data that is merged into the event action's payload on click, and
+`->resource($resourceId)` binds the event to a timeline row (see below).
+
+<Warning title="Floating wall time">
+  Timed events travel as local wall time without timezone information. Adapters that serve users
+  across timezones should convert to the viewer's timezone before building events.
+</Warning>
+
+### Capabilities
+
+The timeline view and rescheduling are opt-in adapter capabilities:
+
+```php
+use Illuminate\Http\Request;
+use Lattice\Calendar\ProvidesCalendarResources;
+use Lattice\Calendar\ReschedulesCalendarEvents;
+use Lattice\Calendar\ResourceGroup;
+
+final class ProjectPlanAdapter implements CalendarAdapter, ProvidesCalendarResources, ReschedulesCalendarEvents
 {
     public function groups(): array
     {
         return [
             ResourceGroup::make('projects', 'Projects')->resources([
                 ['id' => 'website-relaunch', 'label' => 'Website Relaunch'],
-                ['id' => 'mobile-app', 'label' => 'Mobile App'],
             ]),
             ResourceGroup::make('employees', 'Employees')->resources(
                 fn (): array => Employee::query()->select('id', 'name as label')->get()->toArray(),
@@ -61,130 +135,90 @@ final class ProjectPlanTimelineAdapter implements TimelineAdapter
         ];
     }
 
-    public function events(CarbonImmutable $from, CarbonImmutable $until): iterable
+    public function reschedule(Request $request): CalendarEvent
     {
-        return Assignment::query()
-            ->where('starts_at', '<', $until)
-            ->where('ends_at', '>', $from)
-            ->get()
-            ->map(fn (Assignment $assignment): Entry => Entry::make(
-                (string) $assignment->id,
-                (string) $assignment->resource_id,
-                $assignment->starts_at,
-                $assignment->ends_at,
-            )->label($assignment->title)->color($assignment->color));
+        // validate id/resourceId/start/end, persist, return the updated event
     }
 
-    public function reschedule(Request $request): Entry
-    {
-        $data = $request->validate([
-            'id' => ['required', 'string'],
-            'resourceId' => ['required', 'string', Rule::exists(Resource::class, 'id')],
-            'start' => ['required', 'date_format:Y-m-d'],
-            'end' => ['required', 'date_format:Y-m-d', 'after:start'],
-        ]);
-
-        return DB::transaction(function () use ($data): Entry {
-            $assignment = Assignment::query()->findOrFail($data['id']);
-            $assignment->update([
-                'resource_id' => $data['resourceId'],
-                'starts_at' => $data['start'],
-                'ends_at' => $data['end'],
-            ]);
-
-            return Entry::make(
-                (string) $assignment->id,
-                (string) $assignment->resource_id,
-                $assignment->starts_at,
-                $assignment->ends_at,
-            )->label($assignment->title)->color($assignment->color);
-        });
-    }
-}
-
-#[AsTimeline('project-plan')]
-final class ProjectPlanTimeline extends TimelineDefinition
-{
-    public function adapter(): TimelineAdapter
-    {
-        return app(ProjectPlanTimelineAdapter::class);
-    }
+    // ... events()
 }
 ```
 
-`ResourceGroup::make($key, $label)->resources()` takes either an inline list of
-`['id' => ..., 'label' => ...]` rows or a closure returning the same shape — evaluated once per
-render/fetch, so an Eloquent-backed group can query at read time.
+- **`ProvidesCalendarResources`** supplies the timeline's resource rows and is required as soon as
+  `CalendarView::Timeline` is enabled — serialization throws a `LogicException` otherwise.
+  `ResourceGroup::make($key, $label)->resources()` takes either an inline list of
+  `['id' => ..., 'label' => ...]` rows or a closure returning the same shape, evaluated once per
+  render. Timeline lanes lay out the events bound to a resource via `->resource()`; the month view
+  shows every event regardless of binding.
+- **`ReschedulesCalendarEvents`** enables drag-to-reschedule in the timeline view. Without it the
+  calendar renders read-only and its `PATCH` endpoint responds `405`.
 
-The adapter is the only application-facing contract. The calendar package does not depend on
-Eloquent or a particular storage model. The adapter owns authorization rules beyond the
-definition's `authorize()`, validation, translations, persistence, and transactions. Validation
-failures can use Laravel's normal translated validation response; the board restores the previous
-position and displays the returned message.
+### Actions
 
-Render it with `Timeline::use()`:
+Clicks are wired to regular [Lattice actions](/actions/overview/):
 
 ```php
-use Lattice\Calendar\Components\Timeline;
-
-Timeline::use(ProjectPlanTimeline::class)
-    ->from('2026-08-01')
-    ->days(90);
+Calendar::use(CompanyCalendar::class)
+    ->eventAction(ShowEventAction::class)
+    ->dayAction(PlanDayAction::class);
 ```
 
-Without `->from()`, the board opens on the start of the current week minus one week, so "today"
-sits inside the initial page rather than at its edge. `->days()` sets the initially rendered
-window (default 90) — navigating and zooming fetch more as needed, see below.
+An event click posts `{ eventId, ...context }` and a day click posts `{ date }` to the sealed
+action endpoint; the returned effects (toast, modal, redirect, …) dispatch as usual. Events and
+day cells are only interactive when the matching action is configured.
 
-### Entries
+## Month view
 
-`Entry::make($id, $resourceId, $start, $end)` is day-granular and **`$end` is exclusive** — a
-one-day entry has `$end` one day after `$start`, same convention as the `events()` window. Dates
-accept a `DateTimeInterface` or a `Y-m-d` string. `->label()` sets the bar text and
-`->color()` accepts any Lattice color (see [Enums reference](/advanced/enums/)); entries left
-uncolored render in the theme's primary tone.
+The month grid follows the viewer's locale for week start and weekday labels, spans multi-day
+events across day cells with stable per-week lanes, and marks today. Three event lanes are visible
+per week; further events collapse into a per-day **"+N more"** button that opens a popover listing
+everything on that day.
 
-Entries on the same resource that overlap in time are not stacked by the server — the client
-assigns them to lanes automatically and grows the row to fit, so `events()` can simply return
-whatever overlaps.
+The grid is keyboard-navigable: arrow keys move the focused day (crossing a month boundary
+navigates), <kbd>PageUp</kbd>/<kbd>PageDown</kbd> jump a month, and <kbd>Enter</kbd> fires the day
+action. Prev/next/today controls and the month title round out the header; navigating prefetches
+the adjacent months' grids.
 
-Each `Entry` represents one resource assignment. If one logical event belongs to several
-resources, return one entry per assignment with a stable, unique entry ID. Moving one of those
-entries replaces that assignment's resource, start, and end together; the other assignments are
-unchanged.
+## Timeline view
+
+The timeline draws each resource's events as bars against a sticky month/calendar-week/day header,
+with weekend columns striped and a marker line for today. Toolbar controls: `‹`/`›` step the
+visible window by a week, **Today** recenters on it, and `−`/`+` zoom the day column width
+(10–64px) without changing how many days are loaded. Resource groups collapse independently via
+their chevron. Overlapping same-resource events stack into lanes automatically, growing the row —
+`events()` can simply return whatever overlaps.
+
+Timeline lane layout is day-granular: a timed event occupies the calendar days it touches.
 
 ### Rescheduling
 
-Drag an entry to a resource row to change its resource and dates in one operation. Keyboard users
-can focus an entry and press <kbd>Control</kbd>+<kbd>Shift</kbd> with an arrow key: left/right moves
-by one day and up/down moves to the adjacent resource. The client updates immediately while the
-adapter runs, then either applies the returned entry or rolls back and announces the adapter's
-translated error message.
+Drag an event to a resource row to change its resource and dates in one operation, or drag either
+edge to resize. Keyboard users can focus an event and press <kbd>Control</kbd>+<kbd>Shift</kbd>
+with an arrow key: left/right moves by one day and up/down moves to the adjacent resource. The
+client updates immediately while the adapter runs, then either applies the returned event or rolls
+back and announces the adapter's translated error message. Each event represents one resource
+assignment — if one logical event belongs to several resources, return one event per assignment
+with a stable, unique ID.
 
-## Navigation, zoom, and lazy loading
+## Endpoint and lazy loading
 
-The header is sticky in three rows — month, calendar week, and day — with weekend columns
-striped and a marker line for today. Toolbar controls: `‹`/`›` step the visible window by a week,
-**Today** recenters on it, and `−`/`+` zoom the day column width (10–64px) without changing how
-many days are loaded. Resource groups collapse independently via their chevron.
+Navigating past the initially loaded window fetches the missing range from the definition's
+endpoint, merging it into the shared client-side cache rather than re-fetching already-seen days —
+the same signed-reference pattern Lattice tables and trees use. The package registers its own
+route (there is no core routes seam), following Lattice's group conventions:
+`config('lattice.calendars.middleware', ['web', 'auth'])` and
+`config('lattice.calendars.endpoint', 'lattice/calendars/{calendar}')`.
 
-Navigating past the initially rendered `days` window fetches the missing range from the
-definition's endpoint, merging it into what is already loaded client-side rather than re-fetching
-already-seen days — the same signed-reference pattern Lattice tables and trees use. The package
-registers its own route (there is no core routes seam), following Lattice's group conventions:
-`config('lattice.timelines.middleware', ['web', 'auth'])` and
-`config('lattice.timelines.endpoint', 'lattice/timelines/{timeline}')`.
-
-`GET lattice/timelines/{timeline}?from=Y-m-d&to=Y-m-d` (`to` exclusive) re-resolves the
-definition from its sealed reference and calls `adapter()->events($from, $to)` again —
-`authorize()` on the
+`GET lattice/calendars/{calendar}?from=Y-m-d&to=Y-m-d` (`to` exclusive) re-resolves the definition
+from its sealed reference and calls `adapter()->events($from, $to)` again — `authorize()` on the
 definition gates both the initial render and every window fetch, mirroring
 [trees](/packages/tree/#lazy-loading) and the [signing machinery](/core/authorization/) behind
 them.
 
-`PATCH lattice/timelines/{timeline}` accepts `id`, `resourceId`, `start`, and `end`, then calls
-`adapter()->reschedule($request)`. Its success response contains the updated entry. Failed Laravel
-validation responses are forwarded without replacing their translated message.
+`PATCH lattice/calendars/{calendar}` accepts `id`, `resourceId`, `start`, and `end`, then calls
+`reschedule($request)` on adapters implementing `ReschedulesCalendarEvents`. Its success response
+contains the updated event; failed Laravel validation responses are forwarded without replacing
+their translated message.
 
 ## Translations
 

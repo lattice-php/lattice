@@ -92,16 +92,17 @@ export function buildAxis(
 
 /**
  * Greedy first-free-lane interval partitioning: sorted by (start asc, span
- * desc, id asc) for a deterministic, stable layout, then each bar takes the
- * first lane whose last-placed bar already ended at or before its start —
- * `end` is exclusive, so a bar starting exactly where another ends shares a
- * lane instead of stacking.
+ * desc, order-or-id asc) for a deterministic, stable layout, then each bar
+ * takes the first lane whose last-placed bar already ended at or before its
+ * start — `end` is exclusive, so a bar starting exactly where another ends
+ * shares a lane instead of stacking.
  */
-export function assignLanes<T extends { id: string; start: number; span: number }>(
+export function assignLanes<T extends { id: string; start: number; span: number; order?: string }>(
   bars: T[],
 ): { bars: (T & { lane: number })[]; laneCount: number } {
   const sorted = [...bars].sort(
-    (a, b) => a.start - b.start || b.span - a.span || a.id.localeCompare(b.id),
+    (a, b) =>
+      a.start - b.start || b.span - a.span || (a.order ?? a.id).localeCompare(b.order ?? b.id),
   );
   const laneEnds: number[] = [];
   const placed: (T & { lane: number })[] = [];

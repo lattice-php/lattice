@@ -1,94 +1,24 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { apiFetch, apiJson } from "@lattice-php/core";
-import { addDays } from "@lattice-php/ui/format/temporal";
-import type { TimelineEventData, TimelineRescheduleRequest } from "./types";
+import { mergeRanges, uncoveredGaps, type DateRange } from "./date-ranges";
+import type { CalendarEventData, CalendarRescheduleRequest } from "./types";
 
-export type DateRange = readonly [string, string];
-
-/** Sorts and coalesces overlapping or touching ranges into the fewest covering ranges. */
-export function mergeRanges(ranges: readonly DateRange[]): DateRange[] {
-  if (ranges.length === 0) {
-    return [];
-  }
-
-  const sorted = [...ranges].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
-  const merged: [string, string][] = [[sorted[0][0], sorted[0][1]]];
-
-  for (const [from, to] of sorted.slice(1)) {
-    const last = merged[merged.length - 1];
-
-    if (from <= last[1]) {
-      if (to > last[1]) {
-        last[1] = to;
-      }
-    } else {
-      merged.push([from, to]);
-    }
-  }
-
-  return merged;
-}
-
-/**
- * The gap(s) within [from, to) not covered by `loadedRanges`. Each returned
- * gap is itself half-open, so a caller can request exactly the missing slice.
- */
-export function uncoveredGaps(
-  loadedRanges: readonly DateRange[],
-  from: string,
-  to: string,
-): DateRange[] {
-  if (from >= to) {
-    return [];
-  }
-
-  const merged = mergeRanges(loadedRanges);
-  const gaps: DateRange[] = [];
-  let cursor = from;
-
-  for (const [rangeFrom, rangeTo] of merged) {
-    if (rangeTo <= cursor) {
-      continue;
-    }
-
-    if (rangeFrom >= to) {
-      break;
-    }
-
-    if (rangeFrom > cursor) {
-      gaps.push([cursor, rangeFrom]);
-    }
-
-    cursor = rangeTo > cursor ? (rangeTo < to ? rangeTo : to) : cursor;
-
-    if (cursor >= to) {
-      break;
-    }
-  }
-
-  if (cursor < to) {
-    gaps.push([cursor, to]);
-  }
-
-  return gaps;
-}
-
-export type UseTimelineEventsOptions = {
+export type UseCalendarEventsOptions = {
   endpoint: string | null;
   componentRef: string | null;
-  initialEvents: TimelineEventData[];
+  initialEvents: CalendarEventData[];
   initialFrom: string;
-  days: number;
+  initialTo: string;
 };
 
-export type UseTimelineEventsReturn = {
-  events: Map<string, TimelineEventData>;
-  eventsForResource: (resourceId: string) => TimelineEventData[];
+export type UseCalendarEventsReturn = {
+  events: Map<string, CalendarEventData>;
+  eventsForResource: (resourceId: string) => CalendarEventData[];
   ensureRange: (from: string, to: string) => void;
   isRescheduling: (id: string) => boolean;
   loading: boolean;
   reschedule: (
-    request: TimelineRescheduleRequest,
+    request: CalendarRescheduleRequest,
   ) => Promise<{ accepted: boolean; message: string | null }>;
 };
 
@@ -96,7 +26,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function eventFromResponse(value: unknown): TimelineEventData | null {
+function eventFromResponse(value: unknown): CalendarEventData | null {
   if (!isRecord(value) || !isRecord(value.event)) {
     return null;
   }
@@ -105,15 +35,15 @@ function eventFromResponse(value: unknown): TimelineEventData | null {
 
   if (
     typeof event.id !== "string" ||
-    typeof event.resourceId !== "string" ||
     typeof event.start !== "string" ||
     typeof event.end !== "string" ||
-    typeof event.label !== "string"
+    typeof event.label !== "string" ||
+    typeof event.allDay !== "boolean"
   ) {
     return null;
   }
 
-  return event as TimelineEventData;
+  return event as unknown as CalendarEventData;
 }
 
 function errorMessage(value: unknown): string | null {
@@ -138,19 +68,19 @@ function errorMessage(value: unknown): string | null {
   return typeof value.message === "string" && value.message !== "" ? value.message : null;
 }
 
-export function useTimelineEvents({
+export function useCalendarEvents({
   endpoint,
   componentRef,
   initialEvents,
   initialFrom,
-  days,
-}: UseTimelineEventsOptions): UseTimelineEventsReturn {
-  const [events, setEvents] = useState<Map<string, TimelineEventData>>(
+  initialTo,
+}: UseCalendarEventsOptions): UseCalendarEventsReturn {
+  const [events, setEvents] = useState<Map<string, CalendarEventData>>(
     () => new Map(initialEvents.map((event) => [event.id, event])),
   );
   const [loading, setLoading] = useState(false);
   const [rescheduling, setRescheduling] = useState<Set<string>>(new Set());
-  const loadedRangesRef = useRef<DateRange[]>([[initialFrom, addDays(initialFrom, days)]]);
+  const loadedRangesRef = useRef<DateRange[]>([[initialFrom, initialTo]]);
   const inFlightRef = useRef<Map<string, Promise<void>>>(new Map());
   const reschedulingRef = useRef<Set<string>>(new Set());
 
@@ -174,7 +104,7 @@ export function useTimelineEvents({
         return;
       }
 
-      const request = apiJson<{ events: TimelineEventData[] }>(
+      const request = apiJson<{ events: CalendarEventData[] }>(
         `${endpoint}?from=${gapFrom}&to=${gapTo}`,
         { ref: componentRef },
       )
@@ -204,7 +134,7 @@ export function useTimelineEvents({
 
   const eventsForResource = useCallback(
     (resourceId: string) => {
-      const list: TimelineEventData[] = [];
+      const list: CalendarEventData[] = [];
 
       for (const event of events.values()) {
         if (event.resourceId === resourceId) {
@@ -219,7 +149,7 @@ export function useTimelineEvents({
 
   const reschedule = useCallback(
     async (
-      request: TimelineRescheduleRequest,
+      request: CalendarRescheduleRequest,
     ): Promise<{ accepted: boolean; message: string | null }> => {
       const previous = events.get(request.id);
 
