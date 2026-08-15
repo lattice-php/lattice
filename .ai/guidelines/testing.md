@@ -45,6 +45,13 @@ the same for Pest and Vitest. Do not write — and delete on sight:
 - **Implementation-detail pins**: mock call wiring, React element internals, DOM nesting, render counts — except where
   fine-grained subscription is the module's documented contract.
 
+## Keep behavior in its owning package
+
+Before writing a test, identify the lowest package that owns the behavior. Reusable behavior belongs in that
+package's Pest or Vitest suite, not in framework, workbench, docs, or every consumer. If an external dependency owns
+the behavior, add or fix its upstream test instead of creating a Lattice test as a substitute. Keep cross-package
+integration, Lattice-specific adapters, and local configuration coverage at their observable consumer boundary.
+
 ## Test helpers (TypeScript)
 
 - Reuse the owned helpers before writing local ones: `@lattice-php/core/test-support` (`fakeNode`,

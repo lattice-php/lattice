@@ -1,6 +1,6 @@
 ---
 name: test-audit
-description: Use when auditing or cleaning up the Lattice test suites (Pest or Vitest) — duplicated or misplaced test helpers, low-value or obsolete tests, jsdom tests fighting the environment, suite-wide config drift — or when asked to "get rid of useless tests", align testing across packages, or consolidate test infrastructure.
+description: Use when auditing or cleaning up the Lattice test suites (Pest or Vitest) — duplicated or misplaced test helpers, low-value or obsolete tests, tests owned by another package or library, jsdom tests fighting the environment, suite-wide config drift — or when asked to "get rid of useless tests", align testing across packages, or consolidate test infrastructure.
 ---
 
 # Test Suite Audit & Cleanup
@@ -34,6 +34,9 @@ Not for writing individual new tests — the Testing guideline covers that bar d
    - Which configs actually run in CI? (`.github/workflows/` is the truth — locally-runnable configs that CI never
      executes are drift factories and delete candidates.)
    - Inventory helper modules and setup files; diff near-duplicates.
+   - Map package ownership before judging coverage. Reusable behavior belongs in the lowest Lattice
+     package that owns it; behavior owned by an external dependency belongs in that upstream suite.
+     Cross-package integration and Lattice-specific configuration remain locally owned.
    - Trace helper imports across packages. An upward import (leaf package pulling framework test sources) or a
      sideways copy-paste is a relocation finding.
    - Grep for inline duplication clusters: fetch/XHR stubs, router and Inertia mocks, `matchMedia`/`ResizeObserver`
@@ -47,14 +50,17 @@ Not for writing individual new tests — the Testing guideline covers that bar d
      duplicate).
    - **TRIM** — the test is sound but carries dead assertions (class pins, redundant absence checks) or duplicates a
      sibling; also collapse N near-identical tests into one `it.each`/dataset.
-   - **MOVE** — the subject lives in another package/layer, or the behavior is already owned there.
+   - **MOVE** — the subject or reusable behavior belongs in another package or external library.
+     Name the owning package and its exact surviving or required test.
    - **CONVERT** — the test fights its environment: jsdom → Vitest browser project, or a Pest feature test asserting
      UI → Pest browser test.
    Also collect **exemplars** — the suite's best tests define the house style the survivors should match.
 
 4. **Verify before deleting — the iron rule.** A test dies only when its behavior is worthless *or* has exactly one
-   surviving owner, named in the verdict. A CONVERT deletes the original only after its replacement passes. Never
-   batch-delete on category alone; the audit lists are hypotheses until checked against the surviving suite.
+   surviving owner, named in the verdict. If behavior lacks coverage in its owning package or library, add the test
+   there before deleting the misplaced test; never retain a consumer or aggregate-package test as a substitute. A
+   CONVERT deletes the original only after its replacement passes. Never batch-delete on category alone; the audit
+   lists are hypotheses until checked against the surviving suite.
 
 5. **Apply in ordered commits.** Order matters:
    1. *Config consolidation first* — otherwise you centralize helpers into N drifting places again.
@@ -78,6 +84,7 @@ Not for writing individual new tests — the Testing guideline covers that bar d
 | Sound test + dead class/absence assertions | TRIM | sidebar `md:*` mirrors next to `data-collapsed` |
 | N clones differing by one value | TRIM to `it.each`/dataset | invalid-date matrices, effect-bridge tests |
 | Framework test whose subject is a ui/form component | MOVE (often DELETE: already covered there) | menu-item-action vs button-action |
+| Consumer test re-proving another package or library's reusable contract | MOVE; add or identify owning coverage, then DELETE here | framework test for a leaf-package contract |
 | Stubbed `getBoundingClientRect`/`matchMedia`, prototype patches, hand-invoked drag callbacks | CONVERT to browser | tree-move, file-upload, table resize |
 | Fake timers around debounce feeding real UI | CONVERT (poll real timing) | precognitive typing test |
 
@@ -92,6 +99,10 @@ Not for writing individual new tests — the Testing guideline covers that bar d
 - **Agents recreate deleted patterns from "sibling convention".** After a purge, an unguided agent asked to test a
   presentational component will rebuild the exact class-pinning file you deleted. The Testing guideline is the
   counterweight — point implementation subagents at it explicitly.
+- **Consumer tests become a substitute package suite.** Do not add or keep a test in framework,
+  workbench, docs, or another consumer because owning coverage is missing. Put reusable behavior in
+  the lowest owning package; keep only cross-package integration and local configuration coverage
+  at the consumer boundary.
 - **Browser failure artifacts** (`__screenshots__/`, `.vitest-attachments/`) appear on red runs — keep them
   gitignored and out of commits (`git add -A` after a red browser run is how they sneak in).
 - **A test that only passes because the environment is fake** (all-zero rects making any pixel number "correct",

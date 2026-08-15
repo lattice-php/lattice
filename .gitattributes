@@ -29,6 +29,7 @@
 /CLAUDE.md export-ignore
 /_ide_helper.php export-ignore
 /artisan export-ignore
+/bin/** export-ignore
 /astro.config.mjs export-ignore
 /boost.json export-ignore
 /package-lock.json export-ignore
