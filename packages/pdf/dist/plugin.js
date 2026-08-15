@@ -16382,43 +16382,49 @@ function Aa(e) {
 var ja = h((() => {}));
 //#endregion
 //#region resources/js/pdf-page.tsx
-function Ma({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, currentStart: c }) {
+function Ma(e, t) {
+	e instanceof nn || console.error(`[lattice/pdf] ${t}`, e);
+}
+function Na({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, currentStart: c }) {
 	let d = o(null), f = o(null), p = o(null), m = o(null), [h, g] = s(0);
 	return r(() => {
 		let r = d.current, a = f.current, o = p.current;
 		if (!r || !a || !o) return;
 		let s = !1, c = null;
 		return (async () => {
+			let l = await e.getPage(t);
+			if (s) return;
+			let u = l.getViewport({ scale: n }), d = window.devicePixelRatio || 1;
+			a.width = Math.floor(u.width * d), a.height = Math.floor(u.height * d), a.style.width = `${Math.floor(u.width)}px`, a.style.height = `${Math.floor(u.height)}px`, r.style.setProperty("--scale-factor", String(u.scale));
+			let f = l.render({
+				canvas: a,
+				viewport: u,
+				transform: d === 1 ? void 0 : [
+					d,
+					0,
+					0,
+					d,
+					0,
+					0
+				]
+			}), p = null;
+			c = () => {
+				f.cancel(), p?.cancel();
+			}, f.promise.catch((e) => Ma(e, `rendering page ${t} failed`));
 			try {
-				let l = await e.getPage(t), { content: u } = await i.get(t);
+				let { content: e } = await i.get(t);
 				if (s) return;
-				let d = l.getViewport({ scale: n }), f = window.devicePixelRatio || 1;
-				a.width = Math.floor(d.width * f), a.height = Math.floor(d.height * f), a.style.width = `${Math.floor(d.width)}px`, a.style.height = `${Math.floor(d.height)}px`, r.style.setProperty("--scale-factor", String(d.scale));
-				let p = l.render({
-					canvas: a,
-					viewport: d,
-					transform: f === 1 ? void 0 : [
-						f,
-						0,
-						0,
-						f,
-						0,
-						0
-					]
-				});
-				o.textContent = "";
-				let h = new ai({
-					textContentSource: u,
+				o.textContent = "", p = new ai({
+					textContentSource: e,
 					container: o,
-					viewport: d
-				});
-				c = () => {
-					p.cancel(), h.cancel();
-				}, await Promise.all([p.promise, h.render()]), s || (m.current = h, g((e) => e + 1));
+					viewport: u
+				}), await p.render(), s || (m.current = p, g((e) => e + 1));
 			} catch (e) {
-				if (!(e instanceof nn)) throw e;
+				s || Ma(e, `text layer for page ${t} failed`);
 			}
-		})(), () => {
+		})().catch((e) => {
+			s || Ma(e, `loading page ${t} failed`);
+		}), () => {
 			s = !0, m.current = null, c?.();
 		};
 	}, [
@@ -16428,12 +16434,18 @@ function Ma({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 		i
 	]), r(() => {
 		let e = m.current;
-		e && (Aa({
+		if (e && (Aa({
 			textDivs: e.textDivs,
 			items: e.textContentItemsStr,
 			matches: a,
 			currentStart: c
-		}), c !== null && d.current?.querySelector("mark.lt-pdf-match--current")?.scrollIntoView({ block: "center" }));
+		}), c !== null)) {
+			let e = d.current?.querySelector("mark.lt-pdf-match--current"), t = d.current?.closest(".lt-pdf-scroll");
+			if (e && t) {
+				let n = e.getBoundingClientRect().top - t.getBoundingClientRect().top + t.scrollTop;
+				t.scrollTo({ top: Math.max(0, n - t.clientHeight / 2) });
+			}
+		}
 	}, [
 		a,
 		c,
@@ -16448,15 +16460,16 @@ function Ma({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 		})]
 	});
 }
-var Na = h((() => {
+var Pa = h((() => {
 	Ea(), ja();
 }));
 //#endregion
 //#region resources/js/page-list.tsx
-function Pa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache: u, search: d, onVisiblePageChange: f }) {
+function Fa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache: u, search: d, onVisiblePageChange: f }) {
 	let p = o([]), [m, h] = s(/* @__PURE__ */ new Set([1])), g = Array.from({ length: n.numPages }, (e, t) => t + 1);
 	i(e, () => ({ scrollToPage(e) {
-		p.current[e - 1]?.scrollIntoView({ block: "start" });
+		let n = t.current, r = p.current[e - 1];
+		n && r && n.scrollTo({ top: Math.max(0, r.offsetTop - 16) });
 	} })), r(() => {
 		let e = t.current;
 		if (!e) return;
@@ -16508,7 +16521,7 @@ function Pa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache
 				height: Math.floor(c.height * a),
 				width: "100%"
 			},
-			children: m.has(e) ? /* @__PURE__ */ l(Ma, {
+			children: m.has(e) ? /* @__PURE__ */ l(Na, {
 				currentStart: _?.page === e ? _.start : null,
 				doc: n,
 				matches: d.matchesForPage(e),
@@ -16519,12 +16532,12 @@ function Pa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache
 		}, e))
 	});
 }
-var Fa = h((() => {
-	Na();
+var Ia = h((() => {
+	Pa();
 }));
 //#endregion
 //#region resources/js/toolbar.tsx
-function Ia(e) {
+function La(e) {
 	let { t } = (0, y.useT)("pdf"), [n, i] = s(String(e.currentPage));
 	r(() => {
 		i(String(e.currentPage));
@@ -16562,7 +16575,7 @@ function Ia(e) {
 				children: [
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.zoom.out", "Zoom out"),
-						className: La,
+						className: Ra,
 						disabled: !e.canZoomOut,
 						onClick: e.onZoomOut,
 						type: "button",
@@ -16578,7 +16591,7 @@ function Ia(e) {
 					}),
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.zoom.in", "Zoom in"),
-						className: La,
+						className: Ra,
 						disabled: !e.canZoomIn,
 						onClick: e.onZoomIn,
 						type: "button",
@@ -16624,7 +16637,7 @@ function Ia(e) {
 					}),
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.search.previous", "Previous match"),
-						className: La,
+						className: Ra,
 						disabled: e.matchCount === 0,
 						onClick: e.onPreviousMatch,
 						type: "button",
@@ -16635,7 +16648,7 @@ function Ia(e) {
 					}),
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.search.next", "Next match"),
-						className: La,
+						className: Ra,
 						disabled: e.matchCount === 0,
 						onClick: e.onNextMatch,
 						type: "button",
@@ -16646,7 +16659,7 @@ function Ia(e) {
 					})
 				] }) : null, e.downloadable ? /* @__PURE__ */ l("a", {
 					"aria-label": t("pdf.download", "Download"),
-					className: La,
+					className: Ra,
 					download: e.filename ?? "",
 					href: e.url,
 					children: /* @__PURE__ */ l(y.Icon, {
@@ -16658,31 +16671,43 @@ function Ia(e) {
 		]
 	});
 }
-var La, Ra = h((() => {
-	x(), La = "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
+var Ra, za = h((() => {
+	x(), Ra = "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
 }));
 //#endregion
 //#region resources/js/text-cache.ts
-function za(e) {
+async function Ba(e) {
+	let t = e.streamTextContent().getReader(), n = {
+		items: [],
+		styles: {},
+		lang: null
+	};
+	for (;;) {
+		let { done: e, value: r } = await t.read();
+		if (e) return n;
+		n.lang ??= r.lang, Object.assign(n.styles, r.styles), n.items.push(...r.items);
+	}
+}
+function Va(e) {
 	let t = /* @__PURE__ */ new Map();
 	return {
 		numPages: e.numPages,
 		get(n) {
 			let r = t.get(n);
 			return r || (r = e.getPage(n).then(async (e) => {
-				let t = await e.getTextContent();
+				let t = await Ba(e);
 				return {
 					content: t,
 					items: t.items.map((e) => "str" in e ? e.str : "")
 				};
-			}), t.set(n, r)), r;
+			}), r.catch(() => t.delete(n)), t.set(n, r)), r;
 		}
 	};
 }
-var Ba = h((() => {}));
+var Ha = h((() => {}));
 //#endregion
 //#region resources/js/use-pdf-document.ts
-function Va(e) {
+function Ua(e) {
 	let [t, n] = s({
 		doc: null,
 		error: !1
@@ -16721,12 +16746,12 @@ function Va(e) {
 		e.wasmUrl
 	]), t;
 }
-var Ha = h((() => {
+var Wa = h((() => {
 	Ea();
 }));
 //#endregion
 //#region resources/js/use-search.ts
-function Ua(e) {
+function Ga(e) {
 	let [t, n] = s(""), [i, o] = s([]), [c, l] = s(-1);
 	r(() => {
 		if (!e || t.trim() === "") {
@@ -16742,8 +16767,10 @@ function Ua(e) {
 					r.push(...Oa(a, i, t));
 				}
 				o(r), l(r.length > 0 ? 0 : -1);
-			})();
-		}, Wa);
+			})().catch((e) => {
+				n || (console.error("[lattice/pdf] search failed", e), o([]), l(-1));
+			});
+		}, Ka);
 		return () => {
 			n = !0, clearTimeout(r);
 		};
@@ -16773,15 +16800,15 @@ function Ua(e) {
 		}
 	};
 }
-var Wa, Ga = h((() => {
-	ja(), Wa = 250;
+var Ka, qa = h((() => {
+	ja(), Ka = 250;
 }));
 //#endregion
 //#region resources/js/use-zoom.ts
-function Ka(e) {
-	return Math.min(Ya, Math.max(Ja, e));
+function Ja(e) {
+	return Math.min(Za, Math.max(Xa, e));
 }
-function qa(e) {
+function Ya(e) {
 	let [t, n] = s(e.initialZoom ?? "fit-width"), [i, a] = s(null);
 	r(() => {
 		let t = e.containerRef.current;
@@ -16794,40 +16821,40 @@ function qa(e) {
 			n.disconnect();
 		};
 	}, [e.containerRef]);
-	let o = i !== null && e.baseWidth !== null && e.baseWidth > 0 ? Ka((i - Za) / e.baseWidth) : null, c = t === "fit-width" ? o : t;
+	let o = i !== null && e.baseWidth !== null && e.baseWidth > 0 ? Ja((i - $a) / e.baseWidth) : null, c = t === "fit-width" ? o : t;
 	return {
 		scale: c,
 		percent: c === null ? null : Math.round(c * 100),
 		isFitWidth: t === "fit-width",
-		canZoomIn: c === null || c < Ya,
-		canZoomOut: c === null || c > Ja,
+		canZoomIn: c === null || c < Za,
+		canZoomOut: c === null || c > Xa,
 		zoomIn() {
-			n(Ka((c ?? 1) * Xa));
+			n(Ja((c ?? 1) * Qa));
 		},
 		zoomOut() {
-			n(Ka((c ?? 1) / Xa));
+			n(Ja((c ?? 1) / Qa));
 		},
 		fitWidth() {
 			n("fit-width");
 		}
 	};
 }
-var Ja, Ya, Xa, Za, Qa = h((() => {
-	Ja = .25, Ya = 4, Xa = 1.25, Za = 32;
-})), $a = /* @__PURE__ */ g({ default: () => eo }), eo, to = h((() => {
-	Ea(), x(), Fa(), Ra(), Ba(), Ha(), Ga(), Qa(), eo = ({ node: e }) => {
+var Xa, Za, Qa, $a, eo = h((() => {
+	Xa = .25, Za = 4, Qa = 1.25, $a = 32;
+})), to = /* @__PURE__ */ g({ default: () => no }), no, ro = h((() => {
+	Ea(), x(), Ia(), za(), Ha(), Wa(), qa(), eo(), no = ({ node: e }) => {
 		let { t } = (0, y.useT)("pdf"), i = e.props;
 		Jr.workerSrc !== i.workerUrl && (Jr.workerSrc = i.workerUrl);
-		let { doc: c, error: d } = Va({
+		let { doc: c, error: d } = Ua({
 			url: i.url,
 			cmapUrl: i.cmapUrl,
 			standardFontDataUrl: i.standardFontDataUrl,
 			wasmUrl: i.wasmUrl
-		}), f = a(() => c ? za(c) : null, [c]), [p, m] = s(null), h = o(null), g = o(null), [_, v] = s(1), b = qa({
+		}), f = a(() => c ? Va(c) : null, [c]), [p, m] = s(null), h = o(null), g = o(null), [_, v] = s(1), b = Ya({
 			containerRef: h,
 			baseWidth: p?.width ?? null,
 			initialZoom: i.initialZoom
-		}), x = Ua(i.searchable ? f : null);
+		}), x = Ga(i.searchable ? f : null);
 		r(() => {
 			if (!c) {
 				m(null), v(1);
@@ -16842,6 +16869,8 @@ var Ja, Ya, Xa, Za, Qa = h((() => {
 						height: e.height
 					});
 				}
+			}).catch((t) => {
+				e || console.error("[lattice/pdf] measuring the first page failed", t);
 			}), () => {
 				e = !0;
 			};
@@ -16859,7 +16888,7 @@ var Ja, Ya, Xa, Za, Qa = h((() => {
 			children: t("pdf.error", "The document could not be loaded.")
 		}) : /* @__PURE__ */ u("div", {
 			className: "lt-pdf-engine",
-			children: [/* @__PURE__ */ l(Ia, {
+			children: [/* @__PURE__ */ l(La, {
 				canZoomIn: b.canZoomIn,
 				canZoomOut: b.canZoomOut,
 				currentMatch: x.currentIndex + 1,
@@ -16882,7 +16911,7 @@ var Ja, Ya, Xa, Za, Qa = h((() => {
 			}), /* @__PURE__ */ l("div", {
 				className: "lt-pdf-scroll",
 				ref: h,
-				children: c && f && p && b.scale !== null ? /* @__PURE__ */ l(Pa, {
+				children: c && f && p && b.scale !== null ? /* @__PURE__ */ l(Fa, {
 					baseSize: p,
 					doc: c,
 					scrollRootRef: h,
@@ -16904,18 +16933,19 @@ var Ja, Ya, Xa, Za, Qa = h((() => {
 }));
 //#endregion
 //#region resources/js/engine-registry.ts
-function no() {
-	return (0, y.useExtensionRegistry)(ro);
+function io() {
+	return (0, y.useExtensionRegistry)(ao);
 }
-var ro, io = h((() => {
-	x(), ro = "pdf.engine";
-})), ao = /* @__PURE__ */ g({ default: () => oo }), oo, so = h((() => {
-	x(), io(), oo = ({ node: t }) => {
-		let { t: n } = (0, y.useT)("pdf"), r = no().engine;
+var ao, oo = h((() => {
+	x(), ao = "pdf.engine";
+})), so = /* @__PURE__ */ g({ default: () => co }), co, lo = h((() => {
+	x(), oo(), co = ({ node: t }) => {
+		let { t: n } = (0, y.useT)("pdf"), r = io().engine;
 		return r ? /* @__PURE__ */ l("div", {
 			className: "lt-pdf",
+			"data-lattice-component": (0, y.nodeIdentity)(t),
 			"data-test": "pdf-viewer",
-			style: { height: t.props.height },
+			style: t.props.maxHeight === null ? { height: t.props.height } : { maxHeight: t.props.maxHeight },
 			children: /* @__PURE__ */ l(e, {
 				fallback: /* @__PURE__ */ l("div", {
 					className: "lt-pdf-status",
@@ -16936,11 +16966,11 @@ var ro, io = h((() => {
 //#endregion
 //#region resources/js/plugin.ts
 x();
-var co = t(() => Promise.resolve().then(() => (to(), $a))), lo = {
+var uo = t(() => Promise.resolve().then(() => (ro(), to))), fo = {
 	name: "lattice/pdf",
-	components: { pdf: (0, y.lazyComponent)(() => Promise.resolve().then(() => (so(), ao))) },
-	extensions: { "pdf.engine": { engine: co } },
+	components: { pdf: (0, y.lazyComponent)(() => Promise.resolve().then(() => (lo(), so))) },
+	extensions: { "pdf.engine": { engine: uo } },
 	i18n: { namespace: "pdf" }
 };
 //#endregion
-export { lo as default };
+export { fo as default };

@@ -14,6 +14,12 @@ type PdfPageProps = {
   currentStart: number | null;
 };
 
+function warnUnlessCancelled(error: unknown, context: string): void {
+  if (!(error instanceof RenderingCancelledException)) {
+    console.error(`[lattice/pdf] ${context}`, error);
+  }
+}
+
 export function PdfPage({
   doc,
   pageNumber,
@@ -41,50 +47,67 @@ export function PdfPage({
     let cancelRender: (() => void) | null = null;
 
     void (async () => {
+      const page = await doc.getPage(pageNumber);
+
+      if (cancelled) {
+        return;
+      }
+
+      const viewport = page.getViewport({ scale });
+      const outputScale = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(viewport.width * outputScale);
+      canvas.height = Math.floor(viewport.height * outputScale);
+      canvas.style.width = `${Math.floor(viewport.width)}px`;
+      canvas.style.height = `${Math.floor(viewport.height)}px`;
+      root.style.setProperty("--scale-factor", String(viewport.scale));
+
+      const renderTask = page.render({
+        canvas,
+        viewport,
+        transform: outputScale === 1 ? undefined : [outputScale, 0, 0, outputScale, 0, 0],
+      });
+      let textLayer: TextLayer | null = null;
+      cancelRender = () => {
+        renderTask.cancel();
+        textLayer?.cancel();
+      };
+
+      renderTask.promise.catch((error: unknown) =>
+        warnUnlessCancelled(error, `rendering page ${pageNumber} failed`),
+      );
+
+      // The text layer must never take the canvas down with it — a document
+      // whose text extraction fails still renders, it just loses selection
+      // and search on that page.
       try {
-        const page = await doc.getPage(pageNumber);
         const { content } = await textCache.get(pageNumber);
 
         if (cancelled) {
           return;
         }
 
-        const viewport = page.getViewport({ scale });
-        const outputScale = window.devicePixelRatio || 1;
-        canvas.width = Math.floor(viewport.width * outputScale);
-        canvas.height = Math.floor(viewport.height * outputScale);
-        canvas.style.width = `${Math.floor(viewport.width)}px`;
-        canvas.style.height = `${Math.floor(viewport.height)}px`;
-        root.style.setProperty("--scale-factor", String(viewport.scale));
-
-        const renderTask = page.render({
-          canvas,
-          viewport,
-          transform: outputScale === 1 ? undefined : [outputScale, 0, 0, outputScale, 0, 0],
-        });
         textContainer.textContent = "";
-        const textLayer = new TextLayer({
+        textLayer = new TextLayer({
           textContentSource: content,
           container: textContainer,
           viewport,
         });
-        cancelRender = () => {
-          renderTask.cancel();
-          textLayer.cancel();
-        };
-
-        await Promise.all([renderTask.promise, textLayer.render()]);
+        await textLayer.render();
 
         if (!cancelled) {
           layerRef.current = textLayer;
           setLayerVersion((version) => version + 1);
         }
       } catch (error) {
-        if (!(error instanceof RenderingCancelledException)) {
-          throw error;
+        if (!cancelled) {
+          warnUnlessCancelled(error, `text layer for page ${pageNumber} failed`);
         }
       }
-    })();
+    })().catch((error: unknown) => {
+      if (!cancelled) {
+        warnUnlessCancelled(error, `loading page ${pageNumber} failed`);
+      }
+    });
 
     return () => {
       cancelled = true;
@@ -108,9 +131,18 @@ export function PdfPage({
     });
 
     if (currentStart !== null) {
-      rootRef.current
-        ?.querySelector("mark.lt-pdf-match--current")
-        ?.scrollIntoView({ block: "center" });
+      const mark = rootRef.current?.querySelector("mark.lt-pdf-match--current");
+      // Scroll only the viewer's own container — scrollIntoView would also
+      // scroll the window and push the toolbar out of view.
+      const container = rootRef.current?.closest(".lt-pdf-scroll");
+
+      if (mark && container) {
+        const markTop =
+          mark.getBoundingClientRect().top -
+          container.getBoundingClientRect().top +
+          container.scrollTop;
+        container.scrollTo({ top: Math.max(0, markTop - container.clientHeight / 2) });
+      }
     }
   }, [matches, currentStart, layerVersion]);
 

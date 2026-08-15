@@ -27,6 +27,7 @@ async function renderViewer(extra: Partial<PdfViewer> = {}, into = registry) {
       downloadable: true,
       searchable: true,
       height: 480,
+      maxHeight: null,
       initialZoom: null,
       cmapUrl: null,
       standardFontDataUrl: null,
@@ -42,14 +43,48 @@ function renderedCanvas(): HTMLCanvasElement | null {
   return document.querySelector<HTMLCanvasElement>('[data-test="pdf-page"] canvas');
 }
 
+function canvasInk(): number {
+  const canvas = renderedCanvas();
+
+  if (!canvas || canvas.width === 0) {
+    return 0;
+  }
+
+  const { data } = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
+  let ink = 0;
+
+  for (let offset = 0; offset < data.length; offset += 64) {
+    if (data[offset + 3]! > 0 && data[offset]! < 200) {
+      ink += 1;
+    }
+  }
+
+  return ink;
+}
+
 it("renders the document onto a canvas with a page indicator", async () => {
   await renderViewer();
 
   await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0).toBe(true);
+  await expect.poll(() => canvasInk()).toBeGreaterThan(50);
   await expect.element(page.getByTestId("pdf-page-indicator")).toHaveTextContent("of 2");
   await expect
     .element(page.getByText("The quick brown fox jumps over the lazy dog."))
     .toBeInTheDocument();
+});
+
+it("draws actual page pixels at a retina devicePixelRatio", async () => {
+  Object.defineProperty(window, "devicePixelRatio", { configurable: true, value: 2 });
+
+  try {
+    await renderViewer({ initialZoom: 1 });
+
+    await expect.poll(() => renderedCanvas()?.width ?? 0).toBe(1224);
+    await expect.poll(() => renderedCanvas()?.style.width ?? "").toBe("612px");
+    await expect.poll(() => canvasInk()).toBeGreaterThan(50);
+  } finally {
+    delete (window as { devicePixelRatio?: number }).devicePixelRatio;
+  }
 });
 
 it("zooms the rendered page and returns to fit width", async () => {
@@ -108,6 +143,37 @@ it("searches across pages, walks matches, and wraps around", async () => {
 
   await userEvent.click(page.getByRole("button", { name: "Next match" }));
   await expect.element(page.getByTestId("pdf-match-count")).toHaveTextContent("1 of 3");
+});
+
+it("keeps the toolbar in place while search navigation scrolls only the page container", async () => {
+  await renderViewer();
+
+  await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0).toBe(true);
+
+  await userEvent.fill(page.getByLabelText("Search document…"), "quick");
+  await expect.element(page.getByTestId("pdf-match-count")).toHaveTextContent("1 of 3");
+
+  await userEvent.click(page.getByRole("button", { name: "Next match" }));
+  await userEvent.click(page.getByRole("button", { name: "Next match" }));
+  await expect.element(page.getByTestId("pdf-match-count")).toHaveTextContent("3 of 3");
+
+  const scroller = document.querySelector(".lt-pdf-scroll")!;
+  await expect.poll(() => scroller.scrollTop).toBeGreaterThan(0);
+  expect(document.scrollingElement?.scrollTop ?? 0).toBe(0);
+
+  const toolbar = document.querySelector(".lt-pdf-toolbar")!.getBoundingClientRect();
+  expect(toolbar.top).toBeGreaterThanOrEqual(0);
+});
+
+it("grows with the document under maxHeight instead of forcing a fixed height", async () => {
+  await renderViewer({ maxHeight: 5000, initialZoom: 0.5 });
+
+  await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0).toBe(true);
+
+  const shell = document.querySelector<HTMLElement>('[data-test="pdf-viewer"]')!;
+  await expect.poll(() => shell.getBoundingClientRect().height).toBeGreaterThan(240);
+  expect(shell.getBoundingClientRect().height).toBeLessThan(5000);
+  expect(shell.style.maxHeight).toBe("5000px");
 });
 
 it("reports no matches for text the document does not contain", async () => {

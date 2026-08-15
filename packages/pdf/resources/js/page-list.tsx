@@ -35,8 +35,16 @@ export function PageList({
   const pages = Array.from({ length: doc.numPages }, (_, index) => index + 1);
 
   useImperativeHandle(ref, () => ({
+    // Scroll only the viewer's own container — scrollIntoView would also
+    // scroll every outer ancestor (including the window), yanking the page
+    // and the viewer toolbar out of view.
     scrollToPage(page: number): void {
-      slotRefs.current[page - 1]?.scrollIntoView({ block: "start" });
+      const container = scrollRootRef.current;
+      const slot = slotRefs.current[page - 1];
+
+      if (container && slot) {
+        container.scrollTo({ top: Math.max(0, slot.offsetTop - 16) });
+      }
     },
   }));
 

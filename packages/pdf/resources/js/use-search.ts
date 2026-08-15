@@ -46,7 +46,13 @@ export function useSearch(textCache: PageTextCache | null): SearchState {
 
         setMatches(found);
         setCurrentIndex(found.length > 0 ? 0 : -1);
-      })();
+      })().catch((error: unknown) => {
+        if (!cancelled) {
+          console.error("[lattice/pdf] search failed", error);
+          setMatches([]);
+          setCurrentIndex(-1);
+        }
+      });
     }, SEARCH_DEBOUNCE_MS);
 
     return () => {

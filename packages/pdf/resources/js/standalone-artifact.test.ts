@@ -15,6 +15,10 @@ it("dist/plugin.js bundles the pdf engine and only imports host externals", () =
   expect(artifact).not.toContain('from"pdfjs-dist"');
   expect(artifact).not.toContain("process.env");
 
+  // getTextContent() iterates a ReadableStream with `for await`, which Safari
+  // cannot do — the engine must stay on the manual reader in text-cache.ts.
+  expect(artifact).not.toContain(".getTextContent(");
+
   // pdf.js legitimately keeps two `import(` occurrences: the runtime-expression
   // fake-worker fallback and a CDN-wrapper template string. A literal specifier
   // after `import(` would mean a code-splitting leak instead.

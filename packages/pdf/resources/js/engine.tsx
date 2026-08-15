@@ -48,12 +48,19 @@ const PdfEngine = ({ node }: PdfEngineProps): React.ReactElement => {
 
     let cancelled = false;
 
-    void doc.getPage(1).then((page) => {
-      if (!cancelled) {
-        const viewport = page.getViewport({ scale: 1 });
-        setBaseSize({ width: viewport.width, height: viewport.height });
-      }
-    });
+    doc
+      .getPage(1)
+      .then((page) => {
+        if (!cancelled) {
+          const viewport = page.getViewport({ scale: 1 });
+          setBaseSize({ width: viewport.width, height: viewport.height });
+        }
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          console.error("[lattice/pdf] measuring the first page failed", error);
+        }
+      });
 
     return () => {
       cancelled = true;
