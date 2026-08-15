@@ -31,13 +31,22 @@ open.
 
 ## Orientation and alignment
 
-- `->orientation(Orientation::Vertical)` moves the strip to the side of the panels.
+- `->orientation(Orientation::Vertical)` moves the strip to the side of the panels. Vertical tabs
+  render as a fixed-width rail on the page background — no pill panel — with the active item marked
+  by a primary accent bar and a subtle background.
 - `->alignment(TabsAlignment::…)` controls how the strip sits. Horizontal tabs default to `Stretch`
   (tabs share the full width); `Start`, `Center`, and `End` shrink the strip to its content and pin it
   left, center, or right. Vertical tabs only read `End` — it moves the strip to the right of the
   panels; every other value keeps it on the left.
 
 See the [enums reference](/advanced/enums/) for the full `Orientation` and `TabsAlignment` cases.
+
+## Responsive behavior
+
+Below the `md` breakpoint, tabs with more than three entries collapse into a native select — both
+orientations — so long tab strips stay usable on small screens. Selecting an option switches panels
+exactly like clicking the tab, including the password-confirmation redirect for gated tabs. With
+three or fewer tabs the strip is kept as-is.
 
 ## Password-confirmed tabs
 
