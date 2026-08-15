@@ -32,6 +32,14 @@ composer require lattice-php/lattice
 
 The service provider is registered automatically through Laravel package discovery, so there is nothing to add to `bootstrap/providers.php`.
 
+Run the installer after Composer finishes:
+
+```bash
+php artisan lattice:install
+```
+
+The installer finds every installed `lattice-php/*` Composer package and installs its published `@lattice-php/*` counterpart when one is needed. Composer-only component packages are skipped. It then checks the frontend entry points and lists any remaining wiring steps without rewriting your application files.
+
 Publish `config/lattice.php` to customize discovery paths, endpoints, and middleware:
 
 ```bash
@@ -50,6 +58,8 @@ The browser needs the Lattice React renderer to turn the server's component tree
 npm install @lattice-php/lattice
 ```
 
+You can run this command manually instead of `php artisan lattice:install`. The Artisan installer is useful when your application has multiple Lattice packages because it keeps their published frontend counterparts aligned automatically.
+
 The renderer's UI libraries (Radix, TipTap, i18n, and styling utilities) come with it. `react`, `react-dom`, and `@inertiajs/react` are required peer dependencies you already have in a Laravel React app; `@laravel/echo-react` and `pusher-js` are optional peers, needed only if you use Lattice's [realtime](/core/realtime/) layer. Styling is driven by Tailwind CSS v4:
 
 ```bash
@@ -65,6 +75,22 @@ Lattice targets React 19, Inertia v3, Tailwind 4, and TipTap 3. The npm package 
 Keep the Composer and npm package lines aligned. For pre-1.0 releases, install the same `0.x` minor line on both sides, e.g. `lattice-php/lattice:^0.7` with `@lattice-php/lattice@^0.7`. From 1.0 onward, keep the major versions matched, such as `1.x` with `1.x` or `2.x` with `2.x`.
 
 The split is intentional: React, React DOM, and Inertia stay as peer dependencies so the application owns its SPA runtime, while Lattice bundles its renderer internals.
+
+### Updating Lattice
+
+Preview available updates without changing files:
+
+```bash
+php artisan lattice:update --dry-run
+```
+
+Run the update when you are ready:
+
+```bash
+php artisan lattice:update
+```
+
+The command updates every installed `lattice-php/*` package to the latest stable Lattice release, raises direct Composer constraints to that release line, and updates or installs the corresponding npm packages. It stops before changing files if the Composer and npm releases do not match.
 
 ### Configure Vite
 

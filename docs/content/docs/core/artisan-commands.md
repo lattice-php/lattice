@@ -10,6 +10,25 @@ application with:
 php artisan list lattice
 ```
 
+## Package setup and updates
+
+After requiring `lattice-php/lattice` through Composer, synchronize its frontend packages:
+
+```bash
+php artisan lattice:install
+```
+
+The installer adds published npm counterparts for the installed Lattice Composer packages and lists any remaining Vite, CSS, or React wiring. In an application without `package.json`, it publishes the standalone no-build assets instead.
+
+Use `lattice:update` to move every installed Lattice package to the latest stable coordinated release:
+
+```bash
+php artisan lattice:update --dry-run
+php artisan lattice:update
+```
+
+The dry run shows package versions and planned package-manager commands without changing files. See [Installation](/introduction/installation/) and [No-Build Installation](/introduction/no-build/) for the complete workflows.
+
 ## Definition generators
 
 These commands create PHP-only definition classes under `app/`. Each accepts a required `name`

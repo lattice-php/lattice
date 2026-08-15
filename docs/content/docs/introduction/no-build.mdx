@@ -15,12 +15,14 @@ Require the Composer package as usual, then publish the prebuilt bundle:
 
 ```bash
 composer require lattice-php/lattice
-php artisan lattice:assets
+php artisan lattice:install
 ```
 
-`lattice:assets` copies the bundle that ships inside the Composer package into `public/vendor/lattice/` — the JS entry, its lazily-loaded chunks, the compiled stylesheet, the icon sprite, and a `manifest.json` that pins their versions.
+Without a `package.json`, `lattice:install` selects the no-build path and publishes the standalone bundle. You can also run `php artisan lattice:assets` directly. Both commands copy the bundle that ships inside the Composer package into `public/vendor/lattice/` — the JS entry, its lazily-loaded chunks, the compiled stylesheet, the icon sprite, and a `manifest.json` that pins their versions.
 
-Re-run it after every `composer update` that touches `lattice-php/lattice`. The bundle version must match the installed package; in debug mode, the `@latticeHead` directive throws if they drift, so a stale bundle fails loudly instead of silently serving old JS. Automate the republish by adding it to your `post-autoload-dump` script in `composer.json`:
+Use `php artisan lattice:update` for future updates. It updates all installed Lattice Composer packages and republishes the bundle when its version is stale. Run `php artisan lattice:update --dry-run` first to preview the changes.
+
+The bundle version must match the installed package; in debug mode, the `@latticeHead` directive throws if they drift, so a stale bundle fails loudly instead of silently serving old JS. If you update packages through Composer directly, automate the republish by adding `lattice:assets` to your `post-autoload-dump` script in `composer.json`:
 
 ```json
 "scripts": {

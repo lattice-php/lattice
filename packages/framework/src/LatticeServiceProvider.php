@@ -16,6 +16,7 @@ use Inertia\ResponseFactory;
 use Lattice\Actions\ActionServiceProvider;
 use Lattice\Console\Commands\DiscoverCacheCommand;
 use Lattice\Console\Commands\DiscoverClearCommand;
+use Lattice\Console\Commands\InstallCommand;
 use Lattice\Console\Commands\MakeColumnCommand;
 use Lattice\Console\Commands\MakeComponentCommand;
 use Lattice\Console\Commands\MakeDefinitionCommand;
@@ -23,6 +24,7 @@ use Lattice\Console\Commands\MakeFieldCommand;
 use Lattice\Console\Commands\PruneNotificationsCommand;
 use Lattice\Console\Commands\PublishAssetsCommand;
 use Lattice\Console\Commands\TypeScriptCommand;
+use Lattice\Console\Commands\UpdateCommand;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\AsLayout;
 use Lattice\Core\Attributes\AsRemoteSource;
@@ -69,8 +71,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
                 MakeColumnCommand::class,
                 DiscoverCacheCommand::class,
                 DiscoverClearCommand::class,
+                InstallCommand::class,
                 PruneNotificationsCommand::class,
                 PublishAssetsCommand::class,
+                UpdateCommand::class,
             ]);
     }
 
