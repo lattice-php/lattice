@@ -1,0 +1,101 @@
+@source "../js";
+
+.lt-pdf {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--lt-border);
+  border-radius: var(--lt-radius-lg);
+  background: var(--lt-background);
+  color: var(--lt-fg);
+  font-family: var(--lt-font-sans);
+}
+
+.lt-pdf-engine {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.lt-pdf-status {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  min-height: 8rem;
+  color: var(--lt-muted-fg);
+  font-size: 0.875rem;
+}
+
+.lt-pdf-scroll {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--lt-muted);
+}
+
+.lt-pdf-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+}
+
+.lt-pdf-slot {
+  display: flex;
+  justify-content: center;
+}
+
+.lt-pdf-page {
+  position: relative;
+  border: 1px solid var(--lt-border);
+  background: white;
+  box-shadow: var(--lt-shadow-md);
+}
+
+.lt-pdf-page canvas {
+  display: block;
+}
+
+/*
+ * The text layer rules mirror pdf.js's own text_layer.css contract: TextLayer
+ * positions absolutely-placed transparent spans over the canvas and sizes them
+ * through the `--scale-factor` variable set on the page container.
+ */
+.lt-pdf-textlayer {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  opacity: 1;
+  line-height: 1;
+  text-align: initial;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  caret-color: CanvasText;
+}
+
+.lt-pdf-textlayer :is(span, br) {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+
+.lt-pdf-textlayer ::selection {
+  background: color-mix(in srgb, var(--lt-primary) 30%, transparent);
+}
+
+.lt-pdf-match {
+  padding: 0;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--lt-warning) 45%, transparent);
+  color: transparent;
+}
+
+.lt-pdf-match--current {
+  background: color-mix(in srgb, var(--lt-warning) 85%, transparent);
+}

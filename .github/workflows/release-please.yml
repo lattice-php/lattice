@@ -82,6 +82,8 @@ jobs:
             repository: map
           - directory: packages/media
             repository: media
+          - directory: packages/pdf
+            repository: pdf
           - directory: packages/search
             repository: search
           - directory: packages/table

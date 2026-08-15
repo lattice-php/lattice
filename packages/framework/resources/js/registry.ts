@@ -35,6 +35,7 @@ type OptInNodeType =
   | "chat.part.tool-call"
   | "map"
   | "media.library"
+  | "pdf"
   | "search.box"
   | "search.categories"
   | "search.input"

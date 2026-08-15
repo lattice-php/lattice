@@ -5,6 +5,7 @@ const artifacts = [
   { package: "packages/calendar", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   { package: "packages/chat", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   { package: "packages/map", manifest: "dist/manifest.json", module: "dist/plugin.js" },
+  { package: "packages/pdf", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   { package: "packages/tree", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   { package: "packages/media", manifest: "dist/manifest.json", module: "dist/plugin.js" },
   {

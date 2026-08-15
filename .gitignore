@@ -21,6 +21,7 @@ node_modules
 !/packages/chat/dist
 !/packages/map/dist
 !/packages/media/dist
+!/packages/pdf/dist
 !/packages/search/dist
 !/packages/tree/dist
 /packages/*/dist-analyze
