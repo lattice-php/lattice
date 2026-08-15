@@ -77,6 +77,8 @@ Drop a form or a table into the tree with `Form::use(MyForm::class)` and `Table:
 | `php artisan lattice:layout {name}` | Scaffold a layout class. |
 | `php artisan lattice:fragment {name}` | Scaffold a fragment class. |
 | `php artisan lattice:remote-source {name}` | Scaffold a remote source class. |
+| `php artisan lattice:install` | Install matching npm packages or publish the no-build assets. |
+| `php artisan lattice:update {--dry-run}` | Update all installed Lattice Composer and npm packages. |
 | `php artisan lattice:component {name} {--type=}` | Scaffold a custom Lattice UI component (PHP + React). |
 | `php artisan lattice:field {name} {--type=}` | Scaffold a custom form field (PHP + React). |
 | `php artisan lattice:column {name} {--type=}` | Scaffold a custom table column (PHP + React). |
