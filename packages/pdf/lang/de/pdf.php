@@ -18,6 +18,16 @@ return [
         'fit-width' => 'An Breite anpassen',
     ],
     'download' => 'Herunterladen',
+    'link' => [
+        'external' => '{{url}} öffnen',
+        'page' => 'Zu Seite {{page}} springen',
+    ],
+    'sidebar' => [
+        'toggle' => 'Seitenleiste umschalten',
+        'label' => 'Dokument-Seitenleiste',
+        'pages' => 'Seiten',
+        'attachments' => 'Anhänge',
+    ],
     'search' => [
         'placeholder' => 'Dokument durchsuchen…',
         'previous' => 'Vorheriger Treffer',

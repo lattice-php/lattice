@@ -1,4 +1,4 @@
-import { useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { Ref, RefObject } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import { PdfPage } from "./pdf-page";
@@ -34,11 +34,11 @@ export function PageList({
   const [mountedPages, setMountedPages] = useState<ReadonlySet<number>>(new Set([1]));
   const pages = Array.from({ length: doc.numPages }, (_, index) => index + 1);
 
-  useImperativeHandle(ref, () => ({
-    // Scroll only the viewer's own container — scrollIntoView would also
-    // scroll every outer ancestor (including the window), yanking the page
-    // and the viewer toolbar out of view.
-    scrollToPage(page: number): void {
+  // Scroll only the viewer's own container — scrollIntoView would also
+  // scroll every outer ancestor (including the window), yanking the page
+  // and the viewer toolbar out of view.
+  const scrollToPage = useCallback(
+    (page: number): void => {
       const container = scrollRootRef.current;
       const slot = slotRefs.current[page - 1];
 
@@ -46,7 +46,10 @@ export function PageList({
         container.scrollTo({ top: Math.max(0, slot.offsetTop - 16) });
       }
     },
-  }));
+    [scrollRootRef],
+  );
+
+  useImperativeHandle(ref, () => ({ scrollToPage }), [scrollToPage]);
 
   useEffect(() => {
     const container = scrollRootRef.current;
@@ -142,6 +145,7 @@ export function PageList({
               currentStart={currentMatch?.page === page ? currentMatch.start : null}
               doc={doc}
               matches={search.matchesForPage(page)}
+              onNavigateToPage={scrollToPage}
               pageNumber={page}
               scale={scale}
               textCache={textCache}

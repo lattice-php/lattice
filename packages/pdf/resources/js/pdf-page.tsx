@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { RenderingCancelledException, TextLayer } from "pdfjs-dist";
 import type { PDFDocumentProxy } from "pdfjs-dist";
+import { useT } from "@lattice-php/ui/i18n";
 import {
   clearHighlightRanges,
   setHighlightRanges,
   supportsHighlightApi,
 } from "./highlight-registry";
+import { resolveLinkOverlays } from "./link-annotations";
+import type { LinkOverlay } from "./link-annotations";
 import { applyHighlights, matchRanges } from "./search";
 import type { SearchMatch } from "./search";
 import type { PageTextCache } from "./text-cache";
@@ -17,6 +20,7 @@ type PdfPageProps = {
   textCache: PageTextCache;
   matches: SearchMatch[];
   currentStart: number | null;
+  onNavigateToPage(page: number): void;
 };
 
 function warnUnlessCancelled(error: unknown, context: string): void {
@@ -32,13 +36,37 @@ export function PdfPage({
   textCache,
   matches,
   currentStart,
+  onNavigateToPage,
 }: PdfPageProps): React.ReactElement {
+  const { t } = useT("pdf");
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<TextLayer | null>(null);
   const ownerRef = useRef<Record<never, never>>({});
   const [layerVersion, setLayerVersion] = useState(0);
+  const [links, setLinks] = useState<LinkOverlay[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void (async () => {
+      const page = await doc.getPage(pageNumber);
+      const overlays = await resolveLinkOverlays(doc, page, page.getViewport({ scale }));
+
+      if (!cancelled) {
+        setLinks(overlays);
+      }
+    })().catch((error: unknown) => {
+      if (!cancelled) {
+        warnUnlessCancelled(error, `link annotations for page ${pageNumber} failed`);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [doc, pageNumber, scale]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -173,6 +201,42 @@ export function PdfPage({
     <div className="lt-pdf-page" data-test="pdf-page" ref={rootRef}>
       <canvas ref={canvasRef} />
       <div className="lt-pdf-textlayer" ref={textLayerRef} />
+      {links.length > 0 ? (
+        <div className="lt-pdf-linklayer">
+          {links.map((link) => {
+            const style = {
+              left: link.left,
+              top: link.top,
+              width: link.width,
+              height: link.height,
+            };
+
+            return link.url !== null ? (
+              <a
+                aria-label={t("pdf.link.external", "Open {{url}}", { url: link.url })}
+                className="lt-pdf-link"
+                href={link.url}
+                key={link.id}
+                rel="noopener noreferrer"
+                style={style}
+                target="_blank"
+              />
+            ) : (
+              <a
+                aria-label={t("pdf.link.page", "Go to page {{page}}", { page: link.page })}
+                className="lt-pdf-link"
+                href={`#pdf-page-${link.page}`}
+                key={link.id}
+                onClick={(event) => {
+                  event.preventDefault();
+                  onNavigateToPage(link.page!);
+                }}
+                style={style}
+              />
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 }
