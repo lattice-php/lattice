@@ -199,6 +199,7 @@ export default defineConfig({
             { label: "Chat", link: "/packages/chat/" },
             { label: "Map", link: "/packages/map/" },
             { label: "Media", link: "/packages/media/" },
+            { label: "PDF", link: "/packages/pdf/" },
             { label: "Search", link: "/packages/search/" },
             { label: "Tree", link: "/packages/tree/" },
           ],

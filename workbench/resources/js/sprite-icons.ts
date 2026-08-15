@@ -25,6 +25,7 @@ export const iconNames = [
   "code-xml",
   "columns-3",
   "copy",
+  "download",
   "external-link",
   "eye",
   "eye-off",
@@ -97,6 +98,7 @@ declare module "@lattice-php/ui" {
     "code-xml": true;
     "columns-3": true;
     copy: true;
+    download: true;
     "external-link": true;
     eye: true;
     "eye-off": true;

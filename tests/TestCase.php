@@ -14,6 +14,7 @@ use Lattice\Chat\ChatServiceProvider;
 use Lattice\LatticeServiceProvider;
 use Lattice\Map\MapServiceProvider;
 use Lattice\Media\MediaServiceProvider;
+use Lattice\Pdf\PdfServiceProvider;
 use Lattice\Search\SearchServiceProvider;
 use Lattice\Support\Testing\InteractsWithLatticeComponents;
 use Lattice\Tree\Tree;
@@ -93,6 +94,7 @@ abstract class TestCase extends BaseTestCase
             ChatServiceProvider::class,
             MapServiceProvider::class,
             MediaServiceProvider::class,
+            PdfServiceProvider::class,
             SearchServiceProvider::class,
             TreeServiceProvider::class,
             I18NextServiceProvider::class,

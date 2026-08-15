@@ -1,0 +1,17 @@
+{
+  "name": "@lattice-php/pdf",
+  "version": "0.54.0",
+  "private": true,
+  "description": "Dev workspace for the pdf component package; ships to consumers via Composer, not npm.",
+  "type": "module",
+  "scripts": {
+    "build:standalone": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lattice-php/core": "0.54.0",
+    "@lattice-php/lattice": "0.54.0",
+    "@lattice-php/ui": "0.54.0",
+    "pdfjs-dist": "6.2.108"
+  }
+}

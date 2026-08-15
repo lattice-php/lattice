@@ -47,6 +47,7 @@ use Workbench\App\Pages\Components\ContainersPage;
 use Workbench\App\Pages\Components\MapPage;
 use Workbench\App\Pages\Components\ModalsPage;
 use Workbench\App\Pages\Components\NotificationsPage;
+use Workbench\App\Pages\Components\PdfPage;
 use Workbench\App\Pages\Components\ProgressPage;
 use Workbench\App\Pages\Components\TabsPage;
 use Workbench\App\Pages\DependentFieldsPage;
@@ -165,6 +166,7 @@ class AppLayout extends LayoutDefinition
                     MenuItem::fromPage(ProgressPage::class)->key('progress')->label(__('workbench.navigation.progress')),
                     MenuItem::fromPage(ContainersPage::class)->key('containers')->label(__('workbench.navigation.containers')),
                     MenuItem::fromPage(MapPage::class)->key('map')->label(__('workbench.navigation.map')),
+                    MenuItem::fromPage(PdfPage::class)->key('pdf')->label(__('workbench.navigation.pdf')),
                     MenuItem::fromPage(ModalsPage::class)->key('modals')->label(__('workbench.navigation.modals')),
                     MenuItem::fromPage(NotificationsPage::class)->key('notifications')->label(__('workbench.navigation.notifications')),
                     MenuItem::fromPage(ChatPage::class)->key('chat')->label(__('workbench.navigation.chat')),

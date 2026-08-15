@@ -33,6 +33,7 @@
         "lattice-php/lattice": "@dev",
         "lattice-php/map": "@dev",
         "lattice-php/media": "@dev",
+        "lattice-php/pdf": "@dev",
         "lattice-php/search": "@dev",
         "lattice-php/signature-example": "@dev",
         "lattice-php/tree": "@dev",

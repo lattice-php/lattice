@@ -39,6 +39,7 @@ const CORE_FORBIDDEN_NAMESPACES = [
     'Lattice\\Realtime',
     'Lattice\\Remote',
     'Lattice\\Media',
+    'Lattice\\Pdf',
     'Lattice\\Tree',
     'Lattice\\ApiReference',
 ];

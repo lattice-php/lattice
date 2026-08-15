@@ -199,6 +199,7 @@ export type NodeType =
   | "modal"
   | "notifications"
   | "outlet"
+  | "pdf"
   | "progress"
   | "raw-block"
   | "remote.data-list"
@@ -260,6 +261,7 @@ export type PagePayload = {
   readonly title: string | null;
   readonly width: string;
 };
+export type PdfNodeType = "pdf";
 export type RemoteNodeType = "remote.data-list";
 export type SearchNodeType =
   | "search.box"

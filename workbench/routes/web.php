@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,11 @@ Route::middleware('web')->get('/standalone-package-demo', function () {
 
     return app(PackageComponentPage::class);
 });
+
+Route::middleware('web')->get('/fixtures/sample.pdf', fn (): ResponseFactory|\Illuminate\Http\Response => response(
+    (string) file_get_contents(dirname(__DIR__).'/fixtures/sample.pdf'),
+    headers: ['Content-Type' => 'application/pdf'],
+));
 
 // Deterministic endpoints backing the API reference playground demo.
 Route::middleware('web')->group(function (): void {
