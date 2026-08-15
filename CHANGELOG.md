@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.53.0](https://github.com/lattice-php/lattice/compare/0.52.0...0.53.0) (2026-08-15)
+
+
+### Features
+
+* vertical rail chrome — tabs, search disclosure, topbar breadcrumbs, sidebar footer, responsive visibility ([#461](https://github.com/lattice-php/lattice/issues/461)) ([c6f7269](https://github.com/lattice-php/lattice/commit/c6f726971c53d4232b330186d3fdb0da564d5877))
+
 ## [0.52.0](https://github.com/lattice-php/lattice/compare/0.51.0...0.52.0) (2026-08-14)
 
 

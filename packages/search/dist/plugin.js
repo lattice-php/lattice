@@ -381,13 +381,23 @@ function te(e) {
 	return e instanceof HTMLElement ? e.isContentEditable || e.tagName === "INPUT" || e.tagName === "TEXTAREA" || e.tagName === "SELECT" : !1;
 }
 function ne() {
-	return /* @__PURE__ */ l("div", {
-		className: "flex h-[min(36rem,calc(100dvh-2rem))] flex-col",
+	let { query: e } = S();
+	return e.trim() === "" ? /* @__PURE__ */ l("div", {
+		className: "flex max-h-[min(36rem,calc(100dvh-2rem))] flex-col",
+		children: [/* @__PURE__ */ c(R, {
+			node: Q("search.input"),
+			children: null
+		}), /* @__PURE__ */ c(K, {
+			node: Q("search.recent"),
+			children: null
+		})]
+	}) : /* @__PURE__ */ l("div", {
+		className: "flex max-h-[min(36rem,calc(100dvh-2rem))] flex-col",
 		children: [/* @__PURE__ */ c(R, {
 			node: Q("search.input"),
 			children: null
 		}), /* @__PURE__ */ l("div", {
-			className: "grid min-h-0 flex-1 grid-rows-[auto_1fr] md:grid-cols-[12rem_minmax(0,1fr)_16rem] md:grid-rows-1",
+			className: "grid min-h-80 flex-1 grid-rows-[auto_1fr] md:grid-cols-[12rem_minmax(0,1fr)_16rem] md:grid-rows-1",
 			children: [
 				/* @__PURE__ */ c("div", {
 					className: "border-b border-lt-border md:border-e md:border-b-0",
@@ -396,15 +406,12 @@ function ne() {
 						children: null
 					})
 				}),
-				/* @__PURE__ */ l("div", {
+				/* @__PURE__ */ c("div", {
 					className: "min-h-0 overflow-hidden",
-					children: [/* @__PURE__ */ c(K, {
-						node: Q("search.recent"),
-						children: null
-					}), /* @__PURE__ */ c(Y, {
+					children: /* @__PURE__ */ c(Y, {
 						node: Q("search.results"),
 						children: null
-					})]
+					})
 				}),
 				/* @__PURE__ */ c("div", {
 					className: "hidden border-s border-lt-border md:block",
@@ -419,27 +426,28 @@ function ne() {
 }
 var $, re = m((() => {
 	b(), w(), A(), N(), z(), V(), q(), X(), $ = ({ node: e, children: t }) => {
-		let { endpoint: n, placeholder: a, title: u, shortcut: d, perPage: f } = e.props, { t: p } = (0, v.useT)("search"), [m, h] = o(!1), g = i(), _ = k({
+		let { endpoint: n, placeholder: a, title: u, shortcut: d, perPage: f } = e.props, { t: p } = (0, v.useT)("search"), m = (0, v.useCollapsed)(), [h, g] = o(!1), _ = i(), y = k({
 			endpoint: n,
 			perPage: f
-		}), y = a ?? p("search.placeholder", "Search…"), b = u ?? p("search.title", "Search");
+		}), b = a ?? p("search.placeholder", "Search…"), S = u ?? p("search.title", "Search");
 		r(() => {
 			if (!d) return;
 			function e(e) {
-				!e.repeat && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && !te(e.target) && (e.preventDefault(), h((e) => !e));
+				!e.repeat && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && !te(e.target) && (e.preventDefault(), g((e) => !e));
 			}
 			return window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e);
 		}, [d]);
-		let { refreshRecent: S } = _;
+		let { refreshRecent: C } = y;
 		r(() => {
-			m && S();
-		}, [m, S]);
-		let C = e.schema?.length ? t : t ?? /* @__PURE__ */ c(ne, {});
+			h && C();
+		}, [h, C]);
+		let w = e.schema?.length ? t : t ?? /* @__PURE__ */ c(ne, {});
 		return /* @__PURE__ */ l(s, { children: [/* @__PURE__ */ l("button", {
 			...d ? { "aria-keyshortcuts": "Meta+K Control+K" } : {},
-			className: "flex min-h-11 w-full max-w-sm items-center gap-2 rounded-lt border border-lt-border bg-lt-bg px-3 text-sm text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]",
+			...m ? { "aria-label": b } : {},
+			className: m ? "flex size-9 items-center justify-center rounded-lt border border-lt-border bg-lt-bg text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]" : "flex min-h-11 w-full max-w-sm items-center gap-2 rounded-lt border border-lt-border bg-lt-bg px-3 text-sm text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]",
 			"data-test": "search-trigger",
-			onClick: () => h(!0),
+			onClick: () => g(!0),
 			type: "button",
 			children: [
 				/* @__PURE__ */ c(v.Icon, {
@@ -447,31 +455,31 @@ var $, re = m((() => {
 					"aria-hidden": "true",
 					className: "size-lt-icon-sm"
 				}),
-				/* @__PURE__ */ c("span", {
+				m ? null : /* @__PURE__ */ c("span", {
 					className: "min-w-0 flex-1 truncate text-start",
-					children: y
+					children: b
 				}),
-				d ? /* @__PURE__ */ c("kbd", {
+				!m && d ? /* @__PURE__ */ c("kbd", {
 					className: "rounded-lt-xs border border-lt-border px-1.5 py-0.5 text-xs",
 					children: "⌘K"
 				}) : null
 			]
 		}), /* @__PURE__ */ c(v.Dialog, {
-			open: m,
-			onOpenChange: h,
+			open: h,
+			onOpenChange: g,
 			children: /* @__PURE__ */ l(v.DialogContent, {
 				className: "overflow-hidden p-0",
 				width: "3xl",
 				children: [/* @__PURE__ */ c(v.DialogTitle, {
 					className: "sr-only",
-					children: b
+					children: S
 				}), /* @__PURE__ */ c(x, {
 					value: {
-						..._,
-						instanceId: g,
-						placeholder: y
+						...y,
+						instanceId: _,
+						placeholder: b
 					},
-					children: C
+					children: w
 				})]
 			})
 		})] });
