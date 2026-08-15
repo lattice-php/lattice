@@ -20,3 +20,17 @@ export function eventDaySpan(
 
   return [startDay, exclusiveEnd > startDay ? exclusiveEnd : addDays(startDay, 1)];
 }
+
+/**
+ * Shifts an event by whole days in its own representation: all-day `Y-m-d`
+ * bounds move as dates; a timed event keeps its wall-clock times and only the
+ * date parts shift.
+ */
+export function shiftEventDays(
+  event: Pick<CalendarEventData, "start" | "end">,
+  days: number,
+): { start: string; end: string } {
+  const shift = (value: string): string => addDays(value.slice(0, 10), days) + value.slice(10);
+
+  return { start: shift(event.start), end: shift(event.end) };
+}

@@ -113,7 +113,7 @@ describe("timeline rescheduling in a browser", () => {
     });
   });
 
-  it("rolls an optimistic move back and displays the translated rejection", async () => {
+  it("rolls an optimistic move back and raises the translated rejection as a danger toast", async () => {
     let rejectRequest: ((response: Response) => void) | undefined;
     const fetchMock = vi.fn<typeof fetch>().mockImplementation(
       () =>
@@ -122,6 +122,8 @@ describe("timeline rescheduling in a browser", () => {
         }),
     );
     vi.stubGlobal("fetch", fetchMock);
+    const toastListener = vi.fn<(toastEvent: Event) => void>();
+    window.addEventListener("lattice:toast", toastListener);
     await renderTimeline();
 
     await dragToTeam();
@@ -136,9 +138,13 @@ describe("timeline rescheduling in a browser", () => {
     );
 
     await expect.element(entry()).toHaveAttribute("data-resource-id", "anna");
-    await expect
-      .element(page.getByRole("alert"))
-      .toHaveTextContent("This planning resource is unavailable.");
+    await expect.poll(() => toastListener.mock.calls.length).toBe(1);
+    expect((toastListener.mock.calls[0]?.[0] as CustomEvent).detail).toMatchObject({
+      message: "This planning resource is unavailable.",
+      variant: "danger",
+    });
+
+    window.removeEventListener("lattice:toast", toastListener);
   });
 
   it("supports moving a focused assignment by keyboard", async () => {
@@ -265,7 +271,7 @@ describe("timeline rescheduling in a browser", () => {
     });
   });
 
-  it("rolls a rejected resize back and displays the translated rejection", async () => {
+  it("rolls a rejected resize back and raises the translated rejection as a danger toast", async () => {
     let rejectRequest: ((response: Response) => void) | undefined;
     const fetchMock = vi.fn<typeof fetch>().mockImplementation(
       () =>
@@ -274,6 +280,8 @@ describe("timeline rescheduling in a browser", () => {
         }),
     );
     vi.stubGlobal("fetch", fetchMock);
+    const toastListener = vi.fn<(toastEvent: Event) => void>();
+    window.addEventListener("lattice:toast", toastListener);
     await renderTimeline();
 
     await userEvent.dragAndDrop(resizeHandle("end"), resource("anna"), {
@@ -287,8 +295,12 @@ describe("timeline rescheduling in a browser", () => {
     );
 
     await expect.element(entry()).toHaveAttribute("data-end", "2026-01-04");
-    await expect
-      .element(page.getByRole("alert"))
-      .toHaveTextContent("This assignment cannot end then.");
+    await expect.poll(() => toastListener.mock.calls.length).toBe(1);
+    expect((toastListener.mock.calls[0]?.[0] as CustomEvent).detail).toMatchObject({
+      message: "This assignment cannot end then.",
+      variant: "danger",
+    });
+
+    window.removeEventListener("lattice:toast", toastListener);
   });
 });

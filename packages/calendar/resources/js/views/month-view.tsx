@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import type { KeyboardEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
+import { announce, draggable, dropTargetForElements } from "@lattice-php/lattice/dnd";
 import { coerceColor, namedColor, toneProps } from "@lattice-php/ui/lib/color";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Icon } from "@lattice-php/ui/icons";
@@ -7,25 +8,31 @@ import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover
 import {
   addDays,
   addMonths,
+  daysBetween,
   formatWallTime,
   startOfMonthISO,
 } from "@lattice-php/ui/format/temporal";
 import { buildMonthGrid, capLanes, eventsOnDay, weekChips } from "../month-grid";
-import type { MonthChip, MonthWeek } from "../month-grid";
+import { eventDaySpan, shiftEventDays } from "../event-span";
+import { useAnnouncedReschedule } from "../use-announced-reschedule";
+import type { MonthChip, MonthDay, MonthWeek } from "../month-grid";
+import type { UseCalendarEventsReturn } from "../calendar-state";
 import type { CalendarEventData } from "../types";
 
 export const MAX_VISIBLE_LANES = 3;
 
+const MONTH_DRAG_TYPE = "lattice-calendar-month-event";
+
 type Translate = (key: string, defaultValue?: string, options?: Record<string, unknown>) => string;
 
 export type MonthViewProps = {
-  events: Map<string, CalendarEventData>;
-  loading: boolean;
+  canReschedule: boolean;
   locale: string;
   month: string;
   onDayClick: ((date: string) => void) | null;
   onEventClick: ((event: CalendarEventData) => void) | null;
   onNavigate: (month: string) => void;
+  state: UseCalendarEventsReturn;
   t: Translate;
   today: string;
 };
@@ -35,19 +42,23 @@ function toNoonUtc(dateISO: string): Date {
 }
 
 export function MonthView({
-  events,
-  loading,
+  canReschedule,
   locale,
   month,
   onDayClick,
   onEventClick,
   onNavigate,
+  state,
   t,
   today,
 }: MonthViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pendingFocusRef = useRef<string | null>(null);
+  const pendingChipFocusRef = useRef<string | null>(null);
   const [focusedDate, setFocusedDate] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const { events, isRescheduling, loading, reschedule } = state;
+  const { submitReschedule } = useAnnouncedReschedule(events, reschedule, t);
   const grid = useMemo(() => buildMonthGrid(month, locale, today), [month, locale, today]);
   const eventList = useMemo(() => [...events.values()], [events]);
   const title = useMemo(
@@ -94,6 +105,23 @@ export function MonthView({
     }
   });
 
+  useEffect(() => {
+    const pending = pendingChipFocusRef.current;
+
+    if (!pending) {
+      return;
+    }
+
+    const chip = containerRef.current?.querySelector<HTMLElement>(
+      `[data-test="calendar-event-${pending}"]`,
+    );
+
+    if (chip) {
+      pendingChipFocusRef.current = null;
+      chip.focus();
+    }
+  });
+
   function onCellKeyDown(keyboardEvent: KeyboardEvent<HTMLDivElement>, date: string): void {
     let next: string;
 
@@ -132,8 +160,92 @@ export function MonthView({
     moveFocus(next);
   }
 
+  function moveEventByDays(event: CalendarEventData, deltaDays: number): void {
+    if (deltaDays === 0) {
+      return;
+    }
+
+    void submitReschedule({
+      id: event.id,
+      resourceId: event.resourceId,
+      ...shiftEventDays(event, deltaDays),
+    });
+  }
+
+  function onChipKeyDown(
+    keyboardEvent: KeyboardEvent<HTMLButtonElement>,
+    event: CalendarEventData,
+  ): void {
+    if (
+      !canReschedule ||
+      isRescheduling(event.id) ||
+      !keyboardEvent.ctrlKey ||
+      !keyboardEvent.shiftKey
+    ) {
+      return;
+    }
+
+    let deltaDays: number;
+
+    switch (keyboardEvent.key) {
+      case "ArrowLeft":
+        deltaDays = -1;
+        break;
+      case "ArrowRight":
+        deltaDays = 1;
+        break;
+      case "ArrowUp":
+        deltaDays = -7;
+        break;
+      case "ArrowDown":
+        deltaDays = 7;
+        break;
+      default:
+        return;
+    }
+
+    keyboardEvent.preventDefault();
+    pendingChipFocusRef.current = event.id;
+    moveEventByDays(event, deltaDays);
+  }
+
+  const onEventDrop = useCallback(
+    (data: Record<string | symbol, unknown>, date: string): void => {
+      const id = data.id;
+      const grabOffsetDays = typeof data.grabOffsetDays === "number" ? data.grabOffsetDays : 0;
+
+      if (typeof id !== "string") {
+        return;
+      }
+
+      const event = events.get(id);
+
+      if (!event) {
+        return;
+      }
+
+      const [dayStart] = eventDaySpan(event);
+      const deltaDays = daysBetween(dayStart, addDays(date, -grabOffsetDays));
+
+      if (deltaDays === 0) {
+        return;
+      }
+
+      void submitReschedule({
+        id: event.id,
+        resourceId: event.resourceId,
+        ...shiftEventDays(event, deltaDays),
+      });
+    },
+    [events, submitReschedule],
+  );
+
   return (
-    <div className="lt-calendar-month" ref={containerRef}>
+    <div
+      className="lt-calendar-month"
+      data-dragging={dragging ? "true" : undefined}
+      ref={containerRef}
+    >
       <div className="mb-2 flex items-center gap-1">
         <button
           aria-label={t("calendar.previous", "Previous")}
@@ -164,7 +276,7 @@ export function MonthView({
       </div>
 
       <div
-        aria-busy={loading}
+        aria-busy={loading || [...events.keys()].some((id) => isRescheduling(id))}
         aria-label={title}
         className="overflow-hidden rounded-lt-sm border border-lt-border"
         role="grid"
@@ -183,14 +295,19 @@ export function MonthView({
 
         {grid.weeks.map((week, weekIndex) => (
           <MonthWeekRow
+            canReschedule={canReschedule}
             dayFormatter={dayFormatter}
             eventList={eventList}
             first={weekIndex === 0}
+            isRescheduling={isRescheduling}
             key={week.start}
             locale={locale}
             onCellKeyDown={onCellKeyDown}
+            onChipKeyDown={onChipKeyDown}
             onDayClick={onDayClick}
+            onDragStateChange={setDragging}
             onEventClick={onEventClick}
+            onEventDrop={onEventDrop}
             t={t}
             tabStopDate={tabStopDate}
             week={week}
@@ -202,24 +319,37 @@ export function MonthView({
 }
 
 function MonthWeekRow({
+  canReschedule,
   dayFormatter,
   eventList,
   first,
+  isRescheduling,
   locale,
   onCellKeyDown,
+  onChipKeyDown,
   onDayClick,
+  onDragStateChange,
   onEventClick,
+  onEventDrop,
   t,
   tabStopDate,
   week,
 }: {
+  canReschedule: boolean;
   dayFormatter: Intl.DateTimeFormat;
   eventList: CalendarEventData[];
   first: boolean;
+  isRescheduling: (id: string) => boolean;
   locale: string;
   onCellKeyDown: (keyboardEvent: KeyboardEvent<HTMLDivElement>, date: string) => void;
+  onChipKeyDown: (
+    keyboardEvent: KeyboardEvent<HTMLButtonElement>,
+    event: CalendarEventData,
+  ) => void;
   onDayClick: ((date: string) => void) | null;
+  onDragStateChange: (dragging: boolean) => void;
   onEventClick: ((event: CalendarEventData) => void) | null;
+  onEventDrop: (data: Record<string | symbol, unknown>, date: string) => void;
   t: Translate;
   tabStopDate: string;
   week: MonthWeek;
@@ -230,36 +360,17 @@ function MonthWeekRow({
   return (
     <div className={cn("lt-calendar-week", !first && "border-t border-lt-border")} role="row">
       {week.days.map((day, dayIndex) => (
-        <div
-          aria-current={day.isToday ? "date" : undefined}
-          aria-label={dayFormatter.format(toNoonUtc(day.date))}
-          className={cn(
-            "lt-calendar-day",
-            dayIndex > 0 && "border-l border-lt-border",
-            day.isWeekend && "bg-lt-muted/40",
-            !day.inMonth && "text-lt-muted-fg",
-            onDayClick && "cursor-pointer",
-          )}
-          data-date={day.date}
-          data-test={`calendar-day-${day.date}`}
+        <MonthDayCell
+          ariaLabel={dayFormatter.format(toNoonUtc(day.date))}
+          canReschedule={canReschedule}
+          day={day}
+          dayIndex={dayIndex}
           key={day.date}
-          onClick={onDayClick ? () => onDayClick(day.date) : undefined}
-          onKeyDown={(keyboardEvent) => onCellKeyDown(keyboardEvent, day.date)}
-          role="gridcell"
-          tabIndex={day.date === tabStopDate ? 0 : -1}
+          onDayClick={onDayClick}
+          onEventDrop={onEventDrop}
+          onKeyDown={onCellKeyDown}
+          tabStop={day.date === tabStopDate}
         >
-          <div className="flex justify-end px-1.5 pt-1">
-            <span
-              className={cn(
-                "flex size-6 items-center justify-center rounded-full text-xs",
-                day.isToday && "bg-lt-primary font-semibold text-lt-primary-fg",
-                !day.isToday && !day.inMonth && "text-lt-muted-fg",
-              )}
-            >
-              {day.dayOfMonth}
-            </span>
-          </div>
-          <div className="flex-1" />
           {hiddenByDay[dayIndex] > 0 ? (
             <DayOverflow
               count={hiddenByDay[dayIndex]}
@@ -271,20 +382,108 @@ function MonthWeekRow({
               t={t}
             />
           ) : null}
-        </div>
+        </MonthDayCell>
       ))}
 
-      <div aria-hidden={onEventClick ? undefined : true} className="lt-calendar-chips">
+      <div
+        aria-hidden={onEventClick || canReschedule ? undefined : true}
+        className="lt-calendar-chips"
+      >
         {visible.map((chip) => (
           <EventChip
+            canReschedule={canReschedule}
             chip={chip}
+            isRescheduling={isRescheduling(chip.id)}
             key={`${chip.id}-${chip.start}`}
             locale={locale}
+            onDragStateChange={onDragStateChange}
             onEventClick={onEventClick}
+            onMoveKeyDown={onChipKeyDown}
             t={t}
+            weekStart={week.start}
           />
         ))}
       </div>
+    </div>
+  );
+}
+
+function MonthDayCell({
+  ariaLabel,
+  canReschedule,
+  children,
+  day,
+  dayIndex,
+  onDayClick,
+  onEventDrop,
+  onKeyDown,
+  tabStop,
+}: {
+  ariaLabel: string;
+  canReschedule: boolean;
+  children: ReactNode;
+  day: MonthDay;
+  dayIndex: number;
+  onDayClick: ((date: string) => void) | null;
+  onEventDrop: (data: Record<string | symbol, unknown>, date: string) => void;
+  onKeyDown: (keyboardEvent: KeyboardEvent<HTMLDivElement>, date: string) => void;
+  tabStop: boolean;
+}) {
+  const cellRef = useRef<HTMLDivElement>(null);
+  const [dropActive, setDropActive] = useState(false);
+
+  useEffect(() => {
+    const element = cellRef.current;
+
+    if (!element || !canReschedule) {
+      return;
+    }
+
+    return dropTargetForElements({
+      canDrop: ({ source }) => source.data.type === MONTH_DRAG_TYPE,
+      element,
+      onDragEnter: () => setDropActive(true),
+      onDragLeave: () => setDropActive(false),
+      onDrop: ({ source }) => {
+        setDropActive(false);
+        onEventDrop(source.data, day.date);
+      },
+    });
+  }, [canReschedule, day.date, onEventDrop]);
+
+  return (
+    <div
+      aria-current={day.isToday ? "date" : undefined}
+      aria-label={ariaLabel}
+      className={cn(
+        "lt-calendar-day",
+        dayIndex > 0 && "border-l border-lt-border",
+        day.isWeekend && "bg-lt-muted/40",
+        !day.inMonth && "text-lt-muted-fg",
+        onDayClick && "cursor-pointer",
+        dropActive && "bg-lt-primary/10",
+      )}
+      data-date={day.date}
+      data-test={`calendar-day-${day.date}`}
+      onClick={onDayClick ? () => onDayClick(day.date) : undefined}
+      onKeyDown={(keyboardEvent) => onKeyDown(keyboardEvent, day.date)}
+      ref={cellRef}
+      role="gridcell"
+      tabIndex={tabStop ? 0 : -1}
+    >
+      <div className="flex justify-end px-1.5 pt-1">
+        <span
+          className={cn(
+            "flex size-6 items-center justify-center rounded-full text-xs",
+            day.isToday && "bg-lt-primary font-semibold text-lt-primary-fg",
+            !day.isToday && !day.inMonth && "text-lt-muted-fg",
+          )}
+        >
+          {day.dayOfMonth}
+        </span>
+      </div>
+      <div className="flex-1" />
+      {children}
     </div>
   );
 }
@@ -302,7 +501,15 @@ function chipContent(event: CalendarEventData, locale: string) {
   );
 }
 
-function chipLabel(event: CalendarEventData, t: Translate): string {
+function chipLabel(event: CalendarEventData, t: Translate, reschedulable = false): string {
+  if (reschedulable) {
+    return t(
+      "calendar.event-chip-label-reschedulable",
+      "{{label}}, {{start}} to {{end}}. Use Control Shift and arrow keys to reschedule.",
+      { end: event.end, label: event.label, start: event.start },
+    );
+  }
+
   return t("calendar.event-chip-label", "{{label}}, {{start}} to {{end}}", {
     end: event.end,
     label: event.label,
@@ -311,24 +518,84 @@ function chipLabel(event: CalendarEventData, t: Translate): string {
 }
 
 function EventChip({
+  canReschedule,
   chip,
+  isRescheduling,
   locale,
+  onDragStateChange,
   onEventClick,
+  onMoveKeyDown,
   t,
+  weekStart,
 }: {
+  canReschedule: boolean;
   chip: MonthChip;
+  isRescheduling: boolean;
   locale: string;
+  onDragStateChange: (dragging: boolean) => void;
   onEventClick: ((event: CalendarEventData) => void) | null;
+  onMoveKeyDown: (
+    keyboardEvent: KeyboardEvent<HTMLButtonElement>,
+    event: CalendarEventData,
+  ) => void;
   t: Translate;
+  weekStart: string;
 }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const { event, span, start } = chip;
+
+  useEffect(() => {
+    const element = buttonRef.current;
+
+    if (!element || !canReschedule) {
+      return;
+    }
+
+    const [dayStart, dayEnd] = eventDaySpan(event);
+    const durationDays = daysBetween(dayStart, dayEnd);
+    const hiddenStartDays = daysBetween(dayStart, addDays(weekStart, start));
+
+    return draggable({
+      canDrag: () => !isRescheduling,
+      element,
+      getInitialData: ({ element: source, input }) => {
+        const rect = source.getBoundingClientRect();
+        const dayWidth = rect.width / span;
+
+        return {
+          grabOffsetDays: Math.max(
+            0,
+            Math.min(
+              durationDays - 1,
+              hiddenStartDays + Math.floor((input.clientX - rect.left) / dayWidth),
+            ),
+          ),
+          id: event.id,
+          type: MONTH_DRAG_TYPE,
+        };
+      },
+      onDragStart: () => {
+        onDragStateChange(true);
+        announce(
+          t("calendar.dragging-day", "Moving {{label}}. Drop on a day.", {
+            label: event.label,
+          }),
+        );
+      },
+      onDrop: () => onDragStateChange(false),
+    });
+  }, [canReschedule, event, isRescheduling, onDragStateChange, span, start, t, weekStart]);
+
   const tone = toneProps(coerceColor(chip.event.color) ?? namedColor("primary"));
   const className = cn(
     "lt-calendar-chip mx-1 mb-0.5 flex items-center gap-1 overflow-hidden px-1.5 text-left text-xs",
     tone.className,
     chip.continuesBefore ? "rounded-l-none" : "rounded-l-lt-xs",
     chip.continuesAfter ? "rounded-r-none" : "rounded-r-lt-xs",
-    onEventClick &&
-      "cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-lt-primary",
+    (onEventClick || canReschedule) &&
+      "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-lt-primary",
+    onEventClick && "cursor-pointer",
+    canReschedule && !onEventClick && "cursor-grab",
   );
   const style = {
     gridColumn: `${chip.start + 1} / span ${chip.span}`,
@@ -336,9 +603,15 @@ function EventChip({
     ...tone.style,
   };
 
-  if (!onEventClick) {
+  if (!onEventClick && !canReschedule) {
     return (
-      <div className={className} data-test={`calendar-event-${chip.id}`} style={style}>
+      <div
+        className={className}
+        data-end={chip.event.end}
+        data-start={chip.event.start}
+        data-test={`calendar-event-${chip.id}`}
+        style={style}
+      >
         {chipContent(chip.event, locale)}
       </div>
     );
@@ -346,10 +619,20 @@ function EventChip({
 
   return (
     <button
-      aria-label={chipLabel(chip.event, t)}
+      aria-disabled={isRescheduling || undefined}
+      aria-keyshortcuts={
+        canReschedule
+          ? "Control+Shift+ArrowLeft Control+Shift+ArrowRight Control+Shift+ArrowUp Control+Shift+ArrowDown"
+          : undefined
+      }
+      aria-label={chipLabel(chip.event, t, canReschedule)}
       className={className}
+      data-end={chip.event.end}
+      data-start={chip.event.start}
       data-test={`calendar-event-${chip.id}`}
-      onClick={() => onEventClick(chip.event)}
+      onClick={onEventClick ? () => onEventClick(chip.event) : undefined}
+      onKeyDown={(keyboardEvent) => onMoveKeyDown(keyboardEvent, chip.event)}
+      ref={buttonRef}
       style={style}
       title={chip.event.label}
       type="button"

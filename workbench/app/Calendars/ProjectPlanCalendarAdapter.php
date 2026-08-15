@@ -55,6 +55,7 @@ final class ProjectPlanCalendarAdapter implements CalendarAdapter, ProvidesCalen
             'end' => ['required', 'date_format:Y-m-d', 'after:start'],
         ], [
             'id.exists' => __('workbench.calendar.assignment-unavailable'),
+            'resourceId.required' => __('workbench.calendar.resource-unavailable'),
             'resourceId.in' => __('workbench.calendar.resource-unavailable'),
         ]);
 

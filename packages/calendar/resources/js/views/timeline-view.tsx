@@ -7,6 +7,7 @@ import { Icon } from "@lattice-php/ui/icons";
 import { addDays, daysBetween } from "@lattice-php/ui/format/temporal";
 import { assignLanes, buildAxis } from "../date-axis";
 import { eventDaySpan } from "../event-span";
+import { useAnnouncedReschedule } from "../use-announced-reschedule";
 import type { UseCalendarEventsReturn } from "../calendar-state";
 import type {
   CalendarEventData,
@@ -124,8 +125,8 @@ export function TimelineView({
 }: TimelineViewProps) {
   const [dayWidth, setDayWidth] = useState(DEFAULT_DAY_WIDTH);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { events, eventsForResource, isRescheduling, loading, reschedule } = state;
+  const { submitReschedule } = useAnnouncedReschedule(events, reschedule, t);
   const resources = useMemo(() => groups.flatMap((group) => group.resources), [groups]);
 
   const entriesForResource = useCallback(
@@ -174,23 +175,9 @@ export function TimelineView({
         return;
       }
 
-      setErrorMessage(null);
-      const result = await reschedule(request);
-
-      if (result.accepted) {
-        announce(t("calendar.rescheduled", "Rescheduled {{label}}", { label: event.label }));
-        return;
-      }
-
-      const message =
-        result.message ??
-        t("calendar.reschedule-failed", "Could not reschedule {{label}}", {
-          label: event.label,
-        });
-      setErrorMessage(message);
-      announce(message);
+      await submitReschedule(request);
     },
-    [events, reschedule, t],
+    [events, submitReschedule],
   );
 
   const rootStyle = {
@@ -246,12 +233,6 @@ export function TimelineView({
           </button>
         </div>
       </div>
-
-      {errorMessage ? (
-        <div className="mb-2 text-sm text-lt-danger" role="alert">
-          {errorMessage}
-        </div>
-      ) : null}
 
       <div
         aria-busy={loading || [...events.keys()].some((id) => isRescheduling(id))}

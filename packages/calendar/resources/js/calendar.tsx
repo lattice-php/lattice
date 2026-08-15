@@ -127,6 +127,9 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
       }
     : null;
 
+  const canReschedule =
+    node.props.endpoint !== null && node.props.ref !== null && node.props.reschedulable;
+
   const viewOptions: Option[] = views.map((view) => ({
     data: null,
     value: view,
@@ -152,21 +155,19 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
 
       {activeView === "month" ? (
         <MonthView
-          events={state.events}
-          loading={state.loading}
+          canReschedule={canReschedule}
           locale={locale}
           month={month}
           onDayClick={onDayClick}
           onEventClick={onEventClick}
           onNavigate={navigateMonth}
+          state={state}
           t={t}
           today={today}
         />
       ) : (
         <TimelineView
-          canReschedule={
-            node.props.endpoint !== null && node.props.ref !== null && node.props.reschedulable
-          }
+          canReschedule={canReschedule}
           days={days}
           from={timelineFrom}
           groups={node.props.groups}
