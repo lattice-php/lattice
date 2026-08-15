@@ -435,6 +435,7 @@ return [
         'notifications' => 'Notifications',
         'package' => 'Package components',
         'pagination-modes' => 'Pagination',
+        'pdf' => 'PDF',
         'platform' => 'Platform',
         'products' => 'Products',
         'progress' => 'Progress',
@@ -448,6 +449,10 @@ return [
         'wizard' => 'Wizard',
     ],
     'pages' => [
+        'pdf' => [
+            'heading' => 'PDF viewer',
+            'description' => 'A pdf.js backed document viewer with text selection, full-text search, and zoom.',
+        ],
         'map' => [
             'heading' => 'Map',
             'description' => 'Server-driven markers with complete Lattice component trees inside their popups.',

@@ -435,6 +435,7 @@ return [
         'notifications' => 'Benachrichtigungen',
         'package' => 'Paket-Komponenten',
         'pagination-modes' => 'Paginierung',
+        'pdf' => 'PDF',
         'platform' => 'Plattform',
         'products' => 'Produkte',
         'progress' => 'Fortschritt',
@@ -448,6 +449,10 @@ return [
         'wizard' => 'Assistent',
     ],
     'pages' => [
+        'pdf' => [
+            'heading' => 'PDF-Viewer',
+            'description' => 'Ein pdf.js-basierter Dokumenten-Viewer mit Textauswahl, Volltextsuche und Zoom.',
+        ],
         'map' => [
             'heading' => 'Karte',
             'description' => 'Serverseitige Marker mit vollständigen Lattice-Komponentenbäumen in ihren Popups.',
