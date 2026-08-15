@@ -26,6 +26,52 @@ it('mounts far pages with their tables and images through the jump input', funct
     $page->assertNoSmoke();
 });
 
+it('opens a viewer in a modal through a server action and searches inside it', function (): void {
+    $page = $this->visitAsWorkbenchUser('/components/pdf');
+
+    assertPresentEventually($page, '[data-test="pdf-page"] canvas');
+
+    $page->click('button:has-text("Open in modal")');
+
+    assertSeeEventually($page, 'Sample document');
+    assertPresentEventually($page, '[data-lattice-component="modal-sample"] [data-test="pdf-page"] canvas');
+
+    $page->fill('[data-lattice-component="modal-sample"] [aria-label="Search document…"]', 'quick');
+
+    retryUntil(function () use ($page): void {
+        expect($page->script('document.querySelector(\'[data-lattice-component="modal-sample"] [data-test="pdf-match-count"]\')?.textContent ?? ""'))
+            ->toBe('1 of 5');
+    });
+
+    $page->assertNoSmoke();
+});
+
+it('navigates through sidebar thumbnails and lists the embedded attachment', function (): void {
+    $page = $this->visitAsWorkbenchUser('/components/pdf');
+
+    assertPresentEventually($page, '[data-test="pdf-page"] canvas');
+
+    $page->click('[data-lattice-component="sample"] [aria-label="Toggle sidebar"]');
+
+    retryUntil(function () use ($page): void {
+        expect((int) $page->script('document.querySelectorAll(\'[data-lattice-component="sample"] [data-test="pdf-thumbnail"]\').length'))
+            ->toBe(5);
+    });
+
+    $page->click('[data-lattice-component="sample"] [data-test="pdf-thumbnail"][data-page="3"]');
+
+    retryUntil(function () use ($page): void {
+        expect($page->script('document.querySelector(\'[data-lattice-component="sample"] [aria-label="Go to page"]\')?.value ?? ""'))
+            ->toBe('3');
+    });
+
+    $page->click('[data-lattice-component="sample"] [role="radio"]:has-text("Attachments")');
+
+    assertSeeEventually($page, 'invoice-data.csv');
+
+    $page->assertNoSmoke();
+});
+
 it('searches across pages and scrolls matches inside the viewer only', function (): void {
     $page = $this->visitAsWorkbenchUser('/components/pdf');
 
