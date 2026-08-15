@@ -6,6 +6,9 @@ const iconButtonClass =
   "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
 
 export type ToolbarProps = {
+  sidebarToggle: boolean;
+  sidebarOpen: boolean;
+  onToggleSidebar(): void;
   currentPage: number;
   totalPages: number;
   onJump(page: number): void;
@@ -51,6 +54,17 @@ export function Toolbar(props: ToolbarProps): React.ReactElement {
 
   return (
     <div className="lt-pdf-toolbar flex flex-wrap items-center gap-1 border-b border-lt-border p-2">
+      {props.sidebarToggle ? (
+        <button
+          aria-label={t("pdf.sidebar.toggle", "Toggle sidebar")}
+          aria-pressed={props.sidebarOpen}
+          className={iconButtonClass}
+          onClick={props.onToggleSidebar}
+          type="button"
+        >
+          <Icon className="size-lt-icon-sm" name="panel-left" />
+        </button>
+      ) : null}
       <input
         aria-label={t("pdf.page.jump", "Go to page")}
         className="h-7 w-12 rounded-lt-sm border border-lt-border bg-transparent text-center text-sm"

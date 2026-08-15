@@ -11,6 +11,7 @@ export type PdfViewer = {
   initialZoom: number | null;
   maxHeight: number | null;
   searchable: boolean;
+  sidebar: boolean;
   standardFontDataUrl: string | null;
   url: string;
   wasmUrl: string | null;

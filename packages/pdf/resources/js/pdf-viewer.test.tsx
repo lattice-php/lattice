@@ -19,6 +19,7 @@ function pdfNode() {
       searchable: true,
       height: 480,
       maxHeight: null,
+      sidebar: true,
       initialZoom: null,
       cmapUrl: null,
       standardFontDataUrl: null,
