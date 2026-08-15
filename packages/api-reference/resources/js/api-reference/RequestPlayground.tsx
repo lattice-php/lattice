@@ -5,7 +5,10 @@ import {
   remoteToken,
   type RemoteAccess,
 } from "@lattice-php/core/api";
-import { FormFieldFrame } from "@lattice-php/form/components/base/field";
+import {
+  FormFieldFrame,
+  type FormFieldControlProps,
+} from "@lattice-php/form/components/base/field";
 import { Badge } from "@lattice-php/ui/badge";
 import { Button } from "@lattice-php/ui/button";
 import { Combobox } from "@lattice-php/ui/combobox";
@@ -1276,7 +1279,8 @@ function RequestParameterField({
   const id = `${idPrefix}-${fieldId(key)}`;
   const schema = parameterSchema(param);
   const arrayOptions = parameterArrayOptions(schema);
-  const selectedArrayOptions = value === "" ? [] : value.split(",");
+  const selectedArrayOptions = parameterArrayValues(value);
+  const itemSchema = schema.type === "array" && isRecord(schema.items) ? schema.items : null;
   const [isArrayOptionsOpen, setIsArrayOptionsOpen] = useState(false);
 
   function toggleArrayOption(option: string): void {
@@ -1292,20 +1296,32 @@ function RequestParameterField({
       id={id}
       label={param.name}
       required={param.required}
-      helperText={inline ? undefined : (param.description ?? undefined)}
+      helperText={inline ? undefined : parameterHelperText(param, schema)}
       tooltip={inline ? undefined : (param.tooltip ?? undefined)}
       error={error ?? undefined}
       className={
-        inline ? "min-w-0 [&>div:first-child]:sr-only" : "min-w-0 basis-full flex-1 sm:basis-48"
+        inline
+          ? "min-w-0 [&>div:first-child]:sr-only"
+          : "min-w-0 basis-full shrink-0 grow-0 sm:basis-48 sm:shrink sm:grow"
       }
     >
       {(controlProps) =>
-        arrayOptions.length > 0 ? (
+        param.filterType === "between" && itemSchema !== null ? (
+          <BetweenParameterControl
+            controlProps={controlProps}
+            fieldKey={key}
+            itemSchema={itemSchema}
+            name={param.name}
+            required={param.required}
+            value={value}
+            onChange={onChange}
+          />
+        ) : arrayOptions.length > 0 ? (
           <Combobox
             multiple
             open={isArrayOptionsOpen}
             onOpenChange={setIsArrayOptionsOpen}
-            options={arrayOptions.map((option) => ({ label: option, value: option, data: null }))}
+            options={arrayOptions.map((option) => ({ ...option, data: null }))}
             selected={selectedArrayOptions}
             onSelect={toggleArrayOption}
             emptyLabel="No values found."
@@ -1323,6 +1339,16 @@ function RequestParameterField({
                 "data-field-key": key,
               } as React.ComponentProps<"button"> & { "data-field-key": string }
             }
+          />
+        ) : itemSchema !== null ? (
+          <Input
+            {...controlProps}
+            type="text"
+            value={value}
+            required={param.required}
+            placeholder="Separate values with commas"
+            data-field-key={key}
+            onChange={(event) => onChange(event.target.value)}
           />
         ) : Array.isArray(schema.enum) ? (
           <NativeSelect
@@ -1369,6 +1395,135 @@ function RequestParameterField({
         )
       }
     </FormFieldFrame>
+  );
+}
+
+function BetweenParameterControl({
+  controlProps,
+  fieldKey,
+  itemSchema,
+  name,
+  required,
+  value,
+  onChange,
+}: {
+  controlProps: FormFieldControlProps;
+  fieldKey: string;
+  itemSchema: Record<string, unknown>;
+  name: string;
+  required: boolean;
+  value: string;
+  onChange: (value: string) => void;
+}): React.ReactNode {
+  const [start = "", end = ""] = parameterArrayValues(value);
+
+  function change(index: 0 | 1, next: string): void {
+    const bounds = [start, end];
+    bounds[index] = next;
+    onChange(bounds.every((bound) => bound === "") ? "" : bounds.join(","));
+  }
+
+  return (
+    <div className="grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
+      <label className="grid min-w-0 gap-1 text-xs text-lt-muted-fg">
+        Start
+        <ScalarParameterControl
+          ariaLabel={`${name} start`}
+          controlProps={controlProps}
+          dataFieldKey={fieldKey}
+          required={required}
+          schema={itemSchema}
+          value={start}
+          onChange={(next) => change(0, next)}
+        />
+      </label>
+      <label className="grid min-w-0 gap-1 text-xs text-lt-muted-fg">
+        End
+        <ScalarParameterControl
+          ariaLabel={`${name} end`}
+          controlProps={{ ...controlProps, id: `${controlProps.id}-end` }}
+          required={required}
+          schema={itemSchema}
+          value={end}
+          onChange={(next) => change(1, next)}
+        />
+      </label>
+    </div>
+  );
+}
+
+function ScalarParameterControl({
+  ariaLabel,
+  controlProps,
+  dataFieldKey,
+  required,
+  schema,
+  value,
+  onChange,
+}: {
+  ariaLabel: string;
+  controlProps: FormFieldControlProps;
+  dataFieldKey?: string;
+  required: boolean;
+  schema: Record<string, unknown>;
+  value: string;
+  onChange: (value: string) => void;
+}): React.ReactNode {
+  const { "aria-labelledby": _labelledBy, ...labelledControlProps } = controlProps;
+
+  if (Array.isArray(schema.enum)) {
+    return (
+      <NativeSelect
+        {...labelledControlProps}
+        aria-label={ariaLabel}
+        value={value}
+        required={required}
+        data-field-key={dataFieldKey}
+        onChange={(event) => onChange(event.target.value)}
+      >
+        <option value="">Not set</option>
+        {schema.enum.map((option) => (
+          <option key={String(option)} value={String(option)}>
+            {String(option)}
+          </option>
+        ))}
+      </NativeSelect>
+    );
+  }
+
+  if (schema.type === "boolean") {
+    return (
+      <NativeSelect
+        {...labelledControlProps}
+        aria-label={ariaLabel}
+        value={value}
+        required={required}
+        data-field-key={dataFieldKey}
+        onChange={(event) => onChange(event.target.value)}
+      >
+        <option value="">Not set</option>
+        <option value="true">true</option>
+        <option value="false">false</option>
+      </NativeSelect>
+    );
+  }
+
+  return (
+    <Input
+      {...labelledControlProps}
+      aria-label={ariaLabel}
+      type={parameterInputType(schema)}
+      value={value}
+      required={required}
+      min={parameterMinimum(schema)}
+      max={parameterMaximum(schema)}
+      step={parameterStep(schema)}
+      minLength={numberValue(schema.minLength)}
+      maxLength={numberValue(schema.maxLength)}
+      pattern={typeof schema.pattern === "string" ? schema.pattern : undefined}
+      data-field-key={dataFieldKey}
+      onChange={(event) => onChange(event.target.value)}
+    />
   );
 }
 
@@ -1424,12 +1579,31 @@ function parameterSchema(param: Param): Record<string, unknown> {
   return isRecord(param.schema) ? param.schema : {};
 }
 
-function parameterArrayOptions(schema: Record<string, unknown>): string[] {
+function parameterArrayOptions(
+  schema: Record<string, unknown>,
+): Array<{ label: string; value: string }> {
   if (schema.type !== "array" || !isRecord(schema.items) || !Array.isArray(schema.items.enum)) {
     return [];
   }
 
-  return schema.items.enum.filter((option): option is string => typeof option === "string");
+  return schema.items.enum.flatMap((option) =>
+    ["string", "number", "boolean"].includes(typeof option)
+      ? [{ label: String(option), value: String(option) }]
+      : [],
+  );
+}
+
+function parameterArrayValues(value: string): string[] {
+  return value === "" ? [] : value.split(",").map((item) => item.trim());
+}
+
+function parameterHelperText(param: Param, schema: Record<string, unknown>): string | undefined {
+  const valueFormat =
+    param.filterType === "operator" && typeof schema["x-value-format"] === "string"
+      ? `Value format: ${schema["x-value-format"]}.`
+      : null;
+
+  return [param.description, valueFormat].filter(Boolean).join(" ") || undefined;
 }
 
 function parameterInputType(schema: Record<string, unknown>): React.HTMLInputTypeAttribute {

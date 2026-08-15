@@ -165,6 +165,44 @@ function branchLabel(branch: Schema, resolved: Schema, components: Schema | null
   return refName(branch.$ref) ?? typeLabel(resolved, components);
 }
 
+function discriminatorBranch(
+  schema: Schema,
+  branch: Schema,
+  resolved: Schema,
+): { property: string; value: string } | null {
+  const discriminator = asSchema(schema.discriminator);
+  const property = discriminator?.propertyName;
+  if (typeof property !== "string" || property === "") {
+    return null;
+  }
+
+  const mapping = asSchema(discriminator?.mapping);
+  if (typeof branch.$ref === "string") {
+    const mapped = Object.entries(mapping ?? {}).find(([, ref]) => ref === branch.$ref);
+    if (mapped !== undefined) {
+      return { property, value: mapped[0] };
+    }
+  }
+
+  const discriminatorSchema = asSchema(asSchema(resolved.properties)?.[property]);
+  const pinnedValue =
+    typeof discriminatorSchema?.const === "string"
+      ? discriminatorSchema.const
+      : Array.isArray(discriminatorSchema?.enum) &&
+          discriminatorSchema.enum.length === 1 &&
+          typeof discriminatorSchema.enum[0] === "string"
+        ? discriminatorSchema.enum[0]
+        : null;
+
+  if (pinnedValue !== null) {
+    return { property, value: pinnedValue };
+  }
+
+  const implicitValue = refName(branch.$ref);
+
+  return implicitValue === null ? null : { property, value: implicitValue };
+}
+
 function schemaValue(value: unknown): string {
   return JSON.stringify(value) ?? String(value);
 }
@@ -297,11 +335,15 @@ function childRows(
     branches.forEach((branch, index) => {
       const branchSchema = asSchema(branch) ?? {};
       const row = toRow(branch, null, `${id}/${combiner}/${index}`, false, components, ancestors);
-      row.typeLabel = branchLabel(
-        branchSchema,
-        resolveSchema(branchSchema, components, new Set()),
-        components,
-      );
+      const resolvedBranch = resolveSchema(branchSchema, components, new Set());
+      const discriminator = discriminatorBranch(schema, branchSchema, resolvedBranch);
+      row.typeLabel = branchLabel(branchSchema, resolvedBranch, components);
+      if (discriminator !== null) {
+        row.name = discriminator.value;
+        row.details.unshift(
+          `discriminator: ${discriminator.property}=${schemaValue(discriminator.value)}`,
+        );
+      }
       rows.push(row);
     });
   }

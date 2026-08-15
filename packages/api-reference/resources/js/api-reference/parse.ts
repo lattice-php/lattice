@@ -30,6 +30,7 @@ type RawParameter = {
   examples?: Record<string, RawExample>;
   style?: string | null;
   explode?: boolean | null;
+  "x-filter-type"?: string | null;
   $ref?: string;
 };
 
@@ -263,6 +264,7 @@ function buildParam(spec: RawSpec, parameter: RawParameter): Param {
     example: parameterExample(spec, parameter, schema),
     ...(parameter.style === undefined ? {} : { style: parameter.style }),
     ...(parameter.explode === undefined ? {} : { explode: parameter.explode }),
+    ...(parameter["x-filter-type"] === undefined ? {} : { filterType: parameter["x-filter-type"] }),
   };
 }
 

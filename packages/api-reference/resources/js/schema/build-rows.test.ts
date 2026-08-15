@@ -197,6 +197,51 @@ describe("buildSchemaRows", () => {
     expect(rows.every((r) => r.name === null)).toBe(true);
   });
 
+  it("labels discriminated oneOf branches by their mapping values", () => {
+    const rows = buildSchemaRows(
+      {
+        oneOf: [
+          { $ref: "#/components/schemas/TextBlock" },
+          { $ref: "#/components/schemas/ImageBlock" },
+        ],
+        discriminator: {
+          propertyName: "type",
+          mapping: {
+            text: "#/components/schemas/TextBlock",
+            image: "#/components/schemas/ImageBlock",
+          },
+        },
+      },
+      {
+        schemas: {
+          TextBlock: {
+            type: "object",
+            required: ["type", "text"],
+            properties: {
+              type: { type: "string", enum: ["text"] },
+              text: { type: "string" },
+            },
+          },
+          ImageBlock: {
+            type: "object",
+            required: ["type", "url"],
+            properties: {
+              type: { type: "string", enum: ["image"] },
+              url: { type: "string", format: "uri" },
+            },
+          },
+        },
+      },
+    );
+
+    expect(rows.map((row) => [row.name, row.typeLabel])).toEqual([
+      ["text", "TextBlock"],
+      ["image", "ImageBlock"],
+    ]);
+    expect(rows[0]!.details).toContain('discriminator: type="text"');
+    expect(rows[1]!.details).toContain('discriminator: type="image"');
+  });
+
   it("appends null for OpenAPI 3.0 nullable and 3.1 type arrays", () => {
     const rows = buildSchemaRows(
       {

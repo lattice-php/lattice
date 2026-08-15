@@ -1,6 +1,7 @@
 import { isJsonMediaType, parameterKey, type RequestValues } from "./request-state";
 import type { Contract, Operation, Param, SecuritySchemeRef } from "./types";
 import { isRecord } from "./utils";
+import { parseDate, toDate } from "@lattice-php/ui/format/temporal";
 
 export type RequestErrors = {
   parameters: Record<string, string>;
@@ -182,12 +183,67 @@ function parameterConstraintError(param: Param, value: string): string | null {
     return null;
   }
 
-  if (param.schema.type === "number" || param.schema.type === "integer") {
-    return numericConstraintError(param.schema, value);
+  if (param.schema.type === "array") {
+    return arrayConstraintError(param.schema, value);
   }
 
-  if (param.schema.type === "string") {
-    return stringConstraintError(param.schema, value);
+  return scalarConstraintError(param.schema, value);
+}
+
+function arrayConstraintError(schema: Record<string, unknown>, value: string): string | null {
+  if (!isRecord(schema.items)) {
+    return null;
+  }
+
+  const items = formArrayItems(value);
+  const minimum = numberValue(schema.minItems);
+  const maximum = numberValue(schema.maxItems);
+
+  if (minimum !== null && maximum === minimum && items.length !== minimum) {
+    return `Enter exactly ${minimum} values.`;
+  }
+  if (minimum !== null && items.length < minimum) {
+    return `Enter at least ${minimum} values.`;
+  }
+  if (maximum !== null && items.length > maximum) {
+    return `Enter no more than ${maximum} values.`;
+  }
+
+  for (const [index, item] of items.entries()) {
+    if (item === "") {
+      return `Value ${index + 1} is required.`;
+    }
+
+    const error = scalarConstraintError(schema.items, item);
+    if (error !== null) {
+      return `Value ${index + 1}: ${error}`;
+    }
+  }
+
+  return null;
+}
+
+function scalarConstraintError(schema: Record<string, unknown>, value: string): string | null {
+  if (
+    Array.isArray(schema.enum) &&
+    !schema.enum.some(
+      (option) =>
+        ["string", "number", "boolean"].includes(typeof option) && String(option) === value,
+    )
+  ) {
+    return "Select an available value.";
+  }
+
+  if (schema.type === "boolean" && value !== "true" && value !== "false") {
+    return "Select true or false.";
+  }
+
+  if (schema.type === "number" || schema.type === "integer") {
+    return numericConstraintError(schema, value);
+  }
+
+  if (schema.type === "string") {
+    return stringConstraintError(schema, value);
   }
 
   return null;
@@ -234,6 +290,18 @@ function numericConstraintError(schema: Record<string, unknown>, value: string):
 }
 
 function stringConstraintError(schema: Record<string, unknown>, value: string): string | null {
+  if (schema.format === "date") {
+    try {
+      parseDate(value);
+    } catch {
+      return "Enter a valid date.";
+    }
+  }
+
+  if (schema.format === "date-time" && toDate(value) === null) {
+    return "Enter a valid date and time.";
+  }
+
   const length = [...value].length;
   const minLength = numberValue(schema.minLength);
   if (minLength !== null && length < minLength) {
@@ -349,7 +417,9 @@ function buildUrl(
     }
 
     if (param.location === "query" && value !== "") {
-      query.push(`${encodeURIComponent(param.name)}=${encodeURIComponent(value)}`);
+      query.push(
+        `${encodeURIComponent(param.name)}=${encodeURIComponent(parameterRequestValue(param, value))}`,
+      );
     }
   }
 
@@ -394,22 +464,21 @@ function isForbiddenMethodOverride(name: string, value: string | undefined): boo
 }
 
 function hasPrimitiveSchema(param: Param): boolean {
-  if (!isRecord(param.schema)) {
+  return hasPrimitiveSchemaValue(param.schema);
+}
+
+function hasPrimitiveSchemaValue(schema: unknown): schema is Record<string, unknown> {
+  if (!isRecord(schema)) {
     return false;
   }
 
-  if (
-    "$ref" in param.schema ||
-    "oneOf" in param.schema ||
-    "allOf" in param.schema ||
-    "anyOf" in param.schema
-  ) {
+  if ("$ref" in schema || "oneOf" in schema || "allOf" in schema || "anyOf" in schema) {
     return false;
   }
 
   return (
-    typeof param.schema.type === "string" &&
-    ["string", "number", "integer", "boolean"].includes(param.schema.type)
+    typeof schema.type === "string" &&
+    ["string", "number", "integer", "boolean"].includes(schema.type)
   );
 }
 
@@ -425,15 +494,15 @@ function hasFormArraySchema(param: Param): boolean {
     return false;
   }
 
-  const items = param.schema.items;
+  return hasPrimitiveSchemaValue(param.schema.items);
+}
 
-  return (
-    isRecord(items) &&
-    items.type === "string" &&
-    Array.isArray(items.enum) &&
-    items.enum.length > 0 &&
-    items.enum.every((value) => typeof value === "string")
-  );
+function formArrayItems(value: string): string[] {
+  return value.split(",").map((item) => item.trim());
+}
+
+function parameterRequestValue(param: Param, value: string): string {
+  return hasFormArraySchema(param) ? formArrayItems(value).join(",") : value;
 }
 
 function upsertHeader(headers: Record<string, string>, name: string, value: string): void {
