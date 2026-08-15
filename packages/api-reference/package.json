@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/api-reference",
-  "version": "0.53.0",
+  "version": "0.53.1",
   "description": "Interactive OpenAPI reference component with request playground, for Lattice apps or any React frontend.",
   "license": "MIT",
   "author": "Manuel Christlieb <manuel@christlieb.eu>",
@@ -59,9 +59,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lattice-php/core": "0.53.0",
-    "@lattice-php/form": "0.53.0",
-    "@lattice-php/ui": "0.53.0"
+    "@lattice-php/core": "0.53.1",
+    "@lattice-php/form": "0.53.1",
+    "@lattice-php/ui": "0.53.1"
   },
   "peerDependencies": {
     "react": "^19.0.0",

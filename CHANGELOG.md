@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.53.1](https://github.com/lattice-php/lattice/compare/0.53.0...0.53.1) (2026-08-15)
+
+
+### Bug Fixes
+
+* **ui:** nested grid span inheritance and vertical tabs on mobile ([#465](https://github.com/lattice-php/lattice/issues/465)) ([716776b](https://github.com/lattice-php/lattice/commit/716776b8416dfcf0f0851d5fd45ec978c111e5bd))
+
 ## [0.53.0](https://github.com/lattice-php/lattice/compare/0.52.0...0.53.0) (2026-08-15)
 
 
