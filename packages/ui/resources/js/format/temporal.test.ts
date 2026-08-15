@@ -1,12 +1,17 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   addDays,
+  addMonths,
   daysBetween,
   formatDateValue,
+  formatWallTime,
   isoWeek,
   preciseDateTime,
+  startOfMonthISO,
+  startOfWeekISO,
   toDate,
   todayISO,
+  weeksInMonth,
 } from "./temporal";
 
 afterEach(() => {
@@ -40,6 +45,54 @@ describe("addDays / daysBetween", () => {
     expect(daysBetween("2027-03-01", "2027-04-01")).toBe(31);
     expect(addDays("2027-03-26", 5)).toBe("2027-03-31");
     expect(daysBetween("2027-03-26", "2027-03-31")).toBe(5);
+  });
+});
+
+describe("startOfMonthISO / addMonths", () => {
+  it("resolves the first of the month", () => {
+    expect(startOfMonthISO("2026-08-15")).toBe("2026-08-01");
+    expect(startOfMonthISO("2026-08-01")).toBe("2026-08-01");
+  });
+
+  it("clamps the day when the target month is shorter", () => {
+    expect(addMonths("2026-01-31", 1)).toBe("2026-02-28");
+    expect(addMonths("2026-08-15", -1)).toBe("2026-07-15");
+    expect(addMonths("2026-12-15", 1)).toBe("2027-01-15");
+  });
+});
+
+describe("startOfWeekISO", () => {
+  it("honors the locale's week start", () => {
+    // 2026-08-15 is a Saturday.
+    expect(startOfWeekISO("2026-08-15", "en-US")).toBe("2026-08-09");
+    expect(startOfWeekISO("2026-08-15", "de-DE")).toBe("2026-08-10");
+  });
+});
+
+describe("weeksInMonth", () => {
+  it("varies with the locale's week start", () => {
+    // February 2026 starts on a Sunday and has exactly 28 days.
+    expect(weeksInMonth("2026-02-10", "en-US")).toBe(4);
+    expect(weeksInMonth("2026-02-10", "de-DE")).toBe(5);
+  });
+
+  it("spans six rows when a long month starts late in the week", () => {
+    // August 2026 starts on a Saturday.
+    expect(weeksInMonth("2026-08-01", "en-US")).toBe(6);
+    expect(weeksInMonth("2026-08-01", "de-DE")).toBe(6);
+  });
+});
+
+describe("formatWallTime", () => {
+  it("formats the floating wall-clock time per locale", () => {
+    expect(formatWallTime("2026-08-15T09:30:00", "de-DE")).toBe("09:30");
+    expect(formatWallTime("2026-08-15T09:30:00", "en-US")).toMatch(/^9:30\sAM$/);
+  });
+
+  it("keeps the wall time regardless of the runner's timezone", () => {
+    vi.stubEnv("TZ", "Pacific/Kiritimati");
+
+    expect(formatWallTime("2026-08-15T23:45:00", "de-DE")).toBe("23:45");
   });
 });
 

@@ -1,4 +1,11 @@
-import { parseDate, today } from "@internationalized/date";
+import {
+  getWeeksInMonth,
+  parseDate,
+  parseDateTime,
+  startOfMonth,
+  startOfWeek,
+  today,
+} from "@internationalized/date";
 import type { DateTimeStyle } from "../types";
 
 export type { DateValue } from "@internationalized/date";
@@ -52,6 +59,35 @@ export function isoWeek(dateISO: string): number {
 /** Today's calendar date in `timeZone`, as `Y-m-d`. */
 export function todayISO(timeZone: string): string {
   return today(timeZone).toString();
+}
+
+export function startOfMonthISO(dateISO: string): string {
+  return startOfMonth(parseDate(dateISO)).toString();
+}
+
+/** Adds calendar months, clamping the day to the target month's length. */
+export function addMonths(dateISO: string, months: number): string {
+  return parseDate(dateISO).add({ months }).toString();
+}
+
+/** First day of the week containing `dateISO`, honoring the locale's week start. */
+export function startOfWeekISO(dateISO: string, locale: string): string {
+  return startOfWeek(parseDate(dateISO), locale).toString();
+}
+
+/** Number of week rows the month containing `dateISO` spans in the locale's grid (4–6). */
+export function weeksInMonth(dateISO: string, locale: string): number {
+  return getWeeksInMonth(parseDate(dateISO), locale);
+}
+
+/** Locale-formatted wall-clock time of a floating `Y-m-dTH:i:s` datetime, e.g. "09:30" / "9:30 AM". */
+export function formatWallTime(dateTimeISO: string, locale?: string): string {
+  const parsed = parseDateTime(dateTimeISO);
+
+  return new Intl.DateTimeFormat(locale, {
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(parsed.toDate("UTC"));
 }
 
 export type FormatOptions = {
