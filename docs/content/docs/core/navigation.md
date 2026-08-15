@@ -153,27 +153,25 @@ Stack::make('app-main')->width(Width::Fill)->schema([
 
 ## Pinning a sidebar footer
 
-To keep navigation at the top of the sidebar and a user menu pinned to the bottom, wrap them in a
-full-height `Stack` with `->justify(Justify::Between)`. A column `Stack` lays out as a grid by default;
-giving it a `justify` switches it to a flex column so the space distributes:
+To keep navigation at the top of the sidebar and, say, a user menu pinned to the bottom, pass the
+bottom components to `->footer([...])`:
 
 ```php
-use Lattice\Ui\Enums\Justify;
 use Lattice\Ui\Enums\Placement;
-use Lattice\Ui\Enums\Width;
 use Lattice\Ui\Components\RawBlock;
-use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Layouts\Components\Dropdown;
 use Lattice\Layouts\Components\Menu;
 use Lattice\Layouts\Components\MenuItem;
 use Lattice\Layouts\Components\Sidebar;
 
-Sidebar::make('app-sidebar')->collapsible()->items([
-    Stack::make('sidebar-body')->width(Width::Fill)->justify(Justify::Between)->schema([
+Sidebar::make('app-sidebar')->collapsible()
+    ->items([
         Menu::make('sidebar')->items([
             MenuItem::fromPage(HomePage::class)->icon('house'),
         ]),
+    ])
+    ->footer([
         Dropdown::make('user-menu')
             ->placement(Placement::Top)
             ->trigger([
@@ -183,6 +181,7 @@ Sidebar::make('app-sidebar')->collapsible()->items([
             ->items([
                 MenuItem::make('Log out')->href(route('logout', absolute: false))->method(HttpMethod::Post),
             ]),
-    ]),
-]);
+    ]);
 ```
+
+Give dropdowns in the footer `Placement::Top` so they open upward.

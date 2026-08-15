@@ -17,7 +17,7 @@ const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
   return (
     <nav
       aria-label={t("common.breadcrumb", "Breadcrumb")}
-      className="px-4 pt-4"
+      className="min-w-0"
       data-lattice-component={nodeIdentity(node)}
     >
       <ol className="flex items-center gap-2 text-sm text-lt-muted-fg">
@@ -26,13 +26,13 @@ const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
 
           return (
             <Fragment key={crumb.href}>
-              <li>
+              <li className="min-w-0">
                 {isLast ? (
-                  <span aria-current="page" className="text-lt-fg">
+                  <span aria-current="page" className="block truncate text-lt-fg">
                     {crumb.title}
                   </span>
                 ) : (
-                  <Link className="hover:text-lt-fg" href={crumb.href}>
+                  <Link className="block truncate hover:text-lt-fg" href={crumb.href}>
                     {crumb.title}
                   </Link>
                 )}

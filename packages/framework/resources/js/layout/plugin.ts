@@ -7,6 +7,7 @@ import MenuComponent from "./components/menu";
 import MenuItemComponent from "./components/menu-item";
 import OutletComponent from "./components/outlet";
 import SidebarComponent from "./components/sidebar";
+import SidebarFooterComponent from "./components/sidebar-footer";
 import TopbarComponent from "./components/topbar";
 
 export const layoutComponents: Plugin = {
@@ -18,6 +19,7 @@ export const layoutComponents: Plugin = {
     "menu-item": eagerComponent(MenuItemComponent),
     outlet: eagerComponent(OutletComponent),
     sidebar: eagerComponent(SidebarComponent),
+    "sidebar.footer": eagerComponent(SidebarFooterComponent),
     topbar: eagerComponent(TopbarComponent),
   } satisfies ComponentRegistryFor<LayoutNodeType>,
   name: "lattice/layout",

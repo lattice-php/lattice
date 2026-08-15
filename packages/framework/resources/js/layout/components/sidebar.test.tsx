@@ -6,9 +6,13 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import SidebarComponent from "./sidebar";
+import SidebarFooterComponent from "./sidebar-footer";
 
 const registry = createRegistry({
-  components: { sidebar: eagerComponent(SidebarComponent) },
+  components: {
+    sidebar: eagerComponent(SidebarComponent),
+    "sidebar.footer": eagerComponent(SidebarFooterComponent),
+  },
   name: "test/sidebar",
 });
 
@@ -65,5 +69,22 @@ describe("Sidebar", () => {
     dispatchToggle();
 
     expect(window.localStorage.getItem("lattice:sidebar:app-sidebar")).toBeNull();
+  });
+
+  it("pins footer children to the bottom of the sidebar", () => {
+    const node: Node = {
+      id: "app-sidebar",
+      props: { collapsible: false, rememberState: false },
+      schema: [{ id: "footer", props: {}, type: "sidebar.footer" }],
+      type: "sidebar",
+    };
+
+    renderWithRegistry(<Renderer nodes={[node]} />, registry);
+
+    const footer = screen
+      .getByRole("complementary")
+      .querySelector('[data-lattice-component="footer"]');
+    expect(footer).not.toBeNull();
+    expect(footer).toHaveClass("mt-auto");
   });
 });
