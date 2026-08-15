@@ -13,16 +13,21 @@ use Lattice\Media\Models\Media;
 trait HasMedia
 {
     /**
+     * Without a collection this is the unfiltered relation over every
+     * attachment — the pivot's `collection` says where each row belongs, so
+     * eager loads and API includes can expose all media at once.
+     *
      * @return MorphToMany<Media, $this, Attachment>
      */
-    public function media(string $collection = 'default'): MorphToMany
+    public function media(?string $collection = null): MorphToMany
     {
-        return $this->morphToMany(Media::modelClass(), 'attachable', 'media_attachments', null, 'media_id')
+        $relation = $this->morphToMany(Media::modelClass(), 'attachable', 'media_attachments', null, 'media_id')
             ->using(Attachment::class)
             ->withPivot(['id', 'collection', 'sort_order', 'meta'])
             ->withTimestamps()
-            ->wherePivot('collection', $collection)
             ->orderByPivot('sort_order');
+
+        return $collection === null ? $relation : $relation->wherePivot('collection', $collection);
     }
 
     /**
