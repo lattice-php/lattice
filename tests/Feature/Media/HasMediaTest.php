@@ -57,6 +57,21 @@ test('collections are isolated from each other', function (): void {
     expect($product->refresh()->media('manuals')->count())->toBe(1);
 });
 
+test('media without a collection spans every attachment with its pivot collection', function (): void {
+    $product = Product::factory()->create();
+    $image = Media::factory()->create();
+    $manual = Media::factory()->document()->create();
+
+    $product->syncMedia([$image->getKey()], 'images');
+    $product->syncMedia([$manual->getKey()], 'manuals');
+
+    $attachments = $product->media()->get()
+        ->mapWithKeys(fn (Media $media): array => [$media->getKey() => $media->pivot?->getAttribute('collection')])
+        ->all();
+
+    expect($attachments)->toBe([$image->getKey() => 'images', $manual->getKey() => 'manuals']);
+});
+
 test('firstMediaUrl returns the first attachment url or null', function (): void {
     Storage::fake('public');
     $product = Product::factory()->create();
