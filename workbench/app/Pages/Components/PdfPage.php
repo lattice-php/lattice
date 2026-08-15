@@ -32,7 +32,7 @@ final class PdfPage extends WorkbenchPage
                     PdfViewer::make('sample')
                         ->url(fn (): string => url('/fixtures/sample.pdf'))
                         ->filename('sample.pdf')
-                        ->height(640),
+                        ->maxHeight(720),
                 ]),
         ]);
     }
