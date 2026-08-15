@@ -67,6 +67,16 @@ container resizes; `->fitWidth()` restores that behavior explicitly. Zoom values
 to `4.0`. The viewer virtualizes rendering — only pages near the viewport hold a live canvas — so
 long documents stay responsive.
 
+`->height()` fixes the viewer's height; `->maxHeight()` lets it grow with the document instead and
+only caps it — a single A4 page then shows without dead space below, while longer documents scroll
+inside the cap:
+
+```php
+PdfViewer::make('manual')
+    ->url('/documents/manual.pdf')
+    ->maxHeight(900);
+```
+
 ## The worker asset
 
 pdf.js parses documents in a Web Worker whose version must match the bundled library exactly. The

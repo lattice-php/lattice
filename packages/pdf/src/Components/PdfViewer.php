@@ -26,6 +26,8 @@ final class PdfViewer extends Component
 
     public int $height = 720;
 
+    public ?int $maxHeight = null;
+
     public ?float $initialZoom = null;
 
     public ?string $cmapUrl = null;
@@ -82,6 +84,17 @@ final class PdfViewer extends Component
         }
 
         $this->height = $height;
+
+        return $this;
+    }
+
+    public function maxHeight(int $maxHeight): static
+    {
+        if ($maxHeight < 240) {
+            throw new InvalidArgumentException('PdfViewer maxHeight must be at least 240 pixels.');
+        }
+
+        $this->maxHeight = $maxHeight;
 
         return $this;
     }

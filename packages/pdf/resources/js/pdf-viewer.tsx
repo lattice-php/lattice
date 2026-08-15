@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { nodeIdentity } from "@lattice-php/core";
 import type { RendererComponent } from "@lattice-php/core";
 import { useT } from "@lattice-php/ui/i18n";
 import { usePdfEngineRegistry } from "./engine-registry";
@@ -20,7 +21,16 @@ const PdfViewerComponent: RendererComponent<"pdf"> = ({ node }) => {
   }
 
   return (
-    <div className="lt-pdf" data-test="pdf-viewer" style={{ height: node.props.height }}>
+    <div
+      className="lt-pdf"
+      data-lattice-component={nodeIdentity(node)}
+      data-test="pdf-viewer"
+      style={
+        node.props.maxHeight === null
+          ? { height: node.props.height }
+          : { maxHeight: node.props.maxHeight }
+      }
+    >
       <Suspense
         fallback={
           <div className="lt-pdf-status">

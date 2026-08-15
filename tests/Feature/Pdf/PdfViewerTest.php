@@ -45,6 +45,16 @@ it('rejects heights below the minimum', function (): void {
     PdfViewer::make()->height(120);
 })->throws(InvalidArgumentException::class, 'PdfViewer height must be at least 240 pixels.');
 
+it('serializes a max height cap instead of the fixed height', function (): void {
+    $node = wire(PdfViewer::make()->url('https://files.example.test/manual.pdf')->maxHeight(900));
+
+    expect($node['props'])->toMatchArray(['maxHeight' => 900, 'height' => 720]);
+});
+
+it('rejects max heights below the minimum', function (): void {
+    PdfViewer::make()->maxHeight(120);
+})->throws(InvalidArgumentException::class, 'PdfViewer maxHeight must be at least 240 pixels.');
+
 it('rejects zoom outside the supported range', function (float $zoom): void {
     PdfViewer::make()->zoom($zoom);
 })->with([

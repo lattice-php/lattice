@@ -9,6 +9,7 @@ export type PdfViewer = {
   filename: string | null;
   height: number;
   initialZoom: number | null;
+  maxHeight: number | null;
   searchable: boolean;
   standardFontDataUrl: string | null;
   url: string;

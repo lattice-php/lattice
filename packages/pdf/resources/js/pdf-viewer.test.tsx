@@ -18,6 +18,7 @@ function pdfNode() {
       downloadable: true,
       searchable: true,
       height: 480,
+      maxHeight: null,
       initialZoom: null,
       cmapUrl: null,
       standardFontDataUrl: null,
