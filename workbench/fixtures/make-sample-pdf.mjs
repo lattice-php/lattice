@@ -1,9 +1,10 @@
-// Regenerates workbench/fixtures/sample.pdf, the document behind the
-// /components/pdf demo page: node workbench/fixtures/make-sample-pdf.mjs
+// Regenerates the sample document behind the /components/pdf demo page AND
+// the pdf package's browser-test fixture: node workbench/fixtures/make-sample-pdf.mjs
 //
 // Deterministic by construction (no dates, no randomness) so the committed
-// binary only changes when this script does. The browser test pins the page
-// count and the number of "quick" occurrences (5, case-insensitive).
+// binaries only change when this script does. Browser tests pin the page
+// count, the number of "quick" occurrences (5, case-insensitive), the two
+// link annotations, and the embedded CSV attachment.
 import { writeFileSync } from "node:fs";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
@@ -294,7 +295,22 @@ const pageIds = contentIds.map((contentId, index) => {
 });
 
 addObject(`<< /Type /Pages /Kids [${pageIds.map((id) => `${id} 0 R`).join(" ")}] /Count ${PAGE_COUNT} >>`);
-const catalogId = addObject(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
+const attachmentCsv = Buffer.from(
+  ["item,qty,total", ...tableRows.map((row) => `${row[0]},${row[1]},${row[3]}`)].join("\n"),
+  "latin1",
+);
+const embeddedFileId = addObject(
+  streamObject("/Type /EmbeddedFile /Subtype /text#2Fcsv", attachmentCsv),
+);
+const filespecId = addObject(
+  "<< /Type /Filespec /F (invoice-data.csv) /UF (invoice-data.csv) " +
+    `/Desc (The invoice table as CSV) /EF << /F ${embeddedFileId} 0 R >> >>`,
+);
+
+const catalogId = addObject(
+  `<< /Type /Catalog /Pages ${pagesId} 0 R ` +
+    `/Names << /EmbeddedFiles << /Names [(invoice-data.csv) ${filespecId} 0 R] >> >> >>`,
+);
 
 const chunks = [Buffer.from("%PDF-1.7\n%\xE2\xE3\xCF\xD3\n", "latin1")];
 let offset = chunks[0].length;
@@ -319,6 +335,13 @@ for (const objectOffset of offsets) {
 xref += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${offset}\n%%EOF\n`;
 chunks.push(Buffer.from(xref, "latin1"));
 
-const target = path.join(import.meta.dirname, "sample.pdf");
-writeFileSync(target, Buffer.concat(chunks));
-console.log(`wrote ${target} (${Buffer.concat(chunks).length} bytes, ${PAGE_COUNT} pages)`);
+const document = Buffer.concat(chunks);
+const targets = [
+  path.join(import.meta.dirname, "sample.pdf"),
+  path.join(import.meta.dirname, "../../packages/pdf/resources/js/fixtures/sample.pdf"),
+];
+
+for (const target of targets) {
+  writeFileSync(target, document);
+  console.log(`wrote ${target} (${document.length} bytes, ${PAGE_COUNT} pages)`);
+}
