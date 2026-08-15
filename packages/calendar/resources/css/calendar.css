@@ -4,8 +4,58 @@
  * Structural layout only — sticky positioning, the grid track sizes, and the
  * weekend/today paint that depends on the day-width custom property. Visual
  * detail (spacing, borders, typography, hover states) stays as Tailwind
- * utilities on the elements in timeline.tsx.
+ * utilities on the elements in the view components.
  */
+
+.lt-calendar {
+  --lt-calendar-day-header-h: 2rem;
+  --lt-calendar-chip-h: 1.625rem;
+  --lt-calendar-more-h: 1.5rem;
+  --lt-calendar-max-lanes: 3;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.lt-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.lt-calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  position: relative;
+}
+
+.lt-calendar-day {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(
+    var(--lt-calendar-day-header-h) + var(--lt-calendar-max-lanes) * var(--lt-calendar-chip-h) +
+      var(--lt-calendar-more-h)
+  );
+  min-width: 0;
+}
+
+/*
+ * Multi-day chips span day columns, so they live in a grid overlay above the
+ * cell layer; the overlay ignores pointer events so the day cells underneath
+ * stay clickable, while each chip opts back in.
+ */
+.lt-calendar-chips {
+  display: grid;
+  grid-auto-rows: var(--lt-calendar-chip-h);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  inset: var(--lt-calendar-day-header-h) 0 auto 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.lt-calendar-chip {
+  background-color: var(--lt-tone-bg, var(--lt-primary));
+  color: var(--lt-tone-fg, var(--lt-primary-fg));
+  pointer-events: auto;
+}
 
 .lt-timeline {
   --lt-timeline-lane-height: 2rem;

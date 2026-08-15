@@ -8,22 +8,22 @@ use Illuminate\Http\Request;
 use Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Core\Contracts\SignsComponentReferences;
 
-final readonly class TimelineController
+final readonly class CalendarController
 {
     use InteractsWithComponents;
 
     public function __construct(
-        private TimelineRegistry $timelines,
+        private CalendarRegistry $calendars,
         private SignsComponentReferences $references,
     ) {}
 
-    public function __invoke(Request $request, string $timeline): JsonResponse
+    public function __invoke(Request $request, string $calendar): JsonResponse
     {
-        [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->timelines, 'timeline', $timeline);
+        [$request, $definition] = $this->authorizeComponent($request, $this->references, $this->calendars, 'calendar', $calendar);
 
         $data = $request->isMethod('patch')
-            ? $this->timelines->reschedule($request, $definition)
-            : $this->timelines->response($timeline, $request, $definition);
+            ? $this->calendars->reschedule($request, $definition)
+            : $this->calendars->response($calendar, $request, $definition);
 
         return response()->json($data);
     }

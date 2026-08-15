@@ -1,48 +1,44 @@
 import { page, userEvent } from "vitest/browser";
 import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent } from "@lattice-php/core";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
-import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
-import TimelineComponent from "./timeline";
-import type { TimelineEventData, TimelineWireProps } from "./types";
+import { jsonResponse } from "@lattice-php/core/test-support";
+import CalendarComponent from "../calendar";
+import { calendarEvent, calendarNode, testRegistry } from "../test-support";
+import type { CalendarEventData, CalendarWireProps } from "../types";
 
-const initialEvent: TimelineEventData = {
+const initialEvent: CalendarEventData = calendarEvent({
   id: "assignment-1",
   resourceId: "anna",
   start: "2026-01-02",
   end: "2026-01-04",
   label: "Website Relaunch",
-};
-
-const registry = createRegistry({
-  components: { timeline: eagerComponent(TimelineComponent) },
-  name: "test/calendar",
 });
 
-async function renderTimeline(props: Partial<TimelineWireProps> = {}) {
-  const node = fakeNode({
-    type: "timeline",
-    props: {
-      groups: [
-        {
-          key: "resources",
-          label: "Resources",
-          resources: [
-            { id: "team-website", label: "Website Team" },
-            { id: "anna", label: "Anna" },
-          ],
-        },
-      ],
-      events: [initialEvent],
-      from: "2026-01-01",
-      days: 7,
-      ref: "timeline-ref",
-      endpoint: "/lattice/timelines/project-plan",
-      ...props,
-    },
+async function renderTimeline(props: Partial<CalendarWireProps> = {}) {
+  const node = calendarNode({
+    views: ["timeline"],
+    defaultView: "timeline",
+    date: "2026-01-01",
+    days: 7,
+    groups: [
+      {
+        key: "resources",
+        label: "Resources",
+        resources: [
+          { id: "team-website", label: "Website Team" },
+          { id: "anna", label: "Anna" },
+        ],
+      },
+    ],
+    events: [initialEvent],
+    reschedulable: true,
+    ...props,
   });
 
-  return renderWithRegistry(<TimelineComponent node={node}>{null}</TimelineComponent>, registry);
+  return renderWithRegistry(
+    <CalendarComponent node={node}>{null}</CalendarComponent>,
+    testRegistry,
+  );
 }
 
 function entry() {

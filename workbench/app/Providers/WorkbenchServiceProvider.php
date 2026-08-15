@@ -20,6 +20,7 @@ use Lattice\Search\Contracts\SearchHistoryRecorder;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 use Lattice\Theme\Swatch;
 use Lattice\Theme\Theme;
+use Workbench\App\Calendars\ProjectPlanCalendarAdapter;
 use Workbench\App\Http\Middleware\ShareReverbConnection;
 use Workbench\App\Models\User;
 use Workbench\App\Search\SessionSearchHistoryRecorder;
@@ -27,7 +28,6 @@ use Workbench\App\Support\BoostConfig;
 use Workbench\App\Support\BoostGuidelineComposer;
 use Workbench\App\Support\BoostSkillComposer;
 use Workbench\App\Support\TypeScript\BaseProfile;
-use Workbench\App\Timelines\ProjectPlanTimelineAdapter;
 
 use function Orchestra\Testbench\package_path;
 
@@ -45,7 +45,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         config(['app.faker_locale' => self::FAKER_LOCALE]);
 
         $this->keepLatticeEndpointsPublic();
-        $this->app->singleton(ProjectPlanTimelineAdapter::class);
+        $this->app->singleton(ProjectPlanCalendarAdapter::class);
         $this->app->singleton(SearchHistoryRecorder::class, SessionSearchHistoryRecorder::class);
 
         // Rebind so lattice:typescript regenerates the package's own built-in artifacts.
@@ -150,7 +150,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             'lattice.actions.middleware' => ['web'],
             'lattice.bulk-actions.middleware' => ['web'],
             'lattice.trees.middleware' => ['web'],
-            'lattice.timelines.middleware' => ['web'],
+            'lattice.calendars.middleware' => ['web'],
         ]);
     }
 

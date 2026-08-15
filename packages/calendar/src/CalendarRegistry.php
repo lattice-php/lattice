@@ -5,21 +5,21 @@ namespace Lattice\Calendar;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Lattice\Calendar\Components\Timeline;
+use Lattice\Calendar\Components\Calendar;
 use Lattice\Core\DefinitionRegistry;
 use Throwable;
 
 /**
- * @extends DefinitionRegistry<TimelineDefinition>
+ * @extends DefinitionRegistry<CalendarDefinition>
  */
-final class TimelineRegistry extends DefinitionRegistry
+final class CalendarRegistry extends DefinitionRegistry
 {
     /**
      * Events for the requested `[from, to)` window, `to` exclusive.
      *
-     * @return array{events: list<EntryData>}
+     * @return array{events: list<CalendarEventData>}
      */
-    public function response(string $key, Request $request, ?TimelineDefinition $definition = null): array
+    public function response(string $key, Request $request, ?CalendarDefinition $definition = null): array
     {
         $definition ??= $this->resolve($key);
 
@@ -31,15 +31,19 @@ final class TimelineRegistry extends DefinitionRegistry
         }
 
         return ['events' => array_map(
-            static fn (Entry $entry): EntryData => $entry->data(),
-            $this->entryList($definition->adapter()->events($from, $until)),
+            static fn (CalendarEvent $event): CalendarEventData => $event->data(),
+            $this->eventList($definition->adapter()->events($from, $until)),
         )];
     }
 
-    /** @return array{event: EntryData} */
-    public function reschedule(Request $request, TimelineDefinition $definition): array
+    /** @return array{event: CalendarEventData} */
+    public function reschedule(Request $request, CalendarDefinition $definition): array
     {
-        return ['event' => $definition->adapter()->reschedule($request)->data()];
+        $adapter = $definition->adapter();
+
+        abort_unless($adapter instanceof ReschedulesCalendarEvents, 405);
+
+        return ['event' => $adapter->reschedule($request)->data()];
     }
 
     private function parseDate(string $value): ?CarbonImmutable
@@ -58,24 +62,24 @@ final class TimelineRegistry extends DefinitionRegistry
     }
 
     /**
-     * @param  iterable<int, Entry>  $entries
-     * @return list<Entry>
+     * @param  iterable<int, CalendarEvent>  $events
+     * @return list<CalendarEvent>
      */
-    private function entryList(iterable $entries): array
+    private function eventList(iterable $events): array
     {
-        return is_array($entries) ? array_values($entries) : iterator_to_array($entries, false);
+        return is_array($events) ? array_values($events) : iterator_to_array($events, false);
     }
 
     /**
-     * @param  class-string<TimelineDefinition>  $timeline
+     * @param  class-string<CalendarDefinition>  $calendar
      * @param  array<string, mixed>  $context
      */
-    public function component(string $timeline, array $context = []): Timeline
+    public function component(string $calendar, array $context = []): Calendar
     {
         return $this->gatedComponent(
-            $timeline,
-            fn (string $key): Timeline => Timeline::make($key),
-            fn (TimelineDefinition $definition, Timeline $component, string $key): Timeline => $component
+            $calendar,
+            fn (string $key): Calendar => Calendar::make($key),
+            fn (CalendarDefinition $definition, Calendar $component, string $key): Calendar => $component
                 ->id($key)
                 ->endpoint($this->endpointFor($key))
                 ->definition($definition),
@@ -85,21 +89,21 @@ final class TimelineRegistry extends DefinitionRegistry
 
     protected function definitionClass(): string
     {
-        return TimelineDefinition::class;
+        return CalendarDefinition::class;
     }
 
     public function attributeClass(): string
     {
-        return AsTimeline::class;
+        return AsCalendar::class;
     }
 
     protected function name(): string
     {
-        return 'timeline';
+        return 'calendar';
     }
 
     public function group(): string
     {
-        return 'timelines';
+        return 'calendars';
     }
 }

@@ -1,36 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent } from "react";
-import { nodeIdentity } from "@lattice-php/core";
-import type { RendererComponent } from "@lattice-php/core";
 import { announce, draggable, dropTargetForElements } from "@lattice-php/lattice/dnd";
 import { coerceColor, namedColor, toneProps } from "@lattice-php/ui/lib/color";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Icon } from "@lattice-php/ui/icons";
-import { currentTimezone, useT } from "@lattice-php/ui/i18n";
-import { addDays, daysBetween, todayISO } from "@lattice-php/ui/format/temporal";
-import { assignLanes, buildAxis } from "./date-axis";
-import { useTimelineEvents } from "./timeline-state";
+import { addDays, daysBetween } from "@lattice-php/ui/format/temporal";
+import { assignLanes, buildAxis } from "../date-axis";
+import { eventDaySpan } from "../event-span";
+import type { UseCalendarEventsReturn } from "../calendar-state";
 import type {
-  TimelineEventData,
-  TimelineGroupData,
-  TimelineRescheduleRequest,
-  TimelineResourceData,
-  TimelineWireProps,
-} from "./types";
-
-export type {
-  TimelineEventData,
-  TimelineGroupData,
-  TimelineRescheduleRequest,
-  TimelineResourceData,
-  TimelineWireProps,
-} from "./types";
-
-declare module "@lattice-php/core" {
-  interface ComponentProps {
-    timeline: TimelineWireProps;
-  }
-}
+  CalendarEventData,
+  CalendarRescheduleRequest,
+  CalendarResourceData,
+  ResourceGroupData,
+} from "../types";
 
 const MIN_DAY_WIDTH = 10;
 const MAX_DAY_WIDTH = 64;
@@ -44,50 +27,80 @@ type ResizeEdge = "start" | "end";
 
 type Translate = (key: string, defaultValue?: string, options?: Record<string, unknown>) => string;
 
+/** A resource-bound event, reduced to the day-granular span the timeline lays out. */
+type TimelineEntry = Omit<CalendarEventData, "resourceId"> & {
+  resourceId: string;
+  dayStart: string;
+  dayEnd: string;
+};
+
 type Bar = {
   id: string;
   start: number;
   span: number;
-  event: TimelineEventData;
+  event: TimelineEntry;
+};
+
+export type TimelineViewProps = {
+  canReschedule: boolean;
+  days: number;
+  from: string;
+  groups: ResourceGroupData[];
+  locale: string;
+  onNavigate: (from: string) => void;
+  state: UseCalendarEventsReturn;
+  t: Translate;
+  today: string;
 };
 
 function isResizeEdge(value: unknown): value is ResizeEdge {
   return value === "start" || value === "end";
 }
 
+function toEntries(events: CalendarEventData[]): TimelineEntry[] {
+  return events.flatMap((event) => {
+    if (event.resourceId === null) {
+      return [];
+    }
+
+    const [dayStart, dayEnd] = eventDaySpan(event);
+
+    return [{ ...event, resourceId: event.resourceId, dayStart, dayEnd }];
+  });
+}
+
 function resizeRequest(
-  event: Pick<TimelineEventData, "id" | "resourceId" | "start" | "end">,
+  event: Pick<TimelineEntry, "id" | "resourceId" | "dayStart" | "dayEnd">,
   edge: ResizeEdge,
   boundary: string,
-): TimelineRescheduleRequest {
+): CalendarRescheduleRequest {
   if (edge === "start") {
     return {
       id: event.id,
       resourceId: event.resourceId,
-      start: boundary < event.end ? boundary : addDays(event.end, -1),
-      end: event.end,
+      start: boundary < event.dayEnd ? boundary : addDays(event.dayEnd, -1),
+      end: event.dayEnd,
     };
   }
 
   return {
     id: event.id,
     resourceId: event.resourceId,
-    start: event.start,
-    end: boundary > event.start ? boundary : addDays(event.start, 1),
+    start: event.dayStart,
+    end: boundary > event.dayStart ? boundary : addDays(event.dayStart, 1),
   };
 }
 
 function barsForResource(
-  resourceId: string,
-  eventsForResource: (resourceId: string) => TimelineEventData[],
+  entries: TimelineEntry[],
   from: string,
   days: number,
 ): { bars: (Bar & { lane: number })[]; laneCount: number } {
   const clipped: Bar[] = [];
 
-  for (const event of eventsForResource(resourceId)) {
-    const start = Math.max(0, daysBetween(from, event.start));
-    const end = Math.min(days, daysBetween(from, event.end));
+  for (const event of entries) {
+    const start = Math.max(0, daysBetween(from, event.dayStart));
+    const end = Math.min(days, daysBetween(from, event.dayEnd));
     const span = end - start;
 
     if (span > 0) {
@@ -98,26 +111,26 @@ function barsForResource(
   return assignLanes(clipped);
 }
 
-const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
-  const identity = nodeIdentity(node);
-  const { t, locale } = useT("calendar");
-  const [from, setFrom] = useState(node.props.from);
+export function TimelineView({
+  canReschedule,
+  days,
+  from,
+  groups,
+  locale,
+  onNavigate,
+  state,
+  t,
+  today,
+}: TimelineViewProps) {
   const [dayWidth, setDayWidth] = useState(DEFAULT_DAY_WIDTH);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
-  const [today] = useState(() => todayISO(currentTimezone()));
-  const { days } = node.props;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { events, eventsForResource, ensureRange, isRescheduling, loading, reschedule } =
-    useTimelineEvents({
-      endpoint: node.props.endpoint,
-      componentRef: node.props.ref,
-      initialEvents: node.props.events,
-      initialFrom: node.props.from,
-      days,
-    });
-  const resources = useMemo(
-    () => node.props.groups.flatMap((group) => group.resources),
-    [node.props.groups],
+  const { events, eventsForResource, isRescheduling, loading, reschedule } = state;
+  const resources = useMemo(() => groups.flatMap((group) => group.resources), [groups]);
+
+  const entriesForResource = useCallback(
+    (resourceId: string) => toEntries(eventsForResource(resourceId)),
+    [eventsForResource],
   );
 
   const axis = useMemo(() => buildAxis(from, days, locale, today), [from, days, locale, today]);
@@ -128,11 +141,6 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
     () => new Intl.DateTimeFormat(locale, { weekday: "short" }),
     [locale],
   );
-
-  function navigate(nextFrom: string): void {
-    setFrom(nextFrom);
-    ensureRange(nextFrom, addDays(nextFrom, days));
-  }
 
   function toggleGroup(key: string): void {
     setCollapsed((current) => {
@@ -149,17 +157,19 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
   }
 
   const rescheduleEntry = useCallback(
-    async (request: TimelineRescheduleRequest): Promise<void> => {
+    async (request: CalendarRescheduleRequest): Promise<void> => {
       const event = events.get(request.id);
 
       if (!event) {
         return;
       }
 
+      const [dayStart, dayEnd] = eventDaySpan(event);
+
       if (
         event.resourceId === request.resourceId &&
-        event.start === request.start &&
-        event.end === request.end
+        dayStart === request.start &&
+        dayEnd === request.end
       ) {
         return;
       }
@@ -190,12 +200,12 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
   } as CSSProperties;
 
   return (
-    <div className="lt-timeline" data-lattice-component={identity}>
+    <div className="lt-timeline">
       <div className="mb-2 flex items-center gap-1">
         <button
           aria-label={t("calendar.previous", "Previous")}
           className="rounded-lt-sm p-1.5 hover:bg-lt-muted"
-          onClick={() => navigate(addDays(from, -NAV_STEP_DAYS))}
+          onClick={() => onNavigate(addDays(from, -NAV_STEP_DAYS))}
           type="button"
         >
           <Icon className="size-lt-icon-sm" name="chevron-left" />
@@ -203,14 +213,14 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
         <button
           aria-label={t("calendar.next", "Next")}
           className="rounded-lt-sm p-1.5 hover:bg-lt-muted"
-          onClick={() => navigate(addDays(from, NAV_STEP_DAYS))}
+          onClick={() => onNavigate(addDays(from, NAV_STEP_DAYS))}
           type="button"
         >
           <Icon className="size-lt-icon-sm" name="chevron-right" />
         </button>
         <button
           className="rounded-lt-sm px-2 py-1 text-sm hover:bg-lt-muted"
-          onClick={() => navigate(addDays(today, -NAV_STEP_DAYS))}
+          onClick={() => onNavigate(addDays(today, -NAV_STEP_DAYS))}
           type="button"
         >
           {t("calendar.today", "Today")}
@@ -317,11 +327,11 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
             </div>
           </div>
 
-          {node.props.groups.map((group) => (
+          {groups.map((group) => (
             <TimelineGroupRows
               collapsed={collapsed.has(group.key)}
               days={days}
-              eventsForResource={eventsForResource}
+              entriesForResource={entriesForResource}
               from={from}
               group={group}
               isRescheduling={isRescheduling}
@@ -330,7 +340,7 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
               onToggle={() => toggleGroup(group.key)}
               resources={resources}
               t={t}
-              canReschedule={node.props.endpoint !== null && node.props.ref !== null}
+              canReschedule={canReschedule}
               dayWidth={dayWidth}
             />
           ))}
@@ -348,14 +358,14 @@ const TimelineComponent: RendererComponent<"timeline"> = ({ node }) => {
       </div>
     </div>
   );
-};
+}
 
 function TimelineGroupRows({
   canReschedule,
   collapsed,
   dayWidth,
   days,
-  eventsForResource,
+  entriesForResource,
   from,
   group,
   isRescheduling,
@@ -368,13 +378,13 @@ function TimelineGroupRows({
   collapsed: boolean;
   dayWidth: number;
   days: number;
-  eventsForResource: (resourceId: string) => TimelineEventData[];
+  entriesForResource: (resourceId: string) => TimelineEntry[];
   from: string;
-  group: TimelineGroupData;
+  group: ResourceGroupData;
   isRescheduling: (id: string) => boolean;
-  onReschedule: (request: TimelineRescheduleRequest) => Promise<void>;
+  onReschedule: (request: CalendarRescheduleRequest) => Promise<void>;
   onToggle: () => void;
-  resources: TimelineResourceData[];
+  resources: CalendarResourceData[];
   t: Translate;
 }) {
   return (
@@ -408,7 +418,7 @@ function TimelineGroupRows({
               canReschedule={canReschedule}
               dayWidth={dayWidth}
               days={days}
-              eventsForResource={eventsForResource}
+              entriesForResource={entriesForResource}
               from={from}
               isRescheduling={isRescheduling}
               key={resource.id}
@@ -427,7 +437,7 @@ function TimelineResourceRow({
   canReschedule,
   dayWidth,
   days,
-  eventsForResource,
+  entriesForResource,
   from,
   isRescheduling,
   onReschedule,
@@ -438,16 +448,16 @@ function TimelineResourceRow({
   canReschedule: boolean;
   dayWidth: number;
   days: number;
-  eventsForResource: (resourceId: string) => TimelineEventData[];
+  entriesForResource: (resourceId: string) => TimelineEntry[];
   from: string;
   isRescheduling: (id: string) => boolean;
-  onReschedule: (request: TimelineRescheduleRequest) => Promise<void>;
-  resource: TimelineResourceData;
-  resources: TimelineResourceData[];
+  onReschedule: (request: CalendarRescheduleRequest) => Promise<void>;
+  resource: CalendarResourceData;
+  resources: CalendarResourceData[];
   t: Translate;
 }) {
   // ponytail: full render; row-windowing + bar culling when rows × events grows ~10x
-  const { bars, laneCount } = barsForResource(resource.id, eventsForResource, from, days);
+  const { bars, laneCount } = barsForResource(entriesForResource(resource.id), from, days);
   const rowHeight = `calc(${Math.max(laneCount, 1)} * var(--lt-timeline-lane-height))`;
   const canvasRef = useRef<HTMLDivElement>(null);
   const [dropActive, setDropActive] = useState(false);
@@ -511,7 +521,9 @@ function TimelineResourceRow({
             return;
           }
 
-          void onReschedule(resizeRequest({ id, resourceId, start, end }, edge, boundary));
+          void onReschedule(
+            resizeRequest({ id, resourceId, dayStart: start, dayEnd: end }, edge, boundary),
+          );
 
           return;
         }
@@ -591,16 +603,16 @@ function TimelineBar({
   days: number;
   from: string;
   isRescheduling: boolean;
-  onReschedule: (request: TimelineRescheduleRequest) => Promise<void>;
-  resource: TimelineResourceData;
-  resources: TimelineResourceData[];
+  onReschedule: (request: CalendarRescheduleRequest) => Promise<void>;
+  resource: CalendarResourceData;
+  resources: CalendarResourceData[];
   t: Translate;
 }) {
   const barRef = useRef<HTMLDivElement>(null);
   const moveHandleRef = useRef<HTMLButtonElement>(null);
   const [dragging, setDragging] = useState(false);
-  const durationDays = daysBetween(bar.event.start, bar.event.end);
-  const hiddenStartDays = Math.max(0, daysBetween(bar.event.start, from));
+  const durationDays = daysBetween(bar.event.dayStart, bar.event.dayEnd);
+  const hiddenStartDays = Math.max(0, daysBetween(bar.event.dayStart, from));
   const until = addDays(from, days);
   const tone = toneProps(coerceColor(bar.event.color) ?? namedColor("primary"));
 
@@ -656,7 +668,7 @@ function TimelineBar({
     }
 
     let resourceId = bar.event.resourceId;
-    let start = bar.event.start;
+    let start = bar.event.dayStart;
     const resourceIndex = resources.findIndex((candidate) => candidate.id === resourceId);
 
     switch (keyboardEvent.key) {
@@ -705,19 +717,19 @@ function TimelineBar({
           "calendar.entry-label",
           "{{label}}, {{resource}}, {{start}} to {{end}}. Use Control Shift and arrow keys to reschedule.",
           {
-            end: bar.event.end,
+            end: bar.event.dayEnd,
             label: bar.event.label,
             resource: resource.label,
-            start: bar.event.start,
+            start: bar.event.dayStart,
           },
         )}
         className={cn(
           "h-full w-full overflow-hidden rounded-lt-xs px-1.5 py-1 text-left text-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary",
           canReschedule && "cursor-grab",
         )}
-        data-end={bar.event.end}
+        data-end={bar.event.dayEnd}
         data-resource-id={bar.event.resourceId}
-        data-start={bar.event.start}
+        data-start={bar.event.dayStart}
         data-test={`timeline-entry-${bar.id}`}
         onKeyDown={onKeyDown}
         ref={moveHandleRef}
@@ -727,7 +739,7 @@ function TimelineBar({
         {bar.event.label}
       </button>
 
-      {canReschedule && bar.event.start >= from ? (
+      {canReschedule && bar.event.dayStart >= from ? (
         <TimelineResizeHandle
           edge="start"
           event={bar.event}
@@ -739,7 +751,7 @@ function TimelineBar({
         />
       ) : null}
 
-      {canReschedule && bar.event.end <= until ? (
+      {canReschedule && bar.event.dayEnd <= until ? (
         <TimelineResizeHandle
           edge="end"
           event={bar.event}
@@ -764,16 +776,16 @@ function TimelineResizeHandle({
   until,
 }: {
   edge: ResizeEdge;
-  event: TimelineEventData;
+  event: TimelineEntry;
   from: string;
   isRescheduling: boolean;
-  onReschedule: (request: TimelineRescheduleRequest) => Promise<void>;
+  onReschedule: (request: CalendarRescheduleRequest) => Promise<void>;
   t: Translate;
   until: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [resizing, setResizing] = useState(false);
-  const value = edge === "start" ? event.start : event.end;
+  const value = edge === "start" ? event.dayStart : event.dayEnd;
 
   useEffect(() => {
     const element = ref.current;
@@ -790,11 +802,11 @@ function TimelineResizeHandle({
 
         return {
           edge,
-          end: event.end,
+          end: event.dayEnd,
           grabOffsetPx: input.clientX - (rect.left + rect.width / 2),
           id: event.id,
           resourceId: event.resourceId,
-          start: event.start,
+          start: event.dayStart,
           type: TIMELINE_RESIZE_TYPE,
         };
       },
@@ -835,8 +847,8 @@ function TimelineResizeHandle({
   }
 
   const currentIndex = daysBetween(from, value);
-  const minimum = edge === "start" ? 0 : daysBetween(from, event.start) + 1;
-  const maximum = edge === "start" ? daysBetween(from, event.end) - 1 : daysBetween(from, until);
+  const minimum = edge === "start" ? 0 : daysBetween(from, event.dayStart) + 1;
+  const maximum = edge === "start" ? daysBetween(from, event.dayEnd) - 1 : daysBetween(from, until);
 
   return (
     <div
@@ -865,5 +877,3 @@ function TimelineResizeHandle({
     />
   );
 }
-
-export default TimelineComponent;

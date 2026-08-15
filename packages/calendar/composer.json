@@ -1,7 +1,7 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
     "name": "lattice-php/calendar",
-    "description": "Resource-planning timeline component for Lattice.",
+    "description": "Multi-view calendar component (month grid and resource timeline) for Lattice.",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -10,6 +10,7 @@
         "illuminate/http": "^11.0 || ^12.0 || ^13.0",
         "illuminate/routing": "^11.0 || ^12.0 || ^13.0",
         "illuminate/support": "^11.0 || ^12.0 || ^13.0",
+        "lattice-php/action": "self.version",
         "lattice-php/core": "self.version",
         "lattice-php/ui": "self.version"
     },

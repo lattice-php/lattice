@@ -1,15 +1,15 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
+import { jsonResponse } from "@lattice-php/core/test-support";
 import { currentTimezone } from "@lattice-php/ui/i18n";
 import { addDays, todayISO } from "@lattice-php/ui/format/temporal";
-import TimelineComponent from "./timeline";
-import type { TimelineEventData, TimelineGroupData, TimelineWireProps } from "./types";
+import { calendarEvent, renderCalendar } from "../test-support";
+import type { CalendarEventData, CalendarWireProps, ResourceGroupData } from "../types";
 
 const today = todayISO(currentTimezone());
 const initialFrom = addDays(today, -7);
 
-function makeGroup(overrides: Partial<TimelineGroupData> = {}): TimelineGroupData {
+function makeGroup(overrides: Partial<ResourceGroupData> = {}): ResourceGroupData {
   return {
     key: "team-a",
     label: "Team A",
@@ -21,15 +21,14 @@ function makeGroup(overrides: Partial<TimelineGroupData> = {}): TimelineGroupDat
   };
 }
 
-function makeEvent(overrides: Partial<TimelineEventData> = {}): TimelineEventData {
-  return {
-    id: "e1",
+function makeEvent(overrides: Partial<CalendarEventData> = {}): CalendarEventData {
+  return calendarEvent({
     resourceId: "r1",
     start: initialFrom,
     end: addDays(initialFrom, 2),
     label: "Design review",
     ...overrides,
-  };
+  });
 }
 
 const fetchMock = vi.fn<typeof fetch>();
@@ -40,21 +39,17 @@ beforeEach(() => {
   vi.stubGlobal("fetch", fetchMock);
 });
 
-function renderTimeline(props: Partial<TimelineWireProps> = {}) {
-  const node = fakeNode({
-    type: "timeline",
-    props: {
-      groups: [makeGroup()],
-      events: [makeEvent()],
-      from: initialFrom,
-      days: 7,
-      ref: "ref-1",
-      endpoint: "/lattice/timelines/demo",
-      ...props,
-    },
+function renderTimeline(props: Partial<CalendarWireProps> = {}) {
+  return renderCalendar({
+    views: ["timeline"],
+    defaultView: "timeline",
+    date: initialFrom,
+    days: 7,
+    groups: [makeGroup()],
+    events: [makeEvent()],
+    reschedulable: true,
+    ...props,
   });
-
-  return render(<TimelineComponent node={node}>{null}</TimelineComponent>);
 }
 
 function dayOfMonthCells(container: HTMLElement): string[] {
@@ -63,7 +58,7 @@ function dayOfMonthCells(container: HTMLElement): string[] {
   );
 }
 
-describe("TimelineComponent", () => {
+describe("TimelineView", () => {
   it("hides a group's resource rows when collapsed and restores them on expand", () => {
     renderTimeline();
 
@@ -132,7 +127,7 @@ describe("TimelineComponent", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url] = fetchMock.mock.calls[0] as [string];
-    expect(url).toBe(`/lattice/timelines/demo?from=${today}&to=${addDays(today, 7)}`);
+    expect(url).toBe(`/lattice/calendars/demo?from=${today}&to=${addDays(today, 7)}`);
 
     const nextDayNumbers = dayOfMonthCells(container);
     expect(nextDayNumbers[0]).toBe(String(Number(today.slice(8, 10))));
@@ -175,6 +170,38 @@ describe("TimelineComponent", () => {
 
     const canvas = container.querySelector(".lt-timeline-resource-canvas") as HTMLElement;
     expect(canvas.style.height).toBe("calc(2 * var(--lt-timeline-lane-height))");
+  });
+
+  it("lays a timed event out on the calendar days it occupies", () => {
+    renderTimeline({
+      events: [
+        makeEvent({
+          id: "timed",
+          label: "Onsite",
+          start: `${initialFrom}T09:00:00`,
+          end: `${addDays(initialFrom, 1)}T17:00:00`,
+          allDay: false,
+        }),
+      ],
+    });
+
+    const bar = screen.getByTestId("timeline-entry-timed");
+    expect(bar).toHaveAttribute("data-start", initialFrom);
+    expect(bar).toHaveAttribute("data-end", addDays(initialFrom, 2));
+  });
+
+  it("offers no drag or resize affordances when the calendar is not reschedulable", () => {
+    renderTimeline({ reschedulable: false });
+
+    expect(screen.queryByRole("separator")).not.toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByTitle("Design review"), {
+      ctrlKey: true,
+      key: "ArrowRight",
+      shiftKey: true,
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("resizes either edge by keyboard without changing the resource or opposite edge", async () => {
