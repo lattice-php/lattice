@@ -80,9 +80,51 @@ function rangesByItem(
 }
 
 /**
- * Rebuilds each text-layer div's children so match ranges render as <mark>
- * elements. Divs are keyed by text-content item; resetting to the plain item
- * string first keeps the operation idempotent across query changes.
+ * Builds DOM ranges over the untouched text-layer divs for the CSS Custom
+ * Highlight API — the browser then paints matches like a native selection,
+ * without mutating the text layer.
+ */
+export function matchRanges(options: {
+  textDivs: HTMLElement[];
+  items: string[];
+  matches: SearchMatch[];
+  currentStart: number | null;
+}): { all: Range[]; current: Range[] } {
+  const ranges = rangesByItem(options.items, options.matches, options.currentStart);
+  const all: Range[] = [];
+  const current: Range[] = [];
+
+  for (const [item, itemRanges] of ranges) {
+    const textNode = options.textDivs[item]?.firstChild;
+
+    if (!(textNode instanceof Text)) {
+      continue;
+    }
+
+    for (const itemRange of itemRanges) {
+      if (itemRange.end > textNode.length) {
+        continue;
+      }
+
+      const range = textNode.ownerDocument.createRange();
+      range.setStart(textNode, itemRange.start);
+      range.setEnd(textNode, itemRange.end);
+      all.push(range);
+
+      if (itemRange.current) {
+        current.push(range);
+      }
+    }
+  }
+
+  return { all, current };
+}
+
+/**
+ * Fallback for browsers without the CSS Custom Highlight API: rebuilds each
+ * text-layer div's children so match ranges render as <mark> elements. Divs
+ * are keyed by text-content item; resetting to the plain item string first
+ * keeps the operation idempotent across query changes.
  */
 export function applyHighlights(options: {
   textDivs: HTMLElement[];

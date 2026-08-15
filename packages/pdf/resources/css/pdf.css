@@ -89,13 +89,21 @@
   background: color-mix(in srgb, var(--lt-primary) 30%, transparent);
 }
 
+::highlight(lt-pdf-match) {
+  background-color: color-mix(in srgb, var(--lt-warning) 40%, transparent);
+}
+
+::highlight(lt-pdf-match-current) {
+  background-color: color-mix(in srgb, var(--lt-warning) 90%, transparent);
+}
+
+/* Fallback marks for browsers without the CSS Custom Highlight API. */
 .lt-pdf-match {
   padding: 0;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--lt-warning) 45%, transparent);
+  background: color-mix(in srgb, var(--lt-warning) 40%, transparent);
   color: transparent;
 }
 
 .lt-pdf-match--current {
-  background: color-mix(in srgb, var(--lt-warning) 85%, transparent);
+  background: color-mix(in srgb, var(--lt-warning) 90%, transparent);
 }

@@ -16323,13 +16323,32 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 	};
 }));
 //#endregion
+//#region resources/js/highlight-registry.ts
+function Da() {
+	return typeof CSS < "u" && "highlights" in CSS;
+}
+function Oa(e, t) {
+	Na.set(e, t), Aa();
+}
+function ka(e) {
+	Na.delete(e) && Aa();
+}
+function Aa() {
+	let e = [], t = [];
+	for (let n of Na.values()) e.push(...n.all), t.push(...n.current);
+	CSS.highlights.set(ja, new Highlight(...e)), CSS.highlights.set(Ma, new Highlight(...t));
+}
+var ja, Ma, Na, Pa = h((() => {
+	ja = "lt-pdf-match", Ma = "lt-pdf-match-current", Na = /* @__PURE__ */ new Map();
+}));
+//#endregion
 //#region resources/js/search.ts
-function Da(e) {
+function Fa(e) {
 	let t = [], n = 0;
 	for (let r of e) t.push(n), n += r.length;
 	return t;
 }
-function Oa(e, t, n) {
+function Ia(e, t, n) {
 	let r = n.toLowerCase();
 	if (r === "") return [];
 	let i = e.join("").toLowerCase(), a = [], o = 0;
@@ -16343,8 +16362,8 @@ function Oa(e, t, n) {
 		}), o = e + r.length;
 	}
 }
-function ka(e, t, n) {
-	let r = Da(e), i = /* @__PURE__ */ new Map();
+function La(e, t, n) {
+	let r = Fa(e), i = /* @__PURE__ */ new Map();
 	for (let a of t) {
 		let t = a.start + a.length;
 		for (let o = 0; o < e.length; o += 1) {
@@ -16361,8 +16380,23 @@ function ka(e, t, n) {
 	}
 	return i;
 }
-function Aa(e) {
-	let { textDivs: t, items: n, matches: r, currentStart: i } = e, a = ka(n, r, i);
+function Ra(e) {
+	let t = La(e.items, e.matches, e.currentStart), n = [], r = [];
+	for (let [i, a] of t) {
+		let t = e.textDivs[i]?.firstChild;
+		if (t instanceof Text) for (let e of a) {
+			if (e.end > t.length) continue;
+			let i = t.ownerDocument.createRange();
+			i.setStart(t, e.start), i.setEnd(t, e.end), n.push(i), e.current && r.push(i);
+		}
+	}
+	return {
+		all: n,
+		current: r
+	};
+}
+function za(e) {
+	let { textDivs: t, items: n, matches: r, currentStart: i } = e, a = La(n, r, i);
 	for (let e = 0; e < t.length; e += 1) {
 		let r = t[e], i = n[e] ?? "", o = a.get(e);
 		if (!o) {
@@ -16379,14 +16413,14 @@ function Aa(e) {
 		s < i.length && r.append(i.slice(s));
 	}
 }
-var ja = h((() => {}));
+var Ba = h((() => {}));
 //#endregion
 //#region resources/js/pdf-page.tsx
-function Ma(e, t) {
+function Va(e, t) {
 	e instanceof nn || console.error(`[lattice/pdf] ${t}`, e);
 }
-function Na({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, currentStart: c }) {
-	let d = o(null), f = o(null), p = o(null), m = o(null), [h, g] = s(0);
+function Ha({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, currentStart: c }) {
+	let d = o(null), f = o(null), p = o(null), m = o(null), h = o({}), [g, _] = s(0);
 	return r(() => {
 		let r = d.current, a = f.current, o = p.current;
 		if (!r || !a || !o) return;
@@ -16410,7 +16444,7 @@ function Na({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 			}), p = null;
 			c = () => {
 				f.cancel(), p?.cancel();
-			}, f.promise.catch((e) => Ma(e, `rendering page ${t} failed`));
+			}, f.promise.catch((e) => Va(e, `rendering page ${t} failed`));
 			try {
 				let { content: e } = await i.get(t);
 				if (s) return;
@@ -16418,12 +16452,12 @@ function Na({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 					textContentSource: e,
 					container: o,
 					viewport: u
-				}), await p.render(), s || (m.current = p, g((e) => e + 1));
+				}), await p.render(), s || (m.current = p, _((e) => e + 1));
 			} catch (e) {
-				s || Ma(e, `text layer for page ${t} failed`);
+				s || Va(e, `text layer for page ${t} failed`);
 			}
 		})().catch((e) => {
-			s || Ma(e, `loading page ${t} failed`);
+			s || Va(e, `loading page ${t} failed`);
 		}), () => {
 			s = !0, m.current = null, c?.();
 		};
@@ -16434,23 +16468,34 @@ function Na({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 		i
 	]), r(() => {
 		let e = m.current;
-		if (e && (Aa({
+		if (!e) return;
+		let t = {
 			textDivs: e.textDivs,
 			items: e.textContentItemsStr,
 			matches: a,
 			currentStart: c
-		}), c !== null)) {
-			let e = d.current?.querySelector("mark.lt-pdf-match--current"), t = d.current?.closest(".lt-pdf-scroll");
-			if (e && t) {
-				let n = e.getBoundingClientRect().top - t.getBoundingClientRect().top + t.scrollTop;
-				t.scrollTo({ top: Math.max(0, n - t.clientHeight / 2) });
+		}, n;
+		if (Da()) {
+			let e = Ra(t);
+			Oa(h.current, e), n = e.current[0]?.getBoundingClientRect();
+		} else za(t), n = d.current?.querySelector("mark.lt-pdf-match--current")?.getBoundingClientRect();
+		if (c !== null && n) {
+			let e = d.current?.closest(".lt-pdf-scroll");
+			if (e) {
+				let t = n.top - e.getBoundingClientRect().top + e.scrollTop;
+				e.scrollTo({ top: Math.max(0, t - e.clientHeight / 2) });
 			}
 		}
 	}, [
 		a,
 		c,
-		h
-	]), /* @__PURE__ */ u("div", {
+		g
+	]), r(() => {
+		let e = h.current;
+		return () => {
+			ka(e);
+		};
+	}, []), /* @__PURE__ */ u("div", {
 		className: "lt-pdf-page",
 		"data-test": "pdf-page",
 		ref: d,
@@ -16460,12 +16505,12 @@ function Na({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 		})]
 	});
 }
-var Pa = h((() => {
-	Ea(), ja();
+var Ua = h((() => {
+	Ea(), Pa(), Ba();
 }));
 //#endregion
 //#region resources/js/page-list.tsx
-function Fa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache: u, search: d, onVisiblePageChange: f }) {
+function Wa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache: u, search: d, onVisiblePageChange: f }) {
 	let p = o([]), [m, h] = s(/* @__PURE__ */ new Set([1])), g = Array.from({ length: n.numPages }, (e, t) => t + 1);
 	i(e, () => ({ scrollToPage(e) {
 		let n = t.current, r = p.current[e - 1];
@@ -16521,7 +16566,7 @@ function Fa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache
 				height: Math.floor(c.height * a),
 				width: "100%"
 			},
-			children: m.has(e) ? /* @__PURE__ */ l(Na, {
+			children: m.has(e) ? /* @__PURE__ */ l(Ha, {
 				currentStart: _?.page === e ? _.start : null,
 				doc: n,
 				matches: d.matchesForPage(e),
@@ -16532,12 +16577,12 @@ function Fa({ ref: e, scrollRootRef: t, doc: n, scale: a, baseSize: c, textCache
 		}, e))
 	});
 }
-var Ia = h((() => {
-	Pa();
+var Ga = h((() => {
+	Ua();
 }));
 //#endregion
 //#region resources/js/toolbar.tsx
-function La(e) {
+function Ka(e) {
 	let { t } = (0, y.useT)("pdf"), [n, i] = s(String(e.currentPage));
 	r(() => {
 		i(String(e.currentPage));
@@ -16575,7 +16620,7 @@ function La(e) {
 				children: [
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.zoom.out", "Zoom out"),
-						className: Ra,
+						className: qa,
 						disabled: !e.canZoomOut,
 						onClick: e.onZoomOut,
 						type: "button",
@@ -16591,7 +16636,7 @@ function La(e) {
 					}),
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.zoom.in", "Zoom in"),
-						className: Ra,
+						className: qa,
 						disabled: !e.canZoomIn,
 						onClick: e.onZoomIn,
 						type: "button",
@@ -16637,7 +16682,7 @@ function La(e) {
 					}),
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.search.previous", "Previous match"),
-						className: Ra,
+						className: qa,
 						disabled: e.matchCount === 0,
 						onClick: e.onPreviousMatch,
 						type: "button",
@@ -16648,7 +16693,7 @@ function La(e) {
 					}),
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.search.next", "Next match"),
-						className: Ra,
+						className: qa,
 						disabled: e.matchCount === 0,
 						onClick: e.onNextMatch,
 						type: "button",
@@ -16659,7 +16704,7 @@ function La(e) {
 					})
 				] }) : null, e.downloadable ? /* @__PURE__ */ l("a", {
 					"aria-label": t("pdf.download", "Download"),
-					className: Ra,
+					className: qa,
 					download: e.filename ?? "",
 					href: e.url,
 					children: /* @__PURE__ */ l(y.Icon, {
@@ -16671,12 +16716,12 @@ function La(e) {
 		]
 	});
 }
-var Ra, za = h((() => {
-	x(), Ra = "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
+var qa, Ja = h((() => {
+	x(), qa = "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
 }));
 //#endregion
 //#region resources/js/text-cache.ts
-async function Ba(e) {
+async function Ya(e) {
 	let t = e.streamTextContent().getReader(), n = {
 		items: [],
 		styles: {},
@@ -16688,14 +16733,14 @@ async function Ba(e) {
 		n.lang ??= r.lang, Object.assign(n.styles, r.styles), n.items.push(...r.items);
 	}
 }
-function Va(e) {
+function Xa(e) {
 	let t = /* @__PURE__ */ new Map();
 	return {
 		numPages: e.numPages,
 		get(n) {
 			let r = t.get(n);
 			return r || (r = e.getPage(n).then(async (e) => {
-				let t = await Ba(e);
+				let t = await Ya(e);
 				return {
 					content: t,
 					items: t.items.map((e) => "str" in e ? e.str : "")
@@ -16704,10 +16749,10 @@ function Va(e) {
 		}
 	};
 }
-var Ha = h((() => {}));
+var Za = h((() => {}));
 //#endregion
 //#region resources/js/use-pdf-document.ts
-function Ua(e) {
+function Qa(e) {
 	let [t, n] = s({
 		doc: null,
 		error: !1
@@ -16746,12 +16791,12 @@ function Ua(e) {
 		e.wasmUrl
 	]), t;
 }
-var Wa = h((() => {
+var $a = h((() => {
 	Ea();
 }));
 //#endregion
 //#region resources/js/use-search.ts
-function Ga(e) {
+function eo(e) {
 	let [t, n] = s(""), [i, o] = s([]), [c, l] = s(-1);
 	r(() => {
 		if (!e || t.trim() === "") {
@@ -16764,13 +16809,13 @@ function Ga(e) {
 				for (let i = 1; i <= e.numPages; i += 1) {
 					let { items: a } = await e.get(i);
 					if (n) return;
-					r.push(...Oa(a, i, t));
+					r.push(...Ia(a, i, t));
 				}
 				o(r), l(r.length > 0 ? 0 : -1);
 			})().catch((e) => {
 				n || (console.error("[lattice/pdf] search failed", e), o([]), l(-1));
 			});
-		}, Ka);
+		}, to);
 		return () => {
 			n = !0, clearTimeout(r);
 		};
@@ -16800,15 +16845,15 @@ function Ga(e) {
 		}
 	};
 }
-var Ka, qa = h((() => {
-	ja(), Ka = 250;
+var to, no = h((() => {
+	Ba(), to = 250;
 }));
 //#endregion
 //#region resources/js/use-zoom.ts
-function Ja(e) {
-	return Math.min(Za, Math.max(Xa, e));
+function ro(e) {
+	return Math.min(oo, Math.max(ao, e));
 }
-function Ya(e) {
+function io(e) {
 	let [t, n] = s(e.initialZoom ?? "fit-width"), [i, a] = s(null);
 	r(() => {
 		let t = e.containerRef.current;
@@ -16821,40 +16866,40 @@ function Ya(e) {
 			n.disconnect();
 		};
 	}, [e.containerRef]);
-	let o = i !== null && e.baseWidth !== null && e.baseWidth > 0 ? Ja((i - $a) / e.baseWidth) : null, c = t === "fit-width" ? o : t;
+	let o = i !== null && e.baseWidth !== null && e.baseWidth > 0 ? ro((i - co) / e.baseWidth) : null, c = t === "fit-width" ? o : t;
 	return {
 		scale: c,
 		percent: c === null ? null : Math.round(c * 100),
 		isFitWidth: t === "fit-width",
-		canZoomIn: c === null || c < Za,
-		canZoomOut: c === null || c > Xa,
+		canZoomIn: c === null || c < oo,
+		canZoomOut: c === null || c > ao,
 		zoomIn() {
-			n(Ja((c ?? 1) * Qa));
+			n(ro((c ?? 1) * so));
 		},
 		zoomOut() {
-			n(Ja((c ?? 1) / Qa));
+			n(ro((c ?? 1) / so));
 		},
 		fitWidth() {
 			n("fit-width");
 		}
 	};
 }
-var Xa, Za, Qa, $a, eo = h((() => {
-	Xa = .25, Za = 4, Qa = 1.25, $a = 32;
-})), to = /* @__PURE__ */ g({ default: () => no }), no, ro = h((() => {
-	Ea(), x(), Ia(), za(), Ha(), Wa(), qa(), eo(), no = ({ node: e }) => {
+var ao, oo, so, co, lo = h((() => {
+	ao = .25, oo = 4, so = 1.25, co = 32;
+})), uo = /* @__PURE__ */ g({ default: () => fo }), fo, po = h((() => {
+	Ea(), x(), Ga(), Ja(), Za(), $a(), no(), lo(), fo = ({ node: e }) => {
 		let { t } = (0, y.useT)("pdf"), i = e.props;
 		Jr.workerSrc !== i.workerUrl && (Jr.workerSrc = i.workerUrl);
-		let { doc: c, error: d } = Ua({
+		let { doc: c, error: d } = Qa({
 			url: i.url,
 			cmapUrl: i.cmapUrl,
 			standardFontDataUrl: i.standardFontDataUrl,
 			wasmUrl: i.wasmUrl
-		}), f = a(() => c ? Va(c) : null, [c]), [p, m] = s(null), h = o(null), g = o(null), [_, v] = s(1), b = Ya({
+		}), f = a(() => c ? Xa(c) : null, [c]), [p, m] = s(null), h = o(null), g = o(null), [_, v] = s(1), b = io({
 			containerRef: h,
 			baseWidth: p?.width ?? null,
 			initialZoom: i.initialZoom
-		}), x = Ga(i.searchable ? f : null);
+		}), x = eo(i.searchable ? f : null);
 		r(() => {
 			if (!c) {
 				m(null), v(1);
@@ -16888,7 +16933,7 @@ var Xa, Za, Qa, $a, eo = h((() => {
 			children: t("pdf.error", "The document could not be loaded.")
 		}) : /* @__PURE__ */ u("div", {
 			className: "lt-pdf-engine",
-			children: [/* @__PURE__ */ l(La, {
+			children: [/* @__PURE__ */ l(Ka, {
 				canZoomIn: b.canZoomIn,
 				canZoomOut: b.canZoomOut,
 				currentMatch: x.currentIndex + 1,
@@ -16911,7 +16956,7 @@ var Xa, Za, Qa, $a, eo = h((() => {
 			}), /* @__PURE__ */ l("div", {
 				className: "lt-pdf-scroll",
 				ref: h,
-				children: c && f && p && b.scale !== null ? /* @__PURE__ */ l(Fa, {
+				children: c && f && p && b.scale !== null ? /* @__PURE__ */ l(Wa, {
 					baseSize: p,
 					doc: c,
 					scrollRootRef: h,
@@ -16933,14 +16978,14 @@ var Xa, Za, Qa, $a, eo = h((() => {
 }));
 //#endregion
 //#region resources/js/engine-registry.ts
-function io() {
-	return (0, y.useExtensionRegistry)(ao);
+function mo() {
+	return (0, y.useExtensionRegistry)(ho);
 }
-var ao, oo = h((() => {
-	x(), ao = "pdf.engine";
-})), so = /* @__PURE__ */ g({ default: () => co }), co, lo = h((() => {
-	x(), oo(), co = ({ node: t }) => {
-		let { t: n } = (0, y.useT)("pdf"), r = io().engine;
+var ho, go = h((() => {
+	x(), ho = "pdf.engine";
+})), _o = /* @__PURE__ */ g({ default: () => vo }), vo, yo = h((() => {
+	x(), go(), vo = ({ node: t }) => {
+		let { t: n } = (0, y.useT)("pdf"), r = mo().engine;
 		return r ? /* @__PURE__ */ l("div", {
 			className: "lt-pdf",
 			"data-lattice-component": (0, y.nodeIdentity)(t),
@@ -16966,11 +17011,11 @@ var ao, oo = h((() => {
 //#endregion
 //#region resources/js/plugin.ts
 x();
-var uo = t(() => Promise.resolve().then(() => (ro(), to))), fo = {
+var bo = t(() => Promise.resolve().then(() => (po(), uo))), xo = {
 	name: "lattice/pdf",
-	components: { pdf: (0, y.lazyComponent)(() => Promise.resolve().then(() => (lo(), so))) },
-	extensions: { "pdf.engine": { engine: uo } },
+	components: { pdf: (0, y.lazyComponent)(() => Promise.resolve().then(() => (yo(), _o))) },
+	extensions: { "pdf.engine": { engine: bo } },
 	i18n: { namespace: "pdf" }
 };
 //#endregion
-export { fo as default };
+export { xo as default };

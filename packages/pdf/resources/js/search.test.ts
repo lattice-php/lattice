@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyHighlights, findPageMatches } from "./search";
+import { applyHighlights, findPageMatches, matchRanges } from "./search";
 
 describe("findPageMatches", () => {
   it("matches case-insensitively with offsets into the concatenated page text", () => {
@@ -21,6 +21,49 @@ describe("findPageMatches", () => {
 
   it("returns nothing for empty queries", () => {
     expect(findPageMatches(["content"], 1, "")).toEqual([]);
+  });
+});
+
+describe("matchRanges", () => {
+  it("builds DOM ranges over the untouched text nodes and flags the current match", () => {
+    const items = ["The quick brown fox. ", "A quick check."];
+    const textDivs = items.map((item) => {
+      const div = document.createElement("div");
+      div.textContent = item;
+
+      return div;
+    });
+
+    const { all, current } = matchRanges({
+      textDivs,
+      items,
+      matches: findPageMatches(items, 1, "quick"),
+      currentStart: 23,
+    });
+
+    expect(all.map((range) => range.toString())).toEqual(["quick", "quick"]);
+    expect(current.map((range) => range.toString())).toEqual(["quick"]);
+    expect(current[0]!.startContainer).toBe(textDivs[1]!.firstChild);
+    expect(textDivs[0]!.querySelector("mark")).toBeNull();
+  });
+
+  it("spans an item boundary with one range per affected div", () => {
+    const items = ["Latt", "ice viewer"];
+    const textDivs = items.map((item) => {
+      const div = document.createElement("div");
+      div.textContent = item;
+
+      return div;
+    });
+
+    const { all } = matchRanges({
+      textDivs,
+      items,
+      matches: findPageMatches(items, 1, "lattice"),
+      currentStart: null,
+    });
+
+    expect(all.map((range) => range.toString())).toEqual(["Latt", "ice"]);
   });
 });
 

@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { RenderingCancelledException, TextLayer } from "pdfjs-dist";
 import type { PDFDocumentProxy } from "pdfjs-dist";
-import { applyHighlights } from "./search";
+import {
+  clearHighlightRanges,
+  setHighlightRanges,
+  supportsHighlightApi,
+} from "./highlight-registry";
+import { applyHighlights, matchRanges } from "./search";
 import type { SearchMatch } from "./search";
 import type { PageTextCache } from "./text-cache";
 
@@ -32,6 +37,7 @@ export function PdfPage({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
   const layerRef = useRef<TextLayer | null>(null);
+  const ownerRef = useRef<Record<never, never>>({});
   const [layerVersion, setLayerVersion] = useState(0);
 
   useEffect(() => {
@@ -123,28 +129,45 @@ export function PdfPage({
       return;
     }
 
-    applyHighlights({
+    const highlightInput = {
       textDivs: layer.textDivs,
       items: layer.textContentItemsStr,
       matches,
       currentStart,
-    });
+    };
+    let currentRect: DOMRect | undefined;
 
-    if (currentStart !== null) {
-      const mark = rootRef.current?.querySelector("mark.lt-pdf-match--current");
+    if (supportsHighlightApi()) {
+      const ranges = matchRanges(highlightInput);
+      setHighlightRanges(ownerRef.current, ranges);
+      currentRect = ranges.current[0]?.getBoundingClientRect();
+    } else {
+      applyHighlights(highlightInput);
+      currentRect = rootRef.current
+        ?.querySelector("mark.lt-pdf-match--current")
+        ?.getBoundingClientRect();
+    }
+
+    if (currentStart !== null && currentRect) {
       // Scroll only the viewer's own container — scrollIntoView would also
       // scroll the window and push the toolbar out of view.
       const container = rootRef.current?.closest(".lt-pdf-scroll");
 
-      if (mark && container) {
-        const markTop =
-          mark.getBoundingClientRect().top -
-          container.getBoundingClientRect().top +
-          container.scrollTop;
-        container.scrollTo({ top: Math.max(0, markTop - container.clientHeight / 2) });
+      if (container) {
+        const targetTop =
+          currentRect.top - container.getBoundingClientRect().top + container.scrollTop;
+        container.scrollTo({ top: Math.max(0, targetTop - container.clientHeight / 2) });
       }
     }
   }, [matches, currentStart, layerVersion]);
+
+  useEffect(() => {
+    const owner = ownerRef.current;
+
+    return () => {
+      clearHighlightRanges(owner);
+    };
+  }, []);
 
   return (
     <div className="lt-pdf-page" data-test="pdf-page" ref={rootRef}>
