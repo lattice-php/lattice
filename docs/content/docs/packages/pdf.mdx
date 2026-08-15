@@ -1,0 +1,127 @@
+---
+title: PDF
+description: A pdf.js backed document viewer with text selection, full-text search, and zoom.
+---
+
+import BundleReport from "@components/BundleReport.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+The pdf package renders PDF documents with [pdf.js](https://mozilla.github.io/pdf.js/) inside a
+Lattice-styled viewer: pages render onto canvases as you scroll, a text layer makes the document
+selectable and copyable, and the toolbar provides page navigation, zoom, full-text search with
+match highlighting, and a download action.
+
+## Installation
+
+```bash
+composer require lattice-php/pdf
+```
+
+Composer is the only install. The `lattice()` Vite plugin discovers the package through Composer
+and adds only a small entry to the app bundle: the viewer shell loads from source, and the pdf.js
+engine ships as a precompiled renderer — with pdf.js bundled inside it, while React and the
+Lattice runtime remain shared with the host app — that loads on demand the first time a page
+renders a document, so pages without a PDF never pay for pdf.js. For a
+[no-build app](/introduction/no-build/), run `php artisan lattice:assets` after installation; it
+publishes the same self-contained renderer as a single standalone plugin.
+
+In an app with a build step, import the viewer stylesheet in your application CSS — it themes the
+toolbar and pages with the Lattice design tokens and positions the transparent text layer over
+each canvas:
+
+```css
+@import "@lattice-php/pdf/css";
+```
+
+## Usage
+
+```php
+use Lattice\Pdf\Components\PdfViewer;
+
+PdfViewer::make('manual')
+    ->url(fn () => $product->firstMediaUrl('manuals'))
+    ->filename('manual.pdf')
+    ->height(720);
+```
+
+`->url()` accepts a string or a [closure](/core/closure-evaluation/) resolved at serialization time —
+the natural place to produce a signed or temporary URL on every render instead of storing one.
+The browser fetches the document directly from that URL, so it must be reachable from the client
+and same-origin or CORS-enabled.
+
+`->filename()` names the file the download button saves; without it the browser derives a name
+from the URL. Individual toolbar sections can be turned off, and the initial zoom is
+configurable:
+
+```php
+PdfViewer::make('terms')
+    ->url('/documents/terms.pdf')
+    ->searchable(false)
+    ->downloadable(false)
+    ->zoom(1.5);
+```
+
+Without an explicit `->zoom()` the document fits the viewer's width and keeps tracking it as the
+container resizes; `->fitWidth()` restores that behavior explicitly. Zoom values cover `0.25`
+to `4.0`. The viewer virtualizes rendering — only pages near the viewport hold a live canvas — so
+long documents stay responsive.
+
+## The worker asset
+
+pdf.js parses documents in a Web Worker whose version must match the bundled library exactly. The
+package ships the matching worker script and serves it itself; the service provider registers a
+`GET` route (named `lattice.pdf.worker`) that streams the artifact with immutable cache headers,
+and the component puts that URL on the wire. There is nothing to publish or configure for the
+default setup.
+
+In `config/pdf.php`:
+
+```php
+return [
+    'middleware' => ['web'],
+    'asset_route' => 'lattice/pdf/worker.js',
+    'worker_url' => null,
+    'cmap_url' => null,
+    'standard_font_data_url' => null,
+    'wasm_url' => null,
+];
+```
+
+`worker_url` overrides the package route entirely — point it at your CDN when you serve static
+assets from one. `middleware` and `asset_route` reshape the built-in route.
+
+<Warning title="Content Security Policy">
+  The worker loads with <code>new Worker()</code> from your application's origin, so
+  <code>worker-src 'self'</code> is sufficient. When a CSP blocks worker construction, pdf.js falls
+  back to parsing on the main thread — documents still render, with reduced scrolling and search
+  responsiveness on large files.
+</Warning>
+
+## Exotic documents
+
+Typical PDFs with embedded fonts render out of the box. Three optional pdf.js asset sets cover the
+long tail, and each has a config passthrough that flows into the viewer:
+
+- `cmap_url` — CMap tables for CJK documents without embedded fonts.
+- `standard_font_data_url` — font data for documents relying on the standard 14 PDF fonts.
+- `wasm_url` — wasm codecs for JPEG&nbsp;2000 images and ICC color profiles.
+
+The package does not bundle these (they total several megabytes); host the matching directories
+from the `pdfjs-dist` npm package yourself or on a CDN and point the config at them. The versions
+must match the pinned `pdfjs-dist` release in the package.
+
+<Info>
+  Full-text search reads the text content of every page the first time a query runs, so the first
+  search in a very large document takes noticeably longer than subsequent ones — the extracted text
+  is cached per document.
+</Info>
+
+## Bundle Size
+
+The report measures the precompiled pdf plugin. It includes pdf.js but externalizes React and the
+[framework runtime](/advanced/bundle-size/), so it represents the package's additional JavaScript —
+loaded only when a page actually renders a document. The worker script (~1.2&nbsp;MB) loads
+separately through the asset route with immutable caching.
+
+<BundleReport target="pdf" />
