@@ -114,6 +114,83 @@ describe("buildRequest", () => {
     });
   });
 
+  it("serializes primitive form arrays as normalized comma-separated values", () => {
+    const ids = parameter({
+      name: "filter[id]",
+      location: "query",
+      style: "form",
+      explode: false,
+      schema: { type: "array", items: { type: "integer" } },
+    });
+
+    expect(
+      buildRequest({
+        operation: operation([ids]),
+        baseUrl: "https://api.example.test",
+        values: values([[ids, "1, 2,3"]]),
+        token: null,
+      }),
+    ).toEqual({
+      request: {
+        method: "POST",
+        url: "https://api.example.test/widgets/{id}?filter%5Bid%5D=1%2C2%2C3",
+        headers: { Accept: "application/json" },
+        body: null,
+      },
+      errors: null,
+    });
+  });
+
+  it("validates form array cardinality and every item schema", () => {
+    const between = parameter({
+      name: "filter[published_on.between]",
+      location: "query",
+      style: "form",
+      explode: false,
+      filterType: "between",
+      schema: {
+        type: "array",
+        items: { type: "string", format: "date" },
+        minItems: 2,
+        maxItems: 2,
+      },
+    });
+
+    expect(
+      buildRequest({
+        operation: operation([between]),
+        baseUrl: "https://api.example.test",
+        values: values([[between, "2026-08-01"]]),
+        token: null,
+      }),
+    ).toEqual({
+      request: null,
+      errors: {
+        parameters: { "query:filter[published_on.between]": "Enter exactly 2 values." },
+        body: null,
+        request: null,
+      },
+    });
+
+    expect(
+      buildRequest({
+        operation: operation([between]),
+        baseUrl: "https://api.example.test",
+        values: values([[between, "2026-08-01,not-a-date"]]),
+        token: null,
+      }),
+    ).toEqual({
+      request: null,
+      errors: {
+        parameters: {
+          "query:filter[published_on.between]": "Value 2: Enter a valid date.",
+        },
+        body: null,
+        request: null,
+      },
+    });
+  });
+
   it("omits empty optional query and header values and does not invent authorization", () => {
     const id = parameter({ name: "id", location: "path", required: true });
     const filter = parameter({ name: "filter", location: "query" });

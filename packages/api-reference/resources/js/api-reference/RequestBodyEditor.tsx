@@ -5,19 +5,31 @@ import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 import { Input } from "@lattice-php/ui/input";
 import { NativeSelect } from "@lattice-php/ui/native-select";
 import { Textarea } from "@lattice-php/ui/textarea";
-import { exampleFromSchema } from "./schema-example";
+import { requestExampleFromSchema } from "./schema-example";
 import { isRecord, prettyJson } from "./utils";
 
 type Scalar = string | number | boolean;
 
+type ObjectFieldSchema = {
+  kind: "object";
+  description: string | null;
+  tooltip: string | null;
+  initialValue: unknown;
+  properties: Array<{ name: string; required: boolean; schema: FieldSchema }>;
+};
+
+type DiscriminatedUnionFieldSchema = {
+  kind: "oneOf";
+  description: string | null;
+  tooltip: string | null;
+  initialValue: unknown;
+  discriminator: string;
+  variants: Array<{ label: string; value: string; schema: ObjectFieldSchema }>;
+};
+
 type FieldSchema =
-  | {
-      kind: "object";
-      description: string | null;
-      tooltip: string | null;
-      initialValue: unknown;
-      properties: Array<{ name: string; required: boolean; schema: FieldSchema }>;
-    }
+  | ObjectFieldSchema
+  | DiscriminatedUnionFieldSchema
   | {
       kind: "array";
       description: string | null;
@@ -71,7 +83,12 @@ export function RequestBodyEditor({
   );
   const parsed = parseJson(value);
 
-  if (fieldSchema?.kind !== "object" || !isRecord(parsed)) {
+  if (
+    fieldSchema === null ||
+    fieldSchema === undefined ||
+    !["object", "oneOf"].includes(fieldSchema.kind) ||
+    !isRecord(parsed)
+  ) {
     return (
       <FormFieldFrame
         id={`${idPrefix}-request-body`}
@@ -102,7 +119,17 @@ export function RequestBodyEditor({
   return (
     <fieldset aria-label="JSON body fields" className="@container flex min-w-0 flex-col gap-3">
       {error ? <p className="text-sm text-lt-danger">{error}</p> : null}
-      <ObjectFields schema={fieldSchema} path={[]} value={parsedBody} onChange={update} />
+      {fieldSchema.kind === "object" ? (
+        <ObjectFields schema={fieldSchema} path={[]} value={parsedBody} onChange={update} />
+      ) : (
+        <BodyField
+          schema={fieldSchema}
+          path={[]}
+          required={required}
+          value={parsedBody}
+          onChange={update}
+        />
+      )}
     </fieldset>
   );
 }
@@ -113,7 +140,7 @@ function ObjectFields({
   value,
   onChange,
 }: {
-  schema: Extract<FieldSchema, { kind: "object" }>;
+  schema: ObjectFieldSchema;
   path: Path;
   value: unknown;
   onChange: (path: Path, value: unknown) => void;
@@ -148,6 +175,19 @@ function BodyField({
   onChange: (path: Path, value: unknown) => void;
 }): React.ReactNode {
   const id = `body-${useId().replaceAll(/[^a-zA-Z0-9_-]/g, "")}`;
+
+  if (schema.kind === "oneOf") {
+    return (
+      <DiscriminatedUnionField
+        id={id}
+        schema={schema}
+        path={path}
+        required={required}
+        value={value}
+        onChange={onChange}
+      />
+    );
+  }
 
   if (schema.kind === "object") {
     return (
@@ -311,6 +351,77 @@ function BodyField({
   );
 }
 
+function DiscriminatedUnionField({
+  id,
+  schema,
+  path,
+  required,
+  value,
+  onChange,
+}: {
+  id: string;
+  schema: DiscriminatedUnionFieldSchema;
+  path: Path;
+  required: boolean;
+  value: unknown;
+  onChange: (path: Path, value: unknown) => void;
+}): React.ReactNode {
+  const label = pathLabel(path) || "JSON body";
+  const selectedValue = isRecord(value) ? value[schema.discriminator] : null;
+  const selected =
+    typeof selectedValue === "string"
+      ? (schema.variants.find((variant) => variant.value === selectedValue) ?? null)
+      : null;
+
+  return (
+    <fieldset className="flex min-w-0 flex-col gap-3 rounded-lt-sm border border-lt-border p-3 @xl:col-span-2">
+      <legend className="px-1 text-xs font-semibold text-lt-muted-fg">
+        {label}
+        {required ? <span className="text-lt-danger"> *</span> : null}
+        <InfoTooltip content={schema.tooltip} />
+      </legend>
+      {schema.description ? <p className="text-xs text-lt-muted-fg">{schema.description}</p> : null}
+      <FormFieldFrame id={`${id}-variant`} label={`${label} variant`} required={required}>
+        {(controlProps) => (
+          <NativeSelect
+            {...controlProps}
+            value={selected?.value ?? ""}
+            required={required}
+            data-field-key={`body:${label}:variant`}
+            onChange={(event) => {
+              const variant = schema.variants.find(
+                (candidate) => candidate.value === event.target.value,
+              );
+
+              if (variant === undefined) {
+                onChange(path, undefined);
+
+                return;
+              }
+
+              const initial = initialValue(variant.schema);
+              onChange(path, {
+                ...(isRecord(initial) ? initial : {}),
+                [schema.discriminator]: variant.value,
+              });
+            }}
+          >
+            {!required ? <option value="">Not set</option> : null}
+            {schema.variants.map((variant) => (
+              <option key={variant.value} value={variant.value}>
+                {variant.label}
+              </option>
+            ))}
+          </NativeSelect>
+        )}
+      </FormFieldFrame>
+      {selected !== null ? (
+        <ObjectFields schema={selected.schema} path={path} value={value} onChange={onChange} />
+      ) : null}
+    </fieldset>
+  );
+}
+
 function JsonField({
   schema,
   path,
@@ -412,7 +523,7 @@ function normalizeFieldSchema(
           ...normalized,
           description: stringValue(schema.description) ?? normalized.description,
           tooltip: tooltipValue(schema) ?? normalized.tooltip,
-          initialValue: exampleFromSchema(schema, components),
+          initialValue: requestExampleFromSchema(schema, components),
         };
   }
 
@@ -426,8 +537,13 @@ function normalizeFieldSchema(
           ...normalized,
           description: stringValue(schema.description) ?? normalized.description,
           tooltip: tooltipValue(schema) ?? normalized.tooltip,
-          initialValue: exampleFromSchema(schema, components),
+          initialValue: requestExampleFromSchema(schema, components),
         };
+  }
+
+  const discriminatedUnion = normalizeDiscriminatedUnion(schema, components, visitedRefs);
+  if (discriminatedUnion !== null) {
+    return discriminatedUnion;
   }
 
   if ("oneOf" in schema || "anyOf" in schema) {
@@ -442,11 +558,7 @@ function normalizeFieldSchema(
       return null;
     }
 
-    return mergeObjects(
-      [...(parts as Array<Extract<FieldSchema, { kind: "object" }>>), own],
-      schema,
-      components,
-    );
+    return mergeObjects([...(parts as ObjectFieldSchema[]), own], schema, components);
   }
 
   const type = schemaType(schema);
@@ -463,7 +575,7 @@ function normalizeFieldSchema(
           kind: "array",
           description: stringValue(schema.description),
           tooltip: tooltipValue(schema),
-          initialValue: exampleFromSchema(schema, components),
+          initialValue: requestExampleFromSchema(schema, components),
           items,
         };
   }
@@ -482,7 +594,7 @@ function normalizeFieldSchema(
     kind: type,
     description: stringValue(schema.description),
     tooltip: tooltipValue(schema),
-    initialValue: exampleFromSchema(schema, components),
+    initialValue: requestExampleFromSchema(schema, components),
     enumValues,
     format: stringValue(schema.format),
     minimum: numberValue(schema.minimum),
@@ -498,7 +610,7 @@ function normalizeObjectProperties(
   schema: Record<string, unknown>,
   components: unknown,
   visitedRefs: Set<string>,
-): Extract<FieldSchema, { kind: "object" }> | null {
+): ObjectFieldSchema | null {
   if (schema.additionalProperties === true || isRecord(schema.additionalProperties)) {
     return null;
   }
@@ -531,9 +643,87 @@ function normalizeObjectProperties(
     kind: "object",
     description: stringValue(schema.description),
     tooltip: tooltipValue(schema),
-    initialValue: exampleFromSchema(schema, components),
+    initialValue: requestExampleFromSchema(schema, components),
     properties: normalizedProperties,
   };
+}
+
+function normalizeDiscriminatedUnion(
+  schema: Record<string, unknown>,
+  components: unknown,
+  visitedRefs: Set<string>,
+): DiscriminatedUnionFieldSchema | null {
+  if (!Array.isArray(schema.oneOf) || !isRecord(schema.discriminator)) {
+    return null;
+  }
+
+  const discriminator = stringValue(schema.discriminator.propertyName);
+  if (discriminator === null || discriminator === "") {
+    return null;
+  }
+
+  const mapping = isRecord(schema.discriminator.mapping) ? schema.discriminator.mapping : {};
+  const variants: DiscriminatedUnionFieldSchema["variants"] = [];
+
+  for (const branch of schema.oneOf) {
+    const normalized = normalizeFieldSchema(branch, components, new Set(visitedRefs));
+    if (normalized?.kind !== "object") {
+      return null;
+    }
+
+    const value = discriminatorValue(branch, normalized, discriminator, mapping);
+    if (value === null || variants.some((variant) => variant.value === value)) {
+      return null;
+    }
+
+    variants.push({
+      label: value,
+      value,
+      schema: {
+        ...normalized,
+        initialValue: requestExampleFromSchema(branch, components),
+        properties: normalized.properties.filter((property) => property.name !== discriminator),
+      },
+    });
+  }
+
+  return variants.length < 2
+    ? null
+    : {
+        kind: "oneOf",
+        description: stringValue(schema.description),
+        tooltip: tooltipValue(schema),
+        initialValue: requestExampleFromSchema(schema, components),
+        discriminator,
+        variants,
+      };
+}
+
+function discriminatorValue(
+  branch: unknown,
+  normalized: ObjectFieldSchema,
+  discriminator: string,
+  mapping: Record<string, unknown>,
+): string | null {
+  if (isRecord(branch) && typeof branch.$ref === "string") {
+    const mapped = Object.entries(mapping).find(([, ref]) => ref === branch.$ref);
+    if (mapped !== undefined) {
+      return mapped[0];
+    }
+  }
+
+  const property = normalized.properties.find((candidate) => candidate.name === discriminator);
+  if (
+    property?.schema.kind !== "string" ||
+    property.schema.enumValues.length !== 1 ||
+    typeof property.schema.enumValues[0] !== "string"
+  ) {
+    return isRecord(branch) && typeof branch.$ref === "string"
+      ? (branch.$ref.split("/").pop() ?? null)
+      : null;
+  }
+
+  return property.schema.enumValues[0];
 }
 
 function rawJsonFieldSchema(
@@ -544,7 +734,7 @@ function rawJsonFieldSchema(
     kind: "json",
     description: isRecord(schema) ? stringValue(schema.description) : null,
     tooltip: isRecord(schema) ? tooltipValue(schema) : null,
-    initialValue: exampleFromSchema(schema, components),
+    initialValue: requestExampleFromSchema(schema, components),
   };
 }
 
@@ -570,10 +760,10 @@ function isNullableSchema(schema: unknown): boolean {
 }
 
 function mergeObjects(
-  objects: Array<Extract<FieldSchema, { kind: "object" }>>,
+  objects: ObjectFieldSchema[],
   schema: Record<string, unknown>,
   components: unknown,
-): Extract<FieldSchema, { kind: "object" }> {
+): ObjectFieldSchema {
   const properties = new Map<string, { name: string; required: boolean; schema: FieldSchema }>();
 
   for (const object of objects) {
@@ -593,7 +783,7 @@ function mergeObjects(
       objects.find((object) => object.description)?.description ??
       null,
     tooltip: tooltipValue(schema) ?? objects.find((object) => object.tooltip)?.tooltip ?? null,
-    initialValue: exampleFromSchema(schema, components),
+    initialValue: requestExampleFromSchema(schema, components),
     properties: [...properties.values()],
   };
 }
@@ -608,6 +798,10 @@ function initialValue(schema: FieldSchema): unknown {
       return {};
     case "array":
       return [];
+    case "oneOf":
+      return schema.initialValue === null || schema.initialValue === undefined
+        ? {}
+        : structuredClone(schema.initialValue);
     case "json":
       return null;
     case "boolean":

@@ -243,7 +243,7 @@ describe("parseOperation", () => {
     expect(op.tags).toEqual(["Users", "Admin"]);
   });
 
-  it("reads x-tooltip beside description on the operation and on the parameter itself", () => {
+  it("reads operation and parameter extensions", () => {
     const op = parseOperation(
       {
         openapi: "3.1.0",
@@ -260,6 +260,7 @@ describe("parseOperation", () => {
                   in: "query",
                   description: "Restricts the result set by type.",
                   "x-tooltip": '<a href="/docs/filters">Filter docs</a>',
+                  "x-filter-type": "operator",
                   schema: { type: "string", "x-tooltip": "<em>ignored</em>" },
                 },
               ],
@@ -273,6 +274,7 @@ describe("parseOperation", () => {
 
     expect(op.tooltip).toBe('<a href="/docs/widgets">Widget docs</a>');
     expect(op.paramGroups[0]!.params[0]!.tooltip).toBe('<a href="/docs/filters">Filter docs</a>');
+    expect(op.paramGroups[0]!.params[0]!.filterType).toBe("operator");
   });
 
   it("carries a parameter example", () => {

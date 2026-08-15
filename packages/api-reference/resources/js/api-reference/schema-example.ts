@@ -9,6 +9,10 @@ export function exampleFromSchema(schema: unknown, components?: unknown): unknow
   return schemaExample(schema, components, new Set(), "complete");
 }
 
+export function requestExampleFromSchema(schema: unknown, components?: unknown): unknown {
+  return schemaExample(schema, components, new Set(), "request");
+}
+
 export function initialContractExample(contract: Contract, components?: unknown): unknown {
   return contractExample(contract, components, "complete");
 }

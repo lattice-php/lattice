@@ -33,6 +33,7 @@ export type Param = {
   example: unknown;
   style?: string | null;
   explode?: boolean | null;
+  filterType?: string | null;
 };
 export type ContractExample = {
   name: string | null;

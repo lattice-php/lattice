@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { userEvent } from "vitest/browser";
+import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { clearRemoteTokenCache, type RemoteAccess } from "@lattice-php/core/api";
 import { parameter, requestContract } from "../test-support";
@@ -251,6 +251,100 @@ describe("RequestPlayground", () => {
     });
   });
 
+  it("switches discriminated oneOf request body variants", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response("{}", { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          summary: {
+            id: "store-page",
+            method: "POST",
+            path: "/pages",
+            title: "Store page",
+            deprecated: false,
+          },
+          paramGroups: [],
+          requests: [
+            bodyContract({
+              schema: { $ref: "#/components/schemas/StorePageData" },
+            }),
+          ],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={{
+          schemas: {
+            StorePageData: {
+              type: "object",
+              required: ["title", "blocks"],
+              properties: {
+                title: { type: "string", example: "Landing" },
+                blocks: {
+                  type: "array",
+                  items: {
+                    oneOf: [
+                      { $ref: "#/components/schemas/TextBlockData" },
+                      { $ref: "#/components/schemas/ImageBlockData" },
+                    ],
+                    discriminator: {
+                      propertyName: "type",
+                      mapping: {
+                        text: "#/components/schemas/TextBlockData",
+                        image: "#/components/schemas/ImageBlockData",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            TextBlockData: {
+              type: "object",
+              required: ["text", "type"],
+              properties: {
+                type: { type: "string", enum: ["text"] },
+                text: { type: "string", example: "Welcome" },
+              },
+            },
+            ImageBlockData: {
+              type: "object",
+              required: ["url", "type"],
+              properties: {
+                type: { type: "string", enum: ["image"] },
+                url: {
+                  type: "string",
+                  format: "uri",
+                  example: "https://example.test/hero.png",
+                },
+                caption: { type: ["string", "null"] },
+              },
+            },
+          },
+        }}
+      />,
+    );
+
+    const variant = screen.getByLabelText("blocks[0] variant");
+
+    await expect.element(variant).toHaveValue("text");
+    await expect.element(screen.getByLabelText("blocks[0].text")).toHaveValue("Welcome");
+    await variant.selectOptions("image");
+    await expect.element(screen.getByLabelText("blocks[0].text")).not.toBeInTheDocument();
+    await expect
+      .element(screen.getByLabelText("blocks[0].url"))
+      .toHaveValue("https://example.test/hero.png");
+    await screen.getByLabelText("blocks[0].url").fill("https://example.test/banner.png");
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+      title: "Landing",
+      blocks: [{ type: "image", url: "https://example.test/banner.png" }],
+    });
+  });
+
   it("keeps raw JSON editing for schemas without a finite field shape", async () => {
     const screen = await render(
       <RequestPlayground
@@ -490,6 +584,91 @@ describe("RequestPlayground", () => {
       .toHaveTextContent(
         "https://api.example.test/users?filter%5Bname%5D=Taylor&sort=-created_at&include=roles%2CrolesCount&fields%5Busers%5D=id%2Cemail",
       );
+  });
+
+  it("edits Spectacular typed, multi-enum, operator, and between filters", async () => {
+    await page.viewport(390, 800);
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response("{}", { status: 200, statusText: "OK" }));
+    vi.stubGlobal("fetch", fetchMock);
+    const status = parameter({
+      name: "filter[status]",
+      location: "query",
+      style: "form",
+      explode: false,
+      schema: { type: "array", items: { type: "integer", enum: [1, 2, 3] } },
+    });
+    const email = parameter({
+      name: "filter[email]",
+      location: "query",
+      style: "form",
+      explode: false,
+      schema: { type: "array", items: { type: "string", format: "email" } },
+    });
+    const operator = parameter({
+      name: "filter[created_at]",
+      location: "query",
+      description: "Prefix the value with a comparison operator.",
+      filterType: "operator",
+      schema: { type: "string", "x-value-format": "date-time" },
+    });
+    const between = parameter({
+      name: "filter[published_on.between]",
+      location: "query",
+      style: "form",
+      explode: false,
+      filterType: "between",
+      schema: {
+        type: "array",
+        items: { type: "string", format: "date" },
+        minItems: 2,
+        maxItems: 2,
+      },
+    });
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          summary: {
+            id: "list-users",
+            method: "GET",
+            path: "/users",
+            title: "List users",
+            deprecated: false,
+          },
+          paramGroups: [{ location: "query", params: [status, email, operator, between] }],
+          requests: [],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={null}
+      />,
+    );
+
+    const statuses = screen.getByRole("button", { name: "filter[status]" });
+    await statuses.click();
+    await screen.getByRole("option", { name: "1" }).click();
+    await screen.getByRole("option", { name: "3" }).click();
+    await userEvent.keyboard("{Escape}");
+    await screen.getByLabelText("filter[email]").fill("ada@example.test, linus@example.test");
+    await screen.getByLabelText("filter[created_at]").fill(">=2026-08-01T00:00:00Z");
+    await expect.element(screen.getByText("Value format: date-time.")).toBeVisible();
+    const start = screen.getByLabelText("filter[published_on.between] start");
+    const end = screen.getByLabelText("filter[published_on.between] end");
+    await expect.element(start).toHaveAttribute("type", "date");
+    await expect.element(end).toHaveAttribute("type", "date");
+    await start.fill("2026-08-01");
+    await end.fill("2026-08-31");
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    const playground = screen.getByRole("complementary", { name: "Request" }).element()
+      .parentElement as HTMLElement;
+    expect(playground.scrollWidth).toBeLessThanOrEqual(playground.clientWidth + 1);
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(
+      "https://api.example.test/users?filter%5Bstatus%5D=1%2C3&filter%5Bemail%5D=ada%40example.test%2Clinus%40example.test&filter%5Bcreated_at%5D=%3E%3D2026-08-01T00%3A00%3A00Z&filter%5Bpublished_on.between%5D=2026-08-01%2C2026-08-31",
+    );
+    await page.viewport(1280, 800);
   });
 
   it("groups filters, sorts, and includes before pagination", async () => {
