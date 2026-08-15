@@ -96,7 +96,6 @@ class AppLayout extends LayoutDefinition
                         ->width(Width::Fill)
                         ->schema([
                             $this->topbar(),
-                            Breadcrumbs::make(),
                             Outlet::make(),
                             RawBlock::make('chat-scroll-clearance')->html('<div class="h-24" aria-hidden="true"></div>'),
                         ]),
@@ -192,6 +191,7 @@ class AppLayout extends LayoutDefinition
                 ->icon('panel-left')
                 ->emphasis(Emphasis::Ghost)
                 ->effects(Effects::toggleSidebar('app-sidebar')),
+            Breadcrumbs::make(),
             SearchBox::make('global-search'),
             Stack::make('topbar-end')
                 ->direction(StackDirection::Row)

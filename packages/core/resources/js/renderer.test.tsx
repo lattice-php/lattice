@@ -104,6 +104,42 @@ describe("Renderer", () => {
     expect(screen.queryByText("Hidden")).not.toBeInTheDocument();
   });
 
+  it("wraps responsive visibility in a layout-transparent span", () => {
+    const registry = createRegistry({
+      components: {
+        "test.component": eagerComponent(TestComponent),
+      },
+      name: "test",
+    });
+
+    renderWithRegistry(
+      <Renderer
+        nodes={[
+          {
+            id: "mobile-only",
+            props: { hiddenFrom: "md", label: "Mobile only" },
+            type: "test.component",
+          },
+          {
+            id: "desktop-only",
+            props: { label: "Desktop only", visibleFrom: "md" },
+            type: "test.component",
+          },
+          {
+            id: "everywhere",
+            props: { label: "Everywhere" },
+            type: "test.component",
+          },
+        ]}
+      />,
+      registry,
+    );
+
+    expect(screen.getByTestId("mobile-only").parentElement).toHaveClass("contents", "md:hidden");
+    expect(screen.getByTestId("desktop-only").parentElement).toHaveClass("hidden", "md:contents");
+    expect(screen.getByTestId("everywhere").parentElement).not.toHaveClass("contents");
+  });
+
   it("suspends to an empty fallback while a lazy chunk is loading", () => {
     const registry = createRegistry({
       components: {

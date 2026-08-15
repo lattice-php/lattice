@@ -5,7 +5,6 @@ namespace Workbench\App\Layouts;
 
 use Illuminate\Http\Request;
 use Lattice\Core\Attributes\AsLayout;
-use Lattice\Layouts\Components\Breadcrumbs;
 use Lattice\Layouts\Components\Outlet;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Enums\Gap;
@@ -29,7 +28,6 @@ final class ChatLayout extends AppLayout
                         ->width(Width::Fill)
                         ->schema([
                             $this->topbar(),
-                            Breadcrumbs::make(),
                             Outlet::make(),
                         ]),
                     Stack::make('chat-rail')

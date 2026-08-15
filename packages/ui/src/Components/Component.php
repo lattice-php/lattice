@@ -27,6 +27,10 @@ abstract class Component implements CanBeHidden, JsonSerializable, Renderable, S
 
     protected bool $hideWhenCollapsed = false;
 
+    protected ?Breakpoint $hiddenFrom = null;
+
+    protected ?Breakpoint $visibleFrom = null;
+
     /**
      * Breakpoint => span toward the nearest Grid ancestor.
      *
@@ -51,6 +55,34 @@ abstract class Component implements CanBeHidden, JsonSerializable, Renderable, S
     public function hideWhenCollapsed(bool $hide = true): static
     {
         $this->hideWhenCollapsed = $hide;
+
+        return $this;
+    }
+
+    /**
+     * Hide this component at the given breakpoint and above.
+     */
+    public function hiddenFrom(Breakpoint $breakpoint): static
+    {
+        if ($breakpoint === Breakpoint::Default) {
+            throw new InvalidArgumentException('hiddenFrom(Breakpoint::Default) would hide the component everywhere; use when() or remove it instead.');
+        }
+
+        $this->hiddenFrom = $breakpoint;
+
+        return $this;
+    }
+
+    /**
+     * Show this component only at the given breakpoint and above.
+     */
+    public function visibleFrom(Breakpoint $breakpoint): static
+    {
+        if ($breakpoint === Breakpoint::Default) {
+            throw new InvalidArgumentException('visibleFrom(Breakpoint::Default) is always visible; remove the call instead.');
+        }
+
+        $this->visibleFrom = $breakpoint;
 
         return $this;
     }
@@ -125,6 +157,14 @@ abstract class Component implements CanBeHidden, JsonSerializable, Renderable, S
 
         if ($this->hideWhenCollapsed) {
             $props['hideWhenCollapsed'] = true;
+        }
+
+        if ($this->hiddenFrom instanceof Breakpoint) {
+            $props['hiddenFrom'] = $this->hiddenFrom->value;
+        }
+
+        if ($this->visibleFrom instanceof Breakpoint) {
+            $props['visibleFrom'] = $this->visibleFrom->value;
         }
 
         if ($this->columnSpan !== null) {

@@ -7,6 +7,46 @@ import { useComponentRegistry } from "./registry-context";
 
 const warnedMissingTypes = new Set<string>();
 
+const HIDDEN_FROM_CLASS: Record<string, string> = {
+  sm: "sm:hidden",
+  md: "md:hidden",
+  lg: "lg:hidden",
+  xl: "xl:hidden",
+  "2xl": "2xl:hidden",
+};
+
+const VISIBLE_FROM_CLASS: Record<string, string> = {
+  sm: "sm:contents",
+  md: "md:contents",
+  lg: "lg:contents",
+  xl: "xl:contents",
+  "2xl": "2xl:contents",
+};
+
+/**
+ * A `display: contents` wrapper stays transparent to the parent layout, so the
+ * responsive visibility classes can toggle any node without disturbing flex or
+ * grid parents.
+ */
+function responsiveVisibilityClass(props: Node["props"]): string | null {
+  const hiddenFrom = HIDDEN_FROM_CLASS[(props as { hiddenFrom?: string })?.hiddenFrom ?? ""];
+  const visibleFrom = VISIBLE_FROM_CLASS[(props as { visibleFrom?: string })?.visibleFrom ?? ""];
+
+  if (visibleFrom && hiddenFrom) {
+    return `hidden ${visibleFrom} ${hiddenFrom}`;
+  }
+
+  if (visibleFrom) {
+    return `hidden ${visibleFrom}`;
+  }
+
+  if (hiddenFrom) {
+    return `contents ${hiddenFrom}`;
+  }
+
+  return null;
+}
+
 function warnMissingComponent(type: string): void {
   if (!import.meta.env.DEV || warnedMissingTypes.has(type)) {
     return;
@@ -86,10 +126,16 @@ const NodeRenderer = memo(function NodeRenderer({ node }: { node: Node }) {
 
   const Component = registration.component;
   const children = node.schema?.length ? <Renderer nodes={node.schema} /> : null;
-  const renderedComponent = <Component node={node}>{children}</Component>;
+  let renderedComponent = <Component node={node}>{children}</Component>;
 
   if (registration.mode === "lazy") {
-    return <Suspense fallback={null}>{renderedComponent}</Suspense>;
+    renderedComponent = <Suspense fallback={null}>{renderedComponent}</Suspense>;
+  }
+
+  const visibilityClass = responsiveVisibilityClass(node.props);
+
+  if (visibilityClass) {
+    return <span className={visibilityClass}>{renderedComponent}</span>;
   }
 
   return renderedComponent;

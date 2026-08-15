@@ -11,12 +11,15 @@ import type { KeyboardEvent, ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
 import type { Tab } from "../generated";
 import { cn } from "../lib/utils";
+import { useMediaQuery } from "../lib/use-media-query";
+import { NativeSelect } from "../native-select";
 import { useNavigation } from "../navigation";
 import { pillClassName } from "../pill";
 import { UI_NAMESPACE, useT } from "../i18n";
 
 type TabsContextValue = {
   activeValue: string;
+  hasTablist: boolean;
   setActiveValue: (value: string) => void;
 };
 
@@ -28,11 +31,23 @@ function useTabsContext(): TabsContextValue {
   if (!context) {
     return {
       activeValue: "",
+      hasTablist: true,
       setActiveValue: () => {},
     };
   }
 
   return context;
+}
+
+const SELECT_COLLAPSE_THRESHOLD = 3;
+
+function verticalTabClassName(active: boolean): string {
+  return cn(
+    "relative rounded-lt-sm px-3 py-2.5 text-left text-sm font-medium transition-colors",
+    active
+      ? "bg-lt-muted text-lt-fg before:absolute before:inset-y-2 before:left-0 before:w-1 before:rounded-full before:bg-lt-primary"
+      : "text-lt-muted-fg hover:bg-lt-muted/60 hover:text-lt-fg",
+  );
 }
 
 type TabItem = {
@@ -137,9 +152,12 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
     [selectTab, tabs],
   );
 
+  const isDesktop = useMediaQuery("(min-width: 768px)", true);
+  const collapseToSelect = !isDesktop && tabs.length > SELECT_COLLAPSE_THRESHOLD;
+
   const contextValue = useMemo(
-    () => ({ activeValue, setActiveValue: selectTabValue }),
-    [activeValue, selectTabValue],
+    () => ({ activeValue, hasTablist: !collapseToSelect, setActiveValue: selectTabValue }),
+    [activeValue, collapseToSelect, selectTabValue],
   );
 
   function onTablistKeyDown(event: KeyboardEvent<HTMLButtonElement>): void {
@@ -185,62 +203,78 @@ export const TabsComponent: RendererComponent<"tabs"> = ({ children, node }) => 
       <div
         className={cn(
           "gap-6",
-          isVertical ? cn("flex", alignment === "end" && "flex-row-reverse") : "grid",
+          isVertical && !collapseToSelect
+            ? cn("flex", alignment === "end" && "flex-row-reverse")
+            : "grid",
         )}
         data-lattice-tabs={node.key ?? node.id}
       >
-        <div
-          aria-label={t("common.tabs", "Tabs")}
-          aria-orientation={orientation}
-          className={cn(
-            "gap-1 rounded-lt bg-lt-muted p-1",
-            isVertical && "flex flex-col",
-            isStretched && "flex w-full",
-            !isVertical &&
-              !isStretched &&
-              cn("inline-flex w-fit max-w-full overflow-x-auto", {
-                "justify-self-center": alignment === "center",
-                "justify-self-end": alignment === "end",
-              }),
-          )}
-          ref={tablistRef}
-          role="tablist"
-        >
-          {tabs.map((tab) => {
-            const isActive = activeValue === tab.value;
-
-            return (
-              <button
-                aria-controls={`${tab.value}-panel`}
-                aria-selected={isActive}
-                data-test={`tab-${tab.value}`}
-                className={cn(
-                  pillClassName(isActive),
-                  isVertical && "text-left",
-                  isStretched && "flex-1",
-                )}
-                id={`${tab.value}-tab`}
-                key={tab.value}
-                onClick={() => selectTab(tab)}
-                onKeyDown={onTablistKeyDown}
-                role="tab"
-                tabIndex={isActive ? 0 : -1}
-                type="button"
-              >
+        {collapseToSelect ? (
+          <NativeSelect
+            aria-label={t("common.tabs", "Tabs")}
+            data-test="tabs-select"
+            onChange={(event) => selectTabValue(event.target.value)}
+            value={activeValue}
+          >
+            {tabs.map((tab) => (
+              <option key={tab.value} value={tab.value}>
                 {tab.label}
-              </button>
-            );
-          })}
-        </div>
+              </option>
+            ))}
+          </NativeSelect>
+        ) : (
+          <div
+            aria-label={t("common.tabs", "Tabs")}
+            aria-orientation={orientation}
+            className={cn(
+              "gap-1",
+              isVertical ? "flex w-44 shrink-0 flex-col self-start" : "rounded-lt bg-lt-muted p-1",
+              isStretched && "flex w-full",
+              !isVertical &&
+                !isStretched &&
+                cn("inline-flex w-fit max-w-full overflow-x-auto", {
+                  "justify-self-center": alignment === "center",
+                  "justify-self-end": alignment === "end",
+                }),
+            )}
+            ref={tablistRef}
+            role="tablist"
+          >
+            {tabs.map((tab) => {
+              const isActive = activeValue === tab.value;
 
-        <div className={cn("min-w-0", isVertical && "flex-1")}>{children}</div>
+              return (
+                <button
+                  aria-controls={`${tab.value}-panel`}
+                  aria-selected={isActive}
+                  data-test={`tab-${tab.value}`}
+                  className={cn(
+                    isVertical ? verticalTabClassName(isActive) : pillClassName(isActive),
+                    isStretched && "flex-1",
+                  )}
+                  id={`${tab.value}-tab`}
+                  key={tab.value}
+                  onClick={() => selectTab(tab)}
+                  onKeyDown={onTablistKeyDown}
+                  role="tab"
+                  tabIndex={isActive ? 0 : -1}
+                  type="button"
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <div className={cn("min-w-0", isVertical && !collapseToSelect && "flex-1")}>{children}</div>
       </div>
     </TabsContext.Provider>
   );
 };
 
 const TabComponent: RendererComponent<"tab"> = ({ children, node }) => {
-  const { activeValue } = useTabsContext();
+  const { activeValue, hasTablist } = useTabsContext();
   const value = node.props.value;
   const isActive = activeValue === value;
   const [hasOpened, setHasOpened] = useState(isActive);
@@ -253,7 +287,8 @@ const TabComponent: RendererComponent<"tab"> = ({ children, node }) => {
 
   return (
     <section
-      aria-labelledby={`${value}-tab`}
+      aria-label={hasTablist ? undefined : node.props.label}
+      aria-labelledby={hasTablist ? `${value}-tab` : undefined}
       className={cn("space-y-8", !isActive && "hidden")}
       hidden={!isActive}
       id={`${value}-panel`}

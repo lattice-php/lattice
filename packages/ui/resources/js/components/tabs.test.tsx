@@ -58,9 +58,28 @@ function renderTabs(
   );
 }
 
+function stubMatchMedia(matches: boolean): void {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn().mockReturnValue({
+      addEventListener: vi.fn(),
+      matches,
+      removeEventListener: vi.fn(),
+    }),
+  );
+}
+
+const fourTabs = [
+  tab("Overview", "overview"),
+  tab("Details", "details"),
+  tab("History", "history"),
+  tab("Danger", "danger"),
+];
+
 describe("Lattice tabs component", () => {
   beforeEach(() => {
     visit.mockClear();
+    vi.unstubAllGlobals();
     window.history.replaceState({}, "", "/settings");
   });
 
@@ -136,6 +155,59 @@ describe("Lattice tabs component", () => {
 
     fireEvent.keyDown(overview, { key: "ArrowLeft" });
     expect(history).toHaveFocus();
+  });
+
+  it("marks the active vertical tab with the rail accent", () => {
+    renderTabs({ orientation: "vertical" });
+
+    const tablist = screen.getByRole("tablist");
+    const overview = screen.getByRole("tab", { name: "Overview" });
+    const details = screen.getByRole("tab", { name: "Details" });
+
+    expect(tablist).toHaveClass("w-44", "flex-col", "self-start");
+    expect(tablist).not.toHaveClass("bg-lt-muted");
+    expect(overview.className).toContain("before:bg-lt-primary");
+    expect(details.className).not.toContain("before:bg-lt-primary");
+  });
+
+  it("collapses to a native select on mobile with more than three tabs", () => {
+    stubMatchMedia(false);
+    renderTabs({ orientation: "vertical" }, fourTabs);
+
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    const select = screen.getByRole("combobox", { name: "Tabs" });
+    expect(select).toHaveValue("overview");
+    expect(screen.getByText("Overview panel")).toBeVisible();
+
+    fireEvent.change(select, { target: { value: "details" } });
+
+    expect(select).toHaveValue("details");
+    expect(screen.getByText("Details panel")).toBeVisible();
+    expect(screen.getByText("Overview panel")).not.toBeVisible();
+    expect(window.location.search).toBe("?tabs=details");
+    expect(visit).not.toHaveBeenCalled();
+  });
+
+  it("keeps the tablist on mobile with three or fewer tabs", () => {
+    stubMatchMedia(false);
+    renderTabs();
+
+    expect(screen.getByRole("tablist")).toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+  });
+
+  it("visits the query url when the mobile select picks a confirmed tab", () => {
+    stubMatchMedia(false);
+    renderTabs({ activeValue: "overview" }, [
+      ...fourTabs.slice(0, 3),
+      tab("Danger", "danger", { confirm: { required: true } }),
+    ]);
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Tabs" }), {
+      target: { value: "danger" },
+    });
+
+    expect(visit).toHaveBeenCalledWith("/settings?tabs=danger", { preserveScroll: true });
   });
 
   it("lays out vertical tabs and roves focus with up and down arrows", () => {

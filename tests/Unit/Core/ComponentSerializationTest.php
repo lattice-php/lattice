@@ -23,6 +23,7 @@ use Lattice\Ui\Components\Separator;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\AvatarShape;
+use Lattice\Ui\Enums\Breakpoint;
 use Lattice\Ui\Enums\CodeBlockLanguage;
 use Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Ui\Enums\Gap;
@@ -426,4 +427,27 @@ test('a description list drops to list semantics once an entry can disclose', fu
 
     expect($plain['props']['semantic'])->toBe('description-list')
         ->and($disclosing['props']['semantic'])->toBe('list');
+});
+
+test('components serialize responsive visibility breakpoints', function (): void {
+    $wire = wire(Text::make('Mobile only')->hiddenFrom(Breakpoint::Md));
+
+    expect($wire['props']['hiddenFrom'])->toBe('md')
+        ->and($wire['props'])->not->toHaveKey('visibleFrom');
+
+    $wire = wire(Text::make('Desktop only')->visibleFrom(Breakpoint::Lg));
+
+    expect($wire['props']['visibleFrom'])->toBe('lg')
+        ->and($wire['props'])->not->toHaveKey('hiddenFrom');
+
+    expect(wire(Text::make('Everywhere'))['props'])
+        ->not->toHaveKey('hiddenFrom')
+        ->not->toHaveKey('visibleFrom');
+});
+
+test('responsive visibility rejects the default breakpoint', function (): void {
+    expect(fn (): Text => Text::make('x')->hiddenFrom(Breakpoint::Default))
+        ->toThrow(InvalidArgumentException::class);
+    expect(fn (): Text => Text::make('x')->visibleFrom(Breakpoint::Default))
+        ->toThrow(InvalidArgumentException::class);
 });

@@ -28,6 +28,7 @@ export type ComponentPropsMap = {
   outlet: Outlet;
   "remote.data-list": DataList;
   sidebar: Sidebar;
+  "sidebar.footer": SidebarFooter;
   topbar: Topbar;
 };
 export type DataList = {
@@ -117,6 +118,7 @@ export type LayoutNodeType =
   | "menu-item"
   | "outlet"
   | "sidebar"
+  | "sidebar.footer"
   | "topbar";
 export type Listen = {
   readonly channel: string;
@@ -209,6 +211,7 @@ export type NodeType =
   | "segmented-control"
   | "separator"
   | "sidebar"
+  | "sidebar.footer"
   | "signature"
   | "stack"
   | "tab"
@@ -269,6 +272,7 @@ export type Sidebar = {
   collapsible: boolean;
   rememberState: boolean;
 };
+export type SidebarFooter = Record<string, never>;
 export type SignatureExampleNodeType = "signature";
 export type TableNodeType = "table";
 export type Topbar = {

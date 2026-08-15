@@ -78,6 +78,14 @@ Any child component or field controls how many columns it covers with `->columnS
   matching `columns` maps when a grid gets narrow.
 </Info>
 
+## Responsive visibility
+
+Every component can opt out of rendering at a breakpoint range: `->hiddenFrom(Breakpoint::Md)`
+hides it at `md` and up, `->visibleFrom(Breakpoint::Md)` shows it only from `md` up. The toggle is
+CSS-only (a `display: contents` wrapper), so it is layout-transparent inside flex and grid parents —
+use it for chrome that differs between mobile and desktop, like a logo mark that only appears in a
+mobile topbar.
+
 ## Card
 
 `Card::make('Title', 'Description')` wraps children in a bordered panel. Both arguments are optional —

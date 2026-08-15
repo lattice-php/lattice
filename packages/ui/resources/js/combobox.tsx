@@ -1,6 +1,6 @@
 import { Icon } from "./icons";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useT } from "./i18n";
 import type { Option } from "@lattice-php/core/types";
 import { cn } from "./lib/utils";
@@ -70,6 +70,12 @@ function Combobox({
 }) {
   const { t } = useT("lattice");
   const [query, setQuery] = useState("");
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [inDialog, setInDialog] = useState(false);
+
+  useLayoutEffect(() => {
+    setInDialog(Boolean(triggerRef.current?.closest('[role="dialog"]')));
+  }, []);
 
   function commitCreate(raw: string): void {
     const tokens = raw
@@ -128,9 +134,18 @@ function Combobox({
   }
 
   return (
-    <Popover open={open} onOpenChange={(next) => (next ? onOpenChange(true) : close())}>
+    // Modal inside a dialog so the popover owns the scroll lock there: the
+    // dialog's own lock would otherwise swallow wheel events over the portaled
+    // option list, leaving only the scrollbar draggable. Outside dialogs the
+    // popover stays non-modal so a click on e.g. the submit button lands in
+    // one go while a multi-select is still open.
+    <Popover
+      modal={inDialog}
+      open={open}
+      onOpenChange={(next) => (next ? onOpenChange(true) : close())}
+    >
       <PopoverTrigger asChild>
-        <button type="button" className={triggerClassName} {...triggerProps}>
+        <button type="button" className={triggerClassName} ref={triggerRef} {...triggerProps}>
           {trigger}
         </button>
       </PopoverTrigger>
