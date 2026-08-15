@@ -37,7 +37,7 @@ final class InstallCommand extends Command
 
         try {
             foreach ($plan->npmCommands as $command) {
-                $this->components->task('Installing Lattice npm packages', fn () => $packages->run($command));
+                $this->components->task('Installing Lattice npm packages', fn () => $packages->runNpm($command));
             }
         } catch (LatticePackageManagerException $exception) {
             $this->components->error($exception->getMessage());

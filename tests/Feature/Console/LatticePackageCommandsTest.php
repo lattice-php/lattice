@@ -1,9 +1,12 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Process\PendingProcess;
+use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
+use Symfony\Component\Console\Output\OutputInterface;
 
 use function Pest\Laravel\artisan;
 
@@ -16,6 +19,8 @@ beforeEach(function (): void {
     File::put($this->projectPath.'/composer.json', json_encode([
         'require' => [
             'lattice-php/lattice' => '^0.52',
+        ],
+        'require-dev' => [
             'lattice-php/media' => '^0.52',
         ],
     ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
@@ -26,6 +31,8 @@ beforeEach(function (): void {
     ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 
     app()->setBasePath($this->projectPath);
+    $this->composer = new RecordingComposer(app(Filesystem::class), $this->projectPath);
+    app()->instance(Composer::class, $this->composer);
 });
 
 afterEach(function (): void {
@@ -60,7 +67,6 @@ it('updates Composer packages and their published npm counterparts', function ()
         ['npm', 'view', '@lattice-php/lattice@0.53.0', 'version', '--json'] => Process::result(output: '"0.53.0"'),
         ['npm', 'view', '@lattice-php/media@0.53.0', 'version', '--json'] => Process::result(errorOutput: 'npm error code E404', exitCode: 1),
         ['npm', 'ls', '--all', '--json', '@lattice-php/core', '@lattice-php/lattice'] => Process::result(output: npmPackages('0.52.1')),
-        ['composer', 'require', 'lattice-php/lattice:^0.53', 'lattice-php/media:^0.53', '--with-all-dependencies', '--no-interaction'] => Process::result(),
         ['npm', 'install', '--save-prod', '@lattice-php/lattice@^0.53.0'] => Process::result(),
         default => Process::result(errorOutput: 'Unexpected process: '.json_encode($process->command), exitCode: 1),
     });
@@ -70,14 +76,21 @@ it('updates Composer packages and their published npm counterparts', function ()
         ->expectsOutputToContain('Updated Lattice packages to 0.53.0.')
         ->assertSuccessful();
 
-    Process::assertRan(fn (PendingProcess $process): bool => $process->command === [
-        'composer',
-        'require',
-        'lattice-php/lattice:^0.53',
-        'lattice-php/media:^0.53',
-        '--with-all-dependencies',
-        '--no-interaction',
-    ]);
+    expect($this->composer->requirements)->toBe([[
+        'packages' => [
+            'lattice-php/lattice:^0.53',
+            '--with-all-dependencies',
+            '--no-interaction',
+        ],
+        'dev' => false,
+    ], [
+        'packages' => [
+            'lattice-php/media:^0.53',
+            '--with-all-dependencies',
+            '--no-interaction',
+        ],
+        'dev' => true,
+    ]]);
     Process::assertRan(fn (PendingProcess $process): bool => $process->command === [
         'npm',
         'install',
@@ -122,7 +135,8 @@ it('shows update work without changing packages during a dry run', function (): 
 
     artisan('lattice:update', ['--dry-run' => true])
         ->expectsOutputToContain('Dry run complete. No files were changed.')
-        ->expectsOutputToContain('composer require lattice-php/lattice:^0.53 lattice-php/media:^0.53')
+        ->expectsOutputToContain('composer require lattice-php/lattice:^0.53')
+        ->expectsOutputToContain('composer require lattice-php/media:^0.53 --with-all-dependencies --no-interaction --dev')
         ->expectsOutputToContain('npm install --save-prod @lattice-php/lattice@^0.53.0')
         ->assertSuccessful();
 
@@ -204,4 +218,27 @@ function npmPackages(?string $version = null): string
     }
 
     return json_encode(['dependencies' => $dependencies], JSON_THROW_ON_ERROR);
+}
+
+final class RecordingComposer extends Composer
+{
+    /** @var list<array{packages: list<string>, dev: bool}> */
+    public array $requirements = [];
+
+    public bool $successful = true;
+
+    #[Override]
+    public function requirePackages(
+        array $packages,
+        bool $dev = false,
+        Closure|OutputInterface|null $output = null,
+        $composerBinary = null,
+    ): bool {
+        $this->requirements[] = [
+            'packages' => array_values($packages),
+            'dev' => $dev,
+        ];
+
+        return $this->successful;
+    }
 }

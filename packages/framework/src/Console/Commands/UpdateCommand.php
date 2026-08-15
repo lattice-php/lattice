@@ -55,7 +55,7 @@ final class UpdateCommand extends Command
 
         try {
             foreach ($plan->composerCommands as $command) {
-                $this->components->task('Updating Lattice Composer packages', fn () => $packages->run($command));
+                $this->components->task('Updating Lattice Composer packages', fn () => $packages->runComposer($command));
                 $composerUpdated = true;
             }
         } catch (LatticePackageManagerException $exception) {
@@ -66,7 +66,7 @@ final class UpdateCommand extends Command
 
         try {
             foreach ($plan->npmCommands as $command) {
-                $this->components->task('Updating Lattice npm packages', fn () => $packages->run($command));
+                $this->components->task('Updating Lattice npm packages', fn () => $packages->runNpm($command));
             }
         } catch (LatticePackageManagerException $exception) {
             $prefix = $composerUpdated ? 'Composer packages were updated, but the npm update failed. ' : '';

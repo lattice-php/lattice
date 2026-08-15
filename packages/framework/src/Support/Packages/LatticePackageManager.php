@@ -4,13 +4,17 @@ declare(strict_types=1);
 namespace Lattice\Support\Packages;
 
 use Illuminate\Contracts\Process\ProcessResult;
+use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Process;
 use JsonException;
 use Throwable;
 
 final readonly class LatticePackageManager
 {
-    public function __construct(private ?string $basePath = null) {}
+    public function __construct(
+        private Composer $composer,
+        private ?string $basePath = null,
+    ) {}
 
     public function installPlan(): LatticePackagePlan
     {
@@ -77,7 +81,36 @@ final readonly class LatticePackageManager
     }
 
     /** @param list<string> $command */
-    public function run(array $command): void
+    public function runComposer(array $command): void
+    {
+        if (array_slice($command, 0, 2) !== ['composer', 'require']) {
+            throw new LatticePackageManagerException('Only Composer require commands can be executed.');
+        }
+
+        $arguments = array_slice($command, 2);
+        $dev = in_array('--dev', $arguments, true);
+        $arguments = array_values(array_filter($arguments, static fn (string $argument): bool => $argument !== '--dev'));
+        $output = '';
+
+        $successful = $this->composer()
+            ->requirePackages(
+                $arguments,
+                $dev,
+                static function (string $type, string $line) use (&$output): void {
+                    $output .= $line;
+                },
+            );
+
+        if (! $successful) {
+            $message = 'Process ['.implode(' ', $command).'] failed.';
+            $details = trim($output);
+
+            throw new LatticePackageManagerException($details === '' ? $message : $message.' '.$details);
+        }
+    }
+
+    /** @param list<string> $command */
+    public function runNpm(array $command): void
     {
         $result = $this->invoke($command, 600);
 
@@ -115,7 +148,7 @@ final readonly class LatticePackageManager
     private function installedComposerPackages(): array
     {
         $manifest = $this->jsonFile($this->path('composer.json'));
-        $result = $this->process(['composer', 'show', '--format=json', 'lattice-php/*']);
+        $result = $this->process($this->composerCommand(['show', '--format=json', 'lattice-php/*']));
         $data = $this->decodeObject($result->output(), 'Composer package list');
         $installed = $data['installed'] ?? null;
 
@@ -167,7 +200,7 @@ final readonly class LatticePackageManager
 
     private function latestStableVersion(): string
     {
-        $result = $this->process(['composer', 'show', '--all', '--format=json', 'lattice-php/lattice']);
+        $result = $this->process($this->composerCommand(['show', '--all', '--format=json', 'lattice-php/lattice']));
         $data = $this->decodeObject($result->output(), 'Composer release list');
         $versions = $data['versions'] ?? null;
 
@@ -492,6 +525,20 @@ final readonly class LatticePackageManager
     private function compareVersions(string $left, string $right): int
     {
         return version_compare($left, $right);
+    }
+
+    /**
+     * @param  list<string>  $arguments
+     * @return list<string>
+     */
+    private function composerCommand(array $arguments): array
+    {
+        return array_values([...$this->composer()->findComposer(), ...$arguments]);
+    }
+
+    private function composer(): Composer
+    {
+        return $this->composer->setWorkingPath($this->path());
     }
 
     private function publishedAssetsAreCurrent(string $targetVersion): bool
