@@ -27,6 +27,17 @@ run `php artisan lattice:assets` after installation.
 There is no npm package — Composer is the only install.
 :::
 
+## The search dialog
+
+`SearchBox::make()` renders a trigger button that opens the search dialog (also reachable via
+`⌘K`/`Ctrl+K`). The dialog opens compact — just the input, plus recent selections when a
+`SearchHistoryRecorder` is bound — and expands into the three-pane layout (categories, results,
+preview) once a query is typed. Inside a collapsed sidebar the trigger shrinks to an icon-only
+button; the keyboard shortcut keeps working.
+
+Pass your own `->schema([...])` of `SearchInput`, `SearchResults`, `SearchCategories`,
+`SearchRecent`, and `SearchPreview` components to replace the default composition entirely.
+
 ## Translations
 
 The component's strings ship with inline English defaults. With

@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { CollapsedContext } from "@lattice-php/core/collapsed-context";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
 import SearchBox from "./components/search-box";
@@ -118,6 +119,57 @@ it("opens the keyboard-focused result only after the server re-resolves it", asy
   await waitFor(() => expect(visit).toHaveBeenCalledWith("/safe"));
   const selection = fetch.mock.calls.find(([, init]) => init?.method === "POST");
   expect(selection?.[1]?.body).toBe(JSON.stringify({ category: "products", id: "2" }));
+});
+
+it("opens compact and expands the result grid once a query is typed", async () => {
+  stubSearchFetch((url) => {
+    if (url.searchParams.has("recent")) {
+      return jsonResponse(searchResponse([], { mode: "recent" }));
+    }
+
+    return jsonResponse(searchResponse([deskLamp], { category: "products" }));
+  });
+  renderSearch();
+
+  fireEvent.click(screen.getByTestId("search-trigger"));
+
+  expect(screen.getByRole("searchbox")).toBeInTheDocument();
+  expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+
+  fireEvent.change(screen.getByRole("searchbox"), { target: { value: "desk" } });
+
+  expect(await screen.findByRole("option", { name: /Desk Lamp/ })).toBeInTheDocument();
+  expect(screen.getByRole("listbox")).toBeInTheDocument();
+
+  fireEvent.change(screen.getByRole("searchbox"), { target: { value: "" } });
+
+  expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+});
+
+it("renders an icon-only trigger inside a collapsed container", () => {
+  stubSearchFetch(() => jsonResponse(searchResponse([], { mode: "recent" })));
+  const node = fakeNode({
+    type: "search.box",
+    id: "global-search",
+    props: { endpoint: "/lattice/search", perPage: 20, shortcut: true },
+  });
+
+  render(
+    <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
+      <CollapsedContext.Provider value={true}>
+        <SearchBox node={node}>{null}</SearchBox>
+      </CollapsedContext.Provider>
+    </NavigationProvider>,
+  );
+
+  const trigger = screen.getByTestId("search-trigger");
+  expect(trigger).toHaveAccessibleName("Search…");
+  expect(trigger).not.toHaveTextContent("Search…");
+  expect(trigger).not.toHaveTextContent("⌘K");
+
+  fireEvent.click(trigger);
+
+  expect(screen.getByRole("searchbox")).toBeInTheDocument();
 });
 
 it("appends the next result page", async () => {
