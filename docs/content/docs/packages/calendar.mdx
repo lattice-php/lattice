@@ -10,8 +10,8 @@ import Warning from "@components/Warning.astro";
 The calendar package renders one `Calendar` component with switchable views over a single event
 source: a **month grid** with multi-day event spanning, per-day overflow, and keyboard navigation,
 and a resource-planning **timeline** ("Plantafel") of resource rows against a day-granular date
-axis with drag-to-reschedule. Both views share the same adapter, endpoint, and client-side event
-cache — switching views reuses everything already loaded.
+axis. Both views support drag-to-reschedule and share the same adapter, endpoint, and client-side
+event cache — switching views reuses everything already loaded.
 
 ## Installation
 
@@ -150,7 +150,7 @@ final class ProjectPlanAdapter implements CalendarAdapter, ProvidesCalendarResou
   `['id' => ..., 'label' => ...]` rows or a closure returning the same shape, evaluated once per
   render. Timeline lanes lay out the events bound to a resource via `->resource()`; the month view
   shows every event regardless of binding.
-- **`ReschedulesCalendarEvents`** enables drag-to-reschedule in the timeline view. Without it the
+- **`ReschedulesCalendarEvents`** enables drag-to-reschedule in both views. Without it the
   calendar renders read-only and its `PATCH` endpoint responds `405`.
 
 ### Actions
@@ -179,6 +179,16 @@ navigates), <kbd>PageUp</kbd>/<kbd>PageDown</kbd> jump a month, and <kbd>Enter</
 action. Prev/next/today controls and the month title round out the header; navigating prefetches
 the adjacent months' grids.
 
+### Rescheduling
+
+With [`ReschedulesCalendarEvents`](#capabilities), dragging an event chip onto another day cell
+moves the event by whole days: the duration stays intact, all-day events shift their date bounds,
+and timed events keep their wall-clock times while only the dates move. Dragging any weekly
+segment of a multi-week event moves the whole event, anchored to the day the drag started on.
+Keyboard users can focus a chip and press <kbd>Control</kbd>+<kbd>Shift</kbd> with an arrow key:
+left/right moves by one day, up/down by one week. The optimistic update, rollback, and announced
+error handling match the [timeline's rescheduling](#rescheduling-and-resizing).
+
 ## Timeline view
 
 The timeline draws each resource's events as bars against a sticky month/calendar-week/day header,
@@ -190,13 +200,13 @@ their chevron. Overlapping same-resource events stack into lanes automatically, 
 
 Timeline lane layout is day-granular: a timed event occupies the calendar days it touches.
 
-### Rescheduling
+### Rescheduling and resizing
 
 Drag an event to a resource row to change its resource and dates in one operation, or drag either
 edge to resize. Keyboard users can focus an event and press <kbd>Control</kbd>+<kbd>Shift</kbd>
 with an arrow key: left/right moves by one day and up/down moves to the adjacent resource. The
 client updates immediately while the adapter runs, then either applies the returned event or rolls
-back and announces the adapter's translated error message. Each event represents one resource
+back and raises the adapter's translated error message as a toast. Each event represents one resource
 assignment — if one logical event belongs to several resources, return one event per assignment
 with a stable, unique ID.
 
@@ -216,9 +226,11 @@ definition gates both the initial render and every window fetch, mirroring
 them.
 
 `PATCH lattice/calendars/{calendar}` accepts `id`, `resourceId`, `start`, and `end`, then calls
-`reschedule($request)` on adapters implementing `ReschedulesCalendarEvents`. Its success response
-contains the updated event; failed Laravel validation responses are forwarded without replacing
-their translated message.
+`reschedule($request)` on adapters implementing `ReschedulesCalendarEvents`. `resourceId` is
+`null` for resource-less events, and `start`/`end` arrive in the event's own representation —
+`Y-m-d` bounds for all-day events, wall-clock datetimes for timed ones — so each adapter validates
+exactly the shapes it accepts. The success response contains the updated event; failed Laravel
+validation responses are forwarded without replacing their translated message.
 
 ## Translations
 

@@ -149,6 +149,83 @@ describe("CalendarComponent month view", () => {
     expect(JSON.parse(String(init.body))).toEqual({ eventId: "e1", kind: "meeting" });
   });
 
+  it("moves an all-day event by one day with Ctrl+Shift+Arrow, keeping its duration", async () => {
+    const event = calendarEvent({
+      id: "e1",
+      start: "2026-08-10",
+      end: "2026-08-12",
+      label: "Offsite",
+    });
+    fetchMock.mockResolvedValue(
+      jsonResponse({ event: { ...event, start: "2026-08-11", end: "2026-08-13" } }),
+    );
+    renderCalendar({ date: "2026-08-15", reschedulable: true, events: [event] });
+
+    fireEvent.keyDown(screen.getByTestId("calendar-event-e1"), {
+      ctrlKey: true,
+      key: "ArrowRight",
+      shiftKey: true,
+    });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe("/lattice/calendars/demo");
+    expect(init.method).toBe("PATCH");
+    expect(JSON.parse(String(init.body))).toEqual({
+      id: "e1",
+      resourceId: null,
+      start: "2026-08-11",
+      end: "2026-08-13",
+    });
+  });
+
+  it("moves a timed event by a week with Ctrl+Shift+ArrowDown, preserving its wall-clock times", async () => {
+    const event = calendarEvent({
+      id: "timed",
+      start: "2026-08-10T09:30:00",
+      end: "2026-08-10T10:30:00",
+      allDay: false,
+      label: "Standup",
+    });
+    fetchMock.mockResolvedValue(
+      jsonResponse({
+        event: { ...event, start: "2026-08-17T09:30:00", end: "2026-08-17T10:30:00" },
+      }),
+    );
+    renderCalendar({ date: "2026-08-15", reschedulable: true, events: [event] });
+
+    fireEvent.keyDown(screen.getByTestId("calendar-event-timed"), {
+      ctrlKey: true,
+      key: "ArrowDown",
+      shiftKey: true,
+    });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({
+      id: "timed",
+      resourceId: null,
+      start: "2026-08-17T09:30:00",
+      end: "2026-08-17T10:30:00",
+    });
+  });
+
+  it("offers no reschedule affordance when the calendar is not reschedulable", () => {
+    renderCalendar({
+      date: "2026-08-15",
+      events: [calendarEvent({ id: "e1", start: "2026-08-10", end: "2026-08-12" })],
+    });
+
+    const chip = screen.getByTestId("calendar-event-e1");
+    expect(chip).not.toHaveAttribute("aria-keyshortcuts");
+
+    fireEvent.keyDown(chip, { ctrlKey: true, key: "ArrowRight", shiftKey: true });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("hides the view switcher for a single view", () => {
     renderCalendar({ date: today });
 

@@ -128,6 +128,21 @@ it('returns the adapter translated message when a reschedule is rejected', funct
         ->assertJsonPath('errors.resourceId.0', 'This planning resource is unavailable.');
 });
 
+it('rejects a resource-less month-view drag of a meeting with the translated message', function (): void {
+    $today = CarbonImmutable::today();
+    $calendar = $this->sealCalendar(fn (): Calendar => Calendar::use(ProjectPlanCalendar::class));
+
+    patchJson($calendar['props']['endpoint'], [
+        'id' => 'sprint-review',
+        'resourceId' => null,
+        'start' => $today->addDay()->format('Y-m-d\T09:00:00'),
+        'end' => $today->addDay()->format('Y-m-d\T10:00:00'),
+    ], ['X-Lattice-Ref' => $calendar['props']['ref']])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.id.0', 'This assignment is unavailable.')
+        ->assertJsonPath('errors.resourceId.0', 'This planning resource is unavailable.');
+});
+
 it('rejects a request without a ref', function (): void {
     $calendar = $this->sealCalendar(fn (): Calendar => Calendar::use(ProjectPlanCalendar::class));
 

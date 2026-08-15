@@ -57,6 +57,14 @@
   pointer-events: auto;
 }
 
+/*
+ * Mid-drag the chips must not swallow the pointer either, so the day cells
+ * underneath stay hittable as drop targets wherever the cursor is.
+ */
+.lt-calendar-month[data-dragging] .lt-calendar-chip {
+  pointer-events: none;
+}
+
 .lt-timeline {
   --lt-timeline-lane-height: 2rem;
   --lt-timeline-header-row-h: 2rem;

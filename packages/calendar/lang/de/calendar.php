@@ -11,6 +11,7 @@ return [
     'collapse-group' => ':label einklappen',
     'expand-group' => ':label ausklappen',
     'dragging' => ':label wird verschoben. Auf einer Ressourcenzeile ablegen.',
+    'dragging-day' => ':label wird verschoben. Auf einem Tag ablegen.',
     'resizing-start' => 'Start von :label wird angepasst.',
     'resizing-end' => 'Ende von :label wird angepasst.',
     'resize-start' => 'Start von :label anpassen',
@@ -24,4 +25,5 @@ return [
     'more-events' => '+:count weitere',
     'show-events-for-day' => 'Alle Termine am :date anzeigen',
     'event-chip-label' => ':label, :start bis :end',
+    'event-chip-label-reschedulable' => ':label, :start bis :end. Zum Umplanen Strg, Umschalt und die Pfeiltasten verwenden.',
 ];

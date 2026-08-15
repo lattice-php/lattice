@@ -11,6 +11,7 @@ return [
     'collapse-group' => 'Collapse :label',
     'expand-group' => 'Expand :label',
     'dragging' => 'Moving :label. Drop on a resource row.',
+    'dragging-day' => 'Moving :label. Drop on a day.',
     'resizing-start' => 'Resizing start of :label.',
     'resizing-end' => 'Resizing end of :label.',
     'resize-start' => 'Resize start of :label',
@@ -24,4 +25,5 @@ return [
     'more-events' => '+:count more',
     'show-events-for-day' => 'Show all events on :date',
     'event-chip-label' => ':label, :start to :end',
+    'event-chip-label-reschedulable' => ':label, :start to :end. Use Control Shift and arrow keys to reschedule.',
 ];
