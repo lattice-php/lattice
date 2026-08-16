@@ -9,7 +9,9 @@ use InvalidArgumentException;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Facades\Evaluate;
+use Lattice\Media\Models\Media;
 use Lattice\Ui\Components\Component;
+use LogicException;
 
 #[AsComponent('pdf')]
 final class PdfViewer extends Component
@@ -23,6 +25,8 @@ final class PdfViewer extends Component
     public bool $downloadable = true;
 
     public bool $searchable = true;
+
+    public bool $sidebar = true;
 
     public int $height = 720;
 
@@ -46,6 +50,44 @@ final class PdfViewer extends Component
     public function url(Closure|string $url): static
     {
         $this->urlSource = $url;
+
+        return $this;
+    }
+
+    /**
+     * Sources the document from a lattice-php/media attachment: the signed
+     * URL and filename resolve freshly on every serialization because media
+     * URLs are temporary.
+     */
+    public function media(int|object $media): static
+    {
+        if (! class_exists(Media::class)) {
+            throw new LogicException('PdfViewer::media() requires the lattice-php/media package.');
+        }
+
+        if (is_object($media) && ! $media instanceof Media) {
+            throw new InvalidArgumentException('PdfViewer::media() expects a media id or a '.Media::class.' instance.');
+        }
+
+        $this->urlSource = function () use ($media): string {
+            $model = $media instanceof Media ? $media : Media::modelQuery()->findOrFail($media);
+            $url = $model->url();
+
+            if (! is_string($url) || $url === '') {
+                throw new InvalidArgumentException("PdfViewer media [{$model->getKey()}] has no resolvable url.");
+            }
+
+            $this->filename ??= $model->name;
+
+            return $url;
+        };
+
+        return $this;
+    }
+
+    public function sidebar(bool $enabled = true): static
+    {
+        $this->sidebar = $enabled;
 
         return $this;
     }

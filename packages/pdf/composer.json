@@ -12,6 +12,9 @@
         "lattice-php/core": "self.version",
         "lattice-php/ui": "self.version"
     },
+    "suggest": {
+        "lattice-php/media": "Source viewer documents from media attachments with PdfViewer::media()."
+    },
     "autoload": {
         "psr-4": {
             "Lattice\\Pdf\\": "src/"

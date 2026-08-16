@@ -6,6 +6,9 @@ const iconButtonClass =
   "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
 
 export type ToolbarProps = {
+  sidebarToggle: boolean;
+  sidebarOpen: boolean;
+  onToggleSidebar(): void;
   currentPage: number;
   totalPages: number;
   onJump(page: number): void;
@@ -30,12 +33,18 @@ export type ToolbarProps = {
 export function Toolbar(props: ToolbarProps): React.ReactElement {
   const { t } = useT("pdf");
   const [pageInput, setPageInput] = useState(String(props.currentPage));
+  // Blurring must only jump for values the user actually typed — the input
+  // also tracks the visible page while scrolling, and a blur mid-scroll would
+  // otherwise fire a jump to a transient page number.
+  const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     setPageInput(String(props.currentPage));
+    setDirty(false);
   }, [props.currentPage]);
 
   function jumpTo(raw: string): void {
+    setDirty(false);
     const page = Number.parseInt(raw, 10);
 
     if (Number.isNaN(page)) {
@@ -51,12 +60,30 @@ export function Toolbar(props: ToolbarProps): React.ReactElement {
 
   return (
     <div className="lt-pdf-toolbar flex flex-wrap items-center gap-1 border-b border-lt-border p-2">
+      {props.sidebarToggle ? (
+        <button
+          aria-label={t("pdf.sidebar.toggle", "Toggle sidebar")}
+          aria-pressed={props.sidebarOpen}
+          className={iconButtonClass}
+          onClick={props.onToggleSidebar}
+          type="button"
+        >
+          <Icon className="size-lt-icon-sm" name="panel-left" />
+        </button>
+      ) : null}
       <input
         aria-label={t("pdf.page.jump", "Go to page")}
         className="h-7 w-12 rounded-lt-sm border border-lt-border bg-transparent text-center text-sm"
         inputMode="numeric"
-        onBlur={(event) => jumpTo(event.target.value)}
-        onChange={(event) => setPageInput(event.target.value)}
+        onBlur={(event) => {
+          if (dirty) {
+            jumpTo(event.target.value);
+          }
+        }}
+        onChange={(event) => {
+          setDirty(true);
+          setPageInput(event.target.value);
+        }}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
             jumpTo(event.currentTarget.value);

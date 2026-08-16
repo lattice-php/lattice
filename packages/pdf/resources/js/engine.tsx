@@ -4,6 +4,7 @@ import { useT } from "@lattice-php/ui/i18n";
 import type { PdfEngineProps } from "./engine-registry";
 import { PageList } from "./page-list";
 import type { PageListHandle } from "./page-list";
+import { Sidebar } from "./sidebar";
 import { Toolbar } from "./toolbar";
 import { createPageTextCache } from "./text-cache";
 import { usePdfDocument } from "./use-pdf-document";
@@ -37,6 +38,7 @@ const PdfEngine = ({ node }: PdfEngineProps): React.ReactElement => {
     initialZoom: props.initialZoom,
   });
   const search = useSearch(props.searchable ? textCache : null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!doc) {
@@ -90,6 +92,9 @@ const PdfEngine = ({ node }: PdfEngineProps): React.ReactElement => {
   return (
     <div className="lt-pdf-engine">
       <Toolbar
+        onToggleSidebar={() => setSidebarOpen((open) => !open)}
+        sidebarOpen={sidebarOpen}
+        sidebarToggle={props.sidebar && doc !== null}
         canZoomIn={zoom.canZoomIn}
         canZoomOut={zoom.canZoomOut}
         currentMatch={search.currentIndex + 1}
@@ -110,23 +115,33 @@ const PdfEngine = ({ node }: PdfEngineProps): React.ReactElement => {
         url={props.url}
         zoomPercent={zoom.percent}
       />
-      <div className="lt-pdf-scroll" ref={scrollRef}>
-        {doc && textCache && baseSize && zoom.scale !== null ? (
-          <PageList
+      <div className="lt-pdf-body">
+        {sidebarOpen && props.sidebar && doc && baseSize ? (
+          <Sidebar
             baseSize={baseSize}
+            currentPage={currentPage}
             doc={doc}
-            scrollRootRef={scrollRef}
-            onVisiblePageChange={onVisiblePageChange}
-            ref={pageListRef}
-            scale={zoom.scale}
-            search={search}
-            textCache={textCache}
+            onSelectPage={(page) => pageListRef.current?.scrollToPage(page)}
           />
-        ) : (
-          <div className="lt-pdf-status">
-            <span role="status">{t("pdf.loading", "Loading document…")}</span>
-          </div>
-        )}
+        ) : null}
+        <div className="lt-pdf-scroll" ref={scrollRef}>
+          {doc && textCache && baseSize && zoom.scale !== null ? (
+            <PageList
+              baseSize={baseSize}
+              doc={doc}
+              scrollRootRef={scrollRef}
+              onVisiblePageChange={onVisiblePageChange}
+              ref={pageListRef}
+              scale={zoom.scale}
+              search={search}
+              textCache={textCache}
+            />
+          ) : (
+            <div className="lt-pdf-status">
+              <span role="status">{t("pdf.loading", "Loading document…")}</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -452,6 +452,10 @@ return [
         'pdf' => [
             'heading' => 'PDF viewer',
             'description' => 'A pdf.js backed document viewer with text selection, full-text search, and zoom.',
+            'modal' => [
+                'trigger' => 'Open in modal',
+                'title' => 'Sample document',
+            ],
         ],
         'map' => [
             'heading' => 'Map',

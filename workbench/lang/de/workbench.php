@@ -452,6 +452,10 @@ return [
         'pdf' => [
             'heading' => 'PDF-Viewer',
             'description' => 'Ein pdf.js-basierter Dokumenten-Viewer mit Textauswahl, Volltextsuche und Zoom.',
+            'modal' => [
+                'trigger' => 'Im Modal öffnen',
+                'title' => 'Beispieldokument',
+            ],
         ],
         'map' => [
             'heading' => 'Karte',

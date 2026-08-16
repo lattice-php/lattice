@@ -27,11 +27,87 @@
   font-size: 0.875rem;
 }
 
+.lt-pdf-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.lt-pdf-sidebar {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 11.5rem;
+  min-height: 0;
+  border-right: 1px solid var(--lt-border);
+  background: var(--lt-background);
+}
+
+.lt-pdf-sidebar-tabs {
+  padding: 0.5rem 0.5rem 0;
+}
+
+.lt-pdf-sidebar-scroll {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  padding: 0.5rem;
+}
+
+.lt-pdf-thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  width: 100%;
+  padding: 0.375rem;
+  border-radius: var(--lt-radius);
+}
+
+.lt-pdf-thumb:hover {
+  background: color-mix(in srgb, var(--lt-primary) 8%, transparent);
+}
+
+.lt-pdf-thumb[aria-current="page"] {
+  background: color-mix(in srgb, var(--lt-primary) 14%, transparent);
+}
+
+.lt-pdf-thumb canvas {
+  border: 1px solid var(--lt-border);
+  background: white;
+}
+
+.lt-pdf-attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.lt-pdf-attachment {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  border-radius: var(--lt-radius);
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.lt-pdf-attachment:hover {
+  background: color-mix(in srgb, var(--lt-primary) 8%, transparent);
+}
+
 .lt-pdf-scroll {
   position: relative;
   flex: 1;
   min-height: 0;
   overflow: auto;
+  /* An appearing scrollbar must not shrink the container: fit-width would
+     recompute, page heights would shift, and a just-issued page jump would
+     land one page off. */
+  scrollbar-gutter: stable;
   background: var(--lt-muted);
 }
 
@@ -87,6 +163,24 @@
 
 .lt-pdf-textlayer ::selection {
   background: color-mix(in srgb, var(--lt-primary) 30%, transparent);
+}
+
+.lt-pdf-linklayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.lt-pdf-link {
+  position: absolute;
+  border-radius: 2px;
+  pointer-events: auto;
+}
+
+.lt-pdf-link:hover,
+.lt-pdf-link:focus-visible {
+  background: color-mix(in srgb, var(--lt-primary) 12%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--lt-primary) 40%, transparent);
 }
 
 ::highlight(lt-pdf-match) {

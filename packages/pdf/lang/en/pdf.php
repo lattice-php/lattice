@@ -18,6 +18,16 @@ return [
         'fit-width' => 'Fit width',
     ],
     'download' => 'Download',
+    'link' => [
+        'external' => 'Open {{url}}',
+        'page' => 'Go to page {{page}}',
+    ],
+    'sidebar' => [
+        'toggle' => 'Toggle sidebar',
+        'label' => 'Document sidebar',
+        'pages' => 'Pages',
+        'attachments' => 'Attachments',
+    ],
     'search' => [
         'placeholder' => 'Search document…',
         'previous' => 'Previous match',

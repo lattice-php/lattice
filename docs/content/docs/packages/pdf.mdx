@@ -77,6 +77,49 @@ PdfViewer::make('manual')
     ->maxHeight(900);
 ```
 
+Link annotations in the document are interactive: external URI links open in a new tab, and
+internal links (a table of contents, cross references) scroll their target page into view inside
+the viewer.
+
+## Sidebar
+
+The toolbar's leftmost button opens a sidebar with page thumbnails — click one to jump to its
+page. When the document carries embedded file attachments, the sidebar gains an Attachments tab
+listing them for download. `->sidebar(false)` removes the toggle, which suits compact embeds such
+as modals.
+
+## Media attachments
+
+With [lattice-php/media](/packages/media/) installed, `->media()` sources the document straight
+from an attachment — the signed URL and the filename resolve freshly on every render:
+
+```php
+PdfViewer::make('manual')->media($product->media('manuals')->first());
+```
+
+It accepts a media id or model instance. An explicit `->filename()` wins over the media's stored
+name.
+
+## In a modal
+
+The "view document" flow of a record table is a server action opening a modal that contains a
+viewer:
+
+```php
+Modal::make('invoice-modal')
+    ->title('Invoice')
+    ->width(ModalWidth::Xl)
+    ->schema([
+        PdfViewer::make('invoice')
+            ->media($invoiceMediaId)
+            ->sidebar(false)
+            ->height(560),
+    ]);
+
+// In the row action's handle():
+return ActionResult::success()->openModal('invoice-modal');
+```
+
 ## The worker asset
 
 pdf.js parses documents in a Web Worker whose version must match the bundled library exactly. The

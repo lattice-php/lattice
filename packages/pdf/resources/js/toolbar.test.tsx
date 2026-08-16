@@ -5,6 +5,9 @@ import type { ToolbarProps } from "./toolbar";
 
 function toolbarProps(overrides: Partial<ToolbarProps> = {}): ToolbarProps {
   return {
+    sidebarToggle: true,
+    sidebarOpen: false,
+    onToggleSidebar: vi.fn(),
     currentPage: 1,
     totalPages: 5,
     onJump: vi.fn(),
@@ -76,6 +79,21 @@ it("forwards search input and match navigation", () => {
   expect(props.onNextMatch).toHaveBeenCalledOnce();
   expect(props.onPreviousMatch).toHaveBeenCalledOnce();
   expect(screen.getByText("2 of 4")).toBeInTheDocument();
+});
+
+it("toggles the sidebar and reflects its open state", () => {
+  const props = toolbarProps({ sidebarOpen: true });
+  const { rerender } = render(<Toolbar {...props} />);
+
+  const toggle = screen.getByLabelText("Toggle sidebar");
+  fireEvent.click(toggle);
+
+  expect(props.onToggleSidebar).toHaveBeenCalledOnce();
+  expect(toggle).toHaveAttribute("aria-pressed", "true");
+
+  rerender(<Toolbar {...toolbarProps({ sidebarToggle: false })} />);
+
+  expect(screen.queryByLabelText("Toggle sidebar")).not.toBeInTheDocument();
 });
 
 it("hides search and download when the wire disables them", () => {
