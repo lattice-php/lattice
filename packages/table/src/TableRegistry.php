@@ -172,7 +172,7 @@ final class TableRegistry extends DefinitionRegistry
     private function bulkActions(TableDefinition $definition, string $key, array $context): array
     {
         return array_map(
-            fn (Component&InteractiveComponent $action): Component => $action->context([...$context, 'table' => $key]),
+            fn (Component&InteractiveComponent $action): Component => $action->mergeContext($context, ['table' => $key]),
             $this->renderableComponents($definition->bulkActions()),
         );
     }
@@ -185,7 +185,7 @@ final class TableRegistry extends DefinitionRegistry
     {
         return array_map(
             fn (Component $component): Component => $component instanceof InteractiveComponent
-                ? $component->context([...$context, 'table' => $key])
+                ? $component->mergeContext($context, ['table' => $key])
                 : $component,
             $this->renderableComponents($definition->toolbar()),
         );

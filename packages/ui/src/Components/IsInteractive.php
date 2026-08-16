@@ -46,6 +46,20 @@ trait IsInteractive
     }
 
     /**
+     * Merge $context beneath the component's existing context — explicit
+     * keys set at build time win — while $override forces its keys over both.
+     *
+     * @param  array<string, mixed>  $context
+     * @param  array<string, mixed>  $override
+     */
+    public function mergeContext(array $context, array $override = []): static
+    {
+        $this->context = [...$context, ...$this->context, ...$override];
+
+        return $this;
+    }
+
+    /**
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>
      */
