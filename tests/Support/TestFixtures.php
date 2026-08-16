@@ -57,6 +57,27 @@ function wireJson(mixed $value): string
 }
 
 /**
+ * Depth-first search of a wire payload for the component node with the id.
+ *
+ * @param  array<array-key, mixed>  $node
+ * @return array<array-key, mixed>|null
+ */
+function wireNode(array $node, string $id): ?array
+{
+    if (($node['id'] ?? null) === $id) {
+        return $node;
+    }
+
+    foreach ($node as $value) {
+        if (is_array($value) && ($found = wireNode($value, $id)) !== null) {
+            return $found;
+        }
+    }
+
+    return null;
+}
+
+/**
  * @param  array<int|string, string>  $people
  */
 function inMemoryOptionSource(array $people): OptionSource
