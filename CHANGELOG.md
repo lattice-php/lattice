@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.55.0](https://github.com/lattice-php/lattice/compare/0.54.0...0.55.0) (2026-08-16)
+
+
+### Features
+
+* add pdf viewer package built on pdf.js ([#473](https://github.com/lattice-php/lattice/issues/473)) ([aebae5e](https://github.com/lattice-php/lattice/commit/aebae5e4f46e391f6f7350a0cf1aac6a904f09f0))
+* **core:** opt-in context inheritance for child components ([#476](https://github.com/lattice-php/lattice/issues/476)) ([8df227f](https://github.com/lattice-php/lattice/commit/8df227f0f6702ec2a9d751dca1045b17a7fe9b17))
+* **pdf:** clickable links, sidebar with thumbnails and attachments, modal and media integration ([#475](https://github.com/lattice-php/lattice/issues/475)) ([8878ccb](https://github.com/lattice-php/lattice/commit/8878ccbc39c52c51cd4e78738955a912e39ea837))
+
 ## [0.54.0](https://github.com/lattice-php/lattice/compare/0.53.1...0.54.0) (2026-08-15)
 
 
