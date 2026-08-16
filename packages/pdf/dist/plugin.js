@@ -16638,9 +16638,9 @@ function Ja({ ref: e, scrollRootRef: t, doc: a, scale: c, baseSize: u, textCache
 			ref: (t) => {
 				m.current[e - 1] = t;
 			},
-			style: h.has(e) ? void 0 : {
-				height: Math.floor(u.height * c),
-				width: "100%"
+			style: {
+				minHeight: Math.floor(u.height * c),
+				...h.has(e) ? {} : { width: "100%" }
 			},
 			children: h.has(e) ? /* @__PURE__ */ l(Ka, {
 				currentStart: y?.page === e ? y.start : null,
@@ -16806,11 +16806,12 @@ var $a, eo = h((() => {
 //#endregion
 //#region resources/js/toolbar.tsx
 function to(e) {
-	let { t } = (0, y.useT)("pdf"), [n, i] = s(String(e.currentPage));
+	let { t } = (0, y.useT)("pdf"), [n, i] = s(String(e.currentPage)), [a, o] = s(!1);
 	r(() => {
-		i(String(e.currentPage));
+		i(String(e.currentPage)), o(!1);
 	}, [e.currentPage]);
-	function a(t) {
+	function d(t) {
+		o(!1);
 		let n = Number.parseInt(t, 10);
 		if (Number.isNaN(n)) {
 			i(String(e.currentPage));
@@ -16837,10 +16838,14 @@ function to(e) {
 				"aria-label": t("pdf.page.jump", "Go to page"),
 				className: "h-7 w-12 rounded-lt-sm border border-lt-border bg-transparent text-center text-sm",
 				inputMode: "numeric",
-				onBlur: (e) => a(e.target.value),
-				onChange: (e) => i(e.target.value),
+				onBlur: (e) => {
+					a && d(e.target.value);
+				},
+				onChange: (e) => {
+					o(!0), i(e.target.value);
+				},
 				onKeyDown: (e) => {
-					e.key === "Enter" && a(e.currentTarget.value);
+					e.key === "Enter" && d(e.currentTarget.value);
 				},
 				value: n
 			}),

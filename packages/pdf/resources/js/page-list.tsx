@@ -134,11 +134,13 @@ export function PageList({
           ref={(slot) => {
             slotRefs.current[page - 1] = slot;
           }}
-          style={
-            mountedPages.has(page)
-              ? undefined
-              : { height: Math.floor(baseSize.height * scale), width: "100%" }
-          }
+          // minHeight stays on mounted slots too: a freshly mounted page has a
+          // 0-height canvas until its async render sizes it, and a collapsing
+          // slot above the viewport shifts the scroll position a full page.
+          style={{
+            minHeight: Math.floor(baseSize.height * scale),
+            ...(mountedPages.has(page) ? {} : { width: "100%" }),
+          }}
         >
           {mountedPages.has(page) ? (
             <PdfPage

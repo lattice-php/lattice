@@ -100,6 +100,7 @@ it("navigates internal link annotations inside the viewer", async () => {
 
   const scroller = document.querySelector(".lt-pdf-scroll")!;
   await expect.poll(() => scroller.scrollTop, WAIT).toBeGreaterThan(0);
+  await expect.element(input, WAIT).toHaveValue("5");
 
   await userEvent.click(page.getByRole("link", { name: "Go to page 1" }));
 

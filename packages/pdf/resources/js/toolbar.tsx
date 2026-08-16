@@ -33,12 +33,18 @@ export type ToolbarProps = {
 export function Toolbar(props: ToolbarProps): React.ReactElement {
   const { t } = useT("pdf");
   const [pageInput, setPageInput] = useState(String(props.currentPage));
+  // Blurring must only jump for values the user actually typed — the input
+  // also tracks the visible page while scrolling, and a blur mid-scroll would
+  // otherwise fire a jump to a transient page number.
+  const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     setPageInput(String(props.currentPage));
+    setDirty(false);
   }, [props.currentPage]);
 
   function jumpTo(raw: string): void {
+    setDirty(false);
     const page = Number.parseInt(raw, 10);
 
     if (Number.isNaN(page)) {
@@ -69,8 +75,15 @@ export function Toolbar(props: ToolbarProps): React.ReactElement {
         aria-label={t("pdf.page.jump", "Go to page")}
         className="h-7 w-12 rounded-lt-sm border border-lt-border bg-transparent text-center text-sm"
         inputMode="numeric"
-        onBlur={(event) => jumpTo(event.target.value)}
-        onChange={(event) => setPageInput(event.target.value)}
+        onBlur={(event) => {
+          if (dirty) {
+            jumpTo(event.target.value);
+          }
+        }}
+        onChange={(event) => {
+          setDirty(true);
+          setPageInput(event.target.value);
+        }}
         onKeyDown={(event) => {
           if (event.key === "Enter") {
             jumpTo(event.currentTarget.value);

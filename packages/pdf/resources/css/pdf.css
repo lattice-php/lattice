@@ -104,6 +104,10 @@
   flex: 1;
   min-height: 0;
   overflow: auto;
+  /* An appearing scrollbar must not shrink the container: fit-width would
+     recompute, page heights would shift, and a just-issued page jump would
+     land one page off. */
+  scrollbar-gutter: stable;
   background: var(--lt-muted);
 }
 
