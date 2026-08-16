@@ -9,6 +9,7 @@ use Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Core\Definition;
 use Lattice\Core\DefinitionRegistry;
 use Lattice\Core\Exceptions\UnknownComponent;
+use Lattice\Core\Services\ContextScope;
 
 trait InteractsWithComponents
 {
@@ -34,6 +35,8 @@ trait InteractsWithComponents
         }
 
         Authorization::ensure($definition, $request);
+
+        app(ContextScope::class)->activate($context);
 
         return [$request, $definition, $context];
     }

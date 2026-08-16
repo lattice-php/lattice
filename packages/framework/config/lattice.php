@@ -15,6 +15,13 @@ return [
         'ref_lifetime' => 30,
     ],
 
+    'context' => [
+        // Context keys child components inherit from the definition they are
+        // built inside (row actions, modal forms, nested actions). Empty means
+        // no inheritance; explicit context always wins over inherited keys.
+        'inherited_keys' => [],
+    ],
+
     'refs' => [
         'middleware' => ['web'],
     ],

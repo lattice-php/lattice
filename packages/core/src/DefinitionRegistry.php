@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use Lattice\Core\Attributes\DefinitionAttribute;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Exceptions\UnknownComponent;
+use Lattice\Core\Services\ContextScope;
 use Spatie\Attributes\Attributes;
 
 /**
@@ -32,6 +33,11 @@ abstract class DefinitionRegistry
      * configured and then sealed. Registries supply only the construction
      * closures so this sequence cannot drift between them.
      *
+     * Whitelisted context keys (`lattice.context.inherited_keys`) cascade:
+     * they merge beneath the explicit context — so the gate and the sealed
+     * ref see the same merged array — and the configure step runs inside a
+     * ContextScope frame, so children built within it inherit them too.
+     *
      * @template TComponent of Contracts\CanBeHidden&Contracts\InteractiveComponent
      *
      * @param  class-string<TDefinition>  $definitionClass
@@ -42,6 +48,9 @@ abstract class DefinitionRegistry
      */
     protected function gatedComponent(string $definitionClass, callable $component, callable $configure, array $context = [])
     {
+        $scope = $this->container->make(ContextScope::class);
+        $context = [...$scope->inheritable(), ...$context];
+
         $key = $this->registeredKeyFor($definitionClass);
         $definition = $this->make($definitionClass)->withContext($context);
 
@@ -49,7 +58,7 @@ abstract class DefinitionRegistry
             return $component($key)->hidden();
         }
 
-        return $configure($definition, $component($key), $key)
+        return $scope->wrap($context, fn () => $configure($definition, $component($key), $key))
             ->signedAs($key)
             ->context($context);
     }

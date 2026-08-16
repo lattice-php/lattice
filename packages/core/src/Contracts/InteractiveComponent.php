@@ -15,4 +15,13 @@ interface InteractiveComponent
      * @param  array<string, mixed>  $context
      */
     public function context(array $context): static;
+
+    /**
+     * Merge $context beneath the existing context — explicit keys set at
+     * build time win — while $override forces its keys over both.
+     *
+     * @param  array<string, mixed>  $context
+     * @param  array<string, mixed>  $override
+     */
+    public function mergeContext(array $context, array $override = []): static;
 }
