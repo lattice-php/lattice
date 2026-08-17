@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.1](https://github.com/lattice-php/lattice/compare/0.56.0...0.56.1) (2026-08-17)
+
+
+### Bug Fixes
+
+* **ci:** commit the pdf package's standalone assets ([#480](https://github.com/lattice-php/lattice/issues/480)) ([c49d621](https://github.com/lattice-php/lattice/commit/c49d6217f27bb77e5c4ee61c5cb86efc8e07c2de))
+
 ## [0.56.0](https://github.com/lattice-php/lattice/compare/0.55.0...0.56.0) (2026-08-17)
 
 
