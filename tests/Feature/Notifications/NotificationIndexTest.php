@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Str;
 use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
@@ -44,6 +45,50 @@ test('index returns translatable titles and bodies as their wire shape', functio
         ->assertJsonPath('notifications.0.title.key', 'orders.shipped.title')
         ->assertJsonPath('notifications.0.body.key', 'orders.shipped.body')
         ->assertJsonPath('notifications.0.body.replacements.order', 1234);
+});
+
+test('show returns one of the users notifications', function (): void {
+    $user = workbenchTestUser();
+    Notification::make()->title('Order shipped')->send($user);
+    $notification = $user->notifications()->first();
+    expect($notification)->toBeInstanceOf(DatabaseNotification::class);
+    assert($notification instanceof DatabaseNotification);
+
+    actingAs($user);
+
+    getJson("/lattice/notifications/{$notification->id}")
+        ->assertOk()
+        ->assertJsonPath('id', $notification->id)
+        ->assertJsonPath('title', 'Order shipped');
+});
+
+test('show never leaks another users notification', function (): void {
+    $me = workbenchTestUser();
+    $other = workbenchTestUser();
+    Notification::make()->title('Theirs')->send($other);
+    $notification = $other->notifications()->first();
+    expect($notification)->toBeInstanceOf(DatabaseNotification::class);
+    assert($notification instanceof DatabaseNotification);
+
+    actingAs($me);
+
+    getJson("/lattice/notifications/{$notification->id}")->assertNotFound();
+});
+
+test('unread count returns only the users unread notifications', function (): void {
+    $user = workbenchTestUser();
+    Notification::make()->title('Read')->send($user);
+    Notification::make()->title('Unread')->send($user);
+    $notification = $user->notifications()->latest()->first();
+    expect($notification)->toBeInstanceOf(DatabaseNotification::class);
+    assert($notification instanceof DatabaseNotification);
+    $notification->markAsRead();
+
+    actingAs($user);
+
+    getJson('/lattice/notifications/unread-count')
+        ->assertOk()
+        ->assertJsonPath('unreadCount', 1);
 });
 
 test('index never leaks another users notifications', function (): void {

@@ -3,18 +3,21 @@ declare(strict_types=1);
 
 namespace Lattice\Http\Controllers;
 
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Lattice\Notifications\NotificationItem;
 use Lattice\Notifications\NotificationList;
-use Lattice\Notifications\Support\ActionDescriptor;
+use Lattice\Notifications\NotificationPresenter;
+use Lattice\Notifications\NotificationRoutes;
+use Lattice\Notifications\NotificationTranslationMode;
 use Lattice\Notifications\UnreadCount;
-use Lattice\Ui\Enums\Variant;
-use Lattice\Ui\I18n\Values\Translatable;
 
-final class NotificationController
+final readonly class NotificationController
 {
+    public function __construct(private NotificationPresenter $presenter) {}
+
     public function index(Request $request): JsonResponse
     {
         $notifiable = $request->user();
@@ -26,12 +29,45 @@ final class NotificationController
         $perPage = (int) config('lattice.notifications.per_page', 15);
 
         $notifications = $notifiable->notifications()->paginate($perPage);
+        $translationMode = $this->translationMode($request);
+        $locale = $this->locale($notifiable);
 
         return response()->json(new NotificationList(
-            notifications: array_values(array_map($this->present(...), $notifications->items())),
+            notifications: array_values(array_map(
+                fn (DatabaseNotification $notification): NotificationItem => $this->presenter->present($notification, $translationMode, $locale),
+                $notifications->items(),
+            )),
             unreadCount: $notifiable->unreadNotifications()->count(),
             hasMore: $notifications->hasMorePages(),
         ));
+    }
+
+    public function show(Request $request, string $id): JsonResponse
+    {
+        $notifiable = $request->user();
+
+        if ($notifiable === null) {
+            abort(401);
+        }
+
+        $notification = $notifiable->notifications()->findOrFail($id);
+
+        return response()->json($this->presenter->present(
+            $notification,
+            $this->translationMode($request),
+            $this->locale($notifiable),
+        ));
+    }
+
+    public function unreadCount(Request $request): JsonResponse
+    {
+        $notifiable = $request->user();
+
+        if ($notifiable === null) {
+            abort(401);
+        }
+
+        return $this->count($notifiable);
     }
 
     public function read(Request $request, string $id): JsonResponse
@@ -91,29 +127,23 @@ final class NotificationController
         return response()->json(new UnreadCount($notifiable->unreadNotifications()->count()));
     }
 
-    private function present(DatabaseNotification $notification): NotificationItem
+    private function translationMode(Request $request): NotificationTranslationMode
     {
-        $data = $notification->getAttribute('data');
-        $variant = $data['variant'] ?? null;
+        $translationMode = $request->route(NotificationRoutes::TranslationModeParameter);
 
-        return new NotificationItem(
-            id: $notification->getAttribute('id'),
-            title: $this->text($data['title'] ?? $data['message'] ?? $data['subject'] ?? null),
-            body: $this->text($data['body'] ?? (($data['title'] ?? null) ? ($data['message'] ?? null) : null)),
-            icon: $data['icon'] ?? null,
-            variant: is_string($variant) ? Variant::tryFrom($variant) : null,
-            href: $data['href'] ?? null,
-            isRead: $notification->getAttribute('read_at') !== null,
-            createdAt: $notification->getAttribute('created_at')?->toIso8601String(),
-            actions: array_values(array_filter(array_map(
-                ActionDescriptor::materialize(...),
-                $data['actions'] ?? [],
-            ))),
-        );
+        return is_string($translationMode)
+            ? NotificationTranslationMode::tryFrom($translationMode) ?? NotificationTranslationMode::Wire
+            : NotificationTranslationMode::Wire;
     }
 
-    private function text(mixed $value): string|Translatable|null
+    private function locale(mixed $notifiable): ?string
     {
-        return Translatable::tryFromWire($value) ?? (is_string($value) ? $value : null);
+        if (! $notifiable instanceof HasLocalePreference) {
+            return null;
+        }
+
+        $locale = $notifiable->preferredLocale();
+
+        return is_string($locale) && $locale !== '' ? $locale : null;
     }
 }

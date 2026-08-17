@@ -82,6 +82,10 @@ return [
     'notifications' => [
         'endpoint' => 'lattice/notifications',
         'middleware' => ['web', 'auth'],
+        // Named profiles expose the same inbox through different authentication stacks.
+        // When empty, the endpoint and middleware above register the original route group.
+        'routes' => [],
+        'component_route' => 'web',
         'per_page' => 15,
         'polling_interval' => null,
         'prune_after_days' => 30,

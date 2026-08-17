@@ -23,6 +23,19 @@ test('the bell serializes its endpoint, channel and mode', function (): void {
     ]);
 });
 
+test('the bell uses the configured browser route profile endpoint', function (): void {
+    config()->set('lattice.notifications.component_route', 'browser');
+    config()->set('lattice.notifications.routes', [
+        'browser' => [
+            'endpoint' => 'inbox/notifications',
+        ],
+    ]);
+
+    $payload = wire(Notifications::make());
+
+    expect($payload)->toHaveKey('props.endpoint', '/inbox/notifications');
+});
+
 describe('docs fixtures', function (): void {
     test('matches the bell example fixture', function (): void {
         assertFixtureMatches('notifications.bell', Wire::toWire([
