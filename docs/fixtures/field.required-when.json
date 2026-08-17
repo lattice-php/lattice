@@ -12,6 +12,7 @@
             "label": "Country",
             "labelAction": null,
             "name": "country",
+            "optionSchema": null,
             "options": [
                 {
                     "data": null,

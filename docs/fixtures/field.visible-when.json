@@ -12,6 +12,7 @@
             "label": "Account type",
             "labelAction": null,
             "name": "type",
+            "optionSchema": null,
             "options": [
                 {
                     "data": null,
