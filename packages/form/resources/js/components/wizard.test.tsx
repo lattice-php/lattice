@@ -102,4 +102,16 @@ describe("WizardComponent", () => {
     expect(screen.getByTestId("content-review").closest("section")).toHaveAttribute("hidden");
     expect(screen.getByTestId("wizard-rail-customer")).toHaveAttribute("data-error");
   });
+
+  it("centers the rail when the wizard asks for it", () => {
+    const centered = fakeNode({
+      type: "wizard",
+      props: { orientation: "horizontal", align: "center" },
+      schema: [emptyStep],
+    });
+
+    renderWithForm(<WizardComponent node={centered}>{null}</WizardComponent>);
+
+    expect(screen.getByTestId("wizard-rail-review").closest("ol")).toHaveClass("justify-center");
+  });
 });

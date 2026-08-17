@@ -1,5 +1,6 @@
 import type { Affix, Node, Op, Option } from "@lattice-php/core";
 import type {
+  Align,
   ColumnWidth,
   Emphasis,
   HttpMethod,
@@ -667,6 +668,7 @@ export type Toggle = {
   value: unknown;
 };
 export type Wizard = {
+  align: Align;
   orientation: Orientation;
 };
 export type WizardStep = {

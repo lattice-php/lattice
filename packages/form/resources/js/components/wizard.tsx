@@ -15,6 +15,13 @@ import {
   stepValidationPaths,
 } from "@lattice-php/form/lib/wizard-steps";
 
+const RAIL_ALIGNMENTS: Record<string, string> = {
+  center: "justify-center",
+  left: "justify-start",
+  start: "justify-start",
+  stretch: "justify-stretch",
+};
+
 type WizardContextValue = { activeName: string };
 
 const WizardContext = createContext<WizardContextValue>({ activeName: "" });
@@ -89,7 +96,11 @@ export const WizardComponent: RendererComponent<"wizard"> = ({ children, node })
       <div className={cn("gap-6", isVertical ? "flex" : "grid")} data-slot="wizard">
         <ol
           aria-label={t("form.wizard.steps", "Steps")}
-          className={cn("gap-1", isVertical ? "flex w-56 shrink-0 flex-col" : "flex flex-wrap")}
+          className={cn(
+            "gap-1",
+            isVertical ? "flex w-56 shrink-0 flex-col" : "flex flex-wrap",
+            !isVertical && RAIL_ALIGNMENTS[node.props.align ?? "start"],
+          )}
         >
           {items.map((step, index) => {
             const isActive = index === activeIndex;
