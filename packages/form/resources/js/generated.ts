@@ -68,6 +68,7 @@ export type Choice = {
   label: string | null;
   labelAction: Node | null;
   name: string;
+  optionSchema: Node[] | null;
   options: Option[];
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;

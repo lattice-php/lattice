@@ -12,6 +12,7 @@
             "label": "Plan",
             "labelAction": null,
             "name": "plan",
+            "optionSchema": null,
             "options": [
                 {
                     "data": null,

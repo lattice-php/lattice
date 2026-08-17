@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { Option, RendererComponent } from "@lattice-php/core";
+import { OptionCards } from "@lattice-php/ui/option-cards";
 import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
@@ -15,6 +16,7 @@ export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => 
     () => (resolvedNode.props as { options?: Option[] }).options ?? [],
     [resolvedNode.props],
   );
+  const optionSchema = resolvedNode.props.optionSchema;
   const fallbackValue = options[0]?.value ?? "";
   const selected = value || fallbackValue;
 
@@ -37,17 +39,32 @@ export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => 
       {(controlProps) => (
         <>
           <input name={name} type="hidden" value={selected} />
-          <SegmentedPills
-            {...controlProps}
-            ariaLabel={node.props.label ?? undefined}
-            autoFocus={node.props.autoFocus ?? undefined}
-            disabled={readOnly || disabled}
-            name={testId ?? "segment"}
-            onSelect={commit}
-            options={options}
-            tabIndex={node.props.tabIndex ?? undefined}
-            value={selected}
-          />
+          {optionSchema?.length ? (
+            <OptionCards
+              {...controlProps}
+              ariaLabel={node.props.label ?? undefined}
+              autoFocus={node.props.autoFocus ?? undefined}
+              disabled={readOnly || disabled}
+              name={testId ?? "choice"}
+              onSelect={commit}
+              optionSchema={optionSchema}
+              options={options}
+              tabIndex={node.props.tabIndex ?? undefined}
+              value={selected}
+            />
+          ) : (
+            <SegmentedPills
+              {...controlProps}
+              ariaLabel={node.props.label ?? undefined}
+              autoFocus={node.props.autoFocus ?? undefined}
+              disabled={readOnly || disabled}
+              name={testId ?? "segment"}
+              onSelect={commit}
+              options={options}
+              tabIndex={node.props.tabIndex ?? undefined}
+              value={selected}
+            />
+          )}
         </>
       )}
     </FormFieldFrame>
