@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.2](https://github.com/lattice-php/lattice/compare/0.56.1...0.56.2) (2026-08-17)
+
+
+### Bug Fixes
+
+* **form:** seed the choice default and align the wizard rail ([#482](https://github.com/lattice-php/lattice/issues/482)) ([2faf2d3](https://github.com/lattice-php/lattice/commit/2faf2d3b46977729b4fbc759e40f0e69fb0f71fb))
+
 ## [0.56.1](https://github.com/lattice-php/lattice/compare/0.56.0...0.56.1) (2026-08-17)
 
 

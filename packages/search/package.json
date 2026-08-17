@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/search",
-  "version": "0.56.1",
+  "version": "0.56.2",
   "private": true,
   "description": "Dev workspace for the search component package; ships to consumers via Composer, not npm.",
   "type": "module",
@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lattice-php/core": "0.56.1",
-    "@lattice-php/ui": "0.56.1"
+    "@lattice-php/core": "0.56.2",
+    "@lattice-php/ui": "0.56.2"
   }
 }
