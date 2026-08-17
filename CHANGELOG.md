@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.0](https://github.com/lattice-php/lattice/compare/0.55.0...0.56.0) (2026-08-17)
+
+
+### Features
+
+* **form:** let Choice render its options as cards ([#478](https://github.com/lattice-php/lattice/issues/478)) ([63e9f32](https://github.com/lattice-php/lattice/commit/63e9f323e6dab9fc4a62f9e921003c90aa736303))
+
 ## [0.55.0](https://github.com/lattice-php/lattice/compare/0.54.0...0.55.0) (2026-08-16)
 
 
