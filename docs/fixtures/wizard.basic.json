@@ -1,6 +1,7 @@
 [
     {
         "props": {
+            "align": "start",
             "orientation": "vertical"
         },
         "schema": [

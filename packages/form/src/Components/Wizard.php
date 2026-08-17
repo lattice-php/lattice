@@ -6,6 +6,7 @@ namespace Lattice\Form\Components;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Enums\Align;
 use Lattice\Ui\Enums\Orientation;
 use LogicException;
 
@@ -13,6 +14,8 @@ use LogicException;
 class Wizard extends ContainerComponent
 {
     public Orientation $orientation = Orientation::Horizontal;
+
+    public Align $align = Align::Start;
 
     /**
      * @param  array<int, WizardStep>  $steps
@@ -32,6 +35,17 @@ class Wizard extends ContainerComponent
     public function vertical(): static
     {
         return $this->orientation(Orientation::Vertical);
+    }
+
+    /**
+     * Where the step rail sits above the panel. Only a horizontal wizard has a
+     * choice — a vertical one keeps its rail in a fixed column beside the panel.
+     */
+    public function align(Align $align): static
+    {
+        $this->align = $align;
+
+        return $this;
     }
 
     /**
