@@ -40,7 +40,14 @@ jobs:
           if [ -n "$(git status --porcelain package.json package-lock.json packages)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add package.json package-lock.json packages/*/package.json packages/framework/dist-standalone packages/api-reference/dist-standalone packages/calendar/dist packages/chat/dist packages/map/dist packages/media/dist packages/search/dist packages/tree/dist
+            # Naming the directories one by one drifted: pdf was added in 0.55 and
+            # its manifest went stale here for two releases. These globs are quoted
+            # so git matches them itself, which skips the library packages' ignored
+            # dist/ silently and leaves .gitignore as the one list of what ships.
+            # They need the trailing /** because a pathspec carrying a wildcard is
+            # matched against file paths, and no file is named packages/pdf/dist.
+            git add package.json package-lock.json \
+              'packages/*/package.json' 'packages/*/dist/**' 'packages/*/dist-standalone/**'
             git commit -m "chore: build standalone assets"
             git push
           fi
