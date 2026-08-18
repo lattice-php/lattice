@@ -4,6 +4,7 @@ import type { Registry } from "@lattice-php/core/registry";
 import { RegistryContext } from "@lattice-php/core/registry-context";
 import { useFlashEffects } from "./effects/use-flash-effects";
 import { NavigationProvider } from "@lattice-php/ui/navigation";
+import { ModalHostProvider } from "@lattice-php/ui/modal-host";
 import { EventBridge } from "./event-bridge";
 import { inertiaNavigation } from "./inertia-navigation";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
@@ -33,9 +34,11 @@ export function ProviderBase({
       <NavigationProvider adapter={inertiaNavigation}>
         <ActionInteractionProvider>
           <SpriteProvider sprite={sprite}>
-            {children}
-            <EventBridge onAppearanceChange={updateAppearance} />
-            {toaster ? <Toaster /> : null}
+            <ModalHostProvider>
+              {children}
+              <EventBridge onAppearanceChange={updateAppearance} />
+              {toaster ? <Toaster /> : null}
+            </ModalHostProvider>
           </SpriteProvider>
         </ActionInteractionProvider>
       </NavigationProvider>

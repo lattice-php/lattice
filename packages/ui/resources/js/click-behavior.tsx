@@ -4,12 +4,14 @@ import type { Node } from "@lattice-php/core/types";
 import { getActionEffects } from "./effects/dispatch";
 import { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 import type { Effect } from "./effects/types";
+import { MODAL_HOST_MISSING_ERROR, ModalHostContext } from "./modal-host";
 
 type ActionNode = Node<"action" | "action.bulk">;
 
 export type ClickBehavior =
   | { kind: "navigate"; href: string; method: HttpMethod }
   | { kind: "action"; action: ActionNode }
+  | { kind: "modal"; onClick: () => void }
   | { kind: "effects"; onClick: () => void }
   | { kind: "none" };
 
@@ -61,10 +63,26 @@ export function useClickBehavior(props: {
   method?: HttpMethod | null;
   action?: Node | null;
   effects?: Effect[] | null;
+  modal?: Node<"modal"> | null;
 }): ClickBehavior {
   const dispatch = useEffectDispatcher();
+  const host = useContext(ModalHostContext);
   const action = props.action ?? null;
   const effects = props.effects ?? [];
+  const modal = props.modal ?? null;
+
+  if (modal) {
+    return {
+      kind: "modal",
+      onClick: () => {
+        if (!host) {
+          throw new Error(MODAL_HOST_MISSING_ERROR);
+        }
+
+        host.open(modal);
+      },
+    };
+  }
 
   if (action) {
     if (!isActionNode(action)) {
