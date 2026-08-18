@@ -1,5 +1,5 @@
 import { Icon } from "@lattice-php/ui/icons";
-import { IconButton } from "@lattice-php/ui/icon-button";
+import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import { getSortDirectionLabel } from "@lattice-php/table/lib/query";
 import type { TableColumn, TableSort, TableQuery } from "@lattice-php/table/types";

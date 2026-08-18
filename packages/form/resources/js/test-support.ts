@@ -2,7 +2,7 @@ import { render, waitFor, type RenderResult } from "@testing-library/react";
 import { createElement, type ComponentType, type ReactElement, type ReactNode } from "react";
 import { expect } from "vitest";
 import type { Registry } from "@lattice-php/core/registry";
-import { RegistryContext } from "@lattice-php/core/registry-context";
+import { RegistryProvider } from "@lattice-php/core/registry-context";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import type { EditorExtension } from "./generated";
@@ -67,9 +67,7 @@ export function formFrame(
     children: createElement(FormValuesProvider, { initial, children }),
   });
 
-  return registry
-    ? createElement(RegistryContext.Provider, { value: registry, children: form })
-    : form;
+  return registry ? createElement(RegistryProvider, { registry, children: form }) : form;
 }
 
 /**

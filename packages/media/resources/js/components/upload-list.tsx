@@ -1,4 +1,4 @@
-import { IconButton } from "@lattice-php/ui/icon-button";
+import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import type { UploadItem } from "./use-media-upload";
 

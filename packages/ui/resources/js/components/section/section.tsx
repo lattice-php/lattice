@@ -1,8 +1,8 @@
 import { type ComponentProps, type MouseEvent, type ReactNode } from "react";
 import { Icon } from "../../icons";
-import { InfoTooltip } from "../../info-tooltip";
+import { InfoTooltip } from "../../primitives/info-tooltip";
 import { cn } from "../../lib/utils";
-import { useCollapsibleState } from "../../use-collapsible-state";
+import { useCollapsibleState } from "../../lib/use-collapsible-state";
 
 export type SectionToggleProps = Omit<
   ComponentProps<"button">,

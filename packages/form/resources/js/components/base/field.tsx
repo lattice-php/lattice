@@ -1,6 +1,6 @@
-import InputError from "@lattice-php/ui/input-error";
-import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
-import { Label } from "@lattice-php/ui/label";
+import InputError from "@lattice-php/ui/primitives/input-error";
+import { InfoTooltip } from "@lattice-php/ui/primitives/info-tooltip";
+import { Label } from "@lattice-php/ui/primitives/label";
 import { useInTableCell } from "@lattice-php/form/hooks/row-layout-context";
 import { cn } from "@lattice-php/ui/lib/utils";
 import type { ComponentProps, ReactNode } from "react";

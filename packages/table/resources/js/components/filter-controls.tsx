@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
-import { Checkbox } from "@lattice-php/ui/checkbox";
+import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node, Option } from "@lattice-php/core/types";
 import {
@@ -15,7 +15,7 @@ import {
   useFormValues,
   useSetFormValue,
 } from "@lattice-php/form/embed";
-import { IconButton } from "@lattice-php/ui/icon-button";
+import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { isTruthy } from "@lattice-php/ui/lib/is-truthy";

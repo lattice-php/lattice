@@ -10,7 +10,7 @@ import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import RawBlockComponent from "@lattice-php/ui/components/raw-block/raw-block-adapter";
 import TextAdapter from "@lattice-php/ui/components/text/text-adapter";
-import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
+import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import DropdownComponent from "./dropdown";
 import MenuItemComponent from "./menu-item";
 
@@ -49,7 +49,7 @@ describe("Dropdown in a browser", () => {
 
   it("renders trigger nodes through the registry and hides collapsed trigger parts", async () => {
     const screen = await renderWithRegistry(
-      <SidebarCollapsedContext.Provider value={true}>
+      <CollapsedProvider collapsed={true}>
         <Renderer
           nodes={[
             {
@@ -64,7 +64,7 @@ describe("Dropdown in a browser", () => {
             },
           ]}
         />
-      </SidebarCollapsedContext.Provider>,
+      </CollapsedProvider>,
       registry,
     );
 

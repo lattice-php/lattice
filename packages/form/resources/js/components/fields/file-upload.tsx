@@ -2,7 +2,7 @@ import { testIdentity } from "@lattice-php/core/test-id";
 import { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 import type { RendererComponent } from "@lattice-php/core";
 import type { SignedUpload } from "@lattice-php/form/generated";
-import { IconButton } from "@lattice-php/ui/icon-button";
+import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";

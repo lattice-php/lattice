@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Icon } from "../../icons";
 import { UI_NAMESPACE, useT } from "../../i18n";
-import { Popover, PopoverContent, PopoverTrigger } from "../../popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popover";
 
 export type TooltipProps = {
   "aria-label"?: string;

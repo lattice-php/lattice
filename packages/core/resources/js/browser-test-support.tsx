@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { render, type ComponentRenderOptions } from "vitest-browser-react";
 import type { Registry } from "./registry";
-import { RegistryContext } from "./registry-context";
+import { RegistryProvider } from "./registry-context";
 
 /**
  * Browser-mode analog of test-support's `renderWithRegistry`. Lives in its own
@@ -15,8 +15,6 @@ export function renderWithRegistry(
 ) {
   return render(ui, {
     ...options,
-    wrapper: ({ children }) => (
-      <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>
-    ),
+    wrapper: ({ children }) => <RegistryProvider registry={registry}>{children}</RegistryProvider>,
   });
 }

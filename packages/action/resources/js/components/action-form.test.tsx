@@ -5,7 +5,7 @@ import type { Node, Plugin } from "@lattice-php/lattice";
 import { formComponents } from "@lattice-php/form";
 import { useFormContext } from "@lattice-php/form/toolkit";
 import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
-import { ModalHostProvider } from "@lattice-php/ui/modal-host";
+import { ModalProvider } from "@lattice-php/ui/modal";
 import { actionComponents } from "@lattice-php/action/plugin";
 
 type ValidateFieldsOptions = { onSuccess?: () => void; onValidationError?: () => void };
@@ -184,9 +184,9 @@ function editProductActionWithExistingImage(): Node {
 
 function renderAction(node: Node, ...extraPlugins: Plugin[]) {
   return renderWithRegistry(
-    <ModalHostProvider>
+    <ModalProvider>
       <Renderer nodes={[node]} />
-    </ModalHostProvider>,
+    </ModalProvider>,
     createRegistry(actionComponents, formComponents, ...extraPlugins),
   );
 }

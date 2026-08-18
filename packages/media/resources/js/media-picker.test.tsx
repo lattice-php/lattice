@@ -1,14 +1,14 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { UploadTarget, UploadedMedia } from "./components/use-media-upload";
-import { createRegistry, eagerComponent, RegistryContext } from "@lattice-php/core";
+import { createRegistry, eagerComponent, RegistryProvider } from "@lattice-php/core";
 import type { RendererComponent, Schema } from "@lattice-php/core/types";
 import { FormProvider } from "@lattice-php/form/hooks/context";
 import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { fakeFormContext } from "@lattice-php/form/test-support";
-import { withModalHost } from "@lattice-php/ui/test/modal-host";
+import { withModal } from "@lattice-php/ui/test/modal";
 import { libraryRow } from "./test-support";
 import MediaPickerComponent from "./media-picker";
 
@@ -107,14 +107,14 @@ function renderPicker(props: Record<string, unknown> = {}, schema?: Schema) {
   });
 
   return render(
-    withModalHost(
-      <RegistryContext.Provider value={registry}>
+    withModal(
+      <RegistryProvider registry={registry}>
         <FormProvider value={fakeFormContext({ action: "/forms/products", componentRef: "ref-1" })}>
           <FormValuesProvider initial={{}}>
             <MediaPickerComponent node={node}>{null}</MediaPickerComponent>
           </FormValuesProvider>
         </FormProvider>
-      </RegistryContext.Provider>,
+      </RegistryProvider>,
     ),
   );
 }

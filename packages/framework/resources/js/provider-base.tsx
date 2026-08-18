@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { ActionInteractionProvider } from "@lattice-php/action/components/action-trigger-provider";
 import type { Registry } from "@lattice-php/core/registry";
-import { RegistryContext } from "@lattice-php/core/registry-context";
+import { RegistryProvider } from "@lattice-php/core/registry-context";
 import { useFlashEffects } from "./effects/use-flash-effects";
 import { NavigationProvider } from "@lattice-php/ui/navigation";
-import { ModalHostProvider } from "@lattice-php/ui/modal-host";
+import { ModalProvider } from "@lattice-php/ui/modal";
 import { EventBridge } from "./event-bridge";
 import { inertiaNavigation, useCloseModalsOnNavigate } from "./inertia-navigation";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
@@ -31,18 +31,18 @@ export function ProviderBase({
   useCloseModalsOnNavigate();
 
   return (
-    <RegistryContext.Provider value={registry}>
+    <RegistryProvider registry={registry}>
       <NavigationProvider adapter={inertiaNavigation}>
         <ActionInteractionProvider>
           <SpriteProvider sprite={sprite}>
-            <ModalHostProvider>
+            <ModalProvider>
               {children}
               <EventBridge onAppearanceChange={updateAppearance} />
               {toaster ? <Toaster /> : null}
-            </ModalHostProvider>
+            </ModalProvider>
           </SpriteProvider>
         </ActionInteractionProvider>
       </NavigationProvider>
-    </RegistryContext.Provider>
+    </RegistryProvider>
   );
 }

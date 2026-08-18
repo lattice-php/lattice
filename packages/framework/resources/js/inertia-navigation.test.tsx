@@ -3,7 +3,7 @@ import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { stubMatchMedia } from "@lattice-php/core/test-support";
 import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import { useEmbeddedModal, useModalHost } from "@lattice-php/ui/modal-host";
+import { useEmbeddedModal, useModal } from "@lattice-php/ui/modal";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { inertiaNavigation } from "./inertia-navigation";
@@ -50,7 +50,7 @@ function ElementDialog() {
 }
 
 function ModalOpener() {
-  const host = useModalHost();
+  const host = useModal();
 
   return (
     <button onClick={() => host.open(<ElementDialog />)} type="button">

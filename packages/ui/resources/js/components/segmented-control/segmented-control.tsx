@@ -1,6 +1,6 @@
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "../../lib/utils";
-import { pillClassName } from "../../pill";
+import { pillClassName } from "../../lib/pill";
 
 export type SegmentedControlOption = {
   label: ReactNode;

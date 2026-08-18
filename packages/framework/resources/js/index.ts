@@ -14,7 +14,7 @@ export {
   mergeEffectHandlers,
 } from "@lattice-php/ui/effects/registry";
 export { initializeAppearance, updateAppearance, useAppearance } from "./appearance";
-export { copyToClipboard } from "@lattice-php/ui/copyable-text";
+export { copyToClipboard } from "@lattice-php/ui/primitives/copyable-text";
 export {
   createLatticeApp,
   type CreateLatticeAppI18nOptions,
@@ -28,14 +28,7 @@ export {
   pageComponentName,
   withVisitHeaders,
 } from "./inertia";
-export {
-  Callouts,
-  layoutComponents,
-  OutletContext,
-  SchemaLayout,
-  SidebarCollapsedContext,
-  useSidebarCollapsed,
-} from "./layout";
+export { Callouts, layoutComponents, OutletProvider, SchemaLayout, useOutlet } from "./layout";
 export { Provider, useColumnRegistry, useComponentRegistry } from "./provider";
 export { onCallout, onToast, Toaster } from "./toast";
 export {

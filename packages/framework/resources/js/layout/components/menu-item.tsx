@@ -7,7 +7,7 @@ import { Icon, IconRenderer } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import type { Affix } from "@lattice-php/core";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "@lattice-php/ui/click-behavior";
-import { useSidebarCollapsed } from "@lattice-php/lattice/layout/hooks/context";
+import { useCollapsed } from "@lattice-php/core/collapsed-context";
 import { Popover } from "./popover";
 
 const rowClass =
@@ -28,7 +28,7 @@ function schemaContainsPath(schema: Schema | undefined, path: string): boolean {
 }
 
 const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) => {
-  const collapsed = useSidebarCollapsed();
+  const collapsed = useCollapsed();
   const { icon, label: rawLabel, prefix, suffix } = node.props;
   const label = rawLabel ?? "";
   const iconOnly = Boolean(icon);

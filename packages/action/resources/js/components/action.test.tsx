@@ -5,7 +5,7 @@ import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { IconRendererProvider } from "@lattice-php/ui/icons";
 import type { IconRendererFunction } from "@lattice-php/ui/icons";
 import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
-import { renderWithModalHost } from "@lattice-php/ui/test/modal-host";
+import { renderWithModal } from "@lattice-php/ui/test/modal";
 import ActionComponent from "./action";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
@@ -34,7 +34,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Send test email" }));
 
@@ -58,7 +58,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Edit" }));
 
@@ -79,7 +79,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Sync" }));
 
@@ -103,7 +103,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Teams" }));
 
@@ -127,7 +127,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(
+    renderWithModal(
       <IconRendererProvider renderer={iconRenderer}>
         <ActionComponent node={node}>{null}</ActionComponent>
       </IconRendererProvider>,
@@ -148,7 +148,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(
+    renderWithModal(
       <ActionMenuProvider>
         <ActionComponent node={node}>{null}</ActionComponent>
       </ActionMenuProvider>,
@@ -178,7 +178,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Delete account" }));
 
@@ -248,7 +248,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
@@ -311,7 +311,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Delete account" }));
 
@@ -349,7 +349,7 @@ describe("Lattice action component", () => {
       type: "action",
     });
 
-    renderWithModalHost(<ActionComponent node={node}>{null}</ActionComponent>);
+    renderWithModal(<ActionComponent node={node}>{null}</ActionComponent>);
 
     fireEvent.click(screen.getByRole("button", { name: "Delete account" }));
 

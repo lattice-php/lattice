@@ -1,7 +1,18 @@
 import { createContext, useContext } from "react";
+import type { ReactNode } from "react";
 import type { ComponentRegistry, ExtensionRegistry, Registry } from "./registry";
 
-export const RegistryContext = createContext<Registry | null>(null);
+const RegistryContext = createContext<Registry | null>(null);
+
+export function RegistryProvider({
+  registry,
+  children,
+}: {
+  registry: Registry;
+  children: ReactNode;
+}) {
+  return <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>;
+}
 
 let _defaultRegistry: Registry | null = null;
 const EMPTY_REGISTRY: ComponentRegistry & ExtensionRegistry = {};

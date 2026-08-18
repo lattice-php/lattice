@@ -3,7 +3,7 @@ import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent, lazyComponent } from "./registry";
 import { Renderer } from "./renderer";
-import { CollapsedContext } from "./collapsed-context";
+import { CollapsedProvider } from "./collapsed-context";
 import type { RendererComponent, RendererComponentModule } from "./index";
 import { renderWithRegistry } from "./test-support";
 
@@ -81,7 +81,7 @@ describe("Renderer", () => {
     });
 
     renderWithRegistry(
-      <CollapsedContext.Provider value={true}>
+      <CollapsedProvider collapsed={true}>
         <Renderer
           nodes={[
             {
@@ -96,7 +96,7 @@ describe("Renderer", () => {
             },
           ]}
         />
-      </CollapsedContext.Provider>,
+      </CollapsedProvider>,
       registry,
     );
 

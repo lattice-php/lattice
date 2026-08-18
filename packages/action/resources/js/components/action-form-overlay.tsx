@@ -1,6 +1,6 @@
 import type { Node } from "@lattice-php/core/types";
 import { ActionForm, useLazyActionForm } from "@lattice-php/action/components/action-form";
-import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal-host";
+import { MODAL_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal";
 import { confirmationLabels } from "@lattice-php/action/lib/confirmation";
 
 export function ActionFormOverlay({
@@ -15,7 +15,7 @@ export function ActionFormOverlay({
   const context = useEmbeddedModal();
 
   if (!context) {
-    throw new Error(MODAL_HOST_MISSING_ERROR);
+    throw new Error(MODAL_MISSING_ERROR);
   }
 
   const endpoint = node.props.endpoint ?? "";

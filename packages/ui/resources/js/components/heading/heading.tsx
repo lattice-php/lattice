@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
-import { CopyableText } from "../../copyable-text";
-import { InfoTooltip } from "../../info-tooltip";
+import { CopyableText } from "../../primitives/copyable-text";
+import { InfoTooltip } from "../../primitives/info-tooltip";
 import { cn } from "../../lib/utils";
 
 export type HeadingProps = Omit<ComponentProps<"h1">, "children"> & {

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@lattice-php/ui/icons";
-import { IconButton } from "@lattice-php/ui/icon-button";
-import { Input } from "@lattice-php/ui/input";
+import { IconButton } from "@lattice-php/ui/primitives/icon-button";
+import { Input } from "@lattice-php/ui/primitives/input";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";

@@ -1,1 +1,0 @@
-import{r as e}from"./rolldown-runtime-hePW80VL.js";import{t}from"./react-CwJFpaho.js";var n=e(t(),1),r=(0,n.createContext)(null),i=null,a={};function o(e){i=e}function s(){return((0,n.useContext)(r)??i)?.components??a}function c(e){return((0,n.useContext)(r)??i)?.extensions[e]??a}export{c as i,o as n,s as r,r as t};

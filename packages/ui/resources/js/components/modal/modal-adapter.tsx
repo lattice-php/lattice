@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogHeader } from "../../dialog";
+import { Dialog, DialogContent, DialogHeader } from "../../primitives/dialog";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { UI_NAMESPACE, useT } from "../../i18n";
-import { useEmbeddedModal } from "../../modal-host";
+import { useEmbeddedModal } from "../../modal";
 
 let warnedMissingHost = false;
 
@@ -12,7 +12,7 @@ function warnMissingHost(): void {
 
   warnedMissingHost = true;
   console.warn(
-    "[Lattice] Modal nodes render only through a trigger's ->modal() or an openModal effect; wrap the app in a ModalHostProvider.",
+    "[Lattice] Modal nodes render only through a trigger's ->modal() or an openModal effect; wrap the app in a ModalProvider.",
   );
 }
 

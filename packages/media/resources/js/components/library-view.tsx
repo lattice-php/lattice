@@ -4,15 +4,15 @@ import type { Node } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/ui/i18n";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { MODAL_HOST_MISSING_ERROR, ModalHostContext } from "@lattice-php/ui/modal-host";
+import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/modal";
 import { useTable } from "@lattice-php/table/hooks/use-table";
 import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import type { TableNode } from "@lattice-php/table/types";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Checkbox } from "@lattice-php/ui/checkbox";
-import { Input } from "@lattice-php/ui/input";
-import { NativeSelect } from "@lattice-php/ui/native-select";
+import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
+import { Input } from "@lattice-php/ui/primitives/input";
+import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { DetailPanel } from "./detail-panel";
 import { UploadList } from "./upload-list";
 import { useMediaUpload } from "./use-media-upload";
@@ -65,7 +65,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [detailId, setDetailId] = useState<number | null>(null);
-  const host = useContext(ModalHostContext);
+  const host = useOptionalModal();
   const uploadLabel = uploadAction?.props.label ?? t("media.actions.upload.label", "Upload");
   // The panel now portals at the app root through the modal host, so its drag
   // events no longer reach this wrapper in a real browser — a drop just falls
@@ -86,7 +86,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
     }
 
     if (!host) {
-      throw new Error(MODAL_HOST_MISSING_ERROR);
+      throw new Error(MODAL_MISSING_ERROR);
     }
 
     setDetailId(row.id);

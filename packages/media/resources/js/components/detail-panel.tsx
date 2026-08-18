@@ -8,15 +8,11 @@ import { formatDateValue } from "@lattice-php/ui/format/temporal";
 import { useFormatContext } from "@lattice-php/ui/format/format-context";
 import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/dialog";
-import { Input } from "@lattice-php/ui/input";
-import { Label } from "@lattice-php/ui/label";
-import { PreviewableImage } from "@lattice-php/ui/image-preview";
-import {
-  MODAL_HOST_MISSING_ERROR,
-  useEmbeddedModal,
-  useModalHost,
-} from "@lattice-php/ui/modal-host";
+import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/primitives/dialog";
+import { Input } from "@lattice-php/ui/primitives/input";
+import { Label } from "@lattice-php/ui/primitives/label";
+import { PreviewableImage } from "@lattice-php/ui/components/image/image-preview";
+import { MODAL_MISSING_ERROR, useEmbeddedModal, useModal } from "@lattice-php/ui/modal";
 import type { MediaRow } from "./library-view";
 
 const byteUnits = ["byte", "kilobyte", "megabyte", "gigabyte", "terabyte"] as const;
@@ -53,11 +49,11 @@ export function DetailPanel({
   const context = useEmbeddedModal();
 
   if (!context) {
-    throw new Error(MODAL_HOST_MISSING_ERROR);
+    throw new Error(MODAL_MISSING_ERROR);
   }
 
   const { open, onOpenChange, onExited } = context;
-  const host = useModalHost();
+  const host = useModal();
   const [name, setName] = useState(row.name);
   const [alt, setAlt] = useState(row.alt ?? "");
   const [processing, setProcessing] = useState(false);

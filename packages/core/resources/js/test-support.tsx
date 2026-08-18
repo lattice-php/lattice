@@ -2,7 +2,7 @@ import { render, type RenderOptions, type RenderResult } from "@testing-library/
 import type { ReactElement } from "react";
 import { onTestFinished, vi } from "vitest";
 import type { Registry } from "./registry";
-import { RegistryContext } from "./registry-context";
+import { RegistryProvider } from "./registry-context";
 import type { ComponentPropsOf, Node, RendererComponent, Schema } from "./types";
 
 /**
@@ -32,9 +32,7 @@ export function renderWithRegistry(
   options?: RenderOptions,
 ): RenderResult {
   return render(ui, {
-    wrapper: ({ children }) => (
-      <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>
-    ),
+    wrapper: ({ children }) => <RegistryProvider registry={registry}>{children}</RegistryProvider>,
     ...options,
   });
 }

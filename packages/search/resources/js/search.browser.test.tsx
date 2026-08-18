@@ -2,7 +2,7 @@ import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { expect, it } from "vitest";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
-import { withModalHost } from "@lattice-php/ui/test/modal-host";
+import { withModal } from "@lattice-php/ui/test/modal";
 import SearchBox from "./components/search-box";
 import { searchResponse, stubSearchFetch } from "./test-support";
 
@@ -10,7 +10,7 @@ it("opens with the keyboard shortcut but leaves editing shortcuts alone", async 
   stubSearchFetch(() => jsonResponse(searchResponse([], { mode: "recent" })));
 
   const screen = await render(
-    withModalHost(
+    withModal(
       <>
         <input aria-label="Editor" />
         <SearchBox
@@ -45,7 +45,7 @@ it("closes with the keyboard shortcut even while the search input has focus, and
   stubSearchFetch(() => jsonResponse(searchResponse([], { mode: "recent" })));
 
   const screen = await render(
-    withModalHost(
+    withModal(
       <SearchBox
         node={fakeNode({
           type: "search.box",

@@ -4,7 +4,7 @@ import type { Node } from "@lattice-php/core/types";
 import { getActionEffects } from "./effects/dispatch";
 import { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 import type { Effect } from "./effects/types";
-import { MODAL_HOST_MISSING_ERROR, ModalHostContext } from "./modal-host";
+import { MODAL_MISSING_ERROR, useOptionalModal } from "./modal";
 
 type ActionNode = Node<"action" | "action.bulk">;
 
@@ -75,7 +75,7 @@ export function useClickBehavior(props: {
   modal?: Node<"modal"> | null;
 }): ClickBehavior {
   const dispatch = useEffectDispatcher();
-  const host = useContext(ModalHostContext);
+  const host = useOptionalModal();
   const action = props.action ?? null;
   const effects = props.effects ?? [];
   const modal = props.modal ?? null;
@@ -85,7 +85,7 @@ export function useClickBehavior(props: {
       kind: "modal",
       onClick: () => {
         if (!host) {
-          throw new Error(MODAL_HOST_MISSING_ERROR);
+          throw new Error(MODAL_MISSING_ERROR);
         }
 
         host.open(modal);

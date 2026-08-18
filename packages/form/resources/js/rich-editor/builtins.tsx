@@ -13,8 +13,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@lattice-php/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+} from "@lattice-php/ui/primitives/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
 import type { RichEditorExtensionRegistryFor, ToolbarButton } from "./registry";
 import { ToolbarIconButton } from "./toolbar-button";
 

@@ -1,5 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
-import { CopyableText } from "../../copyable-text";
+import { CopyableText } from "../../primitives/copyable-text";
 import { coerceColor, colorValue, namedColor } from "../../lib/color";
 import { cn } from "../../lib/utils";
 import type { Color } from "../../types";
