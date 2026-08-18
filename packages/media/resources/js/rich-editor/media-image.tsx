@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense } from "react";
 import { mergeAttributes, Node, type Editor } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import {
@@ -10,6 +10,7 @@ import type { Node as WireNode } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Input } from "@lattice-php/ui/input";
+import { useModalHost } from "@lattice-php/ui/modal-host";
 import { NativeSelect } from "@lattice-php/ui/native-select";
 
 const MediaImageDialog = lazy(() => import("./media-image-dialog"));
@@ -128,26 +129,25 @@ function InsertMediaImageControl({
   library: WireNode | null;
 }) {
   const { t } = useT("media");
-  const [open, setOpen] = useState(false);
+  const host = useModalHost();
 
   if (!library) {
     return null;
   }
 
   return (
-    <>
-      <ToolbarIconButton
-        icon="image"
-        label={t("media.editor.insert", "Insert image")}
-        onClick={() => setOpen(true)}
-        testId="editor-media-image-insert"
-      />
-      {open && (
-        <Suspense fallback={null}>
-          <MediaImageDialog editor={editor} library={library} setOpen={setOpen} />
-        </Suspense>
-      )}
-    </>
+    <ToolbarIconButton
+      icon="image"
+      label={t("media.editor.insert", "Insert image")}
+      onClick={() =>
+        host.open(
+          <Suspense fallback={null}>
+            <MediaImageDialog editor={editor} library={library} />
+          </Suspense>,
+        )
+      }
+      testId="editor-media-image-insert"
+    />
   );
 }
 

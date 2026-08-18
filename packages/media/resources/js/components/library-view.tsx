@@ -1,15 +1,13 @@
-import { useRef, useState } from "react";
-import { runAction } from "@lattice-php/action/lib/run-action";
-import { apiFetch } from "@lattice-php/core/api";
+import { useContext, useRef, useState } from "react";
+import { useAction } from "@lattice-php/action/hooks/use-action";
 import type { Node } from "@lattice-php/core/types";
-import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { useT } from "@lattice-php/ui/i18n";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 import { cn } from "@lattice-php/ui/lib/utils";
+import { MODAL_HOST_MISSING_ERROR, ModalHostContext } from "@lattice-php/ui/modal-host";
 import { useTable } from "@lattice-php/table/hooks/use-table";
 import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
-import { getBulkActions } from "@lattice-php/table/lib/bulk";
-import type { BulkAction } from "@lattice-php/table/lib/bulk";
+import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import type { TableNode } from "@lattice-php/table/types";
 import { Button } from "@lattice-php/ui/button";
 import { Checkbox } from "@lattice-php/ui/checkbox";
@@ -55,7 +53,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   const table = useTable(tableNode);
   const rows = table.rows as MediaRow[];
   const selection = useTableSelection(rows.map((row) => String(row.id)));
-  const [deleteAction] = getBulkActions(tableNode.props?.bulkActions);
+  const [deleteAction] = getBulkActionNodes(tableNode.props?.bulkActions);
   const uploadAction = actionNode(node, "media-upload");
   const updateAction = actionNode(node, "media-update");
   const removeAction = actionNode(node, "media-delete");
@@ -67,20 +65,40 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [detailId, setDetailId] = useState<number | null>(null);
-  const detailRow = rows.find((row) => row.id === detailId) ?? null;
-  // Pick-mode composition never passes these action nodes, and defensively they
-  // could be absent even outside pick mode — in either case there is no panel to
-  // portal, so a selected row must not block drops with no way to clear it.
-  const detail = updateAction && removeAction ? detailRow : null;
+  const host = useContext(ModalHostContext);
   const uploadLabel = uploadAction?.props.label ?? t("media.actions.upload.label", "Upload");
-  // The detail slideout and its confirm dialog portal above the grid, yet their
-  // drag events still bubble through this wrapper — a drop there is not an upload.
-  const acceptsDrop = detail === null;
+  // The panel now portals at the app root through the modal host, so its drag
+  // events no longer reach this wrapper in a real browser — a drop just falls
+  // through to the browser's default handling, like any other host modal (a
+  // document-level guard would fix that; out of scope here). The detailId
+  // check still matters: it is what the jsdom drop test below exercises
+  // directly, since fireEvent skips the portal boundary entirely.
+  const acceptsDrop = detailId === null;
   const reloading = table.processing && table.hasLoaded;
   const commitSearch = useDebouncedCallback(
     (term: string) => table.setSearch(term),
     SEARCH_DEBOUNCE_MS,
   );
+
+  function openDetail(row: MediaRow): void {
+    if (!updateAction || !removeAction) {
+      return;
+    }
+
+    if (!host) {
+      throw new Error(MODAL_HOST_MISSING_ERROR);
+    }
+
+    setDetailId(row.id);
+    host.open(
+      <DetailPanel
+        onClose={() => setDetailId(null)}
+        remove={removeAction}
+        row={row}
+        update={updateAction}
+      />,
+    );
+  }
 
   function toggle(row: MediaRow): void {
     const key = String(row.id);
@@ -213,7 +231,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
                     "ring-[length:var(--lt-ring-width)] ring-lt-ring",
                 )}
                 data-test="media-card"
-                onClick={() => (pick ? toggle(row) : setDetailId(row.id))}
+                onClick={() => (pick ? toggle(row) : openDetail(row))}
                 type="button"
               >
                 {row.preview_url !== null && row.mime_type.startsWith("image/") ? (
@@ -283,16 +301,6 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
           />
         )
       )}
-
-      {detail && updateAction && removeAction && (
-        <DetailPanel
-          key={detail.id}
-          onClose={() => setDetailId(null)}
-          remove={removeAction}
-          row={detail}
-          update={updateAction}
-        />
-      )}
     </div>
   );
 }
@@ -302,34 +310,15 @@ function BulkDeleteBar({
   selectedKeys,
   onDone,
 }: {
-  action: BulkAction;
+  action: Node<"action" | "action.bulk">;
   selectedKeys: string[];
   onDone: () => void;
 }) {
   const { t } = useT("media");
-  const dispatch = useEffectDispatcher();
-  const [processing, setProcessing] = useState(false);
-
-  async function submit(): Promise<void> {
-    setProcessing(true);
-
-    const ok = await runAction(
-      () =>
-        apiFetch(action.endpoint, {
-          method: action.method,
-          ref: action.ref,
-          body: JSON.stringify({ selected: selectedKeys }),
-          throwOnError: false,
-        }),
-      dispatch,
-    );
-
-    setProcessing(false);
-
-    if (ok) {
-      onDone();
-    }
-  }
+  const { processing, requestSubmit } = useAction(action, {
+    extraData: () => ({ selected: selectedKeys }),
+    onSuccess: onDone,
+  });
 
   return (
     <div className="sticky bottom-0 z-lt-sticky flex items-center justify-between gap-3 rounded-lt-sm border border-lt-border bg-lt-surface px-4 py-3 text-sm shadow-lt-md">
@@ -339,12 +328,12 @@ function BulkDeleteBar({
       <Button
         data-test="media-bulk-delete"
         disabled={processing}
-        emphasis={action.emphasis ?? "solid"}
-        onClick={() => void submit()}
+        emphasis={action.props.emphasis ?? "solid"}
+        onClick={requestSubmit}
         type="button"
-        variant={action.variant ?? "danger"}
+        variant={action.props.variant ?? "danger"}
       >
-        {action.label}
+        {action.props.label}
       </Button>
     </div>
   );

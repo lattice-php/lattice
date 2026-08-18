@@ -5,7 +5,7 @@ import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { IconRendererProvider } from "@lattice-php/ui/icons";
 import type { IconRendererFunction } from "@lattice-php/ui/icons";
 import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
-import { renderWithModalHost } from "@lattice-php/action/test-support";
+import { renderWithModalHost } from "@lattice-php/ui/test/modal-host";
 import ActionComponent from "./action";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());

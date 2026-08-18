@@ -3,6 +3,7 @@ export { router } from "@inertiajs/react";
 export { inertiaNavigation, navigationPlugin } from "./inertia-navigation";
 export { defaultNavigation, NavigationProvider, useNavigation } from "@lattice-php/ui/navigation";
 export { runAction } from "@lattice-php/action";
+export { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
 export { useExtensionRegistry } from "@lattice-php/core/registry-context";
 export { RenderNode } from "@lattice-php/core/renderer";
@@ -14,7 +15,14 @@ export { RICH_EDITOR_EXTENSION, ToolbarIconButton } from "@lattice-php/form/rich
 export * from "@lattice-php/form/toolkit";
 export { useTable } from "@lattice-php/table/hooks/use-table";
 export { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
-export { getBulkActions } from "@lattice-php/table/lib/bulk";
+export { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
+export { useAction } from "@lattice-php/action/hooks/use-action";
+export {
+  MODAL_HOST_MISSING_ERROR,
+  ModalHostContext,
+  useEmbeddedModal,
+  useModalHost,
+} from "@lattice-php/ui/modal-host";
 export {
   Badge,
   Button,
