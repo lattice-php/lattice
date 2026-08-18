@@ -5,7 +5,6 @@ namespace Workbench\App\Pages\Components;
 
 use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsPage;
-use Lattice\Facades\Effects;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Modal;
@@ -40,33 +39,36 @@ final class ModalsPage extends WorkbenchPage
                         ->gap(Gap::Small)
                         ->schema([
                             Button::make(__('workbench.pages.components.modals.dialog.trigger'), 'open-centered')
-                                ->effects(Effects::openModal('demo-dialog')),
+                                ->modal(
+                                    Modal::make('demo-dialog')
+                                        ->title(__('workbench.pages.components.modals.dialog.title'))
+                                        ->description(__('workbench.pages.components.modals.dialog.description'))
+                                        ->width(ModalWidth::Md)
+                                        ->schema([
+                                            Text::make(__('workbench.pages.components.modals.dialog.body')),
+                                        ]),
+                                ),
                             Button::make(__('workbench.pages.components.modals.sheet-end.trigger'), 'open-end-sheet')
-                                ->effects(Effects::openModal('demo-sheet-end')),
+                                ->modal(
+                                    Modal::make('demo-sheet-end')
+                                        ->title(__('workbench.pages.components.modals.sheet-end.title'))
+                                        ->description(__('workbench.pages.components.modals.sheet-end.description'))
+                                        ->slideOut()
+                                        ->width(ModalWidth::Xl)
+                                        ->schema([
+                                            Text::make(__('workbench.pages.components.modals.sheet-end.body')),
+                                        ]),
+                                ),
                             Button::make(__('workbench.pages.components.modals.sheet-start.trigger'), 'open-start-sheet')
-                                ->effects(Effects::openModal('demo-sheet-start')),
+                                ->modal(
+                                    Modal::make('demo-sheet-start')
+                                        ->title(__('workbench.pages.components.modals.sheet-start.title'))
+                                        ->slideOut(Side::Start)
+                                        ->schema([
+                                            Text::make(__('workbench.pages.components.modals.sheet-start.body')),
+                                        ]),
+                                ),
                             Action::use(SubmitFeedbackAction::class),
-                        ]),
-                    Modal::make('demo-dialog')
-                        ->title(__('workbench.pages.components.modals.dialog.title'))
-                        ->description(__('workbench.pages.components.modals.dialog.description'))
-                        ->width(ModalWidth::Md)
-                        ->schema([
-                            Text::make(__('workbench.pages.components.modals.dialog.body')),
-                        ]),
-                    Modal::make('demo-sheet-end')
-                        ->title(__('workbench.pages.components.modals.sheet-end.title'))
-                        ->description(__('workbench.pages.components.modals.sheet-end.description'))
-                        ->slideOut()
-                        ->width(ModalWidth::Xl)
-                        ->schema([
-                            Text::make(__('workbench.pages.components.modals.sheet-end.body')),
-                        ]),
-                    Modal::make('demo-sheet-start')
-                        ->title(__('workbench.pages.components.modals.sheet-start.title'))
-                        ->slideOut(Side::Start)
-                        ->schema([
-                            Text::make(__('workbench.pages.components.modals.sheet-start.body')),
                         ]),
                 ]),
         ]);

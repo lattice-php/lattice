@@ -9,7 +9,6 @@ use Lattice\Core\Attributes\AsPage;
 use Lattice\Tree\Tree;
 use Lattice\Tree\TreeNode;
 use Lattice\Ui\Components\Heading;
-use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Gap;
@@ -73,12 +72,6 @@ final class TreePage extends WorkbenchPage
                         ->moveAction(MoveTreeNodeAction::class)
                         ->rememberState()
                         ->selectAction(SelectTreeNodeAction::class),
-                    Modal::make('tree-node-info')
-                        ->title('Node info')
-                        ->description('Details about the selected node.')
-                        ->schema([
-                            Text::make('This modal was opened from a tree node action.'),
-                        ]),
                 ]),
         ]);
     }
