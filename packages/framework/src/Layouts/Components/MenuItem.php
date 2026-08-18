@@ -9,6 +9,7 @@ use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\PageRoute;
 use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Concerns\HasAffixes;
 use Lattice\Ui\Concerns\HasIcon;
 use Lattice\Ui\Concerns\Triggerable;
@@ -67,7 +68,7 @@ class MenuItem extends ContainerComponent
      */
     public function children(array $children): static
     {
-        if ($this->href !== null || $this->action instanceof Action || $this->effects !== [] || $this->modal instanceof \Lattice\Ui\Components\Modal || $this->modalResolver instanceof Closure) {
+        if ($this->href !== null || $this->action instanceof Action || $this->effects !== [] || $this->modal instanceof Modal || $this->modalResolver instanceof Closure) {
             throw new InvalidArgumentException('A menu item that is a link, action, effect, or modal trigger cannot have children; only plain items can hold a collapsible submenu.');
         }
 
