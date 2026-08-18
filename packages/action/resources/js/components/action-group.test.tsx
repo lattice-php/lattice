@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { renderWithModalHost } from "@lattice-php/action/test-support";
+import { renderWithModalHost } from "@lattice-php/ui/test/modal-host";
 import ActionComponent from "./action";
 import ActionGroupComponent from "./action-group";
 
