@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
 use Lattice\Core\Attributes\AsPage;
@@ -78,6 +79,42 @@ final class RegGuardedBarePage extends RegBasePage
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->component(Text::make('Guarded bare'));
+    }
+}
+
+#[AsPage(route: '/orders/{order}', name: 'orders.show')]
+final class RegOrdersShowPage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Order'));
+    }
+}
+
+#[AsPage(route: '/orders/create', name: 'orders.create')]
+final class RegOrdersCreatePage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Create order'));
+    }
+}
+
+#[AsPage(route: '/orders/{order}/edit', name: 'orders.edit')]
+final class RegOrdersEditPage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Edit order'));
+    }
+}
+
+#[AsPage(route: '/orders/bulk/{action}', name: 'orders.bulk')]
+final class RegOrdersBulkPage extends RegBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Bulk orders'));
     }
 }
 
@@ -208,6 +245,26 @@ test('an imperatively registered route-less page registers no route, while a rou
     expect(collect(Lattice::pageRegistry()->all())->pluck('class'))->toContain(RegEmbeddedPage::class)
         ->and($actions)->not->toContain(RegEmbeddedPage::class.'@render')
         ->and(Route::getRoutes()->getByName('widgets.index'))->not->toBeNull();
+});
+
+test('a static route wins over a parameterised sibling registered before it', function (): void {
+    Lattice::pages([RegOrdersShowPage::class, RegOrdersCreatePage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    $matched = Route::getRoutes()->match(Request::create('/orders/create'));
+
+    expect($matched->getActionName())->toBe(RegOrdersCreatePage::class.'@render');
+});
+
+test('a route with an earlier static segment wins over one whose parameter would swallow it', function (): void {
+    Lattice::pages([RegOrdersEditPage::class, RegOrdersBulkPage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    $matched = Route::getRoutes()->match(Request::create('/orders/bulk/edit'));
+
+    expect($matched->getActionName())->toBe(RegOrdersBulkPage::class.'@render');
 });
 
 test('the service provider skips building routes when the route cache is active', function (): void {
