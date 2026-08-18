@@ -1,7 +1,7 @@
 import { UI_NAMESPACE, useT } from "./i18n";
 import { type ComponentProps, type ReactNode, useState } from "react";
 import { Button } from "./button";
-import { Dialog, DialogClose, DialogContent, DialogTitle } from "./dialog";
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "./dialog";
 
 export type PreviewableImageProps = Omit<ComponentProps<"img">, "children"> & {
   alt: string;
@@ -42,40 +42,34 @@ export function PreviewableImage({
   const openLabel = t("common.image.open-preview", "View image");
 
   return (
-    <>
-      <button
-        type="button"
-        data-test={testId}
-        className="cursor-zoom-in"
-        aria-label={openLabel}
-        onClick={() => setOpen(true)}
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button type="button" data-test={testId} className="cursor-zoom-in" aria-label={openLabel}>
+          {image}
+        </button>
+      </DialogTrigger>
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90vh] w-auto max-w-[90vw] border-none bg-transparent p-0 shadow-none"
       >
-        {image}
-      </button>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-          aria-describedby={undefined}
-          className="max-h-[90vh] w-auto max-w-[90vw] border-none bg-transparent p-0 shadow-none"
-        >
-          <DialogTitle className="sr-only">{alt || openLabel}</DialogTitle>
-          <img
-            alt={alt}
-            src={src}
-            data-slot="image-lightbox"
-            className="max-h-[90vh] max-w-[90vw] rounded-lt object-contain"
+        <DialogTitle className="sr-only">{alt || openLabel}</DialogTitle>
+        <img
+          alt={alt}
+          src={src}
+          data-slot="image-lightbox"
+          className="max-h-[90vh] max-w-[90vw] rounded-lt object-contain"
+        />
+        <DialogClose asChild>
+          <Button
+            icon="x"
+            aria-label={t("common.close", "Close")}
+            data-test="lightbox-close"
+            size="icon"
+            emphasis="ghost"
+            className="absolute top-2 right-2 bg-lt-bg/80 hover:bg-lt-bg"
           />
-          <DialogClose asChild>
-            <Button
-              icon="x"
-              aria-label={t("common.close", "Close")}
-              data-test="lightbox-close"
-              size="icon"
-              emphasis="ghost"
-              className="absolute top-2 right-2 bg-lt-bg/80 hover:bg-lt-bg"
-            />
-          </DialogClose>
-        </DialogContent>
-      </Dialog>
-    </>
+        </DialogClose>
+      </DialogContent>
+    </Dialog>
   );
 }

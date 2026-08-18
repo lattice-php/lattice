@@ -6,7 +6,7 @@ import { useFlashEffects } from "./effects/use-flash-effects";
 import { NavigationProvider } from "@lattice-php/ui/navigation";
 import { ModalHostProvider } from "@lattice-php/ui/modal-host";
 import { EventBridge } from "./event-bridge";
-import { inertiaNavigation } from "./inertia-navigation";
+import { inertiaNavigation, useCloseModalsOnNavigate } from "./inertia-navigation";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
 import { SpriteProvider } from "@lattice-php/ui/icons/sprite";
 import { Toaster } from "./toast";
@@ -28,6 +28,7 @@ export function ProviderBase({
   toaster = true,
 }: ProviderBaseProps) {
   useFlashEffects();
+  useCloseModalsOnNavigate();
 
   return (
     <RegistryContext.Provider value={registry}>

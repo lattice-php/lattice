@@ -35,6 +35,7 @@ export {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogTitle,
   formatDateValue,
   IconButton,
   InfoTooltip,

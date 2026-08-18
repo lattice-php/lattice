@@ -5,6 +5,7 @@ import { renderWithRegistry, fakeNode } from "@lattice-php/core/test-support";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import type { Node } from "@lattice-php/core/types";
 import ModalComponent from "./components/modal";
+import type { ModalHostHandle } from "./modal-host";
 import { ModalHostProvider, useEmbeddedModal, useModalHost } from "./modal-host";
 
 const registry = createRegistry({
@@ -21,6 +22,24 @@ function OpenButton({ label, node }: { label: string; node: Node<"modal"> }) {
 
   return (
     <button onClick={() => host.open(node)} type="button">
+      {label}
+    </button>
+  );
+}
+
+function OpenWithHandleButton({
+  label,
+  node,
+  onHandle,
+}: {
+  label: string;
+  node: Node<"modal">;
+  onHandle: (handle: ModalHostHandle) => void;
+}) {
+  const host = useModalHost();
+
+  return (
+    <button onClick={() => onHandle(host.open(node))} type="button">
       {label}
     </button>
   );
@@ -117,6 +136,57 @@ describe("ModalHostProvider", () => {
     expect(screen.getByText("First")).toBeInTheDocument();
   });
 
+  it("closes only its own entry via the handle returned by open(), leaving the other open", () => {
+    let firstHandle: ModalHostHandle | undefined;
+    let secondHandle: ModalHostHandle | undefined;
+
+    renderWithRegistry(
+      <ModalHostProvider>
+        <OpenWithHandleButton
+          label="Open first"
+          node={modalNode("first", "First")}
+          onHandle={(handle) => (firstHandle = handle)}
+        />
+        <OpenWithHandleButton
+          label="Open second"
+          node={modalNode("second", "Second")}
+          onHandle={(handle) => (secondHandle = handle)}
+        />
+      </ModalHostProvider>,
+      registry,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Open first" }));
+    fireEvent.click(screen.getByRole("button", { name: "Open second", hidden: true }));
+
+    act(() => firstHandle?.close());
+
+    expect(screen.queryByText("First")).not.toBeInTheDocument();
+    expect(screen.getByText("Second")).toBeInTheDocument();
+    expect(secondHandle).toBeDefined();
+  });
+
+  it("makes handle.close() a no-op once the entry it targets has already closed", () => {
+    let handle: ModalHostHandle | undefined;
+
+    renderWithRegistry(
+      <ModalHostProvider>
+        <OpenWithHandleButton
+          label="Open"
+          node={modalNode("welcome", "Welcome")}
+          onHandle={(returned) => (handle = returned)}
+        />
+      </ModalHostProvider>,
+      registry,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+    fireEvent.keyDown(document.body, { key: "Escape" });
+    expect(screen.queryByText("Welcome")).not.toBeInTheDocument();
+
+    expect(() => act(() => handle?.close())).not.toThrow();
+  });
+
   it("closes only the matching mid-stack entry on a targeted lattice:close-modal", () => {
     renderWithRegistry(
       <ModalHostProvider>
@@ -138,7 +208,7 @@ describe("ModalHostProvider", () => {
     expect(screen.getByText("Third")).toBeInTheDocument();
   });
 
-  it("closes the topmost open entry on a lattice:close-modal event with no target", () => {
+  it("closes every open entry on a lattice:close-modal event with no target", () => {
     renderWithRegistry(
       <ModalHostProvider>
         <OpenButton label="Open first" node={modalNode("first", "First")} />
@@ -153,7 +223,7 @@ describe("ModalHostProvider", () => {
     fireModalEvent(LATTICE_EVENT.closeModal, { modal: null });
 
     expect(screen.queryByText("Second")).not.toBeInTheDocument();
-    expect(screen.getByText("First")).toBeInTheDocument();
+    expect(screen.queryByText("First")).not.toBeInTheDocument();
   });
 
   it("ignores a lattice:close-modal id that doesn't match any entry", () => {
