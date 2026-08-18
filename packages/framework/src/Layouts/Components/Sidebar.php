@@ -62,6 +62,6 @@ class Sidebar extends ContainerComponent
     {
         $children = parent::resolvedChildren();
 
-        return ! $this->footerNode instanceof SidebarFooter ? $children : [...$children, $this->footerNode];
+        return $this->footerNode instanceof SidebarFooter ? [...$children, $this->footerNode] : $children;
     }
 }
