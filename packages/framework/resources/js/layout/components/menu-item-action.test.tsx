@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
+import { ModalHostProvider } from "@lattice-php/ui/modal-host";
 import MenuItemComponent from "./menu-item";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
@@ -38,9 +39,11 @@ function actionMenuItem(props: Partial<ComponentPropsOf<"action">> = {}): Node<"
 
 function renderActionMenuItem(node: Node<"menu-item">) {
   return render(
-    <ActionInteractionProvider>
-      <MenuItemComponent node={node}>{null}</MenuItemComponent>
-    </ActionInteractionProvider>,
+    <ModalHostProvider>
+      <ActionInteractionProvider>
+        <MenuItemComponent node={node}>{null}</MenuItemComponent>
+      </ActionInteractionProvider>
+    </ModalHostProvider>,
   );
 }
 

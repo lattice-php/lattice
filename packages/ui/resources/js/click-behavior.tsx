@@ -17,9 +17,16 @@ export type ClickBehavior =
 
 export type TriggerState = { onClick: () => void; processing: boolean };
 
+export type ActionSubmitOptions = {
+  /** Evaluated fresh at submit time, e.g. a bulk action's current selection. */
+  extraData?: () => Record<string, unknown>;
+  onSuccess?: () => void;
+};
+
 export type ActionTriggerRenderer = (props: {
   action: ActionNode;
   children: (trigger: TriggerState) => ReactNode;
+  options?: ActionSubmitOptions;
 }) => ReactNode;
 
 const ActionTriggerContext = createContext<ActionTriggerRenderer | null>(null);
@@ -45,9 +52,11 @@ export function useActionTrigger(): ActionTriggerRenderer | null {
 export function ActionTrigger({
   action,
   children,
+  options,
 }: {
   action: ActionNode;
   children: (trigger: TriggerState) => ReactNode;
+  options?: ActionSubmitOptions;
 }) {
   const render = useActionTrigger();
 
@@ -55,7 +64,7 @@ export function ActionTrigger({
     throw new Error("Action triggers require an ActionTriggerProvider.");
   }
 
-  return <>{render({ action, children })}</>;
+  return <>{render({ action, children, options })}</>;
 }
 
 export function useClickBehavior(props: {

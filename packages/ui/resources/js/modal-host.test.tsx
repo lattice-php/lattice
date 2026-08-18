@@ -203,6 +203,31 @@ describe("ModalHostProvider", () => {
     expect(screen.queryByRole("dialog", { name: "Element dialog" })).not.toBeInTheDocument();
   });
 
+  it("stacks an element overlay above an open node modal; closing the overlay leaves the modal open", () => {
+    renderWithRegistry(
+      <ModalHostProvider>
+        <OpenButton label="Open modal" node={modalNode("welcome", "Welcome")} />
+        <OpenElementButton label="Open overlay" title="Overlay dialog" />
+      </ModalHostProvider>,
+      registry,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Open modal" }));
+    expect(screen.getByText("Welcome")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open overlay", hidden: true }));
+    expect(
+      screen.getByRole("dialog", { name: "Overlay dialog", hidden: true }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Close Overlay dialog", hidden: true }));
+
+    expect(
+      screen.queryByRole("dialog", { name: "Overlay dialog", hidden: true }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Welcome")).toBeInTheDocument();
+  });
+
   it("removes an entry from the DOM after it closes, and a subsequent open still works", () => {
     renderWithRegistry(
       <ModalHostProvider>

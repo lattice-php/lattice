@@ -14,7 +14,12 @@ export {
   useActionTrigger,
   useClickBehavior,
 } from "./click-behavior";
-export type { ActionTriggerRenderer, ClickBehavior, TriggerState } from "./click-behavior";
+export type {
+  ActionSubmitOptions,
+  ActionTriggerRenderer,
+  ClickBehavior,
+  TriggerState,
+} from "./click-behavior";
 export {
   Card,
   CardContent,

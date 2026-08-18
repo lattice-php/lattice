@@ -37,7 +37,10 @@ type ActionFormProps = {
   formNode: Node | null;
   method: string;
   onClose: () => void;
+  /** Called by the host stack once the dialog's exit animation finishes. */
+  onExited?: (event: Event) => void;
   onSuccess: (response: ActionResponse) => void;
+  open: boolean;
   /** Dialog placement for the form modal; sheets dock to a viewport edge. */
   placement?: DialogPlacement;
   submitLabel: string;
@@ -53,6 +56,7 @@ export function useLazyActionForm(
   endpoint: string,
   componentRef: string,
   enabled: boolean,
+  extraData?: Record<string, unknown>,
 ): Node | null {
   const [node, setNode] = useState<Node | null>(null);
 
@@ -66,7 +70,7 @@ export function useLazyActionForm(
     const controller = new AbortController();
 
     void apiFetch(endpoint, {
-      body: JSON.stringify({ _sub: "schema" }),
+      body: JSON.stringify({ _sub: "schema", ...extraData }),
       ref: componentRef,
       method: "POST",
       signal: controller.signal,
@@ -77,6 +81,7 @@ export function useLazyActionForm(
       .catch(() => {});
 
     return () => controller.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, endpoint, componentRef]);
 
   return node;
@@ -104,7 +109,7 @@ function ActionFormBody({
   onSuccess,
   precognitive,
   submitLabel,
-}: Omit<ActionFormProps, "description" | "title"> & {
+}: Omit<ActionFormProps, "description" | "onExited" | "open" | "placement" | "title" | "width"> & {
   fieldLabels: Record<string, string>;
   formNode: Node;
   precognitive: boolean;
@@ -302,7 +307,9 @@ function ActionFormBody({
 function ActionFormContent({
   formNode,
   ...rest
-}: Omit<ActionFormProps, "description" | "title"> & { formNode: Node }) {
+}: Omit<ActionFormProps, "description" | "onExited" | "open" | "placement" | "title" | "width"> & {
+  formNode: Node;
+}) {
   const precognitive = Boolean(formNode.props?.precognitive);
   const { labels: fieldLabels, values: initialValues } = useMemo(() => {
     const { labels, values } = collectFields(formNode.schema);
@@ -329,6 +336,8 @@ export function ActionForm({
   description,
   formNode,
   onClose,
+  onExited,
+  open,
   placement,
   title,
   width,
@@ -338,15 +347,16 @@ export function ActionForm({
 
   return (
     <Dialog
-      open
-      onOpenChange={(open) => {
-        if (!open) {
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) {
           onClose();
         }
       }}
     >
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
+        onCloseAutoFocus={onExited}
         placement={placement}
         width={width}
       >

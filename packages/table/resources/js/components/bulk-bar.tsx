@@ -129,6 +129,7 @@ export function BulkBar({
 
       {filling?.form && (
         <ActionForm
+          open={filling !== null}
           cancelLabel={filling.confirmation?.cancelLabel ?? t("common.cancel", "Cancel")}
           componentRef={filling.ref}
           description={filling.confirmation?.description ?? undefined}
