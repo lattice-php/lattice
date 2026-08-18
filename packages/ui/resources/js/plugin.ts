@@ -1,7 +1,7 @@
 import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { UiNodeType } from "./generated";
 import { UI_NAMESPACE } from "./i18n";
-import AvatarComponent from "./components/avatar";
+import AvatarAdapter from "./components/avatar/avatar-adapter";
 import BadgeComponent from "./components/badge";
 import ButtonComponent from "./components/button";
 import CardComponent from "./components/card";
@@ -13,13 +13,13 @@ import FloatingPanelComponent from "./components/floating-panel";
 import GridAdapter from "./components/grid/grid-adapter";
 import HeadingAdapter from "./components/heading/heading-adapter";
 import IconComponent from "./components/icon";
-import ImageComponent from "./components/image";
+import ImageAdapter from "./components/image/image-adapter";
 import LinkComponent from "./components/link";
 import ModalComponent from "./components/modal";
-import ProgressComponent from "./components/progress";
+import ProgressAdapter from "./components/progress/progress-adapter";
 import RawBlockComponent from "./components/raw-block";
 import SectionComponent from "./components/section";
-import SegmentedControlComponent from "./components/segmented-control";
+import SegmentedControlAdapter from "./components/segmented-control/segmented-control-adapter";
 import SeparatorAdapter from "./components/separator/separator-adapter";
 import StackAdapter from "./components/stack/stack-adapter";
 import TabComponent, { TabsComponent } from "./components/tabs";
@@ -35,7 +35,7 @@ import {
 
 export const uiComponents: Plugin = {
   components: {
-    avatar: eagerComponent(AvatarComponent),
+    avatar: eagerComponent(AvatarAdapter),
     badge: eagerComponent(BadgeComponent),
     button: eagerComponent(ButtonComponent),
     card: eagerComponent(CardComponent),
@@ -52,13 +52,13 @@ export const uiComponents: Plugin = {
     grid: eagerComponent(GridAdapter),
     heading: eagerComponent(HeadingAdapter),
     icon: eagerComponent(IconComponent),
-    image: eagerComponent(ImageComponent),
+    image: eagerComponent(ImageAdapter),
     link: eagerComponent(LinkComponent),
     modal: eagerComponent(ModalComponent),
-    progress: eagerComponent(ProgressComponent),
+    progress: eagerComponent(ProgressAdapter),
     "raw-block": eagerComponent(RawBlockComponent),
     section: eagerComponent(SectionComponent),
-    "segmented-control": eagerComponent(SegmentedControlComponent),
+    "segmented-control": eagerComponent(SegmentedControlAdapter),
     separator: eagerComponent(SeparatorAdapter),
     stack: eagerComponent(StackAdapter),
     tab: eagerComponent(TabComponent),

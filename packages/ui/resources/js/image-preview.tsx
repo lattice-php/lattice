@@ -1,17 +1,13 @@
 import { UI_NAMESPACE, useT } from "./i18n";
-import { type ReactNode, useState } from "react";
+import { type ComponentProps, type ReactNode, useState } from "react";
 import { Button } from "./button";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "./dialog";
 
-interface PreviewableImageProps {
-  src: string;
+export type PreviewableImageProps = Omit<ComponentProps<"img">, "children"> & {
   alt: string;
   previewable: boolean;
-  width?: number;
-  height?: number;
-  className?: string;
   testId?: string;
-}
+};
 
 export function PreviewableImage({
   src,
@@ -20,19 +16,22 @@ export function PreviewableImage({
   width,
   height,
   className,
+  style,
   testId,
+  ...props
 }: PreviewableImageProps): ReactNode {
   const { t } = useT(UI_NAMESPACE);
   const [open, setOpen] = useState(false);
 
   const image = (
     <img
+      {...props}
       alt={alt}
       src={src}
       width={width}
       height={height}
       className={className}
-      style={width ? { width, height } : undefined}
+      style={width ? { ...style, width, height } : style}
     />
   );
 

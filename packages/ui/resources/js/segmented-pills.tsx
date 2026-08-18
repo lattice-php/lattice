@@ -1,12 +1,23 @@
 import { type ComponentProps, useEffect, useRef } from "react";
-import type { Option } from "@lattice-php/core/types";
 import { cn } from "./lib/utils";
 import { pillClassName } from "./pill";
 
-/**
- * Presentational segmented pill group. Used by the form choice field (bound to a
- * form value) and the core segmented control (standalone, emits an event).
- */
+export type SegmentedPillOption = {
+  label: string;
+  value: string;
+};
+
+export type SegmentedPillsProps = Omit<ComponentProps<"div">, "children" | "onSelect" | "ref"> & {
+  ariaLabel?: string;
+  autoFocus?: boolean;
+  disabled?: boolean;
+  name: string;
+  onSelect: (value: string) => void;
+  options: SegmentedPillOption[];
+  tabIndex?: number;
+  value: string;
+};
+
 export function SegmentedPills({
   ariaLabel,
   autoFocus = false,
@@ -18,16 +29,7 @@ export function SegmentedPills({
   tabIndex,
   value,
   ...props
-}: Omit<ComponentProps<"div">, "children" | "onSelect" | "ref"> & {
-  ariaLabel?: string;
-  autoFocus?: boolean;
-  disabled?: boolean;
-  name: string;
-  onSelect: (value: string) => void;
-  options: Option[];
-  tabIndex?: number;
-  value: string;
-}) {
+}: SegmentedPillsProps) {
   const groupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
