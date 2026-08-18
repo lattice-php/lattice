@@ -34,6 +34,8 @@ final class MapPage extends WorkbenchPage
                     Heading::make(__('workbench.pages.map.heading')),
                     Text::make(__('workbench.pages.map.description')),
                     Map::make('offices')
+                        ->center(52.47, 13.24)
+                        ->zoom(10)
                         ->height(600)
                         ->markers([
                             Marker::make('berlin')

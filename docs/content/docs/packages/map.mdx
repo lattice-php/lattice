@@ -85,6 +85,10 @@ scrolling — holding Cmd/Ctrl while scrolling (or a trackpad pinch) still zooms
 `->scrollZoom()` makes the plain wheel zoom too. Zoom values must fit both the general `0–24`
 range and the active provider's range.
 
+When a default zoom is set with `->zoom()`, the map shows a reset control below the zoom buttons
+that returns the viewport to its initial center and zoom after panning or zooming away.
+`->navigationControls(false)` hides it together with the zoom buttons.
+
 ## OpenStreetMap Tiles
 
 The built-in provider uses the public OpenStreetMap tile service and includes the required

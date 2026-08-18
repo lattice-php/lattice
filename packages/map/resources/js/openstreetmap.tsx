@@ -85,6 +85,39 @@ function setInitialView(
   map.setView([0, 0], node.props.zoom ?? 2);
 }
 
+function addResetControl(
+  leaflet: typeof import("leaflet"),
+  map: LeafletMap,
+  label: string,
+  setHost: (host: HTMLElement) => void,
+): void {
+  const initialCenter = map.getCenter();
+  const initialZoom = map.getZoom();
+  const control = new leaflet.Control({ position: "topleft" });
+
+  control.onAdd = () => {
+    const container = leaflet.DomUtil.create("div", "lt-map__reset");
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "lt-map__reset-button";
+    button.title = label;
+    button.setAttribute("aria-label", label);
+    container.append(button);
+    leaflet.DomEvent.disableClickPropagation(container);
+    // animate: false keeps Leaflet from scheduling its 250ms zoom-animation
+    // fallback timer, which would throw if the map unmounts before it fires.
+    leaflet.DomEvent.on(button, "click", () =>
+      map.setView(initialCenter, initialZoom, { animate: false }),
+    );
+    setHost(button);
+
+    return container;
+  };
+
+  control.addTo(map);
+}
+
 function styleMarkerPin(element: HTMLElement | undefined, feature: MarkerData): HTMLElement | null {
   const pin = element?.querySelector<HTMLElement>(".lt-map-marker__pin") ?? null;
   const color = coerceColor(feature.color);
@@ -174,6 +207,7 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [popup, setPopup] = useState<PopupPortal | null>(null);
   const [markerIcons, setMarkerIcons] = useState<MarkerIcon[]>([]);
+  const [resetHost, setResetHost] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     const element = container.current;
@@ -194,6 +228,7 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
     setStatus("loading");
     setPopup(null);
     setMarkerIcons([]);
+    setResetHost(null);
 
     void import("leaflet")
       .then((leaflet) => {
@@ -235,6 +270,10 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
         // Layers only initialize their DOM elements once the map has a view,
         // so the view must be set before markers are added and styled.
         setInitialView(leaflet, map, node);
+
+        if (node.props.zoom !== null && node.props.navigationControls) {
+          addResetControl(leaflet, map, t("map.reset-view", "Reset view"), setResetHost);
+        }
 
         const icons: MarkerIcon[] = [];
 
@@ -319,6 +358,7 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
         </div>
       )}
       {popup && createPortal(<PopupSchema portal={popup} />, popup.host, popup.id)}
+      {resetHost && createPortal(<IconRenderer icon="rotate-ccw" />, resetHost, "reset-view")}
       {markerIcons.map((markerIcon) =>
         createPortal(
           <IconRenderer icon={markerIcon.icon} />,

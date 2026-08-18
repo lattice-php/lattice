@@ -193,6 +193,29 @@
   color: var(--lt-accent-fg);
 }
 
+.lt-map__reset-button {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--lt-popover-fg);
+  cursor: pointer;
+}
+
+.lt-map__reset-button:hover,
+.lt-map__reset-button:focus-visible {
+  background: var(--lt-accent);
+  color: var(--lt-accent-fg);
+}
+
+.lt-map__reset-button > * {
+  width: 1rem;
+  height: 1rem;
+}
+
 .leaflet-control-attribution {
   margin: 0 !important;
   padding: 0.125rem 0.375rem;
