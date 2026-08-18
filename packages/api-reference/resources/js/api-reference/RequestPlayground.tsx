@@ -17,7 +17,7 @@ import { CopyButton } from "@lattice-php/ui/copyable-text";
 import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 import { Input } from "@lattice-php/ui/input";
 import { NativeSelect } from "@lattice-php/ui/native-select";
-import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
+import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { Spinner } from "@lattice-php/ui/spinner";
 import { SchemaView } from "../schema/SchemaView";
 import {
@@ -390,12 +390,12 @@ function SchemaExampleView({
   return (
     <div>
       <div className="mb-2 pb-2">
-        <SegmentedPills
+        <SegmentedControl
           name={name}
-          ariaLabel="Schema or example"
+          aria-label="Schema or example"
           options={SCHEMA_TABS.map(({ key, label }) => ({ label, value: key, data: null }))}
           value={tab}
-          onSelect={(value) => setTab(value as SchemaTab)}
+          onValueChange={(value) => setTab(value as SchemaTab)}
         />
       </div>
       {tab === "schema" ? (

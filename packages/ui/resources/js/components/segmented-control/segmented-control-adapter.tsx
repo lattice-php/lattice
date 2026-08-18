@@ -12,7 +12,7 @@ const SegmentedControlAdapter: RendererComponent<"segmented-control"> = ({ node 
 
   return (
     <SegmentedControl
-      ariaLabel={node.props.label ?? undefined}
+      aria-label={node.props.label ?? undefined}
       defaultValue={node.props.value || undefined}
       name={name}
       onValueChange={emitChange}

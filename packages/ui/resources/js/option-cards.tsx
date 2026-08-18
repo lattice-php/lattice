@@ -8,10 +8,7 @@ const PREVIOUS_KEYS = new Set(["ArrowUp", "ArrowLeft"]);
 const NEXT_KEYS = new Set(["ArrowDown", "ArrowRight"]);
 
 /**
- * Presentational radio-card group: each option renders through a bound
- * component schema instead of a bare label, so an option can carry an icon, a
- * description, and badges. The sibling to {@see SegmentedPills} — same prop
- * shape, so a control can pick either presentation from the same options.
+ * Presentational radio-card group whose options render through a bound component schema.
  */
 export function OptionCards({
   ariaLabel,

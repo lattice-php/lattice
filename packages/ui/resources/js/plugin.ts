@@ -8,8 +8,8 @@ import CardComponent from "./components/card";
 import ChartComponent from "./components/chart";
 import CodeBlockComponent from "./components/code-block";
 import CollapsibleAdapter from "./components/collapsible/collapsible-adapter";
-import DescriptionListComponent from "./components/description-list";
-import FloatingPanelComponent from "./components/floating-panel";
+import DescriptionListAdapter from "./components/description-list/description-list-adapter";
+import FloatingPanelAdapter from "./components/floating-panel/floating-panel-adapter";
 import GridAdapter from "./components/grid/grid-adapter";
 import HeadingAdapter from "./components/heading/heading-adapter";
 import IconComponent from "./components/icon";
@@ -18,7 +18,7 @@ import LinkComponent from "./components/link";
 import ModalComponent from "./components/modal";
 import ProgressAdapter from "./components/progress/progress-adapter";
 import RawBlockComponent from "./components/raw-block";
-import SectionComponent from "./components/section";
+import SectionAdapter from "./components/section/section-adapter";
 import SegmentedControlAdapter from "./components/segmented-control/segmented-control-adapter";
 import SeparatorAdapter from "./components/separator/separator-adapter";
 import StackAdapter from "./components/stack/stack-adapter";
@@ -42,13 +42,13 @@ export const uiComponents: Plugin = {
     chart: eagerComponent(ChartComponent),
     "code-block": eagerComponent(CodeBlockComponent),
     collapsible: eagerComponent(CollapsibleAdapter),
-    "description-list": eagerComponent(DescriptionListComponent),
+    "description-list": eagerComponent(DescriptionListAdapter),
     "entry.badge": eagerComponent(BadgeEntryComponent),
     "entry.boolean": eagerComponent(BooleanEntryComponent),
     "entry.component": eagerComponent(ComponentEntryComponent),
     "entry.date": eagerComponent(DateEntryComponent),
     "entry.text": eagerComponent(TextEntryComponent),
-    "floating-panel": eagerComponent(FloatingPanelComponent),
+    "floating-panel": eagerComponent(FloatingPanelAdapter),
     grid: eagerComponent(GridAdapter),
     heading: eagerComponent(HeadingAdapter),
     icon: eagerComponent(IconComponent),
@@ -57,7 +57,7 @@ export const uiComponents: Plugin = {
     modal: eagerComponent(ModalComponent),
     progress: eagerComponent(ProgressAdapter),
     "raw-block": eagerComponent(RawBlockComponent),
-    section: eagerComponent(SectionComponent),
+    section: eagerComponent(SectionAdapter),
     "segmented-control": eagerComponent(SegmentedControlAdapter),
     separator: eagerComponent(SeparatorAdapter),
     stack: eagerComponent(StackAdapter),

@@ -1,5 +1,5 @@
 import { CodeBlock } from "@lattice-php/ui/components/code-block";
-import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
+import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 
 export type SnippetLanguage = "curl" | "javascript";
 
@@ -23,12 +23,12 @@ export function SnippetPanel({
 }: SnippetPanelProps): React.ReactNode {
   return (
     <section className="flex flex-col gap-3">
-      <SegmentedPills
+      <SegmentedControl
         name={`${idPrefix}-request-snippet-language`}
-        ariaLabel="Snippet language"
+        aria-label="Snippet language"
         options={SNIPPET_LANGUAGES}
         value={language}
-        onSelect={(value) => onLanguageChange(value as SnippetLanguage)}
+        onValueChange={(value) => onLanguageChange(value as SnippetLanguage)}
       />
       <CodeBlock
         aria-label="Request snippet"

@@ -1794,12 +1794,12 @@ var jn = f((() => {
 function Mn({ idPrefix: e, language: t, snippet: n, onLanguageChange: r }) {
 	return /* @__PURE__ */ s("section", {
 		className: "flex flex-col gap-3",
-		children: [/* @__PURE__ */ o(g.SegmentedPills, {
+		children: [/* @__PURE__ */ o(g.SegmentedControl, {
 			name: `${e}-request-snippet-language`,
-			ariaLabel: "Snippet language",
+			"aria-label": "Snippet language",
 			options: Nn,
 			value: t,
-			onSelect: (e) => r(e)
+			onValueChange: (e) => r(e)
 		}), /* @__PURE__ */ o(g.CodeBlock, {
 			"aria-label": "Request snippet",
 			copyable: !0,
@@ -2014,16 +2014,16 @@ function Kn({ name: e, schema: t, examples: r, components: a, noSchemaMessage: c
 	let x = y[_] ?? y[0];
 	return /* @__PURE__ */ s("div", { children: [/* @__PURE__ */ o("div", {
 		className: "mb-2 pb-2",
-		children: /* @__PURE__ */ o(g.SegmentedPills, {
+		children: /* @__PURE__ */ o(g.SegmentedControl, {
 			name: e,
-			ariaLabel: "Schema or example",
+			"aria-label": "Schema or example",
 			options: Tr.map(({ key: e, label: t }) => ({
 				label: t,
 				value: e,
 				data: null
 			})),
 			value: m,
-			onSelect: (e) => h(e)
+			onValueChange: (e) => h(e)
 		})
 	}), m === "schema" ? t ? /* @__PURE__ */ o(st, {
 		schema: t,

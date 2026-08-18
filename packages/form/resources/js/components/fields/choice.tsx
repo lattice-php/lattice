@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { Option, RendererComponent } from "@lattice-php/core";
 import { OptionCards } from "@lattice-php/ui/option-cards";
-import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
+import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
 import { useControlledField } from "@lattice-php/form/hooks/use-controlled-field";
@@ -53,13 +53,13 @@ export const ChoiceComponent: RendererComponent<"field.choice"> = ({ node }) => 
               value={selected}
             />
           ) : (
-            <SegmentedPills
+            <SegmentedControl
               {...controlProps}
-              ariaLabel={node.props.label ?? undefined}
+              aria-label={node.props.label ?? undefined}
               autoFocus={node.props.autoFocus ?? undefined}
               disabled={readOnly || disabled}
               name={testId ?? "segment"}
-              onSelect={commit}
+              onValueChange={commit}
               options={options}
               tabIndex={node.props.tabIndex ?? undefined}
               value={selected}

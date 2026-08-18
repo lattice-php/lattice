@@ -42,7 +42,7 @@ export {
   Label,
   NativeSelect,
   PreviewableImage,
-  SegmentedPills,
+  SegmentedControl,
   Spinner,
   Textarea,
   useDebouncedCallback,
