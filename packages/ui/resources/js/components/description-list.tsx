@@ -11,9 +11,12 @@ const DescriptionListComponent: RendererComponent<"description-list"> = ({ child
   const className = cn(
     "w-full",
     divided && "divide-y divide-lt-border",
-    // The rows carry the gutter padding, so pulling the list out by the same
-    // amount runs the dividers to the panel edge while the content stays put.
-    bleed && "-mx-lt-gutter",
+    // `w-full` pins the width to the containing block's content box, which
+    // stops the negative margins below from growing the box — only the left
+    // edge would shift outward, since the right edge is `left + width` with a
+    // fixed width. `w-auto` lets them expand it on both sides instead, so the
+    // divider reaches the panel edge symmetrically (see Separator's bleed).
+    bleed && "-mx-lt-gutter w-auto",
   );
 
   const body =
