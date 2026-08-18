@@ -1,9 +1,9 @@
 import { useId } from "react";
 import type { ComponentProps, KeyboardEvent, MouseEvent, ReactNode } from "react";
-import { Icon } from "./icons";
-import { InfoTooltip } from "./info-tooltip";
-import { cn } from "./lib/utils";
-import { useCollapsibleState } from "./use-collapsible-state";
+import { Icon } from "../../icons";
+import { InfoTooltip } from "../../info-tooltip";
+import { cn } from "../../lib/utils";
+import { useCollapsibleState } from "../../use-collapsible-state";
 
 export type CollapsibleTriggerProps = Omit<
   ComponentProps<"div">,

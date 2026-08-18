@@ -4,13 +4,13 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import CollapsibleComponent from "./collapsible";
-import StackComponent from "./stack";
-import TextComponent from "./text";
+import CollapsibleAdapter from "./collapsible-adapter";
+import StackComponent from "../stack";
+import TextComponent from "../text";
 
 const registry = createRegistry({
   components: {
-    collapsible: eagerComponent(CollapsibleComponent),
+    collapsible: eagerComponent(CollapsibleAdapter),
     stack: eagerComponent(StackComponent),
     text: eagerComponent(TextComponent),
   },
@@ -21,7 +21,7 @@ function renderCollapsible(node: Node) {
   return renderWithRegistry(<Renderer nodes={[node]} />, registry);
 }
 
-describe("Collapsible component", () => {
+describe("Collapsible adapter", () => {
   beforeEach(() => window.localStorage.clear());
 
   it("renders a flow-content trigger through the client collapsible", async () => {

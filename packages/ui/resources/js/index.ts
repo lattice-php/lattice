@@ -5,7 +5,7 @@ export * from "./button";
 export * from "./checkbox";
 export * from "./color-picker";
 export * from "./column-sizing";
-export * from "./collapsible";
+export * from "./components/collapsible/collapsible";
 export * from "./combobox";
 export * from "./confirm-dialog";
 export * from "./control";

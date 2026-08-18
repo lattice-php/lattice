@@ -7,7 +7,7 @@ import ButtonComponent from "./components/button";
 import CardComponent from "./components/card";
 import ChartComponent from "./components/chart";
 import CodeBlockComponent from "./components/code-block";
-import CollapsibleComponent from "./components/collapsible";
+import CollapsibleAdapter from "./components/collapsible/collapsible-adapter";
 import DescriptionListComponent from "./components/description-list";
 import FloatingPanelComponent from "./components/floating-panel";
 import GridComponent from "./components/grid";
@@ -41,7 +41,7 @@ export const uiComponents: Plugin = {
     card: eagerComponent(CardComponent),
     chart: eagerComponent(ChartComponent),
     "code-block": eagerComponent(CodeBlockComponent),
-    collapsible: eagerComponent(CollapsibleComponent),
+    collapsible: eagerComponent(CollapsibleAdapter),
     "description-list": eagerComponent(DescriptionListComponent),
     "entry.badge": eagerComponent(BadgeEntryComponent),
     "entry.boolean": eagerComponent(BooleanEntryComponent),
