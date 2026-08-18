@@ -3,7 +3,6 @@ import { InfoTooltip } from "../info-tooltip";
 import { nodeIdentity, prefixedTestId } from "@lattice-php/core/test-id";
 import { toNodes } from "@lattice-php/core/nodes";
 import type { RendererComponent } from "@lattice-php/core/types";
-import type { ToggleEvent } from "react";
 import { Disclosure } from "../disclosure";
 import { useCollapsibleState } from "../use-collapsible-state";
 
@@ -19,8 +18,8 @@ const CollapsibleComponent: RendererComponent<"collapsible"> = ({ children, node
     rememberState,
   );
 
-  function handleToggle(event: ToggleEvent<HTMLDetailsElement>): void {
-    if (event.currentTarget.open !== open) {
+  function handleOpenChange(nextOpen: boolean): void {
+    if (nextOpen !== open) {
       toggle();
     }
   }
@@ -29,30 +28,19 @@ const CollapsibleComponent: RendererComponent<"collapsible"> = ({ children, node
     <Disclosure
       data-slot="collapsible"
       data-lattice-component={identity}
-      onToggle={handleToggle}
+      onOpenChange={handleOpenChange}
       open={open}
       summary={
         <>
           <Renderer nodes={trigger} />
-          {node.props.tooltip && (
-            <span
-              role="presentation"
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-              }}
-              onKeyDown={(event) => event.stopPropagation()}
-            >
-              <InfoTooltip content={node.props.tooltip} />
-            </span>
-          )}
+          {node.props.tooltip && <InfoTooltip content={node.props.tooltip} />}
         </>
       }
       summaryProps={{
         "data-test": prefixedTestId("collapsible-toggle", identity) ?? "collapsible-toggle-default",
       }}
     >
-      {open ? children : null}
+      {children}
     </Disclosure>
   );
 };

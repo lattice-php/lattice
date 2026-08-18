@@ -34,12 +34,12 @@ describe("Collapsible in a browser", () => {
       registry,
     );
 
-    const disclosure = screen.container.querySelector("details");
-    expect(disclosure?.open).toBe(false);
+    const toggle = screen.getByText("Name", { exact: true }).element().closest('[role="button"]');
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
 
-    await userEvent.click(screen.getByRole("button", { name: "More information" }));
+    await userEvent.click(screen.getByRole("button", { exact: true, name: "More information" }));
 
     await expect.element(screen.getByText("Reveals the edit form.")).toBeVisible();
-    expect(disclosure?.open).toBe(false);
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 });

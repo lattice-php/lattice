@@ -5,11 +5,13 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import CollapsibleComponent from "./collapsible";
+import StackComponent from "./stack";
 import TextComponent from "./text";
 
 const registry = createRegistry({
   components: {
     collapsible: eagerComponent(CollapsibleComponent),
+    stack: eagerComponent(StackComponent),
     text: eagerComponent(TextComponent),
   },
   name: "test/collapsible",
@@ -22,25 +24,41 @@ function renderCollapsible(node: Node) {
 describe("Collapsible component", () => {
   beforeEach(() => window.localStorage.clear());
 
-  it("renders wire content through the client disclosure", async () => {
+  it("renders a flow-content trigger through the client disclosure", async () => {
     renderCollapsible({
       id: "name",
       type: "collapsible",
-      props: { trigger: [{ type: "text", props: { text: "Name" } }] },
+      props: {
+        trigger: [
+          {
+            type: "stack",
+            props: {
+              align: "center",
+              direction: "row",
+              float: null,
+              gap: "md",
+              height: null,
+              justify: "between",
+              width: "fill",
+            },
+            schema: [{ type: "text", props: { text: "Name" } }],
+          },
+        ],
+      },
       schema: [{ type: "text", props: { text: "Hidden body" } }],
     });
 
-    const disclosure = screen.getByTestId("collapsible-toggle-name").closest("details");
-    expect(disclosure?.open).toBe(false);
+    const toggle = screen.getByTestId("collapsible-toggle-name");
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
 
-    fireEvent.click(screen.getByTestId("collapsible-toggle-name"));
+    fireEvent.click(toggle);
 
-    await waitFor(() => expect(disclosure?.open).toBe(true));
+    await waitFor(() => expect(toggle).toHaveAttribute("aria-expanded", "true"));
     expect(await screen.findByText("Hidden body")).toBeVisible();
 
-    fireEvent.click(screen.getByTestId("collapsible-toggle-name"));
+    fireEvent.click(toggle);
 
-    await waitFor(() => expect(disclosure?.open).toBe(false));
+    await waitFor(() => expect(toggle).toHaveAttribute("aria-expanded", "false"));
     expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
   });
 
@@ -57,20 +75,19 @@ describe("Collapsible component", () => {
     });
 
     const toggle = screen.getByTestId("collapsible-toggle-name");
-    const disclosure = toggle.closest("details");
     const content = screen.getByText("Hidden body");
 
-    expect(disclosure?.open).toBe(true);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
     expect(content).toBeVisible();
 
     fireEvent.click(toggle);
 
-    await waitFor(() => expect(disclosure?.open).toBe(false));
+    await waitFor(() => expect(toggle).toHaveAttribute("aria-expanded", "false"));
     expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
     expect(window.localStorage.getItem("lattice:collapsible:name")).toBeNull();
   });
 
-  it("persists native disclosure state changes when rememberState is set", async () => {
+  it("persists disclosure state changes when rememberState is set", async () => {
     renderCollapsible({
       id: "name",
       type: "collapsible",
@@ -102,13 +119,13 @@ describe("Collapsible component", () => {
       schema: [{ type: "text", props: { text: "Hidden body" } }],
     });
 
-    const disclosure = screen.getByTestId("collapsible-toggle-name").closest("details");
-    expect(disclosure?.open).toBe(true);
+    const toggle = screen.getByTestId("collapsible-toggle-name");
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByText("Hidden body")).toBeVisible();
 
-    fireEvent.click(screen.getByTestId("collapsible-toggle-name"));
+    fireEvent.click(toggle);
 
-    await waitFor(() => expect(disclosure?.open).toBe(false));
+    await waitFor(() => expect(toggle).toHaveAttribute("aria-expanded", "false"));
     expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
   });
 });
