@@ -34,6 +34,7 @@ use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\LatticeRegistry;
+use Lattice\Core\PageMetadata;
 use Lattice\Core\Wire\WireSourceCatalog;
 use Lattice\Form\FormServiceProvider;
 use Lattice\Fragments\FragmentDefinition;
@@ -190,6 +191,11 @@ final class LatticeServiceProvider extends PackageServiceProvider
      * A page with no route is a valid embedded page (rendered by returning it
      * from a developer-owned controller, never dispatched by Lattice itself),
      * so it is skipped here rather than passed to `Route::get()`.
+     *
+     * Routes register most-specific first because the router matches in
+     * registration order: discovery order would let `/orders/{order}` swallow
+     * `/orders/create`. `route:cache` compiles this same order, so the fix
+     * carries into the cached route table.
      */
     public function bootPages(): void
     {
@@ -197,7 +203,11 @@ final class LatticeServiceProvider extends PackageServiceProvider
             return;
         }
 
-        foreach (Lattice::pageRegistry()->all() as $page) {
+        $pages = Lattice::pageRegistry()->all();
+
+        usort($pages, $this->compareRouteSpecificity(...));
+
+        foreach ($pages as $page) {
             if ($page->route === null) {
                 continue;
             }
@@ -212,6 +222,23 @@ final class LatticeServiceProvider extends PackageServiceProvider
         }
 
         Route::getRoutes()->refreshNameLookups();
+    }
+
+    /**
+     * Lexicographic comparison of per-segment flags (static = 0, parameter = 1),
+     * so `/orders/create` outranks `/orders/{order}` at the segment where they
+     * diverge. PHP's array comparison ranks a smaller segment count first, which
+     * is safe because routes of different lengths cannot shadow each other, and
+     * `usort` being stable keeps discovery order between equally specific routes.
+     */
+    private function compareRouteSpecificity(PageMetadata $a, PageMetadata $b): int
+    {
+        $flags = static fn (PageMetadata $page): array => array_map(
+            static fn (string $segment): int => (int) str_starts_with($segment, '{'),
+            explode('/', trim((string) $page->route, '/')),
+        );
+
+        return $flags($a) <=> $flags($b);
     }
 
     /**
