@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.3](https://github.com/lattice-php/lattice/compare/0.56.2...0.56.3) (2026-08-18)
+
+
+### Bug Fixes
+
+* **ui:** let a bled description list's divider reach both edges ([#484](https://github.com/lattice-php/lattice/issues/484)) ([59ff98a](https://github.com/lattice-php/lattice/commit/59ff98a4032d20b770cdc0df1514854638b548a2))
+
 ## [0.56.2](https://github.com/lattice-php/lattice/compare/0.56.1...0.56.2) (2026-08-17)
 
 
