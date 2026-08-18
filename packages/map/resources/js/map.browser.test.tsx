@@ -155,6 +155,51 @@ it("automatically centers a single marker for interaction", async () => {
   await expect.element(page.getByText("Munich office content")).toBeVisible();
 });
 
+it("returns to the server-defined zoom when the reset control is clicked after zooming away", async () => {
+  await renderMap({
+    center: { latitude: 48.1372, longitude: 11.5756 },
+    features: [
+      marker("munich", "Munich office", 48.1372, 11.5756),
+      marker("freising", "Freising office", 48.15, 11.6),
+    ],
+    zoom: 14,
+  });
+
+  // The distance between two markers depends only on the zoom level, so it is
+  // immune to the container resizes the test viewport goes through.
+  const markerDistance = () => {
+    const pins = document.querySelectorAll(".leaflet-marker-icon");
+
+    if (pins.length < 2) {
+      return null;
+    }
+
+    const first = pins[0].getBoundingClientRect();
+    const second = pins[1].getBoundingClientRect();
+
+    return Math.hypot(second.left - first.left, second.top - first.top);
+  };
+
+  await expect.poll(markerDistance).toBeTruthy();
+  const initialDistance = markerDistance()!;
+
+  await userEvent.click(page.getByRole("button", { name: "Zoom out" }));
+
+  await expect
+    .poll(() => markerDistance() ?? Number.POSITIVE_INFINITY)
+    .toBeLessThan(initialDistance * 0.75);
+
+  // Leaflet silently drops setView while a zoom animation is still running,
+  // so wait for the zoom-out animation to finish before resetting.
+  await expect.poll(() => document.querySelector(".leaflet-zoom-anim")).toBeNull();
+
+  await userEvent.click(page.getByRole("button", { name: "Reset view" }));
+
+  await expect
+    .poll(() => Math.abs((markerDistance() ?? Number.POSITIVE_INFINITY) - initialDistance))
+    .toBeLessThanOrEqual(1);
+});
+
 it("uses the server-provided center and zoom for an interactive marker", async () => {
   await renderMap({
     center: { latitude: 48.1372, longitude: 11.5756 },
