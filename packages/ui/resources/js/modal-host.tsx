@@ -38,8 +38,12 @@ export function useEmbeddedModal(): EmbeddedModalState | null {
   return useContext(EmbeddedModalContext);
 }
 
+export type ModalHostHandle = {
+  close: () => void;
+};
+
 export type ModalHost = {
-  open: (content: Node<"modal"> | ReactElement) => void;
+  open: (content: Node<"modal"> | ReactElement) => ModalHostHandle;
 };
 
 export const ModalHostContext = createContext<ModalHost | null>(null);
@@ -70,40 +74,72 @@ type ModalHostClosures = {
 type OpenModalEvent = CustomEvent<{ node?: Node<"modal"> }>;
 type CloseModalEvent = CustomEvent<{ modal?: string | null }>;
 
-function topmostOpenIndex(stack: ModalHostEntry[]): number {
-  for (let index = stack.length - 1; index >= 0; index -= 1) {
-    if (stack[index].open) {
-      return index;
-    }
-  }
-
-  return -1;
-}
-
 export function ModalHostProvider({ children }: { children: ReactNode }) {
-  const [stack, setStack] = useState<ModalHostEntry[]>([]);
+  const [stack, setStackState] = useState<ModalHostEntry[]>([]);
+  const stackRef = useRef<ModalHostEntry[]>(stack);
   const nextKeyRef = useRef(0);
   const closuresRef = useRef(new Map<number, ModalHostClosures>());
 
-  const open = useCallback((content: Node<"modal"> | ReactElement) => {
-    const nodeId = isValidElement(content) ? null : (content.id ?? null);
-    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  // Runs the updater synchronously against `stackRef` rather than through
+  // React's `setState` updater queue, so callers (like `open`) can read the
+  // resulting entry back out in the same tick to build its close handle.
+  const updateStack = useCallback(
+    (updater: (current: ModalHostEntry[]) => ModalHostEntry[]): ModalHostEntry[] => {
+      const next = updater(stackRef.current);
+      stackRef.current = next;
+      setStackState(next);
 
-    setStack((current) => {
-      if (nodeId !== null) {
-        const index = current.findIndex((entry) => entry.nodeId === nodeId && entry.open);
+      return next;
+    },
+    [],
+  );
 
-        if (index !== -1) {
-          const next = [...current];
-          next[index] = { ...next[index], content };
+  const closeEntry = useCallback(
+    (key: number) => {
+      updateStack((current) => {
+        const index = current.findIndex((entry) => entry.key === key);
 
-          return next;
+        if (index === -1 || !current[index].open) {
+          return current;
         }
-      }
 
-      return [...current, { key: nextKeyRef.current++, content, nodeId, open: true, opener }];
-    });
-  }, []);
+        const next = [...current];
+        next[index] = { ...next[index], open: false };
+
+        return next;
+      });
+    },
+    [updateStack],
+  );
+
+  const open = useCallback(
+    (content: Node<"modal"> | ReactElement): ModalHostHandle => {
+      const nodeId = isValidElement(content) ? null : (content.id ?? null);
+      const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      let key = -1;
+
+      updateStack((current) => {
+        if (nodeId !== null) {
+          const index = current.findIndex((entry) => entry.nodeId === nodeId && entry.open);
+
+          if (index !== -1) {
+            key = current[index].key;
+            const next = [...current];
+            next[index] = { ...next[index], content };
+
+            return next;
+          }
+        }
+
+        key = nextKeyRef.current++;
+
+        return [...current, { key, content, nodeId, open: true, opener }];
+      });
+
+      return { close: () => closeEntry(key) };
+    },
+    [closeEntry, updateStack],
+  );
 
   useEffect(() => {
     function handleOpen(event: Event): void {
@@ -117,11 +153,12 @@ export function ModalHostProvider({ children }: { children: ReactNode }) {
     function handleClose(event: Event): void {
       const target = (event as CloseModalEvent).detail?.modal;
 
-      setStack((current) => {
-        const index =
-          target == null
-            ? topmostOpenIndex(current)
-            : current.findIndex((entry) => entry.nodeId === target);
+      updateStack((current) => {
+        if (target == null) {
+          return current.map((entry) => (entry.open ? { ...entry, open: false } : entry));
+        }
+
+        const index = current.findIndex((entry) => entry.nodeId === target);
 
         if (index === -1) {
           return current;
@@ -141,52 +178,53 @@ export function ModalHostProvider({ children }: { children: ReactNode }) {
       window.removeEventListener(LATTICE_EVENT.openModal, handleOpen);
       window.removeEventListener(LATTICE_EVENT.closeModal, handleClose);
     };
-  }, [open]);
+  }, [open, updateStack]);
 
-  const closuresFor = useCallback((key: number): ModalHostClosures => {
-    let closures = closuresRef.current.get(key);
+  const closuresFor = useCallback(
+    (key: number): ModalHostClosures => {
+      let closures = closuresRef.current.get(key);
 
-    if (closures) {
-      return closures;
-    }
+      if (closures) {
+        return closures;
+      }
 
-    closures = {
-      onOpenChange: (nextOpen) => {
-        if (nextOpen) {
-          return;
-        }
-
-        setStack((current) =>
-          current.map((entry) => (entry.key === key ? { ...entry, open: false } : entry)),
-        );
-      },
-      // Radix only restores focus to a `DialogTrigger`-registered element, and
-      // these modals are opened imperatively rather than through one. Own the
-      // restore ourselves instead: whatever had focus when the entry opened
-      // gets it back once the closing dialog has finished its exit animation.
-      // The opener can itself have unmounted in the meantime (e.g. a popover
-      // menu item that also closed) — fall back to Radix's default in that case.
-      onExited: (event) => {
-        setStack((current) => {
-          const entry = current.find((candidate) => candidate.key === key);
-          const opener = entry?.opener ?? null;
-
-          if (opener?.isConnected) {
-            event.preventDefault();
-            requestAnimationFrame(() => opener.focus());
+      closures = {
+        onOpenChange: (nextOpen) => {
+          if (nextOpen) {
+            return;
           }
 
-          return current.filter((candidate) => candidate.key !== key);
-        });
+          closeEntry(key);
+        },
+        // Radix only restores focus to a `DialogTrigger`-registered element, and
+        // these modals are opened imperatively rather than through one. Own the
+        // restore ourselves instead: whatever had focus when the entry opened
+        // gets it back once the closing dialog has finished its exit animation.
+        // The opener can itself have unmounted in the meantime (e.g. a popover
+        // menu item that also closed) — fall back to Radix's default in that case.
+        onExited: (event) => {
+          updateStack((current) => {
+            const entry = current.find((candidate) => candidate.key === key);
+            const opener = entry?.opener ?? null;
 
-        closuresRef.current.delete(key);
-      },
-    };
+            if (opener?.isConnected) {
+              event.preventDefault();
+              requestAnimationFrame(() => opener.focus());
+            }
 
-    closuresRef.current.set(key, closures);
+            return current.filter((candidate) => candidate.key !== key);
+          });
 
-    return closures;
-  }, []);
+          closuresRef.current.delete(key);
+        },
+      };
+
+      closuresRef.current.set(key, closures);
+
+      return closures;
+    },
+    [closeEntry, updateStack],
+  );
 
   const host = useMemo(() => ({ open }), [open]);
 
