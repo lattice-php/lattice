@@ -4,6 +4,7 @@ description: A dialog embedded on a trigger or shipped by a server effect.
 ---
 
 import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
 
 `Modal::make($id)->title('…')->schema([...])` declares a dialog. It never sits in the page tree on
 its own — a single host renders it, reached one of two ways.
@@ -90,7 +91,7 @@ return redirect('/dashboard');
 ```
 
 `->closeModal($id)` closes the hosted modal if it matches `$id`; `->closeModal()` with no argument
-closes whatever is currently open.
+closes every modal currently open, not just the topmost one.
 
 - `->title('…')` and `->description('…')` set the dialog header.
 - `->closeLabel('…')` relabels the close button (defaults to `Close`).
@@ -132,9 +133,20 @@ a sheet's panel width.
 
 Opening a modal while another is already open — a button's `->modal()` inside a modal's schema, or
 a row action's confirmation dialog above a modal that contains its table — pushes a new entry onto
-the host rather than replacing the current one. Closing the top entry (Escape, its close button, or
-`->closeModal()` with no id) reveals whatever was open underneath; the rest of the stack is
-untouched.
+the host rather than replacing the current one. Closing the top entry (Escape or its close button)
+reveals whatever was open underneath; `->closeModal()` with no id closes the entire stack instead of
+just the topmost entry.
+
+<Warning>
+  Known issue: the z-scale is flat across the stack, so a second dialog's backdrop paints underneath
+  the first dialog's content instead of between the two. This affects every stacked dialog and is
+  cosmetic only — the stack order, focus, and closing behavior are all correct.
+</Warning>
+
+The host itself is cleared on real page navigation — an open modal does not survive a redirect or a
+link to another page, since its content could otherwise hold stale props from the page it was opened
+on. A partial reload (`->reloadComponent()`, polling, an action's own table refresh) does not count
+as navigation and leaves an open modal untouched.
 
 ## Lazy content
 
