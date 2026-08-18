@@ -9,7 +9,7 @@ import { useTable } from "@lattice-php/table/hooks/use-table";
 import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import type { TableNode } from "@lattice-php/table/types";
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { Checkbox } from "@lattice-php/ui/checkbox";
 import { Input } from "@lattice-php/ui/input";
 import { NativeSelect } from "@lattice-php/ui/native-select";

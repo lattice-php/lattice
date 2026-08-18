@@ -1,0 +1,429 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import type { Node } from "@lattice-php/core/types";
+import ChartComponent from "./chart-view";
+import ChartWrapper from "./chart-adapter";
+
+vi.mock("recharts", async () => {
+  const React = await import("react");
+  const h = React.createElement;
+  const seriesAttrs = (testId: string, props: Record<string, unknown>) => ({
+    "data-key": String(props.dataKey),
+    "data-name": props.name === undefined ? undefined : String(props.name),
+    "data-stack": props.stackId === undefined ? undefined : String(props.stackId),
+    "data-test": testId,
+    fill: props.fill === undefined ? undefined : String(props.fill),
+    stroke: props.stroke === undefined ? undefined : String(props.stroke),
+  });
+
+  return {
+    CartesianGrid: (props: Record<string, unknown>) =>
+      h("div", { "data-test": "cartesian-grid", stroke: String(props.stroke) }),
+    Cell: (props: Record<string, unknown>) =>
+      h("div", { "data-test": "cell", fill: String(props.fill) }),
+    Legend: () => h("div", { "data-test": "legend" }),
+    Line: (props: Record<string, unknown>) => h("div", seriesAttrs("series-line", props)),
+    LineChart: ({ children }: { children: React.ReactNode }) =>
+      h("div", { "data-test": "line-chart" }, children),
+    Pie: ({ children, ...props }: Record<string, unknown> & { children: React.ReactNode }) =>
+      h(
+        "div",
+        {
+          "data-inner-radius": String(props.innerRadius),
+          "data-key": String(props.dataKey),
+          "data-name-key": props.nameKey === undefined ? undefined : String(props.nameKey),
+          "data-test": "series-pie",
+        },
+        children,
+      ),
+    PieChart: ({ children }: { children: React.ReactNode }) =>
+      h("div", { "data-test": "pie-chart" }, children),
+    PolarAngleAxis: (props: Record<string, unknown>) =>
+      h("div", {
+        "data-domain": Array.isArray(props.domain) ? props.domain.join(",") : undefined,
+        "data-test": "polar-angle-axis",
+      }),
+    RadialBar: ({ children, ...props }: Record<string, unknown> & { children: React.ReactNode }) =>
+      h(
+        "div",
+        {
+          "data-background":
+            props.background === undefined ? undefined : JSON.stringify(props.background),
+          "data-corner-radius": String(props.cornerRadius),
+          "data-key": String(props.dataKey),
+          "data-name": props.name === undefined ? undefined : String(props.name),
+          "data-test": "series-radial-bar",
+        },
+        children,
+      ),
+    RadialBarChart: ({
+      children,
+      ...props
+    }: Record<string, unknown> & { children: React.ReactNode }) =>
+      h(
+        "div",
+        {
+          "data-end-angle": String(props.endAngle),
+          "data-inner-radius": String(props.innerRadius),
+          "data-outer-radius": String(props.outerRadius),
+          "data-start-angle": String(props.startAngle),
+          "data-test": "radial-bar-chart",
+        },
+        children,
+      ),
+    ResponsiveContainer: ({
+      children,
+      height,
+      width,
+    }: {
+      children: React.ReactNode;
+      height: number;
+      width: string;
+    }) =>
+      h(
+        "div",
+        { "data-height": height, "data-test": "responsive-container", "data-width": width },
+        children,
+      ),
+    Tooltip: (props: Record<string, unknown>) => {
+      const formatter = props.formatter as ((v: unknown) => string) | undefined;
+      const labelFormatter = props.labelFormatter as ((v: unknown) => string) | undefined;
+
+      return h(
+        "div",
+        { "data-test": "tooltip" },
+        h("span", { "data-test": "tooltip-value" }, formatter ? formatter(28000) : ""),
+        h(
+          "span",
+          { "data-test": "tooltip-label" },
+          labelFormatter ? labelFormatter("2026-01-15") : "",
+        ),
+      );
+    },
+    XAxis: (props: Record<string, unknown>) => {
+      const tickFormatter = props.tickFormatter as ((v: unknown) => string) | undefined;
+
+      return h(
+        "div",
+        { "data-key": String(props.dataKey), "data-test": "x-axis" },
+        tickFormatter ? tickFormatter("2026-01-15") : "",
+      );
+    },
+    YAxis: (props: Record<string, unknown>) => {
+      const tick = props.tick as Record<string, unknown> | undefined;
+      const tickFormatter = props.tickFormatter as ((v: unknown) => string) | undefined;
+
+      return h(
+        "div",
+        {
+          "data-font-size": String(tick?.fontSize),
+          "data-test": "y-axis",
+          "data-width": String(props.width),
+        },
+        tickFormatter ? tickFormatter(28000) : "",
+      );
+    },
+  };
+});
+
+type ChartProps = Node<"chart">["props"];
+type ChartSeries = ChartProps["series"][number];
+
+function series(overrides: Partial<ChartSeries> = {}): ChartSeries {
+  return {
+    color: null,
+    dataKey: "amount",
+    name: "amount",
+    nameKey: "channel",
+    stackId: null,
+    innerRadius: "0%",
+    maxValue: null,
+    type: "distribution",
+    ...overrides,
+  };
+}
+
+function chartNode(props: Partial<ChartProps> = {}): Node<"chart"> {
+  return {
+    type: "chart",
+    props: {
+      categoryFormat: null,
+      categoryKey: null,
+      data: [],
+      description: null,
+      valueFormat: null,
+      grid: true,
+      height: 320,
+      legend: true,
+      series: [],
+      title: null,
+      tooltip: true,
+      xAxis: true,
+      yAxis: true,
+      ...props,
+    },
+  } as Node<"chart">;
+}
+
+function renderChart(props: Partial<ChartProps>) {
+  return render(<ChartComponent node={chartNode(props)}>{null}</ChartComponent>);
+}
+
+describe("Chart component", () => {
+  it("renders a pie chart with one cell per datum, preferring datum colors over the series color", () => {
+    renderChart({
+      data: [
+        { amount: 4200, channel: "Direct", color: "#111827" },
+        { amount: 2600, channel: "Partner" },
+      ],
+      series: [
+        series({
+          color: { kind: "css", value: "#2563eb", dark: null },
+          name: "Series",
+          innerRadius: "60%",
+          type: "pie",
+        }),
+      ],
+      title: "Revenue by channel",
+    });
+
+    expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-key", "amount");
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-name-key", "channel");
+    expect(screen.getByTestId("series-pie")).toHaveAttribute("data-inner-radius", "60%");
+
+    const cells = screen.getAllByTestId("cell");
+
+    expect(cells).toHaveLength(2);
+    expect(cells[0]).toHaveAttribute("fill", "#111827");
+    expect(cells[1]).toHaveAttribute("fill", "#2563eb");
+  });
+
+  it("renders a gauge as a semicircle radial bar with a fixed max domain and center label", () => {
+    renderChart({
+      data: [{ label: "CPU", value: 72 }],
+      valueFormat: {
+        kind: "number",
+        notation: "standard",
+        minimumFractionDigits: null,
+        maximumFractionDigits: null,
+        currency: null,
+        unit: "percent",
+      },
+      height: 260,
+      series: [
+        series({
+          dataKey: "value",
+          name: "value",
+          nameKey: "label",
+          innerRadius: "70%",
+          maxValue: 100,
+          type: "gauge",
+        }),
+      ],
+      title: "CPU usage",
+    });
+
+    expect(screen.getByTestId("radial-bar-chart")).toHaveAttribute("data-start-angle", "210");
+    expect(screen.getByTestId("radial-bar-chart")).toHaveAttribute("data-end-angle", "-30");
+    expect(screen.getByTestId("radial-bar-chart")).toHaveAttribute("data-inner-radius", "70%");
+    expect(screen.getByTestId("radial-bar-chart")).toHaveAttribute("data-outer-radius", "100%");
+    expect(screen.getByTestId("polar-angle-axis")).toHaveAttribute("data-domain", "0,100");
+    expect(screen.getByTestId("series-radial-bar")).toHaveAttribute("data-key", "value");
+    expect(screen.getAllByTestId("cell")).toHaveLength(1);
+    expect(screen.getByText("CPU")).toBeVisible();
+    expect(screen.queryByTestId("legend")).not.toBeInTheDocument();
+    expect(screen.getByTestId("tooltip")).toBeInTheDocument();
+    expect(screen.getByText("72%")).toBeVisible();
+    expect(screen.queryByTestId("cartesian-grid")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("x-axis")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("y-axis")).not.toBeInTheDocument();
+  });
+
+  it("derives the gauge domain from the largest datum and drops the center label for multiple rings", () => {
+    renderChart({
+      data: [
+        { color: "#111827", label: "Used", value: 3 },
+        { label: "Free", value: 5 },
+      ],
+      series: [
+        series({
+          color: { kind: "css", value: "#2563eb", dark: null },
+          dataKey: "value",
+          name: "value",
+          nameKey: "label",
+          innerRadius: "70%",
+          type: "gauge",
+        }),
+      ],
+    });
+
+    expect(screen.getByTestId("polar-angle-axis")).toHaveAttribute("data-domain", "0,5");
+    expect(screen.getByText("Used")).toBeVisible();
+    expect(screen.getByText("Free")).toBeVisible();
+
+    const cells = screen.getAllByTestId("cell");
+
+    expect(cells).toHaveLength(2);
+    expect(cells[0]).toHaveAttribute("fill", "#111827");
+    expect(cells[1]).toHaveAttribute("fill", "#2563eb");
+    expect(screen.queryByText("3")).not.toBeInTheDocument();
+    expect(screen.queryByText("5")).not.toBeInTheDocument();
+  });
+
+  it("renders a distribution as a proportional segmented bar with a percent legend", () => {
+    const { container } = renderChart({
+      data: [
+        { amount: 3, channel: "Direct", color: "#111827" },
+        { amount: 1, channel: "Partner" },
+      ],
+      valueFormat: {
+        kind: "number",
+        notation: "compact",
+        minimumFractionDigits: null,
+        maximumFractionDigits: null,
+        currency: "USD",
+        unit: null,
+      },
+      series: [series({ color: { kind: "css", value: "#2563eb", dark: null } })],
+      title: "Revenue by channel",
+    });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+    const segments = Array.from(track?.children ?? []);
+
+    expect(segments).toHaveLength(2);
+    expect(segments[0]).toHaveStyle({ background: "#111827", width: "75%" });
+    expect(segments[1]).toHaveStyle({ background: "#2563eb", width: "25%" });
+    expect(segments[0]).toHaveAttribute("title", "Direct: $3");
+    expect(segments[1]).toHaveAttribute("title", "Partner: $1");
+    expect(screen.getByText("Direct")).toBeVisible();
+    expect(screen.getByText("75%")).toBeVisible();
+    expect(screen.getByText("Partner")).toBeVisible();
+    expect(screen.getByText("25%")).toBeVisible();
+    expect(screen.queryByTestId("responsive-container")).not.toBeInTheDocument();
+  });
+
+  it("skips non-positive distribution rows", () => {
+    const { container } = renderChart({
+      data: [
+        { amount: 0, channel: "Zero" },
+        { amount: -5, channel: "Negative" },
+        { amount: 4, channel: "Direct" },
+      ],
+      series: [series()],
+    });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+    const segments = Array.from(track?.children ?? []);
+
+    expect(segments).toHaveLength(1);
+    expect(segments[0]).toHaveStyle({ width: "100%" });
+    expect(screen.queryByText("Zero")).not.toBeInTheDocument();
+    expect(screen.queryByText("Negative")).not.toBeInTheDocument();
+  });
+
+  it("renders an empty track when a distribution has no positive values", () => {
+    const { container } = renderChart({ series: [series()] });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+
+    expect(track).not.toBeNull();
+    expect(track?.children).toHaveLength(0);
+  });
+
+  it("omits distribution titles and legend when tooltip and legend are off", () => {
+    const { container } = renderChart({
+      data: [
+        { amount: 3, channel: "Direct" },
+        { amount: 1, channel: "Partner" },
+      ],
+      legend: false,
+      series: [series()],
+      tooltip: false,
+    });
+
+    const track = container.querySelector("[data-lattice-distribution]");
+    const segments = Array.from(track?.children ?? []);
+
+    expect(segments).toHaveLength(2);
+    expect(segments[0]).not.toHaveAttribute("title");
+    expect(screen.queryByText("Direct")).not.toBeInTheDocument();
+    expect(screen.queryByText("75%")).not.toBeInTheDocument();
+  });
+
+  it("keeps cartesian series visible when gauge and pie series are also present", () => {
+    renderChart({
+      categoryKey: "month",
+      data: [{ amount: 4200, month: "Jan", revenue: 1200, value: 72 }],
+      series: [
+        series({
+          dataKey: "value",
+          name: "value",
+          nameKey: null,
+          innerRadius: "70%",
+          maxValue: 100,
+          type: "gauge",
+        }),
+        series({ name: "Series", nameKey: "month", type: "pie" }),
+        series({ dataKey: "revenue", name: "Revenue", nameKey: null, type: "line" }),
+      ],
+    });
+
+    expect(screen.getByTestId("line-chart")).toBeInTheDocument();
+    expect(screen.getByTestId("series-line")).toHaveAttribute("data-key", "revenue");
+    expect(screen.queryByTestId("radial-bar-chart")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("pie-chart")).not.toBeInTheDocument();
+  });
+
+  it("formats axis ticks and tooltip via value and category formats", () => {
+    renderChart({
+      categoryFormat: {
+        kind: "date",
+        dateStyle: "short",
+        timeStyle: null,
+        month: null,
+        year: null,
+      },
+      categoryKey: "month",
+      data: [{ month: "2026-01-15", revenue: 28000 }],
+      valueFormat: {
+        kind: "number",
+        notation: "compact",
+        minimumFractionDigits: null,
+        maximumFractionDigits: null,
+        currency: "USD",
+        unit: null,
+      },
+      series: [series({ dataKey: "revenue", name: "Series", nameKey: null, type: "line" })],
+    });
+
+    expect(screen.getByTestId("y-axis")).toHaveTextContent("$28K");
+    expect(screen.getByTestId("tooltip-value")).toHaveTextContent("$28K");
+    expect(screen.getByTestId("x-axis").textContent).not.toBe("2026-01-15");
+  });
+
+  it("lazily mounts the chart view through the registered wrapper", async () => {
+    const node = chartNode({
+      categoryKey: "month",
+      data: [{ month: "Jan", revenue: 1200 }],
+      grid: false,
+      height: 200,
+      legend: false,
+      series: [
+        series({
+          color: { kind: "css", value: "#2563eb", dark: null },
+          dataKey: "revenue",
+          name: "Revenue",
+          nameKey: null,
+          type: "line",
+        }),
+      ],
+      tooltip: false,
+    });
+
+    render(<ChartWrapper node={node}>{null}</ChartWrapper>);
+
+    expect(await screen.findByTestId("responsive-container")).toBeInTheDocument();
+  });
+});

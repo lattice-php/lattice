@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/core";
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
 import { Icon } from "@lattice-php/ui/icons";
 import { Input } from "@lattice-php/ui/input";

@@ -1,5 +1,5 @@
 import { Icon } from "@lattice-php/ui/icons";
-import { Button } from "@lattice-php/ui/components/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import {
   DropdownMenu,
   DropdownMenuContent,

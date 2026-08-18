@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { NativeSelect } from "@lattice-php/ui/native-select";
 import { useT } from "@lattice-php/ui/i18n";
 import type { PaginationType } from "../generated";

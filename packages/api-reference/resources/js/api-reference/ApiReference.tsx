@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { RemoteAccess } from "@lattice-php/core/api";
 import { Icon } from "@lattice-php/ui/icons";
 import type { ResolveAccessToken } from "./access-token";
-import { Badge } from "@lattice-php/ui/badge";
+import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { CopyButton } from "@lattice-php/ui/copyable-text";
 import { httpMethodColor } from "./http-method-color";
 import { operationToMarkdown } from "./operation-markdown";

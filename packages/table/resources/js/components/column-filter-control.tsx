@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { IconButton } from "@lattice-php/ui/icon-button";
 import { NativeSelect } from "@lattice-php/ui/native-select";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";

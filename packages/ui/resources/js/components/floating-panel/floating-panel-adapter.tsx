@@ -6,15 +6,16 @@ import { FloatingPanel } from "./floating-panel";
 
 const FloatingPanelAdapter: RendererComponent<"floating-panel"> = ({ children, node }) => {
   const trigger = toNodes(node.props.trigger);
+  const identity = nodeIdentity(node);
 
   return (
     <FloatingPanel
       aria-label={node.props.label ?? undefined}
-      data-lattice-component={nodeIdentity(node)}
+      data-lattice-component={identity}
       offset={node.props.offset ?? 16}
       placement={node.props.placement ?? "bottom-end"}
       trigger={trigger.length > 0 ? <Renderer nodes={trigger} /> : undefined}
-      triggerProps={{ "data-test": node.key ? `${node.key}-trigger` : undefined }}
+      triggerProps={{ "data-test": identity ? `${identity}-trigger` : undefined }}
     >
       {children}
     </FloatingPanel>

@@ -1,4 +1,4 @@
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { Spinner } from "@lattice-php/ui/spinner";
 import type { Emphasis, Variant } from "@lattice-php/ui";
 import { useFormContext } from "@lattice-php/form/hooks/context";

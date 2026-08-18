@@ -2,7 +2,7 @@ import { Icon } from "./icons";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as React from "react";
 import { cva } from "class-variance-authority";
-import { Button } from "./button";
+import { Button } from "./components/button/button";
 import { cn } from "./lib/utils";
 import type { ModalHeight, ModalWidth, Side } from "./types";
 

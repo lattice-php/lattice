@@ -9,8 +9,8 @@ import {
   FormFieldFrame,
   type FormFieldControlProps,
 } from "@lattice-php/form/components/base/field";
-import { Badge } from "@lattice-php/ui/badge";
-import { Button } from "@lattice-php/ui/button";
+import { Badge } from "@lattice-php/ui/components/badge/badge";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { Combobox } from "@lattice-php/ui/combobox";
 import { CodeBlock } from "@lattice-php/ui";
 import { CopyButton } from "@lattice-php/ui/copyable-text";

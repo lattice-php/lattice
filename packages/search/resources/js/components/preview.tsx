@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/core/types";
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { useT } from "@lattice-php/ui/i18n";
 import { useSearchContext } from "../context";
 import { searchResultKey } from "../use-search";
