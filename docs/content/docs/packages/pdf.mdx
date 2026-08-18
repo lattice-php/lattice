@@ -4,6 +4,7 @@ description: A pdf.js backed document viewer with text selection, full-text sear
 ---
 
 import BundleReport from "@components/BundleReport.astro";
+import ComponentExample from "@components/ComponentExample.astro";
 import Info from "@components/Info.astro";
 import Warning from "@components/Warning.astro";
 
@@ -11,6 +12,25 @@ The pdf package renders PDF documents with [pdf.js](https://mozilla.github.io/pd
 Lattice-styled viewer: pages render onto canvases as you scroll, a text layer makes the document
 selectable and copyable, and the toolbar provides page navigation, zoom, full-text search with
 match highlighting, and a download action.
+
+<ComponentExample
+  php={[
+    "config()->set(",
+    "    'pdf.worker_url',",
+    "    'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.min.mjs',",
+    ");",
+    "",
+    "PdfViewer::make('manual')",
+    "    ->url('https://raw.githubusercontent.com/lattice-php/lattice/main/workbench/fixtures/sample.pdf')",
+    "    ->filename('sample.pdf')",
+    "    ->maxHeight(480);",
+  ].join("\n")}
+  fixture="packages.pdf"
+/>
+
+The docs are a static site, so this preview uses a version-matched CDN worker and a CORS-enabled
+sample file. A Laravel application should omit the `worker_url` override and use the package's
+built-in worker route described below.
 
 ## Installation
 

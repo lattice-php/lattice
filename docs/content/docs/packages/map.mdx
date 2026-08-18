@@ -4,6 +4,7 @@ description: Provider-neutral interactive maps with server-driven markers and La
 ---
 
 import BundleReport from "@components/BundleReport.astro";
+import ComponentExample from "@components/ComponentExample.astro";
 
 The map package renders interactive maps from server-defined features. The public PHP and wire
 APIs use coordinates, providers, and typed features rather than Leaflet concepts. OpenStreetMap is
@@ -36,40 +37,27 @@ Leaflet panes and themes the controls, markers, and popups with the Lattice desi
 
 ## Usage
 
-```php
-use Lattice\Actions\Components\Action;
-use Lattice\Core\Enums\ColorName;
-use Lattice\Map\Components\Map;
-use Lattice\Map\Marker;
-use Lattice\Ui\Components\Heading;
-use Lattice\Ui\Components\Stack;
-use Lattice\Ui\Components\Text;
-use Lattice\Ui\Enums\Icon;
-
-Map::make('offices')
+<ComponentExample
+  php={`Map::make('offices')
+    ->height(360)
     ->markers([
         Marker::make('berlin')
             ->position(52.5200, 13.4050)
             ->label('Berlin office')
             ->popup([
-                Stack::make()->schema([
+                Stack::make()->gap(Gap::Small)->schema([
                     Heading::make('Berlin office', 3),
                     Text::make('Alexanderplatz 1'),
-                    Action::use(OpenOfficeAction::class),
                 ]),
             ])
             ->open(),
         Marker::make('hamburg')
             ->position(53.5511, 9.9937)
             ->label('Hamburg office')
-            ->icon(Icon::Bell)
-            ->color(ColorName::Warning)
-            ->popup([
-                Heading::make('Hamburg office', 3),
-                Text::make('Speicherstadt'),
-            ]),
-    ]);
-```
+            ->color(ColorName::Warning),
+    ]);`}
+  fixture="packages.map"
+/>
 
 `->open()` marks one popup for automatic opening after the map initializes. Only one marker may be
 open initially, and marker IDs must be unique. Labels supply each marker's accessible name even

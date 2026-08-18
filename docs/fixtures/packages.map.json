@@ -1,0 +1,88 @@
+[
+    {
+        "key": "offices",
+        "props": {
+            "center": null,
+            "features": [
+                {
+                    "color": null,
+                    "icon": null,
+                    "id": "berlin",
+                    "label": "Berlin office",
+                    "open": true,
+                    "position": {
+                        "latitude": 52.52,
+                        "longitude": 13.405
+                    },
+                    "schema": [
+                        {
+                            "props": {
+                                "align": null,
+                                "direction": null,
+                                "float": null,
+                                "gap": "sm",
+                                "height": null,
+                                "justify": null,
+                                "width": null
+                            },
+                            "schema": [
+                                {
+                                    "props": {
+                                        "copyable": false,
+                                        "level": 3,
+                                        "text": "Berlin office",
+                                        "tooltip": null
+                                    },
+                                    "type": "heading"
+                                },
+                                {
+                                    "props": {
+                                        "align": null,
+                                        "color": null,
+                                        "copyable": false,
+                                        "size": "md",
+                                        "text": "Alexanderplatz 1"
+                                    },
+                                    "type": "text"
+                                }
+                            ],
+                            "type": "stack"
+                        }
+                    ],
+                    "type": "marker"
+                },
+                {
+                    "color": {
+                        "dark": null,
+                        "kind": "named",
+                        "value": "warning"
+                    },
+                    "icon": null,
+                    "id": "hamburg",
+                    "label": "Hamburg office",
+                    "open": false,
+                    "position": {
+                        "latitude": 53.5511,
+                        "longitude": 9.9937
+                    },
+                    "schema": [],
+                    "type": "marker"
+                }
+            ],
+            "height": 360,
+            "navigationControls": true,
+            "provider": {
+                "maximumZoom": 19,
+                "minimumZoom": 1,
+                "name": "openstreetmap",
+                "options": {
+                    "attribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                    "tileUrl": "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                }
+            },
+            "scrollZoom": false,
+            "zoom": null
+        },
+        "type": "map"
+    }
+]

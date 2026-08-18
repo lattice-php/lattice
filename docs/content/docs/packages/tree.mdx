@@ -4,6 +4,7 @@ description: Hierarchy rendering from inline nodes, callbacks, or Eloquent sourc
 ---
 
 import BundleReport from "@components/BundleReport.astro";
+import ComponentExample from "@components/ComponentExample.astro";
 
 The tree package renders hierarchies from inline nodes, callbacks, or Eloquent
 adjacency-list sources — with full keyboard navigation (roving tabindex, typeahead), per-node
@@ -30,19 +31,21 @@ There is no npm package — Composer is the only install.
 
 ## Usage
 
-```php
-use Lattice\Tree\Tree;
-use Lattice\Tree\TreeNode;
-
-Tree::make('categories')->nodes([
-    TreeNode::make('electronics', 'Electronics')
-        ->icon('cpu')
+<ComponentExample
+  php={`Tree::make('catalog')->nodes([
+    TreeNode::make('products', 'Products')
+        ->badge('24', ColorName::Info)
         ->children([
-            TreeNode::make('electronics-laptops', 'Laptops'),
-            TreeNode::make('electronics-phones', 'Phones')->href('/products/phones'),
+            TreeNode::make('hardware', 'Hardware')->children([
+                TreeNode::make('laptops', 'Laptops'),
+                TreeNode::make('phones', 'Phones'),
+            ]),
+            TreeNode::make('software', 'Software'),
         ]),
-])->defaultExpanded(['electronics']);
-```
+    TreeNode::make('services', 'Services')->badge('8'),
+])->defaultExpanded(['products', 'hardware']);`}
+  fixture="packages.tree"
+/>
 
 Nodes compile their conveniences (`->icon()`, `->badge()`, `->href()`, `->action()`/`->actions()`)
 into a canonical body schema of core components — an icon, a text-or-link label, a badge, and an

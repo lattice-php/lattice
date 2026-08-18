@@ -4,24 +4,25 @@ description: A streaming chat box with pluggable message parts, served from your
 ---
 
 import BundleReport from "@components/BundleReport.astro";
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
-The chat package adds a streaming chat box to Lattice. The `ChatBox` component reads history from
-and streams NDJSON responses to endpoints you control, and assistant messages are composed of
-**parts** — text and tool calls ship with the package, and applications add their own with the
-`#[AsChatPart]` attribute.
+The chat package adds a streaming conversation UI to Lattice. Your application owns the agent,
+history, authorization, and persistence; the package owns the chat shell, message rendering, and
+the NDJSON transport between the browser and those endpoints.
 
-```php
-use Lattice\Chat\Components\ChatBox;
+Assistant messages are component trees rather than plain strings. Text and tool calls ship with
+the package, and a stream can insert any other registered Lattice component as a message part.
 
-ChatBox::make('assistant')
-    ->title('Assistant')
-    ->streamEndpoint('/chat/stream')
-    ->historyEndpoint('/chat/history');
-```
+<ComponentExample
+  php={`ChatBox::make('assistant')
+    ->title('Lattice assistant')
+    ->placeholder('Ask about your project');`}
+  fixture="packages.chat"
+/>
 
-The stream endpoint answers with newline-delimited JSON frames (`text`, `part`, `done`, `error`);
-the box folds them into the conversation as they arrive. A chat box can also read from a
-[remote source](/advanced/remote/) — call `source()`/`audience()` on it.
+The preview shows the endpoint-free shell. Add a stream endpoint to enable the composer, and
+optionally a history endpoint to seed the conversation.
 
 ## Installation
 
@@ -29,28 +30,226 @@ the box folds them into the conversation as they arrive. A chat box can also rea
 composer require lattice-php/chat
 ```
 
-That is the whole integration: the package ships its React renderer as source, and the
-`lattice()` Vite plugin compiles it into your app's bundle via `virtual:lattice/plugins`
-(see [Component packages](/extending/component-packages/)). The PHP classes are picked up by
-Lattice's discovery and TypeScript generation automatically.
-[No-build apps](/introduction/no-build/) use the precompiled module the package also ships:
-run `php artisan lattice:assets` after installation.
+Composer is the only install. The `lattice()` Vite plugin discovers the package through Composer
+and registers its React renderer automatically. Pages without a chat box do not load the chat
+component chunk. For a [no-build app](/introduction/no-build/), run
+`php artisan lattice:assets` after installation.
 
-:::note
-There is no npm package — Composer is the only install.
-:::
+## Usage
+
+```php
+use Lattice\Chat\Components\ChatBox;
+
+ChatBox::make('support-assistant')
+    ->title('Support assistant')
+    ->placeholder('How can we help?')
+    ->streamEndpoint(route('chat.stream'))
+    ->historyEndpoint(route('chat.history'));
+```
+
+`streamEndpoint()` is required for sending messages. `historyEndpoint()` is optional; when
+present, the component fetches it once after mounting. Both may be relative same-origin URLs or
+absolute URLs configured through a [remote source](#remote-chat).
+
+The browser keeps the active conversation in memory. Sending a message adds the user message and
+an empty assistant message immediately, then folds streamed frames into that assistant message as
+they arrive.
+
+## Endpoint contract
+
+The endpoints are ordinary application routes. Lattice does not register chat routes or prescribe
+an AI provider, database model, queue, or conversation identifier.
+
+### History
+
+The history endpoint receives a `GET` request and returns one object containing `messages`.
+Every message needs a stable `id`, a `user` or `assistant` role, and a list of serialized
+component parts:
+
+```json
+{
+  "messages": [
+    {
+      "id": "message-1",
+      "role": "user",
+      "parts": [
+        {
+          "type": "chat.part.text",
+          "props": { "text": "Where is my order?" }
+        }
+      ]
+    }
+  ]
+}
+```
+
+A failed history request leaves the conversation empty. Authentication and authorization remain
+the route's responsibility.
+
+### Streaming
+
+The stream endpoint receives a JSON `POST` body containing only the newly submitted text:
+
+```json
+{ "message": "Where is my order?" }
+```
+
+It responds with newline-delimited JSON. Each line is one frame:
+
+| Frame   | Shape                                           | Effect                                             |
+| ------- | ----------------------------------------------- | -------------------------------------------------- |
+| `text`  | `{"type":"text","value":"Hello"}`               | Appends text to the current assistant text part.   |
+| `part`  | `{"type":"part","part":{...node}}`              | Appends one complete registered Lattice component. |
+| `done`  | `{"type":"done"}`                               | Marks the turn idle.                               |
+| `error` | `{"type":"error","message":"Please try again"}` | Stops the turn and displays an inline error.       |
+
+Consecutive text frames merge into one text part. A `part` frame closes the current text run, so
+later text starts a new part after that component.
+
+A minimal Laravel controller can stream an application-defined agent directly:
+
+```php
+use App\Chat\Assistant;
+use Illuminate\Http\Request;
+use Lattice\Chat\ChatPart;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+final readonly class ChatAgentController
+{
+    public function __construct(private Assistant $assistant) {}
+
+    public function __invoke(Request $request): StreamedResponse
+    {
+        $message = $request->string('message')->trim()->toString();
+
+        return response()->stream(function () use ($message): void {
+            $write = static function (array $frame): void {
+                echo json_encode($frame, JSON_THROW_ON_ERROR)."\n";
+
+                if (ob_get_level() > 0) {
+                    ob_flush();
+                }
+
+                flush();
+            };
+
+            foreach ($this->assistant->stream($message) as $text) {
+                $write(['type' => 'text', 'value' => $text]);
+            }
+
+            $write([
+                'type' => 'part',
+                'part' => ChatPart::toolCall('lookup-order')->jsonSerialize(),
+            ]);
+            $write(['type' => 'done']);
+        }, 200, [
+            'Content-Type' => 'application/x-ndjson',
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+        ]);
+    }
+}
+```
+
+The no-cache and buffering headers keep reverse proxies from batching the response. A non-success
+HTTP response, a missing response body, or an interrupted request is surfaced in the chat box as
+an inline error.
+
+## Message parts
+
+`ChatPart::text($text)` and `ChatPart::toolCall($name, $args)` build the two bundled parts.
+Use them when preparing history or emitting complete `part` frames:
+
+```php
+use Illuminate\Support\Str;
+use Lattice\Chat\ChatMessage;
+use Lattice\Chat\ChatPart;
+use Lattice\Chat\Enums\ChatRole;
+
+$message = new ChatMessage(
+    id: (string) Str::uuid(),
+    role: ChatRole::Assistant,
+    parts: [
+        ChatPart::text('I found the order.'),
+        ChatPart::toolCall('lookup-order', ['order' => 'A-1042']),
+    ],
+);
+```
+
+A `part` frame may also contain a regular Lattice component, such as a card, section, data list,
+or action. It renders through the same registry as the surrounding page, so its node type must be
+registered in the consuming application.
+
+### Custom parts
+
+For a dedicated message component, extend `ChatPart` and give it a stable wire type with
+`#[AsChatPart]`:
+
+```php
+use Lattice\Chat\Attributes\AsChatPart;
+use Lattice\Chat\ChatPart;
+
+#[AsChatPart('chat.part.order-status')]
+final class OrderStatusPart extends ChatPart
+{
+    public string $status = '';
+
+    public static function make(string $status): self
+    {
+        $part = new self;
+        $part->status = $status;
+
+        return $part;
+    }
+}
+```
+
+Register the matching React renderer exactly like any other
+[custom component](/extending/overview/). `AsChatPart` extends Lattice's component attribute, so
+discovery, serialization, generated TypeScript props, and registry rendering follow the normal
+component-package path.
+
+<Info>
+  Persist the final assistant message only after the stream has completed. If the browser
+  disconnects, decide in your application whether to store the partial response, retry the agent, or
+  discard the turn.
+</Info>
+
+## Remote chat
+
+`ChatBox` supports Lattice's browser-token flow when the endpoints belong to another service:
+
+```php
+ChatBox::make('assistant')
+    ->source('support')
+    ->audience('https://support.example.test')
+    ->scopes(['chat.read', 'chat.write'])
+    ->streamEndpoint('https://support.example.test/api/chat/stream')
+    ->historyEndpoint('https://support.example.test/api/chat/history');
+```
+
+`source()` and `audience()` are required together. The browser exchanges the sealed component
+reference for a short-lived token, sends it as a bearer token to both remote endpoints, and omits
+cookies. See [Remote components](/advanced/remote/#remote-chat) for source registration, host
+allow-lists, and token issuance.
+
+## Layout
+
+The box is 20rem wide and 28rem tall by default. `->fill()` makes it fill its container, with a
+28rem minimum height, which suits a page column or panel. `->title()` replaces the translated
+header and `->placeholder()` customizes the composer prompt.
 
 ## Translations
 
 The component's strings ship with inline English defaults. With
 [laravel-i18next](https://github.com/bambamboole/laravel-i18next) enabled, the plugin's `chat`
-namespace is loaded automatically and serves the bundled `en`/`de` translations (override them
-like any Laravel package translation — see [Internationalization](/core/i18n/)).
+namespace loads automatically and serves the bundled `en`/`de` translations. Override them like
+any Laravel package translation; see [Internationalization](/core/i18n/).
 
 ## Bundle size
 
-The breakdown below measures the package's built plugin — React and the
-[framework runtime](/advanced/bundle-size/) are external, so this is exactly what the chat
-package adds on top of an app that already ships Lattice. It is regenerated on every docs build.
+The report measures the precompiled chat plugin. React and the
+[framework runtime](/advanced/bundle-size/) remain external, so this is the JavaScript the package
+adds to a Lattice application.
 
 <BundleReport target="chat" />

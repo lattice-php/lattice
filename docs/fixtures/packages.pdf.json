@@ -1,0 +1,20 @@
+[
+    {
+        "key": "manual",
+        "props": {
+            "cmapUrl": null,
+            "downloadable": true,
+            "filename": "sample.pdf",
+            "height": 720,
+            "initialZoom": null,
+            "maxHeight": 480,
+            "searchable": true,
+            "sidebar": true,
+            "standardFontDataUrl": null,
+            "url": "https://raw.githubusercontent.com/lattice-php/lattice/main/workbench/fixtures/sample.pdf",
+            "wasmUrl": null,
+            "workerUrl": "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/pdf.worker.min.mjs"
+        },
+        "type": "pdf"
+    }
+]
