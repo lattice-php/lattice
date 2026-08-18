@@ -4608,7 +4608,7 @@ var y = h((() => {})), ie = /* @__PURE__ */ g(((e, t) => {
 			return window.L = ai, this;
 		}, window.L = e;
 	}));
-})), b = /* @__PURE__ */ _({ default: () => se });
+})), b = /* @__PURE__ */ _({ default: () => w });
 function x({ portal: e }) {
 	return r(() => {
 		e.update();
@@ -4643,7 +4643,14 @@ function S(e, t, n) {
 	}
 	t.setView([0, 0], n.props.zoom ?? 2);
 }
-function oe(e, t) {
+function oe(e, t, n, r) {
+	let i = t.getCenter(), a = t.getZoom(), o = new e.Control({ position: "topleft" });
+	o.onAdd = () => {
+		let o = e.DomUtil.create("div", "lt-map__reset"), s = document.createElement("button");
+		return s.type = "button", s.className = "lt-map__reset-button", s.title = n, s.setAttribute("aria-label", n), o.append(s), e.DomEvent.disableClickPropagation(o), e.DomEvent.on(s, "click", () => t.setView(i, a, { animate: !1 })), r(s), o;
+	}, o.addTo(t);
+}
+function C(e, t) {
 	let n = e?.querySelector(".lt-map-marker__pin") ?? null, r = (0, v.coerceColor)(t.color);
 	if (n && r) {
 		let e = (0, v.toneProps)(r);
@@ -4652,7 +4659,7 @@ function oe(e, t) {
 	}
 	return n;
 }
-function C(e, t, n, r, i, a, o) {
+function se(e, t, n, r, i, a, o) {
 	let s = n.icon ? "lt-map-marker__pin lt-map-marker__pin--icon" : "lt-map-marker__pin", c = e.divIcon({
 		className: "lt-map-marker",
 		html: `<span class="${s}" aria-hidden="true"></span>`,
@@ -4669,7 +4676,7 @@ function C(e, t, n, r, i, a, o) {
 	l.addTo(t);
 	let u = l.getElement();
 	u?.setAttribute("aria-label", n.label);
-	let d = oe(u, n);
+	let d = C(u, n);
 	if (d && n.icon && o({
 		host: d,
 		icon: n.icon,
@@ -4692,13 +4699,13 @@ function C(e, t, n, r, i, a, o) {
 	}
 	n.open && i(l);
 }
-function se({ node: e }) {
-	let { t } = (0, v.useT)("map"), r = i(null), [l, u] = a("loading"), [d, f] = a(null), [p, m] = a([]);
+function w({ node: e }) {
+	let { t } = (0, v.useT)("map"), r = i(null), [l, u] = a("loading"), [d, f] = a(null), [p, m] = a([]), [h, g] = a(null);
 	return n(() => {
 		let n = r.current;
 		if (!n) return;
 		let i = !1, a = null, o = null, s = null, c = n.clientWidth, l = n.clientHeight, d = null, p = null;
-		return u("loading"), f(null), m([]), Promise.resolve().then(() => /* @__PURE__ */ ne(ie(), 1)).then((r) => {
+		return u("loading"), f(null), m([]), g(null), Promise.resolve().then(() => /* @__PURE__ */ ne(ie(), 1)).then((r) => {
 			if (i) return;
 			let h = ae(e.props.provider.options);
 			a = r.map(n, {
@@ -4715,12 +4722,12 @@ function se({ node: e }) {
 			}, n.addEventListener("wheel", p, {
 				capture: !0,
 				passive: !0
-			})), S(r, a, e);
-			let g = [];
-			for (let n of e.props.features) C(r, a, n, () => t("map.close-popup", "Close popup"), (e) => {
+			})), S(r, a, e), e.props.zoom !== null && e.props.navigationControls && oe(r, a, t("map.reset-view", "Reset view"), g);
+			let _ = [];
+			for (let n of e.props.features) se(r, a, n, () => t("map.close-popup", "Close popup"), (e) => {
 				d = e;
-			}, f, (e) => g.push(e));
-			m(g), d?.openPopup(), o = new ResizeObserver(([e]) => {
+			}, f, (e) => _.push(e));
+			m(_), d?.openPopup(), o = new ResizeObserver(([e]) => {
 				let { height: t, width: n } = e.contentRect;
 				(n !== c || t !== l) && (c = n, l = t, s === null && (s = requestAnimationFrame(() => {
 					s = null, a?.invalidateSize({ pan: !1 });
@@ -4754,23 +4761,24 @@ function se({ node: e }) {
 				children: t("map.error", "The map could not be loaded.")
 			}),
 			d && o(/* @__PURE__ */ s(x, { portal: d }), d.host, d.id),
+			h && o(/* @__PURE__ */ s(v.IconRenderer, { icon: "rotate-ccw" }), h, "reset-view"),
 			p.map((e) => o(/* @__PURE__ */ s(v.IconRenderer, { icon: e.icon }), e.host, `marker-icon-${e.id}`))
 		]
 	});
 }
-var w = h((() => {
+var ce = h((() => {
 	y();
 }));
 //#endregion
 //#region resources/js/provider-registry.ts
-function ce() {
-	return (0, v.useExtensionRegistry)(T);
+function T() {
+	return (0, v.useExtensionRegistry)(E);
 }
-var T, E = h((() => {
-	y(), T = "map.providers";
-})), D = /* @__PURE__ */ _({ default: () => O }), O, k = h((() => {
-	y(), E(), O = ({ node: t }) => {
-		let { t: n } = (0, v.useT)("map"), r = ce()[t.props.provider.name];
+var E, D = h((() => {
+	y(), E = "map.providers";
+})), O = /* @__PURE__ */ _({ default: () => k }), k, A = h((() => {
+	y(), D(), k = ({ node: t }) => {
+		let { t: n } = (0, v.useT)("map"), r = T()[t.props.provider.name];
 		return r ? /* @__PURE__ */ s(e, {
 			fallback: /* @__PURE__ */ s("div", {
 				className: "lt-map lt-map--pending",
@@ -4791,11 +4799,11 @@ var T, E = h((() => {
 //#endregion
 //#region resources/js/plugin.ts
 y();
-var A = t(() => Promise.resolve().then(() => (w(), b))), j = {
+var j = t(() => Promise.resolve().then(() => (ce(), b))), M = {
 	name: "lattice/map",
-	components: { map: (0, v.lazyComponent)(() => Promise.resolve().then(() => (k(), D))) },
-	extensions: { "map.providers": { openstreetmap: A } },
+	components: { map: (0, v.lazyComponent)(() => Promise.resolve().then(() => (A(), O))) },
+	extensions: { "map.providers": { openstreetmap: j } },
 	i18n: { namespace: "map" }
 };
 //#endregion
-export { j as default };
+export { M as default };
