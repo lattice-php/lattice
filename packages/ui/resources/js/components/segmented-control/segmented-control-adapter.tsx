@@ -1,0 +1,24 @@
+import type { RendererComponent } from "@lattice-php/core/types";
+import { SegmentedControl } from "./segmented-control";
+
+const SegmentedControlAdapter: RendererComponent<"segmented-control"> = ({ node }) => {
+  const { emits, name, options } = node.props;
+
+  function emitChange(value: string): void {
+    if (emits) {
+      window.dispatchEvent(new CustomEvent(emits, { detail: { name, value } }));
+    }
+  }
+
+  return (
+    <SegmentedControl
+      ariaLabel={node.props.label ?? undefined}
+      defaultValue={node.props.value || undefined}
+      name={name}
+      onValueChange={emitChange}
+      options={options}
+    />
+  );
+};
+
+export default SegmentedControlAdapter;

@@ -1,27 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/core/test-support";
-import ImageComponent from "./image";
+import { Image } from "./image";
 
-function renderImage(props: Record<string, unknown> = {}) {
-  const node = fakeNode({
-    type: "image",
-    props: {
-      src: "https://example.test/product.png",
-      alt: "Product photo",
-      size: null,
-      circular: false,
-      previewable: true,
-      ...props,
-    },
-  });
-
-  return render(<ImageComponent node={node}>{null}</ImageComponent>);
-}
-
-describe("ImageComponent", () => {
+describe("Image", () => {
   it("opens the lightbox on click and closes it again", () => {
-    renderImage();
+    render(<Image alt="Product photo" previewable src="https://example.test/product.png" />);
 
     fireEvent.click(screen.getByRole("button", { name: "View image" }));
     expect(document.querySelector('[data-slot="image-lightbox"]')).toBeInTheDocument();
@@ -31,7 +14,7 @@ describe("ImageComponent", () => {
   });
 
   it("renders a plain image when previewable is off", () => {
-    renderImage({ previewable: false });
+    render(<Image alt="Product photo" src="https://example.test/product.png" />);
 
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(screen.getByAltText("Product photo")).toBeVisible();

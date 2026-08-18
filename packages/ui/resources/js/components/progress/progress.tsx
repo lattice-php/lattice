@@ -1,10 +1,23 @@
-import type { RendererComponent } from "@lattice-php/core/types";
-import { useLocale } from "../i18n";
-import { coerceColor, colorValue, namedColor } from "../lib/color";
-import { cn } from "../lib/utils";
-import type { Size } from "../generated";
+import type { ComponentProps } from "react";
+import { useLocale } from "../../i18n";
+import { coerceColor, colorValue, namedColor } from "../../lib/color";
+import { cn } from "../../lib/utils";
+import type { Color } from "../../types";
 
-const barHeights: Record<Size, string> = {
+export type ProgressShape = "bar" | "circle";
+export type ProgressSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+
+export type ProgressProps = Omit<ComponentProps<"div">, "children" | "color"> & {
+  color?: Color | string | null;
+  locale?: string;
+  max?: number;
+  shape?: ProgressShape;
+  showValue?: boolean;
+  size?: ProgressSize;
+  value: number;
+};
+
+const barHeights: Record<ProgressSize, string> = {
   xs: "h-1",
   sm: "h-1.5",
   md: "h-2.5",
@@ -15,7 +28,7 @@ const barHeights: Record<Size, string> = {
   "4xl": "h-8",
 };
 
-const circleDiameters: Record<Size, number> = {
+const circleDiameters: Record<ProgressSize, number> = {
   xs: 24,
   sm: 32,
   md: 40,
@@ -26,7 +39,7 @@ const circleDiameters: Record<Size, number> = {
   "4xl": 128,
 };
 
-const circleReadouts: Record<Size, string> = {
+const circleReadouts: Record<ProgressSize, string> = {
   xs: "text-[0.5rem]",
   sm: "text-[0.625rem]",
   md: "text-xs",
@@ -37,19 +50,28 @@ const circleReadouts: Record<Size, string> = {
   "4xl": "text-2xl",
 };
 
-const ProgressComponent: RendererComponent<"progress"> = ({ node }) => {
-  const { value, max, shape, showValue, color, size } = node.props;
-  const { locale } = useLocale();
+export function Progress({
+  "aria-label": ariaLabel,
+  className,
+  color,
+  locale,
+  max = 100,
+  shape = "bar",
+  showValue = false,
+  size = "md",
+  value,
+  ...props
+}: ProgressProps) {
+  const { locale: activeLocale } = useLocale();
   const paint = colorValue(coerceColor(color) ?? namedColor("primary"));
-
   const clamped = max > 0 ? Math.min(Math.max(value, 0), max) : 0;
   const ratio = max > 0 ? clamped / max : 0;
-  const percent = new Intl.NumberFormat(locale, {
+  const percent = new Intl.NumberFormat(locale ?? activeLocale, {
     maximumFractionDigits: 0,
     style: "percent",
   }).format(ratio);
-
   const aria = {
+    "aria-label": ariaLabel,
     "aria-valuemax": max,
     "aria-valuemin": 0,
     "aria-valuenow": clamped,
@@ -64,7 +86,12 @@ const ProgressComponent: RendererComponent<"progress"> = ({ node }) => {
     const circumference = 2 * Math.PI * radius;
 
     return (
-      <div {...aria} className="relative inline-flex" data-lattice-progress="circle">
+      <div
+        {...props}
+        {...aria}
+        className={cn("relative inline-flex", className)}
+        data-lattice-progress="circle"
+      >
         <svg className="-rotate-90" height={diameter} width={diameter}>
           <circle
             className="text-lt-muted"
@@ -88,7 +115,7 @@ const ProgressComponent: RendererComponent<"progress"> = ({ node }) => {
             style={{ color: paint }}
           />
         </svg>
-        {showValue && (
+        {showValue ? (
           <span
             className={cn(
               "absolute inset-0 flex items-center justify-center font-medium text-lt-fg tabular-nums",
@@ -97,13 +124,17 @@ const ProgressComponent: RendererComponent<"progress"> = ({ node }) => {
           >
             {percent}
           </span>
-        )}
+        ) : null}
       </div>
     );
   }
 
   return (
-    <div className="flex w-full items-center gap-2" data-lattice-progress="bar">
+    <div
+      {...props}
+      className={cn("flex w-full items-center gap-2", className)}
+      data-lattice-progress="bar"
+    >
       <div
         {...aria}
         className={cn("w-full overflow-hidden rounded-full bg-lt-muted", barHeights[size])}
@@ -113,11 +144,9 @@ const ProgressComponent: RendererComponent<"progress"> = ({ node }) => {
           style={{ background: paint, width: `${ratio * 100}%` }}
         />
       </div>
-      {showValue && (
+      {showValue ? (
         <span className="shrink-0 text-lt-muted-fg text-sm tabular-nums">{percent}</span>
-      )}
+      ) : null}
     </div>
   );
-};
-
-export default ProgressComponent;
+}

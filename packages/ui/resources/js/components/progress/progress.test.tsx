@@ -1,26 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { fakeNode } from "@lattice-php/core/test-support";
-import type { Progress } from "../generated";
-import ProgressComponent from "./progress";
+import { Progress } from "./progress";
+import type { ProgressProps } from "./progress";
 
-function renderProgress(props: Partial<Progress>) {
-  const node = fakeNode({
-    type: "progress",
-    props: {
-      value: 0,
-      max: 100,
-      shape: "bar",
-      showValue: false,
-      color: null,
-      size: "md",
-      ...props,
-    },
-  });
-  return render(<ProgressComponent node={node}>{null}</ProgressComponent>);
+function renderProgress(props: Partial<ProgressProps>) {
+  return render(<Progress value={0} {...props} />);
 }
 
-describe("ProgressComponent bar", () => {
+describe("Progress bar", () => {
   it("renders the fill width from value and max with aria state", () => {
     const { container } = renderProgress({ value: 72.5 });
 
@@ -57,10 +44,7 @@ describe("ProgressComponent bar", () => {
   });
 
   it("maps the color onto the fill", () => {
-    renderProgress({
-      value: 40,
-      color: { kind: "named", value: "success", dark: null },
-    });
+    renderProgress({ value: 40, color: "success" });
 
     const track = screen.getByRole("progressbar");
     const fill = track.firstElementChild as HTMLElement;
@@ -68,7 +52,7 @@ describe("ProgressComponent bar", () => {
   });
 });
 
-describe("ProgressComponent circle", () => {
+describe("Progress circle", () => {
   it("renders the ring offset from value and max", () => {
     const { container } = renderProgress({ value: 25, shape: "circle" });
 
@@ -96,11 +80,7 @@ describe("ProgressComponent circle", () => {
   });
 
   it("colors the ring stroke from the color prop", () => {
-    const { container } = renderProgress({
-      value: 10,
-      shape: "circle",
-      color: { kind: "named", value: "danger", dark: null },
-    });
+    const { container } = renderProgress({ value: 10, shape: "circle", color: "danger" });
 
     const ring = container.querySelectorAll("circle")[1];
     expect(ring.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
