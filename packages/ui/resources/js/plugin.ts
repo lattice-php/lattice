@@ -4,9 +4,9 @@ import { UI_NAMESPACE } from "./i18n";
 import AvatarAdapter from "./components/avatar/avatar-adapter";
 import BadgeComponent from "./components/badge";
 import ButtonComponent from "./components/button";
-import CardComponent from "./components/card";
+import CardAdapter from "./components/card/card-adapter";
 import ChartComponent from "./components/chart";
-import CodeBlockComponent from "./components/code-block";
+import CodeBlockAdapter from "./components/code-block/code-block-adapter";
 import CollapsibleAdapter from "./components/collapsible/collapsible-adapter";
 import DescriptionListAdapter from "./components/description-list/description-list-adapter";
 import FloatingPanelAdapter from "./components/floating-panel/floating-panel-adapter";
@@ -22,9 +22,9 @@ import SectionAdapter from "./components/section/section-adapter";
 import SegmentedControlAdapter from "./components/segmented-control/segmented-control-adapter";
 import SeparatorAdapter from "./components/separator/separator-adapter";
 import StackAdapter from "./components/stack/stack-adapter";
-import TabComponent, { TabsComponent } from "./components/tabs";
+import TabAdapter, { TabsAdapter } from "./components/tabs/tabs-adapter";
 import TextAdapter from "./components/text/text-adapter";
-import TooltipComponent from "./components/tooltip";
+import TooltipAdapter from "./components/tooltip/tooltip-adapter";
 import {
   BadgeEntryComponent,
   BooleanEntryComponent,
@@ -38,9 +38,9 @@ export const uiComponents: Plugin = {
     avatar: eagerComponent(AvatarAdapter),
     badge: eagerComponent(BadgeComponent),
     button: eagerComponent(ButtonComponent),
-    card: eagerComponent(CardComponent),
+    card: eagerComponent(CardAdapter),
     chart: eagerComponent(ChartComponent),
-    "code-block": eagerComponent(CodeBlockComponent),
+    "code-block": eagerComponent(CodeBlockAdapter),
     collapsible: eagerComponent(CollapsibleAdapter),
     "description-list": eagerComponent(DescriptionListAdapter),
     "entry.badge": eagerComponent(BadgeEntryComponent),
@@ -61,10 +61,10 @@ export const uiComponents: Plugin = {
     "segmented-control": eagerComponent(SegmentedControlAdapter),
     separator: eagerComponent(SeparatorAdapter),
     stack: eagerComponent(StackAdapter),
-    tab: eagerComponent(TabComponent),
-    tabs: eagerComponent(TabsComponent),
+    tab: eagerComponent(TabAdapter),
+    tabs: eagerComponent(TabsAdapter),
     text: eagerComponent(TextAdapter),
-    tooltip: eagerComponent(TooltipComponent),
+    tooltip: eagerComponent(TooltipAdapter),
   } satisfies ComponentRegistryFor<UiNodeType>,
   i18n: { namespace: UI_NAMESPACE },
   name: "lattice/ui",

@@ -1,5 +1,5 @@
 import { Badge } from "@lattice-php/ui/badge";
-import { CodeBlock } from "@lattice-php/ui/components/code-block";
+import { CodeBlock } from "@lattice-php/ui";
 import type { ColorName } from "@lattice-php/core";
 import type { ExecutedResponse, ExecutionError } from "./execute-request";
 

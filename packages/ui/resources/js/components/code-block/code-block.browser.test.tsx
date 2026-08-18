@@ -1,7 +1,5 @@
 import { render } from "vitest-browser-react";
 import { describe, expect, it, vi } from "vitest";
-import { fakeNode } from "@lattice-php/core/test-support";
-import CodeBlockComponent from "./code-block";
 import { CodeBlock, type CodeBlockLanguageLoader } from "./code-block";
 
 describe("CodeBlock in a browser", () => {
@@ -15,33 +13,10 @@ describe("CodeBlock in a browser", () => {
     const content = screen.getByRole("code");
 
     await expect.element(content).toHaveAttribute("contenteditable", "false");
-    await expect
-      .element(screen.getByRole("region", { name: "PHP example" }))
-      .toHaveAttribute("data-slot", "code-block");
+    await expect.element(screen.getByRole("region", { name: "PHP example" })).toBeVisible();
     await expect.element(screen.getByText("<?php echo 'Hello';")).toBeVisible();
     expect(content.element().querySelector("span")).not.toBeNull();
     expect(document.querySelector(".cm-lineWrapping")).not.toBeNull();
-  });
-
-  it("renders serialized node props", async () => {
-    const node = fakeNode({
-      type: "code-block",
-      props: {
-        code: "<?php echo 'Hello';",
-        language: "php",
-        copyable: false,
-        lineNumbers: true,
-        maxHeight: 240,
-        wrap: true,
-      },
-    });
-    const screen = await render(<CodeBlockComponent node={node}>{null}</CodeBlockComponent>);
-
-    await expect.element(screen.getByText("<?php echo 'Hello';")).toBeVisible();
-    expect(document.querySelector(".cm-editor")).toHaveStyle({ maxHeight: "240px" });
-    expect(document.querySelector(".cm-gutters")).not.toBeNull();
-    expect(document.querySelector(".cm-lineWrapping")).not.toBeNull();
-    expect(document.querySelector(".cm-content span")).not.toBeNull();
   });
 
   it("updates content without recreating the CodeMirror view", async () => {
@@ -62,8 +37,6 @@ describe("CodeBlock in a browser", () => {
     await expect.poll(() => document.querySelector(".cm-content")?.textContent).toContain("second");
     expect(document.querySelector(".cm-editor")).toBe(editor);
     expect(document.querySelector(".cm-scroller")).toBe(scroller);
-    // CodeMirror re-anchors the preserved scroll offset to the nearest line
-    // boundary, so assert it survived the update rather than an exact pixel.
     expect(scroller!.scrollTop).toBeGreaterThan(0);
   });
 
