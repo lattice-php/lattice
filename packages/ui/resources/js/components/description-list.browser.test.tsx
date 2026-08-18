@@ -10,6 +10,43 @@ describe("DescriptionList in a browser", () => {
     window.localStorage.clear();
   });
 
+  it("bleeds its divider flush to both edges of a padded parent", async () => {
+    // Mirrors CardContent's own px-lt-gutter: the padded box a bled list
+    // divides edge to edge in real usage.
+    const screen = await render(
+      <div className="px-lt-gutter" style={{ width: 400 }} data-testid="panel">
+        <DescriptionListComponent
+          node={fakeNode({
+            type: "description-list",
+            id: "bled",
+            props: { bleed: true, semantic: "list" },
+          })}
+        >
+          <TextEntryComponent
+            node={fakeNode({
+              type: "entry.text",
+              id: "entry-name",
+              props: { label: "Name", value: "Ada Lovelace" },
+            })}
+          >
+            {null}
+          </TextEntryComponent>
+        </DescriptionListComponent>
+      </div>,
+    );
+
+    await expect.element(screen.getByText("Ada Lovelace")).toBeVisible();
+
+    const panel = document.querySelector('[data-testid="panel"]') as HTMLElement;
+    const list = panel.querySelector('[data-slot="description-list"]') as HTMLElement;
+
+    const panelRect = panel.getBoundingClientRect();
+    const listRect = list.getBoundingClientRect();
+
+    expect(listRect.left).toBeCloseTo(panelRect.left, 0);
+    expect(listRect.right).toBeCloseTo(panelRect.right, 0);
+  });
+
   it("reveals and hides an entry's disclosure content when its row is used", async () => {
     const screen = await render(
       <DescriptionListComponent
