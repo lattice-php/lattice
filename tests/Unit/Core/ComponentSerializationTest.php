@@ -11,6 +11,7 @@ use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\CodeBlock;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\DescriptionList;
+use Lattice\Ui\Components\Entries\ComponentEntry;
 use Lattice\Ui\Components\Entries\TextEntry;
 use Lattice\Ui\Components\FloatingPanel;
 use Lattice\Ui\Components\Grid;
@@ -414,7 +415,25 @@ test('a description list hands its record to entries that were not given a value
         ]));
 
     expect($payload['schema'][0]['props']['value'])->toBe('Ada Lovelace')
-        ->and($payload['schema'][1]['props']['value'])->toBe('override@example.test');
+        ->and($payload['schema'][0]['props']['dataBindings'])->toBe(['value' => 'name'])
+        ->and($payload['schema'][1]['props']['value'])->toBe('override@example.test')
+        ->and($payload['schema'][1]['props'])->not->toHaveKey('dataBindings');
+});
+
+test('description entries bind their value until it is explicitly assigned', function (): void {
+    $bound = wire(TextEntry::make('email'));
+    $rebound = wire(TextEntry::make('email')
+        ->value('fallback@example.test')
+        ->dataKey('value', 'profile.email'));
+    $resolved = TextEntry::make('email')
+        ->dataKey('description', 'email_hint')
+        ->value(fn (): string => 'resolved@example.test');
+    $component = wire(ComponentEntry::make('status')->value(Text::make('Active')));
+
+    expect($bound['props']['dataBindings'])->toBe(['value' => 'email'])
+        ->and($rebound['props']['dataBindings'])->toBe(['value' => 'profile.email'])
+        ->and($resolved->dataBindingKeys())->toBe(['email_hint'])
+        ->and($component['props'])->not->toHaveKey('dataBindings');
 });
 
 test('a description list drops to list semantics once an entry can disclose', function (): void {
