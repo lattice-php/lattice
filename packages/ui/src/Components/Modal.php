@@ -4,23 +4,21 @@ declare(strict_types=1);
 namespace Lattice\Ui\Components;
 
 use Lattice\Core\Attributes\AsComponent;
-use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Ui\Components\Concerns\SealsReferences;
 use Lattice\Ui\Enums\ModalHeight;
 use Lattice\Ui\Enums\ModalWidth;
 use Lattice\Ui\Enums\Side;
 
 #[AsComponent('modal')]
-class Modal extends ContainerComponent implements InteractiveComponent
+class Modal extends ContainerComponent
 {
-    use IsInteractive;
+    use SealsReferences;
 
     public ?string $title = null;
 
     public ?string $description = null;
 
     public string $closeLabel;
-
-    public bool $open = false;
 
     public ?Side $side = null;
 
@@ -57,13 +55,6 @@ class Modal extends ContainerComponent implements InteractiveComponent
     public function closeLabel(string $label): static
     {
         $this->closeLabel = $label;
-
-        return $this;
-    }
-
-    public function open(bool $open = true): static
-    {
-        $this->open = $open;
 
         return $this;
     }

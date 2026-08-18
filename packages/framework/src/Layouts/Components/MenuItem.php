@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Lattice\Layouts\Components;
 
+use Closure;
 use InvalidArgumentException;
 use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\PageRoute;
 use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Concerns\HasAffixes;
 use Lattice\Ui\Concerns\HasIcon;
 use Lattice\Ui\Concerns\Triggerable;
@@ -49,13 +51,13 @@ class MenuItem extends ContainerComponent
     }
 
     /**
-     * A menu item is a link/action/effect trigger XOR a container with a
+     * A menu item is a link/action/effect/modal trigger XOR a container with a
      * collapsible submenu — the two cannot mix.
      */
     protected function assertBehaviorAllowed(string $incoming): void
     {
         if ($this->children !== []) {
-            throw new InvalidArgumentException('A menu item with children cannot be a link, action, or effect trigger; only plain items can hold a collapsible submenu.');
+            throw new InvalidArgumentException('A menu item with children cannot be a link, action, effect, or modal trigger; only plain items can hold a collapsible submenu.');
         }
 
         $this->assertSingleBehavior($incoming);
@@ -66,8 +68,8 @@ class MenuItem extends ContainerComponent
      */
     public function children(array $children): static
     {
-        if ($this->href !== null || $this->action instanceof Action || $this->effects !== []) {
-            throw new InvalidArgumentException('A menu item that is a link, action, or effect trigger cannot have children; only plain items can hold a collapsible submenu.');
+        if ($this->href !== null || $this->action instanceof Action || $this->effects !== [] || $this->modal instanceof Modal || $this->modalResolver instanceof Closure) {
+            throw new InvalidArgumentException('A menu item that is a link, action, effect, or modal trigger cannot have children; only plain items can hold a collapsible submenu.');
         }
 
         return $this->schema($children);

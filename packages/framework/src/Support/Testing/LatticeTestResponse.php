@@ -7,6 +7,8 @@ namespace Lattice\Support\Testing;
 use BackedEnum;
 use Illuminate\Testing\TestResponse;
 use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Modal;
+use Lattice\Ui\Effects\Attributes\AsEffect;
 use Lattice\Ui\Effects\Builtin\OpenModal;
 use Lattice\Ui\Effects\Builtin\Redirect;
 use Lattice\Ui\Effects\Builtin\ReloadComponent;
@@ -55,9 +57,27 @@ final class LatticeTestResponse extends TestResponse
         return $this->assertEffect(Toast::make($message ?? '', $variant), $props);
     }
 
-    public function assertOpensModal(string $modal): static
+    public function assertOpensModal(Modal|string $modal): static
     {
-        return $this->assertEffect(new OpenModal($modal));
+        if ($modal instanceof Modal) {
+            return $this->assertEffect(new OpenModal($modal));
+        }
+
+        $type = AsEffect::wireTypeForClass(OpenModal::class);
+
+        foreach ($this->effects() as $effect) {
+            $node = $effect['props']['node'] ?? null;
+
+            if (($effect['type'] ?? null) === $type && is_array($node) && ($node['id'] ?? null) === $modal) {
+                return $this;
+            }
+        }
+
+        Assert::fail(sprintf(
+            'Expected a Lattice open-modal effect for modal [%s]. Received effects: %s.',
+            $modal,
+            json_encode($this->effects(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
+        ));
     }
 
     public function assertReloadsPage(bool $full = false): static

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { effect } from "@lattice-php/ui/test/effect-fixture";
 import { builtinEffectHandlers } from "./registry";
 
@@ -100,9 +101,12 @@ describe("builtinEffectHandlers", () => {
       type: "reload-component",
     },
     {
-      detail: { modal: "confirm" },
+      detail: { node: fakeNode({ id: "confirm", type: "modal", props: {} }) },
       event: LATTICE_EVENT.openModal,
-      fire: () => builtinEffectHandlers["open-modal"](effect("open-modal", { modal: "confirm" })),
+      fire: () =>
+        builtinEffectHandlers["open-modal"](
+          effect("open-modal", { node: fakeNode({ id: "confirm", type: "modal", props: {} }) }),
+        ),
       type: "open-modal",
     },
     {

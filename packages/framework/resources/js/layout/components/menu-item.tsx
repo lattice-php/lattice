@@ -84,7 +84,7 @@ const MenuItemComponent: RendererComponent<"menu-item"> = ({ children, node }) =
     );
   }
 
-  if (behavior.kind === "effects") {
+  if (behavior.kind === "effects" || behavior.kind === "modal") {
     return <li>{triggerButton({ onClick: behavior.onClick, processing: false })}</li>;
   }
 

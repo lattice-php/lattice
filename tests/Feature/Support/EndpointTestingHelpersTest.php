@@ -24,6 +24,7 @@ use Lattice\Table\Contracts\TableSource;
 use Lattice\Table\TableDefinition;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\HttpMethod;
 use Lattice\Ui\Enums\Variant;
@@ -73,6 +74,16 @@ test('typed effect assertions match action response effects regardless of order'
         ->assertToast(Variant::Success, 'Saved.')
         ->assertOpensModal('two-factor')
         ->assertReloadsPage();
+});
+
+test('assertOpensModal matches the full modal node when given a Modal instance', function (): void {
+    Route::get('/helper/projects/{project}', fn (string $project): string => $project)
+        ->name('helper.projects.show');
+    Lattice::actions([HelperEffectsAction::class]);
+
+    $response = $this->callAction(HelperEffectsAction::class);
+
+    $response->assertOk()->assertOpensModal(Modal::make('two-factor'));
 });
 
 test('assertReloadsPage(true) matches a full-page reload effect', function (): void {
@@ -280,7 +291,7 @@ final class HelperEffectsAction extends ActionDefinition
     public function handle(Request $request): ActionResult
     {
         return ActionResult::success()
-            ->openModal('two-factor')
+            ->openModal(Modal::make('two-factor'))
             ->toast('Saved.', Variant::Success)
             ->to('/dashboard')
             ->reloadPage()

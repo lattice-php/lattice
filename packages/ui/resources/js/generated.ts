@@ -38,6 +38,7 @@ export type Button = {
   icon: string | null;
   label: string | null;
   method: HttpMethod | null;
+  modal: Node<"modal"> | null;
   variant: Variant | null;
 };
 export type ButtonType = "button" | "submit" | "reset";
@@ -217,6 +218,7 @@ export type Link = {
   icon: string | null;
   label: string | null;
   method: HttpMethod | null;
+  modal: Node<"modal"> | null;
   prefix: Affix | null;
   suffix: Affix | null;
   tabIndex: number | null;
@@ -228,8 +230,6 @@ export type Modal = {
   closeLabel: string;
   description: string | null;
   height: ModalHeight;
-  open: boolean;
-  ref: string | null;
   side: Side | null;
   title: string | null;
   width: ModalWidth;
@@ -292,7 +292,7 @@ export type NumberFormatUnit =
   | "celsius"
   | "fahrenheit";
 export type OpenModal = {
-  readonly modal: string;
+  readonly node: Node<"modal">;
 };
 export type Orientation = "horizontal" | "vertical";
 export type Placement = "top" | "bottom" | "right";

@@ -8,11 +8,9 @@ use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsPage;
 use Lattice\Pdf\Components\PdfViewer;
 use Lattice\Ui\Components\Heading;
-use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Gap;
-use Lattice\Ui\Enums\ModalWidth;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Actions\OpenPdfModalAction;
 use Workbench\App\Pages\WorkbenchPage;
@@ -38,16 +36,6 @@ final class PdfPage extends WorkbenchPage
                         ->url(fn (): string => url('/fixtures/sample.pdf'))
                         ->filename('sample.pdf')
                         ->maxHeight(720),
-                    Modal::make('pdf-document-modal')
-                        ->title(__('workbench.pages.pdf.modal.title'))
-                        ->width(ModalWidth::Xl)
-                        ->schema([
-                            PdfViewer::make('modal-sample')
-                                ->url(fn (): string => url('/fixtures/sample.pdf'))
-                                ->filename('sample.pdf')
-                                ->sidebar(false)
-                                ->height(560),
-                        ]),
                 ]),
         ]);
     }

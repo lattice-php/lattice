@@ -27,19 +27,19 @@ return ActionResult::success()
 
 ## Effects
 
-| Effect                                                  | What it does                                                                 |
-| ------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `->toast($message, $variant)`                           | Shows a toast. Variant defaults to success.                                  |
-| `->callout($callout)`                                   | Shows a persistent in-flow banner in the layout's callout slot.              |
-| `->retractCallout($key)`                                | Drops a keyed callout, even on a same-URL visit.                             |
-| `->reloadComponent($id)`                                | Re-fetches a single component (e.g. the table the action changed).           |
-| `->reloadPage($full = false)`                           | Reloads the current page. `full` does a real browser reload.                 |
-| `->to($url)` / `->toRoute($name, $params)` / `->back()` | Navigates to a URL, a named route, or the previous page.                     |
-| `->download($url)`                                      | Triggers a file download.                                                    |
-| `->openModal($id)` / `->closeModal($id)`                | Opens or closes a modal by id (`closeModal()` closes the current modal).     |
-| `->resetForm($id)`                                      | Resets a form to its initial values (`resetForm()` resets the current form). |
-| `->localeChange($locale)`                               | Persists the frontend locale and dispatches `lattice:locale-change`.         |
-| `->toggleSidebar($target)`                              | Toggles the layout sidebar (optionally a named target).                      |
+| Effect                                                  | What it does                                                                            |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `->toast($message, $variant)`                           | Shows a toast. Variant defaults to success.                                             |
+| `->callout($callout)`                                   | Shows a persistent in-flow banner in the layout's callout slot.                         |
+| `->retractCallout($key)`                                | Drops a keyed callout, even on a same-URL visit.                                        |
+| `->reloadComponent($id)`                                | Re-fetches a single component (e.g. the table the action changed).                      |
+| `->reloadPage($full = false)`                           | Reloads the current page. `full` does a real browser reload.                            |
+| `->to($url)` / `->toRoute($name, $params)` / `->back()` | Navigates to a URL, a named route, or the previous page.                                |
+| `->download($url)`                                      | Triggers a file download.                                                               |
+| `->openModal($modal)` / `->closeModal($id)`             | Ships a `Modal` to open, or closes one by id (`closeModal()` closes the current modal). |
+| `->resetForm($id)`                                      | Resets a form to its initial values (`resetForm()` resets the current form).            |
+| `->localeChange($locale)`                               | Persists the frontend locale and dispatches `lattice:locale-change`.                    |
+| `->toggleSidebar($target)`                              | Toggles the layout sidebar (optionally a named target).                                 |
 
 ```php
 return ActionResult::success()
@@ -54,6 +54,28 @@ return ActionResult::success()
   `LatticeResponse` performs a real redirect — so `->to()` / `->toRoute()` / `->back()` navigate on the
   server there, and emit a redirect effect here.
 </Info>
+
+### Shipping a modal with the effect
+
+`->openModal($modal)` takes a `Modal` instance, not an id — the modal's full schema travels in the
+effect's payload, and the client-side host renders and opens it. There is no page placement to wire
+up: the modal doesn't sit anywhere in the page tree, the action ships it directly.
+
+```php
+use Lattice\Ui\Components\Modal;
+
+return ActionResult::success()->openModal(
+    Modal::make('order-details')
+        ->title('Order details')
+        ->schema([...]),
+);
+```
+
+Reach for this when the modal's content depends on work the action just did — a record it looked up,
+a document it generated — rather than data already available at the trigger. When the content is
+already known at render time, embed the modal on the trigger instead with
+[`->modal()`](/components/modals/#trigger-embedded). See [Modals](/components/modals/) for both
+patterns, including how to open one on page load.
 
 ### Toasts
 

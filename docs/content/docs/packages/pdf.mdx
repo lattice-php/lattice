@@ -122,23 +122,30 @@ name.
 
 ## In a modal
 
-The "view document" flow of a record table is a server action opening a modal that contains a
-viewer:
+The "view document" flow of a record table is a server action that ships a modal containing a
+viewer — the action already has the row's media id, so it builds the `Modal` and opens it in the
+same response:
 
 ```php
-Modal::make('invoice-modal')
-    ->title('Invoice')
-    ->width(ModalWidth::Xl)
-    ->schema([
-        PdfViewer::make('invoice')
-            ->media($invoiceMediaId)
-            ->sidebar(false)
-            ->height(560),
-    ]);
+use Lattice\Ui\Components\Modal;
+use Lattice\Ui\Enums\ModalWidth;
 
 // In the row action's handle():
-return ActionResult::success()->openModal('invoice-modal');
+return ActionResult::success()->openModal(
+    Modal::make('invoice-modal')
+        ->title('Invoice')
+        ->width(ModalWidth::Xl)
+        ->schema([
+            PdfViewer::make('invoice')
+                ->media($invoiceMediaId)
+                ->sidebar(false)
+                ->height(560),
+        ]),
+);
 ```
+
+See [Modals](/components/modals/) for the trigger-embedded alternative, when the viewer's content is
+already known at render time instead of resolved inside the action.
 
 ## The worker asset
 

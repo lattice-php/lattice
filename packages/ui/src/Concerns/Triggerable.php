@@ -4,19 +4,26 @@ declare(strict_types=1);
 
 namespace Lattice\Ui\Concerns;
 
+use Closure;
 use InvalidArgumentException;
+use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Core\Facades\Evaluate;
+use Lattice\Core\Support\Evaluation\EvaluationContext;
 use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Effects\Effect;
 
 /**
  * The shared click surface for clickable components (Link, Button, MenuItem): a
  * label plus exactly one behavior — navigate to an `href`, run a server `action`,
- * or dispatch client `effects`. The three are mutually exclusive.
+ * dispatch client `effects`, or embed a `modal`. The four are mutually exclusive.
  */
 trait Triggerable
 {
     use HasHttpMethod;
     use HasLabel;
+
+    abstract protected function renderContext(): EvaluationContext;
 
     public ?string $href = null;
 
@@ -24,6 +31,10 @@ trait Triggerable
 
     /** @var array<int, Effect> */
     public array $effects = [];
+
+    public ?Modal $modal = null;
+
+    protected ?Closure $modalResolver = null;
 
     public function href(string $href): static
     {
@@ -58,9 +69,24 @@ trait Triggerable
         return $this;
     }
 
+    public function modal(Modal|Closure $modal): static
+    {
+        $this->assertBehaviorAllowed('modal');
+
+        if ($modal instanceof Modal) {
+            $this->modal = $modal;
+            $this->modalResolver = null;
+        } else {
+            $this->modalResolver = $modal;
+            $this->modal = null;
+        }
+
+        return $this;
+    }
+
     /**
      * A clickable carries exactly one behavior. Re-setting the same one is fine;
-     * mixing an href, an action, and effects is not.
+     * mixing an href, an action, effects, and a modal is not.
      */
     protected function assertBehaviorAllowed(string $incoming): void
     {
@@ -68,10 +94,39 @@ trait Triggerable
             'href' => $this->href !== null,
             'action' => $this->action !== null,
             'effects' => $this->effects !== [],
+            'modal' => $this->modal !== null || $this->modalResolver instanceof Closure,
         ]));
 
         if (array_diff($set, [$incoming]) !== []) {
-            throw new InvalidArgumentException('A clickable component can carry only one of an href, an action, or effects.');
+            throw new InvalidArgumentException('A clickable component can carry only one of an href, an action, effects, or a modal.');
         }
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 190)]
+    protected function resolveEmbeddedModal(array $data): array
+    {
+        if ($this->modalResolver instanceof Closure) {
+            $resolved = Evaluate::resolve($this->modalResolver, $this->renderContext());
+
+            if (! $resolved instanceof Modal) {
+                throw new InvalidArgumentException('The modal() closure must return a Modal instance.');
+            }
+
+            $this->modal = $resolved;
+        }
+
+        if ($this->modal instanceof Modal && ! $this->modal->shouldRender()) {
+            // An embedded modal never sits in a schema array, so it bypasses the
+            // usual collect-time FiltersRenderableComponents pass; strip it here
+            // instead, mirroring Action::stripUnauthorizedForm, or it throws at
+            // jsonSerialize() once shouldRender() is false.
+            $this->modal = null;
+        }
+
+        return $data;
     }
 }

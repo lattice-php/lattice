@@ -103,7 +103,7 @@ const LinkComponent: RendererComponent<"link"> = ({ node }) => {
     return <ActionTrigger action={behavior.action}>{triggerButton}</ActionTrigger>;
   }
 
-  if (behavior.kind === "effects") {
+  if (behavior.kind === "effects" || behavior.kind === "modal") {
     return triggerButton({ onClick: behavior.onClick, processing: false });
   }
 

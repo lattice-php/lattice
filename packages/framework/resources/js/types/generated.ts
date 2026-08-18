@@ -136,6 +136,7 @@ export type MenuItem = {
   icon: string | null;
   label: string | null;
   method: HttpMethod | null;
+  modal: Node<"modal"> | null;
   prefix: Affix | null;
   suffix: Affix | null;
 };

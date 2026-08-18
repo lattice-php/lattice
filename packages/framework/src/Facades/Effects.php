@@ -5,6 +5,7 @@ namespace Lattice\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Lattice\Http\LatticeResponse;
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Effects\Builtin\CloseModal;
 use Lattice\Ui\Effects\Builtin\Download;
 use Lattice\Ui\Effects\Builtin\LocaleChange;
@@ -56,7 +57,7 @@ final class Effects extends Facade
         return new Download($url);
     }
 
-    public static function openModal(string $modal): OpenModal
+    public static function openModal(Modal $modal): OpenModal
     {
         return new OpenModal($modal);
     }

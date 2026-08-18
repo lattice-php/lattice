@@ -8,6 +8,8 @@ use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Core\Attributes\AsAction;
+use Lattice\Ui\Components\Modal;
+use Lattice\Ui\Components\Text;
 
 #[AsAction('workbench.tree.show-node-info')]
 final class ShowTreeNodeInfoAction extends ActionDefinition
@@ -19,6 +21,13 @@ final class ShowTreeNodeInfoAction extends ActionDefinition
 
     public function handle(Request $request): ActionResult
     {
-        return ActionResult::success()->openModal('tree-node-info');
+        return ActionResult::success()->openModal(
+            Modal::make('tree-node-info')
+                ->title('Node info')
+                ->description('Details about the selected node.')
+                ->schema([
+                    Text::make('This modal was opened from a tree node action.'),
+                ]),
+        );
     }
 }
