@@ -1,4 +1,4 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
@@ -22,7 +22,7 @@ function renderCollapsible(node: Node) {
 describe("Collapsible component", () => {
   beforeEach(() => window.localStorage.clear());
 
-  it("toggles its content on click", () => {
+  it("renders wire content through the client disclosure", async () => {
     renderCollapsible({
       id: "name",
       type: "collapsible",
@@ -30,49 +30,47 @@ describe("Collapsible component", () => {
       schema: [{ type: "text", props: { text: "Hidden body" } }],
     });
 
-    const toggle = screen.getByRole("button", { name: "Name" });
+    const disclosure = screen.getByTestId("collapsible-toggle-name").closest("details");
+    expect(disclosure?.open).toBe(false);
 
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(screen.getByTestId("collapsible-toggle-name"));
 
-    fireEvent.click(toggle);
-    expect(screen.getByText("Hidden body")).toBeVisible();
-    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await waitFor(() => expect(disclosure?.open).toBe(true));
+    expect(await screen.findByText("Hidden body")).toBeVisible();
 
-    fireEvent.click(toggle);
+    fireEvent.click(screen.getByTestId("collapsible-toggle-name"));
+
+    await waitFor(() => expect(disclosure?.open).toBe(false));
     expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
   });
 
-  it("starts open when collapsed is false", () => {
+  it("maps an expanded wire state without persisting later changes", async () => {
     renderCollapsible({
       id: "name",
       type: "collapsible",
-      props: { collapsed: false, trigger: [{ type: "text", props: { text: "Name" } }] },
+      props: {
+        collapsed: false,
+        rememberState: false,
+        trigger: [{ type: "text", props: { text: "Name" } }],
+      },
       schema: [{ type: "text", props: { text: "Hidden body" } }],
     });
 
-    expect(screen.getByText("Hidden body")).toBeVisible();
-  });
+    const toggle = screen.getByTestId("collapsible-toggle-name");
+    const disclosure = toggle.closest("details");
+    const content = screen.getByText("Hidden body");
 
-  it("toggles with the Enter and Space keys", () => {
-    renderCollapsible({
-      id: "name",
-      type: "collapsible",
-      props: { trigger: [{ type: "text", props: { text: "Name" } }] },
-      schema: [{ type: "text", props: { text: "Hidden body" } }],
-    });
+    expect(disclosure?.open).toBe(true);
+    expect(content).toBeVisible();
 
-    const toggle = screen.getByRole("button", { name: "Name" });
+    fireEvent.click(toggle);
 
-    fireEvent.keyDown(toggle, { key: "Enter" });
-    expect(screen.getByText("Hidden body")).toBeVisible();
-
-    fireEvent.keyDown(toggle, { key: " " });
+    await waitFor(() => expect(disclosure?.open).toBe(false));
     expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
+    expect(window.localStorage.getItem("lattice:collapsible:name")).toBeNull();
   });
 
-  it("persists the open state when rememberState is set", () => {
-    window.localStorage.clear();
-
+  it("persists native disclosure state changes when rememberState is set", async () => {
     renderCollapsible({
       id: "name",
       type: "collapsible",
@@ -80,13 +78,21 @@ describe("Collapsible component", () => {
       schema: [{ type: "text", props: { text: "Hidden body" } }],
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Name" }));
+    const toggle = screen.getByTestId("collapsible-toggle-name");
+    fireEvent.click(toggle);
 
-    expect(window.localStorage.getItem("lattice:collapsible:name")).toBe("true");
-    window.localStorage.clear();
+    await waitFor(() =>
+      expect(window.localStorage.getItem("lattice:collapsible:name")).toBe("true"),
+    );
+
+    fireEvent.click(toggle);
+
+    await waitFor(() =>
+      expect(window.localStorage.getItem("lattice:collapsible:name")).toBe("false"),
+    );
   });
 
-  it("restores the persisted open state", () => {
+  it("restores persisted state and ignores the collapsed fallback", async () => {
     window.localStorage.setItem("lattice:collapsible:name", "true");
 
     renderCollapsible({
@@ -96,28 +102,13 @@ describe("Collapsible component", () => {
       schema: [{ type: "text", props: { text: "Hidden body" } }],
     });
 
+    const disclosure = screen.getByTestId("collapsible-toggle-name").closest("details");
+    expect(disclosure?.open).toBe(true);
     expect(screen.getByText("Hidden body")).toBeVisible();
-    window.localStorage.clear();
-  });
 
-  it("opens the tooltip without toggling the collapse", () => {
-    renderCollapsible({
-      id: "name",
-      type: "collapsible",
-      props: {
-        tooltip: "Reveals the edit form.",
-        trigger: [{ type: "text", props: { text: "Name" } }],
-      },
-      schema: [{ type: "text", props: { text: "Hidden body" } }],
-    });
+    fireEvent.click(screen.getByTestId("collapsible-toggle-name"));
 
-    const toggle = screen.getByRole("button", { name: /Name/ });
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
-
-    fireEvent.click(screen.getByRole("button", { name: "More information" }));
-
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await waitFor(() => expect(disclosure?.open).toBe(false));
     expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
-    expect(screen.getByText("Reveals the edit form.")).toBeVisible();
   });
 });

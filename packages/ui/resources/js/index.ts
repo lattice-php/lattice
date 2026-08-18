@@ -31,6 +31,7 @@ export type {
 } from "./components/code-block";
 export * from "./copyable-text";
 export * from "./dialog";
+export * from "./disclosure";
 export * from "./dropdown-menu";
 export * from "./icon-button";
 export * from "./icons/index";
