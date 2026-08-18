@@ -53,13 +53,14 @@ export function eagerComponent<TType extends string>(
   };
 }
 
-const CHUNK_RETRY_DELAY_MS = 250;
+const CHUNK_RETRY_DELAYS_MS = [250, 1000, 4000];
 
 /**
  * React.lazy caches a rejected loader forever, so one transient chunk-fetch
- * failure (a flaky network, a briefly overloaded server) would leave the
- * subtree permanently broken. One delayed retry recovers those; a persistent
- * failure still surfaces the original error.
+ * failure (a flaky network, a briefly overloaded or stalled server) would
+ * leave the subtree permanently broken. Escalating retries recover outages
+ * that outlast a single short delay; a persistent failure still surfaces the
+ * original error.
  */
 function withChunkRetry(
   load: () => Promise<RendererComponentModule>,
@@ -68,13 +69,17 @@ function withChunkRetry(
     try {
       return await load();
     } catch (error) {
-      await new Promise((resolve) => setTimeout(resolve, CHUNK_RETRY_DELAY_MS));
+      for (const delayMs of CHUNK_RETRY_DELAYS_MS) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
 
-      try {
-        return await load();
-      } catch {
-        throw error;
+        try {
+          return await load();
+        } catch {
+          continue;
+        }
       }
+
+      throw error;
     }
   };
 }
