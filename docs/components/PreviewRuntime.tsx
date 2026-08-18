@@ -5,6 +5,8 @@ import type { Node } from "@lattice-php/core";
 import { RegistryContext as PackageRegistryContext } from "../../packages/core/resources/js/registry-context";
 import chatPlugin from "../../packages/chat/resources/js/plugin";
 import mapPlugin from "../../packages/map/resources/js/plugin";
+import mediaPlugin from "../../packages/media/resources/js/plugin";
+import type {} from "../../packages/media/resources/js/types";
 import pdfPlugin from "../../packages/pdf/resources/js/plugin";
 import type {} from "../../packages/pdf/resources/js/types";
 import treePlugin from "../../packages/tree/resources/js/plugin";
@@ -14,7 +16,14 @@ type Props = {
   values?: Record<string, unknown>;
 };
 
-const previewRegistry = extendRegistry(registry, chatPlugin, mapPlugin, pdfPlugin, treePlugin);
+const previewRegistry = extendRegistry(
+  registry,
+  chatPlugin,
+  mapPlugin,
+  mediaPlugin,
+  pdfPlugin,
+  treePlugin,
+);
 
 export default function PreviewRuntime({ nodes, values = {} }: Props) {
   return (

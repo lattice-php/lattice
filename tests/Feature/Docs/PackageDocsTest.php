@@ -8,7 +8,12 @@ use Lattice\Core\Enums\ColorName;
 use Lattice\Core\Support\Wire;
 use Lattice\Map\Components\Map;
 use Lattice\Map\Marker;
+use Lattice\Media\Components\MediaLibrary;
+use Lattice\Media\Forms\Components\MediaPicker;
 use Lattice\Pdf\Components\PdfViewer;
+use Lattice\Table\Components\Table;
+use Lattice\Table\TableQuery;
+use Lattice\Table\TableResult;
 use Lattice\Tree\Tree;
 use Lattice\Tree\TreeNode;
 use Lattice\Ui\Components\Heading;
@@ -44,6 +49,67 @@ describe('package docs fixtures', function (): void {
                         ->position(53.5511, 9.9937)
                         ->label('Hamburg office')
                         ->color(ColorName::Warning),
+                ]),
+        ]));
+    });
+
+    it('matches the media example fixture', function (): void {
+        assertFixtureMatches('packages.media', Wire::toWire([
+            MediaPicker::make('gallery', 'Product gallery')
+                ->multiple()
+                ->maxFiles(3)
+                ->schema([
+                    MediaLibrary::make('gallery-library')->picker()->schema([
+                        Table::make('gallery-media')->result(
+                            TableResult::fromItems(collect([
+                                [
+                                    'id' => 1,
+                                    'url' => 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80',
+                                    'preview_url' => 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=480&q=80',
+                                    'name' => 'workspace.jpg',
+                                    'mime_type' => 'image/jpeg',
+                                    'size' => 248_320,
+                                    'alt' => 'A bright workspace with plants',
+                                    'created_at' => '2026-08-12T09:15:00+00:00',
+                                    'attachments_count' => 2,
+                                ],
+                                [
+                                    'id' => 2,
+                                    'url' => 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80',
+                                    'preview_url' => 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=480&q=80',
+                                    'name' => 'studio.jpg',
+                                    'mime_type' => 'image/jpeg',
+                                    'size' => 315_904,
+                                    'alt' => 'A modern studio interior',
+                                    'created_at' => '2026-08-11T14:40:00+00:00',
+                                    'attachments_count' => 1,
+                                ],
+                                [
+                                    'id' => 3,
+                                    'url' => null,
+                                    'preview_url' => null,
+                                    'name' => 'brand-guidelines.pdf',
+                                    'mime_type' => 'application/pdf',
+                                    'size' => 1_843_200,
+                                    'alt' => null,
+                                    'created_at' => '2026-08-10T08:05:00+00:00',
+                                    'attachments_count' => 4,
+                                ],
+                                [
+                                    'id' => 4,
+                                    'url' => null,
+                                    'preview_url' => null,
+                                    'name' => 'launch-film.mp4',
+                                    'mime_type' => 'video/mp4',
+                                    'size' => 8_294_400,
+                                    'alt' => null,
+                                    'created_at' => '2026-08-09T16:20:00+00:00',
+                                    'attachments_count' => 0,
+                                ],
+                            ])),
+                            TableQuery::empty(),
+                        ),
+                    ]),
                 ]),
         ]));
     });
