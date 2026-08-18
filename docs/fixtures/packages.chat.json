@@ -1,0 +1,14 @@
+[
+    {
+        "id": "assistant",
+        "props": {
+            "fill": false,
+            "historyEndpoint": null,
+            "placeholder": "Ask about your project",
+            "remote": null,
+            "streamEndpoint": null,
+            "title": "Lattice assistant"
+        },
+        "type": "chat.box"
+    }
+]

@@ -1,0 +1,128 @@
+[
+    {
+        "props": {
+            "columnWidth": "md",
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "label": "Product gallery",
+            "labelAction": null,
+            "maxFiles": 3,
+            "multiple": true,
+            "name": "gallery",
+            "pickerLabel": null,
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "selected": null,
+            "tooltip": null,
+            "uploadOnly": false,
+            "value": null
+        },
+        "schema": [
+            {
+                "key": "gallery-library",
+                "props": {
+                    "accept": null,
+                    "picker": true,
+                    "signed": false
+                },
+                "schema": [
+                    {
+                        "id": "gallery-media",
+                        "props": {
+                            "actionsLabel": null,
+                            "bulkActions": [],
+                            "columns": [],
+                            "data": [
+                                {
+                                    "alt": "A bright workspace with plants",
+                                    "attachments_count": 2,
+                                    "created_at": "2026-08-12T09:15:00+00:00",
+                                    "id": 1,
+                                    "mime_type": "image/jpeg",
+                                    "name": "workspace.jpg",
+                                    "preview_url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=480&q=80",
+                                    "size": 248320,
+                                    "url": "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80"
+                                },
+                                {
+                                    "alt": "A modern studio interior",
+                                    "attachments_count": 1,
+                                    "created_at": "2026-08-11T14:40:00+00:00",
+                                    "id": 2,
+                                    "mime_type": "image/jpeg",
+                                    "name": "studio.jpg",
+                                    "preview_url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=480&q=80",
+                                    "size": 315904,
+                                    "url": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80"
+                                },
+                                {
+                                    "alt": null,
+                                    "attachments_count": 4,
+                                    "created_at": "2026-08-10T08:05:00+00:00",
+                                    "id": 3,
+                                    "mime_type": "application/pdf",
+                                    "name": "brand-guidelines.pdf",
+                                    "preview_url": null,
+                                    "size": 1843200,
+                                    "url": null
+                                },
+                                {
+                                    "alt": null,
+                                    "attachments_count": 0,
+                                    "created_at": "2026-08-09T16:20:00+00:00",
+                                    "id": 4,
+                                    "mime_type": "video/mp4",
+                                    "name": "launch-film.mp4",
+                                    "preview_url": null,
+                                    "size": 8294400,
+                                    "url": null
+                                }
+                            ],
+                            "emptyLabel": null,
+                            "endpoint": null,
+                            "filters": [],
+                            "layout": null,
+                            "lazy": false,
+                            "pagination": {
+                                "currentPage": null,
+                                "from": 1,
+                                "hasMore": false,
+                                "lastPage": null,
+                                "mode": "none",
+                                "nextPage": null,
+                                "perPage": null,
+                                "to": 4,
+                                "total": 4
+                            },
+                            "perPageOptions": [],
+                            "query": {
+                                "filters": [],
+                                "mode": null,
+                                "page": 1,
+                                "perPage": 25,
+                                "search": "",
+                                "sorts": [],
+                                "tableFilterIndicators": [],
+                                "tableFilters": {}
+                            },
+                            "resizableColumns": false,
+                            "resizeIndicator": false,
+                            "searchable": false,
+                            "striped": false,
+                            "toolbar": []
+                        },
+                        "type": "table"
+                    }
+                ],
+                "type": "media.library"
+            }
+        ],
+        "type": "field.media-picker"
+    }
+]

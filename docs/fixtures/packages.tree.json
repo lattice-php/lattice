@@ -1,0 +1,162 @@
+[
+    {
+        "key": "catalog",
+        "props": {
+            "activeId": null,
+            "activePath": null,
+            "defaultExpanded": [
+                "products",
+                "hardware"
+            ],
+            "endpoint": null,
+            "lazy": false,
+            "moveAction": null,
+            "nodes": [
+                {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "children": [],
+                                    "disabled": false,
+                                    "hasChildren": false,
+                                    "href": null,
+                                    "id": "laptops",
+                                    "label": "Laptops",
+                                    "schema": [
+                                        {
+                                            "props": {
+                                                "align": null,
+                                                "color": null,
+                                                "copyable": false,
+                                                "size": "md",
+                                                "text": "Laptops"
+                                            },
+                                            "type": "text"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "children": [],
+                                    "disabled": false,
+                                    "hasChildren": false,
+                                    "href": null,
+                                    "id": "phones",
+                                    "label": "Phones",
+                                    "schema": [
+                                        {
+                                            "props": {
+                                                "align": null,
+                                                "color": null,
+                                                "copyable": false,
+                                                "size": "md",
+                                                "text": "Phones"
+                                            },
+                                            "type": "text"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "disabled": false,
+                            "hasChildren": false,
+                            "href": null,
+                            "id": "hardware",
+                            "label": "Hardware",
+                            "schema": [
+                                {
+                                    "props": {
+                                        "align": null,
+                                        "color": null,
+                                        "copyable": false,
+                                        "size": "md",
+                                        "text": "Hardware"
+                                    },
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        {
+                            "children": [],
+                            "disabled": false,
+                            "hasChildren": false,
+                            "href": null,
+                            "id": "software",
+                            "label": "Software",
+                            "schema": [
+                                {
+                                    "props": {
+                                        "align": null,
+                                        "color": null,
+                                        "copyable": false,
+                                        "size": "md",
+                                        "text": "Software"
+                                    },
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    ],
+                    "disabled": false,
+                    "hasChildren": false,
+                    "href": null,
+                    "id": "products",
+                    "label": "Products",
+                    "schema": [
+                        {
+                            "props": {
+                                "align": null,
+                                "color": null,
+                                "copyable": false,
+                                "size": "md",
+                                "text": "Products"
+                            },
+                            "type": "text"
+                        },
+                        {
+                            "props": {
+                                "color": {
+                                    "dark": null,
+                                    "kind": "named",
+                                    "value": "info"
+                                },
+                                "label": "24"
+                            },
+                            "type": "badge"
+                        }
+                    ]
+                },
+                {
+                    "children": [],
+                    "disabled": false,
+                    "hasChildren": false,
+                    "href": null,
+                    "id": "services",
+                    "label": "Services",
+                    "schema": [
+                        {
+                            "props": {
+                                "align": null,
+                                "color": null,
+                                "copyable": false,
+                                "size": "md",
+                                "text": "Services"
+                            },
+                            "type": "text"
+                        },
+                        {
+                            "props": {
+                                "color": null,
+                                "label": "8"
+                            },
+                            "type": "badge"
+                        }
+                    ]
+                }
+            ],
+            "rememberState": false,
+            "revision": null,
+            "selectAction": null
+        },
+        "type": "tree"
+    }
+]

@@ -7,12 +7,17 @@
 /* Component preview: design tokens + scan the package renderer sources for
  * utilities (the pre-monorepo `../../resources/js` path scanned nothing). */
 @import "../../packages/ui/resources/css/lattice.css";
+@import "../../packages/map/resources/css/map.css";
+@import "../../packages/pdf/resources/css/pdf.css";
 @source "../../packages/action/resources/js";
 @source "../../packages/api-reference/resources/js";
+@source "../../packages/chat/resources/js";
 @source "../../packages/core/resources/js";
 @source "../../packages/form/resources/js";
 @source "../../packages/framework/resources/js";
+@source "../../packages/map/resources/js";
 @source "../../packages/media/resources/js";
+@source "../../packages/pdf/resources/js";
 @source "../../packages/table/resources/js";
 @source "../../packages/tree/resources/js";
 @source "../../packages/ui/resources/js";
