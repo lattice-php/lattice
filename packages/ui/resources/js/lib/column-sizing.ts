@@ -1,4 +1,4 @@
-import type { ColumnWidth } from "./types";
+import type { ColumnWidth } from "../types";
 
 export type SizableColumn = {
   key: string;

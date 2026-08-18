@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { usePersistentState } from "./lib/use-persistent-state";
+import { usePersistentState } from "./use-persistent-state";
 
 /**
  * Boolean open/collapsed state remembered in `localStorage` as `"true"`/`"false"`.

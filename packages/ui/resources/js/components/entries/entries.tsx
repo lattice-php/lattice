@@ -3,14 +3,14 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import { toNodes } from "@lattice-php/core/nodes";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
-import { Badge } from "../components/badge/badge";
-import { CopyableText } from "../copyable-text";
-import { Icon } from "../icons";
-import { cn } from "../lib/utils";
-import { isTruthy } from "../lib/is-truthy";
-import { useT } from "../i18n";
-import { useFormatContext } from "../format/format-context";
-import { formatValue } from "../format/value";
+import { Badge } from "../badge/badge";
+import { CopyableText } from "../../copyable-text";
+import { Icon } from "../../icons";
+import { cn } from "../../lib/utils";
+import { isTruthy } from "../../lib/is-truthy";
+import { useT } from "../../i18n";
+import { useFormatContext } from "../../format/format-context";
+import { formatValue } from "../../format/value";
 import { EntryRow } from "./entry-row";
 
 /** The disclosure body, or undefined when the entry has no children. */

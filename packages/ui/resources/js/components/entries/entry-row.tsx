@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { Icon } from "../icons";
-import { cn } from "../lib/utils";
-import { useCollapsibleState } from "../use-collapsible-state";
+import { Icon } from "../../icons";
+import { cn } from "../../lib/utils";
+import { useCollapsibleState } from "../../lib/use-collapsible-state";
 import { useDescriptionListSemantic } from "./context";
 
 const ROW = "flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-lt-gutter py-3";

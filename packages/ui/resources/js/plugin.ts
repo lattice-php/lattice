@@ -31,7 +31,7 @@ import {
   ComponentEntryComponent,
   DateEntryComponent,
   TextEntryComponent,
-} from "./entries";
+} from "./components/entries/entries";
 
 export const uiComponents: Plugin = {
   components: {

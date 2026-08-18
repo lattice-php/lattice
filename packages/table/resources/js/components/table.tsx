@@ -2,7 +2,7 @@ import { type ReactNode, Fragment, useMemo } from "react";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Renderer, RenderNode } from "@lattice-php/core/renderer";
-import { useColumnResizing } from "@lattice-php/ui/use-column-resizing";
+import { useColumnResizing } from "@lattice-php/ui/lib/use-column-resizing";
 import { useColumnVisibility } from "@lattice-php/table/hooks/use-column-visibility";
 import { useExpandedRows } from "@lattice-php/table/hooks/use-expanded-rows";
 import { nodeIdentity } from "@lattice-php/core/test-id";

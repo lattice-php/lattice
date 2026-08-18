@@ -13,7 +13,7 @@ import type { ComponentProps, KeyboardEvent, ReactElement, ReactNode } from "rea
 import { cn } from "../../lib/utils";
 import { useMediaQuery } from "../../lib/use-media-query";
 import { NativeSelect } from "../../native-select";
-import { pillClassName } from "../../pill";
+import { pillClassName } from "../../lib/pill";
 
 export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type TabsOrientation = "horizontal" | "vertical";

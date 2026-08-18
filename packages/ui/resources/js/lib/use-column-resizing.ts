@@ -1,6 +1,6 @@
 import type { HTMLAttributes, KeyboardEvent, PointerEvent } from "react";
 import { useCallback, useMemo, useRef } from "react";
-import { usePersistentState } from "./lib/use-persistent-state";
+import { usePersistentState } from "./use-persistent-state";
 import {
   buildColumnGridTemplate,
   defaultColumnWidthPx,

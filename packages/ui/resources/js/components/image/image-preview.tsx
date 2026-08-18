@@ -1,7 +1,7 @@
-import { UI_NAMESPACE, useT } from "./i18n";
+import { UI_NAMESPACE, useT } from "../../i18n";
 import { type ComponentProps, type ReactNode, useState } from "react";
-import { Button } from "./components/button/button";
-import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "./dialog";
+import { Button } from "../button/button";
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "../../dialog";
 
 export type PreviewableImageProps = Omit<ComponentProps<"img">, "children"> & {
   alt: string;

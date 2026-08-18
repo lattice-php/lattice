@@ -1,8 +1,8 @@
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
-import type { SizableColumn } from "@lattice-php/ui/column-sizing";
-import { useColumnResizing } from "@lattice-php/ui/use-column-resizing";
+import type { SizableColumn } from "./column-sizing";
+import { useColumnResizing } from "./use-column-resizing";
 
 const columns: SizableColumn[] = [
   { key: "qty", label: "Qty", width: "sm" },

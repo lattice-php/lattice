@@ -1,5 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
-import { DescriptionListProvider } from "../../entries/context";
+import { DescriptionListProvider } from "../entries/context";
 import { cn } from "../../lib/utils";
 
 export type DescriptionListSemantic = "description-list" | "list";

@@ -7,7 +7,7 @@ import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useMediaQuery } from "@lattice-php/ui/lib/use-media-query";
-import { useCollapsibleState } from "@lattice-php/ui/use-collapsible-state";
+import { useCollapsibleState } from "@lattice-php/ui/lib/use-collapsible-state";
 
 const DESKTOP_QUERY = "(min-width: 768px)";
 

@@ -11,7 +11,7 @@ import { Button } from "@lattice-php/ui/components/button/button";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/dialog";
 import { Input } from "@lattice-php/ui/input";
 import { Label } from "@lattice-php/ui/label";
-import { PreviewableImage } from "@lattice-php/ui/image-preview";
+import { PreviewableImage } from "@lattice-php/ui/components/image/image-preview";
 import {
   MODAL_HOST_MISSING_ERROR,
   useEmbeddedModal,

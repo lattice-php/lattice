@@ -1,4 +1,4 @@
-import { cn } from "./lib/utils";
+import { cn } from "./utils";
 
 /** Shared pill styling for the tabs strip and the segmented control. */
 export function pillClassName(active: boolean): string {

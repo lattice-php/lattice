@@ -1,7 +1,7 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { ColorPicker, normalizeHex } from "@lattice-php/ui/color-picker";
-import { controlSurface } from "@lattice-php/ui/control";
+import { controlSurface } from "@lattice-php/ui/lib/control";
 import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
 import { SimpleField } from "./simple-field";
 

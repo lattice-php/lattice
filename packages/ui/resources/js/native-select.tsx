@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { VariantProps } from "class-variance-authority";
 
-import { controlSurface } from "./control";
+import { controlSurface } from "./lib/control";
 import { cn } from "./lib/utils";
 
 /**

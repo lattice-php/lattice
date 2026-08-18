@@ -1,8 +1,8 @@
 import type { Node } from "@lattice-php/core";
 import { nodeKey } from "@lattice-php/core/nodes";
 import { RenderNode } from "@lattice-php/core/renderer";
-import { DEFAULT_COLUMN_WIDTH, type SizableColumn } from "@lattice-php/ui/column-sizing";
-import { useColumnResizing } from "@lattice-php/ui/use-column-resizing";
+import { DEFAULT_COLUMN_WIDTH, type SizableColumn } from "@lattice-php/ui/lib/column-sizing";
+import { useColumnResizing } from "@lattice-php/ui/lib/use-column-resizing";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import type { ColumnWidth } from "@lattice-php/ui/types";

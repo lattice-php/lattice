@@ -1,7 +1,7 @@
 import { Icon } from "@lattice-php/ui/icons";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Combobox } from "@lattice-php/ui/combobox";
-import { controlSurface } from "@lattice-php/ui/control";
+import { controlSurface } from "@lattice-php/ui/lib/control";
 import { coerceColor, colorValue } from "@lattice-php/ui/lib/color";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
