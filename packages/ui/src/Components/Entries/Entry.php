@@ -35,7 +35,6 @@ abstract class Entry extends ContainerComponent
         $entry = new static($key);
         $entry->name = $name;
         $entry->label = $label ?? str($name)->headline()->toString();
-        $entry->dataKey('value', $name);
 
         return $entry;
     }
@@ -48,7 +47,6 @@ abstract class Entry extends ContainerComponent
     public function value(mixed $value): static
     {
         $this->hasExplicitValue = true;
-        $this->forgetDataBinding('value');
 
         if ($value instanceof Closure) {
             $this->valueResolver = $value;
@@ -93,6 +91,14 @@ abstract class Entry extends ContainerComponent
     public function hydrateFromRecord(mixed $record): void
     {
         if ($this->hasExplicitValue) {
+            return;
+        }
+
+        if ($record === null) {
+            if (! $this->hasDataBinding('value')) {
+                $this->dataKey('value', $this->name);
+            }
+
             return;
         }
 

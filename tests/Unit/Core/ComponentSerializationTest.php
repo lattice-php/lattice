@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Collection;
 use Lattice\Chat\Components\ChatBox;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Color;
@@ -406,34 +407,56 @@ test('column spans reject values that are neither positive integers nor full', f
     Text::make('hello')->columnSpan('wide');
 })->throws(InvalidArgumentException::class);
 
-test('a description list hands its record to entries that were not given a value', function (): void {
+test('a description list hands array-like and object records to entries without explicit values', function (mixed $record): void {
     $payload = wire(DescriptionList::make('summary')
-        ->record(['name' => 'Ada Lovelace', 'email' => 'ada@example.test'])
+        ->record($record)
         ->schema([
             TextEntry::make('name'),
+            TextEntry::make('profile.email', 'Email'),
             TextEntry::make('email')->value('override@example.test'),
         ]));
 
     expect($payload['schema'][0]['props']['value'])->toBe('Ada Lovelace')
-        ->and($payload['schema'][0]['props']['dataBindings'])->toBe(['value' => 'name'])
-        ->and($payload['schema'][1]['props']['value'])->toBe('override@example.test')
-        ->and($payload['schema'][1]['props'])->not->toHaveKey('dataBindings');
-});
+        ->and($payload['schema'][0]['props'])->not->toHaveKey('dataBindings')
+        ->and($payload['schema'][1]['props']['value'])->toBe('ada@example.test')
+        ->and($payload['schema'][1]['props'])->not->toHaveKey('dataBindings')
+        ->and($payload['schema'][2]['props']['value'])->toBe('override@example.test')
+        ->and($payload['schema'][2]['props'])->not->toHaveKey('dataBindings');
+})->with([
+    'array' => [[
+        'name' => 'Ada Lovelace',
+        'profile' => ['email' => 'ada@example.test'],
+    ]],
+    'collection' => [fn (): Collection => collect([
+        'name' => 'Ada Lovelace',
+        'profile' => collect(['email' => 'ada@example.test']),
+    ])],
+    'object' => [(object) [
+        'name' => 'Ada Lovelace',
+        'profile' => (object) ['email' => 'ada@example.test'],
+    ]],
+]);
 
-test('description entries bind their value until it is explicitly assigned', function (): void {
-    $bound = wire(TextEntry::make('email'));
-    $rebound = wire(TextEntry::make('email')
-        ->value('fallback@example.test')
-        ->dataKey('value', 'profile.email'));
-    $resolved = TextEntry::make('email')
-        ->dataKey('description', 'email_hint')
-        ->value(fn (): string => 'resolved@example.test');
-    $component = wire(ComponentEntry::make('status')->value(Text::make('Active')));
+test('a description list without a record binds entries to row data', function (): void {
+    $payload = wire(DescriptionList::make()->schema([
+        TextEntry::make('email'),
+        TextEntry::make('email')->dataKey('value', 'profile.email'),
+        TextEntry::make('email')->value('fallback@example.test'),
+        TextEntry::make('email')
+            ->value('fallback@example.test')
+            ->dataKey('value', 'profile.email'),
+        TextEntry::make('email')
+            ->dataKey('description', 'email_hint')
+            ->value('resolved@example.test'),
+        ComponentEntry::make('status')->value(Text::make('Active')),
+    ]));
 
-    expect($bound['props']['dataBindings'])->toBe(['value' => 'email'])
-        ->and($rebound['props']['dataBindings'])->toBe(['value' => 'profile.email'])
-        ->and($resolved->dataBindingKeys())->toBe(['email_hint'])
-        ->and($component['props'])->not->toHaveKey('dataBindings');
+    expect($payload['schema'][0]['props']['dataBindings'])->toBe(['value' => 'email'])
+        ->and($payload['schema'][1]['props']['dataBindings'])->toBe(['value' => 'profile.email'])
+        ->and($payload['schema'][2]['props'])->not->toHaveKey('dataBindings')
+        ->and($payload['schema'][3]['props']['dataBindings'])->toBe(['value' => 'profile.email'])
+        ->and($payload['schema'][4]['props']['dataBindings'])->toBe(['description' => 'email_hint'])
+        ->and($payload['schema'][5]['props'])->not->toHaveKey('dataBindings');
 });
 
 test('a description list drops to list semantics once an entry can disclose', function (): void {

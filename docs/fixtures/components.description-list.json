@@ -18,9 +18,6 @@
                     {
                         "props": {
                             "copyable": false,
-                            "dataBindings": {
-                                "value": "name"
-                            },
                             "description": null,
                             "label": "Name",
                             "name": "name",
@@ -32,9 +29,6 @@
                     {
                         "props": {
                             "copyable": true,
-                            "dataBindings": {
-                                "value": "email"
-                            },
                             "description": null,
                             "label": "Email",
                             "name": "email",
@@ -45,9 +39,6 @@
                     },
                     {
                         "props": {
-                            "dataBindings": {
-                                "value": "joined_at"
-                            },
                             "description": null,
                             "format": {
                                 "dateStyle": "long",
@@ -64,9 +55,6 @@
                     },
                     {
                         "props": {
-                            "dataBindings": {
-                                "value": "is_active"
-                            },
                             "description": null,
                             "falseIcon": "x",
                             "label": "Active",

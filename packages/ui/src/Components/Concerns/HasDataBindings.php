@@ -35,9 +35,9 @@ trait HasDataBindings
         return array_values($this->dataBindings);
     }
 
-    protected function forgetDataBinding(string $property): void
+    protected function hasDataBinding(string $property): bool
     {
-        unset($this->dataBindings[$property]);
+        return array_key_exists($property, $this->dataBindings);
     }
 
     /**
