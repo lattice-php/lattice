@@ -23,6 +23,8 @@ class BrowserTestCase extends TestCase
 
         $this->assertWorkbenchManifestExists();
 
+        \startBrowserHttpServerWithLongKeepAlive();
+
         // CI runners are slower than Playwright's tight 5s default, which
         // intermittently trips browser actions/assertions under load.
         Playwright::setTimeout(15_000);

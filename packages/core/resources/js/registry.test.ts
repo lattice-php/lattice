@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
-import { createRegistry, eagerComponent, loadPluginModules } from "./registry";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createRegistry, eagerComponent, lazyComponent, loadPluginModules } from "./registry";
 import type { Plugin } from "./registry";
-import type { RendererComponent } from "./index";
+import type { RendererComponent, RendererComponentModule } from "./index";
 
 const EagerComponent: RendererComponent<"test.eager"> = () => null;
 
@@ -81,6 +81,44 @@ describe("lattice registry", () => {
       );
     },
   );
+
+  describe("lazy chunk retry", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("recovers a transient chunk-fetch failure on a later retry", async () => {
+      const module: RendererComponentModule<"test.eager"> = { default: EagerComponent };
+      const load = vi
+        .fn<() => Promise<RendererComponentModule<"test.eager">>>()
+        .mockRejectedValueOnce(new Error("first failure"))
+        .mockRejectedValueOnce(new Error("second failure"))
+        .mockResolvedValue(module);
+
+      const pending = expect(lazyComponent(load).load()).resolves.toBe(module);
+      await vi.runAllTimersAsync();
+
+      await pending;
+      expect(load).toHaveBeenCalledTimes(3);
+    });
+
+    it("surfaces the original error once every retry fails", async () => {
+      const load = vi
+        .fn<() => Promise<RendererComponentModule<"test.eager">>>()
+        .mockRejectedValueOnce(new Error("original failure"))
+        .mockRejectedValue(new Error("later failure"));
+
+      const pending = expect(lazyComponent(load).load()).rejects.toThrow("original failure");
+      await vi.runAllTimersAsync();
+
+      await pending;
+      expect(load).toHaveBeenCalledTimes(4);
+    });
+  });
 
   it.each([
     { name: "invalid", components: [] },
