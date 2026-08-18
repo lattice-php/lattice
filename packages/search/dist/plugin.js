@@ -463,7 +463,7 @@ function re(e) {
 }
 var $, ie = p((() => {
 	y(), te(), $ = ({ node: e, children: n }) => {
-		let { placeholder: i, shortcut: o } = e.props, { t: l } = (0, _.useT)("search"), u = (0, _.useCollapsed)(), d = (0, _.useModalHost)(), f = a(null), p = i ?? l("search.placeholder", "Search…"), m = t(() => {
+		let { placeholder: i, shortcut: o } = e.props, { t: l } = (0, _.useT)("search"), u = (0, _.useCollapsed)(), d = (0, _.useModal)(), f = a(null), p = i ?? l("search.placeholder", "Search…"), m = t(() => {
 			f.current ||= d.open(/* @__PURE__ */ s(ee, {
 				node: e,
 				onClosed: () => {
