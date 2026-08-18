@@ -9329,7 +9329,7 @@ function wd(e, t) {
 }
 function Td({ row: e, update: t, remove: n, onClose: r }) {
 	let { t: i } = (0, T.useT)("media"), { locale: a, timezone: o } = (0, T.useFormatContext)(), s = (0, T.useEffectDispatcher)(), c = (0, T.useEmbeddedModal)();
-	if (!c) throw Error(T.MODAL_HOST_MISSING_ERROR);
+	if (!c) throw Error(T.MODAL_MISSING_ERROR);
 	let { open: l, onOpenChange: u, onExited: d } = c, p = (0, T.useModal)(), [m, h] = f(e.name), [g, y] = f(e.alt ?? ""), [b, x] = f(!1), S = i("media.actions.delete.label", "Delete");
 	function C() {
 		u(!1), r();
@@ -9682,7 +9682,7 @@ function Pd({ node: e, pick: t }) {
 	}), x = d(null), [S, C] = f(!1), [w, ee] = f(null), te = (0, T.useOptionalModal)(), ne = l?.props.label ?? n("media.actions.upload.label", "Upload"), re = w === null, E = a.processing && a.hasLoaded, D = (0, T.useDebouncedCallback)((e) => a.setSearch(e), Id);
 	function ie(e) {
 		if (!(!u || !p)) {
-			if (!te) throw Error(T.MODAL_HOST_MISSING_ERROR);
+			if (!te) throw Error(T.MODAL_MISSING_ERROR);
 			ee(e.id), te.open(/* @__PURE__ */ _(Td, {
 				onClose: () => ee(null),
 				remove: p,
@@ -9858,7 +9858,7 @@ var Id, Ld = C((() => {
 })), Rd = /* @__PURE__ */ ee({ default: () => zd });
 function zd({ editor: e, library: t }) {
 	let { t: n } = (0, T.useT)("media"), r = (0, T.useEmbeddedModal)();
-	if (!r) throw Error(T.MODAL_HOST_MISSING_ERROR);
+	if (!r) throw Error(T.MODAL_MISSING_ERROR);
 	return /* @__PURE__ */ _(T.Dialog, {
 		open: r.open,
 		onOpenChange: r.onOpenChange,
@@ -9995,7 +9995,7 @@ var Gd = {
 })), Yd = /* @__PURE__ */ ee({ default: () => Qd });
 function Xd({ libraryNode: e, multiple: t, max: n, onConfirm: r }) {
 	let { t: i } = (0, T.useT)("media"), a = (0, T.useEmbeddedModal)();
-	if (!a) throw Error(T.MODAL_HOST_MISSING_ERROR);
+	if (!a) throw Error(T.MODAL_MISSING_ERROR);
 	return /* @__PURE__ */ _(T.Dialog, {
 		open: a.open,
 		onOpenChange: a.onOpenChange,

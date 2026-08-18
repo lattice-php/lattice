@@ -425,7 +425,7 @@ function Q() {
 }
 function ee({ node: e, children: t, onClosed: n }) {
 	let a = (0, _.useEmbeddedModal)();
-	if (!a) throw Error(_.MODAL_HOST_MISSING_ERROR);
+	if (!a) throw Error(_.MODAL_MISSING_ERROR);
 	let { endpoint: o, perPage: l, placeholder: u, title: d } = e.props, { t: f } = (0, _.useT)("search"), p = O({
 		endpoint: o,
 		perPage: l
