@@ -1,6 +1,6 @@
-import { UI_NAMESPACE, useT } from "./i18n";
+import { UI_NAMESPACE, useT } from "../i18n";
 import { type ReactNode, useEffect, useState } from "react";
-import { Button } from "./components/button/button";
+import { Button } from "../components/button/button";
 import { IconButton } from "./icon-button";
 
 export async function copyToClipboard(text: string): Promise<boolean> {

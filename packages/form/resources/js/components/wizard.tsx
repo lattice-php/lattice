@@ -6,7 +6,7 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import { Icon } from "@lattice-php/ui/icons";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Spinner } from "@lattice-php/ui/spinner";
+import { Spinner } from "@lattice-php/ui/primitives/spinner";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import {
   firstErroredStep,

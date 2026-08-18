@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { apiFetch } from "@lattice-php/core/api";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Dialog, DialogContent, DialogHeader, type DialogPlacement } from "@lattice-php/ui/dialog";
-import { Skeleton } from "@lattice-php/ui/skeleton";
-import { Spinner } from "@lattice-php/ui/spinner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  type DialogPlacement,
+} from "@lattice-php/ui/primitives/dialog";
+import { Skeleton } from "@lattice-php/ui/primitives/skeleton";
+import { Spinner } from "@lattice-php/ui/primitives/spinner";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import type { ModalWidth } from "@lattice-php/ui/types";

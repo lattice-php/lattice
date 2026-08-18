@@ -6,7 +6,7 @@ import { useColumnResizing } from "@lattice-php/ui/lib/use-column-resizing";
 import { useColumnVisibility } from "@lattice-php/table/hooks/use-column-visibility";
 import { useExpandedRows } from "@lattice-php/table/hooks/use-expanded-rows";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { Checkbox } from "@lattice-php/ui/checkbox";
+import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
 import { Icon } from "@lattice-php/ui/icons";
 import { alignJustifyItems, alignText } from "@lattice-php/table/lib/align";
 import type { TableNode } from "@lattice-php/table/types";

@@ -11,14 +11,14 @@ import {
 } from "@lattice-php/form/components/base/field";
 import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Combobox } from "@lattice-php/ui/combobox";
+import { Combobox } from "@lattice-php/ui/primitives/combobox";
 import { CodeBlock } from "@lattice-php/ui";
-import { CopyButton } from "@lattice-php/ui/copyable-text";
-import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
-import { Input } from "@lattice-php/ui/input";
-import { NativeSelect } from "@lattice-php/ui/native-select";
+import { CopyButton } from "@lattice-php/ui/primitives/copyable-text";
+import { InfoTooltip } from "@lattice-php/ui/primitives/info-tooltip";
+import { Input } from "@lattice-php/ui/primitives/input";
+import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
-import { Spinner } from "@lattice-php/ui/spinner";
+import { Spinner } from "@lattice-php/ui/primitives/spinner";
 import { SchemaView } from "../schema/SchemaView";
 import {
   cachedAccessTokens,

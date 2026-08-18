@@ -5,9 +5,9 @@ import type { Node as WireNode } from "@lattice-php/core/types";
 import type { PatternTokenData } from "@lattice-php/form/types";
 import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { Input } from "@lattice-php/ui/input";
-import { NativeSelect } from "@lattice-php/ui/native-select";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+import { Input } from "@lattice-php/ui/primitives/input";
+import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
 
 export type PatternTokenOptions = { tokens: PatternTokenData[] };
 

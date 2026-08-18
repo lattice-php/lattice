@@ -4,7 +4,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@lattice-php/ui/dropdown-menu";
+} from "@lattice-php/ui/primitives/dropdown-menu";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/ui/lib/utils";

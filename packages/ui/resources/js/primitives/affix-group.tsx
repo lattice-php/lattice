@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { IconRenderer } from "./icons";
-import { cn } from "./lib/utils";
-import type { Affix } from "./types";
+import { IconRenderer } from "../icons";
+import { cn } from "../lib/utils";
+import type { Affix } from "../types";
 
 function AffixSegment({
   affix,

@@ -1,8 +1,8 @@
 import * as React from "react";
 import type { VariantProps } from "class-variance-authority";
 
-import { controlSurface } from "./lib/control";
-import { cn } from "./lib/utils";
+import { controlSurface } from "../lib/control";
+import { cn } from "../lib/utils";
 
 /**
  * A native `<select>` wearing the shared control chrome — for short, fixed

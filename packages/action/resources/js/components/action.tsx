@@ -1,5 +1,5 @@
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Spinner } from "@lattice-php/ui/spinner";
+import { Spinner } from "@lattice-php/ui/primitives/spinner";
 import { prefixedTestId } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { IconRenderer } from "@lattice-php/ui/icons";

@@ -4,7 +4,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import { toNodes } from "@lattice-php/core/nodes";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
 import { Badge } from "../badge/badge";
-import { CopyableText } from "../../copyable-text";
+import { CopyableText } from "../../primitives/copyable-text";
 import { Icon } from "../../icons";
 import { cn } from "../../lib/utils";
 import { isTruthy } from "../../lib/is-truthy";

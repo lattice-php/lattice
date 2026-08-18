@@ -1,8 +1,8 @@
-import { Icon } from "./icons";
+import { Icon } from "../icons";
 import type { ComponentProps, Ref } from "react";
 import { useState } from "react";
 import { Input } from "./input";
-import { cn } from "./lib/utils";
+import { cn } from "../lib/utils";
 
 type PasswordInputProps = Omit<ComponentProps<"input">, "type"> & {
   passwordrules?: string;

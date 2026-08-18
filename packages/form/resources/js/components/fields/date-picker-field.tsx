@@ -6,7 +6,7 @@ import { Button } from "@lattice-php/ui/components/button/button";
 import { Icon } from "@lattice-php/ui/icons";
 import { useLocale } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { Input } from "@lattice-php/ui/input";
+import { Input } from "@lattice-php/ui/primitives/input";
 import type { FormFieldControlProps } from "@lattice-php/form/components/base/field";
 import {
   formatDateDisplayValue,

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
-import { Dialog, DialogContent, DialogHeader } from "./dialog";
-import { ConfirmDialog } from "./confirm-dialog";
+import { Dialog, DialogContent, DialogHeader } from "./primitives/dialog";
+import { ConfirmDialog } from "./primitives/confirm-dialog";
 import { ModalHostProvider, useEmbeddedModal, useModalHost } from "./modal-host";
 
 function ConfirmB() {

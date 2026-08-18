@@ -2,7 +2,7 @@ import { type ComponentProps, type KeyboardEvent, useEffect, useRef } from "reac
 import type { Option, Schema } from "@lattice-php/core/types";
 import { materializeSchema } from "@lattice-php/core/materialize";
 import { Renderer } from "@lattice-php/core/renderer";
-import { cn } from "./lib/utils";
+import { cn } from "../lib/utils";
 
 const PREVIOUS_KEYS = new Set(["ArrowUp", "ArrowLeft"]);
 const NEXT_KEYS = new Set(["ArrowDown", "ArrowRight"]);

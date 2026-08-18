@@ -1,4 +1,4 @@
-import { Skeleton } from "@lattice-php/ui/skeleton";
+import { Skeleton } from "@lattice-php/ui/primitives/skeleton";
 import { useT } from "@lattice-php/ui/i18n";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
 import type { NotificationsStatus } from "@lattice-php/lattice/notifications/store";

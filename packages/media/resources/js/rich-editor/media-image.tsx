@@ -9,9 +9,9 @@ import {
 import type { Node as WireNode } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { Input } from "@lattice-php/ui/input";
+import { Input } from "@lattice-php/ui/primitives/input";
 import { useModalHost } from "@lattice-php/ui/modal-host";
-import { NativeSelect } from "@lattice-php/ui/native-select";
+import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 
 const MediaImageDialog = lazy(() => import("./media-image-dialog"));
 

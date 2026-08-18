@@ -1,9 +1,9 @@
-export * from "./affix-group";
+export * from "./primitives/affix-group";
 export * from "./action-menu-context";
 export * from "./components/badge/badge";
 export * from "./components/button/button";
-export * from "./checkbox";
-export * from "./color-picker";
+export * from "./primitives/checkbox";
+export * from "./primitives/color-picker";
 export * from "./lib/column-sizing";
 export * from "./components/avatar/avatar";
 export * from "./components/collapsible/collapsible";
@@ -20,8 +20,8 @@ export * from "./components/stack/stack";
 export * from "./components/tabs/tabs";
 export * from "./components/text/text";
 export * from "./components/tooltip/tooltip";
-export * from "./combobox";
-export * from "./confirm-dialog";
+export * from "./primitives/combobox";
+export * from "./primitives/confirm-dialog";
 export * from "./lib/control";
 export {
   ActionTrigger,
@@ -50,27 +50,27 @@ export type {
   CodeBlockLanguageLoader,
   CodeBlockProps,
 } from "./components/code-block/code-block";
-export * from "./copyable-text";
-export * from "./dialog";
-export * from "./dropdown-menu";
-export * from "./icon-button";
+export * from "./primitives/copyable-text";
+export * from "./primitives/dialog";
+export * from "./primitives/dropdown-menu";
+export * from "./primitives/icon-button";
 export * from "./icons/index";
 export * from "./i18n/index";
 export * from "./i18n/translatable";
 export * from "./components/image/image-preview";
-export * from "./info-tooltip";
-export * from "./input";
-export { default as InputError } from "./input-error";
-export * from "./input-otp";
-export * from "./label";
+export * from "./primitives/info-tooltip";
+export * from "./primitives/input";
+export { default as InputError } from "./primitives/input-error";
+export * from "./primitives/input-otp";
+export * from "./primitives/label";
 export * from "./modal-host";
-export * from "./native-select";
+export * from "./primitives/native-select";
 export * from "./navigation";
-export { default as PasswordInput } from "./password-input";
-export * from "./popover";
-export * from "./skeleton";
-export * from "./spinner";
-export * from "./textarea";
+export { default as PasswordInput } from "./primitives/password-input";
+export * from "./primitives/popover";
+export * from "./primitives/skeleton";
+export * from "./primitives/spinner";
+export * from "./primitives/textarea";
 export * from "./components/link/text-link";
 export * from "./types";
 export * from "./lib/use-collapsible-state";

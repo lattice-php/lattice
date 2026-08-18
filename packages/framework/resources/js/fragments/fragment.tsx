@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { apiJson } from "@lattice-php/core/api";
-import { Skeleton } from "@lattice-php/ui/skeleton";
+import { Skeleton } from "@lattice-php/ui/primitives/skeleton";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { RendererComponent } from "@lattice-php/core/types";
 import type { FragmentResponse } from "@lattice-php/lattice/types/generated";

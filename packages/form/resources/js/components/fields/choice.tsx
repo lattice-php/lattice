@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { Option, RendererComponent } from "@lattice-php/core";
-import { OptionCards } from "@lattice-php/ui/option-cards";
+import { OptionCards } from "@lattice-php/ui/primitives/option-cards";
 import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";

@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/core";
-import { AffixGroup } from "@lattice-php/ui/affix-group";
-import { Input } from "@lattice-php/ui/input";
+import { AffixGroup } from "@lattice-php/ui/primitives/affix-group";
+import { Input } from "@lattice-php/ui/primitives/input";
 import { SimpleField } from "./simple-field";
 
 export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ node }) => {

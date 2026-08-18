@@ -8,9 +8,9 @@ import { formatDateValue } from "@lattice-php/ui/format/temporal";
 import { useFormatContext } from "@lattice-php/ui/format/format-context";
 import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/dialog";
-import { Input } from "@lattice-php/ui/input";
-import { Label } from "@lattice-php/ui/label";
+import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/primitives/dialog";
+import { Input } from "@lattice-php/ui/primitives/input";
+import { Label } from "@lattice-php/ui/primitives/label";
 import { PreviewableImage } from "@lattice-php/ui/components/image/image-preview";
 import {
   MODAL_HOST_MISSING_ERROR,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { cn } from "./lib/utils";
+import { cn } from "../lib/utils";
 import { Input } from "./input";
 
 export function normalizeHex(input: string): string | null {

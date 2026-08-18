@@ -3,7 +3,7 @@ import type { RemoteAccess } from "@lattice-php/core/api";
 import { Icon } from "@lattice-php/ui/icons";
 import type { ResolveAccessToken } from "./access-token";
 import { Badge } from "@lattice-php/ui/components/badge/badge";
-import { CopyButton } from "@lattice-php/ui/copyable-text";
+import { CopyButton } from "@lattice-php/ui/primitives/copyable-text";
 import { httpMethodColor } from "./http-method-color";
 import { operationToMarkdown } from "./operation-markdown";
 import { OperationView } from "./OperationView";

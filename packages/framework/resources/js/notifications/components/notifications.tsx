@@ -8,7 +8,11 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Popover as PopoverRoot, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
+import {
+  Popover as PopoverRoot,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/ui/primitives/popover";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { type ModalHostHandle, useModalHost } from "@lattice-php/ui/modal-host";

@@ -1,6 +1,6 @@
 import { Button } from "@lattice-php/ui/components/button/button";
 import { ActionTrigger } from "@lattice-php/ui/click-behavior";
-import { Spinner } from "@lattice-php/ui/spinner";
+import { Spinner } from "@lattice-php/ui/primitives/spinner";
 import { prefixedTestId } from "@lattice-php/core/test-id";
 import { useT } from "@lattice-php/ui/i18n";
 import type { Node } from "@lattice-php/core/types";

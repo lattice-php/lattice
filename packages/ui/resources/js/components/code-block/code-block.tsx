@@ -2,7 +2,7 @@ import { Fragment, lazy, Suspense } from "react";
 import type { ComponentProps } from "react";
 import type { Extension } from "@codemirror/state";
 import { cn } from "../../lib/utils";
-import { CopyButton } from "../../copyable-text";
+import { CopyButton } from "../../primitives/copyable-text";
 
 const CodeBlockView = lazy(() => import("./code-block-view"));
 

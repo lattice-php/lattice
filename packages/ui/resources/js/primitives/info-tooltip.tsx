@@ -1,5 +1,5 @@
-import { Icon } from "./icons";
-import { UI_NAMESPACE, useT } from "./i18n";
+import { Icon } from "../icons";
+import { UI_NAMESPACE, useT } from "../i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export function InfoTooltip({ content }: { content?: string | null }) {

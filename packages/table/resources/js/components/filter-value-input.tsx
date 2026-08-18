@@ -1,8 +1,8 @@
 import { Icon } from "@lattice-php/ui/icons";
 import { useEffect, useState } from "react";
-import { IconButton } from "@lattice-php/ui/icon-button";
-import { Input } from "@lattice-php/ui/input";
-import { NativeSelect } from "@lattice-php/ui/native-select";
+import { IconButton } from "@lattice-php/ui/primitives/icon-button";
+import { Input } from "@lattice-php/ui/primitives/input";
+import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import type { FilterType } from "../generated";

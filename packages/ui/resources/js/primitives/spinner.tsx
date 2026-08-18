@@ -1,6 +1,6 @@
-import { Icon } from "./icons";
-import { cn } from "./lib/utils";
-import { UI_NAMESPACE, useT } from "./i18n";
+import { Icon } from "../icons";
+import { cn } from "../lib/utils";
+import { UI_NAMESPACE, useT } from "../i18n";
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   const { t } = useT(UI_NAMESPACE);

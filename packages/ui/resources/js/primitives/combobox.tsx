@@ -1,10 +1,10 @@
-import { Icon } from "./icons";
+import { Icon } from "../icons";
 import * as React from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useT } from "./i18n";
+import { useT } from "../i18n";
 import type { Option } from "@lattice-php/core/types";
-import { cn } from "./lib/utils";
-import { useDebouncedCallback } from "./lib/use-debounced-callback";
+import { cn } from "../lib/utils";
+import { useDebouncedCallback } from "../lib/use-debounced-callback";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 const SEARCH_DEBOUNCE_MS = 250;

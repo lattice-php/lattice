@@ -14,7 +14,7 @@ export {
   mergeEffectHandlers,
 } from "@lattice-php/ui/effects/registry";
 export { initializeAppearance, updateAppearance, useAppearance } from "./appearance";
-export { copyToClipboard } from "@lattice-php/ui/copyable-text";
+export { copyToClipboard } from "@lattice-php/ui/primitives/copyable-text";
 export {
   createLatticeApp,
   type CreateLatticeAppI18nOptions,

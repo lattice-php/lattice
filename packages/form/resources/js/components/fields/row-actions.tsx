@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@lattice-php/ui/dropdown-menu";
+} from "@lattice-php/ui/primitives/dropdown-menu";
 
 export type RowAction = {
   key: string;
