@@ -34,6 +34,7 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
     <Dialog open={context.open} onOpenChange={context.onOpenChange}>
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
+        onCloseAutoFocus={context.onExited}
         placement={node.props.side ?? "center"}
         width={node.props.width}
         height={node.props.height}
