@@ -15,6 +15,7 @@
                         "icon": null,
                         "label": "Invite member",
                         "method": null,
+                        "modal": null,
                         "variant": null
                     },
                     "type": "button"

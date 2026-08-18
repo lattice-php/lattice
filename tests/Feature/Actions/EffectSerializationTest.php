@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Facades\Effects;
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\OpenModal;
 use Lattice\Ui\Effects\Builtin\Toast;
 use Lattice\Ui\Enums\HttpMethod;
 use Lattice\Ui\Enums\Variant;
@@ -154,4 +156,40 @@ test('action results expose the retract callout effect', function (): void {
         'type' => 'retract-callout',
         'props' => ['unique' => 'billing.state'],
     ]);
+});
+
+test('an open-modal effect ships the full modal node', function (): void {
+    $wire = wire(Effects::openModal(Modal::make('x')->title('T')));
+
+    expect($wire['type'])->toBe('open-modal')
+        ->and($wire['props']['node']['type'])->toBe('modal')
+        ->and($wire['props']['node']['id'])->toBe('x')
+        ->and($wire['props']['node']['props']['title'])->toBe('T');
+});
+
+test('an open-modal effect rejects a modal without an id', function (): void {
+    expect(fn (): OpenModal => new OpenModal(new Modal))
+        ->toThrow(InvalidArgumentException::class, 'must be given an id');
+});
+
+test('an open-modal effect refuses to encode a non-renderable modal', function (): void {
+    $effect = Effects::openModal(Modal::make('x')->visible(false));
+
+    expect(fn (): array => wire($effect))->toThrow(LogicException::class);
+});
+
+test('action results expose the open-modal effect', function (): void {
+    $result = ActionResult::success()->openModal(Modal::make('x')->title('T'));
+
+    expect(wire($result)['effects'][0]['type'])->toBe('open-modal')
+        ->and(wire($result)['effects'][0]['props']['node']['id'])->toBe('x');
+});
+
+test('a close-modal effect serializes its target id or null', function (): void {
+    expect(wire(Effects::closeModal('x')))->toBe(['type' => 'close-modal', 'props' => ['modal' => 'x']])
+        ->and(wire(Effects::closeModal()))->toBe(['type' => 'close-modal', 'props' => ['modal' => null]])
+        ->and(wire(ActionResult::success()->closeModal('x'))['effects'][0])->toBe([
+            'type' => 'close-modal',
+            'props' => ['modal' => 'x'],
+        ]);
 });

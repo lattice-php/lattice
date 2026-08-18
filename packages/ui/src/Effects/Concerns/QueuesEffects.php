@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Ui\Effects\Concerns;
 
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Effects\Builtin\Callout;
 use Lattice\Ui\Effects\Builtin\CloseModal;
 use Lattice\Ui\Effects\Builtin\Download;
@@ -46,7 +47,7 @@ trait QueuesEffects
         return $this->effect(new ReloadPage($full));
     }
 
-    public function openModal(string $modal): static
+    public function openModal(Modal $modal): static
     {
         return $this->effect(new OpenModal($modal));
     }

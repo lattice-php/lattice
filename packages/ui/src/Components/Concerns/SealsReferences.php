@@ -23,6 +23,11 @@ trait SealsReferences
         return $this;
     }
 
+    public function componentId(): ?string
+    {
+        return $this->id;
+    }
+
     /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>

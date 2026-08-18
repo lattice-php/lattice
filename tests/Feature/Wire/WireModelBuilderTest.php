@@ -30,7 +30,7 @@ it('emits a props def per component with every wire prop required and sorted', f
     expect($button['type'])->toBe('object')
         ->and(array_keys($button['properties']))->toBe($button['required'])
         ->and($button['required'])->toBe([
-            'action', 'buttonType', 'effects', 'emphasis', 'href', 'icon', 'label', 'method', 'variant',
+            'action', 'buttonType', 'effects', 'emphasis', 'href', 'icon', 'label', 'method', 'modal', 'variant',
         ])
         ->and($button['properties']['buttonType'])->toBe(['$ref' => '#/$defs/ButtonType'])
         ->and($button['properties']['action'])->toBe([

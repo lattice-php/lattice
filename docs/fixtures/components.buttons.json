@@ -20,6 +20,7 @@
                     "icon": null,
                     "label": "Primary",
                     "method": null,
+                    "modal": null,
                     "variant": null
                 },
                 "type": "button"
@@ -34,6 +35,7 @@
                     "icon": null,
                     "label": "Secondary",
                     "method": null,
+                    "modal": null,
                     "variant": "secondary"
                 },
                 "type": "button"
@@ -48,6 +50,7 @@
                     "icon": null,
                     "label": "Success",
                     "method": null,
+                    "modal": null,
                     "variant": "success"
                 },
                 "type": "button"
@@ -62,6 +65,7 @@
                     "icon": null,
                     "label": "Info",
                     "method": null,
+                    "modal": null,
                     "variant": "info"
                 },
                 "type": "button"
@@ -76,6 +80,7 @@
                     "icon": null,
                     "label": "Warning",
                     "method": null,
+                    "modal": null,
                     "variant": "warning"
                 },
                 "type": "button"
@@ -90,6 +95,7 @@
                     "icon": null,
                     "label": "Danger",
                     "method": null,
+                    "modal": null,
                     "variant": "danger"
                 },
                 "type": "button"
@@ -104,6 +110,7 @@
                     "icon": null,
                     "label": "Outline",
                     "method": null,
+                    "modal": null,
                     "variant": null
                 },
                 "type": "button"
@@ -118,6 +125,7 @@
                     "icon": null,
                     "label": "Ghost",
                     "method": null,
+                    "modal": null,
                     "variant": null
                 },
                 "type": "button"

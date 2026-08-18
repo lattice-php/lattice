@@ -75,7 +75,6 @@ it('modal serializes id title description and children', function (): void {
         ->title('Title')
         ->description('Desc')
         ->closeLabel('Close')
-        ->open()
         ->schema([Text::make('Body')])))
         ->toEqual([
             'type' => 'modal',
@@ -84,11 +83,9 @@ it('modal serializes id title description and children', function (): void {
                 'title' => 'Title',
                 'description' => 'Desc',
                 'closeLabel' => 'Close',
-                'open' => true,
                 'side' => null,
                 'width' => 'lg',
                 'height' => 'lg',
-                'ref' => null,
             ],
             'schema' => [
                 ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]],
@@ -105,11 +102,9 @@ it('modal without optional props includes them as null', function (): void {
                 'title' => null,
                 'description' => null,
                 'closeLabel' => 'Close',
-                'open' => false,
                 'side' => null,
                 'width' => 'lg',
                 'height' => 'lg',
-                'ref' => null,
             ],
         ]);
 });

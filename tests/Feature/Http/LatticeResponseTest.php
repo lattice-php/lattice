@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Lattice\Facades\Effects;
 use Lattice\Http\LatticeResponse;
+use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Effects\Builtin\Callout;
 use Lattice\Ui\Effects\EffectFlasher;
 use Lattice\Ui\Enums\Variant;
@@ -48,7 +49,7 @@ test('a lattice response queues every effect helper and redirects to a url', fun
 
 test('a lattice response flashes the trait-provided effects', function (): void {
     $response = LatticeResponse::make()
-        ->openModal('two-factor')
+        ->openModal(Modal::make('two-factor'))
         ->localeChange('de')
         ->to('/dashboard')
         ->toResponse(request());
