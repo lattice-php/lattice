@@ -10,7 +10,7 @@ import { Checkbox } from "@lattice-php/ui/checkbox";
 import { Icon } from "@lattice-php/ui/icons";
 import { alignJustifyItems, alignText } from "@lattice-php/table/lib/align";
 import type { TableNode } from "@lattice-php/table/types";
-import { getBulkActions } from "@lattice-php/table/lib/bulk";
+import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import {
   getPerPageOptions,
   getRowActions,
@@ -64,7 +64,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   } = useTable(node);
 
   const bulkActions = useMemo(
-    () => getBulkActions(node.props?.bulkActions),
+    () => getBulkActionNodes(node.props?.bulkActions),
     [node.props?.bulkActions],
   );
   const hasBulkActions = bulkActions.length > 0;

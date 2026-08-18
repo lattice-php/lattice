@@ -1,7 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ReactElement } from "react";
 import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
+import { ActionInteractionProvider } from "@lattice-php/action";
+import { ModalHostProvider } from "@lattice-php/ui/modal-host";
 import { col, tableNode, tableQuery } from "../test-support";
 
 const apiFetch = vi.hoisted(() =>
@@ -17,6 +20,14 @@ vi.mock("@inertiajs/react", async () =>
 );
 
 const { default: TableComponent } = await import("./table");
+
+function renderTable(ui: ReactElement) {
+  return render(
+    <ModalHostProvider>
+      <ActionInteractionProvider>{ui}</ActionInteractionProvider>
+    </ModalHostProvider>,
+  );
+}
 
 const node = tableNode({
   columns: [col({ key: "name", label: "Name" })],
@@ -45,7 +56,7 @@ describe("table bulk actions", () => {
   });
 
   it("dispatches the selected rows when a bulk action runs", async () => {
-    render(<TableComponent node={node}>{null}</TableComponent>);
+    renderTable(<TableComponent node={node}>{null}</TableComponent>);
 
     expect(screen.queryByText("1 selected")).toBeNull();
 
@@ -66,7 +77,7 @@ describe("table bulk actions", () => {
   });
 
   it("selects every row from the header checkbox", () => {
-    render(<TableComponent node={node}>{null}</TableComponent>);
+    renderTable(<TableComponent node={node}>{null}</TableComponent>);
 
     fireEvent.click(screen.getByRole("checkbox", { name: "Select all rows" }));
 
@@ -103,7 +114,7 @@ describe("table bulk actions", () => {
       },
     } satisfies TableNode;
 
-    render(<TableComponent node={matchingNode}>{null}</TableComponent>);
+    renderTable(<TableComponent node={matchingNode}>{null}</TableComponent>);
 
     fireEvent.click(screen.getByRole("checkbox", { name: "Select all rows" }));
     fireEvent.click(screen.getByRole("button", { name: "Select all 50 matching" }));
@@ -147,7 +158,7 @@ describe("table bulk actions", () => {
       },
     } satisfies TableNode;
 
-    render(<TableComponent node={sheetNode}>{null}</TableComponent>);
+    renderTable(<TableComponent node={sheetNode}>{null}</TableComponent>);
 
     fireEvent.click(screen.getByRole("checkbox", { name: "Select row 1" }));
     fireEvent.click(screen.getByRole("button", { name: "Tag selected" }));
