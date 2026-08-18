@@ -61,8 +61,9 @@ class DescriptionList extends ContainerComponent
     }
 
     /**
-     * The subject the entries read their values from. Entries given an explicit
-     * value keep it.
+     * The subject the entries read their values from. This may be an array, a
+     * keyed Collection, an ArrayAccess object, a model, or a DTO. Entries given
+     * an explicit value keep it.
      */
     public function record(mixed $record): static
     {
@@ -92,10 +93,6 @@ class DescriptionList extends ContainerComponent
     #[SerializationHook(priority: 250)]
     protected function distributeRecord(array $data): array
     {
-        if ($this->record === null) {
-            return $data;
-        }
-
         foreach ($this->entries() as $entry) {
             $entry->hydrateFromRecord($this->record);
         }

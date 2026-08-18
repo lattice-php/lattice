@@ -94,6 +94,14 @@ abstract class Entry extends ContainerComponent
             return;
         }
 
+        if ($record === null) {
+            if (! $this->hasDataBinding('value')) {
+                $this->dataKey('value', $this->name);
+            }
+
+            return;
+        }
+
         $this->value = data_get($record, $this->name);
     }
 

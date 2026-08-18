@@ -35,6 +35,11 @@ trait HasDataBindings
         return array_values($this->dataBindings);
     }
 
+    protected function hasDataBinding(string $property): bool
+    {
+        return array_key_exists($property, $this->dataBindings);
+    }
+
     /**
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>

@@ -22,9 +22,20 @@ to a [form](/forms/overview/). Give it a record and each entry reads its own val
 />
 
 An entry's label defaults to its name in headline case (`joined_at` → `Joined at`); pass a second
-argument to override it. Without `->record()`, or for any entry that should not read from it, set the
-value outright with `->value('…')` — which also accepts a Closure resolved against the render
-context.
+argument to override it. The record may be an associative array, a keyed Collection, a model, or
+another object. Entry names use Laravel's `data_get()`, so dotted paths such as `profile.email` work
+across those record types.
+
+When the list has no record, it treats its entries as a row template and binds each value to the
+entry name through Lattice's `dataBindings`. This lets the same list work inside a client-materialised
+schema. Use `->dataKey('value', 'profile.email')` when the row path differs from the entry name.
+
+<Info title="Value precedence">
+  `->record()` is the source for record-backed lists and does not add automatic row bindings.
+  `->value('…')` — which also accepts a Closure resolved against the render context — overrides the
+  record and prevents an automatic binding. An explicit `->dataKey('value', '…')` remains an
+  intentional client-materialisation instruction.
+</Info>
 
 ## Entries
 
