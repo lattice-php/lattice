@@ -9,7 +9,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import RawBlockComponent from "@lattice-php/ui/components/raw-block";
-import TextComponent from "@lattice-php/ui/components/text";
+import TextAdapter from "@lattice-php/ui/components/text/text-adapter";
 import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import DropdownComponent from "./dropdown";
 import MenuItemComponent from "./menu-item";
@@ -19,7 +19,7 @@ const registry = createRegistry({
     dropdown: eagerComponent(DropdownComponent),
     "menu-item": eagerComponent(MenuItemComponent),
     "raw-block": eagerComponent(RawBlockComponent),
-    text: eagerComponent(TextComponent),
+    text: eagerComponent(TextAdapter),
   },
   name: "test/dropdown",
 });

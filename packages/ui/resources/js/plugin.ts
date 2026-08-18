@@ -10,8 +10,8 @@ import CodeBlockComponent from "./components/code-block";
 import CollapsibleAdapter from "./components/collapsible/collapsible-adapter";
 import DescriptionListComponent from "./components/description-list";
 import FloatingPanelComponent from "./components/floating-panel";
-import GridComponent from "./components/grid";
-import HeadingComponent from "./components/heading";
+import GridAdapter from "./components/grid/grid-adapter";
+import HeadingAdapter from "./components/heading/heading-adapter";
 import IconComponent from "./components/icon";
 import ImageComponent from "./components/image";
 import LinkComponent from "./components/link";
@@ -20,10 +20,10 @@ import ProgressComponent from "./components/progress";
 import RawBlockComponent from "./components/raw-block";
 import SectionComponent from "./components/section";
 import SegmentedControlComponent from "./components/segmented-control";
-import SeparatorComponent from "./components/separator";
-import StackComponent from "./components/stack";
+import SeparatorAdapter from "./components/separator/separator-adapter";
+import StackAdapter from "./components/stack/stack-adapter";
 import TabComponent, { TabsComponent } from "./components/tabs";
-import TextComponent from "./components/text";
+import TextAdapter from "./components/text/text-adapter";
 import TooltipComponent from "./components/tooltip";
 import {
   BadgeEntryComponent,
@@ -49,8 +49,8 @@ export const uiComponents: Plugin = {
     "entry.date": eagerComponent(DateEntryComponent),
     "entry.text": eagerComponent(TextEntryComponent),
     "floating-panel": eagerComponent(FloatingPanelComponent),
-    grid: eagerComponent(GridComponent),
-    heading: eagerComponent(HeadingComponent),
+    grid: eagerComponent(GridAdapter),
+    heading: eagerComponent(HeadingAdapter),
     icon: eagerComponent(IconComponent),
     image: eagerComponent(ImageComponent),
     link: eagerComponent(LinkComponent),
@@ -59,11 +59,11 @@ export const uiComponents: Plugin = {
     "raw-block": eagerComponent(RawBlockComponent),
     section: eagerComponent(SectionComponent),
     "segmented-control": eagerComponent(SegmentedControlComponent),
-    separator: eagerComponent(SeparatorComponent),
-    stack: eagerComponent(StackComponent),
+    separator: eagerComponent(SeparatorAdapter),
+    stack: eagerComponent(StackAdapter),
     tab: eagerComponent(TabComponent),
     tabs: eagerComponent(TabsComponent),
-    text: eagerComponent(TextComponent),
+    text: eagerComponent(TextAdapter),
     tooltip: eagerComponent(TooltipComponent),
   } satisfies ComponentRegistryFor<UiNodeType>,
   i18n: { namespace: UI_NAMESPACE },
