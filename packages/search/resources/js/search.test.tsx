@@ -1,11 +1,19 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { CollapsedContext } from "@lattice-php/core/collapsed-context";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
+import { withModalHost } from "@lattice-php/ui/test/modal-host";
 import SearchBox from "./components/search-box";
 import { searchResponse, stubSearchFetch } from "./test-support";
 import type { SearchBox as SearchBoxNode, SearchResult } from "./types";
+
+function dispatchNavigateClose(): void {
+  act(() => {
+    window.dispatchEvent(new CustomEvent(LATTICE_EVENT.closeModal, { detail: { modal: null } }));
+  });
+}
 
 const visit = vi.fn<(url: string) => void>();
 
@@ -42,7 +50,7 @@ function renderSearch(props: Partial<SearchBoxNode> = {}) {
 
   return render(
     <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
-      <SearchBox node={node}>{null}</SearchBox>
+      {withModalHost(<SearchBox node={node}>{null}</SearchBox>)}
     </NavigationProvider>,
   );
 }
@@ -156,9 +164,11 @@ it("renders an icon-only trigger inside a collapsed container", () => {
 
   render(
     <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
-      <CollapsedContext.Provider value={true}>
-        <SearchBox node={node}>{null}</SearchBox>
-      </CollapsedContext.Provider>
+      {withModalHost(
+        <CollapsedContext.Provider value={true}>
+          <SearchBox node={node}>{null}</SearchBox>
+        </CollapsedContext.Provider>,
+      )}
     </NavigationProvider>,
   );
 
@@ -196,4 +206,50 @@ it("appends the next result page", async () => {
 
   expect(await screen.findByRole("option", { name: /Office Chair/ })).toBeInTheDocument();
   expect(screen.getByRole("option", { name: /Desk Lamp/ })).toBeInTheDocument();
+});
+
+it("closes the palette once the framework's navigate listener dispatches the close-modal event", async () => {
+  stubSearchFetch((url, init) => {
+    if (init?.method === "POST") {
+      return jsonResponse({
+        data: { ...officeChair, item: { ...officeChair.item, link: "/safe" } },
+        state: { recorded: true },
+      });
+    }
+
+    return url.searchParams.has("recent")
+      ? jsonResponse(searchResponse([], { mode: "recent" }))
+      : jsonResponse(searchResponse([officeChair], { category: "products" }));
+  });
+  renderSearch();
+
+  fireEvent.click(screen.getByTestId("search-trigger"));
+  fireEvent.change(screen.getByRole("searchbox"), { target: { value: "office" } });
+  fireEvent.click(await screen.findByRole("option", { name: /Office Chair/ }));
+
+  await waitFor(() => expect(visit).toHaveBeenCalledWith("/safe"));
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+  dispatchNavigateClose();
+
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+
+it("lets a fresh trigger click reopen the palette after a navigate close", async () => {
+  stubSearchFetch(() => jsonResponse(searchResponse([], { mode: "recent" })));
+  renderSearch();
+
+  fireEvent.click(screen.getByTestId("search-trigger"));
+  expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+  dispatchNavigateClose();
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+  // The host clears the entry's close handle once Radix's exit animation
+  // settles (onCloseAutoFocus), which runs on its own rAF-scheduled tick even
+  // in jsdom — retry the trigger click until the handle is free again.
+  await waitFor(() => {
+    fireEvent.click(screen.getByTestId("search-trigger"));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
 });
