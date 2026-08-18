@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Schema } from "@lattice-php/core/types";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { renderWithModalHost } from "@lattice-php/ui/test/modal-host";
+import { renderWithModalHost } from "@lattice-php/ui/test/modal";
 import { libraryRow } from "../test-support";
 import { LibraryView } from "./library-view";
 import type { UploadItem } from "./use-media-upload";

@@ -5,12 +5,12 @@ import { renderWithRegistry, fakeNode } from "@lattice-php/core/test-support";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import type { Node } from "@lattice-php/core/types";
 import ModalComponent from "./components/modal/modal-adapter";
-import type { ModalHostHandle } from "./modal-host";
-import { ModalHostProvider, useEmbeddedModal, useModal } from "./modal-host";
+import type { ModalHostHandle } from "./modal";
+import { ModalHostProvider, useEmbeddedModal, useModal } from "./modal";
 
 const registry = createRegistry({
   components: { modal: eagerComponent(ModalComponent) },
-  name: "test/modal-host",
+  name: "test/modal",
 });
 
 function modalNode(id: string, title: string): Node<"modal"> {

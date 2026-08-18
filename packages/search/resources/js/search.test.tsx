@@ -4,7 +4,7 @@ import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
-import { withModalHost } from "@lattice-php/ui/test/modal-host";
+import { withModalHost } from "@lattice-php/ui/test/modal";
 import SearchBox from "./components/search-box";
 import { searchResponse, stubSearchFetch } from "./test-support";
 import type { SearchBox as SearchBoxNode, SearchResult } from "./types";

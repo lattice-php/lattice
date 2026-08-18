@@ -5,7 +5,7 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, fakeNode, TextProbe } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import ModalComponent from "@lattice-php/ui/components/modal/modal-adapter";
-import { ModalHostProvider } from "@lattice-php/ui/modal-host";
+import { ModalHostProvider } from "@lattice-php/ui/modal";
 import MenuItemComponent from "./menu-item";
 
 vi.mock("@inertiajs/react", async () =>

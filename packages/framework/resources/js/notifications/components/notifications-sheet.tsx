@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@lattice-php/ui/primitives/dialog";
 import { useT } from "@lattice-php/ui/i18n";
-import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal-host";
+import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal";
 import { useLiveNotifications } from "../context";
 import { NotificationList } from "./notification-list";
 

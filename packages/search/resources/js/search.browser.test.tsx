@@ -2,7 +2,7 @@ import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { expect, it } from "vitest";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
-import { withModalHost } from "@lattice-php/ui/test/modal-host";
+import { withModalHost } from "@lattice-php/ui/test/modal";
 import SearchBox from "./components/search-box";
 import { searchResponse, stubSearchFetch } from "./test-support";
 

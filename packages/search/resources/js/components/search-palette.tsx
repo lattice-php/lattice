@@ -2,7 +2,7 @@ import { useEffect, useId, type ReactNode } from "react";
 import type { Node } from "@lattice-php/core/types";
 import { Dialog, DialogContent, DialogTitle } from "@lattice-php/ui/primitives/dialog";
 import { useT } from "@lattice-php/ui/i18n";
-import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal-host";
+import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal";
 import { SearchProvider, useSearchContext } from "../context";
 import type { SearchNodeType } from "../types";
 import { useSearch } from "../use-search";

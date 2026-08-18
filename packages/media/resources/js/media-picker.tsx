@@ -7,7 +7,7 @@ import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/primitives/dialog";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
-import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal, useModal } from "@lattice-php/ui/modal-host";
+import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal, useModal } from "@lattice-php/ui/modal";
 import { LibraryView, type MediaRow } from "./components/library-view";
 import { UploadList } from "./components/upload-list";
 import { useMediaUpload, type UploadedMedia } from "./components/use-media-upload";

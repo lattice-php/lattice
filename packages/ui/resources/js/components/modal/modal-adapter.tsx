@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader } from "../../primitives/dialog";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { UI_NAMESPACE, useT } from "../../i18n";
-import { useEmbeddedModal } from "../../modal-host";
+import { useEmbeddedModal } from "../../modal";
 
 let warnedMissingHost = false;
 

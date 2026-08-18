@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/primitives/
 import { Input } from "@lattice-php/ui/primitives/input";
 import { Label } from "@lattice-php/ui/primitives/label";
 import { PreviewableImage } from "@lattice-php/ui/components/image/image-preview";
-import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal, useModal } from "@lattice-php/ui/modal-host";
+import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal, useModal } from "@lattice-php/ui/modal";
 import type { MediaRow } from "./library-view";
 
 const byteUnits = ["byte", "kilobyte", "megabyte", "gigabyte", "terabyte"] as const;

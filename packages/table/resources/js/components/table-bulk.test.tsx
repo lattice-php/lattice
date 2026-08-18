@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { ActionInteractionProvider } from "@lattice-php/action";
-import { ModalHostProvider } from "@lattice-php/ui/modal-host";
+import { ModalHostProvider } from "@lattice-php/ui/modal";
 import { col, tableNode, tableQuery } from "../test-support";
 
 const apiFetch = vi.hoisted(() =>

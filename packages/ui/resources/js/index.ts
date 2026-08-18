@@ -63,7 +63,7 @@ export * from "./primitives/input";
 export { default as InputError } from "./primitives/input-error";
 export * from "./primitives/input-otp";
 export * from "./primitives/label";
-export * from "./modal-host";
+export * from "./modal";
 export * from "./primitives/native-select";
 export * from "./navigation";
 export { default as PasswordInput } from "./primitives/password-input";
