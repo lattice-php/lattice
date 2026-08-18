@@ -28,14 +28,7 @@ export {
   pageComponentName,
   withVisitHeaders,
 } from "./inertia";
-export {
-  Callouts,
-  layoutComponents,
-  OutletContext,
-  SchemaLayout,
-  SidebarCollapsedContext,
-  useSidebarCollapsed,
-} from "./layout";
+export { Callouts, layoutComponents, OutletProvider, SchemaLayout, useOutlet } from "./layout";
 export { Provider, useColumnRegistry, useComponentRegistry } from "./provider";
 export { onCallout, onToast, Toaster } from "./toast";
 export {

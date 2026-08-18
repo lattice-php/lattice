@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ActionInteractionProvider } from "@lattice-php/action/components/action-trigger-provider";
 import type { Registry } from "@lattice-php/core/registry";
-import { RegistryContext } from "@lattice-php/core/registry-context";
+import { RegistryProvider } from "@lattice-php/core/registry-context";
 import { useFlashEffects } from "./effects/use-flash-effects";
 import { NavigationProvider } from "@lattice-php/ui/navigation";
 import { ModalHostProvider } from "@lattice-php/ui/modal-host";
@@ -31,7 +31,7 @@ export function ProviderBase({
   useCloseModalsOnNavigate();
 
   return (
-    <RegistryContext.Provider value={registry}>
+    <RegistryProvider registry={registry}>
       <NavigationProvider adapter={inertiaNavigation}>
         <ActionInteractionProvider>
           <SpriteProvider sprite={sprite}>
@@ -43,6 +43,6 @@ export function ProviderBase({
           </SpriteProvider>
         </ActionInteractionProvider>
       </NavigationProvider>
-    </RegistryContext.Provider>
+    </RegistryProvider>
   );
 }

@@ -1,12 +1,11 @@
-import { useContext } from "react";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { OutletContext } from "@lattice-php/lattice/layout/hooks/context";
+import { useOutlet } from "@lattice-php/lattice/layout/hooks/context";
 
 /**
  * Renders the active page at the position the layout schema places it.
  */
 const OutletComponent: RendererComponent<"outlet"> = () => {
-  return <>{useContext(OutletContext)}</>;
+  return <>{useOutlet()}</>;
 };
 
 export default OutletComponent;

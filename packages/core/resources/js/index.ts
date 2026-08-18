@@ -2,7 +2,7 @@ export type * from "./types";
 export type * from "./generated";
 
 export * from "./api";
-export { CollapsedContext, useCollapsed } from "./collapsed-context";
+export { CollapsedProvider, useCollapsed } from "./collapsed-context";
 export {
   clearRefreshedRefs,
   latestRef,
@@ -39,7 +39,7 @@ export type {
   Registry,
 } from "./registry";
 export {
-  RegistryContext,
+  RegistryProvider,
   setDefaultRegistry,
   useComponentRegistry,
   useExtensionRegistry,

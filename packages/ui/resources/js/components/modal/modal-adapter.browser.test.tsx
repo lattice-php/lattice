@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { ModalHostProvider, useModalHost } from "../../modal-host";
+import { ModalHostProvider, useModal } from "../../modal-host";
 import ModalAdapter from "./modal-adapter";
 
 const registry = createRegistry({
@@ -11,7 +11,7 @@ const registry = createRegistry({
 });
 
 function OpenButton() {
-  const host = useModalHost();
+  const host = useModal();
 
   return (
     <button

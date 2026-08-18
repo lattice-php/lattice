@@ -2,7 +2,7 @@ import { usePage } from "@inertiajs/react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { PagePayload } from "@lattice-php/lattice/types";
-import { OutletContext } from "@lattice-php/lattice/layout/hooks/context";
+import { OutletProvider } from "@lattice-php/lattice/layout/hooks/context";
 
 /**
  * Persistent Inertia layout that renders a server-composed layout schema and
@@ -19,8 +19,8 @@ export default function SchemaLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <OutletContext.Provider value={children}>
+    <OutletProvider outlet={children}>
       <Renderer nodes={layout.schema} />
-    </OutletContext.Provider>
+    </OutletProvider>
   );
 }

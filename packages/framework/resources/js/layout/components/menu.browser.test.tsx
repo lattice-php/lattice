@@ -8,7 +8,7 @@ import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
-import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
+import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import MenuComponent from "./menu";
 import MenuItemComponent from "./menu-item";
 
@@ -38,9 +38,9 @@ const menu: Node = {
 
 function renderCollapsedMenu() {
   return renderWithRegistry(
-    <SidebarCollapsedContext.Provider value={true}>
+    <CollapsedProvider collapsed={true}>
       <Renderer nodes={[menu]} />
-    </SidebarCollapsedContext.Provider>,
+    </CollapsedProvider>,
     registry,
   );
 }

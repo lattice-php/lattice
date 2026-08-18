@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
 import { Dialog, DialogContent, DialogHeader } from "./primitives/dialog";
 import { ConfirmDialog } from "./primitives/confirm-dialog";
-import { ModalHostProvider, useEmbeddedModal, useModalHost } from "./modal-host";
+import { ModalHostProvider, useEmbeddedModal, useModal } from "./modal-host";
 
 function ConfirmB() {
   const context = useEmbeddedModal();
@@ -25,7 +25,7 @@ function ConfirmB() {
 
 function DialogA() {
   const context = useEmbeddedModal();
-  const host = useModalHost();
+  const host = useModal();
 
   if (!context) {
     return null;
@@ -44,7 +44,7 @@ function DialogA() {
 }
 
 function PageTrigger() {
-  const host = useModalHost();
+  const host = useModal();
 
   return (
     <button onClick={() => host.open(<DialogA />)} type="button">

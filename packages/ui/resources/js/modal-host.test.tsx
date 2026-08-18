@@ -6,7 +6,7 @@ import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import type { Node } from "@lattice-php/core/types";
 import ModalComponent from "./components/modal/modal-adapter";
 import type { ModalHostHandle } from "./modal-host";
-import { ModalHostProvider, useEmbeddedModal, useModalHost } from "./modal-host";
+import { ModalHostProvider, useEmbeddedModal, useModal } from "./modal-host";
 
 const registry = createRegistry({
   components: { modal: eagerComponent(ModalComponent) },
@@ -18,7 +18,7 @@ function modalNode(id: string, title: string): Node<"modal"> {
 }
 
 function OpenButton({ label, node }: { label: string; node: Node<"modal"> }) {
-  const host = useModalHost();
+  const host = useModal();
 
   return (
     <button onClick={() => host.open(node)} type="button">
@@ -36,7 +36,7 @@ function OpenWithHandleButton({
   node: Node<"modal">;
   onHandle: (handle: ModalHostHandle) => void;
 }) {
-  const host = useModalHost();
+  const host = useModal();
 
   return (
     <button onClick={() => onHandle(host.open(node))} type="button">
@@ -46,7 +46,7 @@ function OpenWithHandleButton({
 }
 
 function OpenElementButton({ label, title }: { label: string; title: string }) {
-  const host = useModalHost();
+  const host = useModal();
 
   return (
     <button onClick={() => host.open(<ElementDialog title={title} />)} type="button">
@@ -79,7 +79,7 @@ function fireModalEvent(type: string, detail: Record<string, unknown>) {
 }
 
 describe("ModalHostProvider", () => {
-  it("opens a modal through useModalHost().open()", () => {
+  it("opens a modal through useModal().open()", () => {
     renderWithRegistry(
       <ModalHostProvider>
         <OpenButton label="Open" node={modalNode("welcome", "Welcome")} />

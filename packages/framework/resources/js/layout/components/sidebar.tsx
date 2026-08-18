@@ -1,7 +1,7 @@
 import { router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { CollapsedContext } from "@lattice-php/core/collapsed-context";
+import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { nodeIdentity } from "@lattice-php/core/test-id";
@@ -60,7 +60,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
   const isCollapsed = collapsible && collapsed && isDesktop;
 
   return (
-    <CollapsedContext.Provider value={isCollapsed}>
+    <CollapsedProvider collapsed={isCollapsed}>
       {mobileOpen ? (
         <div
           aria-hidden="true"
@@ -84,7 +84,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
       >
         {children}
       </aside>
-    </CollapsedContext.Provider>
+    </CollapsedProvider>
   );
 };
 

@@ -32,7 +32,17 @@ export type EmbeddedModalState = {
   onExited: (event: Event) => void;
 };
 
-export const EmbeddedModalContext = createContext<EmbeddedModalState | null>(null);
+const EmbeddedModalContext = createContext<EmbeddedModalState | null>(null);
+
+export function EmbeddedModalProvider({
+  state,
+  children,
+}: {
+  state: EmbeddedModalState;
+  children: ReactNode;
+}) {
+  return <EmbeddedModalContext.Provider value={state}>{children}</EmbeddedModalContext.Provider>;
+}
 
 export function useEmbeddedModal(): EmbeddedModalState | null {
   return useContext(EmbeddedModalContext);
@@ -46,10 +56,14 @@ export type ModalHost = {
   open: (content: Node<"modal"> | ReactElement) => ModalHostHandle;
 };
 
-export const ModalHostContext = createContext<ModalHost | null>(null);
+const ModalContext = createContext<ModalHost | null>(null);
 
-export function useModalHost(): ModalHost {
-  const host = useContext(ModalHostContext);
+export function useOptionalModal(): ModalHost | null {
+  return useContext(ModalContext);
+}
+
+export function useModal(): ModalHost {
+  const host = useOptionalModal();
 
   if (!host) {
     throw new Error(MODAL_HOST_MISSING_ERROR);
@@ -229,7 +243,7 @@ export function ModalHostProvider({ children }: { children: ReactNode }) {
   const host = useMemo(() => ({ open }), [open]);
 
   return (
-    <ModalHostContext.Provider value={host}>
+    <ModalContext.Provider value={host}>
       {children}
       {stack.map((entry) => {
         const value: EmbeddedModalState = { open: entry.open, ...closuresFor(entry.key) };
@@ -240,6 +254,6 @@ export function ModalHostProvider({ children }: { children: ReactNode }) {
           </EmbeddedModalContext.Provider>
         );
       })}
-    </ModalHostContext.Provider>
+    </ModalContext.Provider>
   );
 }

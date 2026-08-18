@@ -17,12 +17,7 @@ export { useTable } from "@lattice-php/table/hooks/use-table";
 export { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 export { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 export { useAction } from "@lattice-php/action/hooks/use-action";
-export {
-  MODAL_HOST_MISSING_ERROR,
-  ModalHostContext,
-  useEmbeddedModal,
-  useModalHost,
-} from "@lattice-php/ui/modal-host";
+export { MODAL_HOST_MISSING_ERROR, useEmbeddedModal, useModal } from "@lattice-php/ui/modal-host";
 export {
   Badge,
   Button,

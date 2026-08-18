@@ -15,7 +15,7 @@ import {
 } from "@lattice-php/ui/primitives/popover";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
-import { type ModalHostHandle, useModalHost } from "@lattice-php/ui/modal-host";
+import { type ModalHostHandle, useModal } from "@lattice-php/ui/modal-host";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { useNotifications } from "@lattice-php/lattice/notifications/store";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
@@ -51,7 +51,7 @@ const NotificationsComponent: RendererComponent<"notifications"> = ({ node }) =>
     endpoint: node.props.endpoint,
     pollingInterval: node.props.pollingInterval,
   });
-  const host = useModalHost();
+  const host = useModal();
   const handleRef = useRef<ModalHostHandle | null>(null);
   const [bridge] = useState(() => createNotificationsBridge(store));
 

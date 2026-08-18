@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { CollapsedContext } from "@lattice-php/core/collapsed-context";
+import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
@@ -165,9 +165,9 @@ it("renders an icon-only trigger inside a collapsed container", () => {
   render(
     <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
       {withModalHost(
-        <CollapsedContext.Provider value={true}>
+        <CollapsedProvider collapsed={true}>
           <SearchBox node={node}>{null}</SearchBox>
-        </CollapsedContext.Provider>,
+        </CollapsedProvider>,
       )}
     </NavigationProvider>,
   );

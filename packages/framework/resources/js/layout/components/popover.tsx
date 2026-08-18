@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@lattice-php/ui/primitives/popover";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { CollapsedContext } from "@lattice-php/core/collapsed-context";
+import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 
 /**
  * A navigation-aware popover for the sidebar: it wraps the shared popover
@@ -58,7 +58,7 @@ export function Popover({
         role="menu"
         side={placement}
       >
-        <CollapsedContext.Provider value={false}>{children}</CollapsedContext.Provider>
+        <CollapsedProvider collapsed={false}>{children}</CollapsedProvider>
       </PopoverContent>
     </PopoverRoot>
   );

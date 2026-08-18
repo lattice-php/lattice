@@ -1,8 +1,8 @@
 import { Renderer, registry } from "@lattice-php/lattice";
-import { extendRegistry, RegistryContext as RuntimeRegistryContext } from "@lattice-php/core";
+import { extendRegistry, RegistryProvider as RuntimeRegistryProvider } from "@lattice-php/core";
 import { FormValuesProvider } from "@lattice-php/form";
 import type { Node } from "@lattice-php/core";
-import { RegistryContext as PackageRegistryContext } from "../../packages/core/resources/js/registry-context";
+import { RegistryProvider as PackageRegistryProvider } from "../../packages/core/resources/js/registry-context";
 import chatPlugin from "../../packages/chat/resources/js/plugin";
 import mapPlugin from "../../packages/map/resources/js/plugin";
 import mediaPlugin from "../../packages/media/resources/js/plugin";
@@ -27,12 +27,12 @@ const previewRegistry = extendRegistry(
 
 export default function PreviewRuntime({ nodes, values = {} }: Props) {
   return (
-    <RuntimeRegistryContext.Provider value={previewRegistry}>
-      <PackageRegistryContext.Provider value={previewRegistry}>
+    <RuntimeRegistryProvider registry={previewRegistry}>
+      <PackageRegistryProvider registry={previewRegistry}>
         <FormValuesProvider initial={values}>
           <Renderer nodes={nodes} />
         </FormValuesProvider>
-      </PackageRegistryContext.Provider>
-    </RuntimeRegistryContext.Provider>
+      </PackageRegistryProvider>
+    </RuntimeRegistryProvider>
   );
 }
