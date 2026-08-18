@@ -16750,10 +16750,10 @@ function Qa({ doc: e, baseSize: t, currentPage: n, onSelectPage: i }) {
 		"data-test": "pdf-sidebar",
 		children: [m.length > 0 ? /* @__PURE__ */ l("div", {
 			className: "lt-pdf-sidebar-tabs",
-			children: /* @__PURE__ */ l(y.SegmentedPills, {
-				ariaLabel: a("pdf.sidebar.label", "Document sidebar"),
+			children: /* @__PURE__ */ l(y.SegmentedControl, {
+				"aria-label": a("pdf.sidebar.label", "Document sidebar"),
 				name: "pdf-sidebar-tab",
-				onSelect: (e) => p(e),
+				onValueChange: (e) => p(e),
 				options: x,
 				value: f
 			})

@@ -1211,10 +1211,10 @@ var ye, be = f((() => {
 			"data-lattice-component": t,
 			children: [p.length > 1 ? /* @__PURE__ */ o("div", {
 				className: "mb-3",
-				children: /* @__PURE__ */ o(g.SegmentedPills, {
-					ariaLabel: n("calendar.view-switcher-label", "Calendar view"),
+				children: /* @__PURE__ */ o(g.SegmentedControl, {
+					"aria-label": n("calendar.view-switcher-label", "Calendar view"),
 					name: "calendar-view",
-					onSelect: (e) => h(e),
+					onValueChange: (e) => h(e),
 					options: j,
 					value: m
 				})

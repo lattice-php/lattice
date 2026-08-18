@@ -2,8 +2,8 @@ import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import DescriptionListComponent from "./description-list";
-import { TextEntryComponent } from "../entries";
+import { TextEntryComponent } from "../../entries";
+import { DescriptionList } from "./description-list";
 
 describe("DescriptionList in a browser", () => {
   beforeEach(() => {
@@ -15,13 +15,7 @@ describe("DescriptionList in a browser", () => {
     // divides edge to edge in real usage.
     const screen = await render(
       <div className="px-lt-gutter" style={{ width: 400 }} data-testid="panel">
-        <DescriptionListComponent
-          node={fakeNode({
-            type: "description-list",
-            id: "bled",
-            props: { bleed: true, semantic: "list" },
-          })}
-        >
+        <DescriptionList bleed semantic="list">
           <TextEntryComponent
             node={fakeNode({
               type: "entry.text",
@@ -31,7 +25,7 @@ describe("DescriptionList in a browser", () => {
           >
             {null}
           </TextEntryComponent>
-        </DescriptionListComponent>
+        </DescriptionList>
       </div>,
     );
 
@@ -49,9 +43,7 @@ describe("DescriptionList in a browser", () => {
 
   it("reveals and hides an entry's disclosure content when its row is used", async () => {
     const screen = await render(
-      <DescriptionListComponent
-        node={fakeNode({ type: "description-list", id: "security", props: { semantic: "list" } })}
-      >
+      <DescriptionList semantic="list">
         <TextEntryComponent
           node={fakeNode({
             type: "entry.text",
@@ -62,7 +54,7 @@ describe("DescriptionList in a browser", () => {
         >
           <p>Change your password</p>
         </TextEntryComponent>
-      </DescriptionListComponent>,
+      </DescriptionList>,
     );
 
     const row = screen.getByRole("button", { name: /Password/ });

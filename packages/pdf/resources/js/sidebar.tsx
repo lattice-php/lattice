@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 import type { Option } from "@lattice-php/core/types";
-import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
+import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 
@@ -183,10 +183,10 @@ export function Sidebar({
     <div className="lt-pdf-sidebar" data-test="pdf-sidebar">
       {attachments.length > 0 ? (
         <div className="lt-pdf-sidebar-tabs">
-          <SegmentedPills
-            ariaLabel={t("pdf.sidebar.label", "Document sidebar")}
+          <SegmentedControl
+            aria-label={t("pdf.sidebar.label", "Document sidebar")}
             name="pdf-sidebar-tab"
-            onSelect={(value) => setTab(value as SidebarTab)}
+            onValueChange={(value) => setTab(value as SidebarTab)}
             options={tabOptions}
             value={tab}
           />

@@ -3,7 +3,7 @@ import { apiFetch, nodeIdentity } from "@lattice-php/core";
 import type { RendererComponent } from "@lattice-php/core";
 import type { Option } from "@lattice-php/core/types";
 import { runAction } from "@lattice-php/action";
-import { SegmentedPills } from "@lattice-php/ui/segmented-pills";
+import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { currentTimezone, useT } from "@lattice-php/ui/i18n";
 import { addDays, addMonths, startOfMonthISO, todayISO } from "@lattice-php/ui/format/temporal";
@@ -143,10 +143,10 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
     <div className="lt-calendar" data-lattice-component={identity}>
       {views.length > 1 ? (
         <div className="mb-3">
-          <SegmentedPills
-            ariaLabel={t("calendar.view-switcher-label", "Calendar view")}
+          <SegmentedControl
+            aria-label={t("calendar.view-switcher-label", "Calendar view")}
             name="calendar-view"
-            onSelect={(value) => setActiveView(value as CalendarView)}
+            onValueChange={(value) => setActiveView(value as CalendarView)}
             options={viewOptions}
             value={activeView}
           />
