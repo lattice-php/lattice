@@ -15,7 +15,9 @@ function OpenButton() {
 
   return (
     <button
-      onClick={() => host.open(fakeNode({ type: "modal", id: "info", props: { title: "Info" } }))}
+      onClick={() =>
+        host.open(fakeNode<"modal">({ type: "modal", id: "info", props: { title: "Info" } }))
+      }
       type="button"
     >
       Open

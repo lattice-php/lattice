@@ -13,36 +13,32 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const label = actionLabel(node);
   const isMenuItem = useActionMenu();
   const { variant, emphasis } = node.props;
-  const { processing, requestSubmit, overlays } = useAction(node);
+  const { processing, requestSubmit } = useAction(node);
   const testId = node.key ?? prefixedTestId("action", node.id);
 
   return (
-    <>
-      <Button
-        className={isMenuItem ? actionMenuItemClassName : undefined}
-        data-lattice-component={node.id}
-        data-test={testId}
-        disabled={processing || !endpoint}
-        onClick={requestSubmit}
-        type="button"
-        emphasis={isMenuItem ? "ghost" : emphasis}
-        variant={isMenuItem ? null : variant}
-      >
-        {processing ? (
-          <Spinner className={isMenuItem ? "size-lt-icon-sm" : undefined} />
-        ) : (
-          icon && (
-            <IconRenderer
-              className={isMenuItem ? "size-lt-icon-sm" : "size-lt-icon-md"}
-              icon={icon}
-            />
-          )
-        )}
-        {label}
-      </Button>
-
-      {overlays}
-    </>
+    <Button
+      className={isMenuItem ? actionMenuItemClassName : undefined}
+      data-lattice-component={node.id}
+      data-test={testId}
+      disabled={processing || !endpoint}
+      onClick={requestSubmit}
+      type="button"
+      emphasis={isMenuItem ? "ghost" : emphasis}
+      variant={isMenuItem ? null : variant}
+    >
+      {processing ? (
+        <Spinner className={isMenuItem ? "size-lt-icon-sm" : undefined} />
+      ) : (
+        icon && (
+          <IconRenderer
+            className={isMenuItem ? "size-lt-icon-sm" : "size-lt-icon-md"}
+            icon={icon}
+          />
+        )
+      )}
+      {label}
+    </Button>
   );
 };
 

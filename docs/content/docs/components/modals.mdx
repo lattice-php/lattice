@@ -9,8 +9,11 @@ import Info from "@components/Info.astro";
 its own — a single host renders it, reached one of two ways.
 
 <Info>
-  Only one modal can be open at a time. Opening a second one — from another trigger, or another
-  `open-modal` effect — replaces whatever is currently open rather than stacking.
+  The host is a stack, not a single slot: opening a modal from inside another one pushes it above
+  the current modal instead of replacing it, and an action's confirmation or form dialog (see
+  [Confirmation & forms](/actions/confirmation-and-forms/)) opens the same way. Opening the *same*
+  `Modal::make($id)` again — the same instance re-triggered, or a re-dispatched `open-modal` effect
+  — replaces that entry in place rather than pushing a duplicate.
 </Info>
 
 ## Trigger-embedded
@@ -124,6 +127,14 @@ Modal::make('saved-filters')
 
 Sheets and centered dialogs share the same width scale: `->width()` caps a centered dialog and sets
 a sheet's panel width.
+
+## Stacking
+
+Opening a modal while another is already open — a button's `->modal()` inside a modal's schema, or
+a row action's confirmation dialog above a modal that contains its table — pushes a new entry onto
+the host rather than replacing the current one. Closing the top entry (Escape, its close button, or
+`->closeModal()` with no id) reveals whatever was open underneath; the rest of the stack is
+untouched.
 
 ## Lazy content
 

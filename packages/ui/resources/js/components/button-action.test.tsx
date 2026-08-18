@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
+import { ModalHostProvider } from "@lattice-php/ui/modal-host";
 import ButtonComponent from "./button";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
@@ -37,9 +38,11 @@ function actionButton(props: Partial<ComponentPropsOf<"action">> = {}): Node<"bu
 
 function renderActionButton(node: Node<"button">) {
   return render(
-    <ActionInteractionProvider>
-      <ButtonComponent node={node}>{null}</ButtonComponent>
-    </ActionInteractionProvider>,
+    <ModalHostProvider>
+      <ActionInteractionProvider>
+        <ButtonComponent node={node}>{null}</ButtonComponent>
+      </ActionInteractionProvider>
+    </ModalHostProvider>,
   );
 }
 

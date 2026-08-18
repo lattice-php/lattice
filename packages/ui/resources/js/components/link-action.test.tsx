@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
+import { ModalHostProvider } from "@lattice-php/ui/modal-host";
 import LinkComponent from "./link";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
@@ -36,9 +37,11 @@ function actionLink(props: Partial<ComponentPropsOf<"action">> = {}): Node<"link
 
 function renderActionLink(node: Node<"link">) {
   return render(
-    <ActionInteractionProvider>
-      <LinkComponent node={node}>{null}</LinkComponent>
-    </ActionInteractionProvider>,
+    <ModalHostProvider>
+      <ActionInteractionProvider>
+        <LinkComponent node={node}>{null}</LinkComponent>
+      </ActionInteractionProvider>
+    </ModalHostProvider>,
   );
 }
 

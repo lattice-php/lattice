@@ -6,6 +6,7 @@ import type { Node } from "@lattice-php/lattice";
 import { RegistryContext } from "@lattice-php/core";
 import { formComponents } from "@lattice-php/form";
 import { fakeNode } from "@lattice-php/core/test-support";
+import { ModalHostProvider } from "@lattice-php/ui/modal-host";
 import { actionComponents } from "@lattice-php/action/plugin";
 
 vi.mock("@inertiajs/react", async () =>
@@ -45,7 +46,9 @@ describe("action form modal in a browser", () => {
 
     const screen = await render(<Renderer nodes={[rejectAction()]} />, {
       wrapper: ({ children }) => (
-        <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>
+        <RegistryContext.Provider value={registry}>
+          <ModalHostProvider>{children}</ModalHostProvider>
+        </RegistryContext.Provider>
       ),
     });
 

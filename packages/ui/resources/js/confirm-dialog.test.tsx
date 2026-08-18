@@ -7,6 +7,7 @@ describe("ConfirmDialog", () => {
     const onConfirm = vi.fn<() => void>();
     render(
       <ConfirmDialog
+        open
         title="Delete account?"
         description="This cannot be undone."
         confirmLabel="Delete"
@@ -27,6 +28,7 @@ describe("ConfirmDialog", () => {
     const onCancel = vi.fn<() => void>();
     render(
       <ConfirmDialog
+        open
         title="Delete?"
         confirmLabel="Delete"
         onConfirm={() => {}}
@@ -43,6 +45,7 @@ describe("ConfirmDialog", () => {
     const onCancel = vi.fn<() => void>();
     render(
       <ConfirmDialog
+        open
         title="Delete?"
         confirmLabel="Delete"
         processing

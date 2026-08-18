@@ -4,6 +4,7 @@ import type { Emphasis, Variant } from "./generated";
 import { Spinner } from "./spinner";
 
 export function ConfirmDialog({
+  open,
   title,
   description,
   confirmLabel,
@@ -14,7 +15,9 @@ export function ConfirmDialog({
   confirmDisabled = false,
   onConfirm,
   onCancel,
+  onExited,
 }: {
+  open: boolean;
   title: string;
   description?: string;
   confirmLabel: string;
@@ -25,6 +28,7 @@ export function ConfirmDialog({
   confirmDisabled?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  onExited?: (event: Event) => void;
 }) {
   const blockWhileProcessing = (event: Event): void => {
     if (processing) {
@@ -34,9 +38,9 @@ export function ConfirmDialog({
 
   return (
     <Dialog
-      open
-      onOpenChange={(open) => {
-        if (!open) {
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) {
           onCancel();
         }
       }}
@@ -44,6 +48,7 @@ export function ConfirmDialog({
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
         width="md"
+        onCloseAutoFocus={onExited}
         onEscapeKeyDown={blockWhileProcessing}
         onInteractOutside={blockWhileProcessing}
       >

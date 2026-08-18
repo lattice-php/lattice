@@ -5,9 +5,9 @@ import type { Node } from "@lattice-php/core/types";
 import { EmbeddedModalContext } from "../modal-host";
 import ModalComponent from "./modal";
 
-function renderModal(node: Node<"modal">, open = true, onOpenChange = vi.fn()) {
+function renderModal(node: Node<"modal">, open = true, onOpenChange = vi.fn(), onExited = vi.fn()) {
   render(
-    <EmbeddedModalContext.Provider value={{ open, onOpenChange }}>
+    <EmbeddedModalContext.Provider value={{ open, onOpenChange, onExited }}>
       <ModalComponent node={node}>
         <p>Body content</p>
       </ModalComponent>

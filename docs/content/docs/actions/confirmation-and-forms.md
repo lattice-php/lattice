@@ -6,6 +6,11 @@ description: Confirm an action before it runs, or collect validated input in a m
 An action can interrupt the click with a modal — either a simple confirmation, or a full form whose
 values are passed to `handle()`.
 
+Both dialogs render through the app's shared [modal host](/components/modals/#stacking): they
+survive the popover or kebab menu that triggered them closing, and they open above whatever modal
+is already open — a row action's confirmation above the modal that contains its table, for
+instance.
+
 ## Confirmation modals
 
 `->confirm()` shows a confirmation dialog before the action runs. The user must accept; cancelling

@@ -5,8 +5,8 @@ import type { EffectHandler } from "@lattice-php/ui/effects/registry";
 import { createRegistry } from "@lattice-php/core/registry";
 import { Provider } from "@lattice-php/lattice/provider";
 import { fakeNode } from "@lattice-php/core/test-support";
+import type { Node } from "@lattice-php/core/types";
 import { BulkBar } from "./bulk-bar";
-import type { BulkAction } from "@lattice-php/table/lib/bulk";
 
 const apiFetch = vi.hoisted(() =>
   vi.fn<(url: string, init?: Record<string, unknown>) => Promise<Response>>(),
@@ -33,45 +33,74 @@ type ActionFormProps = {
   submitLabel: string;
   title: string;
   onClose: () => void;
+  onExited?: (event: Event) => void;
   onSuccess: (response: ActionResponse) => void;
 };
 
-vi.mock("@lattice-php/form/action-form", () => ({
-  ActionForm: (props: ActionFormProps) => (
-    <div data-test="action-form">
-      <span data-test="form-title">{props.title}</span>
-      <span data-test="form-description">{props.description ?? "(none)"}</span>
-      <span data-test="form-cancel-label">{props.cancelLabel}</span>
-      <span data-test="form-submit-label">{props.submitLabel}</span>
-      <span data-test="form-extra">{JSON.stringify(props.extraData)}</span>
-      <button
-        type="button"
-        data-test="form-success"
-        onClick={() => props.onSuccess({ effects: [{ type: "test.bulk-success", props: {} }] })}
-      >
-        success
-      </button>
-      <button type="button" data-test="form-close" onClick={props.onClose}>
-        close
-      </button>
-    </div>
-  ),
-}));
+vi.mock("@lattice-php/form/action-form", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@lattice-php/form/action-form")>();
 
-function action(partial: Partial<BulkAction> & Pick<BulkAction, "id">): BulkAction {
   return {
-    label: "Run",
-    method: "post",
-    endpoint: "/bulk/run",
-    ref: "",
-    variant: null,
-    emphasis: "solid",
-    confirmation: null,
-    form: null,
-    modalSide: null,
-    modalWidth: null,
-    ...partial,
+    ...actual,
+    // Stands in for the real Dialog/DialogContent: the host only removes the
+    // entry once `onExited` fires (Radix's onCloseAutoFocus), so this mock
+    // fires it itself right after closing/succeeding to mimic an instant
+    // (no-animation) exit, matching what jsdom would otherwise never trigger.
+    ActionForm: (props: ActionFormProps) => (
+      <div data-test="action-form">
+        <span data-test="form-title">{props.title}</span>
+        <span data-test="form-description">{props.description ?? "(none)"}</span>
+        <span data-test="form-cancel-label">{props.cancelLabel}</span>
+        <span data-test="form-submit-label">{props.submitLabel}</span>
+        <span data-test="form-extra">{JSON.stringify(props.extraData)}</span>
+        <button
+          type="button"
+          data-test="form-success"
+          onClick={() => {
+            props.onSuccess({ effects: [{ type: "test.bulk-success", props: {} }] });
+            props.onExited?.(new Event("mock-exit"));
+          }}
+        >
+          success
+        </button>
+        <button
+          type="button"
+          data-test="form-close"
+          onClick={() => {
+            props.onClose();
+            props.onExited?.(new Event("mock-exit"));
+          }}
+        >
+          close
+        </button>
+      </div>
+    ),
   };
+});
+
+function action(
+  partial: Partial<Record<string, unknown>> & { id: string },
+): Node<"action" | "action.bulk"> {
+  const { id, ...props } = partial;
+
+  return fakeNode({
+    id,
+    type: "action.bulk",
+    props: {
+      label: "Run",
+      method: "post",
+      endpoint: "/bulk/run",
+      ref: "",
+      variant: null,
+      emphasis: "solid",
+      confirmation: null,
+      form: null,
+      lazyForm: false,
+      modalSide: null,
+      modalWidth: null,
+      ...props,
+    },
+  });
 }
 
 const effectHandler = vi.fn<EffectHandler>();
@@ -165,8 +194,8 @@ describe("BulkBar", () => {
           id: "archive",
           method: "patch",
           endpoint: "/bulk/archive",
-          // "" is the real normalized "no ref" value: getBulkActions always
-          // defaults `props.ref ?? ""`, so this is an in-contract fixture.
+          // "" is the real normalized "no ref" value: getBulkActionNodes never
+          // rewrites the raw node, so this is an in-contract fixture.
           ref: "",
         }),
       ],
@@ -210,15 +239,18 @@ describe("BulkBar", () => {
     expect(onCompleted).not.toHaveBeenCalled();
   });
 
-  it("disables the action buttons and shows a spinner while processing", async () => {
+  it("tracks processing per trigger, leaving other actions clickable", async () => {
     apiFetch.mockReturnValue(new Promise<Response>(() => {}));
-    renderBar({ actions: [action({ id: "archive" })] });
+    renderBar({
+      actions: [action({ id: "archive" }), action({ id: "restore", label: "Restore" })],
+    });
 
     fireEvent.click(screen.getByTestId("bulk-action-archive"));
 
     await waitFor(() => {
       expect(screen.getByTestId("bulk-action-archive")).toBeDisabled();
     });
+    expect(screen.getByTestId("bulk-action-restore")).not.toBeDisabled();
   });
 
   describe("confirmation flow", () => {
@@ -432,6 +464,29 @@ describe("BulkBar", () => {
       expect(screen.getByTestId("form-extra")).toHaveTextContent(
         JSON.stringify({ allMatching: true, filter: "status:eq:active" }),
       );
+    });
+
+    it("opens a lazy bulk action form and posts the selection payload with the schema request", async () => {
+      renderBar({
+        selectedKeys: ["9"],
+        actions: [
+          action({ id: "tag", label: "Tag", lazyForm: true, form: null, confirmation: null }),
+        ],
+      });
+
+      fireEvent.click(screen.getByTestId("bulk-action-tag"));
+
+      await waitFor(() => expect(screen.getByTestId("action-form")).toBeInTheDocument());
+
+      const schemaCall = apiFetch.mock.calls.find(([, options]) => {
+        const body = JSON.parse((options as { body: string }).body) as Record<string, unknown>;
+
+        return body._sub === "schema";
+      });
+
+      expect(schemaCall).toBeDefined();
+      const [, options] = schemaCall as [string, { body: string }];
+      expect(JSON.parse(options.body)).toEqual({ _sub: "schema", selected: ["9"] });
     });
   });
 });

@@ -1,38 +1,39 @@
 import { router } from "@inertiajs/react";
 import type { Method } from "@inertiajs/core";
-import { useState } from "react";
-import type { ReactNode } from "react";
-import { ConfirmDialog } from "@lattice-php/ui/confirm-dialog";
+import { useContext, useState } from "react";
 import { apiFetch } from "@lattice-php/core/api";
 import { withHeaders } from "@lattice-php/core/headers";
 import type { Node } from "@lattice-php/core/types";
-import { translate } from "@lattice-php/ui/i18n";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
+import { MODAL_HOST_MISSING_ERROR, ModalHostContext } from "@lattice-php/ui/modal-host";
+import type { ActionSubmitOptions } from "@lattice-php/ui/click-behavior";
 import { runAction } from "@lattice-php/action/lib/run-action";
-import { ActionForm, useLazyActionForm } from "@lattice-php/action/components/action-form";
-import { actionLabel } from "@lattice-php/action/lib/action-label";
+import { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";
+import { ActionFormOverlay } from "@lattice-php/action/components/action-form-overlay";
+
+export type { ActionSubmitOptions } from "@lattice-php/ui/click-behavior";
 
 type UseAction = {
-  /** Whether the action request is in flight. */
+  /** Whether the direct-submit request is in flight (form/confirm overlays track their own). */
   processing: boolean;
   /** Gate then run the action: open the form, confirm, or dispatch directly. */
   requestSubmit: () => void;
-  /** The confirm dialog and action form rendered next to the trigger. */
-  overlays: ReactNode;
 };
 
 /**
  * The shared action machinery behind the Action button, action menu items, and
  * action links: it gates submission (form → modal, confirmation → confirm,
- * otherwise dispatch) and renders the matching overlays. The host owns the
- * trigger element so each surface keeps its own styling.
+ * otherwise dispatch) and pushes the matching overlay onto the modal host. The
+ * host is read lazily so a direct-submit action never needs a
+ * ModalHostProvider in scope.
  */
-export function useAction(node: Node<"action" | "action.bulk">): UseAction {
+export function useAction(
+  node: Node<"action" | "action.bulk">,
+  options?: ActionSubmitOptions,
+): UseAction {
   const endpoint = node.props.endpoint ?? "";
   const componentRef = node.props.ref ?? "";
   const method: Method = node.props.method ?? "post";
-  const label = actionLabel(node);
-  const { variant, emphasis } = node.props;
   const confirmation = node.props.confirmation;
   const inlineForm = node.props.form;
   const lazyForm = node.props.lazyForm === true;
@@ -40,19 +41,17 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
 
   const [processing, setProcessing] = useState(false);
   const dispatch = useEffectDispatcher();
-  const [isConfirming, setIsConfirming] = useState(false);
-  const [isFilling, setIsFilling] = useState(false);
-  const lazyNode = useLazyActionForm(endpoint, componentRef, isFilling && lazyForm);
-  const formNode = lazyForm ? lazyNode : inlineForm;
+  const host = useContext(ModalHostContext);
 
   const submit = async (): Promise<void> => {
     if (!endpoint) {
       return;
     }
 
+    const extraData = options?.extraData?.();
+
     if (method === "get") {
       router.visit(endpoint, { headers: withHeaders(componentRef) });
-      setIsConfirming(false);
 
       return;
     }
@@ -60,26 +59,52 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
     setProcessing(true);
 
     const ok = await runAction(
-      () => apiFetch(endpoint, { method, ref: componentRef, throwOnError: false }),
+      () =>
+        apiFetch(endpoint, {
+          method,
+          ref: componentRef,
+          body: extraData ? JSON.stringify(extraData) : undefined,
+          throwOnError: false,
+        }),
       dispatch,
     );
 
     setProcessing(false);
 
     if (ok) {
-      setIsConfirming(false);
+      options?.onSuccess?.();
     }
   };
 
   const requestSubmit = (): void => {
     if (hasForm) {
-      setIsFilling(true);
+      if (!host) {
+        throw new Error(MODAL_HOST_MISSING_ERROR);
+      }
+
+      host.open(
+        <ActionFormOverlay
+          node={node}
+          extraData={options?.extraData?.()}
+          onSuccess={options?.onSuccess}
+        />,
+      );
 
       return;
     }
 
     if (confirmation) {
-      setIsConfirming(true);
+      if (!host) {
+        throw new Error(MODAL_HOST_MISSING_ERROR);
+      }
+
+      host.open(
+        <ActionConfirmOverlay
+          node={node}
+          extraData={options?.extraData?.()}
+          onSuccess={options?.onSuccess}
+        />,
+      );
 
       return;
     }
@@ -87,48 +112,5 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
     void submit();
   };
 
-  const confirmationTitle = confirmation?.title ?? label;
-  const confirmationConfirmLabel = confirmation?.confirmLabel ?? label;
-  const confirmationCancelLabel =
-    confirmation?.cancelLabel ?? translate("lattice", "common.cancel", "Cancel");
-
-  const overlays = (
-    <>
-      {isConfirming && confirmation && (
-        <ConfirmDialog
-          title={confirmationTitle}
-          description={confirmation.description ?? undefined}
-          confirmLabel={confirmationConfirmLabel}
-          cancelLabel={confirmationCancelLabel}
-          confirmVariant={variant}
-          confirmEmphasis={emphasis}
-          processing={processing}
-          confirmDisabled={!endpoint}
-          onConfirm={() => void submit()}
-          onCancel={() => setIsConfirming(false)}
-        />
-      )}
-
-      {isFilling && hasForm && (
-        <ActionForm
-          cancelLabel={confirmationCancelLabel}
-          componentRef={componentRef}
-          description={confirmation?.description ?? undefined}
-          endpoint={endpoint}
-          formNode={formNode}
-          method={method}
-          onClose={() => setIsFilling(false)}
-          onSuccess={() => {
-            setIsFilling(false);
-          }}
-          placement={node.props.modalSide ?? "center"}
-          submitLabel={confirmationConfirmLabel}
-          title={confirmationTitle}
-          width={node.props.modalWidth ?? undefined}
-        />
-      )}
-    </>
-  );
-
-  return { processing, requestSubmit, overlays };
+  return { processing, requestSubmit };
 }
