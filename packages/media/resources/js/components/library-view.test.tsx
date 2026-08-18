@@ -1,7 +1,8 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Schema } from "@lattice-php/core/types";
 import { fakeNode } from "@lattice-php/core/test-support";
+import { renderWithModalHost } from "@lattice-php/ui/test/modal-host";
 import { libraryRow } from "../test-support";
 import { LibraryView } from "./library-view";
 import type { UploadItem } from "./use-media-upload";
@@ -54,7 +55,9 @@ describe("LibraryView", () => {
   });
 
   it("deselects a single-select pick when the same card is clicked twice", () => {
-    render(<LibraryView node={libraryNode()} pick={{ multiple: false, onConfirm: vi.fn() }} />);
+    renderWithModalHost(
+      <LibraryView node={libraryNode()} pick={{ multiple: false, onConfirm: vi.fn() }} />,
+    );
 
     const [card] = screen.getAllByTestId("media-card");
 
@@ -66,7 +69,7 @@ describe("LibraryView", () => {
   });
 
   it("shows a selection counter once a max is configured", () => {
-    render(
+    renderWithModalHost(
       <LibraryView node={libraryNode()} pick={{ multiple: true, max: 2, onConfirm: vi.fn() }} />,
     );
 
@@ -78,7 +81,7 @@ describe("LibraryView", () => {
   });
 
   it("refuses to select past the max but always allows deselecting", () => {
-    render(
+    renderWithModalHost(
       <LibraryView node={libraryNode()} pick={{ multiple: true, max: 1, onConfirm: vi.fn() }} />,
     );
 
@@ -101,7 +104,7 @@ describe("LibraryView", () => {
     const failed = uploadItem({ status: "error", reason: "The file is too large." });
     upload.uploads = [failed];
 
-    render(<LibraryView node={libraryNode()} />);
+    renderWithModalHost(<LibraryView node={libraryNode()} />);
 
     expect(screen.getByTestId("media-upload-reason")).toHaveTextContent("The file is too large.");
 
@@ -118,7 +121,7 @@ describe("LibraryView", () => {
       uploadItem({ id: "u2", name: "beta.jpg", progress: 40 }),
     ];
 
-    render(<LibraryView node={libraryNode()} />);
+    renderWithModalHost(<LibraryView node={libraryNode()} />);
 
     expect(screen.getByTestId("media-upload-reason")).toHaveTextContent("Upload failed");
     expect(screen.getAllByTestId("media-upload-retry")).toHaveLength(1);
@@ -126,7 +129,7 @@ describe("LibraryView", () => {
   });
 
   it("ignores a drop while the detail slideout is open, but always cancels the browser's native drop", () => {
-    render(<LibraryView node={libraryNode()} />);
+    renderWithModalHost(<LibraryView node={libraryNode()} />);
 
     const dropped = { dataTransfer: { files: [new File(["bytes"], "alpha.jpg")] } };
     const wrapper = screen.getByTestId("media-library");
@@ -160,7 +163,7 @@ describe("LibraryView", () => {
       ] as Schema,
     });
 
-    render(<LibraryView node={node} />);
+    renderWithModalHost(<LibraryView node={node} />);
 
     fireEvent.click(screen.getAllByTestId("media-card")[0]);
     expect(screen.queryByTestId("media-detail")).not.toBeInTheDocument();
@@ -178,7 +181,7 @@ describe("LibraryView", () => {
       vi.fn(() => new Promise<Response>(() => {})),
     );
 
-    render(<LibraryView node={libraryNode()} />);
+    renderWithModalHost(<LibraryView node={libraryNode()} />);
 
     expect(screen.getByTestId("media-grid")).toHaveAttribute("aria-busy", "false");
 

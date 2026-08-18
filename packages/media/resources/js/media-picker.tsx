@@ -7,6 +7,11 @@ import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/button";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/dialog";
 import { IconButton } from "@lattice-php/ui/icon-button";
+import {
+  MODAL_HOST_MISSING_ERROR,
+  useEmbeddedModal,
+  useModalHost,
+} from "@lattice-php/ui/modal-host";
 import { LibraryView, type MediaRow } from "./components/library-view";
 import { UploadList } from "./components/upload-list";
 import { useMediaUpload, type UploadedMedia } from "./components/use-media-upload";
@@ -23,10 +28,12 @@ type Picked = {
 const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node }) => {
   const { t } = useT("media");
   const props = node.props;
-  const [open, setOpen] = useState(false);
+  const host = useModalHost();
   const [picked, setPicked] = useState<Picked[]>(
     (props.selected ?? []).map((entry) => ({ ...entry, values: entry.values ?? {} })),
   );
+  const pickedRef = useRef(picked);
+  pickedRef.current = picked;
   const libraryNode = node.schema?.find((child) => child.type === "media.library") as
     | Node<"media.library">
     | undefined;
@@ -60,6 +67,23 @@ const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node })
               i === index ? { ...row, values: { ...row.values, [field]: value } } : row,
             ),
           );
+        };
+
+        const confirmPick = (items: MediaRow[]): void => {
+          const incoming = items.map((item) => ({
+            ...item,
+            values: pickedRef.current.find((entry) => entry.id === item.id)?.values ?? {},
+          }));
+          const merged = multiple
+            ? [
+                ...pickedRef.current.filter(
+                  (entry) => !incoming.some((item) => item.id === entry.id),
+                ),
+                ...incoming,
+              ]
+            : incoming.slice(0, 1);
+
+          apply(multiple && maxFiles !== null ? merged.slice(0, maxFiles) : merged);
         };
 
         return (
@@ -148,51 +172,21 @@ const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node })
                 className="self-start"
                 data-test="media-picker-open"
                 disabled={locked}
-                onClick={() => setOpen(true)}
+                onClick={() =>
+                  libraryNode &&
+                  host.open(
+                    <MediaPickerOverlay
+                      libraryNode={libraryNode}
+                      max={remaining}
+                      multiple={multiple}
+                      onConfirm={confirmPick}
+                    />,
+                  )
+                }
                 type="button"
               >
                 {props.pickerLabel ?? t("media.picker.open", "Choose from library")}
               </Button>
-            )}
-
-            {open && !props.uploadOnly && libraryNode && (
-              <Dialog onOpenChange={setOpen} open>
-                <DialogContent
-                  aria-describedby={undefined}
-                  className="flex flex-col gap-5"
-                  data-test="media-picker-dialog"
-                  width="3xl"
-                >
-                  <DialogHeader
-                    closeLabel={translate("lattice", "common.close", "Close")}
-                    title={t("media.picker.heading", "Choose media")}
-                  />
-                  <LibraryView
-                    node={libraryNode}
-                    pick={{
-                      multiple,
-                      max: remaining,
-                      onConfirm: (items: MediaRow[]) => {
-                        const incoming = items.map((item) => ({
-                          ...item,
-                          values: picked.find((entry) => entry.id === item.id)?.values ?? {},
-                        }));
-                        const merged = multiple
-                          ? [
-                              ...picked.filter(
-                                (entry) => !incoming.some((item) => item.id === entry.id),
-                              ),
-                              ...incoming,
-                            ]
-                          : incoming.slice(0, 1);
-
-                        apply(multiple && maxFiles !== null ? merged.slice(0, maxFiles) : merged);
-                        setOpen(false);
-                      },
-                    }}
-                  />
-                </DialogContent>
-              </Dialog>
             )}
           </div>
         );
@@ -200,6 +194,53 @@ const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node })
     </SimpleField>
   );
 };
+
+function MediaPickerOverlay({
+  libraryNode,
+  multiple,
+  max,
+  onConfirm,
+}: {
+  libraryNode: Node<"media.library">;
+  multiple: boolean;
+  max?: number;
+  onConfirm: (items: MediaRow[]) => void;
+}) {
+  const { t } = useT("media");
+  const context = useEmbeddedModal();
+
+  if (!context) {
+    throw new Error(MODAL_HOST_MISSING_ERROR);
+  }
+
+  return (
+    <Dialog open={context.open} onOpenChange={context.onOpenChange}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="flex flex-col gap-5"
+        data-test="media-picker-dialog"
+        onCloseAutoFocus={context.onExited}
+        width="3xl"
+      >
+        <DialogHeader
+          closeLabel={translate("lattice", "common.close", "Close")}
+          title={t("media.picker.heading", "Choose media")}
+        />
+        <LibraryView
+          node={libraryNode}
+          pick={{
+            multiple,
+            max,
+            onConfirm: (items) => {
+              onConfirm(items);
+              context.onOpenChange(false);
+            },
+          }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 /**
  * The upload-only face of the picker: the button opens the file dialog

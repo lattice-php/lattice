@@ -1,8 +1,8 @@
-import type { Dispatch, SetStateAction } from "react";
 import type { Editor } from "@tiptap/core";
 import type { Node as WireNode } from "@lattice-php/core/types";
 import { translate, useT } from "@lattice-php/ui/i18n";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/dialog";
+import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal-host";
 import { LibraryView, type MediaRow } from "../components/library-view";
 
 /**
@@ -13,20 +13,24 @@ import { LibraryView, type MediaRow } from "../components/library-view";
 export default function MediaImageDialog({
   editor,
   library,
-  setOpen,
 }: {
   editor: Editor;
   library: WireNode;
-  setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const { t } = useT("media");
+  const context = useEmbeddedModal();
+
+  if (!context) {
+    throw new Error(MODAL_HOST_MISSING_ERROR);
+  }
 
   return (
-    <Dialog onOpenChange={setOpen} open>
+    <Dialog open={context.open} onOpenChange={context.onOpenChange}>
       <DialogContent
         aria-describedby={undefined}
         className="flex flex-col gap-5"
         data-test="editor-media-image-dialog"
+        onCloseAutoFocus={context.onExited}
         width="3xl"
       >
         <DialogHeader
@@ -48,7 +52,7 @@ export default function MediaImageDialog({
                   })),
                 )
                 .run();
-              setOpen(false);
+              context.onOpenChange(false);
             },
           }}
         />

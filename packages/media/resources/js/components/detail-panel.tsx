@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";
 import { runAction } from "@lattice-php/action/lib/run-action";
 import { apiFetch } from "@lattice-php/core/api";
 import type { Node } from "@lattice-php/core/types";
@@ -7,11 +8,15 @@ import { formatDateValue } from "@lattice-php/ui/format/temporal";
 import { useFormatContext } from "@lattice-php/ui/format/format-context";
 import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/button";
-import { ConfirmDialog } from "@lattice-php/ui/confirm-dialog";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/dialog";
-import { PreviewableImage } from "@lattice-php/ui/image-preview";
 import { Input } from "@lattice-php/ui/input";
 import { Label } from "@lattice-php/ui/label";
+import { PreviewableImage } from "@lattice-php/ui/image-preview";
+import {
+  MODAL_HOST_MISSING_ERROR,
+  useEmbeddedModal,
+  useModalHost,
+} from "@lattice-php/ui/modal-host";
 import type { MediaRow } from "./library-view";
 
 const byteUnits = ["byte", "kilobyte", "megabyte", "gigabyte", "terabyte"] as const;
@@ -45,21 +50,33 @@ export function DetailPanel({
   const { t } = useT("media");
   const { locale, timezone } = useFormatContext();
   const dispatch = useEffectDispatcher();
+  const context = useEmbeddedModal();
+
+  if (!context) {
+    throw new Error(MODAL_HOST_MISSING_ERROR);
+  }
+
+  const { open, onOpenChange, onExited } = context;
+  const host = useModalHost();
   const [name, setName] = useState(row.name);
   const [alt, setAlt] = useState(row.alt ?? "");
   const [processing, setProcessing] = useState(false);
-  const [confirming, setConfirming] = useState(false);
   const deleteLabel = t("media.actions.delete.label", "Delete");
 
-  async function run(action: Node<"action">, payload: Record<string, unknown> = {}): Promise<void> {
+  function close(): void {
+    onOpenChange(false);
+    onClose();
+  }
+
+  async function run(): Promise<void> {
     setProcessing(true);
 
     const ok = await runAction(
       () =>
-        apiFetch(action.props.endpoint ?? "", {
-          method: action.props.method ?? "post",
-          ref: action.props.ref ?? "",
-          body: JSON.stringify({ media_id: row.id, ...payload }),
+        apiFetch(update.props.endpoint ?? "", {
+          method: update.props.method ?? "post",
+          ref: update.props.ref ?? "",
+          body: JSON.stringify({ media_id: row.id, name, alt: alt === "" ? null : alt }),
           throwOnError: false,
         }),
       dispatch,
@@ -68,16 +85,42 @@ export function DetailPanel({
     setProcessing(false);
 
     if (ok) {
-      onClose();
+      close();
     }
+  }
+
+  function confirmDelete(): void {
+    host.open(
+      <ActionConfirmOverlay
+        extraData={{ media_id: row.id }}
+        node={{
+          ...remove,
+          props: {
+            ...remove.props,
+            confirmation: {
+              title: t("media.actions.delete.confirm-title", "Delete this file?"),
+              description: t(
+                "media.actions.delete.confirm-description",
+                "This file is attached to {{count}} record(s). Deleting removes it everywhere.",
+                { count: row.attachments_count },
+              ),
+              confirmLabel: deleteLabel,
+              cancelLabel: null,
+            },
+            variant: remove.props.variant ?? "danger",
+          },
+        }}
+        onSuccess={close}
+      />,
+    );
   }
 
   return (
     <Dialog
-      open
+      open={open}
       onOpenChange={(open) => {
         if (!open) {
-          onClose();
+          close();
         }
       }}
     >
@@ -85,6 +128,7 @@ export function DetailPanel({
         aria-describedby={undefined}
         className="flex flex-col gap-5"
         data-test="media-detail"
+        onCloseAutoFocus={onExited}
         placement="end"
         width="md"
       >
@@ -149,7 +193,7 @@ export function DetailPanel({
           <Button
             data-test="media-detail-save"
             disabled={processing || name.trim() === ""}
-            onClick={() => void run(update, { name, alt: alt === "" ? null : alt })}
+            onClick={() => void run()}
             type="button"
             variant="primary"
           >
@@ -169,29 +213,13 @@ export function DetailPanel({
             className="ms-auto"
             data-test="media-detail-delete"
             disabled={processing}
-            onClick={() => setConfirming(true)}
+            onClick={confirmDelete}
             type="button"
             variant="danger"
           >
             {deleteLabel}
           </Button>
         </div>
-
-        <ConfirmDialog
-          cancelLabel={translate("lattice", "common.cancel", "Cancel")}
-          confirmLabel={deleteLabel}
-          confirmVariant="danger"
-          description={t(
-            "media.actions.delete.confirm-description",
-            "This file is attached to {{count}} record(s). Deleting removes it everywhere.",
-            { count: row.attachments_count },
-          )}
-          onCancel={() => setConfirming(false)}
-          onConfirm={() => void run(remove)}
-          open={confirming}
-          processing={processing}
-          title={t("media.actions.delete.confirm-title", "Delete this file?")}
-        />
       </DialogContent>
     </Dialog>
   );
