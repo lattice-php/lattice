@@ -9461,13 +9461,14 @@ function Td({ row: e, update: t, remove: n, onClose: r }) {
 						})
 					]
 				}),
-				h && /* @__PURE__ */ _(C.ConfirmDialog, {
+				/* @__PURE__ */ _(C.ConfirmDialog, {
 					cancelLabel: (0, C.translate)("lattice", "common.cancel", "Cancel"),
 					confirmLabel: y,
 					confirmVariant: "danger",
 					description: i("media.actions.delete.confirm-description", "This file is attached to {{count}} record(s). Deleting removes it everywhere.", { count: e.attachments_count }),
 					onCancel: () => g(!1),
 					onConfirm: () => void b(n),
+					open: h,
 					processing: p,
 					title: i("media.actions.delete.confirm-title", "Delete this file?")
 				})
@@ -9662,7 +9663,7 @@ function Nd(e, t) {
 	return e.schema?.find((e) => e.key === t);
 }
 function Pd({ node: e, pick: t }) {
-	let { t: n } = (0, C.useT)("media"), r = e.props ?? {}, i = e.schema?.find((e) => e.type === "table") ?? { type: "table" }, a = (0, C.useTable)(i), o = a.rows, s = (0, C.useTableSelection)(o.map((e) => String(e.id))), [c] = (0, C.getBulkActions)(i.props?.bulkActions), l = Nd(e, "media-upload"), u = Nd(e, "media-update"), p = Nd(e, "media-delete"), { uploads: m, addFiles: h, retry: y, dismiss: b } = jd({
+	let { t: n } = (0, C.useT)("media"), r = e.props ?? {}, i = e.schema?.find((e) => e.type === "table") ?? { type: "table" }, a = (0, C.useTable)(i), o = a.rows, s = (0, C.useTableSelection)(o.map((e) => String(e.id))), [c] = (0, C.getBulkActionNodes)(i.props?.bulkActions), l = Nd(e, "media-upload"), u = Nd(e, "media-update"), p = Nd(e, "media-delete"), { uploads: m, addFiles: h, retry: y, dismiss: b } = jd({
 		endpoint: l?.props.endpoint ?? "",
 		ref: l?.props.ref ?? "",
 		signed: r.signed
@@ -9818,27 +9819,20 @@ function Pd({ node: e, pick: t }) {
 	});
 }
 function Fd({ action: e, selectedKeys: t, onDone: n }) {
-	let { t: r } = (0, C.useT)("media"), i = (0, C.useEffectDispatcher)(), [a, o] = f(!1);
-	async function s() {
-		o(!0);
-		let r = await (0, C.runAction)(() => (0, C.apiFetch)(e.endpoint, {
-			method: e.method,
-			ref: e.ref,
-			body: JSON.stringify({ selected: t }),
-			throwOnError: !1
-		}), i);
-		o(!1), r && n();
-	}
+	let { t: r } = (0, C.useT)("media"), { processing: i, requestSubmit: a } = (0, C.useAction)(e, {
+		extraData: () => ({ selected: t }),
+		onSuccess: n
+	});
 	return /* @__PURE__ */ v("div", {
 		className: "sticky bottom-0 z-lt-sticky flex items-center justify-between gap-3 rounded-lt-sm border border-lt-border bg-lt-surface px-4 py-3 text-sm shadow-lt-md",
 		children: [/* @__PURE__ */ _("span", { children: r("media.library.selected", "{{count}} selected", { count: t.length }) }), /* @__PURE__ */ _(C.Button, {
 			"data-test": "media-bulk-delete",
-			disabled: a,
-			emphasis: e.emphasis ?? "solid",
-			onClick: () => void s(),
+			disabled: i,
+			emphasis: e.props.emphasis ?? "solid",
+			onClick: a,
 			type: "button",
-			variant: e.variant ?? "danger",
-			children: e.label
+			variant: e.props.variant ?? "danger",
+			children: e.props.label
 		})]
 	});
 }

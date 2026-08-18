@@ -14,7 +14,8 @@ export { RICH_EDITOR_EXTENSION, ToolbarIconButton } from "@lattice-php/form/rich
 export * from "@lattice-php/form/toolkit";
 export { useTable } from "@lattice-php/table/hooks/use-table";
 export { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
-export { getBulkActions } from "@lattice-php/table/lib/bulk";
+export { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
+export { useAction } from "@lattice-php/action/hooks/use-action";
 export {
   Badge,
   Button,

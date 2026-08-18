@@ -1,15 +1,12 @@
 import { useRef, useState } from "react";
-import { runAction } from "@lattice-php/action/lib/run-action";
-import { apiFetch } from "@lattice-php/core/api";
+import { useAction } from "@lattice-php/action/hooks/use-action";
 import type { Node } from "@lattice-php/core/types";
-import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { useT } from "@lattice-php/ui/i18n";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useTable } from "@lattice-php/table/hooks/use-table";
 import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
-import { getBulkActions } from "@lattice-php/table/lib/bulk";
-import type { BulkAction } from "@lattice-php/table/lib/bulk";
+import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import type { TableNode } from "@lattice-php/table/types";
 import { Button } from "@lattice-php/ui/button";
 import { Checkbox } from "@lattice-php/ui/checkbox";
@@ -55,7 +52,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   const table = useTable(tableNode);
   const rows = table.rows as MediaRow[];
   const selection = useTableSelection(rows.map((row) => String(row.id)));
-  const [deleteAction] = getBulkActions(tableNode.props?.bulkActions);
+  const [deleteAction] = getBulkActionNodes(tableNode.props?.bulkActions);
   const uploadAction = actionNode(node, "media-upload");
   const updateAction = actionNode(node, "media-update");
   const removeAction = actionNode(node, "media-delete");
@@ -302,34 +299,15 @@ function BulkDeleteBar({
   selectedKeys,
   onDone,
 }: {
-  action: BulkAction;
+  action: Node<"action" | "action.bulk">;
   selectedKeys: string[];
   onDone: () => void;
 }) {
   const { t } = useT("media");
-  const dispatch = useEffectDispatcher();
-  const [processing, setProcessing] = useState(false);
-
-  async function submit(): Promise<void> {
-    setProcessing(true);
-
-    const ok = await runAction(
-      () =>
-        apiFetch(action.endpoint, {
-          method: action.method,
-          ref: action.ref,
-          body: JSON.stringify({ selected: selectedKeys }),
-          throwOnError: false,
-        }),
-      dispatch,
-    );
-
-    setProcessing(false);
-
-    if (ok) {
-      onDone();
-    }
-  }
+  const { processing, requestSubmit } = useAction(action, {
+    extraData: () => ({ selected: selectedKeys }),
+    onSuccess: onDone,
+  });
 
   return (
     <div className="sticky bottom-0 z-lt-sticky flex items-center justify-between gap-3 rounded-lt-sm border border-lt-border bg-lt-surface px-4 py-3 text-sm shadow-lt-md">
@@ -339,12 +317,12 @@ function BulkDeleteBar({
       <Button
         data-test="media-bulk-delete"
         disabled={processing}
-        emphasis={action.emphasis ?? "solid"}
-        onClick={() => void submit()}
+        emphasis={action.props.emphasis ?? "solid"}
+        onClick={requestSubmit}
         type="button"
-        variant={action.variant ?? "danger"}
+        variant={action.props.variant ?? "danger"}
       >
-        {action.label}
+        {action.props.label}
       </Button>
     </div>
   );
