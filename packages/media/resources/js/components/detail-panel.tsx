@@ -177,22 +177,21 @@ export function DetailPanel({
           </Button>
         </div>
 
-        {confirming && (
-          <ConfirmDialog
-            cancelLabel={translate("lattice", "common.cancel", "Cancel")}
-            confirmLabel={deleteLabel}
-            confirmVariant="danger"
-            description={t(
-              "media.actions.delete.confirm-description",
-              "This file is attached to {{count}} record(s). Deleting removes it everywhere.",
-              { count: row.attachments_count },
-            )}
-            onCancel={() => setConfirming(false)}
-            onConfirm={() => void run(remove)}
-            processing={processing}
-            title={t("media.actions.delete.confirm-title", "Delete this file?")}
-          />
-        )}
+        <ConfirmDialog
+          cancelLabel={translate("lattice", "common.cancel", "Cancel")}
+          confirmLabel={deleteLabel}
+          confirmVariant="danger"
+          description={t(
+            "media.actions.delete.confirm-description",
+            "This file is attached to {{count}} record(s). Deleting removes it everywhere.",
+            { count: row.attachments_count },
+          )}
+          onCancel={() => setConfirming(false)}
+          onConfirm={() => void run(remove)}
+          open={confirming}
+          processing={processing}
+          title={t("media.actions.delete.confirm-title", "Delete this file?")}
+        />
       </DialogContent>
     </Dialog>
   );

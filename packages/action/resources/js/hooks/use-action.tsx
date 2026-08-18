@@ -96,6 +96,7 @@ export function useAction(node: Node<"action" | "action.bulk">): UseAction {
     <>
       {isConfirming && confirmation && (
         <ConfirmDialog
+          open={isConfirming}
           title={confirmationTitle}
           description={confirmation.description ?? undefined}
           confirmLabel={confirmationConfirmLabel}

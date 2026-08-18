@@ -114,6 +114,7 @@ export function BulkBar({
 
       {confirming?.confirmation && (
         <ConfirmDialog
+          open={confirming !== null}
           title={confirming.confirmation.title ?? confirming.label}
           description={confirming.confirmation.description ?? undefined}
           confirmLabel={confirming.confirmation.confirmLabel ?? confirming.label}
