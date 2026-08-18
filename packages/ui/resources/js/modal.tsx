@@ -13,7 +13,7 @@ import type { Node } from "@lattice-php/core/types";
 import { RenderNode } from "@lattice-php/core/renderer";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 
-export const MODAL_HOST_MISSING_ERROR = "Embedded modals require a ModalHostProvider.";
+export const MODAL_MISSING_ERROR = "Embedded modals require a ModalProvider.";
 
 /**
  * Contract: any dialog shell consuming this context (`modal.tsx`, a
@@ -48,31 +48,31 @@ export function useEmbeddedModal(): EmbeddedModalState | null {
   return useContext(EmbeddedModalContext);
 }
 
-export type ModalHostHandle = {
+export type ModalHandle = {
   close: () => void;
 };
 
-export type ModalHost = {
-  open: (content: Node<"modal"> | ReactElement) => ModalHostHandle;
+export type ModalApi = {
+  open: (content: Node<"modal"> | ReactElement) => ModalHandle;
 };
 
-const ModalContext = createContext<ModalHost | null>(null);
+const ModalContext = createContext<ModalApi | null>(null);
 
-export function useOptionalModal(): ModalHost | null {
+export function useOptionalModal(): ModalApi | null {
   return useContext(ModalContext);
 }
 
-export function useModal(): ModalHost {
+export function useModal(): ModalApi {
   const host = useOptionalModal();
 
   if (!host) {
-    throw new Error(MODAL_HOST_MISSING_ERROR);
+    throw new Error(MODAL_MISSING_ERROR);
   }
 
   return host;
 }
 
-type ModalHostEntry = {
+type ModalEntry = {
   key: number;
   content: Node<"modal"> | ReactElement;
   nodeId: string | null;
@@ -80,7 +80,7 @@ type ModalHostEntry = {
   opener: HTMLElement | null;
 };
 
-type ModalHostClosures = {
+type ModalClosures = {
   onOpenChange: (open: boolean) => void;
   onExited: (event: Event) => void;
 };
@@ -88,17 +88,17 @@ type ModalHostClosures = {
 type OpenModalEvent = CustomEvent<{ node?: Node<"modal"> }>;
 type CloseModalEvent = CustomEvent<{ modal?: string | null }>;
 
-export function ModalHostProvider({ children }: { children: ReactNode }) {
-  const [stack, setStackState] = useState<ModalHostEntry[]>([]);
-  const stackRef = useRef<ModalHostEntry[]>(stack);
+export function ModalProvider({ children }: { children: ReactNode }) {
+  const [stack, setStackState] = useState<ModalEntry[]>([]);
+  const stackRef = useRef<ModalEntry[]>(stack);
   const nextKeyRef = useRef(0);
-  const closuresRef = useRef(new Map<number, ModalHostClosures>());
+  const closuresRef = useRef(new Map<number, ModalClosures>());
 
   // Runs the updater synchronously against `stackRef` rather than through
   // React's `setState` updater queue, so callers (like `open`) can read the
   // resulting entry back out in the same tick to build its close handle.
   const updateStack = useCallback(
-    (updater: (current: ModalHostEntry[]) => ModalHostEntry[]): ModalHostEntry[] => {
+    (updater: (current: ModalEntry[]) => ModalEntry[]): ModalEntry[] => {
       const next = updater(stackRef.current);
       stackRef.current = next;
       setStackState(next);
@@ -127,7 +127,7 @@ export function ModalHostProvider({ children }: { children: ReactNode }) {
   );
 
   const open = useCallback(
-    (content: Node<"modal"> | ReactElement): ModalHostHandle => {
+    (content: Node<"modal"> | ReactElement): ModalHandle => {
       const nodeId = isValidElement(content) ? null : (content.id ?? null);
       const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       let key = -1;
@@ -195,7 +195,7 @@ export function ModalHostProvider({ children }: { children: ReactNode }) {
   }, [open, updateStack]);
 
   const closuresFor = useCallback(
-    (key: number): ModalHostClosures => {
+    (key: number): ModalClosures => {
       let closures = closuresRef.current.get(key);
 
       if (closures) {

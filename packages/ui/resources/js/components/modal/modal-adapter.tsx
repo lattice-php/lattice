@@ -12,7 +12,7 @@ function warnMissingHost(): void {
 
   warnedMissingHost = true;
   console.warn(
-    "[Lattice] Modal nodes render only through a trigger's ->modal() or an openModal effect; wrap the app in a ModalHostProvider.",
+    "[Lattice] Modal nodes render only through a trigger's ->modal() or an openModal effect; wrap the app in a ModalProvider.",
   );
 }
 

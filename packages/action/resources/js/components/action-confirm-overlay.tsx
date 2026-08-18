@@ -6,7 +6,7 @@ import { withHeaders } from "@lattice-php/core/headers";
 import type { Node } from "@lattice-php/core/types";
 import { ConfirmDialog } from "@lattice-php/ui/primitives/confirm-dialog";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import { MODAL_HOST_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal";
+import { MODAL_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal";
 import { runAction } from "@lattice-php/action/lib/run-action";
 import { confirmationLabels } from "@lattice-php/action/lib/confirmation";
 
@@ -22,7 +22,7 @@ export function ActionConfirmOverlay({
   const context = useEmbeddedModal();
 
   if (!context) {
-    throw new Error(MODAL_HOST_MISSING_ERROR);
+    throw new Error(MODAL_MISSING_ERROR);
   }
 
   const endpoint = node.props.endpoint ?? "";

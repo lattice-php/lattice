@@ -4,7 +4,7 @@ import type { Node } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/ui/i18n";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { MODAL_HOST_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/modal";
+import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/modal";
 import { useTable } from "@lattice-php/table/hooks/use-table";
 import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
@@ -86,7 +86,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
     }
 
     if (!host) {
-      throw new Error(MODAL_HOST_MISSING_ERROR);
+      throw new Error(MODAL_MISSING_ERROR);
     }
 
     setDetailId(row.id);

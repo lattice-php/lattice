@@ -5,7 +5,7 @@ import { apiFetch } from "@lattice-php/core/api";
 import { withHeaders } from "@lattice-php/core/headers";
 import type { Node } from "@lattice-php/core/types";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import { MODAL_HOST_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/modal";
+import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/modal";
 import type { ActionSubmitOptions } from "@lattice-php/ui/click-behavior";
 import { runAction } from "@lattice-php/action/lib/run-action";
 import { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";
@@ -25,7 +25,7 @@ type UseAction = {
  * action links: it gates submission (form → modal, confirmation → confirm,
  * otherwise dispatch) and pushes the matching overlay onto the modal host. The
  * host is read lazily so a direct-submit action never needs a
- * ModalHostProvider in scope.
+ * ModalProvider in scope.
  */
 export function useAction(
   node: Node<"action" | "action.bulk">,
@@ -79,7 +79,7 @@ export function useAction(
   const requestSubmit = (): void => {
     if (hasForm) {
       if (!host) {
-        throw new Error(MODAL_HOST_MISSING_ERROR);
+        throw new Error(MODAL_MISSING_ERROR);
       }
 
       host.open(
@@ -95,7 +95,7 @@ export function useAction(
 
     if (confirmation) {
       if (!host) {
-        throw new Error(MODAL_HOST_MISSING_ERROR);
+        throw new Error(MODAL_MISSING_ERROR);
       }
 
       host.open(

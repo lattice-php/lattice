@@ -4,7 +4,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, fakeNode, TextProbe } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { ModalHostProvider } from "../../modal";
+import { ModalProvider } from "../../modal";
 import { useClickBehavior } from "../../click-behavior";
 import ButtonAdapter from "./button-adapter";
 import ModalAdapter from "../modal/modal-adapter";
@@ -38,9 +38,9 @@ function buttonWithModal(): Node<"button"> {
 describe("button with an embedded modal", () => {
   it("opens the modal it carries on click", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <Renderer nodes={[buttonWithModal()]} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -52,7 +52,7 @@ describe("button with an embedded modal", () => {
     expect(screen.getByText("Order body")).toBeInTheDocument();
   });
 
-  it("throws when opened without a ModalHostProvider", () => {
+  it("throws when opened without a ModalProvider", () => {
     const modal = fakeNode<"modal">({ id: "order-details", type: "modal", props: {} });
     let onClick: (() => void) | undefined;
 
@@ -68,6 +68,6 @@ describe("button with an embedded modal", () => {
 
     renderWithRegistry(<CaptureModalClick />, registry);
 
-    expect(() => onClick?.()).toThrow("Embedded modals require a ModalHostProvider.");
+    expect(() => onClick?.()).toThrow("Embedded modals require a ModalProvider.");
   });
 });

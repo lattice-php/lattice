@@ -5,8 +5,8 @@ import { renderWithRegistry, fakeNode } from "@lattice-php/core/test-support";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import type { Node } from "@lattice-php/core/types";
 import ModalComponent from "./components/modal/modal-adapter";
-import type { ModalHostHandle } from "./modal";
-import { ModalHostProvider, useEmbeddedModal, useModal } from "./modal";
+import type { ModalHandle } from "./modal";
+import { ModalProvider, useEmbeddedModal, useModal } from "./modal";
 
 const registry = createRegistry({
   components: { modal: eagerComponent(ModalComponent) },
@@ -34,7 +34,7 @@ function OpenWithHandleButton({
 }: {
   label: string;
   node: Node<"modal">;
-  onHandle: (handle: ModalHostHandle) => void;
+  onHandle: (handle: ModalHandle) => void;
 }) {
   const host = useModal();
 
@@ -78,12 +78,12 @@ function fireModalEvent(type: string, detail: Record<string, unknown>) {
   });
 }
 
-describe("ModalHostProvider", () => {
+describe("ModalProvider", () => {
   it("opens a modal through useModal().open()", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open" node={modalNode("welcome", "Welcome")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -93,7 +93,7 @@ describe("ModalHostProvider", () => {
   });
 
   it("opens through a lattice:open-modal event carrying the node", () => {
-    renderWithRegistry(<ModalHostProvider>{null}</ModalHostProvider>, registry);
+    renderWithRegistry(<ModalProvider>{null}</ModalProvider>, registry);
 
     expect(screen.queryByText("Welcome")).not.toBeInTheDocument();
 
@@ -104,10 +104,10 @@ describe("ModalHostProvider", () => {
 
   it("stacks a second node modal above the first, which stays mounted", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open first" node={modalNode("first", "First")} />
         <OpenButton label="Open second" node={modalNode("second", "Second")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -120,10 +120,10 @@ describe("ModalHostProvider", () => {
 
   it("closes only the topmost entry on Escape, leaving the lower one open", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open first" node={modalNode("first", "First")} />
         <OpenButton label="Open second" node={modalNode("second", "Second")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -137,11 +137,11 @@ describe("ModalHostProvider", () => {
   });
 
   it("closes only its own entry via the handle returned by open(), leaving the other open", () => {
-    let firstHandle: ModalHostHandle | undefined;
-    let secondHandle: ModalHostHandle | undefined;
+    let firstHandle: ModalHandle | undefined;
+    let secondHandle: ModalHandle | undefined;
 
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenWithHandleButton
           label="Open first"
           node={modalNode("first", "First")}
@@ -152,7 +152,7 @@ describe("ModalHostProvider", () => {
           node={modalNode("second", "Second")}
           onHandle={(handle) => (secondHandle = handle)}
         />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -167,16 +167,16 @@ describe("ModalHostProvider", () => {
   });
 
   it("makes handle.close() a no-op once the entry it targets has already closed", () => {
-    let handle: ModalHostHandle | undefined;
+    let handle: ModalHandle | undefined;
 
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenWithHandleButton
           label="Open"
           node={modalNode("welcome", "Welcome")}
           onHandle={(returned) => (handle = returned)}
         />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -189,11 +189,11 @@ describe("ModalHostProvider", () => {
 
   it("closes only the matching mid-stack entry on a targeted lattice:close-modal", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open first" node={modalNode("first", "First")} />
         <OpenButton label="Open second" node={modalNode("second", "Second")} />
         <OpenButton label="Open third" node={modalNode("third", "Third")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -210,10 +210,10 @@ describe("ModalHostProvider", () => {
 
   it("closes every open entry on a lattice:close-modal event with no target", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open first" node={modalNode("first", "First")} />
         <OpenButton label="Open second" node={modalNode("second", "Second")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -228,9 +228,9 @@ describe("ModalHostProvider", () => {
 
   it("ignores a lattice:close-modal id that doesn't match any entry", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open" node={modalNode("welcome", "Welcome")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -243,10 +243,10 @@ describe("ModalHostProvider", () => {
 
   it("replaces an already-open entry with the same node id instead of stacking a duplicate", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open v1" node={modalNode("welcome", "Welcome v1")} />
         <OpenButton label="Open v2" node={modalNode("welcome", "Welcome v2")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -259,9 +259,9 @@ describe("ModalHostProvider", () => {
 
   it("renders an element entry under the embedded modal context and lets it close itself", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenElementButton label="Open element" title="Element dialog" />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -275,10 +275,10 @@ describe("ModalHostProvider", () => {
 
   it("stacks an element overlay above an open node modal; closing the overlay leaves the modal open", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open modal" node={modalNode("welcome", "Welcome")} />
         <OpenElementButton label="Open overlay" title="Overlay dialog" />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -300,9 +300,9 @@ describe("ModalHostProvider", () => {
 
   it("removes an entry from the DOM after it closes, and a subsequent open still works", () => {
     renderWithRegistry(
-      <ModalHostProvider>
+      <ModalProvider>
         <OpenButton label="Open" node={modalNode("welcome", "Welcome")} />
-      </ModalHostProvider>,
+      </ModalProvider>,
       registry,
     );
 
@@ -316,7 +316,7 @@ describe("ModalHostProvider", () => {
     expect(screen.getByText("Welcome")).toBeInTheDocument();
   });
 
-  it("renders nothing and warns once when a modal node has no ModalHostProvider", () => {
+  it("renders nothing and warns once when a modal node has no ModalProvider", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     renderWithRegistry(

@@ -5,7 +5,7 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { jsonResponse } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
-import { withModalHost } from "@lattice-php/ui/test/modal";
+import { withModal } from "@lattice-php/ui/test/modal";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -29,7 +29,7 @@ const registry = createRegistry({
 });
 
 function renderNotifications(node: Node): ReactElement {
-  return withModalHost(
+  return withModal(
     <RegistryProvider registry={registry}>
       <Renderer nodes={[node]} />
     </RegistryProvider>,

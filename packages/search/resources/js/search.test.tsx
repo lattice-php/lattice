@@ -4,7 +4,7 @@ import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
-import { withModalHost } from "@lattice-php/ui/test/modal";
+import { withModal } from "@lattice-php/ui/test/modal";
 import SearchBox from "./components/search-box";
 import { searchResponse, stubSearchFetch } from "./test-support";
 import type { SearchBox as SearchBoxNode, SearchResult } from "./types";
@@ -50,7 +50,7 @@ function renderSearch(props: Partial<SearchBoxNode> = {}) {
 
   return render(
     <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
-      {withModalHost(<SearchBox node={node}>{null}</SearchBox>)}
+      {withModal(<SearchBox node={node}>{null}</SearchBox>)}
     </NavigationProvider>,
   );
 }
@@ -164,7 +164,7 @@ it("renders an icon-only trigger inside a collapsed container", () => {
 
   render(
     <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
-      {withModalHost(
+      {withModal(
         <CollapsedProvider collapsed={true}>
           <SearchBox node={node}>{null}</SearchBox>
         </CollapsedProvider>,

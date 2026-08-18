@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
 import { Dialog, DialogContent, DialogHeader } from "./primitives/dialog";
 import { ConfirmDialog } from "./primitives/confirm-dialog";
-import { ModalHostProvider, useEmbeddedModal, useModal } from "./modal";
+import { ModalProvider, useEmbeddedModal, useModal } from "./modal";
 
 function ConfirmB() {
   const context = useEmbeddedModal();
@@ -56,9 +56,9 @@ function PageTrigger() {
 describe("nested modal focus restore in a browser", () => {
   it("restores focus down the stack as each nested dialog closes", async () => {
     const screen = await render(
-      <ModalHostProvider>
+      <ModalProvider>
         <PageTrigger />
-      </ModalHostProvider>,
+      </ModalProvider>,
     );
 
     const pageOpener = screen.getByRole("button", { name: "Open A" });
