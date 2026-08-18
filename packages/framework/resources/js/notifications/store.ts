@@ -34,7 +34,7 @@ type UseNotificationsOptions = {
   pollingInterval?: number | null;
 };
 
-type UseNotificationsReturn = {
+export type UseNotificationsReturn = {
   notifications: NotificationItem[];
   unreadCount: number;
   status: NotificationsStatus;

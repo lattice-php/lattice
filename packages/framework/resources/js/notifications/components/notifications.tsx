@@ -1,12 +1,23 @@
-import { Component, lazy, Suspense, type ReactNode } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@lattice-php/ui/dialog";
+import {
+  Component,
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { Popover as PopoverRoot, PopoverContent, PopoverTrigger } from "@lattice-php/ui/popover";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
+import { type ModalHostHandle, useModalHost } from "@lattice-php/ui/modal-host";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { useNotifications } from "@lattice-php/lattice/notifications/store";
 import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
+import { createNotificationsBridge, NotificationsBridgeProvider } from "../context";
 import { NotificationList } from "./notification-list";
+import { NotificationsSheet } from "./notifications-sheet";
 
 const NotificationsEcho = lazy(() =>
   import("./notifications-echo").then((m) => ({ default: m.NotificationsEcho })),
@@ -36,8 +47,31 @@ const NotificationsComponent: RendererComponent<"notifications"> = ({ node }) =>
     endpoint: node.props.endpoint,
     pollingInterval: node.props.pollingInterval,
   });
+  const host = useModalHost();
+  const handleRef = useRef<ModalHostHandle | null>(null);
+  const [bridge] = useState(() => createNotificationsBridge(store));
+
+  useEffect(() => {
+    bridge.publish(store);
+  }, [bridge, store]);
 
   const label = t("notifications.label", "Notifications");
+
+  const openSheet = useCallback((): void => {
+    if (handleRef.current) {
+      return;
+    }
+
+    handleRef.current = host.open(
+      <NotificationsBridgeProvider value={bridge}>
+        <NotificationsSheet
+          onClosed={() => {
+            handleRef.current = null;
+          }}
+        />
+      </NotificationsBridgeProvider>,
+    );
+  }, [bridge, host]);
 
   const trigger = (
     <span className="relative inline-flex items-center justify-center rounded-lt-sm p-2 hover:bg-lt-muted">
@@ -92,22 +126,14 @@ const NotificationsComponent: RendererComponent<"notifications"> = ({ node }) =>
       ) : null}
 
       {node.props.slideOut ? (
-        <>
-          <button
-            type="button"
-            aria-label={label}
-            data-test="notifications-trigger"
-            onClick={() => store.setOpen(true)}
-          >
-            {trigger}
-          </button>
-          <Dialog open={store.open} onOpenChange={store.setOpen}>
-            <DialogContent aria-describedby={undefined} className="p-0" placement="end" width="sm">
-              <DialogTitle className="sr-only">{label}</DialogTitle>
-              {panel}
-            </DialogContent>
-          </Dialog>
-        </>
+        <button
+          type="button"
+          aria-label={label}
+          data-test="notifications-trigger"
+          onClick={openSheet}
+        >
+          {trigger}
+        </button>
       ) : (
         <PopoverRoot open={store.open} onOpenChange={store.setOpen}>
           <PopoverTrigger asChild>
