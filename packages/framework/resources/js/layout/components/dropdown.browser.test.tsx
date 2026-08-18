@@ -8,7 +8,7 @@ import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
-import RawBlockComponent from "@lattice-php/ui/components/raw-block";
+import RawBlockComponent from "@lattice-php/ui/components/raw-block/raw-block-adapter";
 import TextAdapter from "@lattice-php/ui/components/text/text-adapter";
 import { SidebarCollapsedContext } from "@lattice-php/lattice/layout/hooks/context";
 import DropdownComponent from "./dropdown";

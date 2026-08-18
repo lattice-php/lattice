@@ -1,4 +1,4 @@
-import { Badge } from "@lattice-php/ui/badge";
+import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { formatCell } from "@lattice-php/table/lib/format";
 import type { ColumnCellComponent } from "@lattice-php/table/registry";
 

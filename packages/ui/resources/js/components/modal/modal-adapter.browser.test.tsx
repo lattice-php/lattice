@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { ModalHostProvider, useModalHost } from "../modal-host";
-import ModalComponent from "./modal";
+import { ModalHostProvider, useModalHost } from "../../modal-host";
+import ModalAdapter from "./modal-adapter";
 
 const registry = createRegistry({
-  components: { modal: eagerComponent(ModalComponent) },
+  components: { modal: eagerComponent(ModalAdapter) },
   name: "test/modal",
 });
 
@@ -25,7 +25,7 @@ function OpenButton() {
   );
 }
 
-describe("ModalComponent in a browser", () => {
+describe("ModalAdapter in a browser", () => {
   it("restores focus to the opener element after closing", async () => {
     const screen = await renderWithRegistry(
       <ModalHostProvider>

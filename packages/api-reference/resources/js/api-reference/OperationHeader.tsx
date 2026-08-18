@@ -1,4 +1,4 @@
-import { Badge } from "@lattice-php/ui/badge";
+import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { CopyButton } from "@lattice-php/ui/copyable-text";
 import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 import { httpMethodColor } from "./http-method-color";

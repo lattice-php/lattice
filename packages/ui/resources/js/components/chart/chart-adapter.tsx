@@ -3,10 +3,10 @@ import type { RendererComponent, RendererComponentModule } from "@lattice-php/co
 
 const ChartView = lazy(() => import("./chart-view") as unknown as Promise<RendererComponentModule>);
 
-const ChartComponent: RendererComponent<"chart"> = ({ children, node }) => (
+const ChartAdapter: RendererComponent<"chart"> = ({ children, node }) => (
   <Suspense fallback={null}>
     <ChartView node={node}>{children}</ChartView>
   </Suspense>
 );
 
-export default ChartComponent;
+export default ChartAdapter;

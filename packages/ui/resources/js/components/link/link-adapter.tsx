@@ -1,11 +1,11 @@
-import { cn } from "../lib/utils";
+import { cn } from "../../lib/utils";
 import type { Affix } from "@lattice-php/core";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { IconRenderer } from "../icons";
-import { TextLink } from "../text-link";
-import { actionMenuItemClassName, useActionMenu } from "../action-menu-context";
-import { ActionTrigger, type TriggerState, useClickBehavior } from "../click-behavior";
+import { IconRenderer } from "../../icons";
+import { TextLink } from "../../text-link";
+import { actionMenuItemClassName, useActionMenu } from "../../action-menu-context";
+import { ActionTrigger, type TriggerState, useClickBehavior } from "../../click-behavior";
 
 const textLinkClassName =
   "text-lt-fg underline decoration-lt-border underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-lt-border";
@@ -68,7 +68,7 @@ function labelWithTextAffixes(label: string, prefix?: Affix | null, suffix?: Aff
     .join(" ");
 }
 
-const LinkComponent: RendererComponent<"link"> = ({ node }) => {
+const LinkAdapter: RendererComponent<"link"> = ({ node }) => {
   const isMenuItem = useActionMenu();
   const { icon, label: rawLabel, prefix, suffix } = node.props;
   const label = rawLabel ?? "";
@@ -121,5 +121,4 @@ const LinkComponent: RendererComponent<"link"> = ({ node }) => {
   );
 };
 
-export default LinkComponent;
-export { TextLink };
+export default LinkAdapter;

@@ -1,5 +1,5 @@
 import { DateTime } from "@lattice-php/ui/i18n";
-import { Badge } from "@lattice-php/ui/badge";
+import { Badge } from "@lattice-php/ui/components/badge/badge";
 import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "@lattice-php/table/lib/format";
 import type { ColumnCellArgs, ColumnCellComponent } from "@lattice-php/table/registry";

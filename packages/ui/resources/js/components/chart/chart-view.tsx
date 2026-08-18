@@ -23,10 +23,10 @@ import type { ComponentType, ReactNode } from "react";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import { isRecord } from "@lattice-php/core/materialize";
 import type { ComponentPropsOf, RendererComponent } from "@lattice-php/core/types";
-import { coerceColor, colorValue } from "../lib/color";
-import { useFormatContext } from "../format/format-context";
-import { numericValue } from "../format/numeric";
-import { formatValue } from "../format/value";
+import { coerceColor, colorValue } from "../../lib/color";
+import { useFormatContext } from "../../format/format-context";
+import { numericValue } from "../../format/numeric";
+import { formatValue } from "../../format/value";
 
 type ChartProps = ComponentPropsOf<"chart">;
 type ChartSeries = ChartProps["series"][number];

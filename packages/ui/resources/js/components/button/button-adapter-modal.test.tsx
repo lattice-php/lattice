@@ -4,15 +4,15 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, fakeNode, TextProbe } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { ModalHostProvider } from "../modal-host";
-import { useClickBehavior } from "../click-behavior";
-import ButtonComponent from "./button";
-import ModalComponent from "./modal";
+import { ModalHostProvider } from "../../modal-host";
+import { useClickBehavior } from "../../click-behavior";
+import ButtonAdapter from "./button-adapter";
+import ModalAdapter from "../modal/modal-adapter";
 
 const registry = createRegistry({
   components: {
-    button: eagerComponent(ButtonComponent),
-    modal: eagerComponent(ModalComponent),
+    button: eagerComponent(ButtonAdapter),
+    modal: eagerComponent(ModalAdapter),
     text: eagerComponent(TextProbe),
   },
   name: "test/button-modal",

@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
-import { coerceColor, namedColor, toneProps } from "./lib/color";
-import { cn } from "./lib/utils";
-import type { Color } from "./types";
+import { coerceColor, namedColor, toneProps } from "../../lib/color";
+import { cn } from "../../lib/utils";
+import type { Color } from "../../types";
 
 export function Badge({
   color,

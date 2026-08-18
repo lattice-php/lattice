@@ -2,11 +2,11 @@ import { fireEvent, screen } from "@testing-library/react";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
 import { describe, expect, it } from "vitest";
-import BadgeComponent from "../badge";
+import BadgeAdapter from "../badge/badge-adapter";
 import FloatingPanelAdapter from "./floating-panel-adapter";
 
 const registry = createRegistry({
-  components: { badge: eagerComponent(BadgeComponent) },
+  components: { badge: eagerComponent(BadgeAdapter) },
   name: "test/floating-panel",
 });
 

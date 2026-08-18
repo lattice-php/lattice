@@ -1,4 +1,4 @@
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { ActionTrigger } from "@lattice-php/ui/click-behavior";
 import { Spinner } from "@lattice-php/ui/spinner";
 import { prefixedTestId } from "@lattice-php/core/test-id";

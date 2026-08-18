@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import LinkComponent from "./link";
+import LinkAdapter from "./link-adapter";
 
 describe("Lattice link component", () => {
   it("renders prefix and suffix affixes around the label", () => {
@@ -15,7 +15,7 @@ describe("Lattice link component", () => {
       type: "link",
     });
 
-    render(<LinkComponent node={node}>{null}</LinkComponent>);
+    render(<LinkAdapter node={node}>{null}</LinkAdapter>);
 
     const link = screen.getByRole("link", { name: "Docs new" });
     expect(link).toHaveAttribute("href", "/docs");
@@ -33,7 +33,7 @@ describe("Lattice link component", () => {
       type: "link",
     });
 
-    render(<LinkComponent node={node}>{null}</LinkComponent>);
+    render(<LinkAdapter node={node}>{null}</LinkAdapter>);
 
     const link = screen.getByRole("link", { name: "Settings" });
     expect(link).toHaveAttribute("aria-label", "Settings");

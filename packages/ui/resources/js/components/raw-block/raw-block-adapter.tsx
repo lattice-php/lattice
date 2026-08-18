@@ -1,7 +1,7 @@
 import type { RendererComponent } from "@lattice-php/core/types";
 
-const RawBlockComponent: RendererComponent<"raw-block"> = ({ node }) => (
+const RawBlockAdapter: RendererComponent<"raw-block"> = ({ node }) => (
   <span style={{ display: "contents" }} dangerouslySetInnerHTML={{ __html: node.props.html }} />
 );
 
-export default RawBlockComponent;
+export default RawBlockAdapter;

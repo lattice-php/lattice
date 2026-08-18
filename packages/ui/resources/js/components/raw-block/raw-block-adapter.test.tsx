@@ -1,15 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import RawBlockComponent from "./raw-block";
+import RawBlockAdapter from "./raw-block-adapter";
 
 describe("RawBlock", () => {
   it("renders trusted server html without adding layout", () => {
     render(
-      <RawBlockComponent
+      <RawBlockAdapter
         node={{ props: { html: '<span data-test="avatar">AL</span>' }, type: "raw-block" }}
       >
         {null}
-      </RawBlockComponent>,
+      </RawBlockAdapter>,
     );
 
     expect(screen.getByTestId("avatar")).toHaveTextContent("AL");

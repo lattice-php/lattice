@@ -1,9 +1,9 @@
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import type { Emphasis, Variant } from "./generated";
-import { Icon } from "./icons";
-import { cn } from "./lib/utils";
+import type { Emphasis, Variant } from "../../generated";
+import { Icon } from "../../icons";
+import { cn } from "../../lib/utils";
 
 export type { Emphasis, Variant };
 

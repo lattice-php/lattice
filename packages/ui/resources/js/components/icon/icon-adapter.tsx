@@ -1,8 +1,8 @@
 import type { RendererComponent } from "@lattice-php/core/types";
-import { IconRenderer } from "../icons";
-import { coerceColor, colorValue } from "../lib/color";
-import { cn } from "../lib/utils";
-import type { Size } from "../generated";
+import { IconRenderer } from "../../icons";
+import { coerceColor, colorValue } from "../../lib/color";
+import { cn } from "../../lib/utils";
+import type { Size } from "../../generated";
 
 const sizeClass: Record<Size, string> = {
   xs: "size-lt-icon-xs",
@@ -15,7 +15,7 @@ const sizeClass: Record<Size, string> = {
   "4xl": "size-lt-icon-4xl",
 };
 
-const IconComponent: RendererComponent<"icon"> = ({ node }) => {
+const IconAdapter: RendererComponent<"icon"> = ({ node }) => {
   const { name, size, color, class: className } = node.props;
   const icon = <IconRenderer icon={name} className={cn(sizeClass[size], className)} />;
   const coerced = coerceColor(color);
@@ -31,4 +31,4 @@ const IconComponent: RendererComponent<"icon"> = ({ node }) => {
   );
 };
 
-export default IconComponent;
+export default IconAdapter;

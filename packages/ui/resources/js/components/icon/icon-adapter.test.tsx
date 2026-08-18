@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { SpriteProvider } from "@lattice-php/lattice";
 import type { Color } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import type { Size } from "../generated";
-import IconComponent from "./icon";
+import type { Size } from "../../generated";
+import IconAdapter from "./icon-adapter";
 
 function renderIcon(props: {
   name: string;
@@ -14,7 +14,7 @@ function renderIcon(props: {
 }) {
   return render(
     <SpriteProvider sprite={{ href: "", ids: [props.name] }}>
-      <IconComponent node={fakeNode({ type: "icon", props })}>{null}</IconComponent>
+      <IconAdapter node={fakeNode({ type: "icon", props })}>{null}</IconAdapter>
     </SpriteProvider>,
   );
 }

@@ -2,22 +2,22 @@ import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice
 import type { UiNodeType } from "./generated";
 import { UI_NAMESPACE } from "./i18n";
 import AvatarAdapter from "./components/avatar/avatar-adapter";
-import BadgeComponent from "./components/badge";
-import ButtonComponent from "./components/button";
+import BadgeAdapter from "./components/badge/badge-adapter";
+import ButtonAdapter from "./components/button/button-adapter";
 import CardAdapter from "./components/card/card-adapter";
-import ChartComponent from "./components/chart";
+import ChartAdapter from "./components/chart/chart-adapter";
 import CodeBlockAdapter from "./components/code-block/code-block-adapter";
 import CollapsibleAdapter from "./components/collapsible/collapsible-adapter";
 import DescriptionListAdapter from "./components/description-list/description-list-adapter";
 import FloatingPanelAdapter from "./components/floating-panel/floating-panel-adapter";
 import GridAdapter from "./components/grid/grid-adapter";
 import HeadingAdapter from "./components/heading/heading-adapter";
-import IconComponent from "./components/icon";
+import IconAdapter from "./components/icon/icon-adapter";
 import ImageAdapter from "./components/image/image-adapter";
-import LinkComponent from "./components/link";
-import ModalComponent from "./components/modal";
+import LinkAdapter from "./components/link/link-adapter";
+import ModalAdapter from "./components/modal/modal-adapter";
 import ProgressAdapter from "./components/progress/progress-adapter";
-import RawBlockComponent from "./components/raw-block";
+import RawBlockAdapter from "./components/raw-block/raw-block-adapter";
 import SectionAdapter from "./components/section/section-adapter";
 import SegmentedControlAdapter from "./components/segmented-control/segmented-control-adapter";
 import SeparatorAdapter from "./components/separator/separator-adapter";
@@ -36,10 +36,10 @@ import {
 export const uiComponents: Plugin = {
   components: {
     avatar: eagerComponent(AvatarAdapter),
-    badge: eagerComponent(BadgeComponent),
-    button: eagerComponent(ButtonComponent),
+    badge: eagerComponent(BadgeAdapter),
+    button: eagerComponent(ButtonAdapter),
     card: eagerComponent(CardAdapter),
-    chart: eagerComponent(ChartComponent),
+    chart: eagerComponent(ChartAdapter),
     "code-block": eagerComponent(CodeBlockAdapter),
     collapsible: eagerComponent(CollapsibleAdapter),
     "description-list": eagerComponent(DescriptionListAdapter),
@@ -51,12 +51,12 @@ export const uiComponents: Plugin = {
     "floating-panel": eagerComponent(FloatingPanelAdapter),
     grid: eagerComponent(GridAdapter),
     heading: eagerComponent(HeadingAdapter),
-    icon: eagerComponent(IconComponent),
+    icon: eagerComponent(IconAdapter),
     image: eagerComponent(ImageAdapter),
-    link: eagerComponent(LinkComponent),
-    modal: eagerComponent(ModalComponent),
+    link: eagerComponent(LinkAdapter),
+    modal: eagerComponent(ModalAdapter),
     progress: eagerComponent(ProgressAdapter),
-    "raw-block": eagerComponent(RawBlockComponent),
+    "raw-block": eagerComponent(RawBlockAdapter),
     section: eagerComponent(SectionAdapter),
     "segmented-control": eagerComponent(SegmentedControlAdapter),
     separator: eagerComponent(SeparatorAdapter),

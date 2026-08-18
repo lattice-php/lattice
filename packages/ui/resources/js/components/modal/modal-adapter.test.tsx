@@ -2,22 +2,22 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { EmbeddedModalContext } from "../modal-host";
-import ModalComponent from "./modal";
+import { EmbeddedModalContext } from "../../modal-host";
+import ModalAdapter from "./modal-adapter";
 
 function renderModal(node: Node<"modal">, open = true, onOpenChange = vi.fn(), onExited = vi.fn()) {
   render(
     <EmbeddedModalContext.Provider value={{ open, onOpenChange, onExited }}>
-      <ModalComponent node={node}>
+      <ModalAdapter node={node}>
         <p>Body content</p>
-      </ModalComponent>
+      </ModalAdapter>
     </EmbeddedModalContext.Provider>,
   );
 
   return onOpenChange;
 }
 
-describe("ModalComponent", () => {
+describe("ModalAdapter", () => {
   it("renders its content while the host reports it open", () => {
     renderModal(fakeNode({ type: "modal", id: "welcome", props: { title: "Welcome" } }));
 

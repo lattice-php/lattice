@@ -50,7 +50,7 @@ export { Renderer } from "@lattice-php/core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "@lattice-php/core/component-ref";
 export { withHeaders } from "@lattice-php/core/headers";
 export { LATTICE_EVENT } from "@lattice-php/core/event-names";
-export type { Emphasis } from "@lattice-php/ui/button";
+export type { Emphasis } from "@lattice-php/ui/components/button/button";
 export type { ReloadComponentEvent } from "@lattice-php/core/event-names";
 export type {
   ComponentProps,

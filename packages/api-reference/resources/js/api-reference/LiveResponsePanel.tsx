@@ -1,4 +1,4 @@
-import { Badge } from "@lattice-php/ui/badge";
+import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { CodeBlock } from "@lattice-php/ui";
 import type { ColorName } from "@lattice-php/core";
 import type { ExecutedResponse, ExecutionError } from "./execute-request";

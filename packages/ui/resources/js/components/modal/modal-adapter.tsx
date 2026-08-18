@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogHeader } from "../dialog";
+import { Dialog, DialogContent, DialogHeader } from "../../dialog";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { UI_NAMESPACE, useT } from "../i18n";
-import { useEmbeddedModal } from "../modal-host";
+import { UI_NAMESPACE, useT } from "../../i18n";
+import { useEmbeddedModal } from "../../modal-host";
 
 let warnedMissingHost = false;
 
@@ -16,7 +16,7 @@ function warnMissingHost(): void {
   );
 }
 
-const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
+const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => {
   const { t } = useT(UI_NAMESPACE);
   const context = useEmbeddedModal();
 
@@ -46,4 +46,4 @@ const ModalComponent: RendererComponent<"modal"> = ({ children, node }) => {
   );
 };
 
-export default ModalComponent;
+export default ModalAdapter;

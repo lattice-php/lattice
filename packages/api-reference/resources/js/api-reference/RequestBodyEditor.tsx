@@ -1,6 +1,6 @@
 import { useId, useMemo, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { InfoTooltip } from "@lattice-php/ui/info-tooltip";
 import { Input } from "@lattice-php/ui/input";
 import { NativeSelect } from "@lattice-php/ui/native-select";

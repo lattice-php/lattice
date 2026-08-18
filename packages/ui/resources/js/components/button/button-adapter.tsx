@@ -1,14 +1,11 @@
-import { IconRenderer } from "../icons";
-import { Button, buttonVariants } from "../button";
-import type { Emphasis, Variant } from "../button";
+import { IconRenderer } from "../../icons";
+import { Button } from "./button";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { ActionTrigger, type TriggerState, useClickBehavior } from "../click-behavior";
-import { useNavigation } from "../navigation";
+import { ActionTrigger, type TriggerState, useClickBehavior } from "../../click-behavior";
+import { useNavigation } from "../../navigation";
 
-export type { Emphasis, Variant };
-
-const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
+const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
   const { label, icon } = node.props;
   const variant = node.props.variant ?? null;
   const emphasis = node.props.emphasis ?? "solid";
@@ -69,5 +66,4 @@ const ButtonComponent: RendererComponent<"button"> = ({ node }) => {
   );
 };
 
-export default ButtonComponent;
-export { Button, buttonVariants };
+export default ButtonAdapter;

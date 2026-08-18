@@ -2,7 +2,7 @@ import type { DateValue } from "@lattice-php/ui/format/temporal";
 import * as datePicker from "@zag-js/date-picker";
 import { normalizeProps, useMachine } from "@zag-js/react";
 import { useId, useMemo } from "react";
-import { Button } from "@lattice-php/ui/button";
+import { Button } from "@lattice-php/ui/components/button/button";
 import { Icon } from "@lattice-php/ui/icons";
 import { useLocale } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";

@@ -5,12 +5,12 @@ import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { NavigationProvider, type NavigationAdapter } from "../navigation";
-import ButtonComponent from "./button";
+import { NavigationProvider, type NavigationAdapter } from "../../navigation";
+import ButtonAdapter from "./button-adapter";
 
-describe("ButtonComponent client effects", () => {
+describe("ButtonAdapter client effects", () => {
   const registry = createRegistry({
-    components: { button: eagerComponent(ButtonComponent) },
+    components: { button: eagerComponent(ButtonAdapter) },
     name: "test/button",
   });
 

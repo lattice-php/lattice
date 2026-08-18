@@ -3,7 +3,7 @@ import { mergeAttributes, Node } from "@tiptap/core";
 import { NodeViewWrapper, ReactNodeViewRenderer, type NodeViewProps } from "@tiptap/react";
 import type { Node as WireNode } from "@lattice-php/core/types";
 import type { PatternTokenData } from "@lattice-php/form/types";
-import { Badge } from "@lattice-php/ui/badge";
+import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Input } from "@lattice-php/ui/input";
 import { NativeSelect } from "@lattice-php/ui/native-select";
