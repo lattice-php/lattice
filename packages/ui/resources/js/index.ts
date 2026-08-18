@@ -5,6 +5,7 @@ export * from "./button";
 export * from "./checkbox";
 export * from "./color-picker";
 export * from "./column-sizing";
+export * from "./collapsible";
 export * from "./combobox";
 export * from "./confirm-dialog";
 export * from "./control";
@@ -31,7 +32,6 @@ export type {
 } from "./components/code-block";
 export * from "./copyable-text";
 export * from "./dialog";
-export * from "./disclosure";
 export * from "./dropdown-menu";
 export * from "./icon-button";
 export * from "./icons/index";

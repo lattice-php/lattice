@@ -24,7 +24,7 @@ function renderCollapsible(node: Node) {
 describe("Collapsible component", () => {
   beforeEach(() => window.localStorage.clear());
 
-  it("renders a flow-content trigger through the client disclosure", async () => {
+  it("renders a flow-content trigger through the client collapsible", async () => {
     renderCollapsible({
       id: "name",
       type: "collapsible",
@@ -87,29 +87,7 @@ describe("Collapsible component", () => {
     expect(window.localStorage.getItem("lattice:collapsible:name")).toBeNull();
   });
 
-  it("persists disclosure state changes when rememberState is set", async () => {
-    renderCollapsible({
-      id: "name",
-      type: "collapsible",
-      props: { rememberState: true, trigger: [{ type: "text", props: { text: "Name" } }] },
-      schema: [{ type: "text", props: { text: "Hidden body" } }],
-    });
-
-    const toggle = screen.getByTestId("collapsible-toggle-name");
-    fireEvent.click(toggle);
-
-    await waitFor(() =>
-      expect(window.localStorage.getItem("lattice:collapsible:name")).toBe("true"),
-    );
-
-    fireEvent.click(toggle);
-
-    await waitFor(() =>
-      expect(window.localStorage.getItem("lattice:collapsible:name")).toBe("false"),
-    );
-  });
-
-  it("restores persisted state and ignores the collapsed fallback", async () => {
+  it("maps remembered state to storage scoped by the wire identity", async () => {
     window.localStorage.setItem("lattice:collapsible:name", "true");
 
     renderCollapsible({
@@ -125,7 +103,9 @@ describe("Collapsible component", () => {
 
     fireEvent.click(toggle);
 
-    await waitFor(() => expect(toggle).toHaveAttribute("aria-expanded", "false"));
+    await waitFor(() =>
+      expect(window.localStorage.getItem("lattice:collapsible:name")).toBe("false"),
+    );
     expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
   });
 });

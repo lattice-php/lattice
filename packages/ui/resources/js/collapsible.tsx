@@ -1,54 +1,64 @@
-import { useId, useState } from "react";
+import { useId } from "react";
 import type { ComponentProps, KeyboardEvent, MouseEvent, ReactNode } from "react";
 import { Icon } from "./icons";
+import { InfoTooltip } from "./info-tooltip";
 import { cn } from "./lib/utils";
+import { useCollapsibleState } from "./use-collapsible-state";
 
-export type DisclosureSummaryProps = Omit<
+export type CollapsibleTriggerProps = Omit<
   ComponentProps<"div">,
   "aria-controls" | "aria-expanded" | "children" | "role" | "tabIndex"
 > & {
   [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
 };
 
-export type DisclosureProps = Omit<ComponentProps<"div">, "children"> & {
+export type CollapsibleProps = Omit<ComponentProps<"div">, "children"> & {
   children?: ReactNode;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
-  summary: ReactNode;
-  summaryProps?: DisclosureSummaryProps;
+  storageKey?: string;
+  tooltip?: string | null;
+  trigger: ReactNode;
+  triggerProps?: CollapsibleTriggerProps;
 };
 
-export function Disclosure({
+export function Collapsible({
   children,
   className,
   defaultOpen,
   onOpenChange,
   open,
-  summary,
-  summaryProps,
+  storageKey,
+  tooltip,
+  trigger,
+  triggerProps,
   ...props
-}: DisclosureProps) {
+}: CollapsibleProps) {
   const contentId = useId();
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
+  const [uncontrolledOpen, toggleUncontrolledOpen] = useCollapsibleState(
+    storageKey ?? "",
+    defaultOpen ?? false,
+    open === undefined && storageKey !== undefined,
+  );
   const isOpen = open ?? uncontrolledOpen;
   const {
-    className: summaryClassName,
-    onClick: onSummaryClick,
-    onKeyDown: onSummaryKeyDown,
-    ...restSummaryProps
-  } = summaryProps ?? {};
+    className: triggerClassName,
+    onClick: onTriggerClick,
+    onKeyDown: onTriggerKeyDown,
+    ...restTriggerProps
+  } = triggerProps ?? {};
 
   function setOpen(nextOpen: boolean): void {
-    if (open === undefined) {
-      setUncontrolledOpen(nextOpen);
+    if (open === undefined && nextOpen !== uncontrolledOpen) {
+      toggleUncontrolledOpen();
     }
 
     onOpenChange?.(nextOpen);
   }
 
-  function handleSummaryClick(event: MouseEvent<HTMLDivElement>): void {
-    onSummaryClick?.(event);
+  function handleTriggerClick(event: MouseEvent<HTMLDivElement>): void {
+    onTriggerClick?.(event);
 
     if (event.defaultPrevented || isInteractiveChild(event.target, event.currentTarget)) {
       return;
@@ -57,8 +67,8 @@ export function Disclosure({
     setOpen(!isOpen);
   }
 
-  function handleSummaryKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
-    onSummaryKeyDown?.(event);
+  function handleTriggerKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
+    onTriggerKeyDown?.(event);
 
     if (event.defaultPrevented || event.target !== event.currentTarget) {
       return;
@@ -72,26 +82,29 @@ export function Disclosure({
 
   return (
     <div
-      data-slot="disclosure"
+      data-slot="collapsible"
       data-state={isOpen ? "open" : "closed"}
       className={className}
       {...props}
     >
       <div
-        {...restSummaryProps}
+        {...restTriggerProps}
         aria-controls={contentId}
         aria-expanded={isOpen}
-        data-slot="disclosure-summary"
+        data-slot="collapsible-trigger"
         className={cn(
           "flex min-h-11 w-full cursor-pointer items-center justify-between gap-4 rounded-lt-sm py-2 text-left text-lt-fg transition-colors select-none hover:bg-lt-muted focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50 focus-visible:outline-none",
-          summaryClassName,
+          triggerClassName,
         )}
-        onClick={handleSummaryClick}
-        onKeyDown={handleSummaryKeyDown}
+        onClick={handleTriggerClick}
+        onKeyDown={handleTriggerKeyDown}
         role="button"
         tabIndex={0}
       >
-        <div className="flex min-w-0 flex-1 items-center gap-2">{summary}</div>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          {trigger}
+          {tooltip ? <InfoTooltip content={tooltip} /> : null}
+        </div>
         <Icon
           name="chevron-down"
           className={cn(
@@ -102,7 +115,7 @@ export function Disclosure({
       </div>
 
       {isOpen && children !== null && children !== undefined ? (
-        <div id={contentId} data-slot="disclosure-content" className="flex flex-col gap-4 pt-2">
+        <div id={contentId} data-slot="collapsible-content" className="flex flex-col gap-4 pt-2">
           {children}
         </div>
       ) : null}
@@ -110,7 +123,7 @@ export function Disclosure({
   );
 }
 
-function isInteractiveChild(target: EventTarget, summary: HTMLDivElement): boolean {
+function isInteractiveChild(target: EventTarget, trigger: HTMLDivElement): boolean {
   if (!(target instanceof Element)) {
     return false;
   }
@@ -119,5 +132,5 @@ function isInteractiveChild(target: EventTarget, summary: HTMLDivElement): boole
     'a[href], button, input, select, textarea, [contenteditable="true"], [role="button"]',
   );
 
-  return interactiveElement !== null && interactiveElement !== summary;
+  return interactiveElement !== null && interactiveElement !== trigger;
 }
