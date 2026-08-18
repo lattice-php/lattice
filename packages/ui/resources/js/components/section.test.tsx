@@ -6,13 +6,13 @@ import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import ButtonComponent from "./button";
 import SectionComponent from "./section";
-import TextComponent from "./text";
+import TextAdapter from "./text/text-adapter";
 
 const registry = createRegistry({
   components: {
     button: eagerComponent(ButtonComponent),
     section: eagerComponent(SectionComponent),
-    text: eagerComponent(TextComponent),
+    text: eagerComponent(TextAdapter),
   },
   name: "test/section",
 });
