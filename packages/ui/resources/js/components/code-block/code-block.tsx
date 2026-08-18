@@ -1,16 +1,15 @@
 import { Fragment, lazy, Suspense } from "react";
 import type { ComponentProps } from "react";
 import type { Extension } from "@codemirror/state";
-import type { RendererComponent } from "@lattice-php/core/types";
-import { cn } from "../lib/utils";
-import { CopyButton } from "../copyable-text";
+import { cn } from "../../lib/utils";
+import { CopyButton } from "../../copyable-text";
 
 const CodeBlockView = lazy(() => import("./code-block-view"));
 
-type CodeBlockLanguage = "text" | "json" | "javascript" | "shell" | "php";
-type CodeBlockLanguageLoader = () => Promise<Extension>;
+export type CodeBlockLanguage = "text" | "json" | "javascript" | "shell" | "php";
+export type CodeBlockLanguageLoader = () => Promise<Extension>;
 
-interface CodeBlockProps extends Omit<ComponentProps<"div">, "children"> {
+export interface CodeBlockProps extends Omit<ComponentProps<"div">, "children"> {
   children: string;
   copyable?: boolean;
   language?: CodeBlockLanguage | CodeBlockLanguageLoader;
@@ -19,7 +18,7 @@ interface CodeBlockProps extends Omit<ComponentProps<"div">, "children"> {
   wrap?: boolean;
 }
 
-interface CodeBlockViewProps {
+export interface CodeBlockViewProps {
   children: string;
   language: CodeBlockLanguage | CodeBlockLanguageLoader;
   lineNumbers: boolean;
@@ -27,7 +26,7 @@ interface CodeBlockViewProps {
   wrap: boolean;
 }
 
-function CodeBlock({
+export function CodeBlock({
   "aria-label": ariaLabel,
   children,
   className,
@@ -99,19 +98,3 @@ function CodeBlock({
     </div>
   );
 }
-
-const CodeBlockComponent: RendererComponent<"code-block"> = ({ node }) => (
-  <CodeBlock
-    copyable={node.props.copyable}
-    language={node.props.language}
-    lineNumbers={node.props.lineNumbers}
-    maxHeight={node.props.maxHeight}
-    wrap={node.props.wrap}
-  >
-    {node.props.code}
-  </CodeBlock>
-);
-
-export default CodeBlockComponent;
-export { CodeBlock };
-export type { CodeBlockLanguage, CodeBlockLanguageLoader, CodeBlockProps, CodeBlockViewProps };

@@ -17,7 +17,9 @@ export * from "./components/segmented-control/segmented-control";
 export * from "./components/section/section";
 export * from "./components/separator/separator";
 export * from "./components/stack/stack";
+export * from "./components/tabs/tabs";
 export * from "./components/text/text";
+export * from "./components/tooltip/tooltip";
 export * from "./combobox";
 export * from "./confirm-dialog";
 export * from "./control";
@@ -40,13 +42,14 @@ export {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./components/card";
-export { CodeBlock } from "./components/code-block";
+} from "./components/card/card";
+export type { CardProps } from "./components/card/card";
+export { CodeBlock } from "./components/code-block/code-block";
 export type {
   CodeBlockLanguage,
   CodeBlockLanguageLoader,
   CodeBlockProps,
-} from "./components/code-block";
+} from "./components/code-block/code-block";
 export * from "./copyable-text";
 export * from "./dialog";
 export * from "./dropdown-menu";
