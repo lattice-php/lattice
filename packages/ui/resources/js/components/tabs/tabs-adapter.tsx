@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
 import type { Tab as WireTab } from "../../generated";
 import { UI_NAMESPACE, useT } from "../../i18n";
@@ -40,7 +41,7 @@ export const TabsAdapter: RendererComponent<"tabs"> = ({ children, node }) => {
     <Tabs
       aria-label={t("common.tabs", "Tabs")}
       alignment={node.props.alignment}
-      data-lattice-tabs={node.key ?? node.id}
+      data-lattice-component={nodeIdentity(node)}
       items={tabs.map((tab) => ({ label: tab.label, value: tab.value }))}
       onValueChange={selectTab}
       orientation={node.props.orientation}

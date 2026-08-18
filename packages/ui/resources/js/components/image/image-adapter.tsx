@@ -6,6 +6,7 @@ const ImageAdapter: RendererComponent<"image"> = ({ node }) => (
   <Image
     alt={node.props.alt}
     circular={node.props.circular}
+    data-lattice-component={nodeIdentity(node)}
     previewable={node.props.previewable}
     size={node.props.size}
     src={node.props.src}
