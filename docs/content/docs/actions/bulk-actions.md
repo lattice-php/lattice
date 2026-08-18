@@ -43,7 +43,9 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
 
 `definition()` returns the same `Action` component as a single action, so labels, variants,
 [confirmation](/actions/confirmation-and-forms/), and [forms](/actions/confirmation-and-forms/#collecting-input-with-a-form)
-all apply. `handle()` returns an [`ActionResult`](/actions/effects/) like any action.
+all apply — including a [`->lazyForm()`](/actions/confirmation-and-forms/#deferring-the-schema)
+one, which fetches its schema together with the selection payload once the bulk action bar opens
+it. `handle()` returns an [`ActionResult`](/actions/effects/) like any action.
 
 ## Attaching it to a table
 
