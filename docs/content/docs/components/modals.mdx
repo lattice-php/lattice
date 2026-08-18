@@ -1,39 +1,96 @@
 ---
 title: Modals
-description: A dialog opened and closed from the server through action effects.
+description: A dialog embedded on a trigger or shipped by a server effect.
 ---
 
 import Info from "@components/Info.astro";
 
-`Modal::make($id)->title('…')->schema([...])` declares a dialog. It renders nothing until it is
-opened, and it is driven from the server: an [action](/actions/overview/) returns an `open-modal` /
-`close-modal` [effect](/actions/effects/) targeting the modal's `$id`.
+`Modal::make($id)->title('…')->schema([...])` declares a dialog. It never sits in the page tree on
+its own — a single host renders it, reached one of two ways.
+
+<Info>
+  Only one modal can be open at a time. Opening a second one — from another trigger, or another
+  `open-modal` effect — replaces whatever is currently open rather than stacking.
+</Info>
+
+## Trigger-embedded
+
+Pass a `Modal` to `->modal()` on `Button`, `Link`, or `MenuItem`. Clicking the trigger opens it —
+no id to wire up, no effect to dispatch:
 
 ```php
+use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Modal;
 
-Modal::make('invite-member')
-    ->title('Invite a member')
-    ->description('They will receive an email invitation.')
-    ->schema([
-        // form fields, text, buttons…
-    ]);
+Button::make('Invite')
+    ->modal(
+        Modal::make('invite-member')
+            ->title('Invite a member')
+            ->description('They will receive an email invitation.')
+            ->schema([
+                // form fields, text, buttons…
+            ]),
+    );
 ```
 
-The dialog's `$id` is how effects find it:
+`->modal()` also accepts a closure returning a `Modal`, resolved like any other
+[closure parameter](/core/closure-evaluation/) at serialization time — reach for it when the modal's
+content depends on data that is expensive to build up front, or should be re-evaluated per render:
+
+```php
+Button::make('Details')->modal(fn (): Modal => Modal::make('order-details')
+    ->title("Order #{$this->order->id}")
+    ->schema([...]));
+```
+
+A clickable component carries exactly one behavior: an `href`, an `action`, `effects`, or a `modal`.
+Setting a second one throws — `Button::make('Details')->href('/x')->modal(...)` is rejected the same
+way `->href()->action()` is.
+
+<Info>
+  Reuse the same modal on two triggers by passing the same `Modal` instance to both `->modal()`
+  calls — the host renders whichever trigger opened it last.
+</Info>
+
+## Effect-shipped
+
+An [action](/actions/overview/) can ship a modal instead of embedding one on a trigger — the modal
+travels in the `open-modal` [effect](/actions/effects/)'s payload:
+
+```php
+use Lattice\Actions\ActionResult;
+use Lattice\Ui\Components\Modal;
+
+return ActionResult::success()->openModal(
+    Modal::make('order-details')
+        ->title('Order details')
+        ->schema([...]),
+);
+```
+
+This is the right shape when the modal's content depends on server-side work the action just did —
+looking up a record, rendering a generated document — rather than data already available at the
+trigger.
+
+For a modal that should be open on page load, flash the same effect from a controller or middleware
+instead of embedding it in the tree, with `Effects::flash()`:
 
 ```php
 use Lattice\Facades\Effects;
-use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Modal;
 
-Button::make('Invite')
-    ->effects(Effects::openModal('invite-member'));
+Effects::flash(Effects::openModal(
+    Modal::make('welcome')->title('Welcome back')->schema([...]),
+));
+
+return redirect('/dashboard');
 ```
+
+`->closeModal($id)` closes the hosted modal if it matches `$id`; `->closeModal()` with no argument
+closes whatever is currently open.
 
 - `->title('…')` and `->description('…')` set the dialog header.
 - `->closeLabel('…')` relabels the close button (defaults to `Close`).
-- `->open()` renders the modal already open — for a dialog that should show on load, rather than in
-  response to an effect.
 - `->slideOut()` docks the dialog to a viewport edge as a full-height sheet; `->slideOut(Side::Start)`
   picks the leading edge instead of the trailing one.
 - `->width(ModalWidth::…)` sets the dialog width — the max width of a centered dialog and the panel
@@ -68,8 +125,28 @@ Modal::make('saved-filters')
 Sheets and centered dialogs share the same width scale: `->width()` caps a centered dialog and sets
 a sheet's panel width.
 
+## Lazy content
+
+A modal's schema can include a `Fragment::lazy(...)` — its content fetches from the server the first
+time the modal opens, not when the trigger renders, so a rarely-opened modal never pays for data the
+page doesn't need:
+
+```php
+use Lattice\Fragments\Components\Fragment;
+
+Button::make('Activity')
+    ->modal(
+        Modal::make('activity-log')
+            ->title('Activity log')
+            ->schema([
+                Fragment::lazy(ActivityLogFragment::class),
+            ]),
+    );
+```
+
+See [Fragments](/core/fragments/) for how `Fragment::lazy()` works.
+
 <Info>
-  Modals are normally opened and closed by [effects](/actions/effects/), never by the client on its
-  own. `->open()` is only for a modal that should render already open. Because a modal takes over the
-  viewport, its examples here are shown as code rather than a live preview.
+  Because a modal takes over the viewport, its examples here are shown as code rather than a live
+  preview.
 </Info>
