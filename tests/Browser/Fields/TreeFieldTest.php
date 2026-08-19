@@ -7,8 +7,8 @@ it('renders the seeded hierarchy and adds a nested child block', function (): vo
         ->assertValue('input[name="items[0][children][0][product]"]', 'Switch')
         ->assertValue('input[name="items[1][product]"]', 'Installation');
 
-    $page->click('[data-test="tree-field-items-row-0"] [data-test="builder-add"]')
-        ->click('@builder-add-product')
+    $page->click('@tree-field-items-add-child-0')
+        ->click('@tree-field-items-add-child-0-product')
         ->fill('input[name="items[0][children][2][product]"]', 'Router')
         ->fill('input[name="items[0][children][2][qty]"]', '1')
         ->click('@form-submit');
@@ -25,8 +25,8 @@ it('renders the seeded hierarchy and adds a nested child block', function (): vo
 it('surfaces a required error at the nested row path', function (): void {
     $this->visitAsWorkbenchUser('/form/fields/tree')
         ->assertSee('Line items')
-        ->click('[data-test="tree-field-items-row-0"] [data-test="builder-add"]')
-        ->click('@builder-add-product')
+        ->click('@tree-field-items-add-child-0')
+        ->click('@tree-field-items-add-child-0-product')
         ->click('@form-submit')
         ->assertSee('The Product field is required.')
         ->assertNoSmoke();

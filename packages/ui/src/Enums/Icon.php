@@ -30,6 +30,7 @@ enum Icon: string
     case CodeXml = 'code-xml';
     case Columns3 = 'columns-3';
     case Copy = 'copy';
+    case CornerDownRight = 'corner-down-right';
     case ExternalLink = 'external-link';
     case Eye = 'eye';
     case EyeOff = 'eye-off';
@@ -46,6 +47,7 @@ enum Icon: string
     case Link = 'link';
     case List = 'list';
     case ListOrdered = 'list-ordered';
+    case ListPlus = 'list-plus';
     case Loader2 = 'loader-2';
     case Minus = 'minus';
     case MoreHorizontal = 'more-horizontal';

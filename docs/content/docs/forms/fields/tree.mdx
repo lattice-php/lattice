@@ -71,6 +71,13 @@ Both rules are also enforced client-side: the drag-and-drop layer refuses drops 
 row under a type that rejects children, land a subtree deeper than `maxDepth`, or move a row into
 its own subtree.
 
+## Adding rows
+
+Each row's toolbar offers two type menus: **add sub-item** (shown while the row's type accepts
+children and depth remains) appends a child below the row, and **add item below** inserts a sibling
+right after it. The top level additionally keeps the plain add button (labeled by `->addLabel()`)
+for empty trees and appending at the end.
+
 ## Moving rows
 
 Every row carries a drag handle; dropping on the upper or lower edge of a target reorders next to
