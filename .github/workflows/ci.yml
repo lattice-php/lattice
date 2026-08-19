@@ -80,6 +80,7 @@ jobs:
   vitest-browser:
     name: Vitest Browser
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
       id-token: write
@@ -106,10 +107,18 @@ jobs:
 
       - name: Install Playwright browser and system deps
         if: steps.pw-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 10
         run: npx playwright install --with-deps chromium
 
+      # install-deps shells out to apt-get, which sporadically hangs on hosted
+      # runners (dpkg lock contention, mirror stalls). The ubuntu-24.04 image
+      # already ships the Chromium libraries, so a timed-out install never
+      # blocks the job; a lib that is genuinely missing fails the browser
+      # launch loudly right after.
       - name: Install Playwright system deps only
         if: steps.pw-cache.outputs.cache-hit == 'true'
+        timeout-minutes: 6
+        continue-on-error: true
         run: npx playwright install-deps chromium
 
       - run: |
