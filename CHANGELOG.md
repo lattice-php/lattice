@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.60.0](https://github.com/lattice-php/lattice/compare/0.59.0...0.60.0) (2026-08-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* **form:** the abstract handle(Request) declarations are gone, validate() returns FormData instead of array, FormData::string() returns Stringable, and bulk actions now validate their embedded form before handle() runs (invalid input 422s).
+
+### Features
+
+* **form:** validate once and pass validated FormData to handle() ([#510](https://github.com/lattice-php/lattice/issues/510)) ([e515092](https://github.com/lattice-php/lattice/commit/e515092dd00ad3f40e824e4ba8c028d58fc883ca))
+
+
+### Bug Fixes
+
+* **form:** collect row template fields through layout containers ([#511](https://github.com/lattice-php/lattice/issues/511)) ([0ebed55](https://github.com/lattice-php/lattice/commit/0ebed55ae654e4499f20606d53d3b8c50a307969))
+
 ## [0.59.0](https://github.com/lattice-php/lattice/compare/0.58.0...0.59.0) (2026-08-19)
 
 
