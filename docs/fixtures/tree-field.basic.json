@@ -1,0 +1,164 @@
+[
+    {
+        "props": {
+            "addLabel": "Add block",
+            "childBearingTypes": [
+                "heading"
+            ],
+            "columnWidth": "md",
+            "conditions": null,
+            "defaultItems": 0,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "label": "Line items",
+            "labelAction": null,
+            "maxDepth": 2,
+            "maxItems": null,
+            "minItems": null,
+            "name": "items",
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "reorderable": true,
+            "required": false,
+            "templates": [
+                {
+                    "label": "Heading",
+                    "schema": [
+                        {
+                            "props": {
+                                "autoComplete": null,
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "copyable": false,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Title",
+                                "labelAction": null,
+                                "name": "title",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "prefix": null,
+                                "readOnly": false,
+                                "required": true,
+                                "suffix": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "type": null,
+                                "value": null
+                            },
+                            "type": "field.text-input"
+                        }
+                    ],
+                    "type": "heading"
+                },
+                {
+                    "label": "Product line",
+                    "schema": [
+                        {
+                            "props": {
+                                "autoComplete": null,
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "copyable": false,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Product",
+                                "labelAction": null,
+                                "name": "product",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "prefix": null,
+                                "readOnly": false,
+                                "required": true,
+                                "suffix": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "type": null,
+                                "value": null
+                            },
+                            "type": "field.text-input"
+                        },
+                        {
+                            "props": {
+                                "autoComplete": null,
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "copyable": false,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Qty",
+                                "labelAction": null,
+                                "name": "qty",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "prefix": null,
+                                "readOnly": false,
+                                "required": false,
+                                "suffix": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "type": null,
+                                "value": null
+                            },
+                            "type": "field.text-input"
+                        }
+                    ],
+                    "type": "product"
+                },
+                {
+                    "label": "Text",
+                    "schema": [
+                        {
+                            "props": {
+                                "autoFocus": false,
+                                "columnWidth": "md",
+                                "conditions": null,
+                                "dependsOnAny": false,
+                                "dependsOnKeys": null,
+                                "disabled": false,
+                                "editablePrefill": false,
+                                "helperText": null,
+                                "label": "Content",
+                                "labelAction": null,
+                                "name": "content",
+                                "placeholder": null,
+                                "prefillRefreshOn": null,
+                                "prefillResetOn": null,
+                                "readOnly": false,
+                                "required": true,
+                                "rows": null,
+                                "tabIndex": null,
+                                "tooltip": null,
+                                "value": null
+                            },
+                            "type": "field.textarea"
+                        }
+                    ],
+                    "type": "text"
+                }
+            ],
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.tree"
+    }
+]

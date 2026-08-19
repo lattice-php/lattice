@@ -31,6 +31,7 @@ export const iconNames = [
   "eye-off",
   "filter",
   "form-input",
+  "grip-vertical",
   "heading",
   "heading-1",
   "heading-2",
@@ -104,6 +105,7 @@ declare module "@lattice-php/ui" {
     "eye-off": true;
     filter: true;
     "form-input": true;
+    "grip-vertical": true;
     heading: true;
     "heading-1": true;
     "heading-2": true;

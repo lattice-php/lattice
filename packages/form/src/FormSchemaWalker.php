@@ -65,7 +65,7 @@ final class FormSchemaWalker
 
         foreach ($rows as $index => $row) {
             $row = is_array($row) ? $row : [];
-            $rowScope = FormData::make([...$scope->all(), ...$row]);
+            $rowScope = $field->rowScope($scope, $row);
 
             foreach ($field->rowFields($row) as $child) {
                 yield from $this->walkField(

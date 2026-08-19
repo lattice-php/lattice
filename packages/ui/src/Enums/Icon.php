@@ -34,6 +34,7 @@ enum Icon: string
     case Eye = 'eye';
     case EyeOff = 'eye-off';
     case Filter = 'filter';
+    case GripVertical = 'grip-vertical';
     case Heading = 'heading';
     case Heading1 = 'heading-1';
     case Heading2 = 'heading-2';

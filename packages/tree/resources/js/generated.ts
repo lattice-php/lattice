@@ -1,9 +1,14 @@
 import type { Node } from "@lattice-php/core";
+import type { FieldConditions, RowTemplateData } from "@lattice-php/form";
+import type { ColumnWidth } from "@lattice-php/ui";
 
 export type ComponentPropsMap = {
+  "field.tree": TreeField;
   tree: Tree;
 };
-export type NodeType = "tree";
+export type FormFieldNodeType = "field.tree";
+export type FormNodeType = "field.tree";
+export type NodeType = "field.tree" | "tree";
 export type Tree = {
   activeId: string | null;
   activePath: string[] | null;
@@ -17,6 +22,32 @@ export type Tree = {
   rememberState: boolean;
   revision: number | string | null;
   selectAction: Node<"action"> | Node<"action.bulk"> | null;
+};
+export type TreeField = {
+  addLabel: string | null;
+  childBearingTypes: string[] | null;
+  columnWidth: ColumnWidth;
+  conditions: FieldConditions | null;
+  defaultItems: number;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  label: string | null;
+  labelAction: Node | null;
+  maxDepth: number | null;
+  maxItems: number | null;
+  minItems: number | null;
+  name: string;
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  reorderable: boolean;
+  required: boolean;
+  templates: RowTemplateData[];
+  tooltip: string | null;
+  value: unknown;
 };
 export type TreeNodeData = {
   readonly acceptsChildren: boolean;

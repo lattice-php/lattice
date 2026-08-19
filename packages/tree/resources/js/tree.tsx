@@ -3,20 +3,19 @@ import type { KeyboardEvent, MouseEvent } from "react";
 import { LATTICE_EVENT, nodeIdentity, Renderer, useWindowEvent } from "@lattice-php/core";
 import { cn } from "@lattice-php/ui/lib/utils";
 import type { ReloadComponentEvent, RendererComponent } from "@lattice-php/core";
-import {
-  announce,
-  attachTreeItemInstruction,
-  combine,
-  draggable,
-  dropTargetForElements,
-  extractTreeItemInstruction,
-} from "@lattice-php/lattice/dnd";
+import { announce, combine, draggable } from "@lattice-php/lattice/dnd";
 import type { TreeItemInstruction } from "@lattice-php/lattice/dnd";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { useNavigation } from "@lattice-php/ui/navigation";
 import type { TreeNodeData } from "./types";
 import { ROOTS_KEY, TreeContext, useTreeContext, useTreeState } from "./tree-context";
+import {
+  dropIndicatorClass,
+  treeItemDragData,
+  treeItemDropTarget,
+  type TreeDragSource,
+} from "./tree-item-drop";
 
 function isExpandable(
   node: TreeNodeData,
@@ -144,23 +143,8 @@ function TreeItem({
     return targetPosition + (after ? 1 : 0) - sourceAdjustment;
   }
 
-  async function dropNode(
-    sourceData: Record<string, unknown>,
-    targetData: Record<string | symbol, unknown>,
-  ): Promise<void> {
-    const sourceId = sourceData.nodeId;
-    const sourceLabel = typeof sourceData.label === "string" ? sourceData.label : sourceId;
-    const instruction = extractTreeItemInstruction(targetData);
-
-    if (
-      typeof sourceId !== "string" ||
-      typeof sourceLabel !== "string" ||
-      !instruction ||
-      instruction.type === "instruction-blocked"
-    ) {
-      return;
-    }
-
+  async function dropNode(source: TreeDragSource, instruction: TreeItemInstruction): Promise<void> {
+    const sourceId = source.id;
     let request: { nodeId: string; parentId: string | null; position: number } | null = null;
 
     if (instruction.type === "reorder-above" || instruction.type === "reorder-below") {
@@ -200,8 +184,8 @@ function TreeItem({
     const accepted = await move(request);
     announce(
       accepted
-        ? t("tree.moved", "Moved {{label}}", { label: sourceLabel })
-        : t("tree.move_failed", "Could not move {{label}}", { label: sourceLabel }),
+        ? t("tree.moved", "Moved {{label}}", { label: source.label })
+        : t("tree.move_failed", "Could not move {{label}}", { label: source.label }),
     );
   }
 
@@ -235,49 +219,35 @@ function TreeItem({
       draggable({
         canDrag: () => !moving,
         element,
-        getInitialData: () => ({ label: node.label, nodeId: node.id, type: TREE_DRAG_TYPE }),
+        getInitialData: () => treeItemDragData(TREE_DRAG_TYPE, { id: node.id, label: node.label }),
         onDragStart: () => setDragging(true),
         onDrop: () => setDragging(false),
       }),
-      dropTargetForElements({
-        canDrop: ({ source }) =>
-          source.data.type === TREE_DRAG_TYPE &&
-          typeof source.data.nodeId === "string" &&
-          canDropOn(source.data.nodeId, node.id),
+      treeItemDropTarget({
         element,
-        getData: ({ element: target, input, source }) => {
-          const sourceId = typeof source.data.nodeId === "string" ? source.data.nodeId : null;
+        dragType: TREE_DRAG_TYPE,
+        currentLevel: depth - 1,
+        mode: isExpanded
+          ? "expanded"
+          : siblingIndex === siblingCount
+            ? "last-in-group"
+            : "standard",
+        canDrop: (source) => canDropOn(source.id, node.id),
+        blockedInstructions: (source) => {
           const block: TreeItemInstruction["type"][] = [];
 
-          if (sourceId !== null && !canPlace(sourceId, node.id)) {
+          if (!canPlace(source.id, node.id)) {
             block.push("make-child");
           }
 
-          if (sourceId !== null && !canPlace(sourceId, parentFor(node.id))) {
+          if (!canPlace(source.id, parentFor(node.id))) {
             block.push("reorder-above", "reorder-below");
           }
 
-          return attachTreeItemInstruction(
-            { nodeId: node.id, type: TREE_DRAG_TYPE },
-            {
-              block,
-              currentLevel: depth - 1,
-              element: target,
-              indentPerLevel: 24,
-              input,
-              mode: isExpanded
-                ? "expanded"
-                : siblingIndex === siblingCount
-                  ? "last-in-group"
-                  : "standard",
-            },
-          );
+          return block;
         },
-        onDrag: ({ self }) =>
-          setDropInstruction(extractTreeItemInstruction(self.data)?.type ?? null),
-        onDragEnter: ({ self }) => {
-          setDropInstruction(extractTreeItemInstruction(self.data)?.type ?? null);
-
+        onInstruction: setDropInstruction,
+        onEnter: () => {
           if (expandable && !isExpanded) {
             clearHoverTimer();
             hoverTimerRef.current = setTimeout(() => {
@@ -289,15 +259,8 @@ function TreeItem({
             }, HOVER_EXPAND_MS);
           }
         },
-        onDragLeave: () => {
-          clearHoverTimer();
-          setDropInstruction(null);
-        },
-        onDrop: ({ self, source }) => {
-          clearHoverTimer();
-          setDropInstruction(null);
-          void dropNode(source.data, self.data);
-        },
+        onLeave: clearHoverTimer,
+        onDrop: (source, instruction) => void dropNode(source, instruction),
       }),
     );
   }, [
@@ -495,11 +458,7 @@ function TreeItem({
           isDisabled && "pointer-events-none opacity-50",
           canMove && !isDisabled && "cursor-grab",
           dragging && "opacity-50",
-          dropInstruction === "reorder-above" && "border-t-lt-primary",
-          dropInstruction === "reorder-below" && "border-b-lt-primary",
-          (dropInstruction === "make-child" || dropInstruction === "reparent") &&
-            "ring-1 ring-lt-primary",
-          dropInstruction === "instruction-blocked" && "ring-1 ring-lt-danger/50",
+          dropIndicatorClass(dropInstruction),
         )}
         data-drop-instruction={dropInstruction ?? undefined}
         ref={rowRef}

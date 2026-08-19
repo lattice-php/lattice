@@ -133,6 +133,7 @@ export default defineConfig({
                 { label: "Pattern input", link: "/forms/fields/pattern-input/" },
                 { label: "Repeater", link: "/forms/fields/repeater/" },
                 { label: "Builder", link: "/forms/fields/builder/" },
+                { label: "Tree", link: "/forms/fields/tree/" },
               ],
             },
             { label: "Validation", link: "/forms/validation/" },

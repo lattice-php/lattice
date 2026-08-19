@@ -67,6 +67,7 @@ export type FormFieldNodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
+  | "field.tree"
   | "wizard"
   | "wizard-step";
 export type FormNodeType =
@@ -90,6 +91,7 @@ export type FormNodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
+  | "field.tree"
   | "form"
   | "wizard"
   | "wizard-step";
@@ -185,6 +187,7 @@ export type NodeType =
   | "field.textarea"
   | "field.time-input"
   | "field.toggle"
+  | "field.tree"
   | "floating-panel"
   | "form"
   | "fragment"

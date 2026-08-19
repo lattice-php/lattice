@@ -287,6 +287,10 @@ return [
             'restricted' => 'Restricted set',
             'summary' => 'Summary',
         ],
+        'tree' => [
+            'heading' => 'Heading',
+            'title-field' => 'Title',
+        ],
         'select' => [
             'creatable' => 'Creatable',
             'design' => 'Design',
@@ -423,6 +427,7 @@ return [
         'field-select' => 'Select',
         'field-text' => 'Text input',
         'field-textarea' => 'Textarea',
+        'field-tree' => 'Tree',
         'fields' => 'Fields',
         'forms' => 'Forms',
         'groups' => 'Groups',
@@ -687,6 +692,10 @@ return [
             'textarea' => [
                 'description' => 'Multi-line text input.',
                 'title' => 'Textarea',
+            ],
+            'tree' => [
+                'description' => 'Typed row blocks nested into a drag-and-drop hierarchy.',
+                'title' => 'Tree',
             ],
         ],
         'remote-schema' => [

@@ -19,6 +19,7 @@ export type {
   PatternInput,
   PatternTokenData,
   RichEditor,
+  RowTemplateData,
   Select,
   SignedUpload,
   Textarea,

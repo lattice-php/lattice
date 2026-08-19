@@ -11,6 +11,7 @@
   "dependencies": {
     "@lattice-php/action": "0.57.0",
     "@lattice-php/core": "0.57.0",
+    "@lattice-php/form": "0.57.0",
     "@lattice-php/lattice": "0.57.0",
     "@lattice-php/ui": "0.57.0"
   }
