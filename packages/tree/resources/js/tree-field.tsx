@@ -2,14 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 import type { ReactNode } from "react";
 import { RenderNode } from "@lattice-php/core";
 import type { Node, RendererComponent } from "@lattice-php/core";
-import {
-  announce,
-  attachTreeItemInstruction,
-  combine,
-  draggable,
-  dropTargetForElements,
-  extractTreeItemInstruction,
-} from "@lattice-php/lattice/dnd";
+import { announce, combine, draggable } from "@lattice-php/lattice/dnd";
 import type { TreeItemInstruction } from "@lattice-php/lattice/dnd";
 import {
   AddRowMenu,
@@ -28,6 +21,7 @@ import { useT } from "@lattice-php/ui/i18n";
 import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { canPlace, childrenOf, CHILDREN_KEY, moveNode, type TreeRow } from "./tree-field-rows";
+import { dropIndicatorClass, treeItemDragData, treeItemDropTarget } from "./tree-item-drop";
 
 type TreeFieldApi = {
   dragType: string;
@@ -247,68 +241,44 @@ function TreeFieldRow({
             draggable({
               element,
               dragHandle: handle,
-              getInitialData: () => ({ type: api.dragType, rowId, label: heading }),
+              getInitialData: () => treeItemDragData(api.dragType, { id: rowId, label: heading }),
               onDragStart: () => setDragging(true),
               onDrop: () => setDragging(false),
             }),
           ]
         : []),
-      dropTargetForElements({
+      treeItemDropTarget({
         element,
-        canDrop: ({ source }) =>
-          source.data.type === api.dragType &&
-          typeof source.data.rowId === "string" &&
-          source.data.rowId !== rowId,
-        getData: ({ element: target, input, source }) => {
-          const sourceId = typeof source.data.rowId === "string" ? source.data.rowId : null;
+        dragType: api.dragType,
+        currentLevel: depth - 1,
+        mode:
+          holdsChildren && childCount > 0
+            ? "expanded"
+            : index === siblingCount - 1
+              ? "last-in-group"
+              : "standard",
+        canDrop: (source) => source.id !== rowId,
+        blockedInstructions: (source) => {
           const block: TreeItemInstruction["type"][] = ["reparent"];
 
-          if (sourceId === null || !holdsChildren || !api.canPlace(sourceId, rowId)) {
+          if (!holdsChildren || !api.canPlace(source.id, rowId)) {
             block.push("make-child");
           }
 
-          if (sourceId === null || !api.canPlace(sourceId, parentRowId)) {
+          if (!api.canPlace(source.id, parentRowId)) {
             block.push("reorder-above", "reorder-below");
           }
 
-          return attachTreeItemInstruction(
-            { rowId, type: api.dragType },
-            {
-              block,
-              currentLevel: depth - 1,
-              element: target,
-              indentPerLevel: 24,
-              input,
-              mode:
-                holdsChildren && childCount > 0
-                  ? "expanded"
-                  : index === siblingCount - 1
-                    ? "last-in-group"
-                    : "standard",
-            },
-          );
+          return block;
         },
-        onDrag: ({ self }) =>
-          setDropInstruction(extractTreeItemInstruction(self.data)?.type ?? null),
-        onDragEnter: ({ self }) =>
-          setDropInstruction(extractTreeItemInstruction(self.data)?.type ?? null),
-        onDragLeave: () => setDropInstruction(null),
-        onDrop: ({ self, source }) => {
-          setDropInstruction(null);
-          const sourceId = typeof source.data.rowId === "string" ? source.data.rowId : null;
-          const label = typeof source.data.label === "string" ? source.data.label : "";
-          const instruction = extractTreeItemInstruction(self.data);
-
-          if (sourceId === null || !instruction) {
-            return;
-          }
-
+        onInstruction: setDropInstruction,
+        onDrop: (source, instruction) => {
           if (instruction.type === "reorder-above") {
-            api.move(sourceId, parentRowId, index, label);
+            api.move(source.id, parentRowId, index, source.label);
           } else if (instruction.type === "reorder-below") {
-            api.move(sourceId, parentRowId, index + 1, label);
+            api.move(source.id, parentRowId, index + 1, source.label);
           } else if (instruction.type === "make-child") {
-            api.move(sourceId, rowId, childCount, label);
+            api.move(source.id, rowId, childCount, source.label);
           }
         },
       }),
@@ -334,10 +304,7 @@ function TreeFieldRow({
       className={cn(
         "rounded-lt border border-lt-border bg-lt-surface p-4",
         dragging && "opacity-50",
-        dropInstruction === "reorder-above" && "border-t-lt-primary",
-        dropInstruction === "reorder-below" && "border-b-lt-primary",
-        dropInstruction === "make-child" && "bg-lt-primary/10",
-        dropInstruction === "instruction-blocked" && "ring-1 ring-lt-danger/50",
+        dropIndicatorClass(dropInstruction),
       )}
     >
       <div className="mb-2 flex items-center justify-between">
