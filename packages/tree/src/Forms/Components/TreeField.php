@@ -28,6 +28,8 @@ class TreeField extends TypedRowsField
 {
     public const string CHILDREN = 'children';
 
+    public ?string $nestedRowsKey = self::CHILDREN;
+
     public ?int $maxDepth = null;
 
     /** @var list<string>|null Row types allowed to hold children; null allows every type. */

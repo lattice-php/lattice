@@ -1,5 +1,5 @@
 import type { Node } from "@lattice-php/core";
-import { fieldProps, ROW_FIELD_TYPES } from "./field-props";
+import { fieldProps, isRowField, nestedRowsKey } from "./field-props";
 import { rowSchemaFor } from "@lattice-php/form/components/fields/row-templates";
 import { appendPath, getPath } from "./form-path";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
@@ -58,34 +58,24 @@ export function collectPrefillTargets(
 ): PrefillTarget[] {
   const targets: PrefillTarget[] = [];
 
-  const walk = (
+  function walk(
     list: Node[] | undefined,
     rowPath: string | null = null,
     identityRowPath: string | null = null,
     identityCollectionPath: string | null = null,
     index = 0,
     row: Record<string, unknown> = {},
-  ): void => {
+  ): void {
     for (const node of list ?? []) {
-      if (ROW_FIELD_TYPES.has(node.type)) {
+      if (isRowField(node)) {
         const name = fieldProps(node).name;
         if (name) {
-          const childCollectionPath = appendPath(rowPath, name);
-          const childIdentityCollectionPath = appendPath(identityRowPath, name);
-          const storedRows = getPath(values, childCollectionPath);
-          const rows = Array.isArray(storedRows)
-            ? (storedRows as Array<Record<string, unknown>>)
-            : [];
-          rows.forEach((childRow, childIndex) => {
-            walk(
-              rowSchemaFor(node, childRow),
-              appendPath(childCollectionPath, childIndex),
-              appendPath(childIdentityCollectionPath, rowIdFrom(childRow) ?? childIndex),
-              childIdentityCollectionPath,
-              childIndex,
-              childRow,
-            );
-          });
+          walkRows(
+            node,
+            appendPath(rowPath, name),
+            appendPath(identityRowPath, name),
+            getPath(values, appendPath(rowPath, name)),
+          );
         }
 
         continue;
@@ -98,7 +88,43 @@ export function collectPrefillTargets(
 
       walk(node.schema, rowPath, identityRowPath, identityCollectionPath, index, row);
     }
-  };
+  }
+
+  function walkRows(
+    node: Node,
+    collectionPath: string,
+    identityCollectionPath: string,
+    storedRows: unknown,
+  ): void {
+    const rows = Array.isArray(storedRows) ? (storedRows as Array<Record<string, unknown>>) : [];
+    const nestedKey = nestedRowsKey(node);
+
+    rows.forEach((childRow, childIndex) => {
+      const childRowPath = appendPath(collectionPath, childIndex);
+      const childIdentityRowPath = appendPath(
+        identityCollectionPath,
+        rowIdFrom(childRow) ?? childIndex,
+      );
+
+      walk(
+        rowSchemaFor(node, childRow),
+        childRowPath,
+        childIdentityRowPath,
+        identityCollectionPath,
+        childIndex,
+        childRow,
+      );
+
+      if (nestedKey) {
+        walkRows(
+          node,
+          appendPath(childRowPath, nestedKey),
+          appendPath(childIdentityRowPath, nestedKey),
+          childRow[nestedKey],
+        );
+      }
+    });
+  }
 
   walk(nodes);
 

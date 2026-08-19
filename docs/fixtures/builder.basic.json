@@ -16,6 +16,7 @@
             "maxItems": null,
             "minItems": 1,
             "name": "items",
+            "nestedRowsKey": null,
             "prefillRefreshOn": null,
             "prefillResetOn": null,
             "readOnly": false,
