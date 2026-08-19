@@ -12,6 +12,7 @@ use Workbench\App\Factories\CategoryFactory;
 
 /**
  * @property string $name
+ * @property int|null $parent_id
  * @property int $sort_order
  * @property bool $is_active
  * @property-read Category|null $parent
