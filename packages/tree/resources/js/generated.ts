@@ -40,6 +40,7 @@ export type TreeField = {
   maxItems: number | null;
   minItems: number | null;
   name: string;
+  nestedRowsKey: string | null;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;

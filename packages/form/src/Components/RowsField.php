@@ -24,6 +24,13 @@ abstract class RowsField extends Field implements ProvidesRowFields
 {
     public const string ROW_ID = 'rowId';
 
+    /**
+     * The reserved row key under which rows of this field nest recursively
+     * (the tree field's `children`); null for flat row collections. The
+     * client's prefill/resolve walkers recurse through it.
+     */
+    public ?string $nestedRowsKey = null;
+
     public ?int $minItems = null;
 
     public ?int $maxItems = null;

@@ -11,4 +11,6 @@ return [
     'move_up' => 'Nach oben',
     'move_down' => 'Nach unten',
     'remove' => 'Entfernen',
+    'add_child' => 'Unterposition hinzufügen',
+    'add_below' => 'Position darunter hinzufügen',
 ];

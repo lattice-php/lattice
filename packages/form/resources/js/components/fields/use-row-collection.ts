@@ -20,6 +20,7 @@ type RowCollection = {
   onMove: (index: number, delta: number) => void;
   onDuplicate: (index: number) => void;
   append: (row: RepeaterRow) => void;
+  insert: (index: number, row: RepeaterRow) => void;
 };
 
 export function useRowCollection(name: string, defaultItems: number): RowCollection {
@@ -69,6 +70,11 @@ export function useRowCollection(name: string, defaultItems: number): RowCollect
     (row: RepeaterRow): void => mutate((current) => [...current, withRowId(row)]),
     [mutate],
   );
+  const insert = useCallback(
+    (index: number, row: RepeaterRow): void =>
+      mutate((current) => [...current.slice(0, index), withRowId(row), ...current.slice(index)]),
+    [mutate],
+  );
 
-  return { path, rows, onField, onRemove, onMove, onDuplicate, append };
+  return { path, rows, onField, onRemove, onMove, onDuplicate, append, insert };
 }

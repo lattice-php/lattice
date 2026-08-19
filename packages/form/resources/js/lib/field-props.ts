@@ -36,6 +36,25 @@ type FieldProps = Partial<
  */
 export const ROW_FIELD_TYPES = new Set(["field.builder", "field.repeater"]);
 
+/**
+ * A field whose value is a collection of rows: the built-in set plus any
+ * node shipping typed row templates on the wire (the tree field, custom
+ * typed-rows fields from other packages).
+ */
+export function isRowField(node: Node): boolean {
+  return (
+    ROW_FIELD_TYPES.has(node.type) ||
+    Array.isArray((node.props as { templates?: unknown }).templates)
+  );
+}
+
+/** The reserved row key rows of this field nest recursively under, if any. */
+export function nestedRowsKey(node: Node): string | null {
+  const key = (node.props as { nestedRowsKey?: unknown }).nestedRowsKey;
+
+  return typeof key === "string" && key !== "" ? key : null;
+}
+
 export function fieldProps(node: Node): FieldProps {
   return node.props as FieldProps;
 }

@@ -16,6 +16,7 @@ import {
   useFormValue,
   useRowCollection,
   useSetFormValue,
+  withRowId,
 } from "@lattice-php/form/toolkit";
 import { useT } from "@lattice-php/ui/i18n";
 import { Icon } from "@lattice-php/ui/icons";
@@ -121,7 +122,7 @@ function TreeLevel({
   const props = node.props;
   const api = useTreeFieldApi();
   const { t } = useT("tree");
-  const { path, rows, onField, onRemove, onMove, append } = useRowCollection(name, 0);
+  const { path, rows, onField, onRemove, onMove, append, insert } = useRowCollection(name, 0);
   const atMax = depth === 1 && props.maxItems !== null && rows.length >= props.maxItems;
   const atMin = depth === 1 && props.minItems !== null && rows.length <= props.minItems;
   const options = props.templates.map((template) => ({
@@ -144,12 +145,15 @@ function TreeLevel({
           parentRowId={parentRowId}
           siblingCount={rows.length}
           removable={!atMin}
+          insertable={!atMax}
+          options={options}
           onField={onField}
           onRemove={onRemove}
           onMove={onMove}
+          onInsert={insert}
         />
       ))}
-      {!api.locked && !atMax && (
+      {depth === 1 && !api.locked && !atMax && (
         <AddRowMenu
           addLabel={props.addLabel ?? t("tree.add", "Add")}
           options={options}
@@ -198,9 +202,12 @@ function TreeFieldRow({
   parentRowId,
   siblingCount,
   removable,
+  insertable,
+  options,
   onField,
   onRemove,
   onMove,
+  onInsert,
 }: {
   node: Node<"field.tree">;
   row: TreeRow;
@@ -210,9 +217,12 @@ function TreeFieldRow({
   parentRowId: string | null;
   siblingCount: number;
   removable: boolean;
+  insertable: boolean;
+  options: { type: string; label: string }[];
   onField: (index: number, field: string, value: unknown) => void;
   onRemove: (index: number) => void;
   onMove: (index: number, delta: number) => void;
+  onInsert: (index: number, row: TreeRow) => void;
 }) {
   const api = useTreeFieldApi();
   const { t } = useT("tree");
@@ -324,6 +334,26 @@ function TreeFieldRow({
         </div>
         {!api.locked && (
           <div className="flex items-center gap-1">
+            {holdsChildren && (
+              <AddRowMenu
+                addLabel={t("tree.add_child", "Add sub-item")}
+                icon="corner-down-right"
+                testId={`tree-field-${path}-add-child-${index}`}
+                options={options}
+                onSelect={(type) =>
+                  onField(index, CHILDREN_KEY, [...childrenOf(row), withRowId({ type })])
+                }
+              />
+            )}
+            {insertable && (
+              <AddRowMenu
+                addLabel={t("tree.add_below", "Add item below")}
+                icon="list-plus"
+                testId={`tree-field-${path}-add-below-${index}`}
+                options={options}
+                onSelect={(type) => onInsert(index + 1, { type })}
+              />
+            )}
             {node.props.reorderable && index > 0 && (
               <RowIconButton
                 label={t("tree.move_up", "Move up")}

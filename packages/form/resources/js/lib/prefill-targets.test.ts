@@ -88,6 +88,44 @@ it("collects targets recursively through nested row collections", () => {
   ]);
 });
 
+it("collects targets through a tree field's nested rows at every level", () => {
+  const treeNode = fakeNode({
+    id: "t1",
+    type: "field.tree",
+    props: {
+      name: "items",
+      nestedRowsKey: "children",
+      templates: [{ type: "product", label: "Product", schema: [priceField()] }],
+    },
+  });
+  const values = {
+    customer: "vip",
+    items: [
+      {
+        rowId: "root-a",
+        type: "product",
+        product: "sku-1",
+        children: [{ rowId: "child-a", type: "product", product: "sku-2" }],
+      },
+    ],
+  };
+
+  expect(collectPrefillTargets([treeNode], values)).toEqual([
+    {
+      path: "items.0.price",
+      overrideKey: "items.root-a.price",
+      resetOn: ["items.0.product"],
+      refreshOn: ["customer"],
+    },
+    {
+      path: "items.0.children.0.price",
+      overrideKey: "items.root-a.children.child-a.price",
+      resetOn: ["items.0.children.0.product"],
+      refreshOn: ["customer"],
+    },
+  ]);
+});
+
 it("clears targets whose resetOn dependency changed", () => {
   const targets = [
     {

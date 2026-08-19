@@ -1,5 +1,5 @@
 import { expect, it, vi } from "vitest";
-import { fireEvent, screen, within } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import type { ComponentPropsOf, Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { RowTemplateData } from "@lattice-php/form/generated";
@@ -86,16 +86,15 @@ it("mounts hidden rowId and type inputs at every level", () => {
   expect(childType).toHaveValue("text");
 });
 
-it("adds a child row of the chosen type under a child-bearing row", () => {
+it("adds a child row of the chosen type through the row's add-child menu", () => {
   wrap(<TreeFieldComponent node={treeNode()}>{null}</TreeFieldComponent>, {
     initial: {
       items: [{ rowId: "11111111-1111-4111-8111-111111111111", type: "product", qty: "1" }],
     },
   });
 
-  const parentRow = screen.getByTestId("tree-field-items-row-0");
-  fireEvent.click(within(parentRow).getByTestId("builder-add"));
-  fireEvent.click(screen.getByTestId("builder-add-text"));
+  fireEvent.click(screen.getByTestId("tree-field-items-add-child-0"));
+  fireEvent.click(screen.getByTestId("tree-field-items-add-child-0-text"));
 
   expect(screen.getAllByTestId("child").map((c) => c.textContent)).toEqual([
     "items[0][qty]",
@@ -103,30 +102,44 @@ it("adds a child row of the chosen type under a child-bearing row", () => {
   ]);
 });
 
-it("offers no nested level on a type that does not accept children", () => {
+it("inserts a sibling of the chosen type below the row", () => {
+  wrap(<TreeFieldComponent node={treeNode()}>{null}</TreeFieldComponent>, {
+    initial: nestedValue,
+  });
+
+  fireEvent.click(screen.getByTestId("tree-field-items-add-below-0"));
+  fireEvent.click(screen.getByTestId("tree-field-items-add-below-0-text"));
+
+  expect(screen.getAllByTestId("child").map((c) => c.textContent)).toEqual([
+    "items[0][qty]",
+    "items[0][children][0][content]",
+    "items[1][content]",
+    "items[2][content]",
+  ]);
+});
+
+it("offers no add-child menu on a type that does not accept children", () => {
   wrap(<TreeFieldComponent node={treeNode()}>{null}</TreeFieldComponent>, {
     initial: {
       items: [{ rowId: "33333333-3333-4333-8333-333333333333", type: "text", content: "x" }],
     },
   });
 
-  const row = screen.getByTestId("tree-field-items-row-0");
-  expect(within(row).queryByTestId("builder-add")).not.toBeInTheDocument();
+  expect(screen.queryByTestId("tree-field-items-add-child-0")).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByTestId("builder-add"));
   fireEvent.click(screen.getByTestId("builder-add-product"));
   expect(screen.getAllByTestId("child").map((c) => c.textContent)).toContain("items[1][qty]");
 });
 
-it("offers no nested level at the maximum depth", () => {
+it("offers no add-child menu at the maximum depth", () => {
   wrap(<TreeFieldComponent node={treeNode({ maxDepth: 1 })}>{null}</TreeFieldComponent>, {
     initial: {
       items: [{ rowId: "11111111-1111-4111-8111-111111111111", type: "product", qty: "1" }],
     },
   });
 
-  const row = screen.getByTestId("tree-field-items-row-0");
-  expect(within(row).queryByTestId("builder-add")).not.toBeInTheDocument();
+  expect(screen.queryByTestId("tree-field-items-add-child-0")).not.toBeInTheDocument();
 });
 
 it("removes a nested row without touching its siblings", () => {
@@ -164,6 +177,8 @@ it("locks all structural affordances when read-only", () => {
 
   expect(screen.getAllByTestId("child").length).toBe(3);
   expect(screen.queryByTestId("builder-add")).not.toBeInTheDocument();
+  expect(screen.queryByTestId("tree-field-items-add-child-0")).not.toBeInTheDocument();
+  expect(screen.queryByTestId("tree-field-items-add-below-0")).not.toBeInTheDocument();
   expect(screen.queryByTestId("tree-field-items-remove-0")).not.toBeInTheDocument();
   expect(screen.queryByTestId("tree-field-items-drag-0")).not.toBeInTheDocument();
   expect(screen.queryByTestId("tree-field-items-down-0")).not.toBeInTheDocument();

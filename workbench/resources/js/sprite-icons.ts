@@ -25,6 +25,7 @@ export const iconNames = [
   "code-xml",
   "columns-3",
   "copy",
+  "corner-down-right",
   "download",
   "external-link",
   "eye",
@@ -44,6 +45,7 @@ export const iconNames = [
   "link",
   "list",
   "list-ordered",
+  "list-plus",
   "loader-2",
   "minus",
   "more-horizontal",
@@ -99,6 +101,7 @@ declare module "@lattice-php/ui" {
     "code-xml": true;
     "columns-3": true;
     copy: true;
+    "corner-down-right": true;
     download: true;
     "external-link": true;
     eye: true;
@@ -118,6 +121,7 @@ declare module "@lattice-php/ui" {
     link: true;
     list: true;
     "list-ordered": true;
+    "list-plus": true;
     "loader-2": true;
     minus: true;
     "more-horizontal": true;

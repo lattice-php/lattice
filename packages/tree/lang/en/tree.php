@@ -11,4 +11,6 @@ return [
     'move_up' => 'Move up',
     'move_down' => 'Move down',
     'remove' => 'Remove',
+    'add_child' => 'Add sub-item',
+    'add_below' => 'Add item below',
 ];

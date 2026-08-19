@@ -1,6 +1,6 @@
 import type { Node } from "@lattice-php/core";
 import { errorKeyBelongsTo } from "./field-errors";
-import { fieldProps, ROW_FIELD_TYPES } from "./field-props";
+import { fieldProps, isRowField } from "./field-props";
 
 export function stepFieldNames(step: Node): string[] {
   const names: string[] = [];
@@ -11,7 +11,7 @@ export function stepFieldNames(step: Node): string[] {
     if (name) {
       names.push(name);
     }
-    if (name && ROW_FIELD_TYPES.has(node.type)) {
+    if (name && isRowField(node)) {
       return;
     }
     for (const child of node.schema ?? []) {
@@ -36,7 +36,7 @@ export function stepValidationPaths(step: Node): string[] {
       paths.push(name, `${name}.*`);
     }
 
-    if (name && ROW_FIELD_TYPES.has(node.type)) {
+    if (name && isRowField(node)) {
       for (const child of stepFieldNames(node)) {
         paths.push(`${name}.*.${child}`);
       }
