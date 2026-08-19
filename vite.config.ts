@@ -30,6 +30,7 @@ const latticeIcons = [
   "copy",
   "external-link",
   "eye-off",
+  "grip-vertical",
   "layout-dashboard",
   "link",
   "more-horizontal",

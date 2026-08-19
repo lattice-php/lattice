@@ -1,0 +1,90 @@
+---
+title: Tree
+description: Typed rows arranged as a drag-and-drop hierarchy — nesting and order are data, validated and submitted with the form.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+The tree field is a [builder](/forms/fields/builder/) whose rows nest: each row may hold child rows
+under the reserved `children` key, built from the same row templates. The submitted structure is the
+authoritative order and nesting, so your `handle()` receives a nested array and persists parent and
+position straight from it — no separate move endpoint involved. Create one with `TreeField::make()`
+from `lattice-php/tree` and declare the templates exactly like a builder.
+
+<ComponentExample
+  php={`TreeField::make('items', 'Line items')
+    ->maxDepth(2)
+    ->acceptsChildrenFor(['heading'])
+    ->templates([
+        RowTemplate::make('heading')->label('Heading')->schema([
+            TextInput::make('title', 'Title')->required(),
+        ]),
+        RowTemplate::make('product')->label('Product line')->schema([
+            TextInput::make('product', 'Product')->required(),
+            TextInput::make('qty', 'Qty')->rules(['numeric']),
+        ]),
+        RowTemplate::make('text')->label('Text')->schema([
+            Textarea::make('content', 'Content')->required(),
+        ]),
+    ])
+    ->addLabel('Add block')`}
+  fixture="tree-field.basic"
+  values={{ items: [] }}
+/>
+
+## Hierarchy is data
+
+A row's children live under its reserved `children` key and validate, cast, and prefill through the
+same templates as top-level rows. The field submits the full structure:
+
+```php
+['items' => [
+    ['type' => 'heading', 'rowId' => '9f3c…', 'title' => 'Hardware', 'children' => [
+        ['type' => 'product', 'rowId' => 'a2b1…', 'product' => 'Switch', 'qty' => '2'],
+        ['type' => 'text', 'rowId' => 'c4d0…', 'content' => 'Includes patch cabling.'],
+    ]],
+    ['type' => 'product', 'rowId' => 'e7f2…', 'product' => 'Installation', 'qty' => '1'],
+]]
+```
+
+Validation errors surface at the nested dot path (`items.0.children.1.qty`), and every row keeps its
+stable `rowId` UUID through validation, exactly like the repeater and builder. Row templates must not
+declare their own `children` or `rowId` fields — both keys are reserved.
+
+## Depth and parent rules
+
+`->maxDepth()` bounds how many levels the tree accepts; the default is unlimited. Depth is enforced
+structurally: a row at the deepest allowed level offers no child list, and a submit that smuggles
+deeper rows in fails with a `prohibited` error on the offending `children` path instead of silently
+dropping them.
+
+`->acceptsChildrenFor([...])` restricts which row types may hold children. Without it every type
+accepts children.
+
+```php
+TreeField::make('items')
+    ->maxDepth(2)
+    ->acceptsChildrenFor(['heading', 'product']);
+```
+
+Both rules are also enforced client-side: the drag-and-drop layer refuses drops that would nest a
+row under a type that rejects children, land a subtree deeper than `maxDepth`, or move a row into
+its own subtree.
+
+## Moving rows
+
+Every row carries a drag handle; dropping on the upper or lower edge of a target reorders next to
+it, dropping on its middle nests the dragged row (and its whole subtree) as the target's last child.
+The move is a pure form-state update — nothing is persisted until the form submits. Sibling reorder
+buttons cover keyboard use, and `->reorderable(false)` hides them.
+
+## Read-only trees
+
+`->readOnly()` (or `->disabled()`) renders the same hierarchy without any structural affordances:
+no drag handles, no add menu, no remove or reorder buttons. Row fields keep their own read-only
+semantics, so a locked record can render its stored tree through the identical schema.
+
+## Row counts
+
+`->minItems()` / `->maxItems()` bound the number of top-level rows, as on the repeater. Child lists
+are unbounded apart from `maxDepth`.

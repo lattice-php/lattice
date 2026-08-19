@@ -287,6 +287,10 @@ return [
             'restricted' => 'Eingeschränktes Set',
             'summary' => 'Zusammenfassung',
         ],
+        'tree' => [
+            'heading' => 'Überschrift',
+            'title-field' => 'Titel',
+        ],
         'select' => [
             'creatable' => 'Erstellbar',
             'design' => 'Design',
@@ -423,6 +427,7 @@ return [
         'field-select' => 'Select',
         'field-text' => 'Texteingabe',
         'field-textarea' => 'Textbereich',
+        'field-tree' => 'Baum',
         'fields' => 'Felder',
         'forms' => 'Formulare',
         'groups' => 'Gruppen',
@@ -687,6 +692,10 @@ return [
             'textarea' => [
                 'description' => 'Mehrzeilige Texteingabe.',
                 'title' => 'Textbereich',
+            ],
+            'tree' => [
+                'description' => 'Typisierte Zeilenblöcke, per Drag-and-drop verschachtelt.',
+                'title' => 'Baum',
             ],
         ],
         'remote-schema' => [

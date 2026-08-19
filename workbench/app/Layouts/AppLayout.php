@@ -66,6 +66,7 @@ use Workbench\App\Pages\Fields\RichEditorPage;
 use Workbench\App\Pages\Fields\SelectPage;
 use Workbench\App\Pages\Fields\TextareaPage;
 use Workbench\App\Pages\Fields\TextInputPage;
+use Workbench\App\Pages\Fields\TreePage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\Platform\PackageComponentPage;
@@ -144,6 +145,7 @@ class AppLayout extends LayoutDefinition
                         MenuItem::fromPage(PatternInputPage::class)->key('field-pattern-input')->label(__('workbench.navigation.field-pattern-input')),
                         MenuItem::fromPage(RepeaterPage::class)->key('field-repeater')->label(__('workbench.navigation.field-repeater')),
                         MenuItem::fromPage(BuilderPage::class)->key('field-builder')->label(__('workbench.navigation.field-builder')),
+                        MenuItem::fromPage(TreePage::class)->key('field-tree')->label(__('workbench.navigation.field-tree')),
                     ]),
                     MenuItem::fromPage(DependentFieldsPage::class)->key('dependent-fields')->label(__('workbench.navigation.dependent-fields')),
                     MenuItem::fromPage(WizardPage::class)->key('wizard')->label(__('workbench.navigation.wizard')),
