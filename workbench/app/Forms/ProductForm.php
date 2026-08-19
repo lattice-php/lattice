@@ -19,6 +19,7 @@ use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\Repeater;
 use Lattice\Form\Components\Select;
 use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Components\Card;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,22 +80,21 @@ class ProductForm extends FormDefinition
             ]);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data, Request $request): Response
     {
         $product = $this->product();
-        $validated = $this->validate($request);
 
-        $relatedIds = $validated['related_products'] ?? [];
-        $priceRows = $validated['sales_prices'] ?? [];
-        $imageKeys = $this->uploadedImageKeys($validated['images'] ?? []);
+        $relatedIds = $data->get('related_products', []);
+        $priceRows = $data->get('sales_prices', []);
+        $imageKeys = $this->uploadedImageKeys($data->get('images', []));
         $removedImagePaths = FileUpload::removed($request, 'images');
-        unset($validated['related_products'], $validated['sales_prices'], $validated['images']);
+        $attributes = $data->except(['related_products', 'sales_prices', 'images']);
 
-        DB::transaction(function () use ($product, $validated, $relatedIds, $priceRows, $imageKeys, $removedImagePaths): void {
+        DB::transaction(function () use ($product, $attributes, $relatedIds, $priceRows, $imageKeys, $removedImagePaths): void {
             if (! $product instanceof Product) {
-                $product = Product::query()->create($validated);
+                $product = Product::query()->create($attributes);
             } else {
-                $product->update($validated);
+                $product->update($attributes);
             }
 
             $product->relatedProducts()->sync(

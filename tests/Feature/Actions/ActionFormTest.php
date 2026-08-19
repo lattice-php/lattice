@@ -10,6 +10,7 @@ use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\NumberInput;
 use Lattice\Form\Components\Select;
 use Lattice\Form\Components\Textarea;
 use Lattice\Form\Components\TextInput;
@@ -68,9 +69,9 @@ class EditActionFixture extends FormActionDefinition
             ->fill(['title' => $this->context('current_title')]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data): ActionResult
     {
-        return ActionResult::success($this->validate($request));
+        return ActionResult::success($data->all());
     }
 }
 
@@ -159,9 +160,9 @@ class WizardActionFixture extends FormActionDefinition
         ]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data): ActionResult
     {
-        return ActionResult::success($this->validate($request));
+        return ActionResult::success($data->all());
     }
 }
 
@@ -199,9 +200,9 @@ class AssignActionFixture extends ActionDefinition
             ]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data): ActionResult
     {
-        return ActionResult::success($this->validate($request));
+        return ActionResult::success($data->all());
     }
 }
 
@@ -218,10 +219,8 @@ class RejectActionFixture extends ActionDefinition
             ]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data): ActionResult
     {
-        $data = $this->validate($request);
-
         return ActionResult::success(['reason' => $data['reason']]);
     }
 }
@@ -289,5 +288,60 @@ class ActionWithDeniedEmbeddedFormFixture extends ActionDefinition
     public function handle(Request $request): ActionResult
     {
         return ActionResult::success();
+    }
+}
+
+test('an action handle(FormData $data) echoes the validated and cast embedded form data', function (): void {
+    Lattice::actions([EchoCastActionFixture::class]);
+
+    $this->callAction(EchoCastActionFixture::class, ['qty' => '4'])
+        ->assertOk()
+        ->assertJsonPath('data.qty', 4);
+});
+
+#[AsAction('test.echo-cast')]
+class EchoCastActionFixture extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Echo')->method(HttpMethod::Post)->form([
+            NumberInput::make('qty', 'Qty')->rules(['required', 'integer']),
+        ]);
+    }
+
+    public function handle(FormData $data): ActionResult
+    {
+        return ActionResult::success(['qty' => $data->integer('qty')]);
+    }
+}
+
+test('an embedded action form validates exactly once per call', function (): void {
+    Lattice::actions([RuleCounterActionFixture::class]);
+    RuleCounterActionFixture::$calls = 0;
+
+    $this->callAction(RuleCounterActionFixture::class, ['name' => 'Ada'])->assertOk();
+
+    expect(RuleCounterActionFixture::$calls)->toBe(1);
+});
+
+#[AsAction('test.rule-counter')]
+class RuleCounterActionFixture extends ActionDefinition
+{
+    public static int $calls = 0;
+
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Counter')->method(HttpMethod::Post)->form([
+            TextInput::make('name', 'Name')->rules(function (): array {
+                self::$calls++;
+
+                return ['required', 'string'];
+            }),
+        ]);
+    }
+
+    public function handle(FormData $data): ActionResult
+    {
+        return ActionResult::success($data->all());
     }
 }

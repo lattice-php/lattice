@@ -29,8 +29,17 @@ first; the type annotation documents it rather than driving the resolution.
 
 ```php
 TextInput::make('slug', 'Slug')
-    ->value(fn (FormData $state) => Str::slug($state->string('name')));
+    ->value(fn (FormData $state) => $state->string('name')->slug());
 ```
+
+:::note
+`FormData::string()` returns a `Stringable`, not a plain `string`. Field values and prefills
+normalize `Stringable` and enum instances to their scalar automatically (a backed enum becomes its
+value, a pure enum its name), so returning one from a `value()` closure just works — call
+`->toString()` only when a helper expects a real `string`. Because `Stringable` implements
+`__toString()`, it always passes truthy checks like `?:`; compare `->toString() !== ''` or use
+`->isNotEmpty()` instead when the value might be empty.
+:::
 
 ## Field utilities
 
@@ -89,12 +98,44 @@ Inside row hooks, use the named `$form` utility when you need values outside the
 
 ```php
 Repeater::make('lines')
-    ->itemLabel(fn (FormData $row, FormData $form) => $row->string('name') ?: $form->string('currency'));
+    ->itemLabel(fn (FormData $row, FormData $form) => $row->string('name')->isNotEmpty()
+        ? $row->string('name')
+        : $form->string('currency'));
 ```
+
+`Stringable` always evaluates truthy — even when it wraps an empty string — so `?:` never falls
+through to the second operand. Check `->isNotEmpty()` (or `->toString() !== ''`) explicitly instead.
 
 Named slot factories also resolve any remaining class or interface from Laravel's container. A
 context object is registered under its concrete type and can satisfy a parameter typed as that class,
 a parent class, or an implemented interface.
+
+## `handle()` parameter resolution
+
+Form, action, and bulk-action endpoints validate the submission once, then invoke `handle()` through
+the same evaluator, with a small, purpose-built context:
+
+| Utility            | Resolves to                                              |
+| ------------------ | -------------------------------------------------------- |
+| `$data`            | The validated, cast `FormData` for this submission.      |
+| `$request`         | The current `Request`.                                   |
+| `$records`         | The selected `Collection` of models — bulk actions only. |
+| `FormData $…`      | Same as `$data`, by type.                                |
+| `Request $…`       | Same as `$request`, by type.                             |
+| `Collection $…`    | Same as `$records`, by type — bulk actions only.         |
+| Any container type | A service resolved from Laravel's container.             |
+
+```php
+public function handle(FormData $data): ActionResult { /* … */ }
+public function handle(FormData $data, Request $request): ActionResult { /* … */ }
+public function handle(Collection $records, FormData $data): ActionResult { /* … */ } // bulk only
+```
+
+`$data`, `$request`, and `$records` are reserved names — declare only the ones you need, in any
+order. Outside a bulk action there is no selection to resolve, so a `Collection`-typed parameter
+falls through to the container instead, which constructs an **empty** `Collection` rather than
+raising an error — a `Collection $records` parameter on a non-bulk action silently receives nothing
+useful.
 
 ## Server-side timing
 

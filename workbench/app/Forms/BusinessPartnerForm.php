@@ -13,6 +13,7 @@ use Lattice\Form\Components\HiddenInput;
 use Lattice\Form\Components\Repeater;
 use Lattice\Form\Components\Select;
 use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Components\Card;
 use Lattice\Ui\Components\Text;
@@ -99,19 +100,18 @@ class BusinessPartnerForm extends FormDefinition
         return $form->schema($schema);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data): Response
     {
         $partner = $this->partner();
-        $validated = $this->validate($request);
 
-        $groupIds = $validated['groups'] ?? [];
-        $addressRows = $validated['addresses'] ?? [];
-        $defaultShippingId = $validated['default_shipping_address_id'] ?? null;
-        $defaultBillingId = $validated['default_billing_address_id'] ?? null;
+        $groupIds = $data->get('groups', []);
+        $addressRows = $data->get('addresses', []);
+        $defaultShippingId = $data->get('default_shipping_address_id');
+        $defaultBillingId = $data->get('default_billing_address_id');
 
         $partnerData = [
-            'name' => $validated['name'],
-            'email' => $validated['email'] ?? null,
+            'name' => $data->get('name'),
+            'email' => $data->get('email'),
         ];
 
         if (! $partner instanceof BusinessPartner) {

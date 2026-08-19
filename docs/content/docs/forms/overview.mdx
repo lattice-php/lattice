@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,11 +35,9 @@ class ProfileForm extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data, Request $request): Response
     {
-        $validated = $this->validate($request);
-
-        $request->user()->update($validated);
+        $request->user()->update($data->only('name', 'email'));
 
         return redirect('/profile');
     }
@@ -106,12 +105,30 @@ form only accepts submissions for the schema it actually rendered. `FormControll
 2. A **resolve** request (a [dependent field](/forms/conditional-fields/) recomputing) returns the
    updated field nodes and values.
 3. A **precognitive** request validates and returns `204`/`422` without running `handle()`.
-4. Otherwise the submission is validated and passed to `handle()`.
+4. Otherwise the submission is validated once, then passed straight to `handle()`.
 
-`$this->validate($request)` runs the field rules and returns the validated, cast data as an array —
-visible-only, with hidden values and locked (disabled or read-only) user input stripped; a
-server-set `->value()` on a locked field still comes through. Your `handle()` returns any Laravel
-`Response` or `Responsable`: a redirect, a JSON payload, or a [toast effect](/actions/overview/).
+The endpoint validates internally and hands `handle()` the result — you never call `validate()`
+yourself inside `handle()`. The data it receives is already validated **and** cast: visible-only,
+with hidden values and locked (disabled or read-only) user input stripped, and a server-set
+`->value()` on a locked field still comes through. Your `handle()` returns any Laravel `Response` or
+`Responsable`: a redirect, a JSON payload, or a [toast effect](/actions/overview/).
+
+## The `handle()` signature
+
+`handle()` accepts any combination of parameters, resolved in this order: by name (`$data` for the
+validated `FormData`, `$request` for the `Request`), then by type (`FormData`, `Request`), then from
+the Laravel container. Declare only what you need:
+
+```php
+public function handle(FormData $data): Response { /* … */ }
+public function handle(FormData $data, Request $request): Response { /* … */ }
+public function handle(Request $request): Response { /* … */ } // no validated data needed
+```
+
+Older `handle(Request $request)` signatures keep working, reading raw input off `$request` directly —
+but don't call `validate()` again inside `handle()`: the endpoint already validated the submission
+once before calling you, and calling it a second time just re-runs the same rules. Add `FormData
+$data` to the signature instead.
 
 ## Resetting after submit
 
@@ -129,18 +146,26 @@ everywhere else.
 
 ## Working with submitted data
 
-`validate()` returns a plain array of validated values. Where a callback needs to read the in-flight
-form state — [dynamic rules](/forms/validation/#dynamic-rules) and
-[dependent fields](/forms/conditional-fields/) — it receives a `FormData` object with typed
-accessors:
+`FormData` (`Lattice\Form\FormData`) extends Laravel's `ValidatedInput`, so the full
+`InteractsWithData` API is available — typed accessors, `only()`/`except()`, `collect()`,
+array access, and dot-notation `get()`:
 
 ```php
-$data->string('name');
+$data->string('name');   // Stringable — call ->toString() to get a plain string
 $data->boolean('subscribe');
 $data->integer('quantity');
 $data->float('price');
 $data->get('tags', []);
+$data->only('name', 'email');
+$data['name'];
 ```
+
+Returning a `Stringable` or an enum from a field's `value()` closure is fine — field values
+normalize them to their scalar on the way to the wire, so no `->toString()` is needed there.
+
+The same object shows up wherever a callback needs to read the in-flight form state —
+[dynamic rules](/forms/validation/#dynamic-rules) and [dependent fields](/forms/conditional-fields/) —
+as well as in `handle()`.
 
 ## Live validation with Precognition
 

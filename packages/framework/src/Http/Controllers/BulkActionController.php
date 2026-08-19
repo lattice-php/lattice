@@ -5,16 +5,20 @@ namespace Lattice\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Lattice\Actions\ActionResult;
 use Lattice\Actions\BulkActionRegistry;
 use Lattice\Core\Authorization;
 use Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Core\Exceptions\UnknownComponent;
+use Lattice\Form\FormData;
 use Lattice\Form\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Form\Http\Controllers\Concerns\HandlesPrecognition;
+use Lattice\Form\Http\Controllers\Concerns\InvokesHandleMethod;
 use Lattice\Table\TableDefinition;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableRegistry;
+use LogicException;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class BulkActionController
@@ -22,6 +26,7 @@ final readonly class BulkActionController
     use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithComponents;
+    use InvokesHandleMethod;
 
     public function __construct(
         private BulkActionRegistry $bulkActions,
@@ -40,7 +45,7 @@ final readonly class BulkActionController
         }
 
         if ($request->isPrecognitive()) {
-            return $this->validatePrecognitive($request, fn (): array => $definition->validate($request));
+            return $this->validatePrecognitive($request, fn (): FormData => $definition->validate($request));
         }
 
         $tableKey = $this->trustedTableKey($context);
@@ -48,9 +53,15 @@ final readonly class BulkActionController
 
         Authorization::ensure($table, $request);
 
+        $data = $definition->validate($request);
+
         $records = $this->resolveRecords($request, $table, $tableKey);
 
-        $result = $definition->handle($records, $request);
+        $result = $this->invokeHandle($definition, $request, $data, $records);
+
+        if (! $result instanceof ActionResult) {
+            throw new LogicException(sprintf('%s::handle() must return an %s.', $definition::class, ActionResult::class));
+        }
 
         return response()->json($result, $result->status());
     }

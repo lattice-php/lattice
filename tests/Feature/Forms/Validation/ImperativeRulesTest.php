@@ -25,7 +25,7 @@ it('skips the rule when the closure returns it optional', function (): void {
 });
 
 it('enforces the rule when the closure makes it required', function (): void {
-    expect(fn (): array => imperativeRulesDefinition()->validate(Request::create('/', 'POST', ['type' => 'business'])))
+    expect(fn (): FormData => imperativeRulesDefinition()->validate(Request::create('/', 'POST', ['type' => 'business'])))
         ->toThrow(ValidationException::class);
 });
 

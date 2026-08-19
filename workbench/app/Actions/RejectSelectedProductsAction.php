@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Workbench\App\Actions;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\BulkActionDefinition;
 use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsBulkAction;
 use Lattice\Form\Components\Textarea;
+use Lattice\Form\FormData;
 use Lattice\Ui\Enums\HttpMethod;
 use Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
@@ -32,10 +32,8 @@ class RejectSelectedProductsAction extends BulkActionDefinition
     /**
      * @param  Collection<int, mixed>  $records
      */
-    public function handle(Collection $records, Request $request): ActionResult
+    public function handle(Collection $records, FormData $data): ActionResult
     {
-        $data = $this->validate($request);
-
         $records->each(function (mixed $product): void {
             if ($product instanceof Product) {
                 $product->update(['status' => 'archived']);

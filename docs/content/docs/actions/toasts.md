@@ -28,10 +28,10 @@ is not available, use `Effects::flash()`:
 ```php
 use Lattice\Ui\Enums\Variant;
 use Lattice\Facades\Effects;
+use Lattice\Form\FormData;
 
-public function handle(Request $request): Response
+public function handle(FormData $data): Response
 {
-    $this->validate($request);
     // … persist …
 
     Effects::flash(Effects::toast('Profile saved.', Variant::Success));

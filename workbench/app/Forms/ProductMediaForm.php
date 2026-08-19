@@ -8,6 +8,7 @@ use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\RichEditor;
 use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Lattice\Media\Forms\Components\MediaPicker;
 use Lattice\Media\Forms\RichEditor\MediaImage;
@@ -31,13 +32,11 @@ class ProductMediaForm extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data): Response
     {
-        $validated = $this->validate($request);
-
-        $this->product()->syncMedia($validated['gallery'] ?? [], 'gallery');
-        $this->product()->update(['body' => $validated['body'] ?? null]);
-        $this->product()->syncMedia(MediaImage::idsIn($validated['body'] ?? null), 'content');
+        $this->product()->syncMedia($data->get('gallery', []), 'gallery');
+        $this->product()->update(['body' => $data->get('body')]);
+        $this->product()->syncMedia(MediaImage::idsIn($data->get('body')), 'content');
 
         return redirect('/media-picker');
     }

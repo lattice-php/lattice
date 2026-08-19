@@ -94,27 +94,26 @@ class SalesOrderForm extends FormDefinition
         return $form->schema($schema);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data): Response
     {
         $order = $this->order();
-        $validated = $this->validate($request);
 
-        $lineRows = $validated['lines'] ?? [];
+        $lineRows = $data->get('lines', []);
 
-        $partner = BusinessPartner::query()->findOrFail((int) $validated['business_partner_id']);
+        $partner = BusinessPartner::query()->findOrFail((int) $data->get('business_partner_id'));
 
-        DB::transaction(function () use ($order, $validated, $lineRows, $partner): void {
-            $shippingAddressId = array_key_exists('shipping_address_id', $validated)
-                ? $this->resolveAddressId($partner, $validated['shipping_address_id'] ?? null)
+        DB::transaction(function () use ($order, $data, $lineRows, $partner): void {
+            $shippingAddressId = $data->has('shipping_address_id')
+                ? $this->resolveAddressId($partner, $data->get('shipping_address_id'))
                 : $partner->default_shipping_address_id;
 
-            $billingAddressId = array_key_exists('billing_address_id', $validated)
-                ? $this->resolveAddressId($partner, $validated['billing_address_id'] ?? null)
+            $billingAddressId = $data->has('billing_address_id')
+                ? $this->resolveAddressId($partner, $data->get('billing_address_id'))
                 : $partner->default_billing_address_id;
 
             $orderData = [
                 'business_partner_id' => $partner->getKey(),
-                'status' => $validated['status'],
+                'status' => $data->get('status'),
                 'shipping_address_id' => $shippingAddressId,
                 'billing_address_id' => $billingAddressId,
             ];

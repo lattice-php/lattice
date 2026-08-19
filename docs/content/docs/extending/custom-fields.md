@@ -167,6 +167,7 @@ use App\Forms\Fields\ColorPicker;
 use Illuminate\Http\Request;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -182,11 +183,9 @@ final class BrandSettingsForm extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data): Response
     {
-        $validated = $this->validate($request);
-
-        // persist $validated['brand_color'] …
+        // persist $data->string('brand_color') …
 
         return redirect()->back();
     }

@@ -12,7 +12,6 @@ Extend `BulkActionDefinition` and implement `definition()` and `handle()`. The `
 attribute registers it.
 
 ```php
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\BulkActionDefinition;
@@ -30,7 +29,7 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
             ->variant(Variant::Danger);
     }
 
-    public function handle(Collection $records, Request $request): ActionResult
+    public function handle(Collection $records): ActionResult
     {
         $records->each(fn (Product $product) => $product->update(['status' => 'archived']));
 
@@ -46,6 +45,10 @@ class ArchiveSelectedProductsAction extends BulkActionDefinition
 all apply — including a [`->lazyForm()`](/actions/confirmation-and-forms/#deferring-the-schema)
 one, which fetches its schema together with the selection payload once the bulk action bar opens
 it. `handle()` returns an [`ActionResult`](/actions/effects/) like any action.
+
+`$records` is a reserved parameter name — declare it to receive the selected records, and add
+`FormData $data` alongside it when the bulk action also collects a form: `handle(Collection
+$records, FormData $data): ActionResult`.
 
 ## Attaching it to a table
 

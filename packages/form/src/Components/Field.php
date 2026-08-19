@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Form\Components;
 
+use BackedEnum;
 use Closure;
 use Illuminate\Http\Request;
 use Lattice\Core\Enums\Op;
@@ -16,6 +17,8 @@ use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\HasLabel;
 use Lattice\Ui\Concerns\HasTooltip;
 use Lattice\Ui\Enums\ColumnWidth;
+use Stringable;
+use UnitEnum;
 
 abstract class Field extends Component
 {
@@ -355,7 +358,7 @@ abstract class Field extends Component
             return $this;
         }
 
-        $this->value = $value;
+        $this->value = $this->normalizeValue($value);
         $this->valueWasSet = true;
 
         if ($this->resolving) {
@@ -392,7 +395,23 @@ abstract class Field extends Component
             ->named('row', $row)
             ->named('form', $form);
 
-        return Evaluate::resolve($this->prefillResolver, $context);
+        return $this->normalizeValue(Evaluate::resolve($this->prefillResolver, $context));
+    }
+
+    /**
+     * Values may be provided as Stringable or enum instances (e.g. straight from
+     * FormData::string() or a domain enum); the wire and the validator need the
+     * underlying scalar.
+     */
+    private function normalizeValue(mixed $value): mixed
+    {
+        return match (true) {
+            $value instanceof Stringable => (string) $value,
+            $value instanceof BackedEnum => $value->value,
+            $value instanceof UnitEnum => $value->name,
+            is_array($value) => array_map($this->normalizeValue(...), $value),
+            default => $value,
+        };
     }
 
     /**

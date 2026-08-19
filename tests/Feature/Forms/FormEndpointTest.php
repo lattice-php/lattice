@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\URL;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form;
+use Lattice\Form\Components\NumberInput;
 use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\HttpMethod;
@@ -241,3 +243,215 @@ class WorkbenchConditionHiddenForm extends FormDefinition
         return response()->json(['handled' => true]);
     }
 }
+
+test('a rules closure resolves exactly once per submission', function (): void {
+    Lattice::forms([RuleCounterForm::class]);
+    RuleCounterForm::$calls = 0;
+
+    $this->submitForm(RuleCounterForm::class, ['name' => 'Taylor'])->assertNoContent();
+
+    expect(RuleCounterForm::$calls)->toBe(1);
+});
+
+#[AsForm('test.rule-counter')]
+class RuleCounterForm extends FormDefinition
+{
+    public static int $calls = 0;
+
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([
+            TextInput::make('name', 'Name')->rules(function (): array {
+                self::$calls++;
+
+                return ['required', 'string'];
+            }),
+        ]);
+    }
+
+    public function handle(FormData $data): Response
+    {
+        return response()->noContent();
+    }
+}
+
+test('handle receives cast, hidden-stripped, and server-injected form data', function (): void {
+    Lattice::forms([ProcessedDataForm::class]);
+
+    $this->submitForm(ProcessedDataForm::class, [
+        'qty' => '5',
+        'secret' => 'client-supplied',
+    ])->assertOk();
+
+    expect(session('processed-form-qty'))->toBe(5)
+        ->and(session('processed-form-data'))->not->toHaveKey('secret')
+        ->and(session('processed-form-data'))->toHaveKey('owner', 'server');
+});
+
+#[AsForm('test.processed-data')]
+class ProcessedDataForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([
+            NumberInput::make('qty', 'Qty')->rules(['required', 'integer']),
+            TextInput::make('secret', 'Secret')->hidden()->required(),
+            TextInput::make('owner', 'Owner')->readOnly()->value('server'),
+        ]);
+    }
+
+    public function handle(FormData $data): Response
+    {
+        session()->put('processed-form-qty', $data->integer('qty'));
+        session()->put('processed-form-data', $data->all());
+
+        return response()->json(['handled' => true]);
+    }
+}
+
+test('handle(FormData $data) receives the validated input', function (): void {
+    Lattice::forms([FormDataOnlyHandlerForm::class]);
+
+    $this->submitForm(FormDataOnlyHandlerForm::class, ['name' => 'Ada'])
+        ->assertOk()
+        ->assertJsonPath('name', 'Ada');
+});
+
+#[AsForm('test.handler.form-data')]
+class FormDataOnlyHandlerForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([TextInput::make('name', 'Name')->required()]);
+    }
+
+    public function handle(FormData $data): Response
+    {
+        return response()->json(['name' => $data->get('name')]);
+    }
+}
+
+test('handle(Request $request, FormData $data) resolves both parameters regardless of declared order', function (): void {
+    Lattice::forms([SwappedOrderHandlerForm::class]);
+
+    $this->submitForm(SwappedOrderHandlerForm::class, ['name' => 'Grace'])
+        ->assertOk()
+        ->assertJsonPath('name', 'Grace')
+        ->assertJsonPath('method', 'POST');
+});
+
+#[AsForm('test.handler.swapped-order')]
+class SwappedOrderHandlerForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([TextInput::make('name', 'Name')->required()]);
+    }
+
+    public function handle(Request $request, FormData $data): Response
+    {
+        return response()->json(['name' => $data->get('name'), 'method' => $request->method()]);
+    }
+}
+
+final class GreetingService
+{
+    public function greet(string $name): string
+    {
+        return "Hello, {$name}!";
+    }
+}
+
+test('handle(GreetingService $service, FormData $data) resolves a container service alongside the validated data', function (): void {
+    Lattice::forms([ServiceHandlerForm::class]);
+
+    $this->submitForm(ServiceHandlerForm::class, ['name' => 'Ada'])
+        ->assertOk()
+        ->assertJsonPath('greeting', 'Hello, Ada!');
+});
+
+#[AsForm('test.handler.service')]
+class ServiceHandlerForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([TextInput::make('name', 'Name')->required()]);
+    }
+
+    public function handle(GreetingService $service, FormData $data): Response
+    {
+        return response()->json(['greeting' => $service->greet($data->get('name'))]);
+    }
+}
+
+test('handle() with no parameters still runs', function (): void {
+    Lattice::forms([NoParamHandlerForm::class]);
+
+    $this->submitForm(NoParamHandlerForm::class, ['name' => 'Taylor'])->assertNoContent();
+
+    expect(session('no-param-handler-ran'))->toBeTrue();
+});
+
+#[AsForm('test.handler.no-params')]
+class NoParamHandlerForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([TextInput::make('name', 'Name')]);
+    }
+
+    public function handle(): Response
+    {
+        session()->put('no-param-handler-ran', true);
+
+        return response()->noContent();
+    }
+}
+
+test('a handle() return value that is not a Response or Responsable throws a LogicException', function (): void {
+    Lattice::forms([BadReturnHandlerForm::class]);
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->submitForm(BadReturnHandlerForm::class, ['name' => 'Ada']))
+        ->toThrow(LogicException::class, 'must return a');
+});
+
+#[AsForm('test.handler.bad-return')]
+class BadReturnHandlerForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([TextInput::make('name', 'Name')]);
+    }
+
+    public function handle(FormData $data): string
+    {
+        return 'not a response';
+    }
+}
+
+test('a definition missing handle() throws a BadMethodCallException', function (): void {
+    Lattice::forms([NoHandlerForm::class]);
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->submitForm(NoHandlerForm::class, ['name' => 'Ada']))
+        ->toThrow(BadMethodCallException::class, 'must declare a public handle()');
+});
+
+#[AsForm('test.handler.missing')]
+class NoHandlerForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([TextInput::make('name', 'Name')]);
+    }
+}
+
+test('the legacy handle(Request $request) signature still works', function (): void {
+    Lattice::forms([WorkbenchProfileForm::class]);
+
+    $this->submitForm(WorkbenchProfileForm::class, ['name' => 'Taylor'])
+        ->assertRedirect('/submitted');
+
+    expect(session('handled-form'))->toBe('Taylor');
+});

@@ -10,6 +10,7 @@ use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\FileUpload;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\Repeater;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Components\Tab;
 use Lattice\Ui\Components\Tabs;
@@ -42,19 +43,19 @@ class FileUploadFieldForm extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data, Request $request): Response
     {
-        $data = $this->validate($request);
-
         foreach (FileUpload::removed($request, 'avatar') as $path) {
             Storage::disk('public')->delete($path);
         }
 
-        if (($data['avatar'] ?? null) instanceof UploadedFile) {
-            $data['avatar'] = $data['avatar']->store('uploads', 'public');
+        $attributes = $data->all();
+
+        if (($attributes['avatar'] ?? null) instanceof UploadedFile) {
+            $attributes['avatar'] = $attributes['avatar']->store('uploads', 'public');
         }
 
-        session()->flash('upload', $data);
+        session()->flash('upload', $attributes);
 
         return redirect('/form/fields/file-upload');
     }

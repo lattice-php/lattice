@@ -16,6 +16,7 @@ use Lattice\Form\FormDefinition;
 use Lattice\Http\LatticeResponse;
 use Lattice\Ui\Components\Grid;
 use Lattice\Ui\Components\Text;
+use Stringable;
 
 #[AsForm('workbench.checkout-wizard')]
 class CheckoutWizardForm extends FormDefinition
@@ -47,10 +48,10 @@ class CheckoutWizardForm extends FormDefinition
                         Grid::make()->columns(2)->schema([
                             TextInput::make('review_name', __('workbench.pages.wizard.fields.name'))
                                 ->readOnly()
-                                ->value(fn (FormData $data): string => $data->string('name')),
+                                ->value(fn (FormData $data): Stringable => $data->string('name')),
                             TextInput::make('review_email', __('workbench.pages.wizard.fields.email'))
                                 ->readOnly()
-                                ->value(fn (FormData $data): string => $data->string('email')),
+                                ->value(fn (FormData $data): Stringable => $data->string('email')),
                         ]),
                         TextInput::make('review_items', __('workbench.pages.wizard.fields.items'))
                             ->readOnly()
@@ -70,10 +71,8 @@ class CheckoutWizardForm extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): LatticeResponse
+    public function handle(): LatticeResponse
     {
-        $this->validate($request);
-
         return Effects::respond()->toast(__('workbench.pages.wizard.submitted'))->back();
     }
 }

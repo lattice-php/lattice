@@ -8,12 +8,12 @@ use Lattice\Core\Http\SubRequest;
 use Lattice\Core\Option;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\SignedUpload;
+use Lattice\Form\FormData;
 use Lattice\Form\ResolveResponse;
 
 interface InteractsWithForm
 {
-    /** @return array<string, mixed> */
-    public function validate(Request $request): array;
+    public function validate(Request $request): FormData;
 
     public function resolveFormSchema(Request $request): ?Form;
 

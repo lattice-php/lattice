@@ -58,17 +58,16 @@ The form fields are the same `Field` builders used everywhere, so [validation](/
 [conditions](/forms/conditional-fields/), and searchable selects all work. Validation is precognitive
 by default — the modal validates as the user types.
 
-In `handle()`, call `$this->validate($request)` to get the validated, cast values:
+Declare `FormData $data` on `handle()` to receive the validated, cast values — the endpoint
+validates before calling you, so there's nothing to trigger yourself:
 
 ```php
-public function handle(Request $request): ActionResult
+public function handle(FormData $data, Request $request): ActionResult
 {
-    $data = $this->validate($request);
-
     $this->product($request)->update(['status' => 'rejected']);
 
     return ActionResult::success()
-        ->toast("Rejected: {$data['reason']}")
+        ->toast("Rejected: {$data->string('reason')}")
         ->reloadComponent('app.products');
 }
 ```
@@ -113,6 +112,7 @@ extend `FormActionDefinition` instead and build it in `formSchema()`:
 ```php
 use Lattice\Actions\FormActionDefinition;
 use Lattice\Form\Components\Form;
+use Lattice\Form\FormData;
 use Illuminate\Http\Request;
 
 #[AsAction('products.edit')]
@@ -127,9 +127,8 @@ final class EditProduct extends FormActionDefinition
         ]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data): ActionResult
     {
-        $data = $this->validate($request);
         // …
     }
 }

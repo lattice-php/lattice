@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Lattice\Form\Components\ColorPicker;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 
 function colorPickerDefinition(): FormDefinition
@@ -20,6 +21,6 @@ it('accepts a valid hex color through the hex_color rule', function (): void {
 });
 
 it('rejects an invalid color through the hex_color rule', function (): void {
-    expect(fn (): array => colorPickerDefinition()->validate(Request::create('/', 'POST', ['color' => 'not-a-color'])))
+    expect(fn (): FormData => colorPickerDefinition()->validate(Request::create('/', 'POST', ['color' => 'not-a-color'])))
         ->toThrow(ValidationException::class);
 });

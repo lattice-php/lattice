@@ -11,6 +11,7 @@ use Lattice\Actions\FormActionDefinition;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 use Lattice\Media\Models\Media;
 use Lattice\Ui\Enums\HttpMethod;
 use Lattice\Ui\Enums\Variant;
@@ -43,10 +44,9 @@ final class UpdateMediaAction extends FormActionDefinition
         ]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data, Request $request): ActionResult
     {
         $media = $this->media($request);
-        $data = $this->validate($request);
 
         $media->update(['name' => $data['name']]);
         $media->mergeMeta(['alt' => $data['alt'] ?? null]);
