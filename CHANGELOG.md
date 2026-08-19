@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.59.0](https://github.com/lattice-php/lattice/compare/0.58.0...0.59.0) (2026-08-19)
+
+
+### Features
+
+* **tree:** per-row add menus; fix prefill resolution inside tree rows ([#508](https://github.com/lattice-php/lattice/issues/508)) ([ed5ca87](https://github.com/lattice-php/lattice/commit/ed5ca8716359f020eeb6317a50731e7f11e5aa2b))
+
 ## [0.58.0](https://github.com/lattice-php/lattice/compare/0.57.0...0.58.0) (2026-08-19)
 
 
