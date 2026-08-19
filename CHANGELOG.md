@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.58.0](https://github.com/lattice-php/lattice/compare/0.57.0...0.58.0) (2026-08-19)
+
+
+### Features
+
+* **tree:** TreeField — typed rows as a drag-and-drop hierarchy ([#505](https://github.com/lattice-php/lattice/issues/505)) ([b2abd9f](https://github.com/lattice-php/lattice/commit/b2abd9f34183a1950dbffc0ce04f98a193d139b3))
+
 ## [0.57.0](https://github.com/lattice-php/lattice/compare/0.56.3...0.57.0) (2026-08-19)
 
 
