@@ -85,10 +85,8 @@ A submitted file arrives as an `UploadedFile` (or an array of them for `->multip
 however you like:
 
 ```php
-public function handle(Request $request): Response
+public function handle(FormData $data): Response
 {
-    $data = $this->validate($request);
-
     if (($data['avatar'] ?? null) instanceof UploadedFile) {
         $data['avatar'] = $data['avatar']->store('avatars', 'public');
     }
@@ -109,7 +107,7 @@ closure that returns each file's destination path. It moves the object and retur
 $finalized = FileUpload::make('document')->disk('s3')->signedUpload()
     ->finalizeSignedUploads(
         (array) $data['document'],
-        fn (string $key, array $meta): string => "documents/{$request->user()->id}.{$meta['extension']}",
+        fn (string $key, array $meta): string => "documents/".auth()->id().".{$meta['extension']}",
     );
 
 foreach ($finalized as $upload) {

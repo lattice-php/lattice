@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Workbench\App\Actions;
 
-use Illuminate\Http\Request;
 use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
@@ -28,10 +27,8 @@ class SubmitFeedbackAction extends ActionDefinition
             ]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(): ActionResult
     {
-        $this->validate($request);
-
         return ActionResult::success()
             ->toast(__('workbench.pages.components.modals.feedback.toast'), Variant::Success);
     }

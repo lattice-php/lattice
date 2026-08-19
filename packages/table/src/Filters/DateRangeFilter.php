@@ -31,8 +31,8 @@ final class DateRangeFilter extends Filter
     #[\Override]
     public function indicator(FormData $data): ?string
     {
-        $from = $data->string('from');
-        $until = $data->string('until');
+        $from = $data->string('from')->toString();
+        $until = $data->string('until')->toString();
 
         return trim($from.' - '.$until, ' -') ?: null;
     }

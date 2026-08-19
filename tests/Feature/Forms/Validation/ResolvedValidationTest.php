@@ -29,7 +29,7 @@ it('skips validation for a field hidden by a closure', function (): void {
 });
 
 it('applies rules set inside a dependsOn closure', function (): void {
-    expect(fn (): array => resolvedDefinition()->validate(Request::create('/', 'POST', ['mode' => 'reveal'])))
+    expect(fn (): FormData => resolvedDefinition()->validate(Request::create('/', 'POST', ['mode' => 'reveal'])))
         ->toThrow(ValidationException::class);
 });
 

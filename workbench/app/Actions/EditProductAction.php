@@ -12,6 +12,7 @@ use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Form\Components\FileUpload;
 use Lattice\Form\Components\Form;
+use Lattice\Form\FormData;
 use Lattice\Ui\Effects\Builtin\Toast;
 use Lattice\Ui\Enums\HttpMethod;
 use Lattice\Ui\Enums\Variant;
@@ -46,20 +47,19 @@ class EditProductAction extends FormActionDefinition
         ]);
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data, Request $request): ActionResult
     {
-        $data = $this->validate($request);
         $product = $this->product();
 
-        $relatedIds = $data['related_products'] ?? [];
-        $priceRows = $data['sales_prices'] ?? [];
+        $relatedIds = $data->get('related_products', []);
+        $priceRows = $data->get('sales_prices', []);
         $productForm = app(ProductForm::class);
-        $imageKeys = $productForm->uploadedImageKeys($data['images'] ?? []);
+        $imageKeys = $productForm->uploadedImageKeys($data->get('images', []));
         $removedImagePaths = FileUpload::removed($request, 'images');
-        unset($data['related_products'], $data['sales_prices'], $data['images']);
+        $attributes = $data->except(['related_products', 'sales_prices', 'images']);
 
-        DB::transaction(function () use ($product, $data, $relatedIds, $priceRows, $productForm, $imageKeys, $removedImagePaths): void {
-            $product->update($data);
+        DB::transaction(function () use ($product, $attributes, $relatedIds, $priceRows, $productForm, $imageKeys, $removedImagePaths): void {
+            $product->update($attributes);
             $product->relatedProducts()->sync(
                 Product::query()->whereIn('id', $relatedIds)->pluck('id')->all(),
             );

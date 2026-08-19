@@ -10,6 +10,7 @@ use Lattice\Form\Components\Field;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Concerns\ResolvesFormFields;
 use Lattice\Form\FieldValidator;
+use Lattice\Form\FormData;
 
 /**
  * Validation, searchable options, and computed-field resolution for an action's
@@ -22,13 +23,11 @@ trait InteractsWithActionForm
 
     /**
      * Validate the request against this action's embedded form schema and return
-     * the validated, cast input. Returns an empty array when no form is attached.
-     *
-     * @return array<string, mixed>
+     * the validated, cast input. Empty when no form is attached.
      */
-    public function validate(Request $request): array
+    public function validate(Request $request): FormData
     {
-        return app(FieldValidator::class)->validate($this->formFields($request), $request);
+        return FormData::make(app(FieldValidator::class)->validate($this->formFields($request), $request));
     }
 
     /**

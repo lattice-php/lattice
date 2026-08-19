@@ -2,7 +2,6 @@
 
 namespace {{ namespace }};
 
-use Illuminate\Http\Request;
 use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action;
@@ -16,7 +15,7 @@ class {{ class }} extends ActionDefinition
         return $action->label('{{ class }}');
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(): ActionResult
     {
         return ActionResult::success();
     }

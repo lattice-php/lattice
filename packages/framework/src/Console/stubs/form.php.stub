@@ -3,8 +3,10 @@
 namespace {{ namespace }};
 
 use Illuminate\Http\Request;
+use Lattice\Facades\Effects;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Lattice\Http\LatticeResponse;
 
@@ -18,10 +20,8 @@ class {{ class }} extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): LatticeResponse
+    public function handle(FormData $data): LatticeResponse
     {
-        $this->validate($request);
-
-        return $this->respond()->back();
+        return Effects::respond()->back();
     }
 }

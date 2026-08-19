@@ -5,10 +5,14 @@ namespace Lattice\Actions\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Lattice\Actions\ActionRegistry;
+use Lattice\Actions\ActionResult;
 use Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Form\FormData;
 use Lattice\Form\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Form\Http\Controllers\Concerns\HandlesPrecognition;
+use Lattice\Form\Http\Controllers\Concerns\InvokesHandleMethod;
+use LogicException;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class ActionController
@@ -16,6 +20,7 @@ final readonly class ActionController
     use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithComponents;
+    use InvokesHandleMethod;
 
     public function __construct(
         private ActionRegistry $actions,
@@ -33,12 +38,14 @@ final readonly class ActionController
         }
 
         if ($request->isPrecognitive()) {
-            return $this->validatePrecognitive($request, fn (): array => $definition->validate($request));
+            return $this->validatePrecognitive($request, fn (): FormData => $definition->validate($request));
         }
 
-        $definition->validate($request);
+        $result = $this->invokeHandle($definition, $request, $definition->validate($request));
 
-        $result = $definition->handle($request);
+        if (! $result instanceof ActionResult) {
+            throw new LogicException(sprintf('%s::handle() must return an %s.', $definition::class, ActionResult::class));
+        }
 
         return response()->json($result, $result->status());
     }

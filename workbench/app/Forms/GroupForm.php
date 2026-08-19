@@ -8,6 +8,7 @@ use Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\TextInput;
+use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Components\Card;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,15 +29,14 @@ class GroupForm extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): Response
+    public function handle(FormData $data): Response
     {
         $group = $this->group();
-        $validated = $this->validate($request);
 
         if (! $group instanceof Group) {
-            Group::query()->create($validated);
+            Group::query()->create($data->all());
         } else {
-            $group->update($validated);
+            $group->update($data->all());
         }
 
         return redirect('/groups');

@@ -7,9 +7,12 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Lattice\Core\Concerns\InteractsWithComponents;
 use Lattice\Core\Contracts\SignsComponentReferences;
+use Lattice\Form\FormData;
 use Lattice\Form\FormRegistry;
 use Lattice\Form\Http\Controllers\Concerns\HandlesFormSubRequests;
 use Lattice\Form\Http\Controllers\Concerns\HandlesPrecognition;
+use Lattice\Form\Http\Controllers\Concerns\InvokesHandleMethod;
+use LogicException;
 use Symfony\Component\HttpFoundation\Response;
 
 final readonly class FormController
@@ -17,6 +20,7 @@ final readonly class FormController
     use HandlesFormSubRequests;
     use HandlesPrecognition;
     use InteractsWithComponents;
+    use InvokesHandleMethod;
 
     public function __construct(
         private FormRegistry $forms,
@@ -34,11 +38,20 @@ final readonly class FormController
         }
 
         if ($request->isPrecognitive()) {
-            return $this->validatePrecognitive($request, fn (): array => $definition->validate($request));
+            return $this->validatePrecognitive($request, fn (): FormData => $definition->validate($request));
         }
 
-        $definition->validate($request);
+        $response = $this->invokeHandle($definition, $request, $definition->validate($request));
 
-        return $definition->handle($request);
+        if (! $response instanceof Response && ! $response instanceof Responsable) {
+            throw new LogicException(sprintf(
+                '%s::handle() must return a %s or %s.',
+                $definition::class,
+                Response::class,
+                Responsable::class,
+            ));
+        }
+
+        return $response;
     }
 }

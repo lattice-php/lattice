@@ -21,7 +21,7 @@ it('injects the field component and its own value into rule closures', function 
 });
 
 it('keeps supporting typed FormData and Request rule closures', function (): void {
-    $field = TextInput::make('age')->rules(fn (FormData $state, Request $request): array => [$state->string('extra')]);
+    $field = TextInput::make('age')->rules(fn (FormData $state, Request $request): array => [$state->string('extra')->toString()]);
 
     expect($field->resolveRules(FormData::make(['extra' => 'min:3']), Request::create('/')))->toBe(['min:3']);
 });
@@ -56,7 +56,7 @@ it('injects row and form scopes into prefill resolvers by name', function (): vo
 
 it('resolves a typed FormData prefill parameter to the row scope', function (): void {
     $field = TextInput::make('label')
-        ->value(fn (FormData $data): string => $data->string('first'), editable: true);
+        ->value(fn (FormData $data): string => $data->string('first')->toString(), editable: true);
 
     $row = FormData::make(['first' => 'ada']);
     $form = FormData::make(['first' => 'grace']);

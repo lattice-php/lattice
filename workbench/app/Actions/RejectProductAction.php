@@ -12,6 +12,7 @@ use Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Core\Option;
 use Lattice\Form\Components\Select;
 use Lattice\Form\Components\Textarea;
+use Lattice\Form\FormData;
 use Lattice\Ui\Enums\HttpMethod;
 use Lattice\Ui\Enums\Variant;
 use Workbench\App\Models\Product;
@@ -49,10 +50,8 @@ class RejectProductAction extends ActionDefinition
         return $this->product()->status !== 'archived';
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data): ActionResult
     {
-        $data = $this->validate($request);
-
         $product = $this->product();
         $product->update(['status' => 'archived']);
 

@@ -62,10 +62,8 @@ class BuilderFieldForm extends FormDefinition
         ]);
     }
 
-    public function handle(Request $request): Response
+    public function handle(): Response
     {
-        $this->validate($request);
-
         return redirect('/form/fields/builder');
     }
 }

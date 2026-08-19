@@ -113,7 +113,7 @@ the earlier steps' input automatically.
 WizardStep::make('review')->schema([
     TextInput::make('review_name', 'Name')
         ->readOnly()
-        ->value(fn (FormData $data): string => $data->string('name')),
+        ->value(fn (FormData $data): Stringable => $data->string('name')),
     TextInput::make('review_items', 'Items')
         ->readOnly()
         ->value(fn (FormData $data): string => collect($data->get('items', []))

@@ -15,6 +15,7 @@ use Lattice\Actions\FormActionDefinition;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Form\Components\FileUpload;
 use Lattice\Form\Components\Form;
+use Lattice\Form\FormData;
 use Lattice\Media\Jobs\GenerateMediaConversions;
 use Lattice\Media\Models\Media;
 use Lattice\Ui\Enums\HttpMethod;
@@ -47,11 +48,9 @@ final class UploadMediaAction extends FormActionDefinition
      * rule bag validates the `files` array. Signed uploads submit temporary
      * keys rather than files, so nothing is checked there — `dimensions` and
      * friends are multipart-only.
-     *
-     * @return array<string, mixed>
      */
     #[\Override]
-    public function validate(Request $request): array
+    public function validate(Request $request): FormData
     {
         $validated = parent::validate($request);
         $rules = array_values(array_filter((array) $this->context('upload_rules', []), is_string(...)));
@@ -68,9 +67,8 @@ final class UploadMediaAction extends FormActionDefinition
      * upload-only picker selects the fresh rows straight from this response
      * without a follow-up fetch.
      */
-    public function handle(Request $request): ActionResult
+    public function handle(FormData $data): ActionResult
     {
-        $data = $this->validate($request);
         $media = array_map(
             // A sync queue has already generated the conversions by now, on its
             // own instances — refresh so the descriptors see them.
@@ -81,7 +79,7 @@ final class UploadMediaAction extends FormActionDefinition
                 'preview_url' => $item->previewUrl(),
                 'mime_type' => $item->mime_type,
             ],
-            $this->storeUploads($data['files'] ?? []),
+            $this->storeUploads($data->get('files', [])),
         );
 
         return ActionResult::success(['media' => $media])

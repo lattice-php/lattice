@@ -124,6 +124,11 @@ function testFormDefinition(Closure $schema): FormDefinition
             return $form->schema(($this->schema)());
         }
 
+        /**
+         * Deliberately kept on the legacy Request-only signature — living
+         * proof that handle() still resolves without a typed FormData
+         * parameter.
+         */
         public function handle(Request $request): Response
         {
             return new Response('ok');

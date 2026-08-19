@@ -68,7 +68,7 @@ class ArchiveProductAction extends ActionDefinition
             ->confirm('Archive product?', 'This hides it from the catalogue.');
     }
 
-    public function handle(Request $request): ActionResult
+    public function handle(): ActionResult
     {
         $product = $this->contextModel('product_id', Product::class);
         $product->update(['status' => 'archived']);

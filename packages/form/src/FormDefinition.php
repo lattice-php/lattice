@@ -3,29 +3,31 @@ declare(strict_types=1);
 
 namespace Lattice\Form;
 
-use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Core\Definition;
 use Lattice\Form\Components\Field;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Concerns\ResolvesFormFields;
-use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * A concrete form declares a public `handle()` method with a flexible
+ * signature — parameters resolve by name (`$data` for the validated
+ * `FormData`, `$request` for the current `Request`), by type (`FormData`,
+ * `Request`), or fall back to the container. It must return a Symfony
+ * `Response` or a `Responsable`, e.g.:
+ *
+ *     public function handle(FormData $data): Response
+ */
 abstract class FormDefinition extends Definition
 {
     use ResolvesFormFields;
 
     abstract public function definition(Form $form, Request $request): Form;
 
-    abstract public function handle(Request $request): Response|Responsable;
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function validate(Request $request): array
+    public function validate(Request $request): FormData
     {
-        return app(FieldValidator::class)->validate($this->formFields($request), $request);
+        return FormData::make(app(FieldValidator::class)->validate($this->formFields($request), $request));
     }
 
     /**

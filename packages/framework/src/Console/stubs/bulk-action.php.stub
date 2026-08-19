@@ -2,7 +2,6 @@
 
 namespace {{ namespace }};
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\BulkActionDefinition;
@@ -20,7 +19,7 @@ class {{ class }} extends BulkActionDefinition
     /**
      * @param  Collection<int, \Illuminate\Database\Eloquent\Model>  $records
      */
-    public function handle(Collection $records, Request $request): ActionResult
+    public function handle(Collection $records): ActionResult
     {
         return ActionResult::success();
     }
