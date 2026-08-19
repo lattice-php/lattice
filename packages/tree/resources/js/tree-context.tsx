@@ -77,6 +77,35 @@ export type TreeMoveRequest = {
   position: number;
 };
 
+function depthOf(graph: TreeGraph, id: string): number {
+  let depth = 1;
+  let parentId = graph.parents.get(id);
+
+  while (parentId !== null && parentId !== undefined) {
+    depth += 1;
+    parentId = graph.parents.get(parentId);
+  }
+
+  return depth;
+}
+
+// A `hasChildren` node whose children are not loaded counts as height 2 — the
+// client cannot know the real subtree height, so this is a best-effort UX
+// affordance and the server-side move action stays authoritative.
+function subtreeHeight(graph: TreeGraph, id: string): number {
+  const childIds = graph.children.get(id);
+
+  if (childIds === undefined) {
+    return graph.nodes.get(id)?.hasChildren === true ? 2 : 1;
+  }
+
+  if (childIds.length === 0) {
+    return 1;
+  }
+
+  return 1 + Math.max(...childIds.map((childId) => subtreeHeight(graph, childId)));
+}
+
 function isDescendant(graph: TreeGraph, ancestorId: string, nodeId: string): boolean {
   let parentId = graph.parents.get(nodeId);
 
@@ -198,6 +227,7 @@ export type TreeContextValue = {
   canDropOn: (sourceId: string, targetId: string) => boolean;
   canLoad: boolean;
   canMove: boolean;
+  canPlace: (sourceId: string, parentId: string | null) => boolean;
   childrenCount: (id: string | null) => number;
   childrenFor: (id: string) => TreeNodeData[] | undefined;
   expand: (id: string) => void;
@@ -213,6 +243,7 @@ export type TreeContextValue = {
   parentFor: (id: string) => string | null;
   positionFor: (id: string) => number;
   register: (entry: TreeItemRegistration) => void;
+  reload: () => void;
   toggle: (id: string) => void;
   typeAhead: (fromId: string, character: string) => void;
   unregister: (path: string) => void;
@@ -224,6 +255,7 @@ const defaultTreeContext: TreeContextValue = {
   canDropOn: () => false,
   canLoad: false,
   canMove: false,
+  canPlace: () => false,
   childrenCount: () => 0,
   childrenFor: () => undefined,
   expand: () => {},
@@ -239,6 +271,7 @@ const defaultTreeContext: TreeContextValue = {
   parentFor: () => null,
   positionFor: () => -1,
   register: () => {},
+  reload: () => {},
   toggle: () => {},
   typeAhead: () => {},
   unregister: () => {},
@@ -297,6 +330,7 @@ export function useTreeState({
   endpoint,
   componentRef,
   lazy,
+  maxDepth,
   nodes,
   moveAction,
   rememberState,
@@ -310,6 +344,7 @@ export function useTreeState({
   endpoint: string | null;
   componentRef: string | null;
   lazy: boolean;
+  maxDepth: number | null;
   nodes: TreeNodeData[];
   moveAction: Tree["moveAction"];
   rememberState: boolean;
@@ -604,9 +639,32 @@ export function useTreeState({
     [store],
   );
 
+  const canPlace = useCallback(
+    (sourceId: string, parentId: string | null): boolean => {
+      const current = store.getState().graph;
+
+      if (parentId === (current.parents.get(sourceId) ?? null)) {
+        return true;
+      }
+
+      if (parentId !== null && current.nodes.get(parentId)?.acceptsChildren === false) {
+        return false;
+      }
+
+      if (maxDepth !== null) {
+        const parentDepth = parentId === null ? 0 : depthOf(current, parentId);
+
+        return parentDepth + subtreeHeight(current, sourceId) <= maxDepth;
+      }
+
+      return true;
+    },
+    [maxDepth, store],
+  );
+
   const move = useCallback(
     async (request: TreeMoveRequest): Promise<boolean> => {
-      if (!moveAction || store.getState().moving) {
+      if (!moveAction || store.getState().moving || !canPlace(request.nodeId, request.parentId)) {
         return false;
       }
 
@@ -632,8 +690,27 @@ export function useTreeState({
 
       return accepted;
     },
-    [dispatch, focus, moveAction, store],
+    [canPlace, dispatch, focus, moveAction, store],
   );
+
+  const reload = useCallback(() => {
+    if (!canLoad) {
+      return;
+    }
+
+    generationRef.current += 1;
+    const generation = generationRef.current;
+    inFlightRef.current.clear();
+    setLoading(new Set());
+
+    void apiJson<{ nodes: TreeNodeData[] }>(`${endpoint}?parent=`, { ref: componentRef ?? "" })
+      .then(({ nodes: fetched }) => {
+        if (generation === generationRef.current) {
+          store.setState({ graph: createGraph(fetched, true) });
+        }
+      })
+      .catch(() => {});
+  }, [canLoad, componentRef, endpoint, store]);
 
   const isLoading = useCallback((id: string) => loading.has(id), [loading]);
 
@@ -686,6 +763,7 @@ export function useTreeState({
       canDropOn,
       canLoad,
       canMove,
+      canPlace,
       childrenCount,
       childrenFor,
       expand,
@@ -701,6 +779,7 @@ export function useTreeState({
       parentFor,
       positionFor,
       register,
+      reload,
       toggle,
       typeAhead,
       unregister,
@@ -711,6 +790,7 @@ export function useTreeState({
       canDropOn,
       canLoad,
       canMove,
+      canPlace,
       childrenCount,
       childrenFor,
       expand,
@@ -726,6 +806,7 @@ export function useTreeState({
       parentFor,
       positionFor,
       register,
+      reload,
       toggle,
       typeAhead,
       unregister,

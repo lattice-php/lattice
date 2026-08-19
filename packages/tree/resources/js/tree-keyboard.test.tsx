@@ -2,6 +2,7 @@ import { act, fireEvent, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   actionClicks,
+  inlineInputNodes,
   moveAction,
   renderTree,
   sampleNodes as nodes,
@@ -347,6 +348,144 @@ describe("Tree keyboard navigation", () => {
       parentId: null,
       position: 1,
     });
+  });
+
+  it("leaves typed characters to an inline form control instead of typeahead", () => {
+    renderTree({ nodes: inlineInputNodes });
+    const input = screen.getByRole("textbox", { name: "Quantity" });
+    input.focus();
+
+    fireEvent.keyDown(input, { key: "s" });
+
+    expect(input).toHaveFocus();
+    expect(item("9")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("leaves arrow keys inside an inline form control to the control", () => {
+    renderTree({ nodes: inlineInputNodes });
+    const input = screen.getByRole("textbox", { name: "Quantity" });
+    input.focus();
+
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+
+    expect(input).toHaveFocus();
+    expect(item("9")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("does not move the node when Ctrl Shift Arrow originates from an inline form control", () => {
+    const fetchMock = stubMoveFetch();
+    renderTree({ moveAction, nodes: inlineInputNodes });
+    const input = screen.getByRole("textbox", { name: "Quantity" });
+    input.focus();
+
+    fireEvent.keyDown(input, { ctrlKey: true, key: "ArrowDown", shiftKey: true });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(
+      screen.getAllByRole("treeitem").map((element) => element.getAttribute("aria-label")),
+    ).toEqual(["Editable", "Suppliers"]);
+  });
+
+  it("does not indent onto a node that rejects children", () => {
+    const fetchMock = stubMoveFetch();
+
+    renderTree({
+      moveAction,
+      nodes: [treeNode("a", "Alpha", { acceptsChildren: false }), treeNode("b", "Beta")],
+    });
+
+    fireEvent.keyDown(item("b"), { ctrlKey: true, key: "ArrowRight", shiftKey: true });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(item("b")).toHaveAttribute("aria-level", "1");
+    expect(item("a")).not.toHaveAttribute("aria-expanded");
+  });
+
+  it("still reorders siblings around a node that rejects children", async () => {
+    const fetchMock = stubMoveFetch();
+
+    renderTree({
+      moveAction,
+      nodes: [treeNode("a", "Alpha", { acceptsChildren: false }), treeNode("b", "Beta")],
+    });
+
+    fireEvent.keyDown(item("b"), { ctrlKey: true, key: "ArrowUp", shiftKey: true });
+
+    await vi.waitFor(() => {
+      expect(
+        screen.getAllByRole("treeitem").map((element) => element.getAttribute("aria-label")),
+      ).toEqual(["Beta", "Alpha"]);
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("blocks a keyboard indent that would exceed maxDepth", () => {
+    const fetchMock = stubMoveFetch();
+
+    renderTree({
+      defaultExpanded: ["a"],
+      maxDepth: 2,
+      moveAction,
+      nodes: [
+        treeNode("a", "Alpha", { children: [treeNode("x", "Xray"), treeNode("y", "Yankee")] }),
+      ],
+    });
+
+    fireEvent.keyDown(item("y"), { ctrlKey: true, key: "ArrowRight", shiftKey: true });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(item("y")).toHaveAttribute("aria-level", "2");
+  });
+
+  it("counts the moved node's loaded subtree against maxDepth", () => {
+    const fetchMock = stubMoveFetch();
+
+    renderTree({
+      maxDepth: 2,
+      moveAction,
+      nodes: [
+        treeNode("a", "Alpha"),
+        treeNode("b", "Beta", { children: [treeNode("c", "Gamma")] }),
+      ],
+    });
+
+    fireEvent.keyDown(item("b"), { ctrlKey: true, key: "ArrowRight", shiftKey: true });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(item("b")).toHaveAttribute("aria-level", "1");
+  });
+
+  it("counts an unloaded hasChildren subtree as at least two levels", () => {
+    const fetchMock = stubMoveFetch();
+
+    renderTree({
+      maxDepth: 2,
+      moveAction,
+      nodes: [treeNode("a", "Alpha"), treeNode("b", "Beta", { hasChildren: true })],
+    });
+
+    fireEvent.keyDown(item("b"), { ctrlKey: true, key: "ArrowRight", shiftKey: true });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(item("b")).toHaveAttribute("aria-level", "1");
+  });
+
+  it("applies no depth limit when maxDepth is null", async () => {
+    const fetchMock = stubMoveFetch();
+
+    renderTree({
+      defaultExpanded: ["a"],
+      maxDepth: null,
+      moveAction,
+      nodes: [
+        treeNode("a", "Alpha", { children: [treeNode("x", "Xray"), treeNode("y", "Yankee")] }),
+      ],
+    });
+
+    fireEvent.keyDown(item("y"), { ctrlKey: true, key: "ArrowRight", shiftKey: true });
+
+    await vi.waitFor(() => expect(item("y")).toHaveAttribute("aria-level", "3"));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("rolls an optimistic keyboard move back when the server rejects it", async () => {

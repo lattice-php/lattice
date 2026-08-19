@@ -46,6 +46,20 @@ it('serializes revision and registered interaction actions', function (): void {
         ->and($node['props']['moveAction']['props']['ref'])->toBeString();
 });
 
+it('serializes maxDepth and defaults to unlimited', function (): void {
+    $unlimited = wire(Tree::make()->nodes([TreeNode::make('1', 'A')]));
+    $limited = wire(Tree::make()->nodes([TreeNode::make('1', 'A')])->maxDepth(2));
+    $cleared = wire(Tree::make()->nodes([TreeNode::make('1', 'A')])->maxDepth(2)->maxDepth(null));
+
+    expect($unlimited['props']['maxDepth'])->toBeNull()
+        ->and($limited['props']['maxDepth'])->toBe(2)
+        ->and($cleared['props']['maxDepth'])->toBeNull();
+});
+
+it('rejects a max depth below one', function (): void {
+    Tree::make()->maxDepth(0);
+})->throws(InvalidArgumentException::class, 'Tree max depth must be one or greater.');
+
 it('derives the active node ancestor path from capable sources', function (): void {
     $source = new class implements TreeSource
     {

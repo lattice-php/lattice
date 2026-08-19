@@ -51,6 +51,11 @@ Nodes compile their conveniences (`->icon()`, `->badge()`, `->href()`, `->action
 into a canonical body schema of core components — an icon, a text-or-link label, a badge, and an
 end-floated action stack. `->badge($label, $color)` accepts any Lattice color.
 
+`->class()` adds classes to the node's `<li>` element — the wrapper around both the row and its
+children group — so styling a parent together with its subtree (a frame around a section and its
+lines, say) needs no `:has()` selectors against the tree's internal markup. The array shorthand
+accepts it as a `class` key.
+
 ### Custom node content
 
 For content the conveniences do not cover, `->schema()` replaces the composed body outright:
@@ -76,6 +81,15 @@ its body, so a custom schema should put its primary action's button first — or
 receive Enter.
 :::
 
+### Form controls in a node body
+
+Interactive form controls (`input`, `textarea`, `select`, contenteditable regions, and their
+labels) are first-class inside `->schema()`: clicks, keystrokes, and drag gestures that originate
+in a control stay with the control instead of driving the tree. Clicking into an inline input does
+not select the node or steal its focus, typing does not trigger typeahead or `Ctrl+Shift+Arrow`
+moves, and selecting text inside it does not start a node drag. Controls also keep their natural
+tab stop — only buttons and links in a node body are removed from the page tab order.
+
 ### Eloquent sources
 
 Back a tree with an Eloquent adjacency list (a self-referencing `parent_id` column):
@@ -95,8 +109,8 @@ Tree::make('categories')->source(
 
 `->orderBy()` orders roots and every sibling group by that column, followed by the label and ID
 for deterministic ties. Without it, label and ID remain the default ordering. The single
-`->map()` callback receives the model and its base `TreeNode`, and applies equally to eager and
-lazy results.
+`->map()` callback receives the model and its base `TreeNode`, applies equally to eager and
+lazy results, and may use any builder method — including `->class()` and `->schema()`.
 
 Any other backing store implements the two-method `Lattice\Tree\TreeSource` contract.
 
@@ -124,6 +138,90 @@ outdents.
 The consuming application owns persistence and authoritative validation — the package never
 writes a `sort_order` column itself.
 :::
+
+### Planning a move
+
+Every `moveAction` handler ends up re-implementing the same splice-and-resequence
+algorithm. `AdjacencyListMovePlanner` owns it as a pure function: give it the current
+placements of one scope — id, parent id, position per node — plus the wire payload, and it
+returns only the placements that must change, with contiguous zero-based positions in both
+the source and the destination sibling group. It returns `null` when the move is
+structurally impossible: unknown node, unknown destination parent, self-parent, or a
+destination inside the moved node's own subtree. A move that changes nothing returns an
+empty plan. The planner never writes anything — persistence, locking, and domain rules
+(max depth, locked records, tenancy) stay with your application:
+
+```php
+use Lattice\Tree\Support\AdjacencyListMovePlanner;
+use Lattice\Tree\Support\NodePlacement;
+
+public function handle(Request $request): ActionResult
+{
+    $payload = $request->validate([
+        'nodeId' => ['required', 'string'],
+        'parentId' => ['nullable', 'string'],
+        'position' => ['required', 'integer', 'min:0'],
+    ]);
+
+    return DB::transaction(function () use ($payload): ActionResult {
+        $categories = Category::query()->lockForUpdate()->get();
+
+        $plan = AdjacencyListMovePlanner::plan(
+            $categories->map(fn (Category $category): NodePlacement => new NodePlacement(
+                $category->id, $category->parent_id, $category->sort_order,
+            )),
+            $payload['nodeId'],
+            $payload['parentId'] ?? null,
+            $payload['position'],
+        );
+
+        if ($plan === null) {
+            return ActionResult::failure('The node cannot be moved there.');
+        }
+
+        foreach ($plan as $placement) {
+            $attributes = ['parent_id' => $placement->parentId, 'sort_order' => $placement->position];
+
+            (string) $placement->id === $payload['nodeId']
+                ? $categories->find($placement->id)?->update($attributes)
+                : Category::query()->whereKey($placement->id)->update($attributes);
+        }
+
+        return ActionResult::success($payload);
+    });
+}
+```
+
+A requested position past the end of the destination group clamps to the end. Siblings with
+equal stored positions order by existing position, then id, so the plan is deterministic even
+over sparse or duplicated `sort_order` values. Ids compare by string identity — the wire
+payload's string `"5"` matches an integer primary key `5` — while the emitted placements keep
+your rows' original id types, so the plan works unchanged for auto-increment and UUID keys.
+
+### Move restrictions
+
+Without restrictions the client offers `make-child` everywhere and leaves hierarchy rules to the
+move action — every invalid drop round-trips to the server and rolls back. Declare the rules up
+front and the client stops offering those moves at all:
+
+```php
+Tree::use(CategoryTree::class)
+    ->moveAction(MoveCategory::class)
+    ->maxDepth(2); // roots are depth 1: a node may nest under a root, nothing deeper
+
+TreeNode::make('archive', 'Archive')->acceptsChildren(false); // never a drop parent
+```
+
+`->maxDepth()` caps the depth any node may sit at after a move. The moved node's own subtree
+counts: dragging a parent with one loaded level of children under a root already exhausts
+`maxDepth(2)`, and a collapsed `hasChildren` node whose children were never fetched counts as at
+least two levels. `->acceptsChildren(false)` (also an `acceptsChildren` array-shorthand key)
+keeps a node from ever receiving `make-child` drops or keyboard indents; reordering siblings
+around it stays possible.
+
+Blocked pointer drops show a blocked indicator instead of the drop ring, and blocked keyboard
+indents do nothing. Both are client-side affordances over the loaded part of the tree — the
+registered move action remains the authority, and moves it rejects still roll back.
 
 ## Lazy loading
 
@@ -170,6 +268,14 @@ An `EloquentTreeSource` behind the endpoint automatically switches to per-level 
 (`WHERE parent_id = ?` plus a scoped `EXISTS` probe for `hasChildren`) instead of loading the
 whole table. Inline `->nodes()` / `->source()` trees stay eager-only — without a registry key
 there is nothing to seal — so `->lazy()` on them throws.
+
+## Reloading
+
+A definition-backed tree listens for the `reload-component` [effect](/actions/effects/): an
+action returning `ActionResult::success()->reloadComponent('categories')` (the tree's `#[AsTree]`
+id) refetches the roots from the endpoint and drops cached lazy children, so expanded branches
+refetch while expansion and focus stay put — no full page reload needed after a mutation. Inline
+`->nodes()` / `->source()` trees have no endpoint to refetch from and ignore the effect.
 
 ## Translations
 

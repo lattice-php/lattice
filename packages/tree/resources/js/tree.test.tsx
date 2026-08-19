@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fakeNode, jsonResponse, stubFetch } from "@lattice-php/core/test-support";
-import { renderTree, sampleNodes as nodes, treeNode } from "./test-support";
+import { inlineInputNodes, renderTree, sampleNodes as nodes, treeNode } from "./test-support";
 import type { TreeNodeData } from "./types";
 import TreeComponent from "./tree";
 
@@ -87,6 +87,26 @@ describe("Tree component", () => {
 
     fireEvent.click(screen.getByTestId("tree-node-2"));
     expect(screen.getByTestId("tree-node-2")).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("keeps focus in a form control rendered in the node body without selecting the node", () => {
+    renderTree({ activeId: null, nodes: inlineInputNodes });
+
+    const input = screen.getByRole("textbox", { name: "Quantity" });
+    input.focus();
+    fireEvent.click(input);
+
+    expect(input).toHaveFocus();
+    expect(screen.getByTestId("tree-node-edit")).toHaveAttribute("aria-selected", "false");
+  });
+
+  it("applies the node's class hook to its treeitem element", () => {
+    renderTree({
+      nodes: [treeNode("styled", "Styled", { class: "quote-line" }), treeNode("plain", "Plain")],
+    });
+
+    expect(screen.getByTestId("tree-node-styled")).toHaveClass("quote-line");
+    expect(screen.getByTestId("tree-node-plain")).not.toHaveAttribute("class");
   });
 
   it("posts the selection contract and rolls back a rejected selection", async () => {

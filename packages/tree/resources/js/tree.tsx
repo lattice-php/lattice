@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
-import { nodeIdentity, Renderer } from "@lattice-php/core";
+import { LATTICE_EVENT, nodeIdentity, Renderer, useWindowEvent } from "@lattice-php/core";
 import { cn } from "@lattice-php/ui/lib/utils";
-import type { RendererComponent } from "@lattice-php/core";
+import type { ReloadComponentEvent, RendererComponent } from "@lattice-php/core";
 import {
   announce,
   attachTreeItemInstruction,
@@ -32,6 +32,11 @@ function isExpandable(
 const ORDER_PATH_SEGMENT_WIDTH = 6;
 const TREE_DRAG_TYPE = "lattice-tree-node";
 const HOVER_EXPAND_MS = 500;
+const FORM_CONTROL_SELECTOR = "input, textarea, select, label, [contenteditable]";
+
+function isFormControlTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest(FORM_CONTROL_SELECTOR) !== null;
+}
 
 function orderPathSegment(index: number): string {
   return String(index).padStart(ORDER_PATH_SEGMENT_WIDTH, "0");
@@ -60,6 +65,7 @@ function TreeItem({
     canDropOn,
     canLoad,
     canMove,
+    canPlace,
     childrenCount,
     childrenFor,
     expand,
@@ -206,7 +212,26 @@ function TreeItem({
       return;
     }
 
+    // Browsers retarget dragstart to the closest draggable ancestor, so neither
+    // canDrag() nor event.target can see an inline form control the gesture
+    // started in; without this capture-phase cancel, selecting text in it drags
+    // the node. The control is focused by the initiating mousedown, so a focused
+    // control inside the row marks the drag as text selection, not a node move.
+    const cancelFormControlDrag = (event: Event): void => {
+      const focused = element.ownerDocument.activeElement;
+
+      if (
+        isFormControlTarget(event.target) ||
+        (element.contains(focused) && isFormControlTarget(focused))
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    element.addEventListener("dragstart", cancelFormControlDrag, true);
+
     return combine(
+      () => element.removeEventListener("dragstart", cancelFormControlDrag, true),
       draggable({
         canDrag: () => !moving,
         element,
@@ -220,10 +245,22 @@ function TreeItem({
           typeof source.data.nodeId === "string" &&
           canDropOn(source.data.nodeId, node.id),
         element,
-        getData: ({ element: target, input }) =>
-          attachTreeItemInstruction(
+        getData: ({ element: target, input, source }) => {
+          const sourceId = typeof source.data.nodeId === "string" ? source.data.nodeId : null;
+          const block: TreeItemInstruction["type"][] = [];
+
+          if (sourceId !== null && !canPlace(sourceId, node.id)) {
+            block.push("make-child");
+          }
+
+          if (sourceId !== null && !canPlace(sourceId, parentFor(node.id))) {
+            block.push("reorder-above", "reorder-below");
+          }
+
+          return attachTreeItemInstruction(
             { nodeId: node.id, type: TREE_DRAG_TYPE },
             {
+              block,
               currentLevel: depth - 1,
               element: target,
               indentPerLevel: 24,
@@ -234,7 +271,8 @@ function TreeItem({
                   ? "last-in-group"
                   : "standard",
             },
-          ),
+          );
+        },
         onDrag: ({ self }) =>
           setDropInstruction(extractTreeItemInstruction(self.data)?.type ?? null),
         onDragEnter: ({ self }) => {
@@ -266,6 +304,7 @@ function TreeItem({
     ancestors,
     canDropOn,
     canMove,
+    canPlace,
     childrenCount,
     depth,
     expand,
@@ -298,7 +337,7 @@ function TreeItem({
     } else if (key === "ArrowRight" && position > 0) {
       const previous = childrenFor(parentId ?? ROOTS_KEY)?.[position - 1];
 
-      if (!previous || previous.disabled === true) {
+      if (!previous || previous.disabled === true || !canPlace(node.id, previous.id)) {
         return;
       }
 
@@ -417,7 +456,8 @@ function TreeItem({
       isDisabled ||
       !(target instanceof Element) ||
       target.closest('[role="treeitem"]') !== event.currentTarget ||
-      target.closest('button, a[href], [role="button"]')
+      target.closest('button, a[href], [role="button"]') ||
+      isFormControlTarget(target)
     ) {
       return;
     }
@@ -440,6 +480,7 @@ function TreeItem({
       aria-posinset={siblingIndex}
       aria-selected={isActive}
       aria-setsize={siblingCount}
+      className={cn(node.class) || undefined}
       data-test={`tree-node-${node.id}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
@@ -458,6 +499,7 @@ function TreeItem({
           dropInstruction === "reorder-below" && "border-b-lt-primary",
           (dropInstruction === "make-child" || dropInstruction === "reparent") &&
             "ring-1 ring-lt-primary",
+          dropInstruction === "instruction-blocked" && "ring-1 ring-lt-danger/50",
         )}
         data-drop-instruction={dropInstruction ?? undefined}
         ref={rowRef}
@@ -520,6 +562,7 @@ const TreeComponent: RendererComponent<"tree"> = ({ node }) => {
     endpoint: node.props.endpoint ?? null,
     componentRef: node.props.ref ?? null,
     lazy: node.props.lazy === true,
+    maxDepth: node.props.maxDepth ?? null,
     moveAction: node.props.moveAction ?? null,
     nodes: node.props.nodes,
     rememberState: node.props.rememberState,
@@ -528,6 +571,15 @@ const TreeComponent: RendererComponent<"tree"> = ({ node }) => {
     storageKey: `lattice:tree:${identity ?? "default"}`,
   });
   const roots = value.childrenFor(ROOTS_KEY) ?? [];
+  const { reload } = value;
+
+  useWindowEvent(LATTICE_EVENT.reloadComponent, (event) => {
+    const detail = (event as ReloadComponentEvent).detail;
+
+    if (identity !== undefined && detail?.component === identity) {
+      reload();
+    }
+  });
 
   return (
     <TreeContext.Provider value={value}>

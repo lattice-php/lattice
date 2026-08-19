@@ -10,14 +10,19 @@
             ],
             "endpoint": null,
             "lazy": false,
+            "maxDepth": null,
             "moveAction": null,
             "nodes": [
                 {
+                    "acceptsChildren": true,
                     "children": [
                         {
+                            "acceptsChildren": true,
                             "children": [
                                 {
+                                    "acceptsChildren": true,
                                     "children": [],
+                                    "class": null,
                                     "disabled": false,
                                     "hasChildren": false,
                                     "href": null,
@@ -37,7 +42,9 @@
                                     ]
                                 },
                                 {
+                                    "acceptsChildren": true,
                                     "children": [],
+                                    "class": null,
                                     "disabled": false,
                                     "hasChildren": false,
                                     "href": null,
@@ -57,6 +64,7 @@
                                     ]
                                 }
                             ],
+                            "class": null,
                             "disabled": false,
                             "hasChildren": false,
                             "href": null,
@@ -76,7 +84,9 @@
                             ]
                         },
                         {
+                            "acceptsChildren": true,
                             "children": [],
+                            "class": null,
                             "disabled": false,
                             "hasChildren": false,
                             "href": null,
@@ -96,6 +106,7 @@
                             ]
                         }
                     ],
+                    "class": null,
                     "disabled": false,
                     "hasChildren": false,
                     "href": null,
@@ -126,7 +137,9 @@
                     ]
                 },
                 {
+                    "acceptsChildren": true,
                     "children": [],
+                    "class": null,
                     "disabled": false,
                     "hasChildren": false,
                     "href": null,
