@@ -8,51 +8,60 @@ var u = Object.defineProperty, d = Object.getOwnPropertyDescriptor, f = Object.g
 	} catch (e) {
 		throw n = [e], e;
 	}
-}, h = (e, t) => {
+}, ee = (e, t) => {
 	let n = {};
 	for (var r in e) u(n, r, {
 		get: e[r],
 		enumerable: !0
 	});
 	return t || u(n, Symbol.toStringTag, { value: "Module" }), n;
-}, g = (e, t, n, r) => {
+}, h = (e, t, n, r) => {
 	if (t && typeof t == "object" || typeof t == "function") for (var i = f(t), a = 0, o = i.length, s; a < o; a++) s = i[a], !p.call(e, s) && s !== n && u(e, s, {
 		get: ((e) => t[e]).bind(null, s),
 		enumerable: !(r = d(t, s)) || r.enumerable
 	});
 	return e;
-}, _ = (e, t, n) => (g(e, t, "default"), n && g(n, t, "default")), v = /* @__PURE__ */ h({});
-import * as y from "@lattice-php/lattice/runtime";
-_(v, y);
-var b = m((() => {}));
+}, g = (e, t, n) => (h(e, t, "default"), n && h(n, t, "default")), _ = /* @__PURE__ */ ee({});
+import * as v from "@lattice-php/lattice/runtime";
+g(_, v);
+var y = m((() => {}));
 //#endregion
 //#region resources/js/tree-context.tsx
-function x(e, t, n) {
+function b(e, t, n) {
 	e.children.set(t, n.map((e) => e.id)), e.loaded.add(t);
 	for (let r of n) e.nodes.set(r.id, {
 		...r,
 		children: []
-	}), e.parents.set(r.id, t === "" ? null : t), r.children.length > 0 && x(e, r.id, r.children);
+	}), e.parents.set(r.id, t === "" ? null : t), r.children.length > 0 && b(e, r.id, r.children);
 }
-function ee(e, t) {
+function te(e, t) {
 	let n = {
 		children: /* @__PURE__ */ new Map(),
 		loaded: /* @__PURE__ */ new Set(),
 		nodes: /* @__PURE__ */ new Map(),
 		parents: /* @__PURE__ */ new Map()
 	};
-	return x(n, "", e), t || n.loaded.delete(""), n;
+	return b(n, "", e), t || n.loaded.delete(""), n;
 }
-function te(e, t, n) {
+function ne(e, t, n) {
 	let r = {
 		children: new Map(e.children),
 		loaded: new Set(e.loaded),
 		nodes: new Map(e.nodes),
 		parents: new Map(e.parents)
 	};
-	return x(r, t, n), r;
+	return b(r, t, n), r;
 }
-function S(e, t, n) {
+function re(e, t) {
+	let n = 1, r = e.parents.get(t);
+	for (; r != null;) n += 1, r = e.parents.get(r);
+	return n;
+}
+function x(e, t) {
+	let n = e.children.get(t);
+	return n === void 0 ? e.nodes.get(t)?.hasChildren === !0 ? 2 : 1 : n.length === 0 ? 1 : 1 + Math.max(...n.map((t) => x(e, t)));
+}
+function ie(e, t, n) {
 	let r = e.parents.get(n);
 	for (; r != null;) {
 		if (r === t) return !0;
@@ -60,9 +69,9 @@ function S(e, t, n) {
 	}
 	return !1;
 }
-function ne(e, t) {
+function S(e, t) {
 	let n = e.nodes.get(t.nodeId), r = t.parentId === null ? null : e.nodes.get(t.parentId);
-	if (!n || n.disabled === !0 || t.parentId !== null && !r || r?.disabled === !0 || t.nodeId === t.parentId || t.parentId !== null && S(e, t.nodeId, t.parentId)) return null;
+	if (!n || n.disabled === !0 || t.parentId !== null && !r || r?.disabled === !0 || t.nodeId === t.parentId || t.parentId !== null && ie(e, t.nodeId, t.parentId)) return null;
 	let i = e.parents.get(t.nodeId) ?? null, a = i ?? "", o = t.parentId ?? "", s = e.children.get(a) ?? [], c = s.indexOf(t.nodeId);
 	if (c === -1) return null;
 	let l = {
@@ -79,7 +88,7 @@ function ne(e, t) {
 		hasChildren: !0
 	}), l);
 }
-function C(e) {
+function ae(e) {
 	let t = e, n = /* @__PURE__ */ new Set();
 	return {
 		getState: () => t,
@@ -94,7 +103,7 @@ function C(e) {
 		})
 	};
 }
-function re() {
+function C() {
 	return n(k);
 }
 function w(e) {
@@ -107,7 +116,7 @@ function T(e) {
 }
 async function E(e, t, n) {
 	let r = e.props.endpoint;
-	return !r || (0, v.runAction)(() => (0, v.apiFetch)(r, {
+	return !r || (0, _.runAction)(() => (0, _.apiFetch)(r, {
 		body: JSON.stringify(t),
 		headers: { "Content-Type": "application/json" },
 		method: e.props.method ?? "post",
@@ -115,59 +124,59 @@ async function E(e, t, n) {
 		throwOnError: !1
 	}), n);
 }
-function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, componentRef: u, lazy: d, nodes: f, moveAction: p, rememberState: m, revision: h, selectAction: g, storageKey: _ }) {
-	let [y, b] = (0, v.usePersistentState)(_, () => new Set(c), {
-		enabled: m,
+function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, componentRef: u, lazy: d, maxDepth: f, nodes: p, moveAction: m, rememberState: ee, revision: h, selectAction: g, storageKey: v }) {
+	let [y, b] = (0, _.usePersistentState)(v, () => new Set(c), {
+		enabled: ee,
 		parse: w,
 		serialize: (e) => JSON.stringify([...e])
-	}), [x, re] = o(() => f[0]?.id ?? null), [D, O] = o(/* @__PURE__ */ new Set()), [k] = o(() => C({
+	}), [C, D] = o(() => p[0]?.id ?? null), [O, k] = o(/* @__PURE__ */ new Set()), [A] = o(() => ae({
 		activeId: e,
-		graph: ee(f, !(d && f.length === 0)),
+		graph: te(p, !(d && p.length === 0)),
 		moving: !1
-	})), { activeId: j, graph: M, moving: ie } = s(k.subscribe, k.getState), N = a(/* @__PURE__ */ new Map()), P = a({
+	})), { activeId: j, graph: M, moving: N } = s(A.subscribe, A.getState), P = a(/* @__PURE__ */ new Map()), F = a({
 		text: "",
 		timestamp: 0
-	}), F = a(/* @__PURE__ */ new Map()), I = a(0), L = a(null), R = a(0), z = a({
-		nodes: f,
+	}), I = a(/* @__PURE__ */ new Map()), L = a(0), R = a(null), z = a(0), B = a({
+		nodes: p,
 		revision: h
-	}), B = (0, v.useEffectDispatcher)(), V = l !== null && l !== "", ae = p !== null;
+	}), V = (0, _.useEffectDispatcher)(), H = l !== null && l !== "", se = m !== null;
 	r(() => {
-		R.current += 1, k.setState({ activeId: e });
-	}, [e, k]), r(() => {
-		(z.current.nodes !== f || z.current.revision !== h) && (z.current = {
-			nodes: f,
+		z.current += 1, A.setState({ activeId: e });
+	}, [e, A]), r(() => {
+		(B.current.nodes !== p || B.current.revision !== h) && (B.current = {
+			nodes: p,
 			revision: h
-		}, I.current += 1, F.current.clear(), k.setState({ graph: ee(f, !(d && f.length === 0)) }), O(/* @__PURE__ */ new Set()));
+		}, L.current += 1, I.current.clear(), A.setState({ graph: te(p, !(d && p.length === 0)) }), k(/* @__PURE__ */ new Set()));
 	}, [
 		d,
-		f,
+		p,
 		h,
-		k
+		A
 	]);
-	let H = t((e) => {
+	let U = t((e) => {
 		b((t) => {
 			let n = new Set(t);
 			return n.has(e) ? n.delete(e) : n.add(e), n;
 		});
-	}, [b]), U = t((e) => b((t) => new Set(t).add(e)), [b]), W = t((e) => {
-		let t = k.getState().activeId, n = ++R.current;
-		k.setState({ activeId: e }), g && E(g, { nodeId: e }, B).then((e) => {
-			!e && R.current === n && k.setState({ activeId: t });
+	}, [b]), W = t((e) => b((t) => new Set(t).add(e)), [b]), G = t((e) => {
+		let t = A.getState().activeId, n = ++z.current;
+		A.setState({ activeId: e }), g && E(g, { nodeId: e }, V).then((e) => {
+			!e && z.current === n && A.setState({ activeId: t });
 		});
 	}, [
-		B,
+		V,
 		g,
-		k
-	]), G = t((e) => {
-		re(e);
-		let t = [...N.current.values()].find((t) => t.id === e);
-		t?.ref.current ? (L.current = null, t.ref.current.focus()) : L.current = e;
-	}, []), K = t((e) => {
-		N.current.set(e.path, e), L.current === e.id && (L.current = null, e.ref.current?.focus());
-	}, []), q = t((e) => {
-		N.current.delete(e);
-	}, []), oe = t((e, t) => {
-		let n = T(N.current);
+		A
+	]), K = t((e) => {
+		D(e);
+		let t = [...P.current.values()].find((t) => t.id === e);
+		t?.ref.current ? (R.current = null, t.ref.current.focus()) : R.current = e;
+	}, []), ce = t((e) => {
+		P.current.set(e.path, e), R.current === e.id && (R.current = null, e.ref.current?.focus());
+	}, []), le = t((e) => {
+		P.current.delete(e);
+	}, []), q = t((e, t) => {
+		let n = T(P.current);
 		if (n.length === 0) return;
 		let r = n.findIndex((t) => t.id === e), i = r === -1 ? void 0 : n[r], a;
 		switch (t) {
@@ -188,12 +197,12 @@ function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compon
 				break;
 			case "firstChild": a = i ? n.find((e) => e.parentPath === i.path) : void 0;
 		}
-		a && G(a.id);
-	}, [G]), J = t((e, t) => {
-		let n = T(N.current);
+		a && K(a.id);
+	}, [K]), J = t((e, t) => {
+		let n = T(P.current);
 		if (n.length === 0) return;
-		let r = Date.now(), i = P.current, a = r - i.timestamp > A ? t : i.text + t;
-		P.current = {
+		let r = Date.now(), i = F.current, a = r - i.timestamp > oe ? t : i.text + t;
+		F.current = {
 			text: a,
 			timestamp: r
 		};
@@ -201,59 +210,75 @@ function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compon
 		for (let e = 1; e <= n.length; e++) {
 			let t = n[(c + e) % n.length];
 			if (t.label.toLowerCase().startsWith(o)) {
-				G(t.id);
+				K(t.id);
 				return;
 			}
 		}
-	}, [G]), Y = t((e) => {
-		if (!V || k.getState().graph.loaded.has(e)) return Promise.resolve();
-		let t = F.current.get(e);
+	}, [K]), Y = t((e) => {
+		if (!H || A.getState().graph.loaded.has(e)) return Promise.resolve();
+		let t = I.current.get(e);
 		if (t) return t;
-		let n = I.current;
-		O((t) => new Set(t).add(e));
-		let r = (0, v.apiJson)(`${l}?parent=${encodeURIComponent(e)}`, { ref: u ?? "" }).then(({ nodes: t }) => {
-			n === I.current && k.setState({ graph: te(k.getState().graph, e, t) });
+		let n = L.current;
+		k((t) => new Set(t).add(e));
+		let r = (0, _.apiJson)(`${l}?parent=${encodeURIComponent(e)}`, { ref: u ?? "" }).then(({ nodes: t }) => {
+			n === L.current && A.setState({ graph: ne(A.getState().graph, e, t) });
 		}).catch(() => {
-			n === I.current && b((t) => {
+			n === L.current && b((t) => {
 				let n = new Set(t);
 				return n.delete(e), n;
 			});
 		}).finally(() => {
-			n === I.current && (F.current.delete(e), O((t) => {
+			n === L.current && (I.current.delete(e), k((t) => {
 				let n = new Set(t);
 				return n.delete(e), n;
 			}));
 		});
-		return F.current.set(e, r), r;
+		return I.current.set(e, r), r;
 	}, [
-		V,
+		H,
 		u,
 		l,
 		b,
-		k
-	]), X = t((e) => M.children.get(e)?.map((e) => M.nodes.get(e)), [M]), se = t((e) => k.getState().graph.children.get(e ?? "")?.length ?? 0, [k]), Z = t((e) => k.getState().graph.parents.get(e) ?? null, [k]), Q = t((e) => {
-		let t = k.getState().graph, n = t.parents.get(e) ?? null;
+		A
+	]), ue = t((e) => M.children.get(e)?.map((e) => M.nodes.get(e)), [M]), X = t((e) => A.getState().graph.children.get(e ?? "")?.length ?? 0, [A]), Z = t((e) => A.getState().graph.parents.get(e) ?? null, [A]), Q = t((e) => {
+		let t = A.getState().graph, n = t.parents.get(e) ?? null;
 		return t.children.get(n ?? "")?.indexOf(e) ?? -1;
-	}, [k]), $ = t((e, t) => {
-		let n = k.getState().graph, r = n.nodes.get(e), i = n.nodes.get(t);
-		return !!(r && i && r.disabled !== !0 && i.disabled !== !0 && e !== t && !S(n, e, t));
-	}, [k]), ce = t(async (e) => {
-		if (!p || k.getState().moving) return !1;
-		let t = k.getState().graph, n = ne(t, e);
+	}, [A]), de = t((e, t) => {
+		let n = A.getState().graph, r = n.nodes.get(e), i = n.nodes.get(t);
+		return !!(r && i && r.disabled !== !0 && i.disabled !== !0 && e !== t && !ie(n, e, t));
+	}, [A]), $ = t((e, t) => {
+		let n = A.getState().graph;
+		return t === (n.parents.get(e) ?? null) ? !0 : t !== null && n.nodes.get(t)?.acceptsChildren === !1 ? !1 : f === null || (t === null ? 0 : re(n, t)) + x(n, e) <= f;
+	}, [f, A]), fe = t(async (e) => {
+		if (!m || A.getState().moving || !$(e.nodeId, e.parentId)) return !1;
+		let t = A.getState().graph, n = S(t, e);
 		if (!n) return !1;
-		let r = I.current;
-		k.setState({
+		let r = L.current;
+		A.setState({
 			graph: n,
 			moving: !0
-		}), G(e.nodeId);
-		let i = await E(p, e, B);
-		return !i && r === I.current && (k.setState({ graph: t }), G(e.nodeId)), k.setState({ moving: !1 }), i;
+		}), K(e.nodeId);
+		let i = await E(m, e, V);
+		return !i && r === L.current && (A.setState({ graph: t }), K(e.nodeId)), A.setState({ moving: !1 }), i;
 	}, [
-		B,
-		G,
-		p,
-		k
-	]), le = t((e) => D.has(e), [D]), ue = t((e) => k.getState().graph.loaded.has(e), [k]);
+		$,
+		V,
+		K,
+		m,
+		A
+	]), pe = t(() => {
+		if (!H) return;
+		L.current += 1;
+		let e = L.current;
+		I.current.clear(), k(/* @__PURE__ */ new Set()), (0, _.apiJson)(`${l}?parent=`, { ref: u ?? "" }).then(({ nodes: t }) => {
+			e === L.current && A.setState({ graph: te(t, !0) });
+		}).catch(() => {});
+	}, [
+		H,
+		u,
+		l,
+		A
+	]), me = t((e) => O.has(e), [O]), he = t((e) => A.getState().graph.loaded.has(e), [A]);
 	r(() => {
 		d && !M.loaded.has("") && Y("");
 	}, [
@@ -261,82 +286,87 @@ function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compon
 		d,
 		Y
 	]);
-	let de = M.children.get("")?.[0];
+	let ge = M.children.get("")?.[0];
 	return r(() => {
-		x === null && de !== void 0 && re(de);
-	}, [x, de]), r(() => {
+		C === null && ge !== void 0 && D(ge);
+	}, [C, ge]), r(() => {
 		if (!e || !n) return;
 		let t = !1;
 		return (async () => {
 			b((e) => /* @__PURE__ */ new Set([...e, ...n]));
 			for (let e of n) if (await Y(e), t) return;
-			G(e);
+			K(e);
 		})(), () => {
 			t = !0;
 		};
 	}, [
 		n,
 		e,
-		G,
+		K,
 		Y,
 		b
 	]), i(() => ({
-		activate: W,
+		activate: G,
 		activeId: j,
-		canDropOn: $,
-		canLoad: V,
-		canMove: ae,
-		childrenCount: se,
-		childrenFor: X,
-		expand: U,
+		canDropOn: de,
+		canLoad: H,
+		canMove: se,
+		canPlace: $,
+		childrenCount: X,
+		childrenFor: ue,
+		expand: W,
 		expanded: y,
-		focus: G,
-		focusedId: x,
-		isLoaded: ue,
-		isLoading: le,
+		focus: K,
+		focusedId: C,
+		isLoaded: he,
+		isLoading: me,
 		loadChildren: Y,
-		move: ce,
-		moveFocus: oe,
-		moving: ie,
+		move: fe,
+		moveFocus: q,
+		moving: N,
 		parentFor: Z,
 		positionFor: Q,
-		register: K,
-		toggle: H,
+		register: ce,
+		reload: pe,
+		toggle: U,
 		typeAhead: J,
-		unregister: q
+		unregister: le
 	}), [
-		W,
-		j,
-		$,
-		V,
-		ae,
-		se,
-		X,
-		U,
-		y,
 		G,
-		x,
+		j,
+		de,
+		H,
+		se,
+		$,
+		X,
 		ue,
-		le,
+		W,
+		y,
+		K,
+		C,
+		he,
+		me,
 		Y,
-		ce,
-		oe,
-		ie,
+		fe,
+		q,
+		N,
 		Z,
 		Q,
-		K,
-		H,
+		ce,
+		pe,
+		U,
 		J,
-		q
+		le
 	]);
 }
-var O, k, A, j = m((() => {
-	b(), O = {
+var O, k, oe, A = m((() => {
+	y(), O = {
 		activate: () => {},
 		activeId: null,
 		canDropOn: () => !1,
 		canLoad: !1,
 		canMove: !1,
+		canPlace: () => !1,
 		childrenCount: () => 0,
 		childrenFor: () => void 0,
 		expand: () => {},
@@ -352,298 +382,317 @@ var O, k, A, j = m((() => {
 		parentFor: () => null,
 		positionFor: () => -1,
 		register: () => {},
+		reload: () => {},
 		toggle: () => {},
 		typeAhead: () => {},
 		unregister: () => {}
-	}, k = e(O), A = 800;
-})), M = /* @__PURE__ */ h({ default: () => R });
-function ie(e, t, n) {
+	}, k = e(O), oe = 800;
+})), j = /* @__PURE__ */ ee({ default: () => B });
+function M(e, t, n) {
 	return !!t?.length || e.hasChildren === !0 && (n || !!e.children?.length);
 }
 function N(e) {
-	return String(e).padStart(F, "0");
+	return e instanceof Element && e.closest(z) !== null;
 }
-function P({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, siblingCount: u, siblingIndex: d }) {
-	let { activate: f, activeId: p, canDropOn: m, canLoad: h, canMove: g, childrenCount: _, childrenFor: y, expand: b, expanded: x, focus: ee, focusedId: te, isLoaded: S, isLoading: ne, loadChildren: C, move: w, moveFocus: T, moving: E, parentFor: D, positionFor: O, register: k, toggle: A, typeAhead: j, unregister: M } = re(), { t: F } = (0, v.useT)("tree"), { visit: R } = (0, v.useNavigation)(), z = a(null), B = a(null), V = a(null), [ae, H] = o(!1), [U, W] = o(null), G = i ? `${i}/${t.id}` : t.id, K = x.has(t.id), q = p === t.id, oe = te === t.id, J = t.disabled === !0, Y = y(t.id), X = ie(t, Y, h), se = ne(t.id), Z = a(null);
+function P(e) {
+	return String(e).padStart(I, "0");
+}
+function F({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, siblingCount: u, siblingIndex: d }) {
+	let { activate: f, activeId: p, canDropOn: m, canLoad: ee, canMove: h, canPlace: g, childrenCount: v, childrenFor: y, expand: b, expanded: te, focus: ne, focusedId: re, isLoaded: x, isLoading: ie, loadChildren: S, move: ae, moveFocus: w, moving: T, parentFor: E, positionFor: D, register: O, toggle: k, typeAhead: oe, unregister: A } = C(), { t: j } = (0, _.useT)("tree"), { visit: I } = (0, _.useNavigation)(), z = a(null), B = a(null), V = a(null), [H, se] = o(!1), [U, W] = o(null), G = i ? `${i}/${t.id}` : t.id, K = te.has(t.id), ce = p === t.id, le = re === t.id, q = t.disabled === !0, J = y(t.id), Y = M(t, J, ee), ue = ie(t.id), X = a(null);
 	r(() => {
-		K && t.hasChildren === !0 && !Y && C(t.id);
+		K && t.hasChildren === !0 && !J && S(t.id);
 	}, [
 		K,
 		t,
-		Y,
-		C
-	]), r(() => (k({
+		J,
+		S
+	]), r(() => (O({
 		id: t.id,
 		label: t.label,
 		orderPath: n,
 		parentPath: i,
 		path: G,
 		ref: z
-	}), () => M(G)), [
+	}), () => A(G)), [
 		t.id,
 		t.label,
 		n,
 		i,
 		G,
-		k,
-		M
+		O,
+		A
 	]), r(() => {
-		let e = Z.current;
+		let e = X.current;
 		e && e.querySelectorAll("button, a[href], [tabindex]").forEach((e) => {
 			e.tabIndex = -1;
 		});
 	}, [t.schema]);
-	function Q() {
+	function Z() {
 		V.current !== null && (clearTimeout(V.current), V.current = null);
 	}
-	function $(e, t, n) {
-		let r = D(t), i = O(t), a = +(D(e) === r && O(e) < i);
+	function Q(e, t, n) {
+		let r = E(t), i = D(t), a = +(E(e) === r && D(e) < i);
 		return i + +!!n - a;
 	}
-	async function ce(e, n) {
-		let r = e.nodeId, i = typeof e.label == "string" ? e.label : r, a = (0, v.extractTreeItemInstruction)(n);
+	async function de(e, n) {
+		let r = e.nodeId, i = typeof e.label == "string" ? e.label : r, a = (0, _.extractTreeItemInstruction)(n);
 		if (typeof r != "string" || typeof i != "string" || !a || a.type === "instruction-blocked") return;
 		let o = null;
 		if (a.type === "reorder-above" || a.type === "reorder-below") o = {
 			nodeId: r,
-			parentId: D(t.id),
-			position: $(r, t.id, a.type === "reorder-below")
+			parentId: E(t.id),
+			position: Q(r, t.id, a.type === "reorder-below")
 		};
 		else if (a.type === "make-child") {
-			if (t.hasChildren === !0 && !S(t.id) && (await C(t.id), !S(t.id))) return;
+			if (t.hasChildren === !0 && !x(t.id) && (await S(t.id), !x(t.id))) return;
 			b(t.id), o = {
 				nodeId: r,
 				parentId: t.id,
-				position: _(t.id)
+				position: v(t.id)
 			};
 		} else if (a.type === "reparent") {
 			let e = [...s, t.id], n = Math.max(0, Math.min(a.desiredLevel, e.length - 1)), i = e[n];
 			o = {
 				nodeId: r,
 				parentId: n === 0 ? null : e[n - 1],
-				position: $(r, i, !0)
+				position: Q(r, i, !0)
 			};
 		}
 		if (!o) return;
-		let c = await w(o);
-		(0, v.announce)(c ? F("tree.moved", "Moved {{label}}", { label: i }) : F("tree.move_failed", "Could not move {{label}}", { label: i }));
+		let c = await ae(o);
+		(0, _.announce)(c ? j("tree.moved", "Moved {{label}}", { label: i }) : j("tree.move_failed", "Could not move {{label}}", { label: i }));
 	}
 	r(() => {
 		let n = B.current;
-		if (!(!n || !g || J)) return (0, v.combine)((0, v.draggable)({
-			canDrag: () => !E,
+		if (!n || !h || q) return;
+		let r = (e) => {
+			let t = n.ownerDocument.activeElement;
+			(N(e.target) || n.contains(t) && N(t)) && e.preventDefault();
+		};
+		return n.addEventListener("dragstart", r, !0), (0, _.combine)(() => n.removeEventListener("dragstart", r, !0), (0, _.draggable)({
+			canDrag: () => !T,
 			element: n,
 			getInitialData: () => ({
 				label: t.label,
 				nodeId: t.id,
-				type: I
+				type: L
 			}),
-			onDragStart: () => H(!0),
-			onDrop: () => H(!1)
-		}), (0, v.dropTargetForElements)({
-			canDrop: ({ source: e }) => e.data.type === I && typeof e.data.nodeId == "string" && m(e.data.nodeId, t.id),
+			onDragStart: () => se(!0),
+			onDrop: () => se(!1)
+		}), (0, _.dropTargetForElements)({
+			canDrop: ({ source: e }) => e.data.type === L && typeof e.data.nodeId == "string" && m(e.data.nodeId, t.id),
 			element: n,
-			getData: ({ element: n, input: r }) => (0, v.attachTreeItemInstruction)({
-				nodeId: t.id,
-				type: I
-			}, {
-				currentLevel: e - 1,
-				element: n,
-				indentPerLevel: 24,
-				input: r,
-				mode: K ? "expanded" : d === u ? "last-in-group" : "standard"
-			}),
-			onDrag: ({ self: e }) => W((0, v.extractTreeItemInstruction)(e.data)?.type ?? null),
+			getData: ({ element: n, input: r, source: i }) => {
+				let a = typeof i.data.nodeId == "string" ? i.data.nodeId : null, o = [];
+				return a !== null && !g(a, t.id) && o.push("make-child"), a !== null && !g(a, E(t.id)) && o.push("reorder-above", "reorder-below"), (0, _.attachTreeItemInstruction)({
+					nodeId: t.id,
+					type: L
+				}, {
+					block: o,
+					currentLevel: e - 1,
+					element: n,
+					indentPerLevel: 24,
+					input: r,
+					mode: K ? "expanded" : d === u ? "last-in-group" : "standard"
+				});
+			},
+			onDrag: ({ self: e }) => W((0, _.extractTreeItemInstruction)(e.data)?.type ?? null),
 			onDragEnter: ({ self: e }) => {
-				W((0, v.extractTreeItemInstruction)(e.data)?.type ?? null), X && !K && (Q(), V.current = setTimeout(() => {
-					b(t.id), t.hasChildren === !0 && C(t.id);
-				}, L));
+				W((0, _.extractTreeItemInstruction)(e.data)?.type ?? null), Y && !K && (Z(), V.current = setTimeout(() => {
+					b(t.id), t.hasChildren === !0 && S(t.id);
+				}, R));
 			},
 			onDragLeave: () => {
-				Q(), W(null);
+				Z(), W(null);
 			},
 			onDrop: ({ self: e, source: t }) => {
-				Q(), W(null), ce(t.data, e.data);
+				Z(), W(null), de(t.data, e.data);
 			}
 		}));
 	}, [
 		s,
 		m,
+		h,
 		g,
-		_,
+		v,
 		e,
 		b,
-		X,
-		J,
+		Y,
+		q,
 		K,
+		x,
 		S,
-		C,
-		w,
-		E,
+		ae,
+		T,
 		t,
+		E,
 		D,
-		O,
 		u,
 		d,
-		F
-	]), r(() => Q, []);
-	async function le(e) {
-		let n = D(t.id), r = O(t.id), i = null;
+		j
+	]), r(() => Z, []);
+	async function $(e) {
+		let n = E(t.id), r = D(t.id), i = null;
 		if (e === "ArrowUp" && r > 0) i = {
 			nodeId: t.id,
 			parentId: n,
 			position: r - 1
 		};
-		else if (e === "ArrowDown" && r < _(n) - 1) i = {
+		else if (e === "ArrowDown" && r < v(n) - 1) i = {
 			nodeId: t.id,
 			parentId: n,
 			position: r + 1
 		};
 		else if (e === "ArrowRight" && r > 0) {
 			let e = y(n ?? "")?.[r - 1];
-			if (!e || e.disabled === !0 || e.hasChildren === !0 && !S(e.id) && (await C(e.id), !S(e.id))) return;
+			if (!e || e.disabled === !0 || !g(t.id, e.id) || e.hasChildren === !0 && !x(e.id) && (await S(e.id), !x(e.id))) return;
 			b(e.id), i = {
 				nodeId: t.id,
 				parentId: e.id,
-				position: _(e.id)
+				position: v(e.id)
 			};
 		} else if (e === "ArrowLeft" && n !== null) {
-			let e = D(n);
+			let e = E(n);
 			i = {
 				nodeId: t.id,
 				parentId: e,
-				position: O(n) + 1
+				position: D(n) + 1
 			};
 		}
 		if (!i) return;
-		let a = await w(i);
-		(0, v.announce)(a ? F("tree.moved", "Moved {{label}}", { label: t.label }) : F("tree.move_failed", "Could not move {{label}}", { label: t.label }));
+		let a = await ae(i);
+		(0, _.announce)(a ? j("tree.moved", "Moved {{label}}", { label: t.label }) : j("tree.move_failed", "Could not move {{label}}", { label: t.label }));
 	}
-	function ue(e) {
+	function fe(e) {
 		if (e.target === e.currentTarget) {
-			if (g && !J && !E && e.ctrlKey && e.shiftKey && [
+			if (h && !q && !T && e.ctrlKey && e.shiftKey && [
 				"ArrowUp",
 				"ArrowDown",
 				"ArrowLeft",
 				"ArrowRight"
 			].includes(e.key)) {
-				e.preventDefault(), le(e.key);
+				e.preventDefault(), $(e.key);
 				return;
 			}
 			switch (e.key) {
 				case "ArrowDown":
-					e.preventDefault(), T(t.id, "next");
+					e.preventDefault(), w(t.id, "next");
 					return;
 				case "ArrowUp":
-					e.preventDefault(), T(t.id, "prev");
+					e.preventDefault(), w(t.id, "prev");
 					return;
 				case "ArrowRight":
-					e.preventDefault(), X && !K ? A(t.id) : X && T(t.id, "firstChild");
+					e.preventDefault(), Y && !K ? k(t.id) : Y && w(t.id, "firstChild");
 					return;
 				case "ArrowLeft":
-					e.preventDefault(), X && K ? A(t.id) : T(t.id, "parent");
+					e.preventDefault(), Y && K ? k(t.id) : w(t.id, "parent");
 					return;
 				case "Home":
-					e.preventDefault(), T(t.id, "first");
+					e.preventDefault(), w(t.id, "first");
 					return;
 				case "End":
-					e.preventDefault(), T(t.id, "last");
+					e.preventDefault(), w(t.id, "last");
 					return;
 				case "Enter":
 				case " ":
-					if (e.preventDefault(), J) return;
-					if (t.href) R(t.href);
+					if (e.preventDefault(), q) return;
+					if (t.href) I(t.href);
 					else {
-						let e = Z.current?.querySelector("button");
+						let e = X.current?.querySelector("button");
 						e ? (e.click(), z.current?.focus()) : f(t.id);
 					}
 					return;
-				default: e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && j(t.id, e.key);
+				default: e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && oe(t.id, e.key);
 			}
 		}
 	}
-	function de(e) {
+	function pe(e) {
 		let n = e.target;
-		J || !(n instanceof Element) || n.closest("[role=\"treeitem\"]") !== e.currentTarget || n.closest("button, a[href], [role=\"button\"]") || (ee(t.id), f(t.id));
+		q || !(n instanceof Element) || n.closest("[role=\"treeitem\"]") !== e.currentTarget || n.closest("button, a[href], [role=\"button\"]") || N(n) || (ne(t.id), f(t.id));
 	}
 	return /* @__PURE__ */ l("li", {
-		"aria-disabled": J,
-		"aria-expanded": X ? K : void 0,
+		"aria-disabled": q,
+		"aria-expanded": Y ? K : void 0,
 		"aria-label": t.label,
 		"aria-level": e,
-		"aria-keyshortcuts": g && !J ? "Control+Shift+ArrowUp Control+Shift+ArrowDown Control+Shift+ArrowLeft Control+Shift+ArrowRight" : void 0,
+		"aria-keyshortcuts": h && !q ? "Control+Shift+ArrowUp Control+Shift+ArrowDown Control+Shift+ArrowLeft Control+Shift+ArrowRight" : void 0,
 		"aria-posinset": d,
-		"aria-selected": q,
+		"aria-selected": ce,
 		"aria-setsize": u,
+		className: (0, _.cn)(t.class) || void 0,
 		"data-test": `tree-node-${t.id}`,
-		onClick: de,
-		onKeyDown: ue,
+		onClick: pe,
+		onKeyDown: fe,
 		ref: z,
 		role: "treeitem",
-		tabIndex: oe ? 0 : -1,
+		tabIndex: le ? 0 : -1,
 		children: [/* @__PURE__ */ l("div", {
-			className: (0, v.cn)("flex items-center gap-2 rounded-lt-sm border-y border-transparent px-2 py-1.5 text-sm text-lt-fg", q && "bg-lt-muted font-medium", J && "pointer-events-none opacity-50", g && !J && "cursor-grab", ae && "opacity-50", U === "reorder-above" && "border-t-lt-primary", U === "reorder-below" && "border-b-lt-primary", (U === "make-child" || U === "reparent") && "ring-1 ring-lt-primary"),
+			className: (0, _.cn)("flex items-center gap-2 rounded-lt-sm border-y border-transparent px-2 py-1.5 text-sm text-lt-fg", ce && "bg-lt-muted font-medium", q && "pointer-events-none opacity-50", h && !q && "cursor-grab", H && "opacity-50", U === "reorder-above" && "border-t-lt-primary", U === "reorder-below" && "border-b-lt-primary", (U === "make-child" || U === "reparent") && "ring-1 ring-lt-primary", U === "instruction-blocked" && "ring-1 ring-lt-danger/50"),
 			"data-drop-instruction": U ?? void 0,
 			ref: B,
-			children: [X ? /* @__PURE__ */ c("button", {
-				"aria-label": K ? F("tree.collapse", "Collapse {{label}}", { label: t.label }) : F("tree.expand", "Expand {{label}}", { label: t.label }),
+			children: [Y ? /* @__PURE__ */ c("button", {
+				"aria-label": K ? j("tree.collapse", "Collapse {{label}}", { label: t.label }) : j("tree.expand", "Expand {{label}}", { label: t.label }),
 				"data-test": `tree-node-${t.id}-toggle`,
-				onClick: () => A(t.id),
+				onClick: () => k(t.id),
 				tabIndex: -1,
 				type: "button",
-				children: se ? /* @__PURE__ */ c(v.Icon, {
+				children: ue ? /* @__PURE__ */ c(_.Icon, {
 					className: "size-lt-icon-md shrink-0 animate-spin",
 					name: "loader-2"
-				}) : /* @__PURE__ */ c(v.Icon, {
-					className: (0, v.cn)("size-lt-icon-md shrink-0 transition-transform", K && "rotate-90"),
+				}) : /* @__PURE__ */ c(_.Icon, {
+					className: (0, _.cn)("size-lt-icon-md shrink-0 transition-transform", K && "rotate-90"),
 					name: "chevron-right"
 				})
 			}) : null, /* @__PURE__ */ c("span", {
 				className: "flex min-w-0 flex-1 items-center gap-2",
-				ref: Z,
-				children: /* @__PURE__ */ c(v.Renderer, { nodes: t.schema })
+				ref: X,
+				children: /* @__PURE__ */ c(_.Renderer, { nodes: t.schema })
 			})]
-		}), X && K && Y && Y.length > 0 ? /* @__PURE__ */ c("ul", {
+		}), Y && K && J && J.length > 0 ? /* @__PURE__ */ c("ul", {
 			className: "pl-6",
 			role: "group",
-			children: Y.map((r, i) => /* @__PURE__ */ c(P, {
+			children: J.map((r, i) => /* @__PURE__ */ c(F, {
 				depth: e + 1,
 				ancestors: [...s, t.id],
 				node: r,
-				orderPath: `${n}.${N(i)}`,
+				orderPath: `${n}.${P(i)}`,
 				parentPath: G,
-				siblingCount: Y.length,
+				siblingCount: J.length,
 				siblingIndex: i + 1
 			}, r.id))
 		}) : null]
 	});
 }
-var F, I, L, R, z = m((() => {
-	b(), j(), F = 6, I = "lattice-tree-node", L = 500, R = ({ node: e }) => {
-		let t = (0, v.nodeIdentity)(e), n = D({
+var I, L, R, z, B, V = m((() => {
+	y(), A(), I = 6, L = "lattice-tree-node", R = 500, z = "input, textarea, select, label, [contenteditable]", B = ({ node: e }) => {
+		let t = (0, _.nodeIdentity)(e), n = D({
 			activeId: e.props.activeId,
 			activePath: e.props.activePath,
 			defaultExpanded: e.props.defaultExpanded,
 			endpoint: e.props.endpoint ?? null,
 			componentRef: e.props.ref ?? null,
 			lazy: e.props.lazy === !0,
+			maxDepth: e.props.maxDepth ?? null,
 			moveAction: e.props.moveAction ?? null,
 			nodes: e.props.nodes,
 			rememberState: e.props.rememberState,
 			revision: e.props.revision ?? null,
 			selectAction: e.props.selectAction ?? null,
 			storageKey: `lattice:tree:${t ?? "default"}`
-		}), r = n.childrenFor("") ?? [];
-		return /* @__PURE__ */ c(k.Provider, {
+		}), r = n.childrenFor("") ?? [], { reload: i } = n;
+		return (0, _.useWindowEvent)(_.LATTICE_EVENT.reloadComponent, (e) => {
+			let n = e.detail;
+			t !== void 0 && n?.component === t && i();
+		}), /* @__PURE__ */ c(k.Provider, {
 			value: n,
 			children: /* @__PURE__ */ c("ul", {
 				"data-lattice-component": t,
 				role: "tree",
-				children: r.map((e, t) => /* @__PURE__ */ c(P, {
+				children: r.map((e, t) => /* @__PURE__ */ c(F, {
 					ancestors: [],
 					depth: 1,
 					node: e,
-					orderPath: N(t),
+					orderPath: P(t),
 					parentPath: null,
 					siblingCount: r.length,
 					siblingIndex: t + 1
@@ -654,11 +703,11 @@ var F, I, L, R, z = m((() => {
 }));
 //#endregion
 //#region resources/js/plugin.ts
-b();
-var B = {
+y();
+var H = {
 	name: "lattice/tree",
-	components: { tree: (0, v.lazyComponent)(() => Promise.resolve().then(() => (z(), M))) },
+	components: { tree: (0, _.lazyComponent)(() => Promise.resolve().then(() => (V(), j))) },
 	i18n: { namespace: "tree" }
 };
 //#endregion
-export { B as default };
+export { H as default };
