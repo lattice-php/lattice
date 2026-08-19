@@ -19,6 +19,7 @@ export type Tree = {
 };
 export type TreeNodeData = {
   readonly children: TreeNodeData[];
+  readonly class: string | null;
   readonly disabled: boolean;
   readonly hasChildren: boolean;
   readonly href: string | null;

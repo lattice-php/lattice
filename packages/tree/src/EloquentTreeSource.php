@@ -99,7 +99,12 @@ final class EloquentTreeSource implements TreeSource
         return $this;
     }
 
-    /** @param Closure(TModel, TreeNode): TreeNode $mapper */
+    /**
+     * Decorate each node from its model with any {@see TreeNode} builder
+     * method, including the `->class()` styling hook.
+     *
+     * @param  Closure(TModel, TreeNode): TreeNode  $mapper
+     */
     public function map(Closure $mapper): static
     {
         $this->mapper = $mapper;

@@ -18,6 +18,7 @@ final readonly class TreeNodeData
         public string $label,
         public array $schema,
         public ?string $href,
+        public ?string $class,
         public bool $disabled,
         public bool $hasChildren,
         public array $children,

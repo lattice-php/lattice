@@ -51,6 +51,11 @@ Nodes compile their conveniences (`->icon()`, `->badge()`, `->href()`, `->action
 into a canonical body schema of core components — an icon, a text-or-link label, a badge, and an
 end-floated action stack. `->badge($label, $color)` accepts any Lattice color.
 
+`->class()` adds classes to the node's `<li>` element — the wrapper around both the row and its
+children group — so styling a parent together with its subtree (a frame around a section and its
+lines, say) needs no `:has()` selectors against the tree's internal markup. The array shorthand
+accepts it as a `class` key.
+
 ### Custom node content
 
 For content the conveniences do not cover, `->schema()` replaces the composed body outright:
@@ -76,6 +81,15 @@ its body, so a custom schema should put its primary action's button first — or
 receive Enter.
 :::
 
+### Form controls in a node body
+
+Interactive form controls (`input`, `textarea`, `select`, contenteditable regions, and their
+labels) are first-class inside `->schema()`: clicks, keystrokes, and drag gestures that originate
+in a control stay with the control instead of driving the tree. Clicking into an inline input does
+not select the node or steal its focus, typing does not trigger typeahead or `Ctrl+Shift+Arrow`
+moves, and selecting text inside it does not start a node drag. Controls also keep their natural
+tab stop — only buttons and links in a node body are removed from the page tab order.
+
 ### Eloquent sources
 
 Back a tree with an Eloquent adjacency list (a self-referencing `parent_id` column):
@@ -95,8 +109,8 @@ Tree::make('categories')->source(
 
 `->orderBy()` orders roots and every sibling group by that column, followed by the label and ID
 for deterministic ties. Without it, label and ID remain the default ordering. The single
-`->map()` callback receives the model and its base `TreeNode`, and applies equally to eager and
-lazy results.
+`->map()` callback receives the model and its base `TreeNode`, applies equally to eager and
+lazy results, and may use any builder method — including `->class()` and `->schema()`.
 
 Any other backing store implements the two-method `Lattice\Tree\TreeSource` contract.
 

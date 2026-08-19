@@ -18,6 +18,7 @@ it('produces a dense TreeNodeData with a default text schema', function (): void
         ->and($data->schema[0]->jsonSerialize()['type'])->toBe('text')
         ->and($data->schema[0]->jsonSerialize()['props']['text'])->toBe('Docs')
         ->and($data->href)->toBeNull()
+        ->and($data->class)->toBeNull()
         ->and($data->disabled)->toBeFalse()
         ->and($data->hasChildren)->toBeFalse()
         ->and($data->children)->toBe([]);
@@ -88,6 +89,18 @@ it('normalizes array-form children into TreeNode instances', function (): void {
 
     expect($node->children)->toHaveCount(2)
         ->and($node->children[1]->data([], false)->schema[0]->jsonSerialize()['type'])->toBe('icon');
+});
+
+it('carries the class styling hook into TreeNodeData', function (): void {
+    expect(TreeNode::make('n1', 'Docs')->class('rounded border')->data([], false)->class)
+        ->toBe('rounded border');
+});
+
+it('accepts the class hook in the array shorthand', function (): void {
+    $nodes = TreeNode::expand([['id' => '1', 'label' => 'A', 'class' => 'highlight']]);
+
+    expect($nodes[0]->class)->toBe('highlight')
+        ->and($nodes[0]->data([], false)->class)->toBe('highlight');
 });
 
 it('marks a lazy boundary via the hasChildren flag without inline children', function (): void {

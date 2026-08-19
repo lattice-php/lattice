@@ -18,6 +18,7 @@
                             "children": [
                                 {
                                     "children": [],
+                                    "class": null,
                                     "disabled": false,
                                     "hasChildren": false,
                                     "href": null,
@@ -38,6 +39,7 @@
                                 },
                                 {
                                     "children": [],
+                                    "class": null,
                                     "disabled": false,
                                     "hasChildren": false,
                                     "href": null,
@@ -57,6 +59,7 @@
                                     ]
                                 }
                             ],
+                            "class": null,
                             "disabled": false,
                             "hasChildren": false,
                             "href": null,
@@ -77,6 +80,7 @@
                         },
                         {
                             "children": [],
+                            "class": null,
                             "disabled": false,
                             "hasChildren": false,
                             "href": null,
@@ -96,6 +100,7 @@
                             ]
                         }
                     ],
+                    "class": null,
                     "disabled": false,
                     "hasChildren": false,
                     "href": null,
@@ -127,6 +132,7 @@
                 },
                 {
                     "children": [],
+                    "class": null,
                     "disabled": false,
                     "hasChildren": false,
                     "href": null,

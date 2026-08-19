@@ -46,6 +46,7 @@ export function treeNode(
     label,
     schema: [{ props: { text: label }, type: "test.text" }],
     href: null,
+    class: null,
     disabled: false,
     hasChildren: false,
     children: [],
@@ -62,6 +63,10 @@ export const TestAction: RendererComponent = ({ node }) => (
   </button>
 );
 
+export const TestInput: RendererComponent = ({ node }) => (
+  <input aria-label={String(node.props?.label ?? "Amount")} type="text" />
+);
+
 export const TestLink: RendererComponent = ({ node }) => (
   <a href={String(node.props?.href ?? "#")} onClick={(event) => event.preventDefault()}>
     {String(node.props?.label ?? "")}
@@ -75,6 +80,7 @@ export const TestLink: RendererComponent = ({ node }) => (
 export const testRegistry = createRegistry({
   components: {
     "test.action": eagerComponent(TestAction),
+    "test.input": eagerComponent(TestInput),
     "test.link": eagerComponent(TestLink),
     "test.text": eagerComponent(TestText),
     tree: eagerComponent(TreeComponent),
@@ -110,4 +116,18 @@ export const sampleNodes: TreeNodeData[] = [
     children: [treeNode("2", "Laptops", { href: "/c/2" }), treeNode("3", "Phones")],
   }),
   treeNode("9", "Suppliers", { hasChildren: true }),
+];
+
+/**
+ * A root whose body renders an inline form control, next to a sibling a
+ * typeahead or move would otherwise target.
+ */
+export const inlineInputNodes: TreeNodeData[] = [
+  treeNode("edit", "Editable", {
+    schema: [
+      { props: { text: "Editable" }, type: "test.text" },
+      { props: { label: "Quantity" }, type: "test.input" },
+    ],
+  }),
+  treeNode("9", "Suppliers"),
 ];

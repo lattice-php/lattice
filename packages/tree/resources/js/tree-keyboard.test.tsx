@@ -2,6 +2,7 @@ import { act, fireEvent, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   actionClicks,
+  inlineInputNodes,
   moveAction,
   renderTree,
   sampleNodes as nodes,
@@ -347,6 +348,42 @@ describe("Tree keyboard navigation", () => {
       parentId: null,
       position: 1,
     });
+  });
+
+  it("leaves typed characters to an inline form control instead of typeahead", () => {
+    renderTree({ nodes: inlineInputNodes });
+    const input = screen.getByRole("textbox", { name: "Quantity" });
+    input.focus();
+
+    fireEvent.keyDown(input, { key: "s" });
+
+    expect(input).toHaveFocus();
+    expect(item("9")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("leaves arrow keys inside an inline form control to the control", () => {
+    renderTree({ nodes: inlineInputNodes });
+    const input = screen.getByRole("textbox", { name: "Quantity" });
+    input.focus();
+
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+
+    expect(input).toHaveFocus();
+    expect(item("9")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("does not move the node when Ctrl Shift Arrow originates from an inline form control", () => {
+    const fetchMock = stubMoveFetch();
+    renderTree({ moveAction, nodes: inlineInputNodes });
+    const input = screen.getByRole("textbox", { name: "Quantity" });
+    input.focus();
+
+    fireEvent.keyDown(input, { ctrlKey: true, key: "ArrowDown", shiftKey: true });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(
+      screen.getAllByRole("treeitem").map((element) => element.getAttribute("aria-label")),
+    ).toEqual(["Editable", "Suppliers"]);
   });
 
   it("rolls an optimistic keyboard move back when the server rejects it", async () => {

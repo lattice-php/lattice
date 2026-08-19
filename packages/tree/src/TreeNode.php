@@ -30,6 +30,8 @@ final class TreeNode
 
     public ?string $href = null;
 
+    public ?string $class = null;
+
     public Action|ActionGroup|null $actions = null;
 
     /** @var list<TreeNode> */
@@ -67,6 +69,13 @@ final class TreeNode
     public function href(string $href): self
     {
         $this->href = $href;
+
+        return $this;
+    }
+
+    public function class(string $class): self
+    {
+        $this->class = $class;
 
         return $this;
     }
@@ -134,9 +143,10 @@ final class TreeNode
 
     /**
      * The array form is a convenience subset of the builder API. Supported keys:
-     * `id` and `label` (required, cast to string), `icon`, `badge`, `href`
-     * (cast to string), `children` (nodes or arrays, expanded recursively),
-     * `hasChildren` and `disabled` (truthy). Unknown keys are ignored. A badge
+     * `id` and `label` (required, cast to string), `icon`, `badge`, `href`,
+     * `class` (cast to string), `children` (nodes or arrays, expanded
+     * recursively), `hasChildren` and `disabled` (truthy). Unknown keys are
+     * ignored. A badge
      * colour, `->action()`/`->actions()`, and `->schema()` have no array form —
      * build those nodes with {@see TreeNode::make()}.
      *
@@ -146,7 +156,7 @@ final class TreeNode
     {
         $tree = self::make((string) $node['id'], (string) $node['label']);
 
-        foreach (['icon', 'badge', 'href'] as $key) {
+        foreach (['icon', 'badge', 'href', 'class'] as $key) {
             if (isset($node[$key])) {
                 $tree->{$key} = (string) $node[$key];
             }
@@ -177,6 +187,7 @@ final class TreeNode
             label: $this->label,
             schema: $this->compiledSchema(),
             href: $this->href,
+            class: $this->class,
             disabled: $this->disabled,
             hasChildren: $hasChildren,
             children: $children,

@@ -2,7 +2,13 @@ import { page, userEvent } from "vitest/browser";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
-import { moveAction, stubMoveFetch, testRegistry, treeNode } from "./test-support";
+import {
+  inlineInputNodes,
+  moveAction,
+  stubMoveFetch,
+  testRegistry,
+  treeNode,
+} from "./test-support";
 import type { TreeNodeData } from "./types";
 import TreeComponent from "./tree";
 
@@ -91,6 +97,16 @@ describe("tree drag and drop in a browser", () => {
 
     expect(fetchMock).not.toHaveBeenCalled();
     expect(treeLabels()).toEqual(["Alpha", "Beta", "Disabled"]);
+  });
+
+  it("does not drag the node when the gesture starts in an inline form control", async () => {
+    const fetchMock = stubMoveFetch();
+    const screen = await renderTree(inlineInputNodes);
+
+    await userEvent.dragAndDrop(screen.getByRole("textbox"), row("9"));
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(treeLabels()).toEqual(["Editable", "Suppliers"]);
   });
 
   it("loads an unloaded lazy target before dropping into it", async () => {

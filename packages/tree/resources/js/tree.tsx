@@ -32,6 +32,11 @@ function isExpandable(
 const ORDER_PATH_SEGMENT_WIDTH = 6;
 const TREE_DRAG_TYPE = "lattice-tree-node";
 const HOVER_EXPAND_MS = 500;
+const FORM_CONTROL_SELECTOR = "input, textarea, select, label, [contenteditable]";
+
+function isFormControlTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest(FORM_CONTROL_SELECTOR) !== null;
+}
 
 function orderPathSegment(index: number): string {
   return String(index).padStart(ORDER_PATH_SEGMENT_WIDTH, "0");
@@ -206,7 +211,26 @@ function TreeItem({
       return;
     }
 
+    // Browsers retarget dragstart to the closest draggable ancestor, so neither
+    // canDrag() nor event.target can see an inline form control the gesture
+    // started in; without this capture-phase cancel, selecting text in it drags
+    // the node. The control is focused by the initiating mousedown, so a focused
+    // control inside the row marks the drag as text selection, not a node move.
+    const cancelFormControlDrag = (event: Event): void => {
+      const focused = element.ownerDocument.activeElement;
+
+      if (
+        isFormControlTarget(event.target) ||
+        (element.contains(focused) && isFormControlTarget(focused))
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    element.addEventListener("dragstart", cancelFormControlDrag, true);
+
     return combine(
+      () => element.removeEventListener("dragstart", cancelFormControlDrag, true),
       draggable({
         canDrag: () => !moving,
         element,
@@ -417,7 +441,8 @@ function TreeItem({
       isDisabled ||
       !(target instanceof Element) ||
       target.closest('[role="treeitem"]') !== event.currentTarget ||
-      target.closest('button, a[href], [role="button"]')
+      target.closest('button, a[href], [role="button"]') ||
+      isFormControlTarget(target)
     ) {
       return;
     }
@@ -440,6 +465,7 @@ function TreeItem({
       aria-posinset={siblingIndex}
       aria-selected={isActive}
       aria-setsize={siblingCount}
+      className={cn(node.class) || undefined}
       data-test={`tree-node-${node.id}`}
       onClick={onClick}
       onKeyDown={onKeyDown}
