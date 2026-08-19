@@ -1,38 +1,373 @@
 import { createContext as e, useCallback as t, useContext as n, useEffect as r, useMemo as i, useRef as a, useState as o, useSyncExternalStore as s } from "react";
-import { jsx as c, jsxs as l } from "react/jsx-runtime";
+import { Fragment as c, jsx as l, jsxs as u } from "react/jsx-runtime";
 //#region \0rolldown/runtime.js
-var u = Object.defineProperty, d = Object.getOwnPropertyDescriptor, f = Object.getOwnPropertyNames, p = Object.prototype.hasOwnProperty, m = (e, t, n) => () => {
+var d = Object.defineProperty, f = Object.getOwnPropertyDescriptor, p = Object.getOwnPropertyNames, m = Object.prototype.hasOwnProperty, h = (e, t, n) => () => {
 	if (n) throw n[0];
 	try {
 		return e && (t = e(e = 0)), t;
 	} catch (e) {
 		throw n = [e], e;
 	}
-}, ee = (e, t) => {
+}, g = (e, t) => {
 	let n = {};
-	for (var r in e) u(n, r, {
+	for (var r in e) d(n, r, {
 		get: e[r],
 		enumerable: !0
 	});
-	return t || u(n, Symbol.toStringTag, { value: "Module" }), n;
-}, h = (e, t, n, r) => {
-	if (t && typeof t == "object" || typeof t == "function") for (var i = f(t), a = 0, o = i.length, s; a < o; a++) s = i[a], !p.call(e, s) && s !== n && u(e, s, {
+	return t || d(n, Symbol.toStringTag, { value: "Module" }), n;
+}, _ = (e, t, n, r) => {
+	if (t && typeof t == "object" || typeof t == "function") for (var i = p(t), a = 0, o = i.length, s; a < o; a++) s = i[a], !m.call(e, s) && s !== n && d(e, s, {
 		get: ((e) => t[e]).bind(null, s),
-		enumerable: !(r = d(t, s)) || r.enumerable
+		enumerable: !(r = f(t, s)) || r.enumerable
 	});
 	return e;
-}, g = (e, t, n) => (h(e, t, "default"), n && h(n, t, "default")), _ = /* @__PURE__ */ ee({});
-import * as v from "@lattice-php/lattice/runtime";
-g(_, v);
-var y = m((() => {}));
+}, v = (e, t, n) => (_(e, t, "default"), n && _(n, t, "default")), y = /* @__PURE__ */ g({});
+import * as b from "@lattice-php/lattice/runtime";
+v(y, b);
+var x = h((() => {}));
+//#endregion
+//#region resources/js/tree-field-rows.ts
+function S(e) {
+	let t = e[A];
+	return Array.isArray(t) ? t : [];
+}
+function C(e, t, n = []) {
+	for (let [r, i] of e.entries()) {
+		if (i[y.ROW_ID_KEY] === t) return [...n, r];
+		let e = C(S(i), t, [...n, r]);
+		if (e) return e;
+	}
+	return null;
+}
+function w(e, t) {
+	let n = e, r = null;
+	for (let e of t) {
+		if (r = n[e] ?? null, !r) return null;
+		n = S(r);
+	}
+	return r;
+}
+function T(e) {
+	return 1 + S(e).reduce((e, t) => Math.max(e, T(t)), 0);
+}
+function E(e, t) {
+	return t.length >= e.length && e.every((e, n) => t[n] === e);
+}
+function D(e, t, n) {
+	if (t.length === 0) return n(e);
+	let [r, ...i] = t;
+	return e.map((e, t) => t === r ? {
+		...e,
+		[A]: D(S(e), i, n)
+	} : e);
+}
+function O(e, t, n, r) {
+	let i = C(e, t), a = i ? w(e, i) : null;
+	if (!i || !a) return !1;
+	let o = [];
+	if (n !== null) {
+		let t = C(e, n), a = t ? w(e, t) : null;
+		if (!t || !a || E(i, t) || !r.acceptsChildren(a)) return !1;
+		o = t;
+	}
+	return r.maxDepth === null || o.length + T(a) <= r.maxDepth;
+}
+function k(e, t, n, r) {
+	let i = C(e, t), a = i ? w(e, i) : null;
+	if (!i || !a) return e;
+	let o = [];
+	if (n !== null) {
+		let t = C(e, n);
+		if (!t || E(i, t)) return e;
+		o = t;
+	}
+	let s = i.slice(0, -1), c = i[i.length - 1], l = s.length === o.length && s.every((e, t) => o[t] === e) && c < r ? r - 1 : r, u = D(e, s, (e) => e.filter((e, t) => t !== c)), d = [...o], f = s.length;
+	return o.length > f && s.every((e, t) => o[t] === e) && o[f] > c && --d[f], D(u, d, (e) => {
+		let t = Math.max(0, Math.min(l, e.length));
+		return [
+			...e.slice(0, t),
+			a,
+			...e.slice(t)
+		];
+	});
+}
+var A, j = h((() => {
+	x(), A = "children";
+}));
+//#endregion
+//#region resources/js/tree-item-drop.ts
+function M(e, t) {
+	return {
+		label: t.label,
+		sourceId: t.id,
+		type: e
+	};
+}
+function N(e, t) {
+	return t.type !== e || typeof t.sourceId != "string" ? null : {
+		id: t.sourceId,
+		label: typeof t.label == "string" ? t.label : t.sourceId
+	};
+}
+function P(e) {
+	let { dragType: t, onInstruction: n } = e;
+	return (0, y.dropTargetForElements)({
+		element: e.element,
+		canDrop: ({ source: n }) => {
+			let r = N(t, n.data);
+			return r !== null && e.canDrop(r);
+		},
+		getData: ({ element: n, input: r, source: i }) => {
+			let a = N(t, i.data);
+			return (0, y.attachTreeItemInstruction)({ type: t }, {
+				block: a ? e.blockedInstructions(a) : [],
+				currentLevel: e.currentLevel,
+				element: n,
+				indentPerLevel: e.indentPerLevel ?? 24,
+				input: r,
+				mode: e.mode
+			});
+		},
+		onDrag: ({ self: e }) => n((0, y.extractTreeItemInstruction)(e.data)?.type ?? null),
+		onDragEnter: ({ self: t }) => {
+			n((0, y.extractTreeItemInstruction)(t.data)?.type ?? null), e.onEnter?.();
+		},
+		onDragLeave: () => {
+			e.onLeave?.(), n(null);
+		},
+		onDrop: ({ self: r, source: i }) => {
+			e.onLeave?.(), n(null);
+			let a = N(t, i.data), o = (0, y.extractTreeItemInstruction)(r.data);
+			!a || !o || o.type === "instruction-blocked" || e.onDrop(a, o);
+		}
+	});
+}
+function F(e) {
+	switch (e) {
+		case "reorder-above": return "border-t-lt-primary";
+		case "reorder-below": return "border-b-lt-primary";
+		case "make-child":
+		case "reparent": return "ring-1 ring-lt-primary";
+		case "instruction-blocked": return "ring-1 ring-lt-danger/50";
+		default: return null;
+	}
+}
+var I = h((() => {
+	x();
+})), L = /* @__PURE__ */ g({ default: () => H });
+function R() {
+	let e = n(V);
+	if (!e) throw Error("Tree field rows must render inside their tree field.");
+	return e;
+}
+function z({ node: e, name: t, depth: n, parentRowId: r }) {
+	let i = e.props, a = R(), { t: o } = (0, y.useT)("tree"), { path: s, rows: d, onField: f, onRemove: p, onMove: m, append: h } = (0, y.useRowCollection)(t, 0), g = n === 1 && i.maxItems !== null && d.length >= i.maxItems, _ = n === 1 && i.minItems !== null && d.length <= i.minItems, v = i.templates.map((e) => ({
+		type: e.type,
+		label: e.label
+	}));
+	return /* @__PURE__ */ u(c, { children: [
+		/* @__PURE__ */ l(y.RowKeyInputs, {
+			path: s,
+			rows: d,
+			rowKey: y.ROW_ID_KEY
+		}),
+		/* @__PURE__ */ l(y.RowKeyInputs, {
+			path: s,
+			rows: d,
+			rowKey: "type"
+		}),
+		d.map((t, i) => /* @__PURE__ */ l(ee, {
+			node: e,
+			row: t,
+			index: i,
+			depth: n,
+			path: s,
+			parentRowId: r,
+			siblingCount: d.length,
+			removable: !_,
+			onField: f,
+			onRemove: p,
+			onMove: m
+		}, String(t[y.ROW_ID_KEY] ?? i))),
+		!a.locked && !g && /* @__PURE__ */ l(y.AddRowMenu, {
+			addLabel: i.addLabel ?? o("tree.add", "Add"),
+			options: v,
+			onSelect: (e) => h({ type: e })
+		})
+	] });
+}
+function B({ label: e, testId: t, danger: n = !1, onClick: r, children: i }) {
+	return /* @__PURE__ */ l("button", {
+		type: "button",
+		"aria-label": e,
+		"data-test": t,
+		className: (0, y.cn)("[&_svg]:size-lt-icon-sm", n ? "text-lt-danger hover:text-lt-danger" : "text-lt-muted-fg hover:text-lt-fg"),
+		onClick: r,
+		children: i
+	});
+}
+function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, siblingCount: d, removable: f, onField: p, onRemove: m, onMove: h }) {
+	let g = R(), { t: _ } = (0, y.useT)("tree"), v = a(null), b = a(null), [x, C] = o(!1), [w, T] = o(null), E = typeof t[y.ROW_ID_KEY] == "string" ? t[y.ROW_ID_KEY] : null, D = e.props.templates.find((e) => e.type === t.type), O = D?.label ?? `Unknown block: ${String(t.type)}`, k = g.acceptsChildren(t) && (g.maxDepth === null || i < g.maxDepth), A = S(t).length, j = !g.locked && E !== null;
+	return r(() => {
+		let e = v.current, t = b.current;
+		if (!(!e || !j || E === null)) return (0, y.combine)(...t ? [(0, y.draggable)({
+			element: e,
+			dragHandle: t,
+			getInitialData: () => M(g.dragType, {
+				id: E,
+				label: O
+			}),
+			onDragStart: () => C(!0),
+			onDrop: () => C(!1)
+		})] : [], P({
+			element: e,
+			dragType: g.dragType,
+			currentLevel: i - 1,
+			mode: k && A > 0 ? "expanded" : n === d - 1 ? "last-in-group" : "standard",
+			canDrop: (e) => e.id !== E,
+			blockedInstructions: (e) => {
+				let t = ["reparent"];
+				return (!k || !g.canPlace(e.id, E)) && t.push("make-child"), g.canPlace(e.id, c) || t.push("reorder-above", "reorder-below"), t;
+			},
+			onInstruction: T,
+			onDrop: (e, t) => {
+				t.type === "reorder-above" ? g.move(e.id, c, n, e.label) : t.type === "reorder-below" ? g.move(e.id, c, n + 1, e.label) : t.type === "make-child" && g.move(e.id, E, A, e.label);
+			}
+		}));
+	}, [
+		g,
+		A,
+		i,
+		j,
+		O,
+		k,
+		n,
+		c,
+		E,
+		d
+	]), /* @__PURE__ */ u("div", {
+		ref: v,
+		"data-test": `tree-field-${s}-row-${n}`,
+		"data-drop-instruction": w ?? void 0,
+		className: (0, y.cn)("rounded-lt border border-lt-border bg-lt-surface p-4", x && "opacity-50", F(w)),
+		children: [/* @__PURE__ */ u("div", {
+			className: "mb-2 flex items-center justify-between",
+			children: [/* @__PURE__ */ u("div", {
+				className: "flex items-center gap-2",
+				children: [!g.locked && /* @__PURE__ */ l("button", {
+					ref: b,
+					type: "button",
+					"aria-label": _("tree.drag", "Drag {{label}}", { label: O }),
+					"data-test": `tree-field-${s}-drag-${n}`,
+					className: "cursor-grab text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm",
+					children: /* @__PURE__ */ l(y.Icon, { name: "grip-vertical" })
+				}), /* @__PURE__ */ l("span", {
+					className: "text-sm font-medium text-lt-muted-fg",
+					children: O
+				})]
+			}), !g.locked && /* @__PURE__ */ u("div", {
+				className: "flex items-center gap-1",
+				children: [
+					e.props.reorderable && n > 0 && /* @__PURE__ */ l(B, {
+						label: _("tree.move_up", "Move up"),
+						testId: `tree-field-${s}-up-${n}`,
+						onClick: () => h(n, -1),
+						children: /* @__PURE__ */ l(y.Icon, { name: "arrow-up" })
+					}),
+					e.props.reorderable && n < d - 1 && /* @__PURE__ */ l(B, {
+						label: _("tree.move_down", "Move down"),
+						testId: `tree-field-${s}-down-${n}`,
+						onClick: () => h(n, 1),
+						children: /* @__PURE__ */ l(y.Icon, { name: "arrow-down" })
+					}),
+					f && /* @__PURE__ */ l(B, {
+						label: _("tree.remove", "Remove"),
+						testId: `tree-field-${s}-remove-${n}`,
+						danger: !0,
+						onClick: () => m(n),
+						children: /* @__PURE__ */ l(y.Icon, { name: "trash-2" })
+					})
+				]
+			})]
+		}), /* @__PURE__ */ u(y.FieldScopeProvider, {
+			base: s,
+			index: n,
+			row: t,
+			onChange: (e, t) => p(n, e, t),
+			children: [/* @__PURE__ */ l("div", {
+				className: "flex flex-col gap-4",
+				children: (D?.schema ?? []).map((e, t) => /* @__PURE__ */ l(y.RenderNode, { node: e }, t))
+			}), k && /* @__PURE__ */ l("div", {
+				className: "mt-3 flex flex-col gap-3 border-l-2 border-lt-border pl-4",
+				children: /* @__PURE__ */ l(z, {
+					node: e,
+					name: "children",
+					depth: i + 1,
+					parentRowId: E
+				})
+			})]
+		})]
+	});
+}
+var V, H, U = h((() => {
+	x(), j(), I(), V = e(null), H = ({ node: e }) => {
+		let t = e.props, { errors: n } = (0, y.useFormContext)(), { hidden: r, required: o, readOnly: s, disabled: c } = (0, y.useDependentField)(e), u = (0, y.useFieldScope)(), d = u ? u.errorKey(t.name) : t.name, f = (0, y.useSetFormValue)(), p = (0, y.useFormValue)(d), { t: m } = (0, y.useT)("tree"), h = a([]);
+		h.current = Array.isArray(p) ? p : [];
+		let g = s || c, _ = i(() => {
+			let e = (e) => t.childBearingTypes === null || t.childBearingTypes.includes(String(e.type));
+			return {
+				dragType: `tree-field:${d}`,
+				locked: g,
+				maxDepth: t.maxDepth,
+				acceptsChildren: e,
+				canPlace: (n, r) => O(h.current, n, r, {
+					maxDepth: t.maxDepth,
+					acceptsChildren: e
+				}),
+				move: (e, t, n, r) => {
+					f(d, (r) => k(Array.isArray(r) ? r : [], e, t, n)), (0, y.announce)(m("tree.moved", "Moved {{label}}", { label: r }));
+				}
+			};
+		}, [
+			t.childBearingTypes,
+			t.maxDepth,
+			d,
+			g,
+			f,
+			m
+		]);
+		return r ? null : /* @__PURE__ */ l(y.FormFieldFrame, {
+			error: n[d],
+			helperText: t.helperText ?? void 0,
+			tooltip: t.tooltip ?? void 0,
+			label: t.label ?? "",
+			id: d,
+			required: o,
+			children: (n) => /* @__PURE__ */ l("div", {
+				...n,
+				className: "flex flex-col gap-3",
+				role: "group",
+				children: /* @__PURE__ */ l(V.Provider, {
+					value: _,
+					children: /* @__PURE__ */ l(z, {
+						node: e,
+						name: t.name,
+						depth: 1,
+						parentRowId: null
+					})
+				})
+			})
+		});
+	};
+}));
 //#endregion
 //#region resources/js/tree-context.tsx
-function b(e, t, n) {
+function W(e, t, n) {
 	e.children.set(t, n.map((e) => e.id)), e.loaded.add(t);
 	for (let r of n) e.nodes.set(r.id, {
 		...r,
 		children: []
-	}), e.parents.set(r.id, t === "" ? null : t), r.children.length > 0 && b(e, r.id, r.children);
+	}), e.parents.set(r.id, t === "" ? null : t), r.children.length > 0 && W(e, r.id, r.children);
 }
 function te(e, t) {
 	let n = {
@@ -41,7 +376,7 @@ function te(e, t) {
 		nodes: /* @__PURE__ */ new Map(),
 		parents: /* @__PURE__ */ new Map()
 	};
-	return b(n, "", e), t || n.loaded.delete(""), n;
+	return W(n, "", e), t || n.loaded.delete(""), n;
 }
 function ne(e, t, n) {
 	let r = {
@@ -50,18 +385,18 @@ function ne(e, t, n) {
 		nodes: new Map(e.nodes),
 		parents: new Map(e.parents)
 	};
-	return b(r, t, n), r;
+	return W(r, t, n), r;
 }
 function re(e, t) {
 	let n = 1, r = e.parents.get(t);
 	for (; r != null;) n += 1, r = e.parents.get(r);
 	return n;
 }
-function x(e, t) {
+function G(e, t) {
 	let n = e.children.get(t);
-	return n === void 0 ? e.nodes.get(t)?.hasChildren === !0 ? 2 : 1 : n.length === 0 ? 1 : 1 + Math.max(...n.map((t) => x(e, t)));
+	return n === void 0 ? e.nodes.get(t)?.hasChildren === !0 ? 2 : 1 : n.length === 0 ? 1 : 1 + Math.max(...n.map((t) => G(e, t)));
 }
-function ie(e, t, n) {
+function K(e, t, n) {
 	let r = e.parents.get(n);
 	for (; r != null;) {
 		if (r === t) return !0;
@@ -69,9 +404,9 @@ function ie(e, t, n) {
 	}
 	return !1;
 }
-function S(e, t) {
+function ie(e, t) {
 	let n = e.nodes.get(t.nodeId), r = t.parentId === null ? null : e.nodes.get(t.parentId);
-	if (!n || n.disabled === !0 || t.parentId !== null && !r || r?.disabled === !0 || t.nodeId === t.parentId || t.parentId !== null && ie(e, t.nodeId, t.parentId)) return null;
+	if (!n || n.disabled === !0 || t.parentId !== null && !r || r?.disabled === !0 || t.nodeId === t.parentId || t.parentId !== null && K(e, t.nodeId, t.parentId)) return null;
 	let i = e.parents.get(t.nodeId) ?? null, a = i ?? "", o = t.parentId ?? "", s = e.children.get(a) ?? [], c = s.indexOf(t.nodeId);
 	if (c === -1) return null;
 	let l = {
@@ -103,20 +438,20 @@ function ae(e) {
 		})
 	};
 }
-function C() {
-	return n(k);
+function oe() {
+	return n(Z);
 }
-function w(e) {
+function q(e) {
 	let t = JSON.parse(e);
 	if (!Array.isArray(t)) throw Error("expected an array of ids");
 	return new Set(t.filter((e) => typeof e == "string"));
 }
-function T(e) {
+function J(e) {
 	return [...e.values()].sort((e, t) => e.orderPath.localeCompare(t.orderPath));
 }
-async function E(e, t, n) {
+async function Y(e, t, n) {
 	let r = e.props.endpoint;
-	return !r || (0, _.runAction)(() => (0, _.apiFetch)(r, {
+	return !r || (0, y.runAction)(() => (0, y.apiFetch)(r, {
 		body: JSON.stringify(t),
 		headers: { "Content-Type": "application/json" },
 		method: e.props.method ?? "post",
@@ -124,59 +459,59 @@ async function E(e, t, n) {
 		throwOnError: !1
 	}), n);
 }
-function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, componentRef: u, lazy: d, maxDepth: f, nodes: p, moveAction: m, rememberState: ee, revision: h, selectAction: g, storageKey: v }) {
-	let [y, b] = (0, _.usePersistentState)(v, () => new Set(c), {
-		enabled: ee,
-		parse: w,
+function se({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, componentRef: u, lazy: d, maxDepth: f, nodes: p, moveAction: m, rememberState: h, revision: g, selectAction: _, storageKey: v }) {
+	let [b, x] = (0, y.usePersistentState)(v, () => new Set(c), {
+		enabled: h,
+		parse: q,
 		serialize: (e) => JSON.stringify([...e])
-	}), [C, D] = o(() => p[0]?.id ?? null), [O, k] = o(/* @__PURE__ */ new Set()), [A] = o(() => ae({
+	}), [S, C] = o(() => p[0]?.id ?? null), [w, T] = o(/* @__PURE__ */ new Set()), [E] = o(() => ae({
 		activeId: e,
 		graph: te(p, !(d && p.length === 0)),
 		moving: !1
-	})), { activeId: j, graph: M, moving: N } = s(A.subscribe, A.getState), P = a(/* @__PURE__ */ new Map()), F = a({
+	})), { activeId: D, graph: O, moving: k } = s(E.subscribe, E.getState), A = a(/* @__PURE__ */ new Map()), j = a({
 		text: "",
 		timestamp: 0
-	}), I = a(/* @__PURE__ */ new Map()), L = a(0), R = a(null), z = a(0), B = a({
+	}), M = a(/* @__PURE__ */ new Map()), N = a(0), P = a(null), F = a(0), I = a({
 		nodes: p,
-		revision: h
-	}), V = (0, _.useEffectDispatcher)(), H = l !== null && l !== "", se = m !== null;
+		revision: g
+	}), L = (0, y.useEffectDispatcher)(), R = l !== null && l !== "", z = m !== null;
 	r(() => {
-		z.current += 1, A.setState({ activeId: e });
-	}, [e, A]), r(() => {
-		(B.current.nodes !== p || B.current.revision !== h) && (B.current = {
+		F.current += 1, E.setState({ activeId: e });
+	}, [e, E]), r(() => {
+		(I.current.nodes !== p || I.current.revision !== g) && (I.current = {
 			nodes: p,
-			revision: h
-		}, L.current += 1, I.current.clear(), A.setState({ graph: te(p, !(d && p.length === 0)) }), k(/* @__PURE__ */ new Set()));
+			revision: g
+		}, N.current += 1, M.current.clear(), E.setState({ graph: te(p, !(d && p.length === 0)) }), T(/* @__PURE__ */ new Set()));
 	}, [
 		d,
 		p,
-		h,
-		A
+		g,
+		E
 	]);
-	let U = t((e) => {
-		b((t) => {
+	let B = t((e) => {
+		x((t) => {
 			let n = new Set(t);
 			return n.has(e) ? n.delete(e) : n.add(e), n;
 		});
-	}, [b]), W = t((e) => b((t) => new Set(t).add(e)), [b]), G = t((e) => {
-		let t = A.getState().activeId, n = ++z.current;
-		A.setState({ activeId: e }), g && E(g, { nodeId: e }, V).then((e) => {
-			!e && z.current === n && A.setState({ activeId: t });
+	}, [x]), ee = t((e) => x((t) => new Set(t).add(e)), [x]), V = t((e) => {
+		let t = E.getState().activeId, n = ++F.current;
+		E.setState({ activeId: e }), _ && Y(_, { nodeId: e }, L).then((e) => {
+			!e && F.current === n && E.setState({ activeId: t });
 		});
 	}, [
-		V,
-		g,
-		A
-	]), K = t((e) => {
-		D(e);
-		let t = [...P.current.values()].find((t) => t.id === e);
-		t?.ref.current ? (R.current = null, t.ref.current.focus()) : R.current = e;
-	}, []), ce = t((e) => {
-		P.current.set(e.path, e), R.current === e.id && (R.current = null, e.ref.current?.focus());
-	}, []), le = t((e) => {
-		P.current.delete(e);
-	}, []), q = t((e, t) => {
-		let n = T(P.current);
+		L,
+		_,
+		E
+	]), H = t((e) => {
+		C(e);
+		let t = [...A.current.values()].find((t) => t.id === e);
+		t?.ref.current ? (P.current = null, t.ref.current.focus()) : P.current = e;
+	}, []), U = t((e) => {
+		A.current.set(e.path, e), P.current === e.id && (P.current = null, e.ref.current?.focus());
+	}, []), W = t((e) => {
+		A.current.delete(e);
+	}, []), oe = t((e, t) => {
+		let n = J(A.current);
 		if (n.length === 0) return;
 		let r = n.findIndex((t) => t.id === e), i = r === -1 ? void 0 : n[r], a;
 		switch (t) {
@@ -197,12 +532,12 @@ function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compon
 				break;
 			case "firstChild": a = i ? n.find((e) => e.parentPath === i.path) : void 0;
 		}
-		a && K(a.id);
-	}, [K]), J = t((e, t) => {
-		let n = T(P.current);
+		a && H(a.id);
+	}, [H]), se = t((e, t) => {
+		let n = J(A.current);
 		if (n.length === 0) return;
-		let r = Date.now(), i = F.current, a = r - i.timestamp > oe ? t : i.text + t;
-		F.current = {
+		let r = Date.now(), i = j.current, a = r - i.timestamp > ce ? t : i.text + t;
+		j.current = {
 			text: a,
 			timestamp: r
 		};
@@ -210,157 +545,157 @@ function D({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compon
 		for (let e = 1; e <= n.length; e++) {
 			let t = n[(c + e) % n.length];
 			if (t.label.toLowerCase().startsWith(o)) {
-				K(t.id);
+				H(t.id);
 				return;
 			}
 		}
-	}, [K]), Y = t((e) => {
-		if (!H || A.getState().graph.loaded.has(e)) return Promise.resolve();
-		let t = I.current.get(e);
+	}, [H]), X = t((e) => {
+		if (!R || E.getState().graph.loaded.has(e)) return Promise.resolve();
+		let t = M.current.get(e);
 		if (t) return t;
-		let n = L.current;
-		k((t) => new Set(t).add(e));
-		let r = (0, _.apiJson)(`${l}?parent=${encodeURIComponent(e)}`, { ref: u ?? "" }).then(({ nodes: t }) => {
-			n === L.current && A.setState({ graph: ne(A.getState().graph, e, t) });
+		let n = N.current;
+		T((t) => new Set(t).add(e));
+		let r = (0, y.apiJson)(`${l}?parent=${encodeURIComponent(e)}`, { ref: u ?? "" }).then(({ nodes: t }) => {
+			n === N.current && E.setState({ graph: ne(E.getState().graph, e, t) });
 		}).catch(() => {
-			n === L.current && b((t) => {
+			n === N.current && x((t) => {
 				let n = new Set(t);
 				return n.delete(e), n;
 			});
 		}).finally(() => {
-			n === L.current && (I.current.delete(e), k((t) => {
+			n === N.current && (M.current.delete(e), T((t) => {
 				let n = new Set(t);
 				return n.delete(e), n;
 			}));
 		});
-		return I.current.set(e, r), r;
+		return M.current.set(e, r), r;
 	}, [
-		H,
+		R,
 		u,
 		l,
-		b,
-		A
-	]), ue = t((e) => M.children.get(e)?.map((e) => M.nodes.get(e)), [M]), X = t((e) => A.getState().graph.children.get(e ?? "")?.length ?? 0, [A]), Z = t((e) => A.getState().graph.parents.get(e) ?? null, [A]), Q = t((e) => {
-		let t = A.getState().graph, n = t.parents.get(e) ?? null;
+		x,
+		E
+	]), Z = t((e) => O.children.get(e)?.map((e) => O.nodes.get(e)), [O]), le = t((e) => E.getState().graph.children.get(e ?? "")?.length ?? 0, [E]), ue = t((e) => E.getState().graph.parents.get(e) ?? null, [E]), de = t((e) => {
+		let t = E.getState().graph, n = t.parents.get(e) ?? null;
 		return t.children.get(n ?? "")?.indexOf(e) ?? -1;
-	}, [A]), de = t((e, t) => {
-		let n = A.getState().graph, r = n.nodes.get(e), i = n.nodes.get(t);
-		return !!(r && i && r.disabled !== !0 && i.disabled !== !0 && e !== t && !ie(n, e, t));
-	}, [A]), $ = t((e, t) => {
-		let n = A.getState().graph;
-		return t === (n.parents.get(e) ?? null) ? !0 : t !== null && n.nodes.get(t)?.acceptsChildren === !1 ? !1 : f === null || (t === null ? 0 : re(n, t)) + x(n, e) <= f;
-	}, [f, A]), fe = t(async (e) => {
-		if (!m || A.getState().moving || !$(e.nodeId, e.parentId)) return !1;
-		let t = A.getState().graph, n = S(t, e);
+	}, [E]), fe = t((e, t) => {
+		let n = E.getState().graph, r = n.nodes.get(e), i = n.nodes.get(t);
+		return !!(r && i && r.disabled !== !0 && i.disabled !== !0 && e !== t && !K(n, e, t));
+	}, [E]), Q = t((e, t) => {
+		let n = E.getState().graph;
+		return t === (n.parents.get(e) ?? null) ? !0 : t !== null && n.nodes.get(t)?.acceptsChildren === !1 ? !1 : f === null || (t === null ? 0 : re(n, t)) + G(n, e) <= f;
+	}, [f, E]), pe = t(async (e) => {
+		if (!m || E.getState().moving || !Q(e.nodeId, e.parentId)) return !1;
+		let t = E.getState().graph, n = ie(t, e);
 		if (!n) return !1;
-		let r = L.current;
-		A.setState({
+		let r = N.current;
+		E.setState({
 			graph: n,
 			moving: !0
-		}), K(e.nodeId);
-		let i = await E(m, e, V);
-		return !i && r === L.current && (A.setState({ graph: t }), K(e.nodeId)), A.setState({ moving: !1 }), i;
+		}), H(e.nodeId);
+		let i = await Y(m, e, L);
+		return !i && r === N.current && (E.setState({ graph: t }), H(e.nodeId)), E.setState({ moving: !1 }), i;
 	}, [
-		$,
-		V,
-		K,
+		Q,
+		L,
+		H,
 		m,
-		A
-	]), pe = t(() => {
-		if (!H) return;
-		L.current += 1;
-		let e = L.current;
-		I.current.clear(), k(/* @__PURE__ */ new Set()), (0, _.apiJson)(`${l}?parent=`, { ref: u ?? "" }).then(({ nodes: t }) => {
-			e === L.current && A.setState({ graph: te(t, !0) });
+		E
+	]), me = t(() => {
+		if (!R) return;
+		N.current += 1;
+		let e = N.current;
+		M.current.clear(), T(/* @__PURE__ */ new Set()), (0, y.apiJson)(`${l}?parent=`, { ref: u ?? "" }).then(({ nodes: t }) => {
+			e === N.current && E.setState({ graph: te(t, !0) });
 		}).catch(() => {});
 	}, [
-		H,
+		R,
 		u,
 		l,
-		A
-	]), me = t((e) => O.has(e), [O]), he = t((e) => A.getState().graph.loaded.has(e), [A]);
+		E
+	]), he = t((e) => w.has(e), [w]), ge = t((e) => E.getState().graph.loaded.has(e), [E]);
 	r(() => {
-		d && !M.loaded.has("") && Y("");
+		d && !O.loaded.has("") && X("");
 	}, [
-		M.loaded,
+		O.loaded,
 		d,
-		Y
+		X
 	]);
-	let ge = M.children.get("")?.[0];
+	let $ = O.children.get("")?.[0];
 	return r(() => {
-		C === null && ge !== void 0 && D(ge);
-	}, [C, ge]), r(() => {
+		S === null && $ !== void 0 && C($);
+	}, [S, $]), r(() => {
 		if (!e || !n) return;
 		let t = !1;
 		return (async () => {
-			b((e) => /* @__PURE__ */ new Set([...e, ...n]));
-			for (let e of n) if (await Y(e), t) return;
-			K(e);
+			x((e) => /* @__PURE__ */ new Set([...e, ...n]));
+			for (let e of n) if (await X(e), t) return;
+			H(e);
 		})(), () => {
 			t = !0;
 		};
 	}, [
 		n,
 		e,
-		K,
-		Y,
-		b
-	]), i(() => ({
-		activate: G,
-		activeId: j,
-		canDropOn: de,
-		canLoad: H,
-		canMove: se,
-		canPlace: $,
-		childrenCount: X,
-		childrenFor: ue,
-		expand: W,
-		expanded: y,
-		focus: K,
-		focusedId: C,
-		isLoaded: he,
-		isLoading: me,
-		loadChildren: Y,
-		move: fe,
-		moveFocus: q,
-		moving: N,
-		parentFor: Z,
-		positionFor: Q,
-		register: ce,
-		reload: pe,
-		toggle: U,
-		typeAhead: J,
-		unregister: le
-	}), [
-		G,
-		j,
-		de,
 		H,
-		se,
-		$,
 		X,
-		ue,
-		W,
-		y,
-		K,
-		C,
-		he,
-		me,
-		Y,
+		x
+	]), i(() => ({
+		activate: V,
+		activeId: D,
+		canDropOn: fe,
+		canLoad: R,
+		canMove: z,
+		canPlace: Q,
+		childrenCount: le,
+		childrenFor: Z,
+		expand: ee,
+		expanded: b,
+		focus: H,
+		focusedId: S,
+		isLoaded: ge,
+		isLoading: he,
+		loadChildren: X,
+		move: pe,
+		moveFocus: oe,
+		moving: k,
+		parentFor: ue,
+		positionFor: de,
+		register: U,
+		reload: me,
+		toggle: B,
+		typeAhead: se,
+		unregister: W
+	}), [
+		V,
+		D,
 		fe,
-		q,
-		N,
-		Z,
+		R,
+		z,
 		Q,
-		ce,
+		le,
+		Z,
+		ee,
+		b,
+		H,
+		S,
+		ge,
+		he,
+		X,
 		pe,
+		oe,
+		k,
+		ue,
+		de,
 		U,
-		J,
-		le
+		me,
+		B,
+		se,
+		W
 	]);
 }
-var O, k, oe, A = m((() => {
-	y(), O = {
+var X, Z, ce, le = h((() => {
+	x(), X = {
 		activate: () => {},
 		activeId: null,
 		canDropOn: () => !1,
@@ -386,41 +721,41 @@ var O, k, oe, A = m((() => {
 		toggle: () => {},
 		typeAhead: () => {},
 		unregister: () => {}
-	}, k = e(O), oe = 800;
-})), j = /* @__PURE__ */ ee({ default: () => B });
-function M(e, t, n) {
+	}, Z = e(X), ce = 800;
+})), ue = /* @__PURE__ */ g({ default: () => _e });
+function de(e, t, n) {
 	return !!t?.length || e.hasChildren === !0 && (n || !!e.children?.length);
 }
-function N(e) {
-	return e instanceof Element && e.closest(z) !== null;
+function fe(e) {
+	return e instanceof Element && e.closest($) !== null;
 }
-function P(e) {
-	return String(e).padStart(I, "0");
+function Q(e) {
+	return String(e).padStart(me, "0");
 }
-function F({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, siblingCount: u, siblingIndex: d }) {
-	let { activate: f, activeId: p, canDropOn: m, canLoad: ee, canMove: h, canPlace: g, childrenCount: v, childrenFor: y, expand: b, expanded: te, focus: ne, focusedId: re, isLoaded: x, isLoading: ie, loadChildren: S, move: ae, moveFocus: w, moving: T, parentFor: E, positionFor: D, register: O, toggle: k, typeAhead: oe, unregister: A } = C(), { t: j } = (0, _.useT)("tree"), { visit: I } = (0, _.useNavigation)(), z = a(null), B = a(null), V = a(null), [H, se] = o(!1), [U, W] = o(null), G = i ? `${i}/${t.id}` : t.id, K = te.has(t.id), ce = p === t.id, le = re === t.id, q = t.disabled === !0, J = y(t.id), Y = M(t, J, ee), ue = ie(t.id), X = a(null);
+function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, siblingCount: c, siblingIndex: d }) {
+	let { activate: f, activeId: p, canDropOn: m, canLoad: h, canMove: g, canPlace: _, childrenCount: v, childrenFor: b, expand: x, expanded: S, focus: C, focusedId: w, isLoaded: T, isLoading: E, loadChildren: D, move: O, moveFocus: k, moving: A, parentFor: j, positionFor: N, register: I, toggle: L, typeAhead: R, unregister: z } = oe(), { t: B } = (0, y.useT)("tree"), { visit: ee } = (0, y.useNavigation)(), V = a(null), H = a(null), U = a(null), [W, te] = o(!1), [ne, re] = o(null), G = i ? `${i}/${t.id}` : t.id, K = S.has(t.id), ie = p === t.id, ae = w === t.id, q = t.disabled === !0, J = b(t.id), Y = de(t, J, h), se = E(t.id), X = a(null);
 	r(() => {
-		K && t.hasChildren === !0 && !J && S(t.id);
+		K && t.hasChildren === !0 && !J && D(t.id);
 	}, [
 		K,
 		t,
 		J,
-		S
-	]), r(() => (O({
+		D
+	]), r(() => (I({
 		id: t.id,
 		label: t.label,
 		orderPath: n,
 		parentPath: i,
 		path: G,
-		ref: z
-	}), () => A(G)), [
+		ref: V
+	}), () => z(G)), [
 		t.id,
 		t.label,
 		n,
 		i,
 		G,
-		O,
-		A
+		I,
+		z
 	]), r(() => {
 		let e = X.current;
 		e && e.querySelectorAll("button, a[href], [tabindex]").forEach((e) => {
@@ -428,111 +763,97 @@ function F({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibli
 		});
 	}, [t.schema]);
 	function Z() {
-		V.current !== null && (clearTimeout(V.current), V.current = null);
+		U.current !== null && (clearTimeout(U.current), U.current = null);
 	}
-	function Q(e, t, n) {
-		let r = E(t), i = D(t), a = +(E(e) === r && D(e) < i);
+	function ce(e, t, n) {
+		let r = j(t), i = N(t), a = +(j(e) === r && N(e) < i);
 		return i + +!!n - a;
 	}
-	async function de(e, n) {
-		let r = e.nodeId, i = typeof e.label == "string" ? e.label : r, a = (0, _.extractTreeItemInstruction)(n);
-		if (typeof r != "string" || typeof i != "string" || !a || a.type === "instruction-blocked") return;
-		let o = null;
-		if (a.type === "reorder-above" || a.type === "reorder-below") o = {
+	async function le(e, n) {
+		let r = e.id, i = null;
+		if (n.type === "reorder-above" || n.type === "reorder-below") i = {
 			nodeId: r,
-			parentId: E(t.id),
-			position: Q(r, t.id, a.type === "reorder-below")
+			parentId: j(t.id),
+			position: ce(r, t.id, n.type === "reorder-below")
 		};
-		else if (a.type === "make-child") {
-			if (t.hasChildren === !0 && !x(t.id) && (await S(t.id), !x(t.id))) return;
-			b(t.id), o = {
+		else if (n.type === "make-child") {
+			if (t.hasChildren === !0 && !T(t.id) && (await D(t.id), !T(t.id))) return;
+			x(t.id), i = {
 				nodeId: r,
 				parentId: t.id,
 				position: v(t.id)
 			};
-		} else if (a.type === "reparent") {
-			let e = [...s, t.id], n = Math.max(0, Math.min(a.desiredLevel, e.length - 1)), i = e[n];
-			o = {
+		} else if (n.type === "reparent") {
+			let e = [...s, t.id], a = Math.max(0, Math.min(n.desiredLevel, e.length - 1)), o = e[a];
+			i = {
 				nodeId: r,
-				parentId: n === 0 ? null : e[n - 1],
-				position: Q(r, i, !0)
+				parentId: a === 0 ? null : e[a - 1],
+				position: ce(r, o, !0)
 			};
 		}
-		if (!o) return;
-		let c = await ae(o);
-		(0, _.announce)(c ? j("tree.moved", "Moved {{label}}", { label: i }) : j("tree.move_failed", "Could not move {{label}}", { label: i }));
+		if (!i) return;
+		let a = await O(i);
+		(0, y.announce)(a ? B("tree.moved", "Moved {{label}}", { label: e.label }) : B("tree.move_failed", "Could not move {{label}}", { label: e.label }));
 	}
 	r(() => {
-		let n = B.current;
-		if (!n || !h || q) return;
+		let n = H.current;
+		if (!n || !g || q) return;
 		let r = (e) => {
 			let t = n.ownerDocument.activeElement;
-			(N(e.target) || n.contains(t) && N(t)) && e.preventDefault();
+			(fe(e.target) || n.contains(t) && fe(t)) && e.preventDefault();
 		};
-		return n.addEventListener("dragstart", r, !0), (0, _.combine)(() => n.removeEventListener("dragstart", r, !0), (0, _.draggable)({
-			canDrag: () => !T,
+		return n.addEventListener("dragstart", r, !0), (0, y.combine)(() => n.removeEventListener("dragstart", r, !0), (0, y.draggable)({
+			canDrag: () => !A,
 			element: n,
-			getInitialData: () => ({
-				label: t.label,
-				nodeId: t.id,
-				type: L
+			getInitialData: () => M(he, {
+				id: t.id,
+				label: t.label
 			}),
-			onDragStart: () => se(!0),
-			onDrop: () => se(!1)
-		}), (0, _.dropTargetForElements)({
-			canDrop: ({ source: e }) => e.data.type === L && typeof e.data.nodeId == "string" && m(e.data.nodeId, t.id),
+			onDragStart: () => te(!0),
+			onDrop: () => te(!1)
+		}), P({
 			element: n,
-			getData: ({ element: n, input: r, source: i }) => {
-				let a = typeof i.data.nodeId == "string" ? i.data.nodeId : null, o = [];
-				return a !== null && !g(a, t.id) && o.push("make-child"), a !== null && !g(a, E(t.id)) && o.push("reorder-above", "reorder-below"), (0, _.attachTreeItemInstruction)({
-					nodeId: t.id,
-					type: L
-				}, {
-					block: o,
-					currentLevel: e - 1,
-					element: n,
-					indentPerLevel: 24,
-					input: r,
-					mode: K ? "expanded" : d === u ? "last-in-group" : "standard"
-				});
+			dragType: he,
+			currentLevel: e - 1,
+			mode: K ? "expanded" : d === c ? "last-in-group" : "standard",
+			canDrop: (e) => m(e.id, t.id),
+			blockedInstructions: (e) => {
+				let n = [];
+				return _(e.id, t.id) || n.push("make-child"), _(e.id, j(t.id)) || n.push("reorder-above", "reorder-below"), n;
 			},
-			onDrag: ({ self: e }) => W((0, _.extractTreeItemInstruction)(e.data)?.type ?? null),
-			onDragEnter: ({ self: e }) => {
-				W((0, _.extractTreeItemInstruction)(e.data)?.type ?? null), Y && !K && (Z(), V.current = setTimeout(() => {
-					b(t.id), t.hasChildren === !0 && S(t.id);
-				}, R));
+			onInstruction: re,
+			onEnter: () => {
+				Y && !K && (Z(), U.current = setTimeout(() => {
+					x(t.id), t.hasChildren === !0 && D(t.id);
+				}, ge));
 			},
-			onDragLeave: () => {
-				Z(), W(null);
-			},
-			onDrop: ({ self: e, source: t }) => {
-				Z(), W(null), de(t.data, e.data);
-			}
+			onLeave: Z,
+			onDrop: (e, t) => void le(e, t)
 		}));
 	}, [
 		s,
 		m,
-		h,
 		g,
+		_,
 		v,
 		e,
-		b,
+		x,
 		Y,
 		q,
 		K,
-		x,
-		S,
-		ae,
 		T,
-		t,
-		E,
 		D,
-		u,
+		O,
+		A,
+		t,
+		j,
+		N,
+		c,
 		d,
-		j
+		B
 	]), r(() => Z, []);
-	async function $(e) {
-		let n = E(t.id), r = D(t.id), i = null;
+	async function ue(e) {
+		let n = j(t.id), r = N(t.id), i = null;
 		if (e === "ArrowUp" && r > 0) i = {
 			nodeId: t.id,
 			parentId: n,
@@ -544,118 +865,118 @@ function F({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibli
 			position: r + 1
 		};
 		else if (e === "ArrowRight" && r > 0) {
-			let e = y(n ?? "")?.[r - 1];
-			if (!e || e.disabled === !0 || !g(t.id, e.id) || e.hasChildren === !0 && !x(e.id) && (await S(e.id), !x(e.id))) return;
-			b(e.id), i = {
+			let e = b(n ?? "")?.[r - 1];
+			if (!e || e.disabled === !0 || !_(t.id, e.id) || e.hasChildren === !0 && !T(e.id) && (await D(e.id), !T(e.id))) return;
+			x(e.id), i = {
 				nodeId: t.id,
 				parentId: e.id,
 				position: v(e.id)
 			};
 		} else if (e === "ArrowLeft" && n !== null) {
-			let e = E(n);
+			let e = j(n);
 			i = {
 				nodeId: t.id,
 				parentId: e,
-				position: D(n) + 1
+				position: N(n) + 1
 			};
 		}
 		if (!i) return;
-		let a = await ae(i);
-		(0, _.announce)(a ? j("tree.moved", "Moved {{label}}", { label: t.label }) : j("tree.move_failed", "Could not move {{label}}", { label: t.label }));
+		let a = await O(i);
+		(0, y.announce)(a ? B("tree.moved", "Moved {{label}}", { label: t.label }) : B("tree.move_failed", "Could not move {{label}}", { label: t.label }));
 	}
-	function fe(e) {
+	function me(e) {
 		if (e.target === e.currentTarget) {
-			if (h && !q && !T && e.ctrlKey && e.shiftKey && [
+			if (g && !q && !A && e.ctrlKey && e.shiftKey && [
 				"ArrowUp",
 				"ArrowDown",
 				"ArrowLeft",
 				"ArrowRight"
 			].includes(e.key)) {
-				e.preventDefault(), $(e.key);
+				e.preventDefault(), ue(e.key);
 				return;
 			}
 			switch (e.key) {
 				case "ArrowDown":
-					e.preventDefault(), w(t.id, "next");
+					e.preventDefault(), k(t.id, "next");
 					return;
 				case "ArrowUp":
-					e.preventDefault(), w(t.id, "prev");
+					e.preventDefault(), k(t.id, "prev");
 					return;
 				case "ArrowRight":
-					e.preventDefault(), Y && !K ? k(t.id) : Y && w(t.id, "firstChild");
+					e.preventDefault(), Y && !K ? L(t.id) : Y && k(t.id, "firstChild");
 					return;
 				case "ArrowLeft":
-					e.preventDefault(), Y && K ? k(t.id) : w(t.id, "parent");
+					e.preventDefault(), Y && K ? L(t.id) : k(t.id, "parent");
 					return;
 				case "Home":
-					e.preventDefault(), w(t.id, "first");
+					e.preventDefault(), k(t.id, "first");
 					return;
 				case "End":
-					e.preventDefault(), w(t.id, "last");
+					e.preventDefault(), k(t.id, "last");
 					return;
 				case "Enter":
 				case " ":
 					if (e.preventDefault(), q) return;
-					if (t.href) I(t.href);
+					if (t.href) ee(t.href);
 					else {
 						let e = X.current?.querySelector("button");
-						e ? (e.click(), z.current?.focus()) : f(t.id);
+						e ? (e.click(), V.current?.focus()) : f(t.id);
 					}
 					return;
-				default: e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && oe(t.id, e.key);
+				default: e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && R(t.id, e.key);
 			}
 		}
 	}
-	function pe(e) {
+	function $(e) {
 		let n = e.target;
-		q || !(n instanceof Element) || n.closest("[role=\"treeitem\"]") !== e.currentTarget || n.closest("button, a[href], [role=\"button\"]") || N(n) || (ne(t.id), f(t.id));
+		q || !(n instanceof Element) || n.closest("[role=\"treeitem\"]") !== e.currentTarget || n.closest("button, a[href], [role=\"button\"]") || fe(n) || (C(t.id), f(t.id));
 	}
-	return /* @__PURE__ */ l("li", {
+	return /* @__PURE__ */ u("li", {
 		"aria-disabled": q,
 		"aria-expanded": Y ? K : void 0,
 		"aria-label": t.label,
 		"aria-level": e,
-		"aria-keyshortcuts": h && !q ? "Control+Shift+ArrowUp Control+Shift+ArrowDown Control+Shift+ArrowLeft Control+Shift+ArrowRight" : void 0,
+		"aria-keyshortcuts": g && !q ? "Control+Shift+ArrowUp Control+Shift+ArrowDown Control+Shift+ArrowLeft Control+Shift+ArrowRight" : void 0,
 		"aria-posinset": d,
-		"aria-selected": ce,
-		"aria-setsize": u,
-		className: (0, _.cn)(t.class) || void 0,
+		"aria-selected": ie,
+		"aria-setsize": c,
+		className: (0, y.cn)(t.class) || void 0,
 		"data-test": `tree-node-${t.id}`,
-		onClick: pe,
-		onKeyDown: fe,
-		ref: z,
+		onClick: $,
+		onKeyDown: me,
+		ref: V,
 		role: "treeitem",
-		tabIndex: le ? 0 : -1,
-		children: [/* @__PURE__ */ l("div", {
-			className: (0, _.cn)("flex items-center gap-2 rounded-lt-sm border-y border-transparent px-2 py-1.5 text-sm text-lt-fg", ce && "bg-lt-muted font-medium", q && "pointer-events-none opacity-50", h && !q && "cursor-grab", H && "opacity-50", U === "reorder-above" && "border-t-lt-primary", U === "reorder-below" && "border-b-lt-primary", (U === "make-child" || U === "reparent") && "ring-1 ring-lt-primary", U === "instruction-blocked" && "ring-1 ring-lt-danger/50"),
-			"data-drop-instruction": U ?? void 0,
-			ref: B,
-			children: [Y ? /* @__PURE__ */ c("button", {
-				"aria-label": K ? j("tree.collapse", "Collapse {{label}}", { label: t.label }) : j("tree.expand", "Expand {{label}}", { label: t.label }),
+		tabIndex: ae ? 0 : -1,
+		children: [/* @__PURE__ */ u("div", {
+			className: (0, y.cn)("flex items-center gap-2 rounded-lt-sm border-y border-transparent px-2 py-1.5 text-sm text-lt-fg", ie && "bg-lt-muted font-medium", q && "pointer-events-none opacity-50", g && !q && "cursor-grab", W && "opacity-50", F(ne)),
+			"data-drop-instruction": ne ?? void 0,
+			ref: H,
+			children: [Y ? /* @__PURE__ */ l("button", {
+				"aria-label": K ? B("tree.collapse", "Collapse {{label}}", { label: t.label }) : B("tree.expand", "Expand {{label}}", { label: t.label }),
 				"data-test": `tree-node-${t.id}-toggle`,
-				onClick: () => k(t.id),
+				onClick: () => L(t.id),
 				tabIndex: -1,
 				type: "button",
-				children: ue ? /* @__PURE__ */ c(_.Icon, {
+				children: se ? /* @__PURE__ */ l(y.Icon, {
 					className: "size-lt-icon-md shrink-0 animate-spin",
 					name: "loader-2"
-				}) : /* @__PURE__ */ c(_.Icon, {
-					className: (0, _.cn)("size-lt-icon-md shrink-0 transition-transform", K && "rotate-90"),
+				}) : /* @__PURE__ */ l(y.Icon, {
+					className: (0, y.cn)("size-lt-icon-md shrink-0 transition-transform", K && "rotate-90"),
 					name: "chevron-right"
 				})
-			}) : null, /* @__PURE__ */ c("span", {
+			}) : null, /* @__PURE__ */ l("span", {
 				className: "flex min-w-0 flex-1 items-center gap-2",
 				ref: X,
-				children: /* @__PURE__ */ c(_.Renderer, { nodes: t.schema })
+				children: /* @__PURE__ */ l(y.Renderer, { nodes: t.schema })
 			})]
-		}), Y && K && J && J.length > 0 ? /* @__PURE__ */ c("ul", {
+		}), Y && K && J && J.length > 0 ? /* @__PURE__ */ l("ul", {
 			className: "pl-6",
 			role: "group",
-			children: J.map((r, i) => /* @__PURE__ */ c(F, {
+			children: J.map((r, i) => /* @__PURE__ */ l(pe, {
 				depth: e + 1,
 				ancestors: [...s, t.id],
 				node: r,
-				orderPath: `${n}.${P(i)}`,
+				orderPath: `${n}.${Q(i)}`,
 				parentPath: G,
 				siblingCount: J.length,
 				siblingIndex: i + 1
@@ -663,9 +984,9 @@ function F({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibli
 		}) : null]
 	});
 }
-var I, L, R, z, B, V = m((() => {
-	y(), A(), I = 6, L = "lattice-tree-node", R = 500, z = "input, textarea, select, label, [contenteditable]", B = ({ node: e }) => {
-		let t = (0, _.nodeIdentity)(e), n = D({
+var me, he, ge, $, _e, ve = h((() => {
+	x(), le(), I(), me = 6, he = "lattice-tree-node", ge = 500, $ = "input, textarea, select, label, [contenteditable]", _e = ({ node: e }) => {
+		let t = (0, y.nodeIdentity)(e), n = se({
 			activeId: e.props.activeId,
 			activePath: e.props.activePath,
 			defaultExpanded: e.props.defaultExpanded,
@@ -680,19 +1001,19 @@ var I, L, R, z, B, V = m((() => {
 			selectAction: e.props.selectAction ?? null,
 			storageKey: `lattice:tree:${t ?? "default"}`
 		}), r = n.childrenFor("") ?? [], { reload: i } = n;
-		return (0, _.useWindowEvent)(_.LATTICE_EVENT.reloadComponent, (e) => {
+		return (0, y.useWindowEvent)(y.LATTICE_EVENT.reloadComponent, (e) => {
 			let n = e.detail;
 			t !== void 0 && n?.component === t && i();
-		}), /* @__PURE__ */ c(k.Provider, {
+		}), /* @__PURE__ */ l(Z.Provider, {
 			value: n,
-			children: /* @__PURE__ */ c("ul", {
+			children: /* @__PURE__ */ l("ul", {
 				"data-lattice-component": t,
 				role: "tree",
-				children: r.map((e, t) => /* @__PURE__ */ c(F, {
+				children: r.map((e, t) => /* @__PURE__ */ l(pe, {
 					ancestors: [],
 					depth: 1,
 					node: e,
-					orderPath: P(t),
+					orderPath: Q(t),
 					parentPath: null,
 					siblingCount: r.length,
 					siblingIndex: t + 1
@@ -703,11 +1024,14 @@ var I, L, R, z, B, V = m((() => {
 }));
 //#endregion
 //#region resources/js/plugin.ts
-y();
-var H = {
+x();
+var ye = {
 	name: "lattice/tree",
-	components: { tree: (0, _.lazyComponent)(() => Promise.resolve().then(() => (V(), j))) },
+	components: {
+		"field.tree": (0, y.lazyComponent)(() => Promise.resolve().then(() => (U(), L))),
+		tree: (0, y.lazyComponent)(() => Promise.resolve().then(() => (ve(), ue)))
+	},
 	i18n: { namespace: "tree" }
 };
 //#endregion
-export { H as default };
+export { ye as default };

@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
+import sourcePlugin from "./plugin";
 
 const hostExternals = ["react", "react-dom", "react/jsx-runtime", "@lattice-php/lattice/runtime"];
 
@@ -29,7 +30,7 @@ it(
       default: { name: string; components: Record<string, unknown> };
     };
 
-    expect(plugin.name).toBe("lattice/tree");
-    expect(Object.keys(plugin.components)).toEqual(["tree"]);
+    expect(plugin.name).toBe(sourcePlugin.name);
+    expect(Object.keys(plugin.components)).toEqual(Object.keys(sourcePlugin.components));
   },
 );
