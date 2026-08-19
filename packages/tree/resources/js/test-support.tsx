@@ -49,6 +49,7 @@ export function treeNode(
     class: null,
     disabled: false,
     hasChildren: false,
+    acceptsChildren: true,
     children: [],
     ...extra,
   };

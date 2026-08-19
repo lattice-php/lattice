@@ -39,6 +39,8 @@ final class TreeNode
 
     public bool $hasChildren = false;
 
+    public bool $acceptsChildren = true;
+
     public bool $disabled = false;
 
     private function __construct(
@@ -119,6 +121,13 @@ final class TreeNode
         return $this;
     }
 
+    public function acceptsChildren(bool $acceptsChildren = true): self
+    {
+        $this->acceptsChildren = $acceptsChildren;
+
+        return $this;
+    }
+
     public function disabled(bool $disabled = true): self
     {
         $this->disabled = $disabled;
@@ -145,7 +154,8 @@ final class TreeNode
      * The array form is a convenience subset of the builder API. Supported keys:
      * `id` and `label` (required, cast to string), `icon`, `badge`, `href`,
      * `class` (cast to string), `children` (nodes or arrays, expanded
-     * recursively), `hasChildren` and `disabled` (truthy). Unknown keys are
+     * recursively), `hasChildren` and `disabled` (truthy), and
+     * `acceptsChildren` (boolean, defaults to true). Unknown keys are
      * ignored. A badge
      * colour, `->action()`/`->actions()`, and `->schema()` have no array form —
      * build those nodes with {@see TreeNode::make()}.
@@ -170,6 +180,10 @@ final class TreeNode
             $tree->hasChildren(true);
         }
 
+        if (isset($node['acceptsChildren'])) {
+            $tree->acceptsChildren((bool) $node['acceptsChildren']);
+        }
+
         if (! empty($node['disabled'])) {
             $tree->disabled(true);
         }
@@ -190,6 +204,7 @@ final class TreeNode
             class: $this->class,
             disabled: $this->disabled,
             hasChildren: $hasChildren,
+            acceptsChildren: $this->acceptsChildren,
             children: $children,
         );
     }

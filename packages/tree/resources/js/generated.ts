@@ -10,6 +10,7 @@ export type Tree = {
   defaultExpanded: string[];
   endpoint: string | null;
   lazy: boolean;
+  maxDepth: number | null;
   moveAction: Node<"action"> | Node<"action.bulk"> | null;
   nodes: TreeNodeData[];
   ref: string | null;
@@ -18,6 +19,7 @@ export type Tree = {
   selectAction: Node<"action"> | Node<"action.bulk"> | null;
 };
 export type TreeNodeData = {
+  readonly acceptsChildren: boolean;
   readonly children: TreeNodeData[];
   readonly class: string | null;
   readonly disabled: boolean;

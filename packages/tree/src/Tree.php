@@ -37,6 +37,8 @@ class Tree extends Component implements InteractiveComponent
 
     public bool $lazy = false;
 
+    public ?int $maxDepth = null;
+
     private ?int $eagerDepth = null;
 
     /** @var list<string>|null */
@@ -88,6 +90,22 @@ class Tree extends Component implements InteractiveComponent
 
         $this->lazy = true;
         $this->eagerDepth = $eagerDepth;
+
+        return $this;
+    }
+
+    /**
+     * The maximum depth any node may reach after a client-side move, roots
+     * being depth 1. A UX affordance only — the registered move action stays
+     * the authority over what persists.
+     */
+    public function maxDepth(?int $maxDepth): static
+    {
+        if ($maxDepth !== null && $maxDepth < 1) {
+            throw new InvalidArgumentException('Tree max depth must be one or greater.');
+        }
+
+        $this->maxDepth = $maxDepth;
 
         return $this;
     }

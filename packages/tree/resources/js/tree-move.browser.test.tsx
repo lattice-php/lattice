@@ -99,6 +99,34 @@ describe("tree drag and drop in a browser", () => {
     expect(treeLabels()).toEqual(["Alpha", "Beta", "Disabled"]);
   });
 
+  it("blocks make-child on a node that rejects children but still reorders next to it", async () => {
+    const fetchMock = stubMoveFetch();
+    await renderTree([treeNode("a", "Alpha"), treeNode("b", "Beta", { acceptsChildren: false })]);
+
+    await dragOnto("a", "b", 0.5);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(treeLabels()).toEqual(["Alpha", "Beta"]);
+
+    await dragOnto("a", "b", 0.9);
+
+    await expect.poll(treeLabels).toEqual(["Beta", "Alpha"]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("blocks a drop whose subtree would exceed maxDepth", async () => {
+    const fetchMock = stubMoveFetch();
+    await renderTree(
+      [treeNode("a", "Alpha", { children: [treeNode("c", "Gamma")] }), treeNode("b", "Beta")],
+      { defaultExpanded: ["a"], maxDepth: 2 },
+    );
+
+    await dragOnto("a", "b", 0.5);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(treeLabels()).toEqual(["Alpha", "Gamma", "Beta"]);
+  });
+
   it("does not drag the node when the gesture starts in an inline form control", async () => {
     const fetchMock = stubMoveFetch();
     const screen = await renderTree(inlineInputNodes);

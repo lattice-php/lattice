@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
 import { testRegistry, treeNode } from "./test-support";
@@ -154,6 +154,67 @@ describe("lazy tree", () => {
 
     expect(await screen.findByText("Laptops")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("refetches roots and drops cached children on a matching reload-component event", async () => {
+    fetchMock
+      .mockResolvedValueOnce(jsonResponse({ nodes: [treeNode("laptops", "Laptops")] }))
+      .mockResolvedValueOnce(jsonResponse({ nodes: roots }))
+      .mockResolvedValueOnce(jsonResponse({ nodes: [treeNode("phones", "Phones")] }));
+    renderLazyTree({ defaultExpanded: ["electronics"], nodes: roots });
+
+    expect(await screen.findByText("Laptops")).toBeInTheDocument();
+
+    act(() => {
+      window.dispatchEvent(
+        new CustomEvent("lattice:reload-component", { detail: { component: "lazy-tree" } }),
+      );
+    });
+
+    expect(await screen.findByText("Phones")).toBeInTheDocument();
+    expect(screen.queryByText("Laptops")).not.toBeInTheDocument();
+    expect(screen.getByTestId("tree-node-electronics")).toHaveAttribute("aria-expanded", "true");
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+
+    const [reloadUrl] = fetchMock.mock.calls[1] as [string];
+    expect(reloadUrl).toBe("/lattice/trees/categories?parent=");
+  });
+
+  it("ignores a reload-component event for another component", async () => {
+    fetchMock.mockResolvedValue(jsonResponse({ nodes: [treeNode("laptops", "Laptops")] }));
+    renderLazyTree({ defaultExpanded: ["electronics"], nodes: roots });
+
+    expect(await screen.findByText("Laptops")).toBeInTheDocument();
+
+    await act(async () => {
+      window.dispatchEvent(
+        new CustomEvent("lattice:reload-component", { detail: { component: "another-tree" } }),
+      );
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("ignores the reload-component event without an endpoint", async () => {
+    const node = fakeNode({
+      id: "inline-tree",
+      props: {
+        defaultExpanded: [],
+        nodes: [treeNode("alpha", "Alpha")],
+        rememberState: false,
+      },
+      type: "tree",
+    });
+    renderWithRegistry(<TreeComponent node={node}>{null}</TreeComponent>, testRegistry);
+
+    await act(async () => {
+      window.dispatchEvent(
+        new CustomEvent("lattice:reload-component", { detail: { component: "inline-tree" } }),
+      );
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(screen.getByText("Alpha")).toBeInTheDocument();
   });
 
   it("fetches the roots for a lazy skeleton without wire nodes", async () => {

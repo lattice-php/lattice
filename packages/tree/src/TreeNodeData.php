@@ -21,6 +21,7 @@ final readonly class TreeNodeData
         public ?string $class,
         public bool $disabled,
         public bool $hasChildren,
+        public bool $acceptsChildren,
         public array $children,
     ) {}
 }

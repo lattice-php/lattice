@@ -110,6 +110,22 @@ it('marks a lazy boundary via the hasChildren flag without inline children', fun
         ->and($lazy->children)->toBe([]);
 });
 
+it('accepts children by default and carries the opt-out into TreeNodeData', function (): void {
+    expect(TreeNode::make('n1', 'Docs')->data([], false)->acceptsChildren)->toBeTrue()
+        ->and(TreeNode::make('n1', 'Docs')->acceptsChildren(false)->data([], false)->acceptsChildren)->toBeFalse();
+});
+
+it('accepts the acceptsChildren flag in the array shorthand', function (): void {
+    $nodes = TreeNode::expand([
+        ['id' => '1', 'label' => 'A', 'acceptsChildren' => false],
+        ['id' => '2', 'label' => 'B'],
+    ]);
+
+    expect($nodes[0]->acceptsChildren)->toBeFalse()
+        ->and($nodes[0]->data([], false)->acceptsChildren)->toBeFalse()
+        ->and($nodes[1]->acceptsChildren)->toBeTrue();
+});
+
 it('marks a disabled node', function (): void {
     expect(TreeNode::make('5', 'Plain')->disabled()->data([], false)->disabled)->toBeTrue();
 });
