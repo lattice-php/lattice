@@ -1,5 +1,49 @@
 # Changelog
 
+## [0.57.0](https://github.com/lattice-php/lattice/compare/0.56.3...0.57.0) (2026-08-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ui:** deep imports move with the files — @lattice-php/ui/control, /column-sizing, /use-column-resizing, and /use-collapsible-state are now under @lattice-php/ui/lib/*, and @lattice-php/ui/image-preview is @lattice-php/ui/components/image/image-preview. Root-index imports are unaffected.
+* **ui:** deep imports move with the files — @lattice-php/ui/button is now @lattice-php/ui/components/button/button, @lattice-php/ui/badge is now @lattice-php/ui/components/badge/badge. Root-index imports are unaffected.
+* a close-modal effect without an id now closes every open entry instead of the topmost one.
+* @lattice-php/lattice/runtime no longer exports getBulkActions and @lattice-php/table/lib/bulk no longer exports BulkAction/getBulkActions; use getBulkActionNodes with the action hook instead.
+* EmbeddedModalState requires onExited; dialog shells must wire it to DialogContent onCloseAutoFocus.
+* openModal(string) and free-standing page-tree modals are removed; Modal->open() and Modal's ref prop are gone.
+
+### Features
+
+* dialog-stack modal host and unified action overlays ([#491](https://github.com/lattice-php/lattice/issues/491)) ([39efc15](https://github.com/lattice-php/lattice/commit/39efc15e81038811bcb0080598935c89036fe5d8))
+* embedded modals via -&gt;modal() triggers and node-shipping openModal effects ([#488](https://github.com/lattice-php/lattice/issues/488)) ([59361eb](https://github.com/lattice-php/lattice/commit/59361eb25bdbd870a03e8551c94c9ffc67fca87b))
+* **map:** reset the view to the default zoom with a map control ([#490](https://github.com/lattice-php/lattice/issues/490)) ([52ae963](https://github.com/lattice-php/lattice/commit/52ae9631e7023bb1d9394ae5ba8c98f62077339a))
+* tree custom-node DX — interactive schemas, move limits, reload, move planner; callAction helper ([#503](https://github.com/lattice-php/lattice/issues/503)) ([490085f](https://github.com/lattice-php/lattice/commit/490085f6c16cc837a95112d9d785bd6a139320ee))
+* **ui:** add client-side layout primitives ([#492](https://github.com/lattice-php/lattice/issues/492)) ([9dbdab8](https://github.com/lattice-php/lattice/commit/9dbdab8c6282449f61a29e365d44ea438c5668c6))
+* **ui:** bind recordless description list entries to row data ([#502](https://github.com/lattice-php/lattice/issues/502)) ([9443832](https://github.com/lattice-php/lattice/commit/9443832afe81fdd5dfdac0bb4939fcaa98c3daa1))
+* **ui:** expose client-side composition components ([#496](https://github.com/lattice-php/lattice/issues/496)) ([17a3338](https://github.com/lattice-php/lattice/commit/17a333823e2422ca8914ecb9509340ee927405db))
+* **ui:** expose client-side content components ([#498](https://github.com/lattice-php/lattice/issues/498)) ([f623cf1](https://github.com/lattice-php/lattice/commit/f623cf189e0f96e226f8a9f390287a3605027514))
+* **ui:** expose client-side disclosure ([#489](https://github.com/lattice-php/lattice/issues/489)) ([4ae7a56](https://github.com/lattice-php/lattice/commit/4ae7a56faf6dfd0ae7cbb5ad322a51916df4d516))
+* **ui:** expose client-side leaf components ([#495](https://github.com/lattice-php/lattice/issues/495)) ([75ff280](https://github.com/lattice-php/lattice/commit/75ff2807863c5c1879cde1488cd59fe5ed836347))
+
+
+### Bug Fixes
+
+* register page routes most-specific first so static segments beat parameters ([#499](https://github.com/lattice-php/lattice/issues/499)) ([5b2e10d](https://github.com/lattice-php/lattice/commit/5b2e10d5999a7141bc6730fb7419008869e53b24))
+* stabilize the flaky CI browser tests ([#493](https://github.com/lattice-php/lattice/issues/493)) ([0786a2f](https://github.com/lattice-php/lattice/commit/0786a2ff76efe0b624060c0482e5d21ab2a34ac1))
+
+
+### Refactoring
+
+* dialog uniformity — palette and notifications on the host, navigation-aware modal stack ([#497](https://github.com/lattice-php/lattice/issues/497)) ([88b9bf9](https://github.com/lattice-php/lattice/commit/88b9bf94905e7af65d34639485ad679935519598))
+* host-mount the media dialogs and retire getBulkActions ([#494](https://github.com/lattice-php/lattice/issues/494)) ([9aed719](https://github.com/lattice-php/lattice/commit/9aed719c3bd30721ad4c63114621e997550b8a01))
+* **ui:** per-node component folders and unified identity attributes ([#500](https://github.com/lattice-php/lattice/issues/500)) ([3936d19](https://github.com/lattice-php/lattice/commit/3936d194f503cdb0ba719fa043b163a08ec918e2))
+* **ui:** root realignment — components/, primitives/, lib/ — and aligned providers ([#501](https://github.com/lattice-php/lattice/issues/501)) ([e07fcc8](https://github.com/lattice-php/lattice/commit/e07fcc8ad9ad177e1b34a4cc1efd1b61434cdcf3))
+
+
+### Documentation
+
+* document first-party package examples ([#486](https://github.com/lattice-php/lattice/issues/486)) ([017a2f7](https://github.com/lattice-php/lattice/commit/017a2f7e43e0860a7183dd03f055aa35f30339dd))
+
 ## [0.56.3](https://github.com/lattice-php/lattice/compare/0.56.2...0.56.3) (2026-08-18)
 
 
