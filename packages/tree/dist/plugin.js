@@ -161,7 +161,7 @@ function R() {
 	return e;
 }
 function z({ node: e, name: t, depth: n, parentRowId: r }) {
-	let i = e.props, a = R(), { t: o } = (0, y.useT)("tree"), { path: s, rows: d, onField: f, onRemove: p, onMove: m, append: h } = (0, y.useRowCollection)(t, 0), g = n === 1 && i.maxItems !== null && d.length >= i.maxItems, _ = n === 1 && i.minItems !== null && d.length <= i.minItems, v = i.templates.map((e) => ({
+	let i = e.props, a = R(), { t: o } = (0, y.useT)("tree"), { path: s, rows: d, onField: f, onRemove: p, onMove: m, append: h, insert: g } = (0, y.useRowCollection)(t, 0), _ = n === 1 && i.maxItems !== null && d.length >= i.maxItems, v = n === 1 && i.minItems !== null && d.length <= i.minItems, b = i.templates.map((e) => ({
 		type: e.type,
 		label: e.label
 	}));
@@ -184,14 +184,17 @@ function z({ node: e, name: t, depth: n, parentRowId: r }) {
 			path: s,
 			parentRowId: r,
 			siblingCount: d.length,
-			removable: !_,
+			removable: !v,
+			insertable: !_,
+			options: b,
 			onField: f,
 			onRemove: p,
-			onMove: m
+			onMove: m,
+			onInsert: g
 		}, String(t[y.ROW_ID_KEY] ?? i))),
-		!a.locked && !g && /* @__PURE__ */ l(y.AddRowMenu, {
+		n === 1 && !a.locked && !_ && /* @__PURE__ */ l(y.AddRowMenu, {
 			addLabel: i.addLabel ?? o("tree.add", "Add"),
-			options: v,
+			options: b,
 			onSelect: (e) => h({ type: e })
 		})
 	] });
@@ -206,85 +209,99 @@ function B({ label: e, testId: t, danger: n = !1, onClick: r, children: i }) {
 		children: i
 	});
 }
-function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, siblingCount: d, removable: f, onField: p, onRemove: m, onMove: h }) {
-	let g = R(), { t: _ } = (0, y.useT)("tree"), v = a(null), b = a(null), [x, C] = o(!1), [w, T] = o(null), E = typeof t[y.ROW_ID_KEY] == "string" ? t[y.ROW_ID_KEY] : null, D = e.props.templates.find((e) => e.type === t.type), O = D?.label ?? `Unknown block: ${String(t.type)}`, k = g.acceptsChildren(t) && (g.maxDepth === null || i < g.maxDepth), A = S(t).length, j = !g.locked && E !== null;
+function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, siblingCount: d, removable: f, insertable: p, options: m, onField: h, onRemove: g, onMove: _, onInsert: v }) {
+	let b = R(), { t: x } = (0, y.useT)("tree"), C = a(null), w = a(null), [T, E] = o(!1), [D, O] = o(null), k = typeof t[y.ROW_ID_KEY] == "string" ? t[y.ROW_ID_KEY] : null, A = e.props.templates.find((e) => e.type === t.type), j = A?.label ?? `Unknown block: ${String(t.type)}`, N = b.acceptsChildren(t) && (b.maxDepth === null || i < b.maxDepth), I = S(t).length, L = !b.locked && k !== null;
 	return r(() => {
-		let e = v.current, t = b.current;
-		if (!(!e || !j || E === null)) return (0, y.combine)(...t ? [(0, y.draggable)({
+		let e = C.current, t = w.current;
+		if (!(!e || !L || k === null)) return (0, y.combine)(...t ? [(0, y.draggable)({
 			element: e,
 			dragHandle: t,
-			getInitialData: () => M(g.dragType, {
-				id: E,
-				label: O
+			getInitialData: () => M(b.dragType, {
+				id: k,
+				label: j
 			}),
-			onDragStart: () => C(!0),
-			onDrop: () => C(!1)
+			onDragStart: () => E(!0),
+			onDrop: () => E(!1)
 		})] : [], P({
 			element: e,
-			dragType: g.dragType,
+			dragType: b.dragType,
 			currentLevel: i - 1,
-			mode: k && A > 0 ? "expanded" : n === d - 1 ? "last-in-group" : "standard",
-			canDrop: (e) => e.id !== E,
+			mode: N && I > 0 ? "expanded" : n === d - 1 ? "last-in-group" : "standard",
+			canDrop: (e) => e.id !== k,
 			blockedInstructions: (e) => {
 				let t = ["reparent"];
-				return (!k || !g.canPlace(e.id, E)) && t.push("make-child"), g.canPlace(e.id, c) || t.push("reorder-above", "reorder-below"), t;
+				return (!N || !b.canPlace(e.id, k)) && t.push("make-child"), b.canPlace(e.id, c) || t.push("reorder-above", "reorder-below"), t;
 			},
-			onInstruction: T,
+			onInstruction: O,
 			onDrop: (e, t) => {
-				t.type === "reorder-above" ? g.move(e.id, c, n, e.label) : t.type === "reorder-below" ? g.move(e.id, c, n + 1, e.label) : t.type === "make-child" && g.move(e.id, E, A, e.label);
+				t.type === "reorder-above" ? b.move(e.id, c, n, e.label) : t.type === "reorder-below" ? b.move(e.id, c, n + 1, e.label) : t.type === "make-child" && b.move(e.id, k, I, e.label);
 			}
 		}));
 	}, [
-		g,
-		A,
+		b,
+		I,
 		i,
+		L,
 		j,
-		O,
-		k,
+		N,
 		n,
 		c,
-		E,
+		k,
 		d
 	]), /* @__PURE__ */ u("div", {
-		ref: v,
+		ref: C,
 		"data-test": `tree-field-${s}-row-${n}`,
-		"data-drop-instruction": w ?? void 0,
-		className: (0, y.cn)("rounded-lt border border-lt-border bg-lt-surface p-4", x && "opacity-50", F(w)),
+		"data-drop-instruction": D ?? void 0,
+		className: (0, y.cn)("rounded-lt border border-lt-border bg-lt-surface p-4", T && "opacity-50", F(D)),
 		children: [/* @__PURE__ */ u("div", {
 			className: "mb-2 flex items-center justify-between",
 			children: [/* @__PURE__ */ u("div", {
 				className: "flex items-center gap-2",
-				children: [!g.locked && /* @__PURE__ */ l("button", {
-					ref: b,
+				children: [!b.locked && /* @__PURE__ */ l("button", {
+					ref: w,
 					type: "button",
-					"aria-label": _("tree.drag", "Drag {{label}}", { label: O }),
+					"aria-label": x("tree.drag", "Drag {{label}}", { label: j }),
 					"data-test": `tree-field-${s}-drag-${n}`,
 					className: "cursor-grab text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-sm",
 					children: /* @__PURE__ */ l(y.Icon, { name: "grip-vertical" })
 				}), /* @__PURE__ */ l("span", {
 					className: "text-sm font-medium text-lt-muted-fg",
-					children: O
+					children: j
 				})]
-			}), !g.locked && /* @__PURE__ */ u("div", {
+			}), !b.locked && /* @__PURE__ */ u("div", {
 				className: "flex items-center gap-1",
 				children: [
+					N && /* @__PURE__ */ l(y.AddRowMenu, {
+						addLabel: x("tree.add_child", "Add sub-item"),
+						icon: "corner-down-right",
+						testId: `tree-field-${s}-add-child-${n}`,
+						options: m,
+						onSelect: (e) => h(n, "children", [...S(t), (0, y.withRowId)({ type: e })])
+					}),
+					p && /* @__PURE__ */ l(y.AddRowMenu, {
+						addLabel: x("tree.add_below", "Add item below"),
+						icon: "list-plus",
+						testId: `tree-field-${s}-add-below-${n}`,
+						options: m,
+						onSelect: (e) => v(n + 1, { type: e })
+					}),
 					e.props.reorderable && n > 0 && /* @__PURE__ */ l(B, {
-						label: _("tree.move_up", "Move up"),
+						label: x("tree.move_up", "Move up"),
 						testId: `tree-field-${s}-up-${n}`,
-						onClick: () => h(n, -1),
+						onClick: () => _(n, -1),
 						children: /* @__PURE__ */ l(y.Icon, { name: "arrow-up" })
 					}),
 					e.props.reorderable && n < d - 1 && /* @__PURE__ */ l(B, {
-						label: _("tree.move_down", "Move down"),
+						label: x("tree.move_down", "Move down"),
 						testId: `tree-field-${s}-down-${n}`,
-						onClick: () => h(n, 1),
+						onClick: () => _(n, 1),
 						children: /* @__PURE__ */ l(y.Icon, { name: "arrow-down" })
 					}),
 					f && /* @__PURE__ */ l(B, {
-						label: _("tree.remove", "Remove"),
+						label: x("tree.remove", "Remove"),
 						testId: `tree-field-${s}-remove-${n}`,
 						danger: !0,
-						onClick: () => m(n),
+						onClick: () => g(n),
 						children: /* @__PURE__ */ l(y.Icon, { name: "trash-2" })
 					})
 				]
@@ -293,17 +310,17 @@ function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, sibl
 			base: s,
 			index: n,
 			row: t,
-			onChange: (e, t) => p(n, e, t),
+			onChange: (e, t) => h(n, e, t),
 			children: [/* @__PURE__ */ l("div", {
 				className: "flex flex-col gap-4",
-				children: (D?.schema ?? []).map((e, t) => /* @__PURE__ */ l(y.RenderNode, { node: e }, t))
-			}), k && /* @__PURE__ */ l("div", {
+				children: (A?.schema ?? []).map((e, t) => /* @__PURE__ */ l(y.RenderNode, { node: e }, t))
+			}), N && /* @__PURE__ */ l("div", {
 				className: "mt-3 flex flex-col gap-3 border-l-2 border-lt-border pl-4",
 				children: /* @__PURE__ */ l(z, {
 					node: e,
 					name: "children",
 					depth: i + 1,
-					parentRowId: E
+					parentRowId: k
 				})
 			})]
 		})]
