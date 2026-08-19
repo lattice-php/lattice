@@ -9,6 +9,9 @@ export {
 } from "@lattice-php/ui/action-menu-context";
 export { useAction } from "./hooks/use-action";
 export type { ActionSubmitOptions } from "./hooks/use-action";
+export { useCallAction } from "./hooks/use-call-action";
+export { callAction } from "./lib/call-action";
+export type { CallActionResult } from "./lib/call-action";
 export { runAction } from "./lib/run-action";
 export { actionComponents } from "./plugin";
 export type * from "./types";

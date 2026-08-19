@@ -152,6 +152,65 @@ rejected outright, a strict accessor's 404 takes the whole page down with it. Se
 [Authorization](/core/authorization/#reading-trusted-context) for the `OrNull` variants to reach for
 there instead.
 
+## Calling an action from a custom component
+
+A [custom component](/extending/component-packages/) can carry an action as a prop and run it with
+its own payload instead of rendering the built-in trigger. Declare a nullable `Action` prop on the
+PHP component and fill it with `Action::use()`:
+
+```php
+use Lattice\Actions\Components\Action;
+use Lattice\Core\Attributes\AsComponent;
+use Lattice\Ui\Components\Component;
+
+#[AsComponent('color-picker')]
+final class ColorPicker extends Component
+{
+    public ?Action $saveAction = null;
+
+    public function saveAction(string $action, array $context = []): static
+    {
+        $this->saveAction = Action::use($action, $context);
+
+        return $this;
+    }
+}
+```
+
+On the client, `callAction` does the whole round trip: it posts a JSON payload to the action's
+endpoint with its signed ref, dispatches the returned effects, and resolves with the response status
+and the data attached via `ActionResult::success([...])`. The `useCallAction()` hook binds it to the
+current effect dispatcher:
+
+```tsx
+import type { RendererComponent } from "@lattice-php/core/types";
+import { useCallAction } from "@lattice-php/lattice/runtime";
+
+const ColorPicker: RendererComponent<"color-picker"> = ({ node }) => {
+  const callAction = useCallAction();
+
+  const save = async (color: string) => {
+    if (!node.props.saveAction) {
+      return;
+    }
+
+    const { ok, data } = await callAction(node.props.saveAction, { color });
+
+    if (ok) {
+      applyColor(String(data.color ?? color));
+    }
+  };
+
+  // ...
+};
+```
+
+An action the server hid or denied serializes without an endpoint; `callAction` treats it as an ok
+no-op, so optimistic UI keyed on the result stays put. A rejected action (non-2xx) still dispatches
+its effects — the error toast shows — and resolves `ok: false` with the response `data`. Outside a
+hook context, use `callAction(action, payload, dispatch)` from `@lattice-php/action` with the
+dispatcher `useEffectDispatcher()` returns.
+
 ## Next steps
 
 - [Effects & results](/actions/effects/) — every effect an action can return.
