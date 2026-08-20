@@ -268,12 +268,6 @@ final class TableRegistry extends DefinitionRegistry
     }
 
     /**
-     * The identity keys plus every rendering column's bound row keys. A
-     * visible(false) column stays authoritative for its own key: hidden means
-     * gone from the row payload even when a rendering sibling binds the key
-     * (e.g. a badge colour reference) — unless the key is also a rendering
-     * column's own key or an identity key.
-     *
      * @param  array<int, Column>  $columns
      * @param  callable(TextColumn): bool  $matches
      * @return array<int, TextColumn>
@@ -328,6 +322,12 @@ final class TableRegistry extends DefinitionRegistry
     }
 
     /**
+     * The identity keys plus every rendering column's bound row keys. A
+     * visible(false) column stays authoritative for its own key: hidden means
+     * gone from the row payload even when a rendering sibling binds the key
+     * (e.g. a badge colour reference) — unless the key is also a rendering
+     * column's own key or an identity key.
+     *
      * @param  array<int, Column>  $columns
      * @return array<int, string>
      */

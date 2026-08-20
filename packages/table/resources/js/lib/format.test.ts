@@ -115,4 +115,16 @@ describe("resolveLink", () => {
   it("falls back to the cell value when no explicit href is set", () => {
     expect(resolveLink(column(null), row, "https://example.test")).toBe("https://example.test");
   });
+
+  it("prefers the row-resolved closure link over the template", () => {
+    const linked = { ...row, links: { col: "/customers/7" } };
+
+    expect(resolveLink(column("/x/{id}"), linked, "Ada")).toBe("/customers/7");
+  });
+
+  it("returns null when the closure resolved no link for the row", () => {
+    const unlinked = { ...row, links: { col: null } };
+
+    expect(resolveLink(column(null), unlinked, "https://example.test")).toBeNull();
+  });
 });

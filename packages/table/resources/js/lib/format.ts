@@ -40,10 +40,10 @@ export function resolveLink(column: TableColumn, row: TableRow, value: unknown):
     return null;
   }
 
-  const resolved = getRowLink(row, column.key);
+  const rowLink = getRowLink(row, column.key);
 
-  if (resolved !== undefined) {
-    return resolved;
+  if (rowLink !== undefined) {
+    return rowLink;
   }
 
   const href = link.href ?? String(value ?? "");
