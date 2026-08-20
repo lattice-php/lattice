@@ -268,6 +268,12 @@ final class TableRegistry extends DefinitionRegistry
     }
 
     /**
+     * The identity keys plus every rendering column's bound row keys. A
+     * visible(false) column stays authoritative for its own key: hidden means
+     * gone from the row payload even when a rendering sibling binds the key
+     * (e.g. a badge colour reference) — unless the key is also a rendering
+     * column's own key or an identity key.
+     *
      * @param  array<int, Column>  $columns
      * @param  callable(TextColumn): bool  $matches
      * @return array<int, TextColumn>
@@ -328,15 +334,20 @@ final class TableRegistry extends DefinitionRegistry
     private function rowKeys(array $columns): array
     {
         $keys = self::ROW_IDENTITY_KEYS;
+        $rendered = [];
+        $suppressed = [];
 
         foreach ($columns as $column) {
-            if (! $column->shouldRender()) {
-                continue;
+            if ($column->shouldRender()) {
+                $rendered[] = $column->key();
+                array_push($keys, ...$column->boundRowKeys());
+            } else {
+                $suppressed[] = $column->key();
             }
-
-            array_push($keys, ...$column->boundRowKeys());
         }
 
-        return array_values(array_unique($keys));
+        $suppressed = array_diff($suppressed, self::ROW_IDENTITY_KEYS, $rendered);
+
+        return array_values(array_unique(array_diff($keys, $suppressed)));
     }
 }

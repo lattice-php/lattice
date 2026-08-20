@@ -104,8 +104,12 @@ describe("resolveLink", () => {
     );
   });
 
-  it("coerces missing row tokens to an empty string", () => {
-    expect(resolveLink(column("/x/{missing}"), row, "v")).toBe("/x/");
+  it("drops the link when a row token has no value", () => {
+    expect(resolveLink(column("/x/{missing}"), row, "v")).toBeNull();
+  });
+
+  it("drops the link when the value token is empty", () => {
+    expect(resolveLink(column("/x/{value}"), row, null)).toBeNull();
   });
 
   it("falls back to the cell value when no explicit href is set", () => {

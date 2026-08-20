@@ -20,3 +20,12 @@ it('serializes a per-row currency reference', function (): void {
         ->and($props['currency'])->toBeNull()
         ->and($props['minimumFractionDigits'])->toBe(0);
 });
+
+it('binds the currency field into the row keys so projection keeps it', function (): void {
+    expect(MoneyColumn::make('total')->currencyField('currency')->boundRowKeys())
+        ->toBe(['total', 'currency']);
+});
+
+it('binds only its own key without a currency field', function (): void {
+    expect(MoneyColumn::make('total')->currency('EUR')->boundRowKeys())->toBe(['total']);
+});
