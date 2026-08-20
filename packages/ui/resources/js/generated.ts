@@ -128,6 +128,7 @@ export type ComponentPropsMap = {
   image: Image;
   link: Link;
   modal: Modal;
+  popover: Popover;
   progress: Progress;
   "raw-block": RawBlock;
   section: Section;
@@ -257,6 +258,7 @@ export type NodeType =
   | "image"
   | "link"
   | "modal"
+  | "popover"
   | "progress"
   | "raw-block"
   | "section"
@@ -296,6 +298,14 @@ export type OpenModal = {
 };
 export type Orientation = "horizontal" | "vertical";
 export type Placement = "top" | "bottom" | "right";
+export type Popover = {
+  align: PopoverAlign;
+  label: string | null;
+  side: PopoverSide;
+  trigger: Node[];
+};
+export type PopoverAlign = "start" | "center" | "end";
+export type PopoverSide = "top" | "right" | "bottom" | "left";
 export type Progress = {
   color: Color | null;
   max: number;
@@ -428,6 +438,7 @@ export type UiNodeType =
   | "image"
   | "link"
   | "modal"
+  | "popover"
   | "progress"
   | "raw-block"
   | "section"

@@ -101,6 +101,7 @@ export default defineConfig({
             { label: "Tabs", link: "/components/tabs/" },
             { label: "Modals", link: "/components/modals/" },
             { label: "Tooltip", link: "/components/tooltip/" },
+            { label: "Popover", link: "/components/popover/" },
             { label: "Progress", link: "/components/progress/" },
             { label: "Charts", link: "/components/charts/" },
             { label: "Notifications", link: "/components/notifications/" },

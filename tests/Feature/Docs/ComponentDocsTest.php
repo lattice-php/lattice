@@ -14,6 +14,7 @@ use Lattice\Ui\Components\Entries\TextEntry;
 use Lattice\Ui\Components\Grid;
 use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Image;
+use Lattice\Ui\Components\Popover;
 use Lattice\Ui\Components\Progress;
 use Lattice\Ui\Components\RawBlock;
 use Lattice\Ui\Components\Section;
@@ -90,6 +91,19 @@ describe('docs fixtures', function (): void {
                 Badge::make('Plan: Pro'),
                 Tooltip::make()->content('Includes unlimited seats and priority support.'),
             ]),
+        ]));
+    });
+
+    it('matches the popover example fixture', function (): void {
+        assertFixtureMatches('components.popover', Wire::toWire([
+            Popover::make('plan-details')
+                ->trigger([Text::make('Pro plan')])
+                ->schema([
+                    Stack::make()->gap(Gap::Small)->schema([
+                        Heading::make('Pro plan', 3),
+                        Text::make('Unlimited seats, priority support, and SSO.'),
+                    ]),
+                ]),
         ]));
     });
 

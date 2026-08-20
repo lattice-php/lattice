@@ -1,0 +1,58 @@
+[
+    {
+        "key": "plan-details",
+        "props": {
+            "align": "start",
+            "label": null,
+            "side": "bottom",
+            "trigger": [
+                {
+                    "props": {
+                        "align": null,
+                        "color": null,
+                        "copyable": false,
+                        "size": "md",
+                        "text": "Pro plan"
+                    },
+                    "type": "text"
+                }
+            ]
+        },
+        "schema": [
+            {
+                "props": {
+                    "align": null,
+                    "direction": null,
+                    "float": null,
+                    "gap": "sm",
+                    "height": null,
+                    "justify": null,
+                    "width": null
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "copyable": false,
+                            "level": 3,
+                            "text": "Pro plan",
+                            "tooltip": null
+                        },
+                        "type": "heading"
+                    },
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Unlimited seats, priority support, and SSO."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "stack"
+            }
+        ],
+        "type": "popover"
+    }
+]
