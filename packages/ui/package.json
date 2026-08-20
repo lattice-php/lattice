@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/ui",
-  "version": "0.60.0",
+  "version": "0.61.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lattice-php/lattice.git",
@@ -55,7 +55,7 @@
     "@codemirror/state": "^6.7.1",
     "@codemirror/view": "^6.43.8",
     "@internationalized/date": "3.12.3",
-    "@lattice-php/core": "0.60.0",
+    "@lattice-php/core": "0.61.0",
     "@lezer/highlight": "^1.2.3",
     "@radix-ui/react-checkbox": "^1.3.11",
     "@radix-ui/react-dialog": "^1.1.23",
