@@ -1,5 +1,5 @@
 import type { NodeUnionOf } from "@lattice-php/core";
-import type { ComponentPropsMap, FormNodeType } from "@lattice-php/form/generated";
+import type { ComponentPropsMap, FormNodeType } from "./generated";
 
 declare module "@lattice-php/core" {
   interface ComponentProps extends ComponentPropsMap {}
@@ -25,6 +25,6 @@ export type {
   Textarea,
   TextInput,
   TimeInput,
-} from "@lattice-php/form/generated";
+} from "./generated";
 
 export type FormNode = NodeUnionOf<FormNodeType>;
