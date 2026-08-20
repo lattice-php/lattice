@@ -32,4 +32,15 @@ final class MoneyColumn extends NumericColumn
 
         return $this;
     }
+
+    /**
+     * @return array<int, string>
+     */
+    #[\Override]
+    public function boundRowKeys(): array
+    {
+        return $this->currencyField === null
+            ? parent::boundRowKeys()
+            : [...parent::boundRowKeys(), $this->currencyField];
+    }
 }
