@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.61.0](https://github.com/lattice-php/lattice/compare/0.60.0...0.61.0) (2026-08-20)
+
+
+### Features
+
+* popover component, cell popovers and closure links ([#514](https://github.com/lattice-php/lattice/issues/514)) ([9d29402](https://github.com/lattice-php/lattice/commit/9d2940201fe4d998144bd9e0f97934d20d0d92d4))
+
+
+### Bug Fixes
+
+* **table:** bind cell-referenced sibling row keys into the row projection ([#513](https://github.com/lattice-php/lattice/issues/513)) ([472b15d](https://github.com/lattice-php/lattice/commit/472b15d45f5be8171af7a34bd898d25abbe0ddd5))
+* **table:** resolve duplicate resolveLink declaration from crossed merges ([#516](https://github.com/lattice-php/lattice/issues/516)) ([3e37391](https://github.com/lattice-php/lattice/commit/3e3739112bf7e24ef2777efa36cf98b8d27d5b9d))
+
 ## [0.60.0](https://github.com/lattice-php/lattice/compare/0.59.0...0.60.0) (2026-08-19)
 
 
