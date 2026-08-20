@@ -419,6 +419,21 @@ test('registered table responses prune hidden columns from the row payload', fun
         ->and($row)->not->toHaveKey('secret');
 });
 
+test('a badge colour key without a hidden column claiming it ships in the row payload', function (): void {
+    Lattice::tables([WorkbenchBadgeHelperUsersTable::class]);
+
+    $ref = $this->latticeRef(wire(Table::use(WorkbenchBadgeHelperUsersTable::class)));
+    $row = $this->latticeGet('/lattice/tables/workbench.badge-helper-users', $ref)
+        ->assertOk()
+        ->json('data.0');
+
+    expect($row)->toBeArray();
+    assert(is_array($row));
+
+    expect(array_keys($row))->toBe(['status', 'helper'])
+        ->and($row['helper'])->toBe('green');
+});
+
 test('a hidden column referenced by a visible badge column is still pruned from the row payload', function (): void {
     Lattice::tables([WorkbenchHiddenBadgeHelperUsersTable::class]);
 
@@ -615,6 +630,27 @@ class WorkbenchHiddenColumnUsersTable extends TableDefinition
             [
                 'name' => 'Taylor',
                 'secret' => 'top-secret',
+            ],
+        ]));
+    }
+}
+
+#[AsTable('workbench.badge-helper-users')]
+class WorkbenchBadgeHelperUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('status')->badge('helper'),
+        ];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            [
+                'status' => 'Active',
+                'helper' => 'green',
             ],
         ]));
     }
