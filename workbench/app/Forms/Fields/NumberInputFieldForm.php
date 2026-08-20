@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\Components\NumberInput;
+use Lattice\Form\Components\Select;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Components\Tab;
 use Lattice\Ui\Components\Tabs;
@@ -42,6 +43,20 @@ class NumberInputFieldForm extends FormDefinition
                             ->step(0.01)
                             ->prefix('$')
                             ->suffix('USD'),
+                        NumberInput::make('price', __('workbench.fields.number.price'))
+                            ->min(0)
+                            ->step(0.01)
+                            ->rules(['nullable', 'numeric', 'min:0'])
+                            ->suffixField(
+                                Select::make('currency', __('workbench.fields.number.currency'))
+                                    ->options([
+                                        Select::option('EUR', 'eur'),
+                                        Select::option('USD', 'usd'),
+                                        Select::option('CHF', 'chf'),
+                                    ])
+                                    ->value('eur')
+                                    ->rules(['nullable', 'in:eur,usd,chf']),
+                            ),
                     ]),
                 ]),
         ]);

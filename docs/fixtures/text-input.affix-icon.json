@@ -21,9 +21,11 @@
                 "icon": "search",
                 "text": null
             },
+            "prefixFieldName": null,
             "readOnly": false,
             "required": false,
             "suffix": null,
+            "suffixFieldName": null,
             "tabIndex": null,
             "tooltip": null,
             "type": null,

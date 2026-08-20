@@ -18,11 +18,13 @@
             "prefillRefreshOn": null,
             "prefillResetOn": null,
             "prefix": null,
+            "prefixFieldName": null,
             "readOnly": false,
             "required": false,
             "slider": false,
             "step": null,
             "suffix": null,
+            "suffixFieldName": null,
             "tabIndex": null,
             "tooltip": null,
             "value": null

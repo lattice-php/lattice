@@ -9,6 +9,7 @@ export type FormFieldControlProps = {
   id: string;
   "aria-describedby"?: string;
   "aria-invalid"?: boolean;
+  "aria-label"?: string;
   "aria-labelledby"?: string;
   "aria-required"?: boolean;
 };

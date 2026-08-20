@@ -21,12 +21,14 @@
                 "icon": null,
                 "text": "$"
             },
+            "prefixFieldName": null,
             "readOnly": false,
             "required": false,
             "suffix": {
                 "icon": null,
                 "text": "USD"
             },
+            "suffixFieldName": null,
             "tabIndex": null,
             "tooltip": null,
             "type": null,

@@ -391,11 +391,13 @@ export type NumberInput = {
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   prefix: Affix | null;
+  prefixFieldName: string | null;
   readOnly: boolean;
   required: boolean;
   slider: boolean;
   step: number | null;
   suffix: Affix | null;
+  suffixFieldName: string | null;
   tabIndex: number | null;
   tooltip: string | null;
   value: unknown;
@@ -596,9 +598,11 @@ export type TextInput = {
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   prefix: Affix | null;
+  prefixFieldName: string | null;
   readOnly: boolean;
   required: boolean;
   suffix: Affix | null;
+  suffixFieldName: string | null;
   tabIndex: number | null;
   tooltip: string | null;
   type: string | null;

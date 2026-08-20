@@ -262,6 +262,8 @@ return [
             'signed' => 'Signed (S3)',
         ],
         'number' => [
+            'currency' => 'Currency',
+            'price' => 'Price',
             'slider' => 'Slider',
         ],
         'otp' => [
@@ -311,7 +313,9 @@ return [
         ],
         'text' => [
             'copyable' => 'Copyable',
+            'dialing-code' => 'Dialing code',
             'handle' => 'Handle',
+            'phone' => 'Phone',
             'website' => 'Website',
         ],
         'variants' => [

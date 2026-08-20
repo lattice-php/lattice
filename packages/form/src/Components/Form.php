@@ -9,6 +9,7 @@ use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Contracts\FormRootComponent;
 use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Form\Contracts\ProvidesAffixFields;
 use Lattice\Form\Contracts\ProvidesRowFields;
 use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
@@ -188,6 +189,10 @@ class Form extends ContainerComponent implements FormRootComponent, InteractiveC
     {
         return collect($this->descendants())
             ->filter(fn (Component $component): bool => $component instanceof Field)
+            ->flatMap(fn (Field $field): array => [
+                $field,
+                ...($field instanceof ProvidesAffixFields ? $field->affixFields() : []),
+            ])
             ->values();
     }
 
@@ -259,8 +264,8 @@ class Form extends ContainerComponent implements FormRootComponent, InteractiveC
         $form = FormData::make($this->state);
         $request = request();
 
-        foreach ($this->descendants() as $component) {
-            if (! $component instanceof Field || ! array_key_exists($component->name(), $this->state)) {
+        foreach ($this->fields() as $component) {
+            if (! array_key_exists($component->name(), $this->state)) {
                 continue;
             }
 
