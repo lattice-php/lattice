@@ -24,6 +24,10 @@ return [
             'actions' => [
                 'edit' => 'Bearbeiten',
             ],
+            'card' => [
+                'missing' => 'Geschäftspartner nicht gefunden.',
+                'orders' => ':count Aufträge',
+            ],
             'columns' => [
                 'email' => 'E-Mail',
                 'groups-count' => 'Gruppen',

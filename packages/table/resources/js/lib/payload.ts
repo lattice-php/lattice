@@ -169,3 +169,41 @@ export function getRowDetail(row: TableRow): Node | null {
     ? (detail as Node)
     : null;
 }
+
+export function getRowPopover(row: TableRow, columnKey: string): Node | null {
+  const popovers = row.popovers;
+
+  if (typeof popovers !== "object" || popovers === null || Array.isArray(popovers)) {
+    return null;
+  }
+
+  const popover = (popovers as Record<string, unknown>)[columnKey];
+
+  return typeof popover === "object" && popover !== null && !Array.isArray(popover)
+    ? (popover as Node)
+    : null;
+}
+
+/**
+ * Resolves a row's closure-driven link for a column: a string href, `null`
+ * when the column has a resolver but this row didn't resolve one (render
+ * plain text), or `undefined` when the column has no resolver at all (fall
+ * back to the string-template form).
+ */
+export function getRowLink(row: TableRow, columnKey: string): string | null | undefined {
+  const links = row.links;
+
+  if (typeof links !== "object" || links === null || Array.isArray(links)) {
+    return undefined;
+  }
+
+  const record = links as Record<string, unknown>;
+
+  if (!(columnKey in record)) {
+    return undefined;
+  }
+
+  const link = record[columnKey];
+
+  return typeof link === "string" ? link : null;
+}

@@ -1,6 +1,6 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as React from "react";
-import { cn } from "../lib/utils";
+import { cn } from "../../lib/utils";
 
 export const POPOVER_SURFACE =
   "z-lt-popover rounded-lt-sm border border-lt-border bg-lt-popover text-lt-popover-fg shadow-lt-md";

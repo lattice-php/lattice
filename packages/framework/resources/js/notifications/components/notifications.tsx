@@ -12,7 +12,7 @@ import {
   Popover as PopoverRoot,
   PopoverContent,
   PopoverTrigger,
-} from "@lattice-php/ui/primitives/popover";
+} from "@lattice-php/ui/components/popover/popover";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { type ModalHandle, useModal } from "@lattice-php/ui/modal";

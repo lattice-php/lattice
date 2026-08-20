@@ -1,7 +1,12 @@
 import { Icon } from "../icons";
 import * as React from "react";
 import { cn } from "../lib/utils";
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "./popover";
+import {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/popover/popover";
 
 function DropdownMenu(props: React.ComponentProps<typeof Popover>) {
   return <Popover {...props} />;

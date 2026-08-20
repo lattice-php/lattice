@@ -16,6 +16,7 @@ import IconAdapter from "./components/icon/icon-adapter";
 import ImageAdapter from "./components/image/image-adapter";
 import LinkAdapter from "./components/link/link-adapter";
 import ModalAdapter from "./components/modal/modal-adapter";
+import PopoverAdapter from "./components/popover/popover-adapter";
 import ProgressAdapter from "./components/progress/progress-adapter";
 import RawBlockAdapter from "./components/raw-block/raw-block-adapter";
 import SectionAdapter from "./components/section/section-adapter";
@@ -55,6 +56,7 @@ export const uiComponents: Plugin = {
     image: eagerComponent(ImageAdapter),
     link: eagerComponent(LinkAdapter),
     modal: eagerComponent(ModalAdapter),
+    popover: eagerComponent(PopoverAdapter),
     progress: eagerComponent(ProgressAdapter),
     "raw-block": eagerComponent(RawBlockAdapter),
     section: eagerComponent(SectionAdapter),

@@ -993,6 +993,46 @@
         "name": "Placement",
         "namespace": "Lattice\\Ui\\Enums"
     },
+    "Lattice\\Ui\\Enums\\PopoverAlign": {
+        "cases": [
+            {
+                "name": "Start",
+                "value": "start"
+            },
+            {
+                "name": "Center",
+                "value": "center"
+            },
+            {
+                "name": "End",
+                "value": "end"
+            }
+        ],
+        "name": "PopoverAlign",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
+    "Lattice\\Ui\\Enums\\PopoverSide": {
+        "cases": [
+            {
+                "name": "Top",
+                "value": "top"
+            },
+            {
+                "name": "Right",
+                "value": "right"
+            },
+            {
+                "name": "Bottom",
+                "value": "bottom"
+            },
+            {
+                "name": "Left",
+                "value": "left"
+            }
+        ],
+        "name": "PopoverSide",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
     "Lattice\\Ui\\Enums\\ProgressShape": {
         "cases": [
             {

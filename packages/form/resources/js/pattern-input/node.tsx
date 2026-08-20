@@ -7,7 +7,11 @@ import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Input } from "@lattice-php/ui/primitives/input";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/ui/components/popover/popover";
 
 export type PatternTokenOptions = { tokens: PatternTokenData[] };
 

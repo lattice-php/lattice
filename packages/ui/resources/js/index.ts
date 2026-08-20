@@ -67,7 +67,7 @@ export * from "./modal";
 export * from "./primitives/native-select";
 export * from "./navigation";
 export { default as PasswordInput } from "./primitives/password-input";
-export * from "./primitives/popover";
+export * from "./components/popover/popover";
 export * from "./primitives/skeleton";
 export * from "./primitives/spinner";
 export * from "./primitives/textarea";
