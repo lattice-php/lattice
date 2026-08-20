@@ -45,11 +45,18 @@ export function resolveLink(column: TableColumn, row: TableRow, value: unknown):
     return null;
   }
 
-  return href.replace(/\{([^}]+)\}/g, (_, key: string) => {
-    if (key === "value") {
-      return encodeURIComponent(String(value ?? ""));
+  let unresolved = false;
+
+  const resolved = href.replace(/\{([^}]+)\}/g, (_, key: string) => {
+    const raw = key === "value" ? value : row[key];
+
+    if (raw === null || raw === undefined || raw === "") {
+      unresolved = true;
+      return "";
     }
 
-    return encodeURIComponent(String(row[key] ?? ""));
+    return encodeURIComponent(String(raw));
   });
+
+  return unresolved ? null : resolved;
 }
