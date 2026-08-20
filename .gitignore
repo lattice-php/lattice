@@ -41,6 +41,7 @@ _ide_helper.php
 
 .agents
 .claude
+/plans
 .codex
 AGENTS.md
 CLAUDE.md
