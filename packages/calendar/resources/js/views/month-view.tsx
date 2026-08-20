@@ -4,7 +4,11 @@ import { announce, draggable, dropTargetForElements } from "@lattice-php/lattice
 import { coerceColor, namedColor, toneProps } from "@lattice-php/ui/lib/color";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { Icon } from "@lattice-php/ui/icons";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/ui/components/popover/popover";
 import {
   addDays,
   addMonths,

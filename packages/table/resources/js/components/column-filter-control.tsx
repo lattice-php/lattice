@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/ui/components/popover/popover";
 import { useT } from "@lattice-php/ui/i18n";
 import type { Op, Option } from "@lattice-php/core";
 import type { ColumnFilterOption, FilterType } from "../generated";

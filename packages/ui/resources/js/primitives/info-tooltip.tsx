@@ -1,6 +1,6 @@
 import { Icon } from "../icons";
 import { UI_NAMESPACE, useT } from "../i18n";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/popover/popover";
 
 export function InfoTooltip({ content }: { content?: string | null }) {
   const { t } = useT(UI_NAMESPACE);

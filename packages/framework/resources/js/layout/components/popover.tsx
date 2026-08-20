@@ -5,7 +5,7 @@ import {
   Popover as PopoverRoot,
   PopoverContent,
   PopoverTrigger,
-} from "@lattice-php/ui/primitives/popover";
+} from "@lattice-php/ui/components/popover/popover";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 

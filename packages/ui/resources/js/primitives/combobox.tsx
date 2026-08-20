@@ -5,7 +5,7 @@ import { useT } from "../i18n";
 import type { Option } from "@lattice-php/core/types";
 import { cn } from "../lib/utils";
 import { useDebouncedCallback } from "../lib/use-debounced-callback";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/popover/popover";
 
 const SEARCH_DEBOUNCE_MS = 250;
 

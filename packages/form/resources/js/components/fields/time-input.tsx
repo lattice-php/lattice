@@ -1,6 +1,10 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/ui/components/popover/popover";
 import { Icon } from "@lattice-php/ui/icons";
 import { Input } from "@lattice-php/ui/primitives/input";
 import { SimpleField } from "./simple-field";

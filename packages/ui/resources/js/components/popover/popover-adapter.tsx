@@ -2,7 +2,7 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { toNodes } from "@lattice-php/core/nodes";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { Popover, PopoverContent, PopoverTrigger } from "../../primitives/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 const PopoverAdapter: RendererComponent<"popover"> = ({ children, node }) => {
   const trigger = toNodes(node.props.trigger);

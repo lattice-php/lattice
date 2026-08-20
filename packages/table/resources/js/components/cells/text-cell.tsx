@@ -1,6 +1,10 @@
 import { DateTime } from "@lattice-php/ui/i18n";
 import { Badge } from "@lattice-php/ui/components/badge/badge";
-import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/ui/components/popover/popover";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "@lattice-php/table/lib/format";
