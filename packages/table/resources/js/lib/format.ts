@@ -5,6 +5,7 @@ import type {
   TableColumn,
   TableRow,
 } from "@lattice-php/table/types";
+import { getRowLink } from "./payload";
 
 export function formatCell(value: unknown, column?: TableColumn, options?: FormatOptions): string {
   if (value === null || value === undefined) {
@@ -37,6 +38,12 @@ export function resolveLink(column: TableColumn, row: TableRow, value: unknown):
 
   if (!link) {
     return null;
+  }
+
+  const resolved = getRowLink(row, column.key);
+
+  if (resolved !== undefined) {
+    return resolved;
   }
 
   const href = link.href ?? String(value ?? "");

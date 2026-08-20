@@ -1,7 +1,10 @@
 import { DateTime } from "@lattice-php/ui/i18n";
 import { Badge } from "@lattice-php/ui/components/badge/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@lattice-php/ui/primitives/popover";
+import { Renderer } from "@lattice-php/core/renderer";
 import type { ReactNode } from "react";
 import { formatCell, resolveLink } from "@lattice-php/table/lib/format";
+import { getRowPopover } from "@lattice-php/table/lib/payload";
 import type { ColumnCellArgs, ColumnCellComponent } from "@lattice-php/table/registry";
 import type { ColumnPropsOf } from "@lattice-php/table/types";
 import { CopyableCell } from "./copyable-cell";
@@ -58,10 +61,22 @@ function SingleBadgeCell({ column, props, row, value }: ColumnCellArgs<"column.t
 
 function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.text">): ReactNode {
   const dateProps = (column.props as ColumnPropsOf<"column.text">).date;
-  const href = resolveLink(column, row, value);
+  const popoverNode = getRowPopover(row, column.key);
+  const href = popoverNode ? null : resolveLink(column, row, value);
   const text = formatCell(value, column);
 
-  const content = href ? (
+  const content = popoverNode ? (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button type="button" className="cursor-pointer underline underline-offset-2">
+          {text}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="p-3">
+        <Renderer nodes={[popoverNode]} />
+      </PopoverContent>
+    </Popover>
+  ) : href ? (
     <a
       className="underline underline-offset-2"
       href={href}
@@ -74,7 +89,14 @@ function PlainTextCell({ column, props, row, value }: ColumnCellArgs<"column.tex
     text
   );
 
-  if (dateProps && !href && !props.copyable && value !== null && value !== undefined) {
+  if (
+    dateProps &&
+    !href &&
+    !popoverNode &&
+    !props.copyable &&
+    value !== null &&
+    value !== undefined
+  ) {
     return (
       <DateTime value={value} dateStyle={dateProps.dateStyle} timeStyle={dateProps.timeStyle} />
     );

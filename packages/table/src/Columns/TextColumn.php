@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Lattice\Table\Columns;
 
+use Closure;
+use InvalidArgumentException;
+use Lattice\Core\Facades\Evaluate;
 use Lattice\Table\Attributes\AsColumn;
 use Lattice\Table\Columns\Concerns\IsFilterable;
 use Lattice\Table\Columns\Concerns\IsSearchable;
@@ -13,6 +16,7 @@ use Lattice\Table\Contracts\Sortable;
 use Lattice\Table\Enums\ColumnType;
 use Lattice\Table\Enums\FilterType;
 use Lattice\Table\RelationBinding;
+use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\HasCopyable;
 use Lattice\Ui\Enums\DateTimeStyle;
 
@@ -40,6 +44,10 @@ final class TextColumn extends Column implements Filterable, Searchable, Sortabl
     public ?array $badge = null;
 
     public ?string $multiple = null;
+
+    protected ?Closure $linkResolver = null;
+
+    protected ?Closure $popover = null;
 
     public function date(DateTimeStyle $style = DateTimeStyle::Medium): static
     {
@@ -99,14 +107,105 @@ final class TextColumn extends Column implements Filterable, Searchable, Sortabl
         return $this->multiple === null && $this->sortableEnabled;
     }
 
-    public function link(?string $href = null, bool $external = false): static
+    /**
+     * Render the value as a link. Pass a string template (`{value}` and any
+     * row key in braces are substituted) or a closure resolved per row —
+     * receives `$row` (the projected row array) and `$value` (this column's
+     * value) by name — returning the href, or null to leave the row plain.
+     */
+    public function link(Closure|string|null $href = null, bool $external = false): static
     {
-        $this->link = [
-            'href' => $href,
-            'external' => $external,
-        ];
+        $this->assertLinkPopoverAllowed('link');
+
+        if ($href instanceof Closure) {
+            $this->linkResolver = $href;
+            $this->link = ['href' => null, 'external' => $external];
+        } else {
+            $this->linkResolver = null;
+            $this->link = ['href' => $href, 'external' => $external];
+        }
 
         return $this;
+    }
+
+    /**
+     * Render the value as a trigger that opens a popover with the given
+     * component, resolved per row — receives `$row` (the projected row array)
+     * and `$value` (this column's value) by name. Return null to leave the
+     * row without a popover.
+     */
+    public function popover(Closure $popover): static
+    {
+        $this->assertLinkPopoverAllowed('popover');
+
+        $this->popover = $popover;
+
+        return $this;
+    }
+
+    public function hasLinkResolver(): bool
+    {
+        return $this->linkResolver instanceof Closure;
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    public function resolvedLink(array $row): ?string
+    {
+        if (! $this->linkResolver instanceof Closure) {
+            return null;
+        }
+
+        $href = Evaluate::resolve($this->linkResolver, Evaluate::context()
+            ->named('row', $row)
+            ->named('value', $row[$this->key()] ?? null));
+
+        if ($href !== null && ! is_string($href)) {
+            throw new InvalidArgumentException('The link() closure must return a string or null.');
+        }
+
+        return $href;
+    }
+
+    public function hasPopover(): bool
+    {
+        return $this->popover instanceof Closure;
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    public function popoverComponent(array $row): ?Component
+    {
+        if (! $this->popover instanceof Closure) {
+            return null;
+        }
+
+        $component = Evaluate::resolve($this->popover, Evaluate::context()
+            ->named('row', $row)
+            ->named('value', $row[$this->key()] ?? null));
+
+        if ($component !== null && ! $component instanceof Component) {
+            throw new InvalidArgumentException('The popover() closure must return a Component instance or null.');
+        }
+
+        return $component;
+    }
+
+    /**
+     * A text column carries at most one of a link or a popover.
+     */
+    private function assertLinkPopoverAllowed(string $incoming): void
+    {
+        $set = array_keys(array_filter([
+            'link' => $this->link !== null,
+            'popover' => $this->popover instanceof Closure,
+        ]));
+
+        if (array_diff($set, [$incoming]) !== []) {
+            throw new InvalidArgumentException('A text column can carry only one of a link or a popover.');
+        }
     }
 
     #[\Override]

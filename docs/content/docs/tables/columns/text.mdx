@@ -4,6 +4,7 @@ description: Render a value as text, with date/time formatting, links, copy-to-c
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 `TextColumn` renders a value as text. It is sortable and filterable, and carries display modifiers for
 the common value types a text cell holds.
@@ -31,12 +32,37 @@ TextColumn::make('updated_at')->dateTime(DateTimeStyle::Short);
 ## Links
 
 `->link('/products/{value}')` renders the value as a link; `{value}` is substituted with the cell
-value. Pass `external: true` for an outbound link that opens in a new tab.
+value, and any other `{key}` in braces with that row field. Pass `external: true` for an outbound
+link that opens in a new tab.
 
 ```php
 TextColumn::make('email')->link('mailto:{value}')->copyable();
 TextColumn::make('homepage')->link('{value}', external: true);
 ```
+
+When a template is not enough, pass a closure instead — it runs on the server per row, receives
+`$row` (the projected row array) and `$value` (this column's value) by name, and returns the href.
+Return `null` to leave that row's cell as plain text.
+
+```php
+TextColumn::make('name')->link(fn (array $row): string => route('customers.show', $row['id']));
+```
+
+## Popover
+
+`->popover()` renders the value as a trigger that opens a [popover](/components/popover/). The
+closure runs on the server per row — receiving `$row` and `$value` like a link closure — and
+returns the popover's content component, or `null` for no popover on that row. Combined with a
+lazy [fragment](/core/fragments/), the content loads from the server when the popover first opens:
+
+```php
+TextColumn::make('customer_name')->popover(fn (array $row) => Fragment::lazy(
+    CustomerCardFragment::class,
+    ['customerId' => $row['customer_id']],
+));
+```
+
+<Info>A column carries either a link or a popover, never both.</Info>
 
 ## Copyable
 

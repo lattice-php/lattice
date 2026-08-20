@@ -14,6 +14,7 @@ use Lattice\Form\FormData;
 use Lattice\Form\FormSchemaWalker;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\Column;
+use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Components\Table as TableComponent;
 use Lattice\Table\Contracts\Filterable;
 use Lattice\Table\Contracts\Searchable;
@@ -234,13 +235,17 @@ final class TableRegistry extends DefinitionRegistry
     private function decorateResult(TableDefinition $definition, TableResult $result, array $columns): TableResult
     {
         $rowKeys = $this->rowKeys($columns);
+        $popoverColumns = $this->textColumnsWhere($columns, static fn (TextColumn $column): bool => $column->hasPopover());
+        $linkColumns = $this->textColumnsWhere($columns, static fn (TextColumn $column): bool => $column->hasLinkResolver());
 
-        return $result->decorateRows(function (array $row) use ($definition, $rowKeys): array {
+        return $result->decorateRows(function (array $row) use ($definition, $rowKeys, $popoverColumns, $linkColumns): array {
             $actions = $this->renderableComponents($definition->actions($row));
             $detail = $this->renderableComponents(array_filter([$definition->rowDetail($row)]));
+            $popovers = $this->popovers($popoverColumns, $row);
+            $links = $this->resolvedLinks($linkColumns, $row);
             $projected = array_intersect_key($row, array_flip($rowKeys));
 
-            unset($projected['actions'], $projected['detail']);
+            unset($projected['actions'], $projected['detail'], $projected['popovers'], $projected['links']);
 
             if ($detail !== []) {
                 $projected['detail'] = $detail[0];
@@ -250,8 +255,70 @@ final class TableRegistry extends DefinitionRegistry
                 $projected['actions'] = $actions;
             }
 
+            if ($popovers !== []) {
+                $projected['popovers'] = $popovers;
+            }
+
+            if ($links !== []) {
+                $projected['links'] = $links;
+            }
+
             return $projected;
         });
+    }
+
+    /**
+     * @param  array<int, Column>  $columns
+     * @param  callable(TextColumn): bool  $matches
+     * @return array<int, TextColumn>
+     */
+    private function textColumnsWhere(array $columns, callable $matches): array
+    {
+        return array_values(array_filter(
+            $columns,
+            static fn (Column $column): bool => $column->shouldRender() && $column instanceof TextColumn && $matches($column),
+        ));
+    }
+
+    /**
+     * @param  array<int, TextColumn>  $columns
+     * @param  array<string, mixed>  $row
+     * @return array<string, Component>
+     */
+    private function popovers(array $columns, array $row): array
+    {
+        $popovers = [];
+
+        foreach ($columns as $column) {
+            $component = $column->popoverComponent($row);
+
+            if ($component !== null && $component->shouldRender()) {
+                $popovers[$column->key()] = $component;
+            }
+        }
+
+        return $popovers;
+    }
+
+    /**
+     * Every closure-driven link column gets an entry for every row — even a
+     * null one — so the client can tell "this column resolves per row and
+     * this row has none" apart from "this column has no resolver at all"
+     * (the string-template form, where a null href falls back to the value).
+     *
+     * @param  array<int, TextColumn>  $columns
+     * @param  array<string, mixed>  $row
+     * @return array<string, string|null>
+     */
+    private function resolvedLinks(array $columns, array $row): array
+    {
+        $links = [];
+
+        foreach ($columns as $column) {
+            $links[$column->key()] = $column->resolvedLink($row);
+        }
+
+        return $links;
     }
 
     /**

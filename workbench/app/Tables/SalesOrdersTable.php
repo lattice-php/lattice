@@ -16,6 +16,7 @@ use Lattice\Table\TableQuery;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Link;
 use Workbench\App\Enums\SalesOrderStatus;
+use Workbench\App\Fragments\BusinessPartnerCardFragment;
 use Workbench\App\Fragments\SalesOrderLinesFragment;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\SalesOrderLine;
@@ -33,7 +34,14 @@ class SalesOrdersTable extends EloquentTableDefinition
     {
         return [
             TextColumn::make('number')->label(__('workbench.commerce.sales-orders.columns.number'))->sortable()->filterable(),
-            TextColumn::make('businessPartner.name')->label(__('workbench.commerce.sales-orders.columns.business-partner'))->sortable()->filterable(),
+            TextColumn::make('businessPartner.name')
+                ->label(__('workbench.commerce.sales-orders.columns.business-partner'))
+                ->sortable()
+                ->filterable()
+                ->popover(fn (array $row): Fragment => Fragment::lazy(
+                    BusinessPartnerCardFragment::class,
+                    ['businessPartnerId' => $row['business_partner_id']],
+                )),
             BadgeColumn::make('status')
                 ->label(__('workbench.commerce.sales-orders.columns.status'))
                 ->enum(SalesOrderStatus::class)

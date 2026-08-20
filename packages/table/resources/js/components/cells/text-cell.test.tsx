@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { ColumnPropsOf, TableColumn, TableRow } from "@lattice-php/table/types";
 import { TextCell } from "./text-cell";
@@ -47,5 +47,18 @@ describe("TextCell", () => {
     const { container } = renderCell({ multiple: "name", badge: { colorKey: "color" } }, []);
 
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it("opens the popover trigger on click when the row carries a popover for the column", () => {
+    renderCell({}, "Ada Lovelace", {
+      popovers: { tags: { type: "text", props: { text: "Customer card" } } },
+    });
+
+    const trigger = screen.getByRole("button", { name: "Ada Lovelace" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(trigger);
+
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
   });
 });
