@@ -51,27 +51,22 @@ export function TablePagination({
               })}
         </span>
         {perPageOptions.length > 0 && mode !== "none" && (
-          <label className="flex items-center gap-2">
-            <span className="text-lt-muted-fg">
-              {t("table.pagination.per-page", "Rows per page")}
-            </span>
-            <NativeSelect
-              data-test="pagination-per-page"
-              disabled={processing}
-              value={String(perPageValue)}
-              onChange={(event) =>
-                onPerPage(
-                  event.target.value === "infinite" ? "infinite" : Number(event.target.value),
-                )
-              }
-            >
-              {perPageOptions.map((option) => (
-                <option key={String(option)} value={String(option)}>
-                  {option === "infinite" ? t("table.pagination.infinite", "Infinite") : option}
-                </option>
-              ))}
-            </NativeSelect>
-          </label>
+          <NativeSelect
+            aria-label={t("table.pagination.per-page", "Rows per page")}
+            className="w-fit"
+            data-test="pagination-per-page"
+            disabled={processing}
+            value={String(perPageValue)}
+            onChange={(event) =>
+              onPerPage(event.target.value === "infinite" ? "infinite" : Number(event.target.value))
+            }
+          >
+            {perPageOptions.map((option) => (
+              <option key={String(option)} value={String(option)}>
+                {option === "infinite" ? t("table.pagination.infinite", "Infinite") : option}
+              </option>
+            ))}
+          </NativeSelect>
         )}
       </div>
       {mode === "infinite" ? (
