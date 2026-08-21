@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Form\Components;
 
 use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Components\Concerns\HasAffixFields;
+use Lattice\Form\Contracts\ProvidesAffixFields;
 use Lattice\Form\Enums\FieldType;
 use Lattice\Ui\Concerns\HasAffixes;
 use Lattice\Ui\Concerns\HasAutoFocus;
@@ -11,9 +13,10 @@ use Lattice\Ui\Concerns\HasPlaceholder;
 use Lattice\Ui\Concerns\HasTabIndex;
 
 #[AsField(FieldType::NumberInput)]
-class NumberInput extends Field
+class NumberInput extends Field implements ProvidesAffixFields
 {
     use HasAffixes;
+    use HasAffixFields;
     use HasAutoFocus;
     use HasPlaceholder;
     use HasTabIndex;

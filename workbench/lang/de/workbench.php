@@ -262,6 +262,8 @@ return [
             'signed' => 'Signiert (S3)',
         ],
         'number' => [
+            'currency' => 'Währung',
+            'price' => 'Preis',
             'slider' => 'Schieberegler',
         ],
         'otp' => [
@@ -311,7 +313,9 @@ return [
         ],
         'text' => [
             'copyable' => 'Kopierbar',
+            'dialing-code' => 'Vorwahl',
             'handle' => 'Handle',
+            'phone' => 'Telefon',
             'website' => 'Website',
         ],
         'variants' => [

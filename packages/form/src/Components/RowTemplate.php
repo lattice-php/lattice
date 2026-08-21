@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Form\Components;
 
 use Illuminate\Support\Str;
+use Lattice\Form\Contracts\ProvidesAffixFields;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Concerns\HasChildSchema;
 use Lattice\Ui\Components\ContainerComponent;
@@ -57,7 +58,7 @@ final class RowTemplate
 
         foreach ($children as $child) {
             if ($child instanceof Field) {
-                $fields[] = $child;
+                $fields = [...$fields, $child, ...$this->affixFieldsOf($child)];
 
                 continue;
             }
@@ -65,13 +66,21 @@ final class RowTemplate
             if ($child instanceof ContainerComponent) {
                 foreach ($child->descendants() as $descendant) {
                     if ($descendant instanceof Field) {
-                        $fields[] = $descendant;
+                        $fields = [...$fields, $descendant, ...$this->affixFieldsOf($descendant)];
                     }
                 }
             }
         }
 
         return $fields;
+    }
+
+    /**
+     * @return list<Field>
+     */
+    private function affixFieldsOf(Field $field): array
+    {
+        return $field instanceof ProvidesAffixFields ? $field->affixFields() : [];
     }
 
     public function data(): RowTemplateData

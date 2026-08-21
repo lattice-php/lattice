@@ -1,10 +1,13 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { AffixGroup } from "@lattice-php/ui/primitives/affix-group";
 import { Input } from "@lattice-php/ui/primitives/input";
+import { AffixSelect, affixFieldNode } from "./affix-select";
 import { SimpleField } from "./simple-field";
 
 export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ node }) => {
   const props = node.props;
+  const prefixFieldNode = affixFieldNode(node, props.prefixFieldName);
+  const suffixFieldNode = affixFieldNode(node, props.suffixFieldName);
 
   return (
     <SimpleField node={node} label={props.label ?? ""}>
@@ -34,7 +37,14 @@ export const NumberInputComponent: RendererComponent<"field.number-input"> = ({ 
             </output>
           </div>
         ) : (
-          <AffixGroup prefix={props.prefix} suffix={props.suffix}>
+          <AffixGroup
+            prefix={prefixFieldNode ? null : props.prefix}
+            suffix={suffixFieldNode ? null : props.suffix}
+            start={
+              prefixFieldNode ? <AffixSelect node={prefixFieldNode} side="start" /> : undefined
+            }
+            end={suffixFieldNode ? <AffixSelect node={suffixFieldNode} side="end" /> : undefined}
+          >
             {(controlClassName) => (
               <Input
                 {...controlProps}

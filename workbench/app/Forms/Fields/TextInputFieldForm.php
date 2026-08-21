@@ -6,6 +6,7 @@ namespace Workbench\App\Forms\Fields;
 use Illuminate\Http\Request;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\Components\Select;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormDefinition;
 use Lattice\Ui\Components\Tab;
@@ -51,6 +52,18 @@ class TextInputFieldForm extends FormDefinition
                             ->prefix('https://')
                             ->suffix('.dev')
                             ->rules(['nullable', 'string', 'max:255']),
+                        TextInput::make('phone', __('workbench.fields.text.phone'))
+                            ->rules(['nullable', 'string', 'max:32'])
+                            ->prefixField(
+                                Select::make('dialing_code', __('workbench.fields.text.dialing-code'))
+                                    ->options([
+                                        Select::option('+49', '49'),
+                                        Select::option('+43', '43'),
+                                        Select::option('+41', '41'),
+                                    ])
+                                    ->value('49')
+                                    ->rules(['nullable', 'in:49,43,41']),
+                            ),
                     ]),
                 ]),
         ]);

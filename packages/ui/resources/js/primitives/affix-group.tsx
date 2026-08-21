@@ -30,15 +30,17 @@ function AffixSegment({
 export function AffixGroup({
   prefix,
   suffix,
+  start,
   end,
   children,
 }: {
   prefix?: Affix | null;
   suffix?: Affix | null;
+  start?: ReactNode;
   end?: ReactNode;
   children: (controlClassName: string) => ReactNode;
 }) {
-  if (!prefix && !suffix && !end) {
+  if (!prefix && !suffix && !start && !end) {
     return children("");
   }
 
@@ -47,12 +49,13 @@ export function AffixGroup({
       className="group flex w-full rounded-lt-sm transition-[color,box-shadow] has-[:focus-visible]:ring-[length:var(--lt-ring-width)] has-[:focus-visible]:ring-lt-ring/50"
       data-slot="affix-group"
     >
+      {start}
       {prefix ? <AffixSegment affix={prefix} side="start" /> : null}
       <div className="min-w-0 flex-1">
         {children(
           cn(
             "focus-visible:ring-0",
-            prefix && "rounded-l-none",
+            (prefix || start) && "rounded-l-none",
             (suffix || end) && "rounded-r-none",
           ),
         )}
