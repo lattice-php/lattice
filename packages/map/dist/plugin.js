@@ -4740,7 +4740,7 @@ function w({ node: e }) {
 		};
 	}, [e, t]), /* @__PURE__ */ c("div", {
 		className: "lt-map",
-		"data-lattice-component": e.id,
+		"data-test": e.id,
 		"data-status": l,
 		style: { height: e.props.height },
 		children: [

@@ -17238,8 +17238,7 @@ var wo, To = h((() => {
 		let { t: n } = (0, y.useT)("pdf"), r = Co().engine;
 		return r ? /* @__PURE__ */ l("div", {
 			className: "lt-pdf",
-			"data-lattice-component": (0, y.nodeIdentity)(t),
-			"data-test": "pdf-viewer",
+			"data-test": (0, y.nodeIdentity)(t),
 			style: t.props.maxHeight === null ? { height: t.props.height } : { maxHeight: t.props.maxHeight },
 			children: /* @__PURE__ */ l(e, {
 				fallback: /* @__PURE__ */ l("div", {
