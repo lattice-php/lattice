@@ -201,21 +201,21 @@ page's breadcrumb trail, and the active-item detection on top of them.
 import {
   Breadcrumbs,
   Dropdown,
-  NavMenu,
-  NavMenuItem,
+  Menu,
+  MenuItem,
   Sidebar,
   SidebarFooter,
   Topbar,
 } from "@lattice-php/ui";
 
 <Sidebar collapsed={collapsed} open={drawerOpen} onOpenChange={setDrawerOpen}>
-  <NavMenu aria-label="Main">
-    <NavMenuItem active={pathname === "/"} href="/" label="Home" prefix={<HomeIcon />} />
-    <NavMenuItem label="Catalog" defaultOpen>
-      <NavMenuItem href="/products" label="Products" />
-    </NavMenuItem>
-    <NavMenuItem label="Log out" onClick={logout} />
-  </NavMenu>
+  <Menu aria-label="Main">
+    <MenuItem active={pathname === "/"} href="/" label="Home" prefix={<HomeIcon />} />
+    <MenuItem label="Catalog" defaultOpen>
+      <MenuItem href="/products" label="Products" />
+    </MenuItem>
+    <MenuItem label="Log out" onClick={logout} />
+  </Menu>
   <SidebarFooter>
     <Dropdown placement="top" trigger={<span>{user.name}</span>}>
       <ul>…</ul>
@@ -230,7 +230,7 @@ import {
 
 `Sidebar` collapses the desktop rail to icons while `collapsed` is true (children read it through
 `useCollapsed()`), and renders the mobile drawer with a backdrop while `open` is true — closing it on
-backdrop click and Escape through `onOpenChange`. `NavMenuItem` renders a link with `href`, a button
+backdrop click and Escape through `onOpenChange`. `MenuItem` renders a link with `href`, a button
 with `onClick`, a section header with neither, and a collapsible group when it has children (a flyout
 while the sidebar is collapsed); `open`/`onOpenChange` control the group, `defaultOpen` seeds it.
 `Dropdown` is a popover with menu semantics that closes on every navigation. `Breadcrumbs` links every

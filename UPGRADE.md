@@ -37,7 +37,7 @@ that rendered the node from page props should read `node.props.items` instead.
 `uiComponents`. Apps composing their own registry from both plugins keep working. The deep imports
 `@lattice-php/lattice/layout/components/*` are gone — the adapters are
 `@lattice-php/ui/components/<name>/<name>-adapter` and the client components are exported from
-`@lattice-php/ui`: `NavMenu`, `NavMenuItem`, and `Dropdown` join `Sidebar`, `SidebarFooter`,
+`@lattice-php/ui`: `Menu`, `MenuItem`, and `Dropdown` join `Sidebar`, `SidebarFooter`,
 `Topbar`, and `Breadcrumbs`.
 
 ### JS: the navigation adapter knows the location

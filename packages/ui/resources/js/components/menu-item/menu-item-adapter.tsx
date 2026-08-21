@@ -5,7 +5,7 @@ import { ActionTrigger, useClickBehavior } from "../../click-behavior";
 import { IconRenderer } from "../../icons";
 import { cn } from "../../lib/utils";
 import { useNavigation } from "../../navigation";
-import { NavMenuItem } from "./menu-item";
+import { MenuItem } from "./menu-item";
 
 function MenuAffix({ affix, className }: { affix: Affix; className?: string }) {
   if (affix.icon) {
@@ -41,19 +41,19 @@ const MenuItemAdapter: RendererComponent<"menu-item"> = ({ children, node }) => 
     return (
       <ActionTrigger action={behavior.action}>
         {({ onClick, processing }) => (
-          <NavMenuItem {...shared} disabled={processing} onClick={onClick} />
+          <MenuItem {...shared} disabled={processing} onClick={onClick} />
         )}
       </ActionTrigger>
     );
   }
 
   if (behavior.kind === "effects" || behavior.kind === "modal") {
-    return <NavMenuItem {...shared} onClick={behavior.onClick} />;
+    return <MenuItem {...shared} onClick={behavior.onClick} />;
   }
 
   if (behavior.kind === "navigate") {
     return (
-      <NavMenuItem
+      <MenuItem
         {...shared}
         active={currentUrl === behavior.href}
         href={behavior.href}
@@ -63,9 +63,9 @@ const MenuItemAdapter: RendererComponent<"menu-item"> = ({ children, node }) => 
   }
 
   return (
-    <NavMenuItem {...shared} defaultOpen={schemaContainsPath(node.schema, currentUrl)}>
+    <MenuItem {...shared} defaultOpen={schemaContainsPath(node.schema, currentUrl)}>
       {children}
-    </NavMenuItem>
+    </MenuItem>
   );
 };
 

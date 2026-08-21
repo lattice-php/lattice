@@ -1,18 +1,18 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
-import { NavMenu } from "../menu/menu";
-import { NavMenuItem } from "./menu-item";
+import { Menu } from "../menu/menu";
+import { MenuItem } from "./menu-item";
 
-describe("NavMenuItem", () => {
+describe("MenuItem", () => {
   it("renders a link with the active page marked and a button for click handlers", () => {
     const onClick = vi.fn();
 
     render(
-      <NavMenu>
-        <NavMenuItem active href="/products" label="Products" />
-        <NavMenuItem label="Log out" onClick={onClick} />
-      </NavMenu>,
+      <Menu>
+        <MenuItem active href="/products" label="Products" />
+        <MenuItem label="Log out" onClick={onClick} />
+      </Menu>,
     );
 
     expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("aria-current", "page");
@@ -26,11 +26,11 @@ describe("NavMenuItem", () => {
     const onOpenChange = vi.fn();
 
     render(
-      <NavMenu>
-        <NavMenuItem label="Account" onOpenChange={onOpenChange}>
-          <NavMenuItem href="/profile" label="Profile" />
-        </NavMenuItem>
-      </NavMenu>,
+      <Menu>
+        <MenuItem label="Account" onOpenChange={onOpenChange}>
+          <MenuItem href="/profile" label="Profile" />
+        </MenuItem>
+      </Menu>,
     );
 
     expect(screen.queryByRole("link", { name: "Profile" })).not.toBeInTheDocument();
@@ -47,11 +47,11 @@ describe("NavMenuItem", () => {
 
   it("keeps a controlled group at the given state", () => {
     render(
-      <NavMenu>
-        <NavMenuItem label="Account" open>
-          <NavMenuItem href="/profile" label="Profile" />
-        </NavMenuItem>
-      </NavMenu>,
+      <Menu>
+        <MenuItem label="Account" open>
+          <MenuItem href="/profile" label="Profile" />
+        </MenuItem>
+      </Menu>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Account" }));
@@ -62,10 +62,10 @@ describe("NavMenuItem", () => {
   it("hides section headers and labels links by name while collapsed", () => {
     render(
       <CollapsedProvider collapsed>
-        <NavMenu>
-          <NavMenuItem label="Section" />
-          <NavMenuItem href="/" label="Home" prefix={<span>H</span>} />
-        </NavMenu>
+        <Menu>
+          <MenuItem label="Section" />
+          <MenuItem href="/" label="Home" prefix={<span>H</span>} />
+        </Menu>
       </CollapsedProvider>,
     );
 

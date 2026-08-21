@@ -12,7 +12,7 @@ export const navMenuItemRowClassName =
 
 type DataAttributes = { [dataAttribute: `data-${string}`]: string | undefined };
 
-export type NavMenuItemProps = DataAttributes & {
+export type MenuItemProps = DataAttributes & {
   /** Marks the link as the current page. */
   active?: boolean;
   /** Nested items turn this item into a group: collapsible when expanded, a flyout in a collapsed rail. */
@@ -37,12 +37,12 @@ function accessibleName(label: ReactNode): string | undefined {
 }
 
 /**
- * One entry of a `NavMenu`: a link (`href`), a button (`onClick`), a section
+ * One entry of a `Menu`: a link (`href`), a button (`onClick`), a section
  * header (neither), or a group (`children`). Reads the surrounding sidebar's
  * collapsed state through `useCollapsed()` and shrinks to its icon with a hover
  * label while collapsed.
  */
-export function NavMenuItem({
+export function MenuItem({
   active = false,
   children,
   defaultOpen = false,
@@ -57,7 +57,7 @@ export function NavMenuItem({
   prefix,
   suffix,
   ...dataAttributes
-}: NavMenuItemProps) {
+}: MenuItemProps) {
   const collapsed = useCollapsed();
   const { Link } = useNavigation();
   const iconOnly = icon != null;
@@ -115,7 +115,7 @@ export function NavMenuItem({
     }
 
     return (
-      <NavMenuGroup
+      <MenuGroup
         {...dataAttributes}
         content={content}
         defaultOpen={defaultOpen}
@@ -123,7 +123,7 @@ export function NavMenuItem({
         open={open}
       >
         {children}
-      </NavMenuGroup>
+      </MenuGroup>
     );
   }
 
@@ -177,7 +177,7 @@ export function NavMenuItem({
   );
 }
 
-function NavMenuGroup({
+function MenuGroup({
   children,
   content,
   defaultOpen,
