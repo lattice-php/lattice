@@ -7,7 +7,7 @@ export { useFormContext } from "./hooks/context";
 export { FieldScopeProvider, useFieldScope } from "./hooks/field-scope";
 export { fieldProps, walkFields } from "./lib/field-props";
 export { appendPath, getPath, setPath, toHtmlName } from "./lib/form-path";
-export { AddRowMenu, type AddRowOption } from "./components/fields/add-row-menu";
+export { AddRowMenu, type AddRowOption } from "./components/rows/add-row-menu";
 export {
   ROW_ID_KEY,
   addRow,
@@ -18,11 +18,11 @@ export {
   seedRows,
   withRowId,
   type RepeaterRow,
-} from "./components/fields/repeater-rows";
-export { RowKeyInputs } from "./components/fields/row-key-inputs";
-export { rowSchemaFor, rowTemplatesOf } from "./components/fields/row-templates";
+} from "./components/rows/repeater-rows";
+export { RowKeyInputs } from "./components/rows/row-key-inputs";
+export { rowSchemaFor, rowTemplatesOf } from "./components/rows/row-templates";
 export type { RowTemplateData } from "@lattice-php/form/generated";
-export { useRowCollection } from "./components/fields/use-row-collection";
+export { useRowCollection } from "./components/rows/use-row-collection";
 export { useDependentField } from "./hooks/use-dependent-field";
 export { useFieldCommit } from "./hooks/use-field-commit";
 export { useFormValue, useFormValues, useSetFormValue } from "./hooks/values";

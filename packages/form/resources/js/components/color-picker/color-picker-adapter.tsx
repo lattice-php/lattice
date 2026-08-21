@@ -7,7 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@lattice-php/ui/components/popover/popover";
-import { SimpleField } from "../fields/simple-field";
+import { SimpleField } from "../base/simple-field";
 
 export const ColorPickerAdapter: RendererComponent<"field.color-picker"> = ({ node }) => {
   const props = node.props;
