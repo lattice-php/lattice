@@ -1,4 +1,4 @@
-import type { Affix, Color, Node, Option } from "@lattice-php/core";
+import type { Affix, Breadcrumb, Color, Node, Option } from "@lattice-php/core";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type Align = "center" | "left" | "start" | "stretch";
@@ -28,6 +28,9 @@ export type BooleanEntry = {
   trueIcon: string;
   value: unknown;
 };
+export type Breadcrumbs = {
+  items: Breadcrumb[];
+};
 export type Breakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type Button = {
   action: Node | null;
@@ -50,6 +53,7 @@ export type Callout = {
   unique: string | null;
   variant: Variant;
 };
+export type Callouts = Record<string, never>;
 export type Card = {
   description: string | null;
   headerActions: Node[];
@@ -110,12 +114,15 @@ export type ComponentEntry = {
 export type ComponentPropsMap = {
   avatar: Avatar;
   badge: Badge;
+  breadcrumbs: Breadcrumbs;
   button: Button;
+  callouts: Callouts;
   card: Card;
   chart: Chart;
   "code-block": CodeBlock;
   collapsible: Collapsible;
   "description-list": DescriptionList;
+  dropdown: Dropdown;
   "entry.badge": BadgeEntry;
   "entry.boolean": BooleanEntry;
   "entry.component": ComponentEntry;
@@ -127,6 +134,8 @@ export type ComponentPropsMap = {
   icon: Icon;
   image: Image;
   link: Link;
+  menu: Menu;
+  "menu-item": MenuItem;
   modal: Modal;
   popover: Popover;
   progress: Progress;
@@ -134,11 +143,14 @@ export type ComponentPropsMap = {
   section: Section;
   "segmented-control": SegmentedControl;
   separator: Separator;
+  sidebar: Sidebar;
+  "sidebar.footer": SidebarFooter;
   stack: Stack;
   tab: Tab;
   tabs: Tabs;
   text: Text;
   tooltip: Tooltip;
+  topbar: Topbar;
 };
 export type DateEntry = {
   description: string | null;
@@ -163,6 +175,10 @@ export type DescriptionList = {
 };
 export type Download = {
   readonly url: string;
+};
+export type Dropdown = {
+  placement: Placement;
+  trigger: Node[];
 };
 export type EffectPropsMap = {
   callout: Callout;
@@ -227,6 +243,18 @@ export type Link = {
 export type LocaleChange = {
   readonly locale: string;
 };
+export type Menu = Record<string, never>;
+export type MenuItem = {
+  action: Node | null;
+  effects: Effect[];
+  href: string | null;
+  icon: string | null;
+  label: string | null;
+  method: HttpMethod | null;
+  modal: Node<"modal"> | null;
+  prefix: Affix | null;
+  suffix: Affix | null;
+};
 export type Modal = {
   closeLabel: string;
   description: string | null;
@@ -240,12 +268,15 @@ export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type NodeType =
   | "avatar"
   | "badge"
+  | "breadcrumbs"
   | "button"
+  | "callouts"
   | "card"
   | "chart"
   | "code-block"
   | "collapsible"
   | "description-list"
+  | "dropdown"
   | "entry.badge"
   | "entry.boolean"
   | "entry.component"
@@ -257,6 +288,8 @@ export type NodeType =
   | "icon"
   | "image"
   | "link"
+  | "menu"
+  | "menu-item"
   | "modal"
   | "popover"
   | "progress"
@@ -264,11 +297,14 @@ export type NodeType =
   | "section"
   | "segmented-control"
   | "separator"
+  | "sidebar"
+  | "sidebar.footer"
   | "stack"
   | "tab"
   | "tabs"
   | "text"
-  | "tooltip";
+  | "tooltip"
+  | "topbar";
 export type NumberFormat = {
   currency: string | null;
   kind: string;
@@ -354,6 +390,11 @@ export type Separator = {
   orientation: Orientation;
 };
 export type Side = "start" | "end";
+export type Sidebar = {
+  collapsible: boolean;
+  rememberState: boolean;
+};
+export type SidebarFooter = Record<string, never>;
 export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type Stack = {
   align: Align | null;
@@ -414,6 +455,9 @@ export type Tooltip = {
   content: string | null;
   trigger: Node[];
 };
+export type Topbar = {
+  sticky: boolean;
+};
 export type Translatable = {
   key: string;
   payload: Record<string, string>;
@@ -422,12 +466,15 @@ export type Translatable = {
 export type UiNodeType =
   | "avatar"
   | "badge"
+  | "breadcrumbs"
   | "button"
+  | "callouts"
   | "card"
   | "chart"
   | "code-block"
   | "collapsible"
   | "description-list"
+  | "dropdown"
   | "entry.badge"
   | "entry.boolean"
   | "entry.component"
@@ -439,6 +486,8 @@ export type UiNodeType =
   | "icon"
   | "image"
   | "link"
+  | "menu"
+  | "menu-item"
   | "modal"
   | "popover"
   | "progress"
@@ -446,10 +495,13 @@ export type UiNodeType =
   | "section"
   | "segmented-control"
   | "separator"
+  | "sidebar"
+  | "sidebar.footer"
   | "stack"
   | "tab"
   | "tabs"
   | "text"
-  | "tooltip";
+  | "tooltip"
+  | "topbar";
 export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "xl" | "fill";

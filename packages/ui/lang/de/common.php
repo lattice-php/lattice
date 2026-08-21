@@ -2,10 +2,12 @@
 declare(strict_types=1);
 
 return [
+    'breadcrumb' => 'Navigationspfad',
     'tabs' => 'Tabs',
     'loading' => 'Lädt',
     'more-info' => 'Mehr Informationen',
     'close' => 'Schließen',
+    'dismiss' => 'Schließen',
     'yes' => 'Ja',
     'no' => 'Nein',
     'all' => 'Alle',

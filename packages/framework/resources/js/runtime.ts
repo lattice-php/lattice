@@ -55,4 +55,3 @@ export {
   dropTargetForElements,
   extractTreeItemInstruction,
 } from "./dnd";
-export type { Variant } from "./toast";

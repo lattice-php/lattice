@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 use Lattice\Core\Facades\Lattice;
 use Lattice\Facades\Effects;
-use Lattice\Layouts\Components\MenuItem;
 use Lattice\Tests\Fixtures\Workbench\WorkbenchPingAction;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Link;
+use Lattice\Ui\Components\MenuItem;
 
 use function Pest\Laravel\postJson;
 

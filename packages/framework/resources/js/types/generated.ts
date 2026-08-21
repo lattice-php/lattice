@@ -1,11 +1,9 @@
-import type { Affix, Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
-import type { HttpMethod, Placement, Size, Translatable, Variant } from "@lattice-php/ui";
+import type { Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
+import type { Size, Translatable, Variant } from "@lattice-php/ui";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
-export type Breadcrumbs = Record<string, never>;
 export type CalendarNodeType = "calendar";
-export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
 export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
 export type ColumnNodeType =
@@ -18,27 +16,15 @@ export type ColumnNodeType =
   | "column.stack"
   | "column.text";
 export type ComponentPropsMap = {
-  breadcrumbs: Breadcrumbs;
-  callouts: Callouts;
-  dropdown: Dropdown;
   fragment: Fragment;
-  menu: Menu;
-  "menu-item": MenuItem;
   notifications: Notifications;
   outlet: Outlet;
   "remote.data-list": DataList;
-  sidebar: Sidebar;
-  "sidebar.footer": SidebarFooter;
-  topbar: Topbar;
 };
 export type DataList = {
   dataEndpoint: string | null;
   emptyLabel: string | null;
   remote: RemoteAccess | null;
-};
-export type Dropdown = {
-  placement: Placement;
-  trigger: Node[];
 };
 export type FilterNodeType =
   | "filter.date-range"
@@ -112,16 +98,7 @@ export type I18nConfig = {
   readonly saveMissing: boolean;
   readonly timezone: string | null;
 };
-export type LayoutNodeType =
-  | "breadcrumbs"
-  | "callouts"
-  | "dropdown"
-  | "menu"
-  | "menu-item"
-  | "outlet"
-  | "sidebar"
-  | "sidebar.footer"
-  | "topbar";
+export type LayoutNodeType = "outlet";
 export type Listen = {
   readonly channel: string;
   effects: Effect[];
@@ -130,18 +107,6 @@ export type Listen = {
 };
 export type MapNodeType = "map";
 export type MediumNodeType = "media.library";
-export type Menu = Record<string, never>;
-export type MenuItem = {
-  action: Node | null;
-  effects: Effect[];
-  href: string | null;
-  icon: string | null;
-  label: string | null;
-  method: HttpMethod | null;
-  modal: Node<"modal"> | null;
-  prefix: Affix | null;
-  suffix: Affix | null;
-};
 export type NodeType =
   | "action"
   | "action.bulk"
@@ -275,25 +240,20 @@ export type SearchNodeType =
   | "search.preview"
   | "search.recent"
   | "search.results";
-export type Sidebar = {
-  collapsible: boolean;
-  rememberState: boolean;
-};
-export type SidebarFooter = Record<string, never>;
 export type SignatureExampleNodeType = "signature";
 export type TableNodeType = "table";
-export type Topbar = {
-  sticky: boolean;
-};
 export type UiNodeType =
   | "avatar"
   | "badge"
+  | "breadcrumbs"
   | "button"
+  | "callouts"
   | "card"
   | "chart"
   | "code-block"
   | "collapsible"
   | "description-list"
+  | "dropdown"
   | "entry.badge"
   | "entry.boolean"
   | "entry.component"
@@ -305,6 +265,8 @@ export type UiNodeType =
   | "icon"
   | "image"
   | "link"
+  | "menu"
+  | "menu-item"
   | "modal"
   | "popover"
   | "progress"
@@ -312,11 +274,14 @@ export type UiNodeType =
   | "section"
   | "segmented-control"
   | "separator"
+  | "sidebar"
+  | "sidebar.footer"
   | "stack"
   | "tab"
   | "tabs"
   | "text"
-  | "tooltip";
+  | "tooltip"
+  | "topbar";
 export type UnreadCount = {
   readonly unreadCount: number;
 };

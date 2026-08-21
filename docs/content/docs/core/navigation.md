@@ -66,8 +66,8 @@ without nesting them in the sidebar tree:
 use Lattice\Ui\Components\Icon;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Placement;
-use Lattice\Layouts\Components\Dropdown;
-use Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\Dropdown;
+use Lattice\Ui\Components\MenuItem;
 
 Dropdown::make('account-menu')
     ->placement(Placement::Bottom)
@@ -111,8 +111,8 @@ use Lattice\Ui\Components\RawBlock;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Placement;
-use Lattice\Layouts\Components\Dropdown;
-use Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\Dropdown;
+use Lattice\Ui\Components\MenuItem;
 
 $user = $request->user();
 
@@ -138,18 +138,22 @@ Dropdown::make('user-menu')
 
 ## Breadcrumbs
 
-`Breadcrumbs::make()` renders the current page's breadcrumb trail. It carries no data of its own — it
-reads whatever the active page returns from `Page::breadcrumbs()`, so drop it once in your layout (a
-header bar is the usual spot) and every page fills it in:
+`Breadcrumbs::make()` renders the current page's breadcrumb trail. Drop it once in your layout (a
+header bar is the usual spot) and every page fills it in: when the layout serializes, the component
+picks up whatever the active page returned from `Page::breadcrumbs()` (or set through
+`$schema->breadcrumbs()`) and sends the items down with the node:
 
 ```php
-use Lattice\Layouts\Components\Breadcrumbs;
+use Lattice\Ui\Components\Breadcrumbs;
 
 Stack::make('app-main')->width(Width::Fill)->schema([
     Breadcrumbs::make(),
     Outlet::make(),
 ]);
 ```
+
+Pass `->items([...])` with `Breadcrumb` values to render a fixed trail instead of the page's — an empty
+array renders nothing, regardless of the page.
 
 ## Pinning a sidebar footer
 
@@ -160,10 +164,10 @@ bottom components to `->footer([...])`:
 use Lattice\Ui\Enums\Placement;
 use Lattice\Ui\Components\RawBlock;
 use Lattice\Ui\Components\Text;
-use Lattice\Layouts\Components\Dropdown;
-use Lattice\Layouts\Components\Menu;
-use Lattice\Layouts\Components\MenuItem;
-use Lattice\Layouts\Components\Sidebar;
+use Lattice\Ui\Components\Dropdown;
+use Lattice\Ui\Components\Menu;
+use Lattice\Ui\Components\MenuItem;
+use Lattice\Ui\Components\Sidebar;
 
 Sidebar::make('app-sidebar')->collapsible()
     ->items([
@@ -188,17 +192,35 @@ Give dropdowns in the footer `Placement::Top` so they open upward.
 
 ## Client-side chrome
 
-The React components behind `Sidebar`, `Topbar`, and `Breadcrumbs` are exported from `@lattice-php/ui`
-for custom pages and component packages. They take plain props instead of wire nodes: the Lattice
-adapters add the toggle-sidebar event, the remembered collapse state, and the page's breadcrumb trail
-on top of them.
+The React components behind `Sidebar`, `Topbar`, `Breadcrumbs`, `Menu`, `MenuItem`, and `Dropdown` are
+exported from `@lattice-php/ui` for custom pages and component packages. They take plain props instead
+of wire nodes: the Lattice adapters add the toggle-sidebar event, the remembered collapse state, the
+page's breadcrumb trail, and the active-item detection on top of them.
 
 ```tsx
-import { Breadcrumbs, Sidebar, SidebarFooter, Topbar } from "@lattice-php/ui";
+import {
+  Breadcrumbs,
+  Dropdown,
+  Menu,
+  MenuItem,
+  Sidebar,
+  SidebarFooter,
+  Topbar,
+} from "@lattice-php/ui";
 
 <Sidebar collapsed={collapsed} open={drawerOpen} onOpenChange={setDrawerOpen}>
-  <nav>…</nav>
-  <SidebarFooter>…</SidebarFooter>
+  <Menu aria-label="Main">
+    <MenuItem active={pathname === "/"} href="/" label="Home" prefix={<HomeIcon />} />
+    <MenuItem label="Catalog" defaultOpen>
+      <MenuItem href="/products" label="Products" />
+    </MenuItem>
+    <MenuItem label="Log out" onClick={logout} />
+  </Menu>
+  <SidebarFooter>
+    <Dropdown placement="top" trigger={<span>{user.name}</span>}>
+      <ul>…</ul>
+    </Dropdown>
+  </SidebarFooter>
 </Sidebar>
 
 <Topbar sticky>
@@ -208,6 +230,15 @@ import { Breadcrumbs, Sidebar, SidebarFooter, Topbar } from "@lattice-php/ui";
 
 `Sidebar` collapses the desktop rail to icons while `collapsed` is true (children read it through
 `useCollapsed()`), and renders the mobile drawer with a backdrop while `open` is true — closing it on
-backdrop click and Escape through `onOpenChange`. `Breadcrumbs` links every item with an `href` and
-marks the last one as the current page; links go through the active `NavigationProvider`, so they
-become Inertia visits inside a Lattice app.
+backdrop click and Escape through `onOpenChange`. `MenuItem` renders a link with `href`, a button
+with `onClick`, a section header with neither, and a collapsible group when it has children (a flyout
+while the sidebar is collapsed); `open`/`onOpenChange` control the group, `defaultOpen` seeds it.
+`Dropdown` is a popover with menu semantics that closes on every navigation. `Breadcrumbs` links every
+item with an `href` and marks the last one as the current page.
+
+Links go through the active `NavigationProvider`, so they become Inertia visits inside a Lattice app.
+The adapter also exposes the location: `useNavigation().currentUrl` is the current path (the Lattice
+runtime seeds it from the Inertia page and tracks visits; without a provider it falls back to
+`window.location.pathname`), and `useNavigation().onNavigate(listener)` subscribes to completed
+navigations and returns the unsubscribe — the sidebar drawer and dropdowns close through it.
+Standalone consumers can supply both on their own adapter.

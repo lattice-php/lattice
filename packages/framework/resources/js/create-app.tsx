@@ -211,7 +211,7 @@ export function createLatticeApp({
       // i18next before the backend can register — init runs exactly once,
       // first caller wins.
       const shell = (
-        <ProviderBase registry={activeRegistry} sprite={sprite}>
+        <ProviderBase initialUrl={page.url} registry={activeRegistry} sprite={sprite}>
           {wrap ? wrap(inner) : inner}
         </ProviderBase>
       );

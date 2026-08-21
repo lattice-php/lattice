@@ -18,6 +18,7 @@ use Lattice\Core\Facades\Lattice;
 use Lattice\Core\PageMetadata;
 use Lattice\Core\Support\Wire;
 use Lattice\Realtime\Listen;
+use Lattice\Ui\BreadcrumbTrail;
 use Lattice\Ui\PageSchema;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use UnexpectedValueException;
@@ -145,11 +146,15 @@ abstract class Page implements PageContract, Responsable
         $layout = $this->layout() ?? $metadata->layout;
         $width = $this->width() ?? $metadata->width;
 
+        $breadcrumbs = $schema->resolvedBreadcrumbs() ?? $this->breadcrumbs();
+
+        app(BreadcrumbTrail::class)->set($breadcrumbs);
+
         $payload = new PagePayload(
             title: $schema->resolvedTitle() ?? $this->title(),
             layout: $this->resolveLayout($layout, $request),
             width: $this->serializePageMetadata($width),
-            breadcrumbs: $schema->resolvedBreadcrumbs() ?? $this->breadcrumbs(),
+            breadcrumbs: $breadcrumbs,
             schema: $schema->renderable(),
             listeners: $this->resolveListeners(),
         );

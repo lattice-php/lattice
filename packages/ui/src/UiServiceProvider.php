@@ -26,6 +26,7 @@ final class UiServiceProvider extends ServiceProvider
         $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
         $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
         $this->app->scoped(EffectFlasher::class);
+        $this->app->scoped(BreadcrumbTrail::class);
 
         $lattice = $this->app->make(LatticeRegistry::class);
         $lattice->registerCapability('extend', fn (string $name, Closure $factory, int $priority = 0) => $this->app->make(SlotRegistry::class)->extend($name, $factory, $priority));

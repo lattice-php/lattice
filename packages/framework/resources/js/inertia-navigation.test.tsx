@@ -4,6 +4,7 @@ import { stubMatchMedia } from "@lattice-php/core/test-support";
 import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { useEmbeddedModal, useModal } from "@lattice-php/ui/modal";
+import { useNavigation } from "@lattice-php/ui/navigation";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { inertiaNavigation } from "./inertia-navigation";
@@ -32,6 +33,39 @@ describe("inertiaNavigation", () => {
     render(<Link href="/spa">Go</Link>);
 
     expect(screen.getByRole("link", { name: "Go" })).toHaveAttribute("href", "/spa");
+  });
+});
+
+function CurrentUrlProbe() {
+  const { currentUrl } = useNavigation();
+
+  return <output>{currentUrl}</output>;
+}
+
+function fireNavigateTo(url: string): void {
+  const calls = vi.mocked(router.on).mock.calls.filter(([event]) => event === "navigate");
+
+  act(() => {
+    for (const call of calls) {
+      const listener = call[1] as (event: { detail: { page: { url: string } } }) => void;
+      listener({ detail: { page: { url } } });
+    }
+  });
+}
+
+describe("useInertiaNavigation", () => {
+  it("seeds the current url from the initial page and follows navigate events", () => {
+    render(
+      <Provider initialUrl="/products?page=2" toaster={false}>
+        <CurrentUrlProbe />
+      </Provider>,
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("/products");
+
+    fireNavigateTo("/products/1#details");
+
+    expect(screen.getByRole("status")).toHaveTextContent("/products/1");
   });
 });
 

@@ -49,7 +49,49 @@ describe("defaultNavigation", () => {
   });
 });
 
+function ProbeLocation() {
+  const { currentUrl, onNavigate } = useNavigation();
+  const unsubscribe = onNavigate(() => undefined);
+
+  return (
+    <output data-subscribed={typeof unsubscribe === "function"}>{currentUrl ?? "unknown"}</output>
+  );
+}
+
+describe("useNavigation without a provider", () => {
+  it("reads the current url from the window location and accepts navigate listeners", () => {
+    window.history.replaceState(null, "", "/products?page=2#top");
+
+    render(<ProbeLocation />);
+
+    expect(screen.getByRole("status")).toHaveTextContent("/products");
+    expect(screen.getByRole("status")).toHaveAttribute("data-subscribed", "true");
+  });
+});
+
 describe("NavigationProvider", () => {
+  it("exposes the adapter's current url and navigate subscription", () => {
+    const listeners: Array<() => void> = [];
+    const adapter: NavigationAdapter = {
+      ...defaultNavigation,
+      currentUrl: "/spa/settings",
+      onNavigate: (listener) => {
+        listeners.push(listener);
+
+        return () => undefined;
+      },
+    };
+
+    render(
+      <NavigationProvider adapter={adapter}>
+        <ProbeLocation />
+      </NavigationProvider>,
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent("/spa/settings");
+    expect(listeners).toHaveLength(1);
+  });
+
   it("overrides how links render and visits run", () => {
     const visit = vi.fn();
     const adapter: NavigationAdapter = {

@@ -1,5 +1,5 @@
 import { Link, router } from "@inertiajs/react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Plugin } from "@lattice-php/core/registry";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { effectHandler } from "@lattice-php/ui/effects/registry";
@@ -17,11 +17,44 @@ function InertiaLink({ href, method = "get", children, ...props }: NavLinkProps)
   );
 }
 
+function onNavigate(listener: () => void): () => void {
+  return router.on("navigate", listener);
+}
+
 export const inertiaNavigation: NavigationAdapter = {
   Link: InertiaLink,
   visit: (url, options) => router.visit(url, options),
   reload: () => router.reload(),
+  onNavigate,
 };
+
+function pathOf(url: string): string {
+  return url.split(/[?#]/, 1)[0] ?? url;
+}
+
+function initialPath(initialUrl: string | undefined): string | undefined {
+  if (initialUrl !== undefined) {
+    return pathOf(initialUrl);
+  }
+
+  return typeof window === "undefined" ? undefined : window.location.pathname;
+}
+
+/**
+ * The Inertia-backed navigation adapter with a live `currentUrl`. The provider
+ * mounts outside Inertia's page context, so the url is seeded from the initial
+ * page and then tracked through the router's `navigate` event.
+ */
+export function useInertiaNavigation(initialUrl?: string): NavigationAdapter {
+  const [currentUrl, setCurrentUrl] = useState(() => initialPath(initialUrl));
+
+  useEffect(
+    () => router.on("navigate", (event) => setCurrentUrl(pathOf(event.detail.page.url))),
+    [],
+  );
+
+  return useMemo(() => ({ ...inertiaNavigation, currentUrl }), [currentUrl]);
+}
 
 function closeAllModals(): void {
   window.dispatchEvent(new CustomEvent(LATTICE_EVENT.closeModal, { detail: { modal: null } }));

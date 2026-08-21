@@ -121,8 +121,8 @@ Anywhere a `type` is accepted you may pass the component class instead of its wi
 resolves to the declared type, so a rename or typo is caught by the compiler:
 
 ```php
-use Lattice\Layouts\Components\MenuItem;
-use Lattice\Layouts\Components\Topbar;
+use Lattice\Ui\Components\MenuItem;
+use Lattice\Ui\Components\Topbar;
 
 $this->assertLatticeLayout($this->get('/'))
     ->component(Topbar::class, tap: fn ($topbar) => $topbar->assertProp('sticky', true))
