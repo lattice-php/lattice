@@ -1,5 +1,58 @@
 # Upgrade Guide
 
+## 0.61 → 0.62
+
+The layout chrome — sidebar, topbar, breadcrumbs, menus, dropdowns — now lives in `lattice-php/ui`
+and `@lattice-php/ui` like every other component; `lattice-php/lattice` keeps only the Laravel and
+Inertia glue (`Outlet`, `Callouts`, `SchemaLayout`, the layout registry).
+
+### PHP namespace
+
+| 0.61 | 0.62 |
+| --- | --- |
+| `Lattice\Layouts\Components\Sidebar` | `Lattice\Ui\Components\Sidebar` |
+| `Lattice\Layouts\Components\SidebarFooter` | `Lattice\Ui\Components\SidebarFooter` |
+| `Lattice\Layouts\Components\Topbar` | `Lattice\Ui\Components\Topbar` |
+| `Lattice\Layouts\Components\Breadcrumbs` | `Lattice\Ui\Components\Breadcrumbs` |
+| `Lattice\Layouts\Components\Menu` | `Lattice\Ui\Components\Menu` |
+| `Lattice\Layouts\Components\MenuItem` | `Lattice\Ui\Components\MenuItem` |
+| `Lattice\Layouts\Components\Dropdown` | `Lattice\Ui\Components\Dropdown` |
+
+`Lattice\Layouts\Components\Outlet` and `Lattice\Layouts\Components\Callouts` stay where they are. A
+find/replace of `Lattice\Layouts\Components\` → `Lattice\Ui\Components\` for the seven classes above
+covers it; the builder APIs are unchanged.
+
+### Breadcrumbs carry their items
+
+The `breadcrumbs` wire node no longer reads `PagePayload.breadcrumbs` on the client. The PHP component
+serializes `items` when the layout renders — the active page's trail by default, or whatever
+`->items([...])` was given. `PagePayload.breadcrumbs` is still emitted for consumers that read it.
+Apps that only ever placed `Breadcrumbs::make()` in a layout need no change; a custom React component
+that rendered the node from page props should read `node.props.items` instead.
+
+### JS: the layout plugin shrank
+
+`layoutComponents` (framework) now registers only `callouts` and `outlet`; `sidebar`,
+`sidebar.footer`, `topbar`, `breadcrumbs`, `menu`, `menu-item`, and `dropdown` come from
+`uiComponents`. Apps composing their own registry from both plugins keep working. The deep imports
+`@lattice-php/lattice/layout/components/*` are gone — the adapters are
+`@lattice-php/ui/components/<name>/<name>-adapter` and the client components are exported from
+`@lattice-php/ui`: `NavMenu`, `NavMenuItem`, and `Dropdown` join `Sidebar`, `SidebarFooter`,
+`Topbar`, and `Breadcrumbs`.
+
+### JS: the navigation adapter knows the location
+
+`NavigationAdapter` gained two optional members, and `useNavigation()` always returns them resolved:
+
+- `currentUrl` — the current path without query or hash (`window.location.pathname` by default,
+  `undefined` during SSR without an adapter). Menu items compare their `href` against it.
+- `onNavigate(listener)` — subscribes to completed navigations and returns the unsubscribe (a no-op by
+  default). The sidebar drawer and dropdowns close through it.
+
+`createLatticeApp` seeds both from Inertia. Standalone consumers with their own
+`<NavigationProvider adapter={...}>` can add them to get active-link marking and auto-closing menus;
+`ProviderBase` accepts an `initialUrl` so the first (server) render already knows the path.
+
 ## 0.49 → 0.50
 
 `@lattice-php/api-reference` is now also published to npm for standalone React/Astro use, and two
