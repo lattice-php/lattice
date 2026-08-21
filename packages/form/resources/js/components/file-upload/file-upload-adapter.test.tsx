@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FakeXhr, fakeNode } from "@lattice-php/core/test-support";
 import { renderWithForm } from "@lattice-php/form/test-support";
 import { useFormValues } from "@lattice-php/form/hooks/values";
-import { FileUploadComponent } from "./file-upload";
+import { FileUploadAdapter } from "./file-upload-adapter";
 
 const apiFetch = vi.hoisted(() =>
   vi.fn<() => Promise<Response>>(() => new Promise<Response>(() => {})),
@@ -54,7 +54,7 @@ function renderUpload({
   return renderWithForm(
     <>
       <ValuesProbe onValues={onValues} />
-      <FileUploadComponent node={node}>{null}</FileUploadComponent>
+      <FileUploadAdapter node={node}>{null}</FileUploadAdapter>
     </>,
     {
       initial: values,
@@ -86,7 +86,7 @@ function successfulSignResponse(key = "tmp/lamp.jpg"): Response {
   );
 }
 
-describe("FileUploadComponent image previews", () => {
+describe("FileUploadAdapter image previews", () => {
   beforeEach(() => {
     apiFetch.mockClear();
     createObjectURL.mockClear();

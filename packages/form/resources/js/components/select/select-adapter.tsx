@@ -6,7 +6,7 @@ import { useDependentField } from "../../hooks/use-dependent-field";
 import { useFieldScope } from "../../hooks/field-scope";
 import { SelectControl, useSelectDomName } from "./select-control";
 
-export const SelectComponent: RendererComponent<"field.select"> = ({ node }) => {
+export const SelectAdapter: RendererComponent<"field.select"> = ({ node }) => {
   const props = node.props;
   const { errors } = useFormContext();
   const { hidden, required } = useDependentField(node);

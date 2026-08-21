@@ -2,7 +2,7 @@ import type { Node } from "@lattice-php/core";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useFormContext } from "../../hooks/context";
 import { useFieldScope } from "../../hooks/field-scope";
-import { SelectControl, useSelectDomName } from "./select-control";
+import { SelectControl, useSelectDomName } from "../select/select-control";
 
 /**
  * Resolve a host field's affix select child (shipped in the node's schema)

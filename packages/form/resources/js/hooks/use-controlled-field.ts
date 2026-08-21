@@ -13,6 +13,7 @@ export type ControlledField = FieldState & {
   localName: string;
   name: string;
   testId?: string;
+  rawValue: unknown;
   value: string;
   error?: string;
   commit: (value: unknown) => void;
@@ -48,6 +49,7 @@ export function useControlledField(node: Node): ControlledField {
     localName,
     name: domName,
     testId: testIdentity(localName),
+    rawValue: currentValue,
     value,
     error: errors[errorKey],
     commit,

@@ -2,11 +2,11 @@ import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { createFieldRenderer } from "@lattice-php/form/test-support";
-import { ToggleComponent } from "./toggle";
+import { ToggleAdapter } from "./toggle-adapter";
 
-const renderField = createFieldRenderer(ToggleComponent);
+const renderField = createFieldRenderer(ToggleAdapter);
 
-describe("ToggleComponent", () => {
+describe("ToggleAdapter", () => {
   it("renders helper text and toggles a boolean value", () => {
     renderField(
       fakeNode({
