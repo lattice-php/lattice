@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@lattice-php/ui/components/popover/popover";
 import { Icon } from "@lattice-php/ui/icons";
-import { Input } from "@lattice-php/form/primitives/input";
+import { Input } from "../../primitives/input";
 import { SimpleField } from "../base/simple-field";
 import { TimePicker } from "../../primitives/time-picker";
 import {

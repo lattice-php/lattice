@@ -1,4 +1,4 @@
-import type { RowAction as WireRowAction } from "@lattice-php/form/generated";
+import type { RowAction as WireRowAction } from "../../generated";
 import type { RowAction } from "./row-actions";
 
 type RowActionTranslate = (key: string, fallback: string) => string;

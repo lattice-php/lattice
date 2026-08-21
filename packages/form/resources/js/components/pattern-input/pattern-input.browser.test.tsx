@@ -3,7 +3,7 @@ import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { findNamedInput, formFrame } from "@lattice-php/form/test-support";
+import { findNamedInput, formFrame } from "../../test-support";
 import { PatternInputAdapter } from "./pattern-input-adapter";
 
 function paddingField(): Node {

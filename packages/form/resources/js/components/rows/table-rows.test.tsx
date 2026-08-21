@@ -2,7 +2,7 @@ import { expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 vi.mock("@lattice-php/core/renderer", async () => {
-  const { RenderNode } = await import("@lattice-php/form/test/form-renderer-probe");
+  const { RenderNode } = await import("../../test/form-renderer-probe");
 
   return { RenderNode };
 });

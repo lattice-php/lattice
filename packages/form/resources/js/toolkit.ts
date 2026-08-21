@@ -21,7 +21,7 @@ export {
 } from "./components/rows/repeater-rows";
 export { RowKeyInputs } from "./components/rows/row-key-inputs";
 export { rowSchemaFor, rowTemplatesOf } from "./components/rows/row-templates";
-export type { RowTemplateData } from "@lattice-php/form/generated";
+export type { RowTemplateData } from "./generated";
 export { useRowCollection } from "./components/rows/use-row-collection";
 export { useDependentField } from "./hooks/use-dependent-field";
 export { useFieldCommit } from "./hooks/use-field-commit";

@@ -2,7 +2,7 @@ import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { formFrame } from "@lattice-php/form/test-support";
+import { formFrame } from "../../test-support";
 import { FileUploadAdapter } from "./file-upload-adapter";
 
 function renderUpload(props: Record<string, unknown> = {}) {

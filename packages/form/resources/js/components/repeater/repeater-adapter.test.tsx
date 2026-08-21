@@ -2,15 +2,15 @@ import { expect, it, vi } from "vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
 
 vi.mock("@lattice-php/core/renderer", async () => {
-  const { RenderNode } = await import("@lattice-php/form/test/form-renderer-probe");
+  const { RenderNode } = await import("../../test/form-renderer-probe");
 
   return { RenderNode };
 });
 
-import { renderCounts } from "@lattice-php/form/test/form-renderer-probe";
+import { renderCounts } from "../../test/form-renderer-probe";
 import { RepeaterAdapter } from "./repeater-adapter";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { renderWithForm as wrap } from "@lattice-php/form/test-support";
+import { renderWithForm as wrap } from "../../test-support";
 
 const repeaterNode = fakeNode({
   id: "r",

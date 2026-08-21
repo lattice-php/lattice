@@ -3,7 +3,7 @@ import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { createRegistry } from "@lattice-php/core/registry";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { formFrame, RICH_EDITOR_EXTENSIONS } from "@lattice-php/form/test-support";
+import { formFrame, RICH_EDITOR_EXTENSIONS } from "../../test-support";
 import { RichEditorAdapter } from "./rich-editor-adapter";
 
 const seededDoc = {

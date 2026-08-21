@@ -2,7 +2,7 @@ import { render } from "vitest-browser-react";
 import { afterEach, describe, expect, it } from "vitest";
 import { setTimezone } from "@lattice-php/ui/i18n/timezone";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
+import { FormValuesProvider } from "../../hooks/values";
 import { DateTimeInputAdapter } from "./date-time-input-adapter";
 
 function renderStartsAt(value: string) {

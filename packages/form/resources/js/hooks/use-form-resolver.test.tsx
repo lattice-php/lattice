@@ -1,8 +1,8 @@
 import { act, render, screen } from "@testing-library/react";
 import { useLayoutEffect } from "@lattice-php/ui/lib/use-layout-effect";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { FORM_DEBOUNCE_MS } from "@lattice-php/form/lib/form-transport";
-import { builderNode } from "@lattice-php/form/test-support";
+import { FORM_DEBOUNCE_MS } from "../lib/form-transport";
+import { builderNode } from "../test-support";
 import { useFormResolver } from "./use-form-resolver";
 import { FormValuesProvider, useFormValues, useSetFormValue } from "./values";
 

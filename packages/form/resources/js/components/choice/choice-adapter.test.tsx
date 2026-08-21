@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { FormValuesProvider, useFormValue } from "@lattice-php/form/hooks/values";
+import { FormValuesProvider, useFormValue } from "../../hooks/values";
 import { ChoiceAdapter } from "./choice-adapter";
 
 function StoredValue({ name }: { name: string }) {

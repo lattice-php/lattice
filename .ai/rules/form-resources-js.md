@@ -5,5 +5,5 @@ paths:
 
 # Form Resources Js
 
-## Relative self-imports for form-package modules with changed types
-The form package's vite dts build clears tsconfig `paths` (vite.config.ts `compilerOptions: { paths: {} }`), so absolute self-imports (`@lattice-php/form/*`) resolve against the package's own stale `dist` d.ts — new/changed exported types then fail the library build until dist is rebuilt. When touching a module whose types change (generated.ts, base/field.tsx, ...), import it relatively inside the package, same as the existing ui-package rule. types.ts already imports `./generated` relatively for this reason.
+## Package-internal imports are always relative
+Inside packages/form/resources/js, always import package siblings relatively — never via `@lattice-php/form/*`, same as the ui-package rule. The package's vite dts build clears tsconfig `paths` (vite.config.ts `compilerOptions: { paths: {} }`), so absolute self-imports resolve against the package's own stale `dist` d.ts and fail the library build whenever exported types change.

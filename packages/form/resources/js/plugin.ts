@@ -1,5 +1,5 @@
 import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
-import type { FormNodeType } from "@lattice-php/form/generated";
+import type { FormNodeType } from "./generated";
 import {
   BuilderAdapter,
   CheckboxAdapter,

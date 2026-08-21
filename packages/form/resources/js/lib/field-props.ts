@@ -1,5 +1,5 @@
 import type { Node } from "@lattice-php/core";
-import type { ComponentPropsMap } from "@lattice-php/form/generated";
+import type { ComponentPropsMap } from "../generated";
 
 /**
  * The props every form-field node shares (the PHP Field base). Nodes flow through

@@ -1,9 +1,9 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { Checkbox } from "./checkbox";
-import { Label } from "@lattice-php/form/primitives/label";
-import { toBoolean } from "@lattice-php/form/lib/conditions";
-import { useControlledField } from "@lattice-php/form/hooks/use-controlled-field";
-import { useSeedDefault } from "@lattice-php/form/hooks/use-seed-default";
+import { Label } from "../../primitives/label";
+import { toBoolean } from "../../lib/conditions";
+import { useControlledField } from "../../hooks/use-controlled-field";
+import { useSeedDefault } from "../../hooks/use-seed-default";
 
 export const CheckboxAdapter: RendererComponent<"field.checkbox"> = ({ node }) => {
   const field = useControlledField(node);

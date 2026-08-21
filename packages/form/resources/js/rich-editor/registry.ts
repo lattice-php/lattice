@@ -2,7 +2,7 @@ import type { AnyExtension, Editor } from "@tiptap/core";
 import type { StarterKitOptions } from "@tiptap/starter-kit";
 import type { ComponentType } from "react";
 import type { ResolveProps } from "@lattice-php/core";
-import type { EditorExtension, EditorExtensionPropsMap } from "@lattice-php/form/generated";
+import type { EditorExtension, EditorExtensionPropsMap } from "../generated";
 
 /**
  * Consumer apps augment this via `declare module "@lattice-php/lattice"` to type

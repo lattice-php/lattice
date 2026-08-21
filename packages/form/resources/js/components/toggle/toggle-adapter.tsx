@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/core";
-import { toBoolean } from "@lattice-php/form/lib/conditions";
-import { useSeedDefault } from "@lattice-php/form/hooks/use-seed-default";
+import { toBoolean } from "../../lib/conditions";
+import { useSeedDefault } from "../../hooks/use-seed-default";
 import { SimpleField } from "../base/simple-field";
 import { Toggle } from "./toggle";
 

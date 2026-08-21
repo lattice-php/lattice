@@ -1,7 +1,7 @@
 import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import type { FormContextValue } from "@lattice-php/form/hooks/context";
-import { renderWithForm } from "@lattice-php/form/test-support";
+import type { FormContextValue } from "../../hooks/context";
+import { renderWithForm } from "../../test-support";
 import { FormSubmitButton } from "./submit-button";
 
 function renderSubmit(overrides: Partial<FormContextValue> = {}) {

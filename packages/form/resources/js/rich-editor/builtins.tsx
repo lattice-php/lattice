@@ -5,7 +5,7 @@ import { TextAlign } from "@tiptap/extension-text-align";
 import type { Editor } from "@tiptap/core";
 import type { StarterKitOptions } from "@tiptap/starter-kit";
 import { useState } from "react";
-import type { EditorExtensionPropsMap } from "@lattice-php/form/generated";
+import type { EditorExtensionPropsMap } from "../generated";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import {

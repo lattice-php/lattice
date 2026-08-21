@@ -1,10 +1,10 @@
 import type { Node } from "@lattice-php/core";
 import { testIdentity } from "@lattice-php/core/test-id";
-import type { FieldState } from "@lattice-php/form/lib/conditions";
-import { fieldProps } from "@lattice-php/form/lib/field-props";
+import type { FieldState } from "../lib/conditions";
+import { fieldProps } from "../lib/field-props";
 import { useFieldScope } from "./field-scope";
 import { useFormContext } from "./context";
-import { fieldDomName } from "@lattice-php/form/lib/field-dom-name";
+import { fieldDomName } from "../lib/field-dom-name";
 import { useDependentField } from "./use-dependent-field";
 import { useFieldCommit } from "./use-field-commit";
 import { useFormValue } from "./values";

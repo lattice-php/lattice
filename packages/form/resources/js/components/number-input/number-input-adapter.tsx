@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/core";
-import { AffixGroup } from "@lattice-php/form/primitives/affix-group";
-import { Input } from "@lattice-php/form/primitives/input";
+import { AffixGroup } from "../../primitives/affix-group";
+import { Input } from "../../primitives/input";
 import { AffixSelect, affixFieldNode } from "../base/affix-select";
 import { SimpleField } from "../base/simple-field";
 

@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { renderWithForm } from "@lattice-php/form/test-support";
+import { renderWithForm } from "../../test-support";
 import { ColorPickerAdapter } from "./color-picker-adapter";
 
 function renderField(props: Record<string, unknown>, initial: Record<string, unknown> = {}) {

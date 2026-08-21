@@ -1,5 +1,5 @@
 import type { Op } from "@lattice-php/core";
-import type { Condition, FieldConditions } from "@lattice-php/form/generated";
+import type { Condition, FieldConditions } from "../generated";
 
 export type { Condition, FieldConditions };
 

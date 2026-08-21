@@ -1,7 +1,7 @@
 import { fakeNode } from "@lattice-php/core/test-support";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import type { RendererComponent } from "@lattice-php/core";
-import { renderWithForm } from "@lattice-php/form/test-support";
+import { renderWithForm } from "../../test-support";
 import { screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { TextInputAdapter } from "../text-input/text-input-adapter";

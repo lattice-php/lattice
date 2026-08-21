@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { FormValuesProvider, useFormValue } from "@lattice-php/form/hooks/values";
+import { FormValuesProvider, useFormValue } from "../../hooks/values";
 import { PasswordInputAdapter } from "./password-input-adapter";
 
 function CommittedValue({ name }: { name: string }) {
