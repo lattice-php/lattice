@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.62.0](https://github.com/lattice-php/lattice/compare/0.61.0...0.62.0) (2026-08-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace data-lattice-component with data-test ([#531](https://github.com/lattice-php/lattice/issues/531))
+* **ui:** move the form controls into the form package ([#528](https://github.com/lattice-php/lattice/issues/528))
+* **ui:** Lattice\Layouts\Components\Breadcrumbs is now Lattice\Ui\Components\Breadcrumbs, and the breadcrumbs wire node carries an items prop instead of reading PagePayload.breadcrumbs on the client.
+
+### Features
+
+* **calendar:** week and day time-grid views ([#523](https://github.com/lattice-php/lattice/issues/523)) ([5d04129](https://github.com/lattice-php/lattice/commit/5d04129e1fabd8e8aa97b063c46a5b8462a27449))
+* **form:** affix select fields for text and number inputs ([#517](https://github.com/lattice-php/lattice/issues/517)) ([b7d100c](https://github.com/lattice-php/lattice/commit/b7d100cd27d820029515e857e733816b17cabfce))
+* **table:** column pinning with sticky left/right columns ([#522](https://github.com/lattice-php/lattice/issues/522)) ([1110989](https://github.com/lattice-php/lattice/commit/11109891e7c45b33976e99d67b8823e3ca4e8c11))
+* **ui:** export Callout and the data-table shell primitives ([#525](https://github.com/lattice-php/lattice/issues/525)) ([f2f6caf](https://github.com/lattice-php/lattice/commit/f2f6cafa8e9a39552954d0eac53c9135e02b0781))
+* **ui:** expose client-side form field frame and layout chrome ([#521](https://github.com/lattice-php/lattice/issues/521)) ([8142814](https://github.com/lattice-php/lattice/commit/81428148f09683dee278d65f0005fe6ee6fdfd0c))
+* **ui:** move the layout chrome into ui ([#524](https://github.com/lattice-php/lattice/issues/524)) ([a531a3b](https://github.com/lattice-php/lattice/commit/a531a3b097e59aea96bce38d96c514430c9dba29))
+* **ui:** sticky stacks and tab rails, extra-large width ([#519](https://github.com/lattice-php/lattice/issues/519)) ([86d1600](https://github.com/lattice-php/lattice/commit/86d1600b6a68526d93d07e546d01e8a3dfacbec9))
+
+
+### Refactoring
+
+* **form:** per-component folders and the components/primitives rule ([#530](https://github.com/lattice-php/lattice/issues/530)) ([7e24144](https://github.com/lattice-php/lattice/commit/7e241444ec4ab147813ea335d6366d8c672480e5))
+* **form:** split toggle, file-upload and select into clients and adapters ([#529](https://github.com/lattice-php/lattice/issues/529)) ([b9b1481](https://github.com/lattice-php/lattice/commit/b9b1481301c0a5d6f86734b24778a394ac62b0b9))
+* replace data-lattice-component with data-test ([#531](https://github.com/lattice-php/lattice/issues/531)) ([3e35bfa](https://github.com/lattice-php/lattice/commit/3e35bfa3645e2bf1846ee46e00c429bcc7a6c901))
+* **ui:** align components and adapters with the folder convention ([#526](https://github.com/lattice-php/lattice/issues/526)) ([a2f3896](https://github.com/lattice-php/lattice/commit/a2f3896e498fd1422d2c3f4faaef5ef424cebf98))
+* **ui:** move the form controls into the form package ([#528](https://github.com/lattice-php/lattice/issues/528)) ([48b27d5](https://github.com/lattice-php/lattice/commit/48b27d51fe32e9a14b1401dd04b5c5fb449dcf8b))
+
 ## [0.61.0](https://github.com/lattice-php/lattice/compare/0.60.0...0.61.0) (2026-08-20)
 
 
