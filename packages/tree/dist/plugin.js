@@ -1024,7 +1024,7 @@ var me, he, ge, $, _e, ve = h((() => {
 		}), /* @__PURE__ */ l(Z.Provider, {
 			value: n,
 			children: /* @__PURE__ */ l("ul", {
-				"data-lattice-component": t,
+				"data-test": t,
 				role: "tree",
 				children: r.map((e, t) => /* @__PURE__ */ l(pe, {
 					ancestors: [],
