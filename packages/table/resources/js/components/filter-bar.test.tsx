@@ -53,6 +53,7 @@ const nameColumn: TableColumn = {
     toggleable: false,
     hiddenByDefault: false,
     filter: null,
+    pinned: null,
     options: [],
   },
 };

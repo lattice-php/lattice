@@ -61,6 +61,8 @@ class Table extends Component implements InteractiveComponent
 
     public bool $resizableColumns = false;
 
+    public bool $pinnableColumns = false;
+
     public bool $resizeIndicator = false;
 
     public ?string $actionsLabel = null;
@@ -208,6 +210,13 @@ class Table extends Component implements InteractiveComponent
     {
         $this->resizableColumns = $resizable;
         $this->resizeIndicator = $resizable && $showIndicator;
+
+        return $this;
+    }
+
+    public function pinnableColumns(bool $pinnable = true): static
+    {
+        $this->pinnableColumns = $pinnable;
 
         return $this;
     }

@@ -75,6 +75,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                     [
@@ -103,6 +104,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                     [
@@ -122,6 +124,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                 ],
@@ -141,6 +144,7 @@ test('registered tables serialize their configured endpoint columns state and in
                     'mode' => null,
                 ],
                 'pagination' => null,
+                'pinnableColumns' => false,
             ],
         ]);
 });
@@ -187,6 +191,7 @@ test('registered tables can serialize lazily without running their query', funct
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                 ],
@@ -212,6 +217,7 @@ test('registered tables can serialize lazily without running their query', funct
                     'hasMore' => false,
                     'nextPage' => null,
                 ],
+                'pinnableColumns' => false,
             ],
         ]);
 });
@@ -241,6 +247,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                     'filter' => null,
                     'width' => 'xl',
                     'align' => 'start',
+                    'pinned' => null,
                 ],
                 'schema' => [
                     [
@@ -284,6 +291,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                     'multiple' => null,
                     'width' => 'md',
                     'align' => 'start',
+                    'pinned' => null,
                 ],
             ],
         ])

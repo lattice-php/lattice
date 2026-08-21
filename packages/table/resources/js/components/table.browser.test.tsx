@@ -2,8 +2,28 @@ import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
+import { fakeNode } from "@lattice-php/core/test-support";
 import { col, tableNode } from "../test-support";
 import TableComponent from "./table";
+
+function wideColumns(pinnedIndexes: Partial<Record<number, "left" | "right">> = {}) {
+  return Array.from({ length: 8 }, (_, index) =>
+    col({
+      key: `col${index}`,
+      label: `Column ${index}`,
+      width: "md",
+      pinned: pinnedIndexes[index] ?? null,
+    }),
+  );
+}
+
+function wideRow(overrides: Record<string, unknown> = {}) {
+  return Object.fromEntries([
+    ["id", 1],
+    ...Array.from({ length: 8 }, (_, index) => [`col${index}`, `Value ${index}`]),
+    ...Object.entries(overrides),
+  ]);
+}
 
 const storageKey = "lattice:table-columns:workbench.products";
 
@@ -308,5 +328,205 @@ describe("Lattice table component in a browser", () => {
       "minmax(6rem, 0.5fr) 224px",
     );
     await expect.element(screen.getByTestId("table-reset-columns")).toBeInTheDocument();
+  });
+});
+
+describe("column pinning in a browser", () => {
+  beforeEach(async () => {
+    await page.viewport(1280, 800);
+    window.localStorage.clear();
+  });
+
+  it("keeps a pinned-left column's cells fixed while unpinned columns scroll away, with an opaque background", async () => {
+    const wideNode = node({
+      columns: wideColumns({ 2: "left" }),
+      data: [wideRow()],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const pinnedHeader = screen.getByRole("columnheader", { name: "Column 2" }).element();
+    const pinnedCell = screen.getByRole("cell", { name: "Value 2" }).element();
+    const unpinnedCell = screen.getByRole("cell", { name: "Value 7" }).element();
+
+    const pinnedHeaderLeftBefore = pinnedHeader.getBoundingClientRect().left;
+    const pinnedCellLeftBefore = pinnedCell.getBoundingClientRect().left;
+    const unpinnedCellLeftBefore = unpinnedCell.getBoundingClientRect().left;
+
+    expect(getComputedStyle(pinnedCell).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+
+    await expect.poll(() => pinnedHeader.getBoundingClientRect().left).toBe(pinnedHeaderLeftBefore);
+    await expect.poll(() => pinnedCell.getBoundingClientRect().left).toBe(pinnedCellLeftBefore);
+    expect(unpinnedCell.getBoundingClientRect().left).toBeLessThan(unpinnedCellLeftBefore);
+  });
+
+  it("keeps row actions and a pinned-right column flush to the scroll port's right edge before and after scrolling", async () => {
+    const wideNode = node({
+      columns: wideColumns({ 6: "right" }),
+      data: [wideRow({ actions: [{ type: "unregistered-test-action", id: "a1", props: {} }] })],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const actionsHeader = screen.getByRole("columnheader", { name: "Actions" }).element();
+    const pinnedHeader = screen.getByRole("columnheader", { name: "Column 6" }).element();
+    const gridScrollRight = gridScroll.getBoundingClientRect().right;
+
+    expect(Math.abs(actionsHeader.getBoundingClientRect().right - gridScrollRight)).toBeLessThan(1);
+    expect(pinnedHeader.getBoundingClientRect().right).toBeLessThanOrEqual(gridScrollRight + 0.5);
+
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+
+    await expect
+      .poll(() => Math.abs(actionsHeader.getBoundingClientRect().right - gridScrollRight))
+      .toBeLessThan(1);
+    expect(pinnedHeader.getBoundingClientRect().right).toBeLessThanOrEqual(gridScrollRight + 0.5);
+
+    gridScroll.scrollLeft = 0;
+
+    await expect
+      .poll(() => Math.abs(actionsHeader.getBoundingClientRect().right - gridScrollRight))
+      .toBeLessThan(1);
+  });
+
+  it("keeps the selection checkbox column pinned to the scroll port's left edge while scrolling", async () => {
+    const wideNode = node({
+      columns: wideColumns({ 3: "left" }),
+      data: [wideRow()],
+      bulkActions: [
+        fakeNode({
+          type: "action",
+          id: "workbench.products.archive-selected",
+          props: {
+            label: "Archive selected",
+            method: "patch",
+            endpoint: "/lattice/bulk-actions/workbench.products.archive-selected",
+            ref: "sealed-ref",
+          },
+        }),
+      ],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const checkboxHeader = screen.getByRole("checkbox", { name: "Select all rows" }).element();
+    const checkboxCell = checkboxHeader.closest('[role="columnheader"]') as HTMLElement;
+    const gridScrollLeft = gridScroll.getBoundingClientRect().left;
+
+    expect(Math.abs(checkboxCell.getBoundingClientRect().left - gridScrollLeft)).toBeLessThan(1);
+
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+
+    await expect
+      .poll(() => Math.abs(checkboxCell.getBoundingClientRect().left - gridScrollLeft))
+      .toBeLessThan(1);
+  });
+
+  it("paints the pinned header cell above columns scrolled underneath it", async () => {
+    const wideNode = node({
+      columns: wideColumns({ 0: "left" }),
+      data: [wideRow()],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const pinnedHeader = screen.getByRole("columnheader", { name: "Column 0" }).element();
+
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+    await expect.poll(() => gridScroll.scrollLeft).toBeGreaterThan(0);
+
+    const rect = pinnedHeader.getBoundingClientRect();
+    const point = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+    expect(point).not.toBeNull();
+    expect(pinnedHeader.contains(point)).toBe(true);
+  });
+
+  it("keeps table-grid-scroll as the containing block for pinned cells without leaking page overflow", async () => {
+    const wideNode = node({
+      columns: wideColumns({ 0: "left", 7: "right" }),
+      data: [wideRow()],
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const wrapper = table.closest('[data-slot="table"]') as HTMLElement;
+    const ancestor = wrapper.parentElement as HTMLElement;
+
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+
+    expect(ancestor.scrollWidth).toBeLessThanOrEqual(ancestor.clientWidth + 1);
+  });
+
+  it("shifts a later pinned-left column's position after resizing an earlier pinned-left column", async () => {
+    const wideNode = node({
+      columns: [
+        col({ key: "a", label: "A", width: "sm", pinned: "left" }),
+        col({ key: "b", label: "B", width: "sm", pinned: "left" }),
+        ...Array.from({ length: 6 }, (_, index) =>
+          col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
+        ),
+      ],
+      data: [
+        Object.fromEntries([
+          ["id", 1],
+          ["a", "A1"],
+          ["b", "B1"],
+          ...Array.from({ length: 6 }, (_, index) => [`col${index}`, `Value ${index}`]),
+        ]),
+      ],
+      resizableColumns: true,
+    });
+
+    const screen = await render(
+      <div style={{ display: "flex", width: "600px" }}>
+        <TableComponent node={wideNode} />
+      </div>,
+    );
+
+    const table = screen.getByRole("table").element();
+    const gridScroll = table.closest('[data-slot="table-grid-scroll"]') as HTMLElement;
+    const handle = screen.getByRole("separator", { name: "Resize A" });
+    const bHeader = screen.getByRole("columnheader", { name: "B" }).element();
+
+    gridScroll.scrollLeft = gridScroll.scrollWidth;
+    const bLeftBefore = bHeader.getBoundingClientRect().left;
+
+    (handle.element() as HTMLElement).focus();
+    await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}");
+
+    await expect.poll(() => bHeader.getBoundingClientRect().left).toBeGreaterThan(bLeftBefore);
   });
 });

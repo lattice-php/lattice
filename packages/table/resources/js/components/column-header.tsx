@@ -1,6 +1,6 @@
 import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
-import type { HTMLAttributes } from "react";
+import type { CSSProperties, HTMLAttributes } from "react";
 import { alignJustify, alignText } from "@lattice-php/table/lib/align";
 import { useT } from "@lattice-php/ui/i18n";
 import { getColumnAriaSort, getColumnSort } from "@lattice-php/table/lib/query";
@@ -27,6 +27,8 @@ function SortIndicator({ sort }: { sort: TableSort | undefined }) {
 export function ColumnHeader({
   bottomBordered,
   column,
+  pinned,
+  pinStyle,
   processing,
   resizeHandleProps,
   sort,
@@ -34,6 +36,8 @@ export function ColumnHeader({
 }: {
   bottomBordered?: boolean;
   column: TableColumn;
+  pinned?: "left" | "right";
+  pinStyle?: CSSProperties;
   processing: boolean;
   resizeHandleProps?: HTMLAttributes<HTMLDivElement>;
   sort: (column: TableColumn) => void;
@@ -47,11 +51,15 @@ export function ColumnHeader({
     <div
       aria-sort={getColumnAriaSort(columnSort)}
       className={cn(
-        "relative min-w-0 bg-lt-muted/50 px-4 py-3 pr-5 align-middle font-semibold text-lt-fg",
+        "relative min-w-0 px-4 py-3 pr-5 align-middle font-semibold text-lt-fg",
+        pinned ? "bg-[var(--lt-table-pinned-muted-bg)]" : "bg-lt-muted/50",
+        pinned && "md:sticky z-[1]",
         bottomBordered && "border-b border-lt-border",
         alignText(align),
       )}
+      data-pinned={pinned}
       role="columnheader"
+      style={pinStyle}
     >
       {sortable ? (
         <button

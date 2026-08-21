@@ -1,11 +1,11 @@
-import type { ToggleableColumn } from "@lattice-php/table/hooks/use-column-visibility";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { col } from "../test-support";
 import { ColumnVisibilityMenu } from "./column-visibility-menu";
 
-const columns: ToggleableColumn[] = [
-  { key: "sku", props: { label: "SKU", toggleable: true } },
-  { key: "notes", props: { label: "Notes", toggleable: true } },
+const columns = [
+  col({ key: "sku", label: "SKU", props: { toggleable: true } }),
+  col({ key: "notes", label: "Notes", props: { toggleable: true } }),
 ];
 
 function setup(overrides: Partial<Parameters<typeof ColumnVisibilityMenu>[0]> = {}) {

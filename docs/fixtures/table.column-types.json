@@ -14,6 +14,7 @@
                         "hiddenByDefault": false,
                         "label": "",
                         "options": [],
+                        "pinned": null,
                         "previewable": true,
                         "size": 32,
                         "sortable": false,
@@ -35,6 +36,7 @@
                         "link": null,
                         "multiple": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -66,6 +68,7 @@
                         "hiddenByDefault": false,
                         "label": "Status",
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -97,6 +100,7 @@
                         },
                         "label": "Verified",
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -141,6 +145,7 @@
                 "total": 3
             },
             "perPageOptions": [],
+            "pinnableColumns": false,
             "query": {
                 "filters": [],
                 "mode": null,

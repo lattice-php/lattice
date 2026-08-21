@@ -18,6 +18,7 @@
                         "link": null,
                         "multiple": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": true,
                         "toggleable": false,
                         "width": "md"
@@ -40,6 +41,7 @@
                         },
                         "multiple": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -59,6 +61,7 @@
                         "link": null,
                         "multiple": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -100,6 +103,7 @@
                 "total": 3
             },
             "perPageOptions": [],
+            "pinnableColumns": false,
             "query": {
                 "filters": [],
                 "mode": null,

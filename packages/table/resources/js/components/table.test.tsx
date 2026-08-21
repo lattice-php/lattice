@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import "@lattice-php/lattice/provider";
 import { afterEach, describe, expect, it } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
@@ -822,5 +822,162 @@ describe("per-page options", () => {
       "/lattice/tables/workbench.users?page=1&per_page=25&mode=table",
       requestOptions(),
     );
+  });
+});
+
+describe("column pinning", () => {
+  afterEach(() => {
+    window.localStorage.clear();
+  });
+
+  it("orders a server-pinned column first and marks it and utility cells as pinned", () => {
+    const node = {
+      id: "workbench.pinned-server",
+      props: {
+        columns: [
+          col({ key: "a", label: "A" }),
+          col({ key: "b", label: "B", pinned: "left" }),
+          col({ key: "c", label: "C" }),
+        ],
+        data: [
+          {
+            id: 1,
+            a: "A1",
+            b: "B1",
+            c: "C1",
+            actions: [{ type: "link", props: { href: "/edit/1", label: "Edit" } }],
+          },
+        ],
+        query: tableQuery(),
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    const headers = screen.getAllByRole("columnheader");
+
+    expect(headers.map((header) => header.textContent)).toEqual(["B", "A", "C", "Actions"]);
+    expect(headers[0]).toHaveAttribute("data-pinned", "left");
+    expect(headers[1]).not.toHaveAttribute("data-pinned");
+    expect(headers[2]).not.toHaveAttribute("data-pinned");
+    expect(headers[3]).toHaveAttribute("data-pinned", "right");
+
+    const rows = screen.getAllByRole("row");
+    const bodyRow = rows[rows.length - 1]!;
+    const cells = within(bodyRow).getAllByRole("cell");
+
+    expect(
+      cells.map((cell) => cell.querySelector('[data-slot="table-cell-content"]')?.textContent),
+    ).toEqual(["B1", "A1", "C1", undefined]);
+    expect(cells[0]).toHaveAttribute("data-pinned", "left");
+    expect(cells[1]).not.toHaveAttribute("data-pinned");
+    expect(cells[2]).not.toHaveAttribute("data-pinned");
+    expect(cells[3]).toHaveAttribute("data-pinned", "right");
+  });
+
+  it("pins and unpins a column through the columns menu, persisting the override", () => {
+    const node = {
+      id: "workbench.pinned-menu",
+      props: {
+        columns: [
+          col({ key: "a", label: "A" }),
+          col({ key: "b", label: "B" }),
+          col({ key: "c", label: "C" }),
+        ],
+        data: [],
+        pinnableColumns: true,
+        query: tableQuery(),
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    fireEvent.click(screen.getByTestId("table-columns-menu"));
+    fireEvent.click(screen.getByTestId("table-column-pin-right-b"));
+
+    expect(screen.getAllByRole("columnheader").map((header) => header.textContent)).toEqual([
+      "A",
+      "C",
+      "B",
+    ]);
+    expect(
+      JSON.parse(window.localStorage.getItem("lattice:table-pins:workbench.pinned-menu") ?? ""),
+    ).toEqual({ overrides: { b: "right" } });
+    expect(screen.getByTestId("table-column-pin-right-b")).toHaveAttribute("aria-pressed", "true");
+
+    fireEvent.click(screen.getByTestId("table-column-pin-right-b"));
+
+    expect(screen.getAllByRole("columnheader").map((header) => header.textContent)).toEqual([
+      "A",
+      "B",
+      "C",
+    ]);
+    expect(window.localStorage.getItem("lattice:table-pins:workbench.pinned-menu")).toBeNull();
+  });
+
+  it("explicitly unpins a server default and restores it via reset", () => {
+    const node = {
+      id: "workbench.pinned-reset",
+      props: {
+        columns: [
+          col({ key: "a", label: "A" }),
+          col({ key: "b", label: "B", pinned: "left" }),
+          col({ key: "c", label: "C" }),
+        ],
+        data: [],
+        pinnableColumns: true,
+        query: tableQuery(),
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(screen.getAllByRole("columnheader").map((header) => header.textContent)).toEqual([
+      "B",
+      "A",
+      "C",
+    ]);
+
+    fireEvent.click(screen.getByTestId("table-columns-menu"));
+    fireEvent.click(screen.getByTestId("table-column-pin-left-b"));
+
+    expect(screen.getAllByRole("columnheader").map((header) => header.textContent)).toEqual([
+      "A",
+      "B",
+      "C",
+    ]);
+    expect(
+      JSON.parse(window.localStorage.getItem("lattice:table-pins:workbench.pinned-reset") ?? ""),
+    ).toEqual({ overrides: { b: false } });
+
+    fireEvent.click(screen.getByTestId("table-columns-reset"));
+
+    expect(screen.getAllByRole("columnheader").map((header) => header.textContent)).toEqual([
+      "B",
+      "A",
+      "C",
+    ]);
+    expect(window.localStorage.getItem("lattice:table-pins:workbench.pinned-reset")).toBeNull();
+  });
+
+  it("renders no pinned markup and keeps the natural column order when nothing is pinned", () => {
+    const node = {
+      id: "workbench.unpinned",
+      props: {
+        columns: [col({ key: "a", label: "A" }), col({ key: "b", label: "B" })],
+        data: [{ id: 1, a: "A1", b: "B1" }],
+        query: tableQuery(),
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    const { container } = render(<TableComponent node={node}>{null}</TableComponent>);
+
+    expect(container.querySelector("[data-pinned]")).not.toBeInTheDocument();
+    expect(screen.getByRole("table")).toHaveClass("min-w-full");
+    expect(screen.getByRole("table")).not.toHaveClass("min-w-max");
   });
 });

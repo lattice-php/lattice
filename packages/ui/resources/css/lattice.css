@@ -136,6 +136,13 @@
   /* Card / section content inset — the gutter apps can break out of */
   --lt-gutter: calc(var(--spacing) * 6);
 
+  /* Pinned table cells need an opaque background so scrolled content behind
+     them doesn't show through; these derive from --lt-bg/--lt-muted, so one
+     definition covers both themes. */
+  --lt-table-pinned-bg: var(--lt-bg);
+  --lt-table-pinned-muted-bg: color-mix(in oklab, var(--lt-muted) 50%, var(--lt-bg));
+  --lt-table-pinned-stripe-bg: color-mix(in oklab, var(--lt-muted) 30%, var(--lt-bg));
+
   color-scheme: light;
   }
 

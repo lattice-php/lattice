@@ -12,6 +12,7 @@ use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\StackColumn;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Components\Table;
+use Lattice\Table\Enums\ColumnPin;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableResult;
 use Lattice\Ui\Components\Text;
@@ -93,6 +94,28 @@ describe('docs fixtures', function (): void {
                     TableResult::fromItems(collect([
                         ['name' => 'Desk Lamp', 'sku' => 'LAMP-1', 'price' => '49.00', 'updated_at' => '2026-05-30 09:15:00'],
                         ['name' => 'Office Chair', 'sku' => 'CHAIR-2', 'price' => '189.00', 'updated_at' => '2026-06-02 14:40:00'],
+                    ])),
+                    TableQuery::empty(),
+                ),
+        ]));
+    });
+
+    it('matches the pinned columns table example fixture', function (): void {
+        assertFixtureMatches('table.pinned', Wire::toWire([
+            Table::make('products')
+                ->pinnableColumns()
+                ->columns([
+                    TextColumn::make('sku')->label('SKU')->pinned(),
+                    TextColumn::make('name')->label('Name'),
+                    NumberColumn::make('price')->label('Price'),
+                    BadgeColumn::make('status')->label('Status')
+                        ->colors(['active' => 'green', 'archived' => 'gray'])
+                        ->pinned(ColumnPin::Right),
+                ])
+                ->result(
+                    TableResult::fromItems(collect([
+                        ['sku' => 'LAMP-1', 'name' => 'Desk Lamp', 'price' => '49.00', 'status' => 'active'],
+                        ['sku' => 'CHAIR-2', 'name' => 'Office Chair', 'price' => '189.00', 'status' => 'archived'],
                     ])),
                     TableQuery::empty(),
                 ),

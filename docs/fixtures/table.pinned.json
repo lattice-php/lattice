@@ -1,10 +1,30 @@
 [
     {
-        "id": "checks",
+        "id": "products",
         "props": {
             "actionsLabel": null,
             "bulkActions": [],
             "columns": [
+                {
+                    "key": "sku",
+                    "props": {
+                        "align": "start",
+                        "badge": null,
+                        "copyable": false,
+                        "date": null,
+                        "filter": null,
+                        "hiddenByDefault": false,
+                        "label": "SKU",
+                        "link": null,
+                        "multiple": null,
+                        "options": [],
+                        "pinned": "left",
+                        "sortable": false,
+                        "toggleable": false,
+                        "width": "md"
+                    },
+                    "type": "column.text"
+                },
                 {
                     "key": "name",
                     "props": {
@@ -26,46 +46,65 @@
                     "type": "column.text"
                 },
                 {
-                    "key": "verified",
+                    "key": "price",
                     "props": {
-                        "align": "start",
-                        "colors": {
-                            "0": {
-                                "dark": null,
-                                "kind": "named",
-                                "value": "gray"
-                            },
-                            "1": {
-                                "dark": null,
-                                "kind": "named",
-                                "value": "green"
-                            }
-                        },
+                        "align": "end",
+                        "compact": false,
+                        "copyable": false,
                         "filter": null,
                         "hiddenByDefault": false,
-                        "icon": null,
-                        "icons": {
-                            "0": "minus",
-                            "1": "check"
-                        },
-                        "label": "Verified",
+                        "label": "Price",
+                        "maximumFractionDigits": null,
+                        "minimumFractionDigits": null,
                         "options": [],
                         "pinned": null,
                         "sortable": false,
                         "toggleable": false,
+                        "unit": null,
                         "width": "md"
                     },
-                    "type": "column.icon"
+                    "type": "column.number"
+                },
+                {
+                    "key": "status",
+                    "props": {
+                        "align": "start",
+                        "colors": {
+                            "active": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "green"
+                            },
+                            "archived": {
+                                "dark": null,
+                                "kind": "named",
+                                "value": "gray"
+                            }
+                        },
+                        "filter": null,
+                        "hiddenByDefault": false,
+                        "label": "Status",
+                        "options": [],
+                        "pinned": "right",
+                        "sortable": false,
+                        "toggleable": false,
+                        "width": "md"
+                    },
+                    "type": "column.badge"
                 }
             ],
             "data": [
                 {
-                    "name": "Ada Lovelace",
-                    "verified": "1"
+                    "name": "Desk Lamp",
+                    "price": "49.00",
+                    "sku": "LAMP-1",
+                    "status": "active"
                 },
                 {
-                    "name": "Alan Turing",
-                    "verified": "0"
+                    "name": "Office Chair",
+                    "price": "189.00",
+                    "sku": "CHAIR-2",
+                    "status": "archived"
                 }
             ],
             "emptyLabel": null,
@@ -85,7 +124,7 @@
                 "total": 2
             },
             "perPageOptions": [],
-            "pinnableColumns": false,
+            "pinnableColumns": true,
             "query": {
                 "filters": [],
                 "mode": null,

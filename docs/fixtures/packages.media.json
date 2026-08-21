@@ -101,6 +101,7 @@
                                 "total": 4
                             },
                             "perPageOptions": [],
+                            "pinnableColumns": false,
                             "query": {
                                 "filters": [],
                                 "mode": null,

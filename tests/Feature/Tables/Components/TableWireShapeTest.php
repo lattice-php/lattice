@@ -73,6 +73,12 @@ it('serializes visible resize indicators on table components', function (): void
         ->and($payload['props']['resizeIndicator'])->toBeTrue();
 });
 
+it('serializes the pinnable columns flag on table components', function (): void {
+    expect(wire(Table::make('demo'))['props']['pinnableColumns'])->toBeFalse();
+
+    expect(wire(Table::make('demo')->pinnableColumns())['props']['pinnableColumns'])->toBeTrue();
+});
+
 it('serializes the searchable flag on table components', function (): void {
     expect(wire(Table::make('demo')->searchable())['props']['searchable'])->toBeTrue()
         ->and(wire(Table::make('demo'))['props']['searchable'])->toBeFalse();

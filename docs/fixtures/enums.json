@@ -363,6 +363,20 @@
         "name": "ColumnAlign",
         "namespace": "Lattice\\Table\\Enums"
     },
+    "Lattice\\Table\\Enums\\ColumnPin": {
+        "cases": [
+            {
+                "name": "Left",
+                "value": "left"
+            },
+            {
+                "name": "Right",
+                "value": "right"
+            }
+        ],
+        "name": "ColumnPin",
+        "namespace": "Lattice\\Table\\Enums"
+    },
     "Lattice\\Table\\Enums\\ColumnType": {
         "cases": [
             {
