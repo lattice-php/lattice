@@ -3,7 +3,7 @@ import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { formFrame } from "@lattice-php/form/test-support";
-import { FileUploadComponent } from "./file-upload";
+import { FileUploadAdapter } from "./file-upload-adapter";
 
 function renderUpload(props: Record<string, unknown> = {}) {
   const node = fakeNode({
@@ -20,7 +20,7 @@ function renderUpload(props: Record<string, unknown> = {}) {
   });
 
   return render(
-    formFrame(<FileUploadComponent node={node}>{null}</FileUploadComponent>, {
+    formFrame(<FileUploadAdapter node={node}>{null}</FileUploadAdapter>, {
       context: { action: "/forms/products", componentRef: "ref-1" },
     }),
   );
@@ -35,7 +35,7 @@ function dropFile(target: Element, file: File): void {
   target.dispatchEvent(new DragEvent("drop", { bubbles: true, cancelable: true, dataTransfer }));
 }
 
-describe("FileUploadComponent in a browser", () => {
+describe("FileUploadAdapter in a browser", () => {
   it("syncs picked files into the native multipart input", async () => {
     const screen = await renderUpload({ image: false });
     const input = screen.getByLabelText("Images");

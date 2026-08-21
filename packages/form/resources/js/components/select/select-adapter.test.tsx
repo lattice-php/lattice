@@ -4,7 +4,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/lattice";
 import type { RendererComponent } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { renderWithForm } from "@lattice-php/form/test-support";
-import { SelectComponent } from "./select";
+import { SelectAdapter } from "./select-adapter";
 
 const formContext = { action: "/forms/products", componentRef: "ref-1" };
 
@@ -50,7 +50,7 @@ function renderSelect({
     },
   });
 
-  return renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+  return renderWithForm(<SelectAdapter node={node}>{null}</SelectAdapter>, {
     initial,
     context: formContext,
     scope: row ? { base: "items", index: 0, row } : undefined,
@@ -69,7 +69,7 @@ async function search(query: string): Promise<void> {
   });
 }
 
-describe("SelectComponent search", () => {
+describe("SelectAdapter search", () => {
   it("posts a row search path with current form values inside a row", async () => {
     vi.useFakeTimers();
 
@@ -127,13 +127,13 @@ function renderStaticSelect(props: Record<string, unknown>, initial: Record<stri
     },
   });
 
-  return renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+  return renderWithForm(<SelectAdapter node={node}>{null}</SelectAdapter>, {
     initial,
     context: formContext,
   });
 }
 
-describe("SelectComponent options", () => {
+describe("SelectAdapter options", () => {
   it("lists static options and selects one", () => {
     renderStaticSelect({
       options: [
@@ -201,7 +201,7 @@ describe("SelectComponent options", () => {
   });
 });
 
-describe("SelectComponent creatable", () => {
+describe("SelectAdapter creatable", () => {
   it("creates a free-text chip on Enter", () => {
     renderStaticSelect({ multiple: true, creatable: true, options: [] }, { color: [] });
 
@@ -342,7 +342,7 @@ describe("SelectComponent creatable", () => {
   });
 });
 
-describe("SelectComponent option schema", () => {
+describe("SelectAdapter option schema", () => {
   const MetaText: RendererComponent = ({ node }) => <span>{String(node.props?.text ?? "")}</span>;
 
   it("materializes the option schema against each option's data", () => {
@@ -366,7 +366,7 @@ describe("SelectComponent option schema", () => {
       },
     });
 
-    renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+    renderWithForm(<SelectAdapter node={node}>{null}</SelectAdapter>, {
       context: { action: "/forms/customers", componentRef: "ref-1" },
       registry,
     });
@@ -390,7 +390,7 @@ describe("SelectComponent option schema", () => {
       },
     });
 
-    renderWithForm(<SelectComponent node={node}>{null}</SelectComponent>, {
+    renderWithForm(<SelectAdapter node={node}>{null}</SelectAdapter>, {
       context: { action: "/forms/customers", componentRef: "ref-1" },
     });
 

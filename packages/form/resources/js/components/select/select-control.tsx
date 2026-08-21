@@ -1,10 +1,5 @@
-import { Icon } from "@lattice-php/ui/icons";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Combobox } from "@lattice-php/form/primitives/combobox";
-import { controlSurface } from "@lattice-php/ui/lib/control";
-import { coerceColor, colorValue } from "@lattice-php/ui/lib/color";
-import { cn } from "@lattice-php/ui/lib/utils";
-import { useT } from "@lattice-php/ui/i18n";
+import { coerceColor } from "@lattice-php/ui/lib/color";
 import { Renderer } from "@lattice-php/core/renderer";
 import { materializeSchema } from "@lattice-php/core/materialize";
 import type { Node, Option } from "@lattice-php/core";
@@ -17,6 +12,7 @@ import { useDependentField } from "../../hooks/use-dependent-field";
 import { useFieldCommit } from "../../hooks/use-field-commit";
 import { useFieldScope } from "../../hooks/field-scope";
 import { useFormValue, useFormValues } from "../../hooks/values";
+import { MultiSelect } from "./select";
 
 function toValues(stored: unknown, fallback: unknown): string[] {
   const source = stored ?? fallback;
@@ -47,7 +43,6 @@ export function SelectControl({
   controlProps: FormFieldControlProps;
   triggerClassName?: string;
 }) {
-  const { t } = useT("lattice");
   const props = node.props;
   const { action, componentRef, searchOptions } = useFormContext();
   const { hidden, readOnly, disabled } = useDependentField(node);
@@ -72,7 +67,6 @@ export function SelectControl({
   const selectedRef = useRef(selected);
   selectedRef.current = selected;
 
-  const [open, setOpen] = useState(false);
   const [results, setResults] = useState<Option[] | null>(null);
   const [loading, setLoading] = useState(false);
   const searchAbort = useRef<AbortController | null>(null);
@@ -199,92 +193,42 @@ export function SelectControl({
         <input name={controlProps.id} type="hidden" value={selected[0] ?? ""} />
       )}
 
-      <div>
-        {multiple && selected.length > 0 && (
-          <div className="mb-1.5 flex flex-wrap gap-1">
-            {selected.map((value) => {
-              const color = colorFor(value);
-
-              return (
-                <span
-                  className="inline-flex items-center gap-1 rounded-lt-sm bg-lt-muted px-2 py-0.5 text-xs"
-                  key={value}
-                >
-                  {color && (
-                    <span
-                      aria-hidden="true"
-                      className="size-2 shrink-0 rounded-full"
-                      style={{ background: colorValue(color) }}
-                    />
-                  )}
-                  {labelFor(value)}
-                  {!locked && (
-                    <button
-                      aria-label={t("form.remove-option", "Remove {{label}}", {
-                        label: labelFor(value),
-                      })}
-                      data-test={`select-${name}-remove-${value}`}
-                      className="text-lt-muted-fg hover:text-lt-fg [&_svg]:size-lt-icon-xs"
-                      onClick={() => remove(value)}
-                      type="button"
-                    >
-                      <Icon name="x" />
-                    </button>
-                  )}
-                </span>
-              );
-            })}
-          </div>
-        )}
-
-        <Combobox
-          creatable={creatable}
-          emptyLabel={props.emptyLabel ?? undefined}
-          loading={loading}
-          multiple={multiple}
-          onCommit={applyCreated}
-          onCreate={applyCreated}
-          onSearch={searchable ? search : undefined}
-          onSelect={select}
-          open={open && !locked}
-          onOpenChange={(next) => {
-            setOpen(next);
-
-            if (!next) {
-              blur(name);
-            }
-          }}
-          options={options}
-          renderOption={renderOption}
-          searchPlaceholder={props.searchPlaceholder ?? undefined}
-          showSearch={Boolean(searchable || creatable)}
-          selected={selected}
-          testId={`select-${name}`}
-          trigger={
-            <>
-              {!multiple && selected.length > 0 ? (
-                <span>{labelFor(selected[0])}</span>
-              ) : (
-                <span className="text-lt-muted-fg">{placeholder}</span>
-              )}
-              <Icon name="chevrons-up-down" className="size-lt-icon-md shrink-0 text-lt-muted-fg" />
-            </>
+      <MultiSelect
+        creatable={creatable}
+        emptyLabel={props.emptyLabel ?? undefined}
+        loading={loading}
+        locked={locked}
+        multiple={multiple}
+        onCreate={applyCreated}
+        onOpenChange={(next) => {
+          if (!next) {
+            blur(name);
           }
-          triggerClassName={cn(
-            triggerClassName ?? cn(controlSurface(), "flex items-center justify-between gap-2"),
-            "text-left",
-            locked && "cursor-not-allowed opacity-60",
-          )}
-          triggerProps={{
-            ...controlProps,
-            "aria-haspopup": "listbox",
-            autoFocus: props.autoFocus ?? undefined,
-            "data-test": `select-${name}`,
-            disabled: locked,
-            tabIndex: props.tabIndex ?? undefined,
-          }}
-        />
-      </div>
+        }}
+        onRemove={remove}
+        onSearch={searchable ? search : undefined}
+        onSelect={select}
+        options={options}
+        placeholder={placeholder}
+        renderOption={renderOption}
+        searchPlaceholder={props.searchPlaceholder ?? undefined}
+        selectedItems={selected.map((value) => ({
+          color: colorFor(value),
+          label: labelFor(value),
+          value,
+        }))}
+        showSearch={Boolean(searchable || creatable)}
+        testId={`select-${name}`}
+        triggerClassName={triggerClassName}
+        triggerProps={{
+          ...controlProps,
+          "aria-haspopup": "listbox",
+          autoFocus: props.autoFocus ?? undefined,
+          "data-test": `select-${name}`,
+          disabled: locked,
+          tabIndex: props.tabIndex ?? undefined,
+        }}
+      />
     </>
   );
 }

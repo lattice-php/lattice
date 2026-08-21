@@ -2,8 +2,6 @@ import { testIdentity } from "@lattice-php/core/test-id";
 import { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 import type { RendererComponent } from "@lattice-php/core";
 import type { SignedUpload } from "@lattice-php/form/generated";
-import { IconButton } from "@lattice-php/ui/primitives/icon-button";
-import { useT } from "@lattice-php/ui/i18n";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
@@ -11,6 +9,7 @@ import { useFormContext } from "@lattice-php/form/hooks/context";
 import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
 import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
 import { useFormValues, useSetFormValue } from "@lattice-php/form/hooks/values";
+import { FileUpload } from "./file-upload";
 
 type Item = {
   id: string;
@@ -37,8 +36,7 @@ function uploadValueEquals(current: unknown, next: string[] | string): boolean {
   return current === next;
 }
 
-export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ node }) => {
-  const { t } = useT("lattice");
+export const FileUploadAdapter: RendererComponent<"field.file-upload"> = ({ node }) => {
   const props = node.props;
   const { hidden, required, readOnly, disabled } = useDependentField(node);
   const { action, componentRef, errors } = useFormContext();
@@ -254,6 +252,10 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
     return null;
   }
 
+  const uploadedItems = items.filter(
+    (item) => signed && !item.existing && item.key && item.status === "ready",
+  );
+
   return (
     <FormFieldFrame
       error={errors[errorKey]}
@@ -265,106 +267,53 @@ export const FileUploadComponent: RendererComponent<"field.file-upload"> = ({ no
       required={required}
     >
       {(controlProps) => (
-        <div
-          className="flex flex-col gap-3 rounded-lt-sm border border-dashed border-lt-border bg-lt-surface px-4 py-6"
-          data-test={testIdentity(name)}
-          onDragOver={(event) => event.preventDefault()}
-          onDrop={(event) => {
-            event.preventDefault();
-            addFiles(event.dataTransfer.files);
+        <FileUpload
+          disabled={locked}
+          hiddenInputs={
+            <>
+              {uploadedItems.map((item) => (
+                <input
+                  data-test={testIdentity(`${name}-uploaded`)}
+                  key={item.id}
+                  name={fieldName}
+                  type="hidden"
+                  value={item.key}
+                />
+              ))}
+              {!scope &&
+                removedTokens.map((token) => (
+                  <input key={token} name={`${name}__removed[]`} type="hidden" value={token} />
+                ))}
+            </>
+          }
+          image={props.image}
+          inputProps={{
+            ...controlProps,
+            accept: props.accept ?? undefined,
+            "aria-label": props.label ?? name,
+            "data-test": testIdentity(`${name}-input`),
+            multiple,
+            name: signed ? undefined : fieldName,
           }}
-        >
-          <button
-            className="text-sm text-lt-muted-fg"
-            disabled={locked}
-            onClick={() => fileInputRef.current?.click()}
-            type="button"
-          >
-            {t("form.file-upload.dropzone", "Drop files here or click to browse")}
-          </button>
-
-          <ul
-            className={
-              props.image ? "grid grid-cols-1 gap-3 sm:grid-cols-2" : "flex flex-col gap-2"
-            }
-          >
-            {items.map((item) => (
-              <li
-                className={
-                  props.image
-                    ? "flex min-w-0 items-center gap-3 rounded-lt-sm border border-lt-border bg-lt-bg p-2 text-sm"
-                    : "flex items-center justify-between gap-3 text-sm"
-                }
-                key={item.id}
-              >
-                {props.image && item.url ? (
-                  <img
-                    alt={item.name}
-                    className="size-16 shrink-0 rounded-lt-sm border border-lt-border object-cover"
-                    data-test={testIdentity(`${name}-preview`)}
-                    src={item.url}
-                  />
-                ) : null}
-                <div className="min-w-0 flex-1">
-                  <span className="block truncate" data-test={testIdentity(`${name}-item`)}>
-                    {item.name}
-                  </span>
-                  {item.status === "uploading" && (
-                    <span className="text-xs text-lt-muted-fg">{item.progress}%</span>
-                  )}
-                  {item.status === "error" && (
-                    <span className="text-xs text-lt-danger">
-                      {t("form.file-upload.failed", "Failed")}
-                    </span>
-                  )}
-                </div>
-                {(!item.existing || !scope) && (
-                  <IconButton
-                    size="sm"
-                    icon="x"
-                    label={t("form.file-upload.remove", "Remove {{name}}", { name: item.name })}
-                    data-test={testIdentity(
-                      item.existing ? `${name}-remove-existing` : `${name}-remove`,
-                    )}
-                    disabled={locked}
-                    onClick={() => removeItem(item.id)}
-                  />
-                )}
-                {signed && !item.existing && item.key && item.status === "ready" && (
-                  <input
-                    data-test={testIdentity(`${name}-uploaded`)}
-                    name={fieldName}
-                    type="hidden"
-                    value={item.key}
-                  />
-                )}
-              </li>
-            ))}
-          </ul>
-
-          {!scope &&
-            removedTokens.map((token) => (
-              <input key={token} name={`${name}__removed[]`} type="hidden" value={token} />
-            ))}
-
-          <input
-            {...controlProps}
-            accept={props.accept ?? undefined}
-            aria-label={props.label ?? name}
-            className="sr-only"
-            data-test={testIdentity(`${name}-input`)}
-            multiple={multiple}
-            name={signed ? undefined : fieldName}
-            onChange={(event) => {
-              addFiles(event.target.files);
-              if (signed) {
-                event.target.value = "";
-              }
-            }}
-            ref={fileInputRef}
-            type="file"
-          />
-        </div>
+          inputRef={fileInputRef}
+          items={items.map((item) => ({
+            id: item.id,
+            itemTestId: testIdentity(`${name}-item`),
+            name: item.name,
+            previewTestId: testIdentity(`${name}-preview`),
+            progress: item.progress,
+            removable: !item.existing || !scope,
+            removeTestId: testIdentity(
+              item.existing ? `${name}-remove-existing` : `${name}-remove`,
+            ),
+            status: item.status,
+            url: item.url,
+          }))}
+          onFilesAdded={addFiles}
+          onRemove={removeItem}
+          resetOnSelect={Boolean(signed)}
+          testId={testIdentity(name)}
+        />
       )}
     </FormFieldFrame>
   );
