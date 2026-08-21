@@ -38,6 +38,7 @@ _ide_helper.php
 /packages/form/resources/js/typescript-transformer-manifest.json
 /packages/table/resources/js/typescript-transformer-manifest.json
 /packages/ui/resources/js/typescript-transformer-manifest.json
+/workbench/resources/js/sprite-icons.ts
 
 .agents
 .claude
@@ -52,3 +53,8 @@ docs/superpowers
 # Vitest browser-mode failure artifacts
 __screenshots__/
 .vitest-attachments/
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
