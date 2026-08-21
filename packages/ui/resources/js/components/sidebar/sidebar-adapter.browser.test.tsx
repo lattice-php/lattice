@@ -5,7 +5,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
-import SidebarAdapter from "./sidebar-adapter";
+import { SidebarAdapter } from "./sidebar-adapter";
 
 const registry = createRegistry({
   components: { sidebar: eagerComponent(SidebarAdapter) },

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
-import LinkAdapter from "../components/link/link-adapter";
+import { LinkAdapter } from "../components/link/link-adapter";
 import { Toaster } from "./toaster";
 
 const registry = createRegistry({

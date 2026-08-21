@@ -1,10 +1,10 @@
 import type { Node, RendererComponent } from "@lattice-php/core";
-import type { RowTemplateData } from "@lattice-php/form/generated";
+import type { RowTemplateData } from "../../generated";
 import { useT } from "@lattice-php/ui/i18n";
-import { FormFieldFrame } from "@lattice-php/form/components/base/field";
-import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
-import { useFormContext } from "@lattice-php/form/hooks/context";
-import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
+import { FormFieldFrame } from "../base/field";
+import { fieldLabelAction } from "../base/label-action";
+import { useFormContext } from "../../hooks/context";
+import { useDependentField } from "../../hooks/use-dependent-field";
 import { AddRowMenu, type AddRowOption } from "../rows/add-row-menu";
 import { ROW_ID_KEY } from "../rows/repeater-rows";
 import { buildRowActions } from "../rows/row-action-menu";

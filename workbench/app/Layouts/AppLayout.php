@@ -127,7 +127,7 @@ class AppLayout extends LayoutDefinition
                         ->html('<span class="text-lg font-semibold tracking-tight text-lt-fg">Lattice</span>')
                         ->hideWhenCollapsed(),
                 ]),
-            Menu::make('sidebar')->items([
+            Menu::make('sidebar-menu')->items([
                 MenuItem::fromPage(HomePage::class)->key('home')->label(__('workbench.navigation.home'))->prefix(Affix::icon('house')),
                 MenuItem::make(__('workbench.navigation.forms'), 'forms')->prefix(Affix::icon('form-input'))->children([
                     MenuItem::make(__('workbench.navigation.fields'), 'fields')->children([

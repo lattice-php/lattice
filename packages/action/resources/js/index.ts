@@ -1,6 +1,6 @@
-export { default as ActionComponent } from "./components/action";
+export { ActionComponent } from "./components/action";
 export { ActionForm } from "./components/action-form";
-export { default as ActionGroupComponent } from "./components/action-group";
+export { ActionGroupComponent } from "./components/action-group";
 export { ActionInteractionProvider, ActionTrigger } from "./components/action-trigger-provider";
 export {
   ActionMenuProvider,

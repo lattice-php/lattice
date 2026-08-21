@@ -1,14 +1,14 @@
 import { testIdentity } from "@lattice-php/core/test-id";
 import { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 import type { RendererComponent } from "@lattice-php/core";
-import type { SignedUpload } from "@lattice-php/form/generated";
+import type { SignedUpload } from "../../generated";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { FormFieldFrame } from "@lattice-php/form/components/base/field";
-import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
-import { useFormContext } from "@lattice-php/form/hooks/context";
-import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
-import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
-import { useFormValues, useSetFormValue } from "@lattice-php/form/hooks/values";
+import { FormFieldFrame } from "../base/field";
+import { fieldLabelAction } from "../base/label-action";
+import { useFormContext } from "../../hooks/context";
+import { useDependentField } from "../../hooks/use-dependent-field";
+import { useFieldScope } from "../../hooks/field-scope";
+import { useFormValues, useSetFormValue } from "../../hooks/values";
 import { FileUpload } from "./file-upload";
 
 type Item = {

@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import type { Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { builderNode, priceField } from "@lattice-php/form/test-support";
+import { builderNode, priceField } from "../test-support";
 import {
   collectPrefillTargets,
   pathsToClear,

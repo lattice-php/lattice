@@ -4,7 +4,7 @@ import { SpriteProvider } from "@lattice-php/lattice";
 import type { Color } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Size } from "../../generated";
-import IconAdapter from "./icon-adapter";
+import { IconAdapter } from "./icon-adapter";
 
 function renderIcon(props: {
   name: string;
@@ -34,7 +34,7 @@ describe("Lattice icon component", () => {
 
     const wrapper = container.querySelector<HTMLSpanElement>("span.contents");
     expect(wrapper).not.toBeNull();
-    expect(wrapper).toHaveAttribute("data-lattice-component", "page.icon");
+    expect(wrapper).toHaveAttribute("data-test", "page.icon");
     expect(wrapper?.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });
 

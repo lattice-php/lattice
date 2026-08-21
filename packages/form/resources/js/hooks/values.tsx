@@ -7,7 +7,7 @@ import {
   useRef,
   useSyncExternalStore,
 } from "react";
-import { getPath, setPath } from "@lattice-php/form/lib/form-path";
+import { getPath, setPath } from "../lib/form-path";
 
 export type SetFormValue = (
   name: string,

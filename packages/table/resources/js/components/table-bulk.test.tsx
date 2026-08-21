@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { ActionInteractionProvider } from "@lattice-php/action";
-import { ModalProvider } from "@lattice-php/ui/modal";
+import { ModalProvider } from "@lattice-php/ui/components/modal/modal-host";
 import { col, tableNode, tableQuery } from "../test-support";
 
 const apiFetch = vi.hoisted(() =>
@@ -19,7 +19,7 @@ vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
-const { default: TableComponent } = await import("./table");
+const { TableComponent } = await import("./table");
 
 function renderTable(ui: ReactElement) {
   return render(

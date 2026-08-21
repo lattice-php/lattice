@@ -24,7 +24,7 @@ let nextId = 0;
  * ordering guard is needed. A `retract-callout` effect clears one on a
  * same-URL response too.
  */
-const CalloutsAdapter: RendererComponent<"callouts"> = ({ node }) => {
+export const CalloutsAdapter: RendererComponent<"callouts"> = ({ node }) => {
   const { t } = useT(UI_NAMESPACE);
   const { onNavigate } = useNavigation();
   const [callouts, setCallouts] = useState<CalloutItem[]>([]);
@@ -68,7 +68,7 @@ const CalloutsAdapter: RendererComponent<"callouts"> = ({ node }) => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-2" data-lattice-component={nodeIdentity(node)}>
+    <div className="flex w-full flex-col gap-2" data-test={nodeIdentity(node)}>
       {callouts.map((callout) => (
         <Callout
           key={callout.id}
@@ -84,5 +84,3 @@ const CalloutsAdapter: RendererComponent<"callouts"> = ({ node }) => {
     </div>
   );
 };
-
-export default CalloutsAdapter;

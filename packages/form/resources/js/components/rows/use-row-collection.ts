@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useLayoutEffect } from "@lattice-php/ui/lib/use-layout-effect";
-import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
-import { useFormValue, useSetFormValue } from "@lattice-php/form/hooks/values";
+import { useFieldScope } from "../../hooks/field-scope";
+import { useFormValue, useSetFormValue } from "../../hooks/values";
 import {
   duplicateRow,
   ensureRowIds,

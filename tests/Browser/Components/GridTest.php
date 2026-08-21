@@ -6,7 +6,7 @@ it('applies breakpoint columns and child spans in a real grid', function (): voi
 
     $grid = $page->script(<<<'JS'
         () => {
-            const grid = document.querySelector('[data-lattice-component="containers-grid"]');
+            const grid = document.querySelector('[data-test="containers-grid"]');
             const items = [...grid.querySelectorAll(':scope > [data-slot=grid-item]')].map(
                 (item) => getComputedStyle(item),
             );

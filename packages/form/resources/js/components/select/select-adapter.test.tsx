@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/lattice";
 import type { RendererComponent } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { renderWithForm } from "@lattice-php/form/test-support";
+import { renderWithForm } from "../../test-support";
 import { SelectAdapter } from "./select-adapter";
 
 const formContext = { action: "/forms/products", componentRef: "ref-1" };
@@ -21,7 +21,7 @@ const { postFormAction } = vi.hoisted(() => ({
   >(() => Promise.resolve({ options: [] })),
 }));
 
-vi.mock("@lattice-php/form/lib/form-transport", () => ({
+vi.mock("../../lib/form-transport", () => ({
   FORM_DEBOUNCE_MS: 250,
   postFormAction,
 }));

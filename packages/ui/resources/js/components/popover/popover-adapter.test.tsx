@@ -2,8 +2,8 @@ import { fireEvent, screen } from "@testing-library/react";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
 import { describe, expect, it } from "vitest";
-import BadgeAdapter from "../badge/badge-adapter";
-import PopoverAdapter from "./popover-adapter";
+import { BadgeAdapter } from "../badge/badge-adapter";
+import { PopoverAdapter } from "./popover-adapter";
 
 const registry = createRegistry({
   components: { badge: eagerComponent(BadgeAdapter), popover: eagerComponent(PopoverAdapter) },
@@ -30,7 +30,6 @@ describe("PopoverAdapter", () => {
 
     const trigger = screen.getByRole("button", { name: "User details" });
 
-    expect(trigger).toHaveAttribute("data-lattice-component", "user-card");
     expect(trigger).toHaveAttribute("data-test", "user-card-trigger");
     expect(screen.getByText("Details")).toBeInTheDocument();
     expect(screen.queryByText("Card body")).not.toBeInTheDocument();

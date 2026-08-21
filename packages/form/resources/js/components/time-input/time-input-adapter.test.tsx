@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer } from "@lattice-php/form/test-support";
-import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
+import { createFieldRenderer } from "../../test-support";
+import { FieldScopeProvider } from "../../hooks/field-scope";
+import { FormValuesProvider } from "../../hooks/values";
 import { TimeInputAdapter } from "./time-input-adapter";
 
 const renderField = createFieldRenderer(TimeInputAdapter);

@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
-import TextAdapter from "../text/text-adapter";
-import SectionAdapter from "./section-adapter";
+import { TextAdapter } from "../text/text-adapter";
+import { SectionAdapter } from "./section-adapter";
 
 const registry = createRegistry({
   components: {

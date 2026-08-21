@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { createRegistry, type Registry } from "@lattice-php/core/registry";
 import type { Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { renderWithForm, RICH_EDITOR_EXTENSIONS } from "@lattice-php/form/test-support";
-import type { RichEditorExtensionRegistry } from "@lattice-php/form/rich-editor/registry";
+import { renderWithForm, RICH_EDITOR_EXTENSIONS } from "../../test-support";
+import type { RichEditorExtensionRegistry } from "../../rich-editor/registry";
 import { RichEditorAdapter } from "./rich-editor-adapter";
 
 function renderField(

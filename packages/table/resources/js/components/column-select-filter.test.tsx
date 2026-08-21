@@ -5,7 +5,7 @@ import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { TableNode } from "@lattice-php/table/types";
 import { col, searchFetch, tableFetch, tableNode } from "../test-support";
-import TableComponent from "./table";
+import { TableComponent } from "./table";
 
 function selectFilter(): ColumnFilter {
   return {

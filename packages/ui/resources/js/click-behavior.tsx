@@ -4,7 +4,7 @@ import type { Node } from "@lattice-php/core/types";
 import { getActionEffects } from "./effects/dispatch";
 import { useEffectDispatcher } from "./effects/use-effect-dispatcher";
 import type { Effect } from "./effects/types";
-import { MODAL_MISSING_ERROR, useOptionalModal } from "./modal";
+import { MODAL_MISSING_ERROR, useOptionalModal } from "./components/modal/modal-host";
 
 type ActionNode = Node<"action" | "action.bulk">;
 

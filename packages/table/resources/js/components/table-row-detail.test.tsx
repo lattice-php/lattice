@@ -4,7 +4,7 @@ import { registry } from "@lattice-php/lattice/registry";
 import { jsonResponse, renderWithRegistry, stubFetch } from "@lattice-php/core/test-support";
 import type { TableNode, TableRow } from "@lattice-php/table/types";
 import { col, tableNode } from "../test-support";
-import TableComponent from "./table";
+import { TableComponent } from "./table";
 
 function detailNode(id: string) {
   return {

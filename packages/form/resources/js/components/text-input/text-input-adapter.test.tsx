@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer } from "@lattice-php/form/test-support";
+import { createFieldRenderer } from "../../test-support";
 import { TextInputAdapter } from "./text-input-adapter";
 
 const renderField = createFieldRenderer(TextInputAdapter);

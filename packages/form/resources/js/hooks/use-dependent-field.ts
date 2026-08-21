@@ -1,11 +1,7 @@
 import type { Node } from "@lattice-php/core";
 import { useMemo } from "react";
-import {
-  conditionFields,
-  type FieldState,
-  evaluateConditions,
-} from "@lattice-php/form/lib/conditions";
-import { fieldProps } from "@lattice-php/form/lib/field-props";
+import { conditionFields, type FieldState, evaluateConditions } from "../lib/conditions";
+import { fieldProps } from "../lib/field-props";
 import { useFieldScope } from "./field-scope";
 import { useFormValuesFor } from "./values";
 

@@ -6,14 +6,14 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import { useExtensionRegistry } from "@lattice-php/core/registry-context";
 import type { RendererComponent } from "@lattice-php/core";
-import { FormFieldFrame } from "@lattice-php/form/components/base/field";
-import { fieldLabelAction } from "@lattice-php/form/components/base/label-action";
-import { useFormContext } from "@lattice-php/form/hooks/context";
-import { useFieldScope } from "@lattice-php/form/hooks/field-scope";
-import { useDependentField } from "@lattice-php/form/hooks/use-dependent-field";
-import { useFieldCommit } from "@lattice-php/form/hooks/use-field-commit";
-import { useFormValue } from "@lattice-php/form/hooks/values";
-import { builtinRichEditorExtensions } from "@lattice-php/form/rich-editor/builtins";
+import { FormFieldFrame } from "../base/field";
+import { fieldLabelAction } from "../base/label-action";
+import { useFormContext } from "../../hooks/context";
+import { useFieldScope } from "../../hooks/field-scope";
+import { useDependentField } from "../../hooks/use-dependent-field";
+import { useFieldCommit } from "../../hooks/use-field-commit";
+import { useFormValue } from "../../hooks/values";
+import { builtinRichEditorExtensions } from "../../rich-editor/builtins";
 import {
   assembleStarterKitOptions,
   assembleTiptapExtensions,
@@ -22,8 +22,8 @@ import {
   resolveRichEditorExtensions,
   type RichEditorExtensionRegistry,
   type ToolbarEntry,
-} from "@lattice-php/form/rich-editor/registry";
-import { ToolbarIconButton } from "@lattice-php/form/rich-editor/toolbar-button";
+} from "../../rich-editor/registry";
+import { ToolbarIconButton } from "../../rich-editor/toolbar-button";
 
 function Toolbar({ editor, items }: { editor: Editor; items: ToolbarEntry[] }) {
   const { t } = useT("lattice");

@@ -2,8 +2,8 @@ import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { useEffect } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FakeXhr, fakeNode } from "@lattice-php/core/test-support";
-import { renderWithForm } from "@lattice-php/form/test-support";
-import { useFormValues } from "@lattice-php/form/hooks/values";
+import { renderWithForm } from "../../test-support";
+import { useFormValues } from "../../hooks/values";
 import { FileUploadAdapter } from "./file-upload-adapter";
 
 const apiFetch = vi.hoisted(() =>

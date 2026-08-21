@@ -3,7 +3,7 @@ import { useCollapsed } from "@lattice-php/core/collapsed-context";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
-import { type ModalHandle, useModal } from "@lattice-php/ui/modal";
+import { type ModalHandle, useModal } from "@lattice-php/ui/components/modal/modal-host";
 import SearchPalette from "./search-palette";
 
 function isEditingTarget(target: EventTarget | null): boolean {

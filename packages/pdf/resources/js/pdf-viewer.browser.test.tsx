@@ -259,7 +259,7 @@ it("grows with the document under maxHeight instead of forcing a fixed height", 
 
   await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0, WAIT).toBe(true);
 
-  const shell = document.querySelector<HTMLElement>('[data-test="pdf-viewer"]')!;
+  const shell = document.querySelector<HTMLElement>('[data-test="manual"]')!;
   await expect.poll(() => shell.getBoundingClientRect().height, WAIT).toBeGreaterThan(240);
   expect(shell.getBoundingClientRect().height).toBeLessThan(5000);
   expect(shell.style.maxHeight).toBe("5000px");

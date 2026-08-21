@@ -5,7 +5,7 @@ import { fakeNode } from "@lattice-php/core/test-support";
 import { TableRows, type TableColumn } from "./table-rows";
 
 vi.mock("@lattice-php/core/renderer", async () => {
-  const { RenderNode } = await import("@lattice-php/form/test/form-renderer-probe");
+  const { RenderNode } = await import("../../test/form-renderer-probe");
 
   return { RenderNode };
 });

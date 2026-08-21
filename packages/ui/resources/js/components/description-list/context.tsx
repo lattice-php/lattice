@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { ReactNode } from "react";
 
 /**
  * How the owning list renders its rows. `description-list` puts each pair in a
@@ -9,7 +10,17 @@ export type DescriptionListSemantic = "description-list" | "list";
 
 const DescriptionListContext = createContext<DescriptionListSemantic>("description-list");
 
-export const DescriptionListProvider = DescriptionListContext.Provider;
+export function DescriptionListProvider({
+  children,
+  value,
+}: {
+  children: ReactNode;
+  value: DescriptionListSemantic;
+}) {
+  return (
+    <DescriptionListContext.Provider value={value}>{children}</DescriptionListContext.Provider>
+  );
+}
 
 export function useDescriptionListSemantic(): DescriptionListSemantic {
   return useContext(DescriptionListContext);

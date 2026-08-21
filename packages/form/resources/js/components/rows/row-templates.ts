@@ -1,5 +1,5 @@
 import type { Node } from "@lattice-php/core";
-import type { RowTemplateData } from "@lattice-php/form/generated";
+import type { RowTemplateData } from "../../generated";
 
 export function rowTemplatesOf(node: Node): RowTemplateData[] | undefined {
   const templates = (node.props as { templates?: RowTemplateData[] }).templates;

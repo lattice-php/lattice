@@ -4,8 +4,8 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import { describe, expect, it } from "vitest";
-import BadgeAdapter from "../badge/badge-adapter";
-import TooltipAdapter from "./tooltip-adapter";
+import { BadgeAdapter } from "../badge/badge-adapter";
+import { TooltipAdapter } from "./tooltip-adapter";
 
 const registry = createRegistry({
   components: {

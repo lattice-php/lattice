@@ -1,19 +1,19 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice-php/core";
-import type { WizardStep } from "@lattice-php/form/generated";
+import type { WizardStep } from "../../generated";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import { Icon } from "@lattice-php/ui/icons";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { Spinner } from "@lattice-php/ui/primitives/spinner";
-import { useFormContext } from "@lattice-php/form/hooks/context";
+import { useFormContext } from "../../hooks/context";
 import {
   firstErroredStep,
   stepFieldNames,
   stepsWithErrors,
   stepValidationPaths,
-} from "@lattice-php/form/lib/wizard-steps";
+} from "../../lib/wizard-steps";
 
 const RAIL_ALIGNMENTS: Record<string, string> = {
   center: "justify-center",

@@ -1,7 +1,7 @@
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { FormValuesProvider } from "@lattice-php/form/hooks/values";
+import { FormValuesProvider } from "../../hooks/values";
 import { DateInputAdapter } from "./date-input-adapter";
 
 describe("DateInputAdapter in a browser", () => {

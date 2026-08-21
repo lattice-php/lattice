@@ -1,6 +1,6 @@
 import type { Node } from "@lattice-php/core/types";
 import { ActionForm, useLazyActionForm } from "@lattice-php/action/components/action-form";
-import { MODAL_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/modal";
+import { MODAL_MISSING_ERROR, useEmbeddedModal } from "@lattice-php/ui/components/modal/modal-host";
 import { confirmationLabels } from "@lattice-php/action/lib/confirmation";
 
 export function ActionFormOverlay({

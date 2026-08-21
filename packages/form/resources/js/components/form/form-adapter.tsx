@@ -11,12 +11,12 @@ import { useT } from "@lattice-php/ui/i18n";
 import type { Emphasis, Justify, Variant } from "@lattice-php/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormSubmitButton } from "../base/submit-button";
-import { FormProvider } from "@lattice-php/form/hooks/context";
-import { collectFields } from "@lattice-php/form/lib/collect-fields";
-import { PrefillProvider } from "@lattice-php/form/hooks/prefill-context";
-import { ResolvedNodesProvider } from "@lattice-php/form/hooks/resolved-nodes";
-import { useFormResolver } from "@lattice-php/form/hooks/use-form-resolver";
-import { FormValuesProvider, useResetFormValues } from "@lattice-php/form/hooks/values";
+import { FormProvider } from "../../hooks/context";
+import { collectFields } from "../../lib/collect-fields";
+import { PrefillProvider } from "../../hooks/prefill-context";
+import { ResolvedNodesProvider } from "../../hooks/resolved-nodes";
+import { useFormResolver } from "../../hooks/use-form-resolver";
+import { FormValuesProvider, useResetFormValues } from "../../hooks/values";
 
 const JUSTIFY_CLASS: Record<Justify, string> = {
   start: "justify-start",
@@ -195,7 +195,7 @@ function FormShell({ children, node }: { children: React.ReactNode; node: Node<"
       ref={formRef}
       action={action}
       data-slot="form"
-      data-lattice-component={node.id}
+      data-test={node.id}
       errorBag={errorBag}
       method={method}
       resetOnError={resetOnError}

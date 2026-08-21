@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { TableCellProvider } from "@lattice-php/form/hooks/row-layout-context";
+import { TableCellProvider } from "../../hooks/row-layout-context";
 import { FormFieldFrame } from "./field";
 
 it("renders the bare frame inside a table cell", () => {

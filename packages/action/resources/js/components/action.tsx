@@ -7,7 +7,7 @@ import { actionMenuItemClassName, useActionMenu } from "@lattice-php/ui/action-m
 import { useAction } from "@lattice-php/action/hooks/use-action";
 import { actionLabel } from "@lattice-php/action/lib/action-label";
 
-const ActionComponent: RendererComponent<"action"> = ({ node }) => {
+export const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const endpoint = node.props.endpoint ?? "";
   const icon = node.props.icon;
   const label = actionLabel(node);
@@ -19,7 +19,6 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   return (
     <Button
       className={isMenuItem ? actionMenuItemClassName : undefined}
-      data-lattice-component={node.id}
       data-test={testId}
       disabled={processing || !endpoint}
       onClick={requestSubmit}
@@ -41,5 +40,3 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
     </Button>
   );
 };
-
-export default ActionComponent;

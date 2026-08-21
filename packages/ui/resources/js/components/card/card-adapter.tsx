@@ -4,13 +4,13 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Card } from "./card";
 
-const CardAdapter: RendererComponent<"card"> = ({ children, node }) => {
+export const CardAdapter: RendererComponent<"card"> = ({ children, node }) => {
   const headerActions = toNodes(node.props.headerActions);
   const tooltip = node.props.tooltip;
 
   return (
     <Card
-      data-lattice-component={nodeIdentity(node)}
+      data-test={nodeIdentity(node)}
       description={node.props.description}
       headerActions={headerActions.length > 0 ? <Renderer nodes={headerActions} /> : null}
       title={node.props.title}
@@ -20,5 +20,3 @@ const CardAdapter: RendererComponent<"card"> = ({ children, node }) => {
     </Card>
   );
 };
-
-export default CardAdapter;

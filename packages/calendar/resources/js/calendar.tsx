@@ -176,7 +176,7 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
   }));
 
   return (
-    <div className="lt-calendar" data-lattice-component={identity}>
+    <div className="lt-calendar" data-test={identity}>
       {views.length > 1 ? (
         <div className="mb-3">
           <SegmentedControl

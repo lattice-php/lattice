@@ -4,7 +4,7 @@ import type { Registry } from "@lattice-php/core/registry";
 import { RegistryProvider } from "@lattice-php/core/registry-context";
 import { useFlashEffects } from "./effects/use-flash-effects";
 import { NavigationProvider } from "@lattice-php/ui/navigation";
-import { ModalProvider } from "@lattice-php/ui/modal";
+import { ModalProvider } from "@lattice-php/ui/components/modal/modal-host";
 import { EventBridge } from "./event-bridge";
 import { useCloseModalsOnNavigate, useInertiaNavigation } from "./inertia-navigation";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";

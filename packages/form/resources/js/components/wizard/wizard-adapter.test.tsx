@@ -2,8 +2,8 @@ import { configure, fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
-import type { FormContextValue } from "@lattice-php/form/hooks/context";
-import { formFrame, renderWithForm } from "@lattice-php/form/test-support";
+import type { FormContextValue } from "../../hooks/context";
+import { formFrame, renderWithForm } from "../../test-support";
 import { WizardAdapter, WizardStepAdapter } from "./wizard-adapter";
 
 configure({ testIdAttribute: "data-test" });

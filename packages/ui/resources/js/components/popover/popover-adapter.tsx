@@ -4,7 +4,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-const PopoverAdapter: RendererComponent<"popover"> = ({ children, node }) => {
+export const PopoverAdapter: RendererComponent<"popover"> = ({ children, node }) => {
   const trigger = toNodes(node.props.trigger);
   const identity = nodeIdentity(node);
 
@@ -12,7 +12,6 @@ const PopoverAdapter: RendererComponent<"popover"> = ({ children, node }) => {
     <Popover>
       <PopoverTrigger
         aria-label={node.props.label ?? undefined}
-        data-lattice-component={identity}
         data-test={identity ? `${identity}-trigger` : undefined}
         type="button"
       >
@@ -24,5 +23,3 @@ const PopoverAdapter: RendererComponent<"popover"> = ({ children, node }) => {
     </Popover>
   );
 };
-
-export default PopoverAdapter;

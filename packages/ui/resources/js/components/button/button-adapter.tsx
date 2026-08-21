@@ -5,7 +5,7 @@ import type { RendererComponent } from "@lattice-php/core/types";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "../../click-behavior";
 import { useNavigation } from "../../navigation";
 
-const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
+export const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
   const { label, icon } = node.props;
   const variant = node.props.variant ?? null;
   const emphasis = node.props.emphasis ?? "solid";
@@ -65,5 +65,3 @@ const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
     </Button>
   );
 };
-
-export default ButtonAdapter;

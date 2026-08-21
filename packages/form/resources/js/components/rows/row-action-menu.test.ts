@@ -1,4 +1,4 @@
-import type { RowAction as WireRowAction } from "@lattice-php/form/generated";
+import type { RowAction as WireRowAction } from "../../generated";
 import { describe, expect, it, vi } from "vitest";
 import { buildRowActions, type RowActionContext } from "./row-action-menu";
 

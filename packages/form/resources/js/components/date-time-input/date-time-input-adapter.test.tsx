@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { setLocale } from "@lattice-php/ui/i18n/locale";
 import { setTimezone } from "@lattice-php/ui/i18n/timezone";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer, findNamedInput } from "@lattice-php/form/test-support";
+import { createFieldRenderer, findNamedInput } from "../../test-support";
 import { DateTimeInputAdapter } from "./date-time-input-adapter";
 
 const renderField = createFieldRenderer(DateTimeInputAdapter);

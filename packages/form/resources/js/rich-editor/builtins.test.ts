@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { EditorExtension } from "@lattice-php/form/generated";
+import type { EditorExtension } from "../generated";
 import { builtinRichEditorExtensions } from "./builtins";
 import {
   assembleStarterKitOptions,

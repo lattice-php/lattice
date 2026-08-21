@@ -5,8 +5,8 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "../../navigation";
-import LinkAdapter from "../link/link-adapter";
-import CalloutsAdapter from "./callouts-adapter";
+import { LinkAdapter } from "../link/link-adapter";
+import { CalloutsAdapter } from "./callouts-adapter";
 
 const navigateListeners: Array<() => void> = [];
 
@@ -128,7 +128,7 @@ describe("CalloutsAdapter", () => {
 
     emitCallout("Archived.");
 
-    expect(screen.getByRole("status").parentElement).toHaveAttribute("data-lattice-component", "c");
+    expect(screen.getByRole("status").parentElement).toHaveAttribute("data-test", "c");
   });
 
   it("replaces a keyed callout instead of stacking it", () => {

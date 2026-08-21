@@ -5,7 +5,7 @@ import { apiFetch } from "@lattice-php/core/api";
 import { withHeaders } from "@lattice-php/core/headers";
 import type { Node } from "@lattice-php/core/types";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/modal";
+import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/components/modal/modal-host";
 import type { ActionSubmitOptions } from "@lattice-php/ui/click-behavior";
 import { runAction } from "@lattice-php/action/lib/run-action";
 import { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";

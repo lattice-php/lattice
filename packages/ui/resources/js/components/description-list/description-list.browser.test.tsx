@@ -2,7 +2,7 @@ import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { TextEntryAdapter } from "../entries/entries";
+import { TextEntryAdapter } from "./entries";
 import { DescriptionList } from "./description-list";
 
 describe("DescriptionList in a browser", () => {

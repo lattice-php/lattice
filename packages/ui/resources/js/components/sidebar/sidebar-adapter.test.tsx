@@ -6,8 +6,8 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, stubMatchMedia } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import { defaultNavigation, NavigationProvider } from "../../navigation";
-import SidebarAdapter from "./sidebar-adapter";
-import SidebarFooterAdapter from "./sidebar-footer-adapter";
+import { SidebarAdapter } from "./sidebar-adapter";
+import { SidebarFooterAdapter } from "./sidebar-footer-adapter";
 
 const registry = createRegistry({
   components: {
@@ -82,9 +82,7 @@ describe("SidebarAdapter", () => {
 
     renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
-    expect(
-      screen.getByRole("complementary").querySelector('[data-lattice-component="footer"]'),
-    ).not.toBeNull();
+    expect(screen.getByRole("complementary").querySelector('[data-test="footer"]')).not.toBeNull();
   });
 });
 

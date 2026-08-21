@@ -4,10 +4,10 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
-import LinkAdapter from "../link/link-adapter";
-import RawBlockAdapter from "../raw-block/raw-block-adapter";
-import TextAdapter from "../text/text-adapter";
-import DropdownAdapter from "./dropdown-adapter";
+import { LinkAdapter } from "../link/link-adapter";
+import { RawBlockAdapter } from "../raw-block/raw-block-adapter";
+import { TextAdapter } from "../text/text-adapter";
+import { DropdownAdapter } from "./dropdown-adapter";
 
 const registry = createRegistry({
   components: {
@@ -34,11 +34,8 @@ describe("DropdownAdapter in a browser", () => {
     const screen = await renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
     await expect.element(screen.getByRole("link", { name: "Profile" })).not.toBeInTheDocument();
-    await expect
-      .element(screen.getByTestId("account-menu"))
-      .toHaveAttribute("data-lattice-component", "account-menu");
 
-    await screen.getByRole("button", { name: "Account" }).click();
+    await screen.getByTestId("account-menu").click();
 
     const profile = screen.getByRole("link", { name: "Profile" });
     await expect.element(profile).toBeVisible();

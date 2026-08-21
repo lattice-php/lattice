@@ -6,7 +6,7 @@ import type { Node } from "@lattice-php/lattice";
 import { RegistryProvider } from "@lattice-php/core";
 import { formComponents } from "@lattice-php/form";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { ModalProvider } from "@lattice-php/ui/modal";
+import { ModalProvider } from "@lattice-php/ui/components/modal/modal-host";
 import { actionComponents } from "@lattice-php/action/plugin";
 
 vi.mock("@inertiajs/react", async () =>

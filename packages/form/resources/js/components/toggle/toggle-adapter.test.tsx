@@ -1,7 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { createFieldRenderer } from "@lattice-php/form/test-support";
+import { createFieldRenderer } from "../../test-support";
 import { ToggleAdapter } from "./toggle-adapter";
 
 const renderField = createFieldRenderer(ToggleAdapter);

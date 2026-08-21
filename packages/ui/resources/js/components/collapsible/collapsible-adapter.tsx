@@ -4,7 +4,7 @@ import { toNodes } from "@lattice-php/core/nodes";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Collapsible } from "./collapsible";
 
-const CollapsibleAdapter: RendererComponent<"collapsible"> = ({ children, node }) => {
+export const CollapsibleAdapter: RendererComponent<"collapsible"> = ({ children, node }) => {
   const rememberState = node.props.rememberState !== false;
   const trigger = toNodes(node.props.trigger);
   const identity = nodeIdentity(node);
@@ -12,7 +12,7 @@ const CollapsibleAdapter: RendererComponent<"collapsible"> = ({ children, node }
   return (
     <Collapsible
       {...(rememberState ? { storageKey: `lattice:collapsible:${identity ?? "default"}` } : {})}
-      data-lattice-component={identity}
+      data-test={identity}
       defaultOpen={node.props.collapsed === false}
       tooltip={node.props.tooltip}
       trigger={<Renderer nodes={trigger} />}
@@ -24,5 +24,3 @@ const CollapsibleAdapter: RendererComponent<"collapsible"> = ({ children, node }
     </Collapsible>
   );
 };
-
-export default CollapsibleAdapter;

@@ -1,5 +1,5 @@
 import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
-import type { FormNodeType } from "@lattice-php/form/generated";
+import type { FormNodeType } from "./generated";
 import {
   BuilderAdapter,
   CheckboxAdapter,
@@ -11,7 +11,7 @@ import {
   FormAdapter,
   HiddenInputAdapter,
   NumberInputAdapter,
-  OtpInputAdapter,
+  OtpAdapter,
   PasswordInputAdapter,
   RepeaterAdapter,
   SelectAdapter,
@@ -37,7 +37,7 @@ export const formComponents: Plugin = {
     "field.file-upload": eagerComponent(FileUploadAdapter),
     "field.hidden-input": eagerComponent(HiddenInputAdapter),
     "field.number-input": eagerComponent(NumberInputAdapter),
-    "field.otp": eagerComponent(OtpInputAdapter),
+    "field.otp": eagerComponent(OtpAdapter),
     "field.password-input": eagerComponent(PasswordInputAdapter),
     "field.pattern-input": eagerComponent(PatternInputAdapter),
     "field.repeater": eagerComponent(RepeaterAdapter),

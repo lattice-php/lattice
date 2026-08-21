@@ -4,13 +4,12 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Dropdown } from "./dropdown";
 
-const DropdownAdapter: RendererComponent<"dropdown"> = ({ children, node }) => {
+export const DropdownAdapter: RendererComponent<"dropdown"> = ({ children, node }) => {
   const identity = nodeIdentity(node) ?? "dropdown";
 
   return (
     <Dropdown
       className="w-auto"
-      data-lattice-component={identity}
       data-test={identity}
       placement={node.props.placement}
       trigger={
@@ -23,5 +22,3 @@ const DropdownAdapter: RendererComponent<"dropdown"> = ({ children, node }) => {
     </Dropdown>
   );
 };
-
-export default DropdownAdapter;
