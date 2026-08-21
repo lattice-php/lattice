@@ -400,7 +400,6 @@ test('registered table responses expose only declared columns row identity and g
         ->json('data.0');
 
     expect($row)->toBeArray();
-    assert(is_array($row));
 
     expect(array_keys($row))->toBe(['id', 'name', 'sku', 'status', 'actions', 'rowUrl'])
         ->and($row['id'])->toBe($product->getKey())
@@ -430,7 +429,6 @@ test('registered table responses prune hidden columns from the row payload', fun
         ->json('data.0');
 
     expect($row)->toBeArray();
-    assert(is_array($row));
 
     expect(array_keys($row))->toBe(['name'])
         ->and($row)->not->toHaveKey('secret');
@@ -445,7 +443,6 @@ test('a badge colour key without a hidden column claiming it ships in the row pa
         ->json('data.0');
 
     expect($row)->toBeArray();
-    assert(is_array($row));
 
     expect(array_keys($row))->toBe(['status', 'helper'])
         ->and($row['helper'])->toBe('green');
@@ -460,7 +457,6 @@ test('a hidden column referenced by a visible badge column is still pruned from 
         ->json('data.0');
 
     expect($row)->toBeArray();
-    assert(is_array($row));
 
     expect(array_keys($row))->toBe(['status'])
         ->and($row)->not->toHaveKey('helper');

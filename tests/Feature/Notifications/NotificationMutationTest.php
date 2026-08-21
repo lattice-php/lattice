@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use Illuminate\Notifications\DatabaseNotification;
 use Lattice\Notifications\Notification;
 
 use function Pest\Laravel\actingAs;
@@ -14,7 +13,6 @@ test('a user can mark a single notification read', function (): void {
     Notification::make()->title('One')->send($user);
     $notification = $user->notifications()->first();
     expect($notification)->not->toBeNull();
-    assert($notification instanceof DatabaseNotification);
     $id = $notification->id;
 
     actingAs($user);
@@ -25,7 +23,6 @@ test('a user can mark a single notification read', function (): void {
 
     $updated = $user->notifications()->first();
     expect($updated)->not->toBeNull();
-    assert($updated instanceof DatabaseNotification);
     expect($updated->getAttribute('read_at'))->not->toBeNull();
 });
 
@@ -49,7 +46,6 @@ test('a user can dismiss and clear notifications', function (): void {
     Notification::make()->title('Two')->send($user);
     $notification = $user->notifications()->first();
     expect($notification)->not->toBeNull();
-    assert($notification instanceof DatabaseNotification);
     $id = $notification->id;
 
     actingAs($user);
@@ -67,7 +63,6 @@ test('a user cannot mutate another users notification', function (): void {
     Notification::make()->title('Theirs')->send($other);
     $notification = $other->notifications()->first();
     expect($notification)->not->toBeNull();
-    assert($notification instanceof DatabaseNotification);
     $id = $notification->id;
 
     actingAs($me);
@@ -77,6 +72,5 @@ test('a user cannot mutate another users notification', function (): void {
 
     $stillUnread = $other->notifications()->first();
     expect($stillUnread)->not->toBeNull();
-    assert($stillUnread instanceof DatabaseNotification);
     expect($stillUnread->getAttribute('read_at'))->toBeNull();
 });
