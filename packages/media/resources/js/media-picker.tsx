@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { RenderNode } from "@lattice-php/core";
 import type { Node, RendererComponent } from "@lattice-php/core/types";
-import { SimpleField } from "@lattice-php/form/components/fields/simple-field";
+import { SimpleField } from "@lattice-php/form/components/base/simple-field";
 import { FieldScopeProvider } from "@lattice-php/form/hooks/field-scope";
 import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/components/button/button";

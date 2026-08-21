@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { InputOTP } from "./otp-input";
-import { SimpleField } from "../fields/simple-field";
+import { SimpleField } from "../base/simple-field";
 
 export const OtpInputAdapter: RendererComponent<"field.otp"> = ({ node }) => {
   const props = node.props;

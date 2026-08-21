@@ -1,6 +1,6 @@
 import type { Node } from "@lattice-php/core";
 import { fieldProps, isRowField, nestedRowsKey } from "./field-props";
-import { rowSchemaFor } from "@lattice-php/form/components/fields/row-templates";
+import { rowSchemaFor } from "@lattice-php/form/components/rows/row-templates";
 import { appendPath, getPath } from "./form-path";
 import { buildOverrideKey, rowIdFrom } from "./override-keys";
 

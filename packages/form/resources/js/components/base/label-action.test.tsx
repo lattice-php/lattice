@@ -4,7 +4,7 @@ import type { RendererComponent } from "@lattice-php/core";
 import { renderWithForm } from "@lattice-php/form/test-support";
 import { screen } from "@testing-library/react";
 import { expect, it } from "vitest";
-import { TextInputComponent } from "../fields/text-input";
+import { TextInputAdapter } from "../text-input/text-input-adapter";
 
 const StubLink: RendererComponent = ({ node }) => (
   <a href={String(node.props?.href ?? "")}>{String(node.props?.label ?? "")}</a>
@@ -25,7 +25,7 @@ it("renders a field's labelAction node at the end of the label row", () => {
     },
   });
 
-  renderWithForm(<TextInputComponent node={node}>{null}</TextInputComponent>, { registry });
+  renderWithForm(<TextInputAdapter node={node}>{null}</TextInputAdapter>, { registry });
 
   const action = screen.getByRole("link", { name: "Need help?" });
   expect(action).toHaveAttribute("href", "/help");
