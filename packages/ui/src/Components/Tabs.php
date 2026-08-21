@@ -21,6 +21,8 @@ class Tabs extends ContainerComponent
 
     public TabsAlignment $alignment = TabsAlignment::Stretch;
 
+    public bool $sticky = false;
+
     public string $activeValue;
 
     public static function make(?string $key = null): static
@@ -52,6 +54,17 @@ class Tabs extends ContainerComponent
     public function alignment(TabsAlignment $alignment): static
     {
         $this->alignment = $alignment;
+
+        return $this;
+    }
+
+    /**
+     * Keep a vertical rail in view while its panel scrolls; horizontal
+     * strips ignore it.
+     */
+    public function sticky(bool $sticky = true): static
+    {
+        $this->sticky = $sticky;
 
         return $this;
     }

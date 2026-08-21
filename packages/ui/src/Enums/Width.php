@@ -13,5 +13,6 @@ enum Width: string
     case Small = 'sm';
     case Medium = 'md';
     case Large = 'lg';
+    case ExtraLarge = 'xl';
     case Fill = 'fill';
 }

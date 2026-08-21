@@ -11,6 +11,7 @@ const StackAdapter: RendererComponent<"stack"> = ({ children, node }) => (
     gap={node.props.gap ?? undefined}
     height={node.props.height ?? undefined}
     justify={node.props.justify ?? undefined}
+    sticky={node.props.sticky}
     width={node.props.width ?? undefined}
   >
     {children}

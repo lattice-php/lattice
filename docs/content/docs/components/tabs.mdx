@@ -38,6 +38,9 @@ open.
   (tabs share the full width); `Start`, `Center`, and `End` shrink the strip to its content and pin it
   left, center, or right. Vertical tabs only read `End` — it moves the strip to the right of the
   panels; every other value keeps it on the left.
+- `->sticky()` keeps a vertical rail in view while a long panel scrolls. The rail sits a gap below
+  whatever sticky chrome the page publishes above it — a sticky `Topbar`, a sticky `Stack` header —
+  so it never slides underneath. Horizontal strips ignore the option.
 
 See the [enums reference](/advanced/enums/) for the full `Orientation` and `TabsAlignment` cases.
 

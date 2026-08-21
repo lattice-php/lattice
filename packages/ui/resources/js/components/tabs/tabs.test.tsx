@@ -49,6 +49,30 @@ describe("Tabs", () => {
     expect(screen.getByText("Overview panel")).toBeVisible();
   });
 
+  it("pins a sticky vertical rail below the published sticky offset", () => {
+    render(
+      <Tabs defaultValue="overview" orientation="vertical" sticky>
+        <Tab label="Overview" value="overview" />
+        <Tab label="Details" value="details" />
+      </Tabs>,
+    );
+
+    expect(screen.getByRole("tablist")).toHaveClass(
+      "sticky top-[calc(var(--lt-sticky-offset)+--spacing(6))]",
+    );
+  });
+
+  it("keeps a horizontal strip in flow even when sticky is requested", () => {
+    render(
+      <Tabs defaultValue="overview" sticky>
+        <Tab label="Overview" value="overview" />
+        <Tab label="Details" value="details" />
+      </Tabs>,
+    );
+
+    expect(screen.getByRole("tablist")).not.toHaveClass("sticky");
+  });
+
   it("roves focus with orientation-aware keyboard navigation", () => {
     render(
       <Tabs defaultValue="overview" orientation="vertical">

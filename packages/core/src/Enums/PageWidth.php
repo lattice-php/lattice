@@ -14,6 +14,7 @@ use Lattice\Core\Attributes\TypeScript;
 enum PageWidth: string
 {
     case Full = 'full';
+    case ExtraLarge = 'xl';
     case Large = 'lg';
     case Medium = 'md';
     case Small = 'sm';

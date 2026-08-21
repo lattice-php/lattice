@@ -362,6 +362,7 @@ export type Stack = {
   gap: Gap | null;
   height: Height | null;
   justify: Justify | null;
+  sticky: boolean;
   width: Width | null;
 };
 export type StackDirection = "row" | "column";
@@ -380,6 +381,7 @@ export type Tabs = {
   defaultValue: string | null;
   orientation: Orientation;
   queryKey: string;
+  sticky: boolean;
 };
 export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type Text = {
@@ -450,4 +452,4 @@ export type UiNodeType =
   | "text"
   | "tooltip";
 export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
-export type Width = "full" | "auto" | "sm" | "md" | "lg" | "fill";
+export type Width = "full" | "auto" | "sm" | "md" | "lg" | "xl" | "fill";

@@ -45,8 +45,14 @@ Tune the layout with enum-typed options (see the [enums reference](/advanced/enu
 
 - `->gap(Gap::ExtraSmall … ExtraLarge)` — the space between children.
 - `->align(Align::…)` and `->justify(Justify::…)` — cross-axis and main-axis alignment.
-- `->width(Width::…)` and `->height(Height::…)` — sizing.
+- `->width(Width::…)` and `->height(Height::…)` — sizing. The capped widths (`Small` … `ExtraLarge`)
+  centre the stack; add `->float(Side::Start)` or `->float(Side::End)` to pin it to one edge instead.
 - `->float(Side::…)` — float the stack to one side.
+- `->sticky()` — pin the stack below the sticky chrome above it (a sticky `Topbar`, an earlier sticky
+  stack) while the page scrolls. The stack paints the page background, keeps a small gutter once
+  stuck, and publishes its own height as the sticky offset for its siblings, so a sticky vertical
+  tab rail or another sticky stack further down lines up beneath it. A page header with the title
+  and primary actions is the typical candidate.
 
 ## Grid
 

@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import { useStickyOffsetPublisher } from "../../lib/use-sticky-offset";
 import { cn } from "../../lib/utils";
 
 export type StackAlign = "center" | "left" | "start" | "stretch";
@@ -7,7 +8,7 @@ export type StackGap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
 export type StackHeight = "full" | "screen";
 export type StackJustify = "start" | "center" | "end" | "between" | "around" | "evenly";
 export type StackSide = "start" | "end";
-export type StackWidth = "full" | "auto" | "sm" | "md" | "lg" | "fill";
+export type StackWidth = "full" | "auto" | "sm" | "md" | "lg" | "xl" | "fill";
 
 export type StackProps = Omit<ComponentProps<"div">, "align"> & {
   align?: StackAlign;
@@ -16,6 +17,7 @@ export type StackProps = Omit<ComponentProps<"div">, "align"> & {
   gap?: StackGap;
   height?: StackHeight;
   justify?: StackJustify;
+  sticky?: boolean;
   width?: StackWidth;
 };
 
@@ -46,6 +48,7 @@ const stackWidths: Record<StackWidth, string> = {
   sm: "mx-auto w-full max-w-md",
   md: "mx-auto w-full max-w-2xl",
   lg: "mx-auto w-full max-w-4xl",
+  xl: "mx-auto w-full max-w-6xl",
   fill: "min-w-0 flex-1",
 };
 
@@ -68,6 +71,14 @@ const floatClasses: Record<StackSide, string> = {
   end: "ml-auto",
 };
 
+/**
+ * The vertical padding only shows once the stack is stuck — the negative
+ * margin cancels it in normal flow — so the pinned content keeps a gutter
+ * between itself and the chrome above without shifting the page.
+ */
+const stickyClasses =
+  "sticky top-[var(--lt-sticky-own-top,var(--lt-sticky-offset))] z-lt-sticky -my-4 bg-lt-bg py-4";
+
 export function Stack({
   align = "stretch",
   className,
@@ -76,14 +87,18 @@ export function Stack({
   gap = "md",
   height,
   justify,
+  sticky = false,
   width = "full",
   ...props
 }: StackProps) {
   const isFlex = direction === "row" || justify !== undefined;
+  const ref = useStickyOffsetPublisher(sticky);
 
   return (
     <div
       data-slot="stack"
+      data-sticky={sticky || undefined}
+      ref={ref}
       className={cn(
         isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid content-start",
         isFlex
@@ -94,6 +109,7 @@ export function Stack({
         justify ? justifyClasses[justify] : null,
         height ? stackHeights[height] : null,
         float ? floatClasses[float] : null,
+        sticky && stickyClasses,
         className,
       )}
       {...props}

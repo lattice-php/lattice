@@ -8,8 +8,10 @@ const TopbarComponent: RendererComponent<"topbar"> = ({ children, node }) => {
   return (
     <header
       data-lattice-component={nodeIdentity(node)}
+      data-lattice-topbar=""
+      data-sticky={sticky || undefined}
       className={cn(
-        "flex h-14 w-full items-center gap-2 border-b border-lt-border bg-lt-bg px-4 text-lt-fg",
+        "flex h-(--lt-topbar-h) w-full items-center gap-2 border-b border-lt-border bg-lt-bg px-4 text-lt-fg",
         sticky && "sticky top-0 z-lt-sticky",
       )}
     >

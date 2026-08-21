@@ -45,6 +45,7 @@ export const TabsAdapter: RendererComponent<"tabs"> = ({ children, node }) => {
       items={tabs.map((tab) => ({ label: tab.label, value: tab.value }))}
       onValueChange={selectTab}
       orientation={node.props.orientation}
+      sticky={node.props.sticky}
       value={activeValue}
     >
       {children}
