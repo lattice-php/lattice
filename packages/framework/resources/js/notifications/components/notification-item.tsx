@@ -4,7 +4,7 @@ import { IconRenderer } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { resolveText } from "@lattice-php/ui/i18n/translatable";
 import { cn } from "@lattice-php/ui/lib/utils";
-import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
+import type { NotificationItem } from "../types";
 
 const variantIconClass: Record<NonNullable<NotificationItem["variant"]>, string> = {
   primary: "text-lt-primary",

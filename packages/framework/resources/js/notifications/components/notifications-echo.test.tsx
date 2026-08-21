@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useEchoNotification } from "@laravel/echo-react";
-import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
+import type { NotificationItem } from "../types";
 import { NotificationsEcho } from "./notifications-echo";
 
 vi.mock("@laravel/echo-react", () => ({

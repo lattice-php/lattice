@@ -51,6 +51,8 @@ export {
   CardTitle,
 } from "./components/card/card";
 export type { CardProps } from "./components/card/card";
+export { Chart } from "./components/chart/chart";
+export type { ChartProps } from "./components/chart/chart";
 export { CodeBlock } from "./components/code-block/code-block";
 export type {
   CodeBlockLanguage,
@@ -64,7 +66,7 @@ export * from "./primitives/icon-button";
 export * from "./icons/index";
 export * from "./i18n/index";
 export * from "./i18n/translatable";
-export * from "./components/image/image-preview";
+export * from "./primitives/image-preview";
 export * from "./primitives/info-tooltip";
 export * from "./primitives/input";
 export { default as InputError } from "./primitives/input-error";
@@ -78,7 +80,7 @@ export * from "./components/popover/popover";
 export * from "./primitives/skeleton";
 export * from "./primitives/spinner";
 export * from "./primitives/textarea";
-export * from "./components/link/text-link";
+export * from "./primitives/text-link";
 export * from "./types";
 export * from "./lib/use-collapsible-state";
 export * from "./lib/use-column-resizing";

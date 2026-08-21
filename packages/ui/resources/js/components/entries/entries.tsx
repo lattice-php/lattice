@@ -18,7 +18,7 @@ function disclosureOf(children: ReactNode, node: Node): ReactNode | undefined {
   return (node.schema ?? []).length > 0 ? children : undefined;
 }
 
-export const TextEntryComponent: RendererComponent<"entry.text"> = ({ children, node }) => {
+export const TextEntryAdapter: RendererComponent<"entry.text"> = ({ children, node }) => {
   const { value, placeholder, copyable, label, description } = node.props;
   const text = value === null || value === undefined || value === "" ? null : String(value);
 
@@ -42,7 +42,7 @@ export const TextEntryComponent: RendererComponent<"entry.text"> = ({ children, 
   );
 };
 
-export const DateEntryComponent: RendererComponent<"entry.date"> = ({ children, node }) => {
+export const DateEntryAdapter: RendererComponent<"entry.date"> = ({ children, node }) => {
   const { value, format, label, description } = node.props;
   const ctx = useFormatContext();
 
@@ -58,7 +58,7 @@ export const DateEntryComponent: RendererComponent<"entry.date"> = ({ children, 
   );
 };
 
-export const BooleanEntryComponent: RendererComponent<"entry.boolean"> = ({ children, node }) => {
+export const BooleanEntryAdapter: RendererComponent<"entry.boolean"> = ({ children, node }) => {
   const { value, trueIcon, falseIcon, label, description } = node.props;
   const { t } = useT("lattice");
   const truthy = isTruthy(value);
@@ -80,7 +80,7 @@ export const BooleanEntryComponent: RendererComponent<"entry.boolean"> = ({ chil
   );
 };
 
-export const BadgeEntryComponent: RendererComponent<"entry.badge"> = ({ children, node }) => {
+export const BadgeEntryAdapter: RendererComponent<"entry.badge"> = ({ children, node }) => {
   const { value, color, label, description } = node.props;
   const text = value === null || value === undefined || value === "" ? null : String(value);
 
@@ -100,10 +100,7 @@ export const BadgeEntryComponent: RendererComponent<"entry.badge"> = ({ children
   );
 };
 
-export const ComponentEntryComponent: RendererComponent<"entry.component"> = ({
-  children,
-  node,
-}) => (
+export const ComponentEntryAdapter: RendererComponent<"entry.component"> = ({ children, node }) => (
   <EntryRow
     description={node.props.description}
     disclosure={disclosureOf(children, node)}

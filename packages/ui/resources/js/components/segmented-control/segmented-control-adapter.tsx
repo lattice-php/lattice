@@ -1,3 +1,4 @@
+import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { SegmentedControl } from "./segmented-control";
 
@@ -13,6 +14,7 @@ const SegmentedControlAdapter: RendererComponent<"segmented-control"> = ({ node 
   return (
     <SegmentedControl
       aria-label={node.props.label ?? undefined}
+      data-lattice-component={nodeIdentity(node)}
       defaultValue={node.props.value || undefined}
       name={name}
       onValueChange={emitChange}

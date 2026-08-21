@@ -2,7 +2,7 @@ import { Head } from "@inertiajs/react";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { PagePayload } from "@lattice-php/lattice";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { RealtimeListeners } from "@lattice-php/lattice/realtime/listeners";
+import { RealtimeListeners } from "./realtime/listeners";
 
 type Props = {
   lattice: PagePayload;

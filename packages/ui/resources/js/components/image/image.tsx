@@ -1,5 +1,5 @@
-import type { PreviewableImageProps } from "./image-preview";
-import { PreviewableImage } from "./image-preview";
+import type { PreviewableImageProps } from "../../primitives/image-preview";
+import { PreviewableImage } from "../../primitives/image-preview";
 import { cn } from "../../lib/utils";
 
 export type ImageProps = Omit<PreviewableImageProps, "alt" | "previewable"> & {

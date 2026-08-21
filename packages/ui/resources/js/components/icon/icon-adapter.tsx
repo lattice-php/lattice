@@ -1,3 +1,4 @@
+import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { IconRenderer } from "../../icons";
 import { coerceColor, colorValue } from "../../lib/color";
@@ -17,16 +18,15 @@ const sizeClass: Record<Size, string> = {
 
 const IconAdapter: RendererComponent<"icon"> = ({ node }) => {
   const { name, size, color, class: className } = node.props;
-  const icon = <IconRenderer icon={name} className={cn(sizeClass[size], className)} />;
   const coerced = coerceColor(color);
 
-  if (!coerced) {
-    return icon;
-  }
-
   return (
-    <span className="contents" style={{ color: colorValue(coerced) }}>
-      {icon}
+    <span
+      className="contents"
+      data-lattice-component={nodeIdentity(node)}
+      style={coerced ? { color: colorValue(coerced) } : undefined}
+    >
+      <IconRenderer icon={name} className={cn(sizeClass[size], className)} />
     </span>
   );
 };

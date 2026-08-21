@@ -2,7 +2,7 @@ import { usePage } from "@inertiajs/react";
 import type { ReactNode } from "react";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { PagePayload } from "@lattice-php/lattice/types";
-import { OutletProvider } from "@lattice-php/lattice/layout/hooks/context";
+import { OutletProvider } from "../hooks/context";
 
 /**
  * Persistent Inertia layout that renders a server-composed layout schema and

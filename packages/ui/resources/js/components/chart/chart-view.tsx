@@ -20,15 +20,14 @@ import {
   YAxis,
 } from "recharts";
 import type { ComponentType, ReactNode } from "react";
-import { nodeIdentity } from "@lattice-php/core/test-id";
 import { isRecord } from "@lattice-php/core/materialize";
-import type { ComponentPropsOf, RendererComponent } from "@lattice-php/core/types";
 import { coerceColor, colorValue } from "../../lib/color";
 import { useFormatContext } from "../../format/format-context";
 import { numericValue } from "../../format/numeric";
 import { formatValue } from "../../format/value";
+import type { ChartViewProps } from "./chart";
 
-type ChartProps = ComponentPropsOf<"chart">;
+type ChartProps = ChartViewProps;
 type ChartSeries = ChartProps["series"][number];
 type ChartDatum = ChartProps["data"][number];
 type CartesianSeries = ChartSeries & { type: "area" | "bar" | "line" };
@@ -127,37 +126,6 @@ function cartesianChartFor(series: CartesianSeries[]): CartesianChartComponent {
     case "line":
       return LineChart;
   }
-}
-
-function ChartFrame({
-  children,
-  description,
-  id,
-  title,
-}: {
-  children: ReactNode;
-  description: string | null;
-  id?: string;
-  title: string | null;
-}) {
-  const hasHeader = title !== null || description !== null;
-
-  return (
-    <div
-      className="flex flex-col gap-3 rounded-lt border border-lt-border bg-lt-surface p-4 text-lt-surface-fg shadow-lt-sm"
-      data-lattice-component={id}
-    >
-      {hasHeader && (
-        <div className="flex min-w-0 flex-col gap-1.5">
-          {title !== null && <div className="text-sm font-semibold leading-tight">{title}</div>}
-          {description !== null && (
-            <div className="text-xs leading-5 text-lt-muted-fg">{description}</div>
-          )}
-        </div>
-      )}
-      {children}
-    </div>
-  );
 }
 
 function CartesianChart({ props }: { props: ChartProps }) {
@@ -424,22 +392,13 @@ function SpecialChart({ props, series }: { props: ChartProps; series: SpecialSer
   }
 }
 
-const ChartView: RendererComponent<"chart"> = ({ node }) => {
-  const props = node.props;
+export default function ChartView(props: ChartViewProps) {
   const specialSeries = props.series.find(isSpecialSeries);
   const hasCartesianSeries = props.series.some(isCartesianSeries);
 
-  return (
-    <ChartFrame description={props.description} id={nodeIdentity(node)} title={props.title}>
-      <div className="min-h-0 w-full">
-        {specialSeries !== undefined && !hasCartesianSeries ? (
-          <SpecialChart props={props} series={specialSeries} />
-        ) : (
-          <CartesianChart props={props} />
-        )}
-      </div>
-    </ChartFrame>
+  return specialSeries !== undefined && !hasCartesianSeries ? (
+    <SpecialChart props={props} series={specialSeries} />
+  ) : (
+    <CartesianChart props={props} />
   );
-};
-
-export default ChartView;
+}
