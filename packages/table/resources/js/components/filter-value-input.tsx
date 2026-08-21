@@ -1,7 +1,7 @@
 import { Icon } from "@lattice-php/ui/icons";
 import { useEffect, useState } from "react";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { Input } from "@lattice-php/form/primitives/input";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";

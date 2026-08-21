@@ -10,8 +10,8 @@ import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection"
 import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import type { TableNode } from "@lattice-php/table/types";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { Checkbox } from "@lattice-php/form/components/checkbox/checkbox";
+import { Input } from "@lattice-php/form/primitives/input";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { DetailPanel } from "./detail-panel";
 import { UploadList } from "./upload-list";

@@ -7,7 +7,7 @@ import { useColumnPinning } from "@lattice-php/table/hooks/use-column-pinning";
 import { useColumnVisibility } from "@lattice-php/table/hooks/use-column-visibility";
 import { useExpandedRows } from "@lattice-php/table/hooks/use-expanded-rows";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
+import { Checkbox } from "@lattice-php/form/components/checkbox/checkbox";
 import {
   DataTable,
   DataTableBody,

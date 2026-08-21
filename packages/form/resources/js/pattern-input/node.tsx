@@ -5,7 +5,7 @@ import type { Node as WireNode } from "@lattice-php/core/types";
 import type { PatternTokenData } from "@lattice-php/form/types";
 import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { Input } from "@lattice-php/form/primitives/input";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import {
   Popover,

@@ -2,9 +2,9 @@ import { useId, useMemo, useState } from "react";
 import { FormFieldFrame } from "@lattice-php/form/components/base/field";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { InfoTooltip } from "@lattice-php/ui/primitives/info-tooltip";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { Input } from "@lattice-php/form/primitives/input";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
-import { Textarea } from "@lattice-php/ui/primitives/textarea";
+import { Textarea } from "@lattice-php/form/components/textarea/textarea";
 import { requestExampleFromSchema } from "./schema-example";
 import { isRecord, prettyJson } from "./utils";
 

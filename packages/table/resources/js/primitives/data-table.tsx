@@ -10,7 +10,7 @@ import { Button } from "@lattice-php/ui/components/button/button";
 import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { Input } from "@lattice-php/form/primitives/input";
 
 export type DataTableAlign = "start" | "center" | "end";
 export type DataTablePinSide = "left" | "right";

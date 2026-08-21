@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { cn } from "../lib/utils";
-import { Input } from "./input";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { Input } from "../../primitives/input";
 
 export function normalizeHex(input: string): string | null {
   const raw = input.trim().replace(/^#/, "").toLowerCase();

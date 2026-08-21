@@ -22,10 +22,8 @@ export { MODAL_MISSING_ERROR, useEmbeddedModal, useModal } from "@lattice-php/ui
 export {
   Badge,
   Button,
-  Checkbox,
   cn,
   CodeBlock,
-  Combobox,
   ConfirmDialog,
   CopyButton,
   Dialog,
@@ -35,17 +33,15 @@ export {
   formatDateValue,
   IconButton,
   InfoTooltip,
-  Input,
-  Label,
   NativeSelect,
   PreviewableImage,
   SegmentedControl,
   Spinner,
-  Textarea,
   useDebouncedCallback,
   useFormatContext,
   usePersistentState,
 } from "@lattice-php/ui";
+export { Checkbox, Combobox, Input, Label, Textarea } from "@lattice-php/form";
 export * from "@lattice-php/ui/i18n";
 export {
   announce,

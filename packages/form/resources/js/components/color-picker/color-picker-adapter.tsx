@@ -1,15 +1,15 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { ColorPicker, normalizeHex } from "@lattice-php/ui/primitives/color-picker";
+import { ColorPicker, normalizeHex } from "./color-picker";
 import { controlSurface } from "@lattice-php/ui/lib/control";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@lattice-php/ui/components/popover/popover";
-import { SimpleField } from "./simple-field";
+import { SimpleField } from "../fields/simple-field";
 
-export const ColorPickerFieldComponent: RendererComponent<"field.color-picker"> = ({ node }) => {
+export const ColorPickerAdapter: RendererComponent<"field.color-picker"> = ({ node }) => {
   const props = node.props;
 
   return (

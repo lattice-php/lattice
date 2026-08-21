@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from "react";
 import type { ReactNode } from "react";
-import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
+import { Checkbox } from "@lattice-php/form/components/checkbox/checkbox";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node, Option } from "@lattice-php/core/types";
 import {
