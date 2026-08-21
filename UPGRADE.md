@@ -2,9 +2,9 @@
 
 ## 0.61 → 0.62
 
-The layout chrome — sidebar, topbar, breadcrumbs, menus, dropdowns — now lives in `lattice-php/ui`
-and `@lattice-php/ui` like every other component; `lattice-php/lattice` keeps only the Laravel and
-Inertia glue (`Outlet`, `Callouts`, `SchemaLayout`, the layout registry).
+The layout chrome — sidebar, topbar, breadcrumbs, menus, dropdowns, callouts, and the toaster — now
+lives in `lattice-php/ui` and `@lattice-php/ui` like every other component; `lattice-php/lattice`
+keeps only the Laravel and Inertia glue (`Outlet`, `SchemaLayout`, the layout registry).
 
 ### PHP namespace
 
@@ -17,10 +17,11 @@ Inertia glue (`Outlet`, `Callouts`, `SchemaLayout`, the layout registry).
 | `Lattice\Layouts\Components\Menu` | `Lattice\Ui\Components\Menu` |
 | `Lattice\Layouts\Components\MenuItem` | `Lattice\Ui\Components\MenuItem` |
 | `Lattice\Layouts\Components\Dropdown` | `Lattice\Ui\Components\Dropdown` |
+| `Lattice\Layouts\Components\Callouts` | `Lattice\Ui\Components\Callouts` |
 
-`Lattice\Layouts\Components\Outlet` and `Lattice\Layouts\Components\Callouts` stay where they are. A
-find/replace of `Lattice\Layouts\Components\` → `Lattice\Ui\Components\` for the seven classes above
-covers it; the builder APIs are unchanged.
+`Lattice\Layouts\Components\Outlet` stays where it is. A find/replace of
+`Lattice\Layouts\Components\` → `Lattice\Ui\Components\` for the eight classes above covers it; the
+builder APIs are unchanged.
 
 ### Breadcrumbs carry their items
 
@@ -32,13 +33,23 @@ that rendered the node from page props should read `node.props.items` instead.
 
 ### JS: the layout plugin shrank
 
-`layoutComponents` (framework) now registers only `callouts` and `outlet`; `sidebar`,
-`sidebar.footer`, `topbar`, `breadcrumbs`, `menu`, `menu-item`, and `dropdown` come from
-`uiComponents`. Apps composing their own registry from both plugins keep working. The deep imports
+`layoutComponents` (framework) now registers only `outlet`; `sidebar`, `sidebar.footer`, `topbar`,
+`breadcrumbs`, `menu`, `menu-item`, `dropdown`, and `callouts` come from `uiComponents`. Apps
+composing their own registry from both plugins keep working. The deep imports
 `@lattice-php/lattice/layout/components/*` are gone — the adapters are
 `@lattice-php/ui/components/<name>/<name>-adapter` and the client components are exported from
-`@lattice-php/ui`: `Menu`, `MenuItem`, and `Dropdown` join `Sidebar`, `SidebarFooter`,
+`@lattice-php/ui`: `Menu`, `MenuItem`, `Dropdown`, and `Callout` join `Sidebar`, `SidebarFooter`,
 `Topbar`, and `Breadcrumbs`.
+
+### JS: `@lattice-php/lattice/toast` moved to `@lattice-php/ui/toast`
+
+The toast module — `Toaster`, `onToast`, `onCallout`, `onRetractCallout`, `normalizeToastMessage`,
+`normalizeCallout`, `variantStyles`, and the `ToastMessage` type — now ships from `@lattice-php/ui`
+(root and `@lattice-php/ui/toast`); there is no re-export from `@lattice-php/lattice` or its root
+(`Callouts`, `Toaster`, `onToast`, `onCallout`, and the `Callout`/`ToastMessage`/`Variant` types left
+the framework index). `@radix-ui/react-toast` is an `@lattice-php/ui` dependency now. A new `Toast`
+client component renders a single Radix toast item; `ProviderBase` keeps mounting the `Toaster`, so
+apps that rely on the default provider need no change.
 
 ### JS: the navigation adapter knows the location
 

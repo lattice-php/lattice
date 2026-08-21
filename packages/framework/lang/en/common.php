@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 return [
-    'dismiss' => 'Dismiss',
     'cancel' => 'Cancel',
     'action-group' => [
         'label' => 'Actions',

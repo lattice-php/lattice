@@ -53,6 +53,7 @@ export type Callout = {
   unique: string | null;
   variant: Variant;
 };
+export type Callouts = Record<string, never>;
 export type Card = {
   description: string | null;
   headerActions: Node[];
@@ -115,6 +116,7 @@ export type ComponentPropsMap = {
   badge: Badge;
   breadcrumbs: Breadcrumbs;
   button: Button;
+  callouts: Callouts;
   card: Card;
   chart: Chart;
   "code-block": CodeBlock;
@@ -268,6 +270,7 @@ export type NodeType =
   | "badge"
   | "breadcrumbs"
   | "button"
+  | "callouts"
   | "card"
   | "chart"
   | "code-block"
@@ -465,6 +468,7 @@ export type UiNodeType =
   | "badge"
   | "breadcrumbs"
   | "button"
+  | "callouts"
   | "card"
   | "chart"
   | "code-block"

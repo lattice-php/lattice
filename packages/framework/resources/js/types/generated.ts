@@ -4,7 +4,6 @@ import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type CalendarNodeType = "calendar";
-export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
 export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
 export type ColumnNodeType =
@@ -17,7 +16,6 @@ export type ColumnNodeType =
   | "column.stack"
   | "column.text";
 export type ComponentPropsMap = {
-  callouts: Callouts;
   fragment: Fragment;
   notifications: Notifications;
   outlet: Outlet;
@@ -100,7 +98,7 @@ export type I18nConfig = {
   readonly saveMissing: boolean;
   readonly timezone: string | null;
 };
-export type LayoutNodeType = "callouts" | "outlet";
+export type LayoutNodeType = "outlet";
 export type Listen = {
   readonly channel: string;
   effects: Effect[];
@@ -249,6 +247,7 @@ export type UiNodeType =
   | "badge"
   | "breadcrumbs"
   | "button"
+  | "callouts"
   | "card"
   | "chart"
   | "code-block"

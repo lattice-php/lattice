@@ -112,7 +112,7 @@ the shell — the persistent banners an action or a redirect can raise. Place it
 the header bar and the `Outlet`:
 
 ```php
-use Lattice\Layouts\Components\Callouts;
+use Lattice\Ui\Components\Callouts;
 
 Stack::make('app-main')->width(Width::Fill)->schema([
     Callouts::make(),

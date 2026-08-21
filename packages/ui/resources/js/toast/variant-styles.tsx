@@ -1,6 +1,6 @@
-import { Icon } from "@lattice-php/ui/icons";
 import type { ReactNode } from "react";
-import type { Variant } from "@lattice-php/ui";
+import type { Variant } from "../generated";
+import { Icon } from "../icons";
 
 export const variantStyles: Record<Variant, { accent: string; icon: ReactNode }> = {
   primary: {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeToastMessage } from "./toast";
+import { normalizeToastMessage } from "./bus";
 
 describe("normalizeToastMessage", () => {
   it("accepts a plain string message", () => {

@@ -7,6 +7,7 @@ return [
     'loading' => 'Lädt',
     'more-info' => 'Mehr Informationen',
     'close' => 'Schließen',
+    'dismiss' => 'Schließen',
     'yes' => 'Ja',
     'no' => 'Nein',
     'all' => 'Alle',

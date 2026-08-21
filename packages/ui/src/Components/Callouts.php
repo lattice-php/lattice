@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Layouts\Components;
+namespace Lattice\Ui\Components;
 
 use Lattice\Core\Attributes\AsComponent;
-use Lattice\Ui\Components\Component;
 
 /**
  * Marks where flashed and action-emitted callouts render inside a layout

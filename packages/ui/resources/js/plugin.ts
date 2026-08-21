@@ -5,6 +5,7 @@ import AvatarAdapter from "./components/avatar/avatar-adapter";
 import BadgeAdapter from "./components/badge/badge-adapter";
 import BreadcrumbsAdapter from "./components/breadcrumbs/breadcrumbs-adapter";
 import ButtonAdapter from "./components/button/button-adapter";
+import CalloutsAdapter from "./components/callouts/callouts-adapter";
 import CardAdapter from "./components/card/card-adapter";
 import ChartAdapter from "./components/chart/chart-adapter";
 import CodeBlockAdapter from "./components/code-block/code-block-adapter";
@@ -47,6 +48,7 @@ export const uiComponents: Plugin = {
     badge: eagerComponent(BadgeAdapter),
     breadcrumbs: eagerComponent(BreadcrumbsAdapter),
     button: eagerComponent(ButtonAdapter),
+    callouts: eagerComponent(CalloutsAdapter),
     card: eagerComponent(CardAdapter),
     chart: eagerComponent(ChartAdapter),
     "code-block": eagerComponent(CodeBlockAdapter),

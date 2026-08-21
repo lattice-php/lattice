@@ -76,10 +76,6 @@
       "types": "./dist/ssr.d.ts",
       "import": "./dist/ssr.js"
     },
-    "./toast": {
-      "types": "./dist/toast/index.d.ts",
-      "import": "./dist/toast/index.js"
-    },
     "./types": {
       "types": "./dist/types/index.d.ts"
     },
@@ -122,8 +118,7 @@
     "@atlaskit/pragmatic-drag-and-drop": "^2.0.2",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
-    "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.0.0",
-    "@radix-ui/react-toast": "^1.2.23"
+    "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.0.0"
   },
   "peerDependencies": {
     "@inertiajs/core": "^3.0.0",

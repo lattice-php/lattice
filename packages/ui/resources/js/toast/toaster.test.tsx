@@ -1,12 +1,15 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
-import { Provider } from "@lattice-php/lattice/provider";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
+import { renderWithRegistry } from "@lattice-php/core/test-support";
+import LinkAdapter from "../components/link/link-adapter";
 import { Toaster } from "./toaster";
 
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
-);
+const registry = createRegistry({
+  components: { link: eagerComponent(LinkAdapter) },
+  name: "test/toaster",
+});
 
 function emit(toast: unknown): void {
   act(() => {
@@ -14,19 +17,9 @@ function emit(toast: unknown): void {
   });
 }
 
-function renderToaster() {
-  return render(
-    <Provider toaster={false}>
-      <Toaster />
-    </Provider>,
-  );
-}
-
 describe("Toaster", () => {
-  afterEach(() => vi.clearAllMocks());
-
   it("renders a toast dispatched on the lattice toast event", () => {
-    renderToaster();
+    render(<Toaster />);
 
     emit({ message: "Saved.", variant: "success" });
 
@@ -34,7 +27,7 @@ describe("Toaster", () => {
   });
 
   it("ignores payloads without a message", () => {
-    renderToaster();
+    render(<Toaster />);
 
     emit({ variant: "success" });
 
@@ -42,7 +35,7 @@ describe("Toaster", () => {
   });
 
   it("dismisses a toast via the close button", () => {
-    renderToaster();
+    render(<Toaster />);
 
     emit({ message: "Saved.", variant: "success" });
     fireEvent.click(screen.getByRole("button", { name: "Dismiss" }));
@@ -51,7 +44,7 @@ describe("Toaster", () => {
   });
 
   it("renders a link action inside the toast", () => {
-    renderToaster();
+    renderWithRegistry(<Toaster />, registry);
 
     emit({
       message: "Archived.",
@@ -64,7 +57,7 @@ describe("Toaster", () => {
   });
 
   it("renders a Translatable message by resolving it to its key when no catalog is loaded", () => {
-    renderToaster();
+    render(<Toaster />);
 
     emit({ message: { key: "orders.created", payload: {}, replacements: {} }, variant: "success" });
 

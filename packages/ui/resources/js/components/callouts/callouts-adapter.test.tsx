@@ -1,37 +1,45 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
-import { vi } from "vitest";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
-import { Provider } from "@lattice-php/lattice/provider";
+import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
-import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
+import { defaultNavigation, NavigationProvider } from "../../navigation";
+import LinkAdapter from "../link/link-adapter";
+import CalloutsAdapter from "./callouts-adapter";
 
-type NavigateEvent = { detail: { page: { url: string } } };
+const navigateListeners: Array<() => void> = [];
 
-const navigateListeners: Array<(event: NavigateEvent) => void> = [];
+const navigation = {
+  ...defaultNavigation,
+  onNavigate: (listener: () => void) => {
+    navigateListeners.push(listener);
 
-vi.mock("@inertiajs/react", async () => {
-  const { inertiaMock } = await import("@lattice-php/ui/test/inertia-mock");
+    return () => undefined;
+  },
+};
 
-  return inertiaMock({
-    router: {
-      on: (event: string, listener: (event: NavigateEvent) => void) => {
-        if (event === "navigate") {
-          navigateListeners.push(listener);
-        }
-
-        return () => undefined;
-      },
-      reload: vi.fn(),
-      visit: vi.fn(),
-    },
-  });
+const registry = createRegistry({
+  components: {
+    callouts: eagerComponent(CalloutsAdapter),
+    link: eagerComponent(LinkAdapter),
+  },
+  name: "test/callouts",
 });
+
+function renderCallouts() {
+  return renderWithRegistry(
+    <NavigationProvider adapter={navigation}>
+      <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
+    </NavigationProvider>,
+    registry,
+  );
+}
 
 function navigate(): void {
   act(() => {
     for (const listener of navigateListeners) {
-      listener({ detail: { page: { url: "/next" } } });
+      listener();
     }
   });
 }
@@ -58,25 +66,17 @@ function emitCallout(
 
 function retractCallout(unique: string): void {
   act(() => {
-    window.dispatchEvent(
-      new CustomEvent(LATTICE_EVENT.retractCallout, {
-        detail: { unique },
-      }),
-    );
+    window.dispatchEvent(new CustomEvent(LATTICE_EVENT.retractCallout, { detail: { unique } }));
   });
 }
 
-describe("Callouts slot", () => {
+describe("CalloutsAdapter", () => {
   beforeEach(() => {
     navigateListeners.length = 0;
   });
 
   it("renders callouts emitted on the bus and dismisses them", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Trial ends soon");
     expect(screen.getByText("Trial ends soon")).toBeInTheDocument();
@@ -86,11 +86,7 @@ describe("Callouts slot", () => {
   });
 
   it("omits the dismiss button when the callout is not dismissible", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Storage almost full", { dismissible: false });
 
@@ -99,11 +95,7 @@ describe("Callouts slot", () => {
   });
 
   it("resolves a translatable message and title to their keys when no catalog is loaded", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     act(() => {
       window.dispatchEvent(
@@ -122,11 +114,7 @@ describe("Callouts slot", () => {
   });
 
   it("renders a link action inside the callout", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Archived.", {
       action: { type: "link", props: { label: "Undo", href: "/undo" } },
@@ -135,12 +123,16 @@ describe("Callouts slot", () => {
     expect(screen.getByRole("link", { name: "Undo" })).toHaveAttribute("href", "/undo");
   });
 
+  it("marks the list with the node identity", () => {
+    renderCallouts();
+
+    emitCallout("Archived.");
+
+    expect(screen.getByRole("status").parentElement).toHaveAttribute("data-lattice-component", "c");
+  });
+
   it("replaces a keyed callout instead of stacking it", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Payment failed", { unique: "billing.state" });
     emitCallout("Payment failed", { unique: "billing.state" });
@@ -150,11 +142,7 @@ describe("Callouts slot", () => {
   });
 
   it("keeps unkeyed callouts stacking", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Archived.");
     emitCallout("Archived.");
@@ -163,11 +151,7 @@ describe("Callouts slot", () => {
   });
 
   it("drops keyed callouts on navigation and keeps unkeyed ones", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Payment failed", { unique: "billing.state" });
     emitCallout("Archived.");
@@ -179,11 +163,7 @@ describe("Callouts slot", () => {
   });
 
   it("drops a keyed callout when its key is retracted", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Payment failed", { unique: "billing.state" });
 
@@ -193,11 +173,7 @@ describe("Callouts slot", () => {
   });
 
   it("leaves a different key alone when retracting", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Payment failed", { unique: "billing.state" });
     emitCallout("Read-only mode", { unique: "maintenance.mode" });
@@ -209,11 +185,7 @@ describe("Callouts slot", () => {
   });
 
   it("leaves an unkeyed callout alone when retracting", () => {
-    render(
-      <Provider toaster={false}>
-        <Renderer nodes={[fakeNode({ type: "callouts", id: "c", props: {} })]} />
-      </Provider>,
-    );
+    renderCallouts();
 
     emitCallout("Archived.");
 

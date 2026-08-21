@@ -9,7 +9,7 @@ import { EventBridge } from "./event-bridge";
 import { useCloseModalsOnNavigate, useInertiaNavigation } from "./inertia-navigation";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
 import { SpriteProvider } from "@lattice-php/ui/icons/sprite";
-import { Toaster } from "./toast";
+import { Toaster } from "@lattice-php/ui/toast";
 import { updateAppearance } from "./appearance";
 
 const defaultSprite: SpriteValue = { href: "" };
