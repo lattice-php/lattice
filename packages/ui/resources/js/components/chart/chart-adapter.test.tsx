@@ -166,7 +166,7 @@ function chartNode(props: Partial<ChartProps> = {}): Node<"chart"> {
 }
 
 function renderChart(props: Partial<ChartProps>) {
-  return render(<ChartComponent node={chartNode(props)}>{null}</ChartComponent>);
+  return render(<ChartComponent {...chartNode(props).props} />);
 }
 
 describe("Chart component", () => {

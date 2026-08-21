@@ -1,12 +1,24 @@
-import { lazy, Suspense } from "react";
-import type { RendererComponent, RendererComponentModule } from "@lattice-php/core/types";
+import { nodeIdentity } from "@lattice-php/core/test-id";
+import type { RendererComponent } from "@lattice-php/core/types";
+import { Chart } from "./chart";
 
-const ChartView = lazy(() => import("./chart-view") as unknown as Promise<RendererComponentModule>);
-
-const ChartAdapter: RendererComponent<"chart"> = ({ children, node }) => (
-  <Suspense fallback={null}>
-    <ChartView node={node}>{children}</ChartView>
-  </Suspense>
+const ChartAdapter: RendererComponent<"chart"> = ({ node }) => (
+  <Chart
+    categoryFormat={node.props.categoryFormat}
+    categoryKey={node.props.categoryKey}
+    data={node.props.data}
+    data-lattice-component={nodeIdentity(node)}
+    description={node.props.description}
+    grid={node.props.grid}
+    height={node.props.height}
+    legend={node.props.legend}
+    series={node.props.series}
+    title={node.props.title}
+    tooltip={node.props.tooltip}
+    valueFormat={node.props.valueFormat}
+    xAxis={node.props.xAxis}
+    yAxis={node.props.yAxis}
+  />
 );
 
 export default ChartAdapter;

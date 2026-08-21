@@ -51,6 +51,8 @@ export {
   CardTitle,
 } from "./components/card/card";
 export type { CardProps } from "./components/card/card";
+export { Chart } from "./components/chart/chart";
+export type { ChartProps } from "./components/chart/chart";
 export { CodeBlock } from "./components/code-block/code-block";
 export type {
   CodeBlockLanguage,
