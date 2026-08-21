@@ -1,21 +1,16 @@
-import { vi } from "vitest";
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
-);
-
 import { describe, expect, it } from "vitest";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
-import MenuComponent from "./menu";
-import MenuItemComponent from "./menu-item";
+import MenuItemAdapter from "../menu-item/menu-item-adapter";
+import MenuAdapter from "./menu-adapter";
 
 const registry = createRegistry({
   components: {
-    menu: eagerComponent(MenuComponent),
-    "menu-item": eagerComponent(MenuItemComponent),
+    menu: eagerComponent(MenuAdapter),
+    "menu-item": eagerComponent(MenuItemAdapter),
   },
   name: "test/menu",
 });
@@ -45,7 +40,7 @@ function renderCollapsedMenu() {
   );
 }
 
-describe("Menu in a collapsed sidebar", () => {
+describe("MenuAdapter in a collapsed sidebar", () => {
   it("opens a group's submenu as a flyout when the sidebar is collapsed", async () => {
     const screen = await renderCollapsedMenu();
 

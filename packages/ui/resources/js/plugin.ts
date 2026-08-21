@@ -17,6 +17,8 @@ import HeadingAdapter from "./components/heading/heading-adapter";
 import IconAdapter from "./components/icon/icon-adapter";
 import ImageAdapter from "./components/image/image-adapter";
 import LinkAdapter from "./components/link/link-adapter";
+import MenuAdapter from "./components/menu/menu-adapter";
+import MenuItemAdapter from "./components/menu-item/menu-item-adapter";
 import ModalAdapter from "./components/modal/modal-adapter";
 import PopoverAdapter from "./components/popover/popover-adapter";
 import ProgressAdapter from "./components/progress/progress-adapter";
@@ -62,6 +64,8 @@ export const uiComponents: Plugin = {
     icon: eagerComponent(IconAdapter),
     image: eagerComponent(ImageAdapter),
     link: eagerComponent(LinkAdapter),
+    menu: eagerComponent(MenuAdapter),
+    "menu-item": eagerComponent(MenuItemAdapter),
     modal: eagerComponent(ModalAdapter),
     popover: eagerComponent(PopoverAdapter),
     progress: eagerComponent(ProgressAdapter),

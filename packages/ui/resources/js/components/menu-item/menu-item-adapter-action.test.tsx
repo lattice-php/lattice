@@ -3,18 +3,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionInteractionProvider } from "@lattice-php/action";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
-import { ModalProvider } from "@lattice-php/ui/modal";
-import MenuItemComponent from "./menu-item";
+import { ModalProvider } from "../../modal";
+import MenuItemAdapter from "./menu-item-adapter";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
 
 vi.mock("@lattice-php/core/api", () => ({ apiFetch }));
-
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
-    usePage: () => ({ url: "/products" }),
-  }),
-);
 
 function actionMenuItem(props: Partial<ComponentPropsOf<"action">> = {}): Node<"menu-item"> {
   return fakeNode({
@@ -41,13 +35,13 @@ function renderActionMenuItem(node: Node<"menu-item">) {
   return render(
     <ModalProvider>
       <ActionInteractionProvider>
-        <MenuItemComponent node={node}>{null}</MenuItemComponent>
+        <MenuItemAdapter node={node}>{null}</MenuItemAdapter>
       </ActionInteractionProvider>
     </ModalProvider>,
   );
 }
 
-describe("menu item action trigger", () => {
+describe("MenuItemAdapter action trigger", () => {
   beforeEach(() => {
     apiFetch.mockReset();
     apiFetch.mockResolvedValue(new Response(JSON.stringify({ effects: [] }), { status: 200 }));

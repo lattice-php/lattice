@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Layouts\Components\MenuItem;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Link;
+use Lattice\Ui\Components\MenuItem;
 use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Text;
 

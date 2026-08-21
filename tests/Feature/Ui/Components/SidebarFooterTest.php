@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use Lattice\Layouts\Components\Menu;
-use Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\Menu;
+use Lattice\Ui\Components\MenuItem;
 use Lattice\Ui\Components\Sidebar;
 use Lattice\Ui\Components\Text;
 

@@ -15,6 +15,8 @@ export * from "./primitives/form-field";
 export * from "./components/grid/grid";
 export * from "./components/heading/heading";
 export * from "./components/image/image";
+export * from "./components/menu/menu";
+export * from "./components/menu-item/menu-item";
 export * from "./components/progress/progress";
 export * from "./components/segmented-control/segmented-control";
 export * from "./components/section/section";

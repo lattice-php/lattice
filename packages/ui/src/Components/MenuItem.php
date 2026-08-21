@@ -1,22 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Layouts\Components;
+namespace Lattice\Ui\Components;
 
 use Closure;
 use InvalidArgumentException;
-use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\PageRoute;
-use Lattice\Ui\Components\ContainerComponent;
-use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Concerns\HasAffixes;
 use Lattice\Ui\Concerns\HasIcon;
 use Lattice\Ui\Concerns\Triggerable;
 use Lattice\Ui\Contracts\SchemaEntry;
 
 /**
- * A single menu entry. Renders an Inertia link when it has an href, triggers a
+ * A single menu entry. Renders a link when it has an href, triggers a
  * registered action or effects when bound to one, otherwise a plain label that
  * can act as a section header for its nested children.
  */
@@ -68,7 +65,7 @@ class MenuItem extends ContainerComponent
      */
     public function children(array $children): static
     {
-        if ($this->href !== null || $this->action instanceof Action || $this->effects !== [] || $this->modal instanceof Modal || $this->modalResolver instanceof Closure) {
+        if ($this->href !== null || $this->action instanceof Component || $this->effects !== [] || $this->modal instanceof Modal || $this->modalResolver instanceof Closure) {
             throw new InvalidArgumentException('A menu item that is a link, action, effect, or modal trigger cannot have children; only plain items can hold a collapsible submenu.');
         }
 

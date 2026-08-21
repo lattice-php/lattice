@@ -1,5 +1,5 @@
-import type { Affix, Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
-import type { HttpMethod, Size, Translatable, Variant } from "@lattice-php/ui";
+import type { Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
+import type { Size, Translatable, Variant } from "@lattice-php/ui";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
@@ -19,8 +19,6 @@ export type ColumnNodeType =
 export type ComponentPropsMap = {
   callouts: Callouts;
   fragment: Fragment;
-  menu: Menu;
-  "menu-item": MenuItem;
   notifications: Notifications;
   outlet: Outlet;
   "remote.data-list": DataList;
@@ -102,7 +100,7 @@ export type I18nConfig = {
   readonly saveMissing: boolean;
   readonly timezone: string | null;
 };
-export type LayoutNodeType = "callouts" | "menu" | "menu-item" | "outlet";
+export type LayoutNodeType = "callouts" | "outlet";
 export type Listen = {
   readonly channel: string;
   effects: Effect[];
@@ -111,18 +109,6 @@ export type Listen = {
 };
 export type MapNodeType = "map";
 export type MediumNodeType = "media.library";
-export type Menu = Record<string, never>;
-export type MenuItem = {
-  action: Node | null;
-  effects: Effect[];
-  href: string | null;
-  icon: string | null;
-  label: string | null;
-  method: HttpMethod | null;
-  modal: Node<"modal"> | null;
-  prefix: Affix | null;
-  suffix: Affix | null;
-};
 export type NodeType =
   | "action"
   | "action.bulk"
@@ -280,6 +266,8 @@ export type UiNodeType =
   | "icon"
   | "image"
   | "link"
+  | "menu"
+  | "menu-item"
   | "modal"
   | "popover"
   | "progress"

@@ -1,44 +1,36 @@
 import { fireEvent, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import MenuComponent from "./menu";
-import MenuItemComponent from "./menu-item";
-
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
-    usePage: vi.fn<() => { url: string }>(() => ({ url: "/products" })),
-    Link: ({
-      children,
-      href,
-      method,
-      as,
-      ...rest
-    }: {
-      children: React.ReactNode;
-      href: string;
-      method?: string;
-      as?: string;
-    }) => (
-      <a data-method={method} data-as={as} href={href} {...rest}>
-        {children}
-      </a>
-    ),
-  }),
-);
+import { defaultNavigation, NavigationProvider, type NavLinkProps } from "../../navigation";
+import MenuItemAdapter from "../menu-item/menu-item-adapter";
+import MenuAdapter from "./menu-adapter";
 
 const registry = createRegistry({
   components: {
-    menu: eagerComponent(MenuComponent),
-    "menu-item": eagerComponent(MenuItemComponent),
+    menu: eagerComponent(MenuAdapter),
+    "menu-item": eagerComponent(MenuItemAdapter),
   },
   name: "test/menu",
 });
 
-function renderMenu(node: Node) {
-  return renderWithRegistry(<Renderer nodes={[node]} />, registry);
+function ProbeLink({ children, href, method, ...rest }: NavLinkProps) {
+  return (
+    <a data-method={method} href={href} {...rest}>
+      {children}
+    </a>
+  );
+}
+
+function renderMenu(node: Node, currentUrl = "/products") {
+  return renderWithRegistry(
+    <NavigationProvider adapter={{ ...defaultNavigation, currentUrl, Link: ProbeLink }}>
+      <Renderer nodes={[node]} />
+    </NavigationProvider>,
+    registry,
+  );
 }
 
 const menu: Node = {
@@ -62,13 +54,18 @@ const menu: Node = {
   ],
 };
 
-describe("Menu", () => {
-  it("marks the item matching the current url as active", () => {
+describe("MenuAdapter", () => {
+  it("marks the item matching the navigation adapter's current url as active", () => {
     renderMenu(menu);
 
+    expect(screen.getByRole("navigation")).toHaveAttribute("data-lattice-component", "main");
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Home" })).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute(
+      "data-test",
+      "menu-i-products",
+    );
   });
 
   it("renders a non-link item with children as a collapsed toggle", () => {
@@ -93,7 +90,7 @@ describe("Menu", () => {
     expect(screen.getByRole("link", { name: "Profile" })).toHaveAttribute("href", "/profile");
   });
 
-  it("opens a group that contains the active route by default", () => {
+  it("opens a group that contains the current url by default", () => {
     renderMenu({
       id: "main",
       type: "menu",
@@ -138,7 +135,7 @@ describe("Menu", () => {
     expect(link.querySelector("svg")).not.toBeNull();
   });
 
-  it("renders a non-get item as an actionable button link", () => {
+  it("passes a non-get method through the navigation link", () => {
     renderMenu({
       id: "main",
       type: "menu",
@@ -151,8 +148,6 @@ describe("Menu", () => {
       ],
     });
 
-    const link = screen.getByRole("link", { name: "Log out" });
-    expect(link).toHaveAttribute("data-method", "post");
-    expect(link).toHaveAttribute("data-as", "button");
+    expect(screen.getByRole("link", { name: "Log out" })).toHaveAttribute("data-method", "post");
   });
 });

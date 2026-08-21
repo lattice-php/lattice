@@ -132,6 +132,8 @@ export type ComponentPropsMap = {
   icon: Icon;
   image: Image;
   link: Link;
+  menu: Menu;
+  "menu-item": MenuItem;
   modal: Modal;
   popover: Popover;
   progress: Progress;
@@ -239,6 +241,18 @@ export type Link = {
 export type LocaleChange = {
   readonly locale: string;
 };
+export type Menu = Record<string, never>;
+export type MenuItem = {
+  action: Node | null;
+  effects: Effect[];
+  href: string | null;
+  icon: string | null;
+  label: string | null;
+  method: HttpMethod | null;
+  modal: Node<"modal"> | null;
+  prefix: Affix | null;
+  suffix: Affix | null;
+};
 export type Modal = {
   closeLabel: string;
   description: string | null;
@@ -271,6 +285,8 @@ export type NodeType =
   | "icon"
   | "image"
   | "link"
+  | "menu"
+  | "menu-item"
   | "modal"
   | "popover"
   | "progress"
@@ -466,6 +482,8 @@ export type UiNodeType =
   | "icon"
   | "image"
   | "link"
+  | "menu"
+  | "menu-item"
   | "modal"
   | "popover"
   | "progress"

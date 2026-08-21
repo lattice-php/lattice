@@ -67,7 +67,7 @@ use Lattice\Ui\Components\Icon;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Placement;
 use Lattice\Ui\Components\Dropdown;
-use Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\MenuItem;
 
 Dropdown::make('account-menu')
     ->placement(Placement::Bottom)
@@ -112,7 +112,7 @@ use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Placement;
 use Lattice\Ui\Components\Dropdown;
-use Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\MenuItem;
 
 $user = $request->user();
 
@@ -161,8 +161,8 @@ use Lattice\Ui\Enums\Placement;
 use Lattice\Ui\Components\RawBlock;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Components\Dropdown;
-use Lattice\Layouts\Components\Menu;
-use Lattice\Layouts\Components\MenuItem;
+use Lattice\Ui\Components\Menu;
+use Lattice\Ui\Components\MenuItem;
 use Lattice\Ui\Components\Sidebar;
 
 Sidebar::make('app-sidebar')->collapsible()

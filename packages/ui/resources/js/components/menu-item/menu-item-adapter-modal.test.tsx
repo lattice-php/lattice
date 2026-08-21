@@ -1,22 +1,16 @@
 import { fireEvent, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, fakeNode, TextProbe } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import ModalComponent from "@lattice-php/ui/components/modal/modal-adapter";
-import { ModalProvider } from "@lattice-php/ui/modal";
-import MenuItemComponent from "./menu-item";
-
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock({
-    usePage: () => ({ url: "/products" }),
-  }),
-);
+import { ModalProvider } from "../../modal";
+import ModalComponent from "../modal/modal-adapter";
+import MenuItemAdapter from "./menu-item-adapter";
 
 const registry = createRegistry({
   components: {
-    "menu-item": eagerComponent(MenuItemComponent),
+    "menu-item": eagerComponent(MenuItemAdapter),
     modal: eagerComponent(ModalComponent),
     text: eagerComponent(TextProbe),
   },
@@ -39,7 +33,7 @@ function menuItemWithModal(): Node<"menu-item"> {
   });
 }
 
-describe("menu item with an embedded modal", () => {
+describe("MenuItemAdapter with an embedded modal", () => {
   it("opens the modal it carries on click", () => {
     renderWithRegistry(
       <ModalProvider>
