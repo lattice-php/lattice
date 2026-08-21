@@ -1,17 +1,20 @@
-import type { RendererComponent } from "@lattice-php/core/types";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { useT } from "@lattice-php/ui/i18n";
-import { useSearchContext } from "../context";
-import { searchResultKey } from "../use-search";
+import { useSearchContext } from "../../context";
+import { searchResultKey } from "../../use-search";
 
-const SearchPreview: RendererComponent<"search.preview"> = () => {
+export type SearchPreviewProps = {
+  "data-test"?: string;
+};
+
+export function SearchPreview({ "data-test": testId }: SearchPreviewProps = {}) {
   const { results, recent, focusedKey, openResult } = useSearchContext();
   const { t } = useT("search");
   const focused = [...results, ...recent].find((result) => searchResultKey(result) === focusedKey);
 
   if (!focused) {
     return (
-      <div className="p-4 text-sm text-lt-muted-fg">
+      <div data-test={testId} className="p-4 text-sm text-lt-muted-fg">
         {t("search.preview-empty", "Select a result to preview.")}
       </div>
     );
@@ -22,7 +25,7 @@ const SearchPreview: RendererComponent<"search.preview"> = () => {
     .join(" · ");
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div data-test={testId} className="flex flex-col gap-4 p-4">
       <div className="grid gap-1">
         <span className="text-base font-semibold text-lt-fg">{focused.item.title}</span>
         {detail !== "" ? <span className="text-sm text-lt-muted-fg">{detail}</span> : null}
@@ -37,6 +40,4 @@ const SearchPreview: RendererComponent<"search.preview"> = () => {
       </Button>
     </div>
   );
-};
-
-export default SearchPreview;
+}

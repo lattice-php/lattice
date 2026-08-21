@@ -1,10 +1,13 @@
-import type { RendererComponent } from "@lattice-php/core/types";
 import { Icon } from "@lattice-php/ui/icons";
-import { useSearchContext } from "../context";
-import { searchResultDomId, useResultKeyboard } from "../use-result-keyboard";
-import { searchResultKey } from "../use-search";
+import { useSearchContext } from "../../context";
+import { searchResultDomId, useResultKeyboard } from "../../use-result-keyboard";
+import { searchResultKey } from "../../use-search";
 
-const SearchInput: RendererComponent<"search.input"> = () => {
+export type SearchInputProps = {
+  "data-test"?: string;
+};
+
+export function SearchInput({ "data-test": testId }: SearchInputProps = {}) {
   const { placeholder, query, setQuery, results, recent, focusedKey, instanceId } =
     useSearchContext();
   const displayedResults = results.length > 0 ? results : query.trim() === "" ? recent : [];
@@ -12,7 +15,10 @@ const SearchInput: RendererComponent<"search.input"> = () => {
   const focused = displayedResults.find((result) => searchResultKey(result) === focusedKey);
 
   return (
-    <div className="flex min-h-12 items-center gap-2 border-b border-lt-border px-4">
+    <div
+      data-test={testId}
+      className="flex min-h-12 items-center gap-2 border-b border-lt-border px-4"
+    >
       <Icon name="search" aria-hidden="true" className="size-lt-icon-md text-lt-muted-fg" />
       <input
         aria-activedescendant={focused ? searchResultDomId(instanceId, focused) : undefined}
@@ -32,6 +38,4 @@ const SearchInput: RendererComponent<"search.input"> = () => {
       />
     </div>
   );
-};
-
-export default SearchInput;
+}

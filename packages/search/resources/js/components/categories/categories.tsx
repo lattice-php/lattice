@@ -1,13 +1,19 @@
-import type { RendererComponent } from "@lattice-php/core/types";
 import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { useSearchContext } from "../context";
+import { useSearchContext } from "../../context";
 
-const SearchCategories: RendererComponent<"search.categories"> = () => {
+export type SearchCategoriesProps = {
+  "data-test"?: string;
+};
+
+export function SearchCategories({ "data-test": testId }: SearchCategoriesProps = {}) {
   const { categories, activeCategory, setCategory } = useSearchContext();
 
   return (
-    <div className="flex gap-1 overflow-x-auto p-1 md:flex-col md:overflow-x-visible">
+    <div
+      data-test={testId}
+      className="flex gap-1 overflow-x-auto p-1 md:flex-col md:overflow-x-visible"
+    >
       {categories.map((category) => (
         <button
           key={category.name}
@@ -34,6 +40,4 @@ const SearchCategories: RendererComponent<"search.categories"> = () => {
       ))}
     </div>
   );
-};
-
-export default SearchCategories;
+}

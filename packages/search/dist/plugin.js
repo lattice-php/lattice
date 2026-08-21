@@ -140,40 +140,45 @@ function O({ endpoint: e, perPage: n = 20 }) {
 }
 var k = p((() => {
 	y(), w();
-})), A = /* @__PURE__ */ m({ default: () => j }), j, M = p((() => {
-	y(), C(), j = () => {
-		let { categories: e, activeCategory: t, setCategory: n } = x();
-		return /* @__PURE__ */ s("div", {
-			className: "flex gap-1 overflow-x-auto p-1 md:flex-col md:overflow-x-visible",
-			children: e.map((e) => /* @__PURE__ */ c("button", {
-				"aria-pressed": e.name === t,
-				className: (0, _.cn)("flex min-h-11 shrink-0 items-center justify-between gap-2 rounded-lt-sm px-3 text-start text-sm md:w-full", e.name === t ? "bg-lt-muted text-lt-fg" : "text-lt-muted-fg hover:bg-lt-muted/60"),
-				onClick: () => n(e.name),
-				type: "button",
-				children: [/* @__PURE__ */ c("span", {
-					className: "flex min-w-0 items-center gap-2",
-					children: [e.icon ? /* @__PURE__ */ s(_.Icon, {
-						name: e.icon,
-						"aria-hidden": "true",
-						className: "size-lt-icon-sm"
-					}) : null, /* @__PURE__ */ s("span", {
-						className: "truncate",
-						children: e.label
-					})]
-				}), e.count === null ? null : /* @__PURE__ */ s("span", {
-					className: "text-xs tabular-nums text-lt-muted-fg",
-					children: e.count
+}));
+//#endregion
+//#region resources/js/components/categories/categories.tsx
+function A({ "data-test": e } = {}) {
+	let { categories: t, activeCategory: n, setCategory: r } = x();
+	return /* @__PURE__ */ s("div", {
+		"data-test": e,
+		className: "flex gap-1 overflow-x-auto p-1 md:flex-col md:overflow-x-visible",
+		children: t.map((e) => /* @__PURE__ */ c("button", {
+			"aria-pressed": e.name === n,
+			className: (0, _.cn)("flex min-h-11 shrink-0 items-center justify-between gap-2 rounded-lt-sm px-3 text-start text-sm md:w-full", e.name === n ? "bg-lt-muted text-lt-fg" : "text-lt-muted-fg hover:bg-lt-muted/60"),
+			onClick: () => r(e.name),
+			type: "button",
+			children: [/* @__PURE__ */ c("span", {
+				className: "flex min-w-0 items-center gap-2",
+				children: [e.icon ? /* @__PURE__ */ s(_.Icon, {
+					name: e.icon,
+					"aria-hidden": "true",
+					className: "size-lt-icon-sm"
+				}) : null, /* @__PURE__ */ s("span", {
+					className: "truncate",
+					children: e.label
 				})]
-			}, e.name))
-		});
-	};
+			}), e.count === null ? null : /* @__PURE__ */ s("span", {
+				className: "text-xs tabular-nums text-lt-muted-fg",
+				children: e.count
+			})]
+		}, e.name))
+	});
+}
+var j = p((() => {
+	y(), C();
 }));
 //#endregion
 //#region resources/js/use-result-keyboard.ts
-function N(e, t) {
+function M(e, t) {
 	return `${e}-result-${encodeURIComponent(E(t))}`;
 }
-function P(e) {
+function N(e) {
 	let { focusedKey: n, setFocusedKey: r, openResult: i } = x();
 	return t((t) => {
 		if (e.length === 0) return;
@@ -197,73 +202,84 @@ function P(e) {
 		r
 	]);
 }
-var F = p((() => {
+var P = p((() => {
 	C(), k();
-})), I = /* @__PURE__ */ m({ default: () => L }), L, R = p((() => {
-	y(), C(), F(), k(), L = () => {
-		let { placeholder: e, query: t, setQuery: n, results: r, recent: i, focusedKey: a, instanceId: o } = x(), l = r.length > 0 ? r : t.trim() === "" ? i : [], u = P(l), d = l.find((e) => E(e) === a);
-		return /* @__PURE__ */ c("div", {
-			className: "flex min-h-12 items-center gap-2 border-b border-lt-border px-4",
-			children: [/* @__PURE__ */ s(_.Icon, {
-				name: "search",
-				"aria-hidden": "true",
-				className: "size-lt-icon-md text-lt-muted-fg"
-			}), /* @__PURE__ */ s("input", {
-				"aria-activedescendant": d ? N(o, d) : void 0,
-				"aria-controls": l.length > 0 ? `${o}-${r.length > 0 ? "results" : "recent"}` : void 0,
-				"aria-label": e,
-				autoFocus: !0,
-				className: "min-h-11 w-full bg-transparent text-sm text-lt-fg outline-none placeholder:text-lt-muted-fg",
-				onChange: (e) => n(e.target.value),
-				onKeyDown: u,
-				placeholder: e,
-				type: "search",
-				value: t
-			})]
-		});
-	};
-})), z = /* @__PURE__ */ m({ default: () => B }), B, V = p((() => {
-	y(), C(), k(), B = () => {
-		let { results: e, recent: t, focusedKey: n, openResult: r } = x(), { t: i } = (0, _.useT)("search"), a = [...e, ...t].find((e) => E(e) === n);
-		if (!a) return /* @__PURE__ */ s("div", {
-			className: "p-4 text-sm text-lt-muted-fg",
-			children: i("search.preview-empty", "Select a result to preview.")
-		});
-		let o = [a.item.subtitle, a.item.additionalInfo].filter((e) => e !== null && e !== "").join(" · ");
-		return /* @__PURE__ */ c("div", {
-			className: "flex flex-col gap-4 p-4",
-			children: [/* @__PURE__ */ c("div", {
-				className: "grid gap-1",
-				children: [
-					/* @__PURE__ */ s("span", {
-						className: "text-base font-semibold text-lt-fg",
-						children: a.item.title
-					}),
-					o === "" ? null : /* @__PURE__ */ s("span", {
-						className: "text-sm text-lt-muted-fg",
-						children: o
-					}),
-					a.item.badge ? /* @__PURE__ */ s("span", {
-						className: "w-fit rounded-lt-xs bg-lt-accent px-1.5 py-0.5 text-xs text-lt-accent-fg",
-						children: a.item.badge
-					}) : null
-				]
-			}), /* @__PURE__ */ s(_.Button, {
-				emphasis: "outline",
-				onClick: () => r(a),
-				variant: "secondary",
-				children: i("search.open", "Open")
-			})]
-		});
-	};
 }));
 //#endregion
-//#region resources/js/components/result-row.tsx
-function H(e) {
+//#region resources/js/components/input/input.tsx
+function F({ "data-test": e } = {}) {
+	let { placeholder: t, query: n, setQuery: r, results: i, recent: a, focusedKey: o, instanceId: l } = x(), u = i.length > 0 ? i : n.trim() === "" ? a : [], d = N(u), f = u.find((e) => E(e) === o);
+	return /* @__PURE__ */ c("div", {
+		"data-test": e,
+		className: "flex min-h-12 items-center gap-2 border-b border-lt-border px-4",
+		children: [/* @__PURE__ */ s(_.Icon, {
+			name: "search",
+			"aria-hidden": "true",
+			className: "size-lt-icon-md text-lt-muted-fg"
+		}), /* @__PURE__ */ s("input", {
+			"aria-activedescendant": f ? M(l, f) : void 0,
+			"aria-controls": u.length > 0 ? `${l}-${i.length > 0 ? "results" : "recent"}` : void 0,
+			"aria-label": t,
+			autoFocus: !0,
+			className: "min-h-11 w-full bg-transparent text-sm text-lt-fg outline-none placeholder:text-lt-muted-fg",
+			onChange: (e) => r(e.target.value),
+			onKeyDown: d,
+			placeholder: t,
+			type: "search",
+			value: n
+		})]
+	});
+}
+var I = p((() => {
+	y(), C(), P(), k();
+}));
+//#endregion
+//#region resources/js/components/preview/preview.tsx
+function L({ "data-test": e } = {}) {
+	let { results: t, recent: n, focusedKey: r, openResult: i } = x(), { t: a } = (0, _.useT)("search"), o = [...t, ...n].find((e) => E(e) === r);
+	if (!o) return /* @__PURE__ */ s("div", {
+		"data-test": e,
+		className: "p-4 text-sm text-lt-muted-fg",
+		children: a("search.preview-empty", "Select a result to preview.")
+	});
+	let l = [o.item.subtitle, o.item.additionalInfo].filter((e) => e !== null && e !== "").join(" · ");
+	return /* @__PURE__ */ c("div", {
+		"data-test": e,
+		className: "flex flex-col gap-4 p-4",
+		children: [/* @__PURE__ */ c("div", {
+			className: "grid gap-1",
+			children: [
+				/* @__PURE__ */ s("span", {
+					className: "text-base font-semibold text-lt-fg",
+					children: o.item.title
+				}),
+				l === "" ? null : /* @__PURE__ */ s("span", {
+					className: "text-sm text-lt-muted-fg",
+					children: l
+				}),
+				o.item.badge ? /* @__PURE__ */ s("span", {
+					className: "w-fit rounded-lt-xs bg-lt-accent px-1.5 py-0.5 text-xs text-lt-accent-fg",
+					children: o.item.badge
+				}) : null
+			]
+		}), /* @__PURE__ */ s(_.Button, {
+			emphasis: "outline",
+			onClick: () => i(o),
+			variant: "secondary",
+			children: a("search.open", "Open")
+		})]
+	});
+}
+var R = p((() => {
+	y(), C(), k();
+}));
+//#endregion
+//#region resources/js/primitives/result-row.tsx
+function ee(e) {
 	return [e.item.subtitle, e.item.additionalInfo].filter((e) => e !== null && e !== "").join(" · ");
 }
-function U({ result: e, focused: t, onOpen: n, onFocus: r, id: i, tabIndex: a = -1 }) {
-	let o = H(e);
+function z({ result: e, focused: t, onOpen: n, onFocus: r, id: i, tabIndex: a = -1 }) {
+	let o = ee(e);
 	return /* @__PURE__ */ c("button", {
 		"aria-selected": t,
 		className: (0, _.cn)("flex min-h-11 w-full items-center gap-3 rounded-lt-sm px-3 py-2 text-start", t ? "bg-lt-muted" : "hover:bg-lt-muted/60"),
@@ -297,236 +313,276 @@ function U({ result: e, focused: t, onOpen: n, onFocus: r, id: i, tabIndex: a = 
 		}) : null]
 	});
 }
-var W = p((() => {
+var B = p((() => {
 	y();
-})), G = /* @__PURE__ */ m({ default: () => K }), K, q = p((() => {
-	y(), C(), F(), k(), W(), K = () => {
-		let { query: e, results: t, recent: n, focusedKey: r, setFocusedKey: i, openResult: a, instanceId: o } = x(), { t: l } = (0, _.useT)("search"), u = P(n);
-		return e.trim() !== "" || t.length > 0 || n.length === 0 ? null : /* @__PURE__ */ c("div", {
-			"aria-label": l("search.recent", "Recent"),
-			className: "flex max-h-full flex-col gap-1 overflow-y-auto p-1",
-			id: `${o}-recent`,
-			onKeyDown: u,
-			role: "listbox",
-			children: [/* @__PURE__ */ s("span", {
-				className: "px-3 py-1 text-xs font-medium uppercase tracking-wide text-lt-muted-fg",
-				children: l("search.recent", "Recent")
-			}), n.map((e) => {
-				let t = E(e);
-				return /* @__PURE__ */ s(U, {
-					focused: t === r,
-					id: N(o, e),
-					onFocus: () => i(t),
-					onOpen: () => a(e),
-					result: e,
-					tabIndex: 0
-				}, t);
-			})]
-		});
-	};
-})), J = /* @__PURE__ */ m({ default: () => Y }), Y, X = p((() => {
-	y(), C(), F(), k(), W(), Y = () => {
-		let { query: e, results: t, recent: n, focusedKey: i, setFocusedKey: o, openResult: l, loadMore: u, status: d, pagination: f, instanceId: p } = x(), { t: m } = (0, _.useT)("search"), h = a(null), g = P(t);
-		return r(() => {
-			let e = h.current;
-			if (e === null || f?.hasMore !== !0 || !window.IntersectionObserver) return;
-			let t = new IntersectionObserver((e) => {
-				e.some((e) => e.isIntersecting) && u();
-			});
-			return t.observe(e), () => t.disconnect();
-		}, [u, f?.hasMore]), d === "error" ? /* @__PURE__ */ s("div", {
-			className: "p-4 text-sm text-lt-danger",
-			children: m("search.error", "Something went wrong.")
-		}) : d === "loading" && t.length === 0 ? /* @__PURE__ */ s("div", {
-			className: "p-4 text-sm text-lt-muted-fg",
-			children: m("search.loading", "Searching…")
-		}) : t.length === 0 ? e.trim() === "" && n.length > 0 ? null : /* @__PURE__ */ s("div", {
-			className: "p-4 text-sm text-lt-muted-fg",
-			children: m("search.empty", "No results found.")
-		}) : /* @__PURE__ */ c("div", {
-			"aria-activedescendant": i ? `${p}-result-${encodeURIComponent(i)}` : void 0,
-			"aria-label": m("search.results", "Results"),
-			className: "flex h-full flex-col gap-1 overflow-y-auto p-1 outline-none",
-			onKeyDown: g,
-			role: "listbox",
-			tabIndex: 0,
-			id: `${p}-results`,
-			children: [t.map((e) => {
-				let t = E(e);
-				return /* @__PURE__ */ s(U, {
-					focused: t === i,
-					id: N(p, e),
-					onFocus: () => o(t),
-					onOpen: () => l(e),
-					result: e
-				}, t);
-			}), f?.hasMore ? /* @__PURE__ */ s("button", {
-				ref: h,
-				className: "min-h-11 rounded-lt-sm px-3 text-sm text-lt-muted-fg hover:bg-lt-muted/60",
-				disabled: d === "loading",
-				onClick: u,
-				type: "button",
-				children: d === "loading" ? m("search.loading", "Searching…") : m("search.load-more", "Load more")
-			}) : null]
-		});
-	};
 }));
 //#endregion
-//#region resources/js/components/search-palette.tsx
-function Z(e) {
-	return {
-		type: e,
-		props: {}
-	};
+//#region resources/js/components/recent/recent.tsx
+function V({ "data-test": e } = {}) {
+	let { query: t, results: n, recent: r, focusedKey: i, setFocusedKey: a, openResult: o, instanceId: l } = x(), { t: u } = (0, _.useT)("search"), d = N(r);
+	return t.trim() !== "" || n.length > 0 || r.length === 0 ? null : /* @__PURE__ */ c("div", {
+		"data-test": e,
+		"aria-label": u("search.recent", "Recent"),
+		className: "flex max-h-full flex-col gap-1 overflow-y-auto p-1",
+		id: `${l}-recent`,
+		onKeyDown: d,
+		role: "listbox",
+		children: [/* @__PURE__ */ s("span", {
+			className: "px-3 py-1 text-xs font-medium uppercase tracking-wide text-lt-muted-fg",
+			children: u("search.recent", "Recent")
+		}), r.map((e) => {
+			let t = E(e);
+			return /* @__PURE__ */ s(z, {
+				focused: t === i,
+				id: M(l, e),
+				onFocus: () => a(t),
+				onOpen: () => o(e),
+				result: e,
+				tabIndex: 0
+			}, t);
+		})]
+	});
 }
-function Q() {
+var H = p((() => {
+	y(), C(), P(), k(), B();
+}));
+//#endregion
+//#region resources/js/components/results/results.tsx
+function U({ "data-test": e } = {}) {
+	let { query: t, results: n, recent: i, focusedKey: o, setFocusedKey: l, openResult: u, loadMore: d, status: f, pagination: p, instanceId: m } = x(), { t: h } = (0, _.useT)("search"), g = a(null), v = N(n);
+	return r(() => {
+		let e = g.current;
+		if (e === null || p?.hasMore !== !0 || !window.IntersectionObserver) return;
+		let t = new IntersectionObserver((e) => {
+			e.some((e) => e.isIntersecting) && d();
+		});
+		return t.observe(e), () => t.disconnect();
+	}, [d, p?.hasMore]), f === "error" ? /* @__PURE__ */ s("div", {
+		"data-test": e,
+		className: "p-4 text-sm text-lt-danger",
+		children: h("search.error", "Something went wrong.")
+	}) : f === "loading" && n.length === 0 ? /* @__PURE__ */ s("div", {
+		"data-test": e,
+		className: "p-4 text-sm text-lt-muted-fg",
+		children: h("search.loading", "Searching…")
+	}) : n.length === 0 ? t.trim() === "" && i.length > 0 ? null : /* @__PURE__ */ s("div", {
+		"data-test": e,
+		className: "p-4 text-sm text-lt-muted-fg",
+		children: h("search.empty", "No results found.")
+	}) : /* @__PURE__ */ c("div", {
+		"data-test": e,
+		"aria-activedescendant": o ? `${m}-result-${encodeURIComponent(o)}` : void 0,
+		"aria-label": h("search.results", "Results"),
+		className: "flex h-full flex-col gap-1 overflow-y-auto p-1 outline-none",
+		onKeyDown: v,
+		role: "listbox",
+		tabIndex: 0,
+		id: `${m}-results`,
+		children: [n.map((e) => {
+			let t = E(e);
+			return /* @__PURE__ */ s(z, {
+				focused: t === o,
+				id: M(m, e),
+				onFocus: () => l(t),
+				onOpen: () => u(e),
+				result: e
+			}, t);
+		}), p?.hasMore ? /* @__PURE__ */ s("button", {
+			ref: g,
+			className: "min-h-11 rounded-lt-sm px-3 text-sm text-lt-muted-fg hover:bg-lt-muted/60",
+			disabled: f === "loading",
+			onClick: d,
+			type: "button",
+			children: f === "loading" ? h("search.loading", "Searching…") : h("search.load-more", "Load more")
+		}) : null]
+	});
+}
+var W = p((() => {
+	y(), C(), P(), k(), B();
+}));
+//#endregion
+//#region resources/js/components/search-box/search-palette.tsx
+function G() {
 	let { query: e } = x();
 	return e.trim() === "" ? /* @__PURE__ */ c("div", {
 		className: "flex max-h-[min(36rem,calc(100dvh-2rem))] flex-col",
-		children: [/* @__PURE__ */ s(L, {
-			node: Z("search.input"),
-			children: null
-		}), /* @__PURE__ */ s(K, {
-			node: Z("search.recent"),
-			children: null
-		})]
+		children: [/* @__PURE__ */ s(F, {}), /* @__PURE__ */ s(V, {})]
 	}) : /* @__PURE__ */ c("div", {
 		className: "flex max-h-[min(36rem,calc(100dvh-2rem))] flex-col",
-		children: [/* @__PURE__ */ s(L, {
-			node: Z("search.input"),
-			children: null
-		}), /* @__PURE__ */ c("div", {
+		children: [/* @__PURE__ */ s(F, {}), /* @__PURE__ */ c("div", {
 			className: "grid min-h-80 flex-1 grid-rows-[auto_1fr] md:grid-cols-[12rem_minmax(0,1fr)_16rem] md:grid-rows-1",
 			children: [
 				/* @__PURE__ */ s("div", {
 					className: "border-b border-lt-border md:border-e md:border-b-0",
-					children: /* @__PURE__ */ s(j, {
-						node: Z("search.categories"),
-						children: null
-					})
+					children: /* @__PURE__ */ s(A, {})
 				}),
 				/* @__PURE__ */ s("div", {
 					className: "min-h-0 overflow-hidden",
-					children: /* @__PURE__ */ s(Y, {
-						node: Z("search.results"),
-						children: null
-					})
+					children: /* @__PURE__ */ s(U, {})
 				}),
 				/* @__PURE__ */ s("div", {
 					className: "hidden border-s border-lt-border md:block",
-					children: /* @__PURE__ */ s(B, {
-						node: Z("search.preview"),
-						children: null
-					})
+					children: /* @__PURE__ */ s(L, {})
 				})
 			]
 		})]
 	});
 }
-function ee({ node: e, children: t, onClosed: n }) {
-	let a = (0, _.useEmbeddedModal)();
-	if (!a) throw Error(_.MODAL_MISSING_ERROR);
-	let { endpoint: o, perPage: l, placeholder: u, title: d } = e.props, { t: f } = (0, _.useT)("search"), p = O({
-		endpoint: o,
-		perPage: l
-	}), m = i(), h = u ?? f("search.placeholder", "Search…"), g = d ?? f("search.title", "Search"), v = e.schema?.length ? t : t ?? /* @__PURE__ */ s(Q, {}), { refreshRecent: y } = p;
+function K({ endpoint: e, perPage: t, placeholder: n, title: a, children: o, onClosed: l }) {
+	let u = (0, _.useEmbeddedModal)();
+	if (!u) throw Error(_.MODAL_MISSING_ERROR);
+	let { t: d } = (0, _.useT)("search"), f = O({
+		endpoint: e,
+		perPage: t
+	}), p = i(), m = n ?? d("search.placeholder", "Search…"), h = a ?? d("search.title", "Search"), { refreshRecent: g } = f;
 	return r(() => {
-		y();
-	}, [y]), /* @__PURE__ */ s(_.Dialog, {
-		open: a.open,
-		onOpenChange: a.onOpenChange,
+		g();
+	}, [g]), /* @__PURE__ */ s(_.Dialog, {
+		open: u.open,
+		onOpenChange: u.onOpenChange,
 		children: /* @__PURE__ */ c(_.DialogContent, {
 			className: "overflow-hidden p-0",
 			onCloseAutoFocus: (e) => {
-				a.onExited(e), n();
+				u.onExited(e), l?.();
 			},
 			width: "3xl",
 			children: [/* @__PURE__ */ s(_.DialogTitle, {
 				className: "sr-only",
-				children: g
+				children: h
 			}), /* @__PURE__ */ s(b, {
 				value: {
-					...p,
-					instanceId: m,
-					placeholder: h
+					...f,
+					instanceId: p,
+					placeholder: m
 				},
-				children: v
+				children: o ?? /* @__PURE__ */ s(G, {})
 			})]
 		})
 	});
 }
-var te = p((() => {
-	y(), C(), k(), M(), R(), V(), q(), X();
-})), ne = /* @__PURE__ */ m({ default: () => $ });
-function re(e) {
+var q = p((() => {
+	y(), C(), k(), j(), I(), R(), H(), W();
+}));
+//#endregion
+//#region resources/js/components/search-box/search-box.tsx
+function te(e) {
 	return e instanceof HTMLElement ? e.isContentEditable || e.tagName === "INPUT" || e.tagName === "TEXTAREA" || e.tagName === "SELECT" : !1;
 }
-var $, ie = p((() => {
-	y(), te(), $ = ({ node: e, children: n }) => {
-		let { placeholder: i, shortcut: o } = e.props, { t: l } = (0, _.useT)("search"), u = (0, _.useCollapsed)(), d = (0, _.useModal)(), f = a(null), p = i ?? l("search.placeholder", "Search…"), m = t(() => {
-			f.current ||= d.open(/* @__PURE__ */ s(ee, {
-				node: e,
-				onClosed: () => {
-					f.current = null;
-				},
-				children: n
-			}));
-		}, [
-			n,
-			d,
-			e
-		]);
-		return r(() => {
-			if (!o) return;
-			function e(e) {
-				if (!(e.repeat || !(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k")) {
-					if (f.current) {
-						e.preventDefault(), f.current.close();
-						return;
-					}
-					re(e.target) || (e.preventDefault(), m());
+function ne({ endpoint: e, perPage: n, placeholder: i, title: o, shortcut: l = !1, collapsed: u = !1, children: d, "data-test": f }) {
+	let { t: p } = (0, _.useT)("search"), m = (0, _.useModal)(), h = a(null), g = i ?? p("search.placeholder", "Search…"), v = t(() => {
+		h.current ||= m.open(/* @__PURE__ */ s(K, {
+			endpoint: e,
+			perPage: n,
+			placeholder: i,
+			title: o,
+			onClosed: () => {
+				h.current = null;
+			},
+			children: d
+		}));
+	}, [
+		d,
+		e,
+		m,
+		n,
+		i,
+		o
+	]);
+	return r(() => {
+		if (!l) return;
+		function e(e) {
+			if (!(e.repeat || !(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k")) {
+				if (h.current) {
+					e.preventDefault(), h.current.close();
+					return;
 				}
+				te(e.target) || (e.preventDefault(), v());
 			}
-			return window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e);
-		}, [m, o]), /* @__PURE__ */ c("button", {
-			...o ? { "aria-keyshortcuts": "Meta+K Control+K" } : {},
-			...u ? { "aria-label": p } : {},
-			className: u ? "flex size-9 items-center justify-center rounded-lt border border-lt-border bg-lt-bg text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]" : "flex min-h-11 w-full max-w-sm items-center gap-2 rounded-lt border border-lt-border bg-lt-bg px-3 text-sm text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]",
-			"data-test": "search-trigger",
-			onClick: m,
-			type: "button",
-			children: [
-				/* @__PURE__ */ s(_.Icon, {
-					name: "search",
-					"aria-hidden": "true",
-					className: "size-lt-icon-sm"
-				}),
-				u ? null : /* @__PURE__ */ s("span", {
-					className: "min-w-0 flex-1 truncate text-start",
-					children: p
-				}),
-				!u && o ? /* @__PURE__ */ s("kbd", {
-					className: "rounded-lt-xs border border-lt-border px-1.5 py-0.5 text-xs",
-					children: "⌘K"
-				}) : null
-			]
+		}
+		return window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e);
+	}, [v, l]), /* @__PURE__ */ c("button", {
+		...l ? { "aria-keyshortcuts": "Meta+K Control+K" } : {},
+		...u ? { "aria-label": g } : {},
+		className: u ? "flex size-9 items-center justify-center rounded-lt border border-lt-border bg-lt-bg text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]" : "flex min-h-11 w-full max-w-sm items-center gap-2 rounded-lt border border-lt-border bg-lt-bg px-3 text-sm text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]",
+		"data-test": f,
+		onClick: v,
+		type: "button",
+		children: [
+			/* @__PURE__ */ s(_.Icon, {
+				name: "search",
+				"aria-hidden": "true",
+				className: "size-lt-icon-sm"
+			}),
+			u ? null : /* @__PURE__ */ s("span", {
+				className: "min-w-0 flex-1 truncate text-start",
+				children: g
+			}),
+			!u && l ? /* @__PURE__ */ s("kbd", {
+				className: "rounded-lt-xs border border-lt-border px-1.5 py-0.5 text-xs",
+				children: "⌘K"
+			}) : null
+		]
+	});
+}
+var re = p((() => {
+	y(), q();
+})), ie = /* @__PURE__ */ m({
+	SearchBoxAdapter: () => J,
+	default: () => J
+}), J, ae = p((() => {
+	y(), re(), J = ({ node: e, children: t }) => {
+		let { endpoint: n, perPage: r, placeholder: i, shortcut: a, title: o } = e.props, c = (0, _.useCollapsed)();
+		return /* @__PURE__ */ s(ne, {
+			collapsed: c,
+			"data-test": (0, _.nodeIdentity)(e),
+			endpoint: n,
+			perPage: r,
+			placeholder: i,
+			shortcut: a,
+			title: o,
+			children: e.schema?.length ? t : void 0
 		});
 	};
+})), oe = /* @__PURE__ */ m({
+	SearchCategoriesAdapter: () => Y,
+	default: () => Y
+}), Y, se = p((() => {
+	y(), j(), Y = ({ node: e }) => /* @__PURE__ */ s(A, { "data-test": (0, _.nodeIdentity)(e) });
+})), ce = /* @__PURE__ */ m({
+	SearchInputAdapter: () => X,
+	default: () => X
+}), X, le = p((() => {
+	y(), I(), X = ({ node: e }) => /* @__PURE__ */ s(F, { "data-test": (0, _.nodeIdentity)(e) });
+})), ue = /* @__PURE__ */ m({
+	SearchPreviewAdapter: () => Z,
+	default: () => Z
+}), Z, de = p((() => {
+	y(), R(), Z = ({ node: e }) => /* @__PURE__ */ s(L, { "data-test": (0, _.nodeIdentity)(e) });
+})), fe = /* @__PURE__ */ m({
+	SearchRecentAdapter: () => Q,
+	default: () => Q
+}), Q, pe = p((() => {
+	y(), H(), Q = ({ node: e }) => /* @__PURE__ */ s(V, { "data-test": (0, _.nodeIdentity)(e) });
+})), me = /* @__PURE__ */ m({
+	SearchResultsAdapter: () => $,
+	default: () => $
+}), $, he = p((() => {
+	y(), W(), $ = ({ node: e }) => /* @__PURE__ */ s(U, { "data-test": (0, _.nodeIdentity)(e) });
 }));
 //#endregion
 //#region resources/js/plugin.ts
 y();
-var ae = {
+var ge = {
 	name: "lattice/search",
 	components: {
-		"search.box": (0, _.lazyComponent)(() => Promise.resolve().then(() => (ie(), ne))),
-		"search.categories": (0, _.lazyComponent)(() => Promise.resolve().then(() => (M(), A))),
-		"search.input": (0, _.lazyComponent)(() => Promise.resolve().then(() => (R(), I))),
-		"search.preview": (0, _.lazyComponent)(() => Promise.resolve().then(() => (V(), z))),
-		"search.recent": (0, _.lazyComponent)(() => Promise.resolve().then(() => (q(), G))),
-		"search.results": (0, _.lazyComponent)(() => Promise.resolve().then(() => (X(), J)))
+		"search.box": (0, _.lazyComponent)(() => Promise.resolve().then(() => (ae(), ie))),
+		"search.categories": (0, _.lazyComponent)(() => Promise.resolve().then(() => (se(), oe))),
+		"search.input": (0, _.lazyComponent)(() => Promise.resolve().then(() => (le(), ce))),
+		"search.preview": (0, _.lazyComponent)(() => Promise.resolve().then(() => (de(), ue))),
+		"search.recent": (0, _.lazyComponent)(() => Promise.resolve().then(() => (pe(), fe))),
+		"search.results": (0, _.lazyComponent)(() => Promise.resolve().then(() => (he(), me)))
 	},
 	i18n: { namespace: "search" }
 };
 //#endregion
-export { ae as default };
+export { ge as default };
