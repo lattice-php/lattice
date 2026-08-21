@@ -1,8 +1,8 @@
-import { Link, usePage } from "@inertiajs/react";
-import { Fragment } from "react";
+import { usePage } from "@inertiajs/react";
 import type { RendererComponent } from "@lattice-php/core/types";
 import type { PagePayload } from "@lattice-php/lattice/types";
 import { nodeIdentity } from "@lattice-php/core/test-id";
+import { Breadcrumbs } from "@lattice-php/ui/components/breadcrumbs/breadcrumbs";
 import { useT } from "@lattice-php/ui/i18n";
 
 const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
@@ -10,39 +10,12 @@ const BreadcrumbsComponent: RendererComponent<"breadcrumbs"> = ({ node }) => {
   const page = usePage();
   const crumbs = (page.props.lattice as PagePayload | undefined)?.breadcrumbs ?? [];
 
-  if (crumbs.length === 0) {
-    return null;
-  }
-
   return (
-    <nav
+    <Breadcrumbs
       aria-label={t("common.breadcrumb", "Breadcrumb")}
-      className="min-w-0 flex-1"
       data-lattice-component={nodeIdentity(node)}
-    >
-      <ol className="flex items-center gap-2 text-sm text-lt-muted-fg">
-        {crumbs.map((crumb, index) => {
-          const isLast = index === crumbs.length - 1;
-
-          return (
-            <Fragment key={crumb.href}>
-              <li className="min-w-0">
-                {isLast ? (
-                  <span aria-current="page" className="block truncate text-lt-fg">
-                    {crumb.title}
-                  </span>
-                ) : (
-                  <Link className="block truncate hover:text-lt-fg" href={crumb.href}>
-                    {crumb.title}
-                  </Link>
-                )}
-              </li>
-              {isLast ? null : <li aria-hidden="true">/</li>}
-            </Fragment>
-          );
-        })}
-      </ol>
-    </nav>
+      items={crumbs.map((crumb) => ({ href: crumb.href, label: crumb.title }))}
+    />
   );
 };
 

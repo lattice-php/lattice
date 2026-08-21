@@ -185,3 +185,29 @@ Sidebar::make('app-sidebar')->collapsible()
 ```
 
 Give dropdowns in the footer `Placement::Top` so they open upward.
+
+## Client-side chrome
+
+The React components behind `Sidebar`, `Topbar`, and `Breadcrumbs` are exported from `@lattice-php/ui`
+for custom pages and component packages. They take plain props instead of wire nodes: the Lattice
+adapters add the toggle-sidebar event, the remembered collapse state, and the page's breadcrumb trail
+on top of them.
+
+```tsx
+import { Breadcrumbs, Sidebar, SidebarFooter, Topbar } from "@lattice-php/ui";
+
+<Sidebar collapsed={collapsed} open={drawerOpen} onOpenChange={setDrawerOpen}>
+  <nav>…</nav>
+  <SidebarFooter>…</SidebarFooter>
+</Sidebar>
+
+<Topbar sticky>
+  <Breadcrumbs items={[{ href: "/dashboard", label: "Dashboard" }, { label: "Settings" }]} />
+</Topbar>
+```
+
+`Sidebar` collapses the desktop rail to icons while `collapsed` is true (children read it through
+`useCollapsed()`), and renders the mobile drawer with a backdrop while `open` is true — closing it on
+backdrop click and Escape through `onOpenChange`. `Breadcrumbs` links every item with an `href` and
+marks the last one as the current page; links go through the active `NavigationProvider`, so they
+become Inertia visits inside a Lattice app.
