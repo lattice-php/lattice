@@ -1,5 +1,6 @@
 import { Button } from "@lattice-php/ui/components/button/button";
 import { ActionTrigger } from "@lattice-php/ui/click-behavior";
+import { DataTableBulkBar } from "@lattice-php/table/primitives/data-table";
 import { Spinner } from "@lattice-php/ui/primitives/spinner";
 import { prefixedTestId } from "@lattice-php/core/test-id";
 import { useT } from "@lattice-php/ui/i18n";
@@ -32,45 +33,46 @@ export function BulkBar({
   const count = allMatching ? (total ?? selectedKeys.length) : selectedKeys.length;
 
   return (
-    <div className="flex flex-wrap items-center gap-3 border-b border-lt-border bg-lt-muted/50 p-4 text-sm">
-      <span className="font-medium">
-        {allMatching
+    <DataTableBulkBar
+      summary={
+        allMatching
           ? t("table.bulk.all-selected", "All {{count}} selected", { count })
-          : t("table.bulk.selected", "{{count}} selected", { count })}
-      </span>
-      {canSelectAllMatching && (
-        <button
-          type="button"
-          data-test="bulk-select-all-matching"
-          className="font-medium text-lt-primary underline underline-offset-2"
-          onClick={onSelectAllMatching}
-        >
-          {t("table.bulk.select-all-matching", "Select all {{total}} matching", { total })}
-        </button>
-      )}
-      <div className="flex flex-wrap items-center gap-2">
-        {actions.map((action, index) => (
-          <ActionTrigger
-            key={action.key ?? action.id ?? index}
-            action={action}
-            options={{ extraData: selectionPayload, onSuccess: onCompleted }}
+          : t("table.bulk.selected", "{{count}} selected", { count })
+      }
+      action={
+        canSelectAllMatching && (
+          <button
+            type="button"
+            data-test="bulk-select-all-matching"
+            className="font-medium text-lt-primary underline underline-offset-2"
+            onClick={onSelectAllMatching}
           >
-            {({ onClick, processing }) => (
-              <Button
-                type="button"
-                data-test={prefixedTestId("bulk-action", action.id)}
-                variant={action.props.variant}
-                emphasis={action.props.emphasis}
-                disabled={processing}
-                onClick={onClick}
-              >
-                {processing && <Spinner />}
-                {action.props.label}
-              </Button>
-            )}
-          </ActionTrigger>
-        ))}
-      </div>
-    </div>
+            {t("table.bulk.select-all-matching", "Select all {{total}} matching", { total })}
+          </button>
+        )
+      }
+    >
+      {actions.map((action, index) => (
+        <ActionTrigger
+          key={action.key ?? action.id ?? index}
+          action={action}
+          options={{ extraData: selectionPayload, onSuccess: onCompleted }}
+        >
+          {({ onClick, processing }) => (
+            <Button
+              type="button"
+              data-test={prefixedTestId("bulk-action", action.id)}
+              variant={action.props.variant}
+              emphasis={action.props.emphasis}
+              disabled={processing}
+              onClick={onClick}
+            >
+              {processing && <Spinner />}
+              {action.props.label}
+            </Button>
+          )}
+        </ActionTrigger>
+      ))}
+    </DataTableBulkBar>
   );
 }

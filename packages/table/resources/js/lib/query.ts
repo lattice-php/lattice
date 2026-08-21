@@ -8,20 +8,6 @@ export function getColumnSort(query: TableQuery, column: TableColumn): TableSort
   return query.sorts.find((currentSort) => currentSort.key === column.key);
 }
 
-export function getColumnAriaSort(
-  sort: TableSort | undefined,
-): "ascending" | "descending" | undefined {
-  if (sort?.direction === "asc") {
-    return "ascending";
-  }
-
-  if (sort?.direction === "desc") {
-    return "descending";
-  }
-
-  return undefined;
-}
-
 export function buildEndpoint(endpoint: string, query: TableQuery): string {
   const url = new URL(endpoint, window.location.origin);
 
@@ -257,16 +243,4 @@ export function getTableSizingColumns(
 
 function columnWidthOrDefault(column: TableColumn): ColumnWidth {
   return (column.props.width ?? DEFAULT_COLUMN_WIDTH) as ColumnWidth;
-}
-
-export function getTableUtilityTracks(
-  hasActions: boolean,
-  hasSelection: boolean,
-  hasExpander = false,
-) {
-  // Utility tracks are fixed because the independent header/filter/body grids would drift with content-sized tracks.
-  return {
-    leadingTracks: [...(hasExpander ? ["2.5rem"] : []), ...(hasSelection ? ["3rem"] : [])],
-    trailingTracks: hasActions ? ["10rem"] : [],
-  };
 }

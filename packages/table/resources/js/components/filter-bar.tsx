@@ -1,3 +1,4 @@
+import { DataTableFilterBar, DataTableFilterChip } from "@lattice-php/table/primitives/data-table";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import {
   Popover,
@@ -40,48 +41,46 @@ export function FilterBar({
   }
 
   return (
-    <div className="border-b border-lt-border px-4 py-3">
-      <div className="flex flex-wrap items-center gap-2 text-sm">
-        {clauses.map((clause, index) => {
-          const label = columnsByKey.get(clause.field)?.props.label ?? clause.field;
-          const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
+    <DataTableFilterBar>
+      {clauses.map((clause, index) => {
+        const label = columnsByKey.get(clause.field)?.props.label ?? clause.field;
+        const valueless = VALUELESS_FILTER_OPERATORS.has(clause.operator);
 
-          return (
-            <FilterChip
-              key={`${clause.field}-${clause.operator}-${index}`}
-              label={`${label} ${operatorLabel(clause.operator)}`}
-              value={valueless ? "" : clause.value}
-              removeTestId={`filter-chip-${clause.field}-remove`}
-              removeLabel={t("table.filter.remove", "Remove {{label}} filter", { label })}
-              processing={processing}
-              onRemove={() => onRemoveClause(index)}
-            />
-          );
-        })}
-        {indicators.map((indicator) => (
+        return (
           <FilterChip
-            key={`${indicator.filter}:${indicator.label}:${indicator.value}`}
-            label={indicator.label}
-            value={indicator.value}
-            removeTestId={`table-filter-chip-${indicator.filter}-remove`}
-            removeLabel={t("table.filter.remove", "Remove {{label}} filter", {
-              label: indicator.label,
-            })}
+            key={`${clause.field}-${clause.operator}-${index}`}
+            label={`${label} ${operatorLabel(clause.operator)}`}
+            value={valueless ? "" : clause.value}
+            removeTestId={`filter-chip-${clause.field}-remove`}
+            removeLabel={t("table.filter.remove", "Remove {{label}} filter", { label })}
             processing={processing}
-            onRemove={() => onChange(indicator.filter, undefined)}
+            onRemove={() => onRemoveClause(index)}
           />
-        ))}
-        <button
-          type="button"
-          data-test="table-filters-reset"
-          className="text-lt-muted-fg underline-offset-2 hover:underline disabled:text-lt-disabled-fg"
-          disabled={processing}
-          onClick={onReset}
-        >
-          {t("table.filter.reset-all", "Reset all")}
-        </button>
-      </div>
-    </div>
+        );
+      })}
+      {indicators.map((indicator) => (
+        <FilterChip
+          key={`${indicator.filter}:${indicator.label}:${indicator.value}`}
+          label={indicator.label}
+          value={indicator.value}
+          removeTestId={`table-filter-chip-${indicator.filter}-remove`}
+          removeLabel={t("table.filter.remove", "Remove {{label}} filter", {
+            label: indicator.label,
+          })}
+          processing={processing}
+          onRemove={() => onChange(indicator.filter, undefined)}
+        />
+      ))}
+      <button
+        type="button"
+        data-test="table-filters-reset"
+        className="text-lt-muted-fg underline-offset-2 hover:underline disabled:text-lt-disabled-fg"
+        disabled={processing}
+        onClick={onReset}
+      >
+        {t("table.filter.reset-all", "Reset all")}
+      </button>
+    </DataTableFilterBar>
   );
 }
 
@@ -101,7 +100,7 @@ function FilterChip({
   onRemove: () => void;
 }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-lt-sm bg-lt-muted px-2 py-1">
+    <DataTableFilterChip>
       <span>
         {value === "" ? (
           <span className="font-semibold">{label}</span>
@@ -120,7 +119,7 @@ function FilterChip({
         disabled={processing}
         onClick={onRemove}
       />
-    </span>
+    </DataTableFilterChip>
   );
 }
 

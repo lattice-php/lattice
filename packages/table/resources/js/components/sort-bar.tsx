@@ -1,4 +1,5 @@
 import { Icon } from "@lattice-php/ui/icons";
+import { DataTableSortBar } from "@lattice-php/table/primitives/data-table";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import { getSortDirectionLabel } from "@lattice-php/table/lib/query";
@@ -18,7 +19,7 @@ export function SortBar({
   const { t } = useT("lattice");
 
   return (
-    <div className="flex flex-wrap items-center gap-4 border-b border-lt-border px-4 py-2.5 text-sm">
+    <DataTableSortBar>
       {query.sorts.map((sort, index) => {
         const column = columnsByKey.get(sort.key);
         const label = column?.props.label ?? sort.key;
@@ -45,6 +46,6 @@ export function SortBar({
           </span>
         );
       })}
-    </div>
+    </DataTableSortBar>
   );
 }
