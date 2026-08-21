@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.63.0](https://github.com/lattice-php/lattice/compare/0.62.0...0.63.0) (2026-08-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* **search:** split the clients from their wire adapters ([#533](https://github.com/lattice-php/lattice/issues/533))
+
+### Features
+
+* root-export standalone clients and add buildLatticeSprite() ([#532](https://github.com/lattice-php/lattice/issues/532)) ([759f0a4](https://github.com/lattice-php/lattice/commit/759f0a4f0765b261643974336f1c359927d0cd5c))
+
+
+### Refactoring
+
+* **search:** split the clients from their wire adapters ([#533](https://github.com/lattice-php/lattice/issues/533)) ([603e494](https://github.com/lattice-php/lattice/commit/603e4941c3b266a780a6f956b1da84acd8b1b00c))
+
 ## [0.62.0](https://github.com/lattice-php/lattice/compare/0.61.0...0.62.0) (2026-08-21)
 
 
