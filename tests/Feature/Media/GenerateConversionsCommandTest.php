@@ -57,12 +57,12 @@ test('force regenerates a derivative whose file was removed behind the map', fun
     Storage::disk('public')->delete('media/conversions/source-thumb.webp');
 
     artisan('media:conversions')->assertSuccessful();
-    expect(Storage::disk('public')->exists('media/conversions/source-thumb.webp'))->toBeFalse();
+    Storage::disk('public')->assertMissing('media/conversions/source-thumb.webp');
 
     artisan('media:conversions --force')->assertSuccessful();
 
-    expect(Storage::disk('public')->exists('media/conversions/source-thumb.webp'))->toBeTrue()
-        ->and($media->refresh()->conversionPath('thumb'))->toBe('media/conversions/source-thumb.webp');
+    Storage::disk('public')->assertExists('media/conversions/source-thumb.webp');
+    expect($media->refresh()->conversionPath('thumb'))->toBe('media/conversions/source-thumb.webp');
 });
 
 test('only limits which conversions force drops and rebuilds', function (): void {

@@ -11,15 +11,16 @@ afterEach(function (): void {
 });
 
 it('caches and clears the discovery manifest', function (): void {
-    $manifest = app(DiscoveryManifest::class);
-
-    expect($manifest->isCached())->toBeFalse();
+    $uncachedManifest = app(DiscoveryManifest::class);
+    expect($uncachedManifest->isCached())->toBeFalse();
 
     artisan('lattice:discover-cache')->assertSuccessful();
-    expect($manifest->isCached())->toBeTrue();
+    $cachedManifest = app(DiscoveryManifest::class);
+    expect($cachedManifest->isCached())->toBeTrue();
 
     artisan('lattice:discover-clear')->assertSuccessful();
-    expect($manifest->isCached())->toBeFalse();
+    $clearedManifest = app(DiscoveryManifest::class);
+    expect($clearedManifest->isCached())->toBeFalse();
 });
 
 it('walks fresh when the cache is cold', function (): void {

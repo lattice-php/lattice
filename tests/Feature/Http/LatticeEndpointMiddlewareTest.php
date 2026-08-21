@@ -12,7 +12,6 @@ test('published lattice endpoints require authentication by default', function (
         $groupConfig = $defaults[$group] ?? null;
 
         expect($groupConfig)->toBeArray();
-        assert(is_array($groupConfig));
 
         expect($groupConfig['middleware'] ?? null)->toBe(['web', 'auth']);
     }

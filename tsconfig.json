@@ -46,6 +46,7 @@
     "packages/*/resources/js/**/*.ts",
     "packages/*/resources/js/**/*.tsx",
     "packages/*/resources/js/**/*.d.ts",
-    "vite.config.ts"
+    "vite.config.ts",
+    "vite.icons.ts"
   ]
 }
