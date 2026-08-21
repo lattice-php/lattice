@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
 import { Button } from "@lattice-php/ui/components/button/button";
+import { DataTableFooter, DataTablePagination } from "@lattice-php/table/primitives/data-table";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { useT } from "@lattice-php/ui/i18n";
 import type { PaginationType } from "../generated";
@@ -36,10 +37,7 @@ export function TablePagination({
   const { t } = useT("lattice");
 
   return (
-    <div
-      data-slot="table-pagination"
-      className="flex items-center justify-between gap-3 border-t border-lt-border p-4 text-sm"
-    >
+    <DataTableFooter>
       <div className="flex items-center gap-4">
         <span>
           {pagination.total == null
@@ -88,59 +86,20 @@ export function TablePagination({
             </span>
           )}
         </div>
-      ) : mode === "simple" ? (
-        <div className="flex items-center gap-2">
-          <Button
-            emphasis="outline"
-            data-test="pagination-previous"
-            disabled={processing || currentPage <= 1}
-            onClick={() => onPage(currentPage - 1)}
-          >
-            {t("table.pagination.previous", "Previous")}
-          </Button>
-          <Button
-            emphasis="outline"
-            data-test="pagination-next"
-            disabled={processing || !hasNextPage}
-            onClick={() => onPage(currentPage + 1)}
-          >
-            {t("table.pagination.next", "Next")}
-          </Button>
-        </div>
-      ) : mode === "table" ? (
-        <div className="flex items-center gap-2">
-          <Button
-            emphasis="outline"
-            data-test="pagination-previous"
-            disabled={processing || currentPage <= 1}
-            onClick={() => onPage(currentPage - 1)}
-          >
-            {t("table.pagination.previous", "Previous")}
-          </Button>
-          {visiblePages.map((pageNumber) => (
-            <Button
-              key={pageNumber}
-              emphasis="outline"
-              size="icon"
-              data-test={`pagination-page-${pageNumber}`}
-              disabled={processing || pageNumber === currentPage}
-              aria-current={pageNumber === currentPage ? "page" : undefined}
-              aria-label={t("table.pagination.page", "Page {{page}}", { page: pageNumber })}
-              onClick={() => onPage(pageNumber)}
-            >
-              {pageNumber}
-            </Button>
-          ))}
-          <Button
-            emphasis="outline"
-            data-test="pagination-next"
-            disabled={processing || !hasNextPage}
-            onClick={() => onPage(currentPage + 1)}
-          >
-            {t("table.pagination.next", "Next")}
-          </Button>
-        </div>
+      ) : mode === "simple" || mode === "table" ? (
+        <DataTablePagination
+          disabled={processing}
+          hasNextPage={hasNextPage}
+          labels={{
+            next: t("table.pagination.next", "Next"),
+            page: (page) => t("table.pagination.page", "Page {{page}}", { page }),
+            previous: t("table.pagination.previous", "Previous"),
+          }}
+          onPageChange={onPage}
+          page={currentPage}
+          pages={mode === "table" ? visiblePages : undefined}
+        />
       ) : null}
-    </div>
+    </DataTableFooter>
   );
 }

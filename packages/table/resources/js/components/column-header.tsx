@@ -1,37 +1,20 @@
-import { Icon } from "@lattice-php/ui/icons";
-import { cn } from "@lattice-php/ui/lib/utils";
-import type { CSSProperties, HTMLAttributes } from "react";
-import { alignJustify, alignText } from "@lattice-php/table/lib/align";
+import type { HTMLAttributes } from "react";
+import {
+  DataTableHeaderCell,
+  DataTableHeaderLabel,
+  DataTableSortButton,
+  type DataTablePinBoundary,
+} from "@lattice-php/table/primitives/data-table";
 import { useT } from "@lattice-php/ui/i18n";
-import type { PinBoundary } from "@lattice-php/table/lib/pin-boundary";
-import { pinBoundaryClassName } from "@lattice-php/table/lib/pin-boundary";
-import { getColumnAriaSort, getColumnSort } from "@lattice-php/table/lib/query";
-import type { TableColumn, TableSort, TableQuery } from "@lattice-php/table/types";
-
-function SortIndicator({ sort }: { sort: TableSort | undefined }) {
-  if (sort?.direction === "asc") {
-    return <Icon name="arrow-up" aria-hidden="true" className="size-lt-icon-sm shrink-0" />;
-  }
-
-  if (sort?.direction === "desc") {
-    return <Icon name="arrow-down" aria-hidden="true" className="size-lt-icon-sm shrink-0" />;
-  }
-
-  return (
-    <Icon
-      name="chevrons-up-down"
-      aria-hidden="true"
-      className="size-lt-icon-sm shrink-0 opacity-50"
-    />
-  );
-}
+import { getColumnSort } from "@lattice-php/table/lib/query";
+import type { TableColumn, TableQuery } from "@lattice-php/table/types";
 
 export function ColumnHeader({
   bottomBordered,
   column,
   pinBoundary,
+  pinIndex,
   pinned,
-  pinStyle,
   processing,
   resizeHandleProps,
   sort,
@@ -39,9 +22,9 @@ export function ColumnHeader({
 }: {
   bottomBordered?: boolean;
   column: TableColumn;
-  pinBoundary?: PinBoundary;
+  pinBoundary?: DataTablePinBoundary;
+  pinIndex?: number;
   pinned?: "left" | "right";
-  pinStyle?: CSSProperties;
   processing: boolean;
   resizeHandleProps?: HTMLAttributes<HTMLDivElement>;
   sort: (column: TableColumn) => void;
@@ -52,37 +35,29 @@ export function ColumnHeader({
   const { align, label, sortable } = column.props;
 
   return (
-    <div
-      aria-sort={getColumnAriaSort(columnSort)}
-      className={cn(
-        "relative min-w-0 px-4 py-3 pr-5 align-middle font-semibold text-lt-fg",
-        pinned ? "bg-[var(--lt-table-pinned-muted-bg)]" : "bg-lt-muted/50",
-        pinned && "md:sticky z-[1]",
-        bottomBordered && "border-b border-lt-border",
-        pinBoundaryClassName(pinBoundary),
-        alignText(align),
-      )}
-      data-pin-boundary={pinBoundary}
-      data-pinned={pinned}
-      role="columnheader"
-      style={pinStyle}
+    <DataTableHeaderCell
+      align={align}
+      bottomBordered={bottomBordered}
+      pinBoundary={pinBoundary}
+      pinIndex={pinIndex}
+      pinned={pinned}
+      sortDirection={columnSort?.direction}
     >
       {sortable ? (
-        <button
-          type="button"
+        <DataTableSortButton
+          align={align}
           aria-label={t("table.sort.column", "Sort {{label}}", { label })}
-          className={cn("flex w-full items-center gap-1.5 font-semibold", alignJustify(align))}
           data-test={`sort-${column.key}`}
+          direction={columnSort?.direction}
           disabled={processing}
           onClick={() => sort(column)}
         >
-          <span className={cn("min-w-0 flex-1 truncate", alignText(align))}>{label}</span>
-          <SortIndicator sort={columnSort} />
-        </button>
+          {label}
+        </DataTableSortButton>
       ) : (
-        <span className={cn("block truncate", alignText(align))}>{label}</span>
+        <DataTableHeaderLabel align={align}>{label}</DataTableHeaderLabel>
       )}
       {resizeHandleProps && <div {...resizeHandleProps} />}
-    </div>
+    </DataTableHeaderCell>
   );
 }

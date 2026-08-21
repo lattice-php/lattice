@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "@lattice-php/ui/icons";
-import { IconButton } from "@lattice-php/ui/primitives/icon-button";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { DataTableSearch } from "@lattice-php/table/primitives/data-table";
 import { useT } from "@lattice-php/ui/i18n";
-import { cn } from "@lattice-php/ui/lib/utils";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 
 const DEBOUNCE_MS = 300;
@@ -49,34 +46,15 @@ export function TableSearch({
     commit("");
   }
 
-  const label = t("table.search.placeholder", "Search");
-
   return (
-    <div className="relative w-full max-w-xs">
-      <Icon
-        name="search"
-        aria-hidden="true"
-        className="pointer-events-none absolute left-2.5 top-1/2 size-lt-icon-sm -translate-y-1/2 text-lt-muted-fg"
-      />
-      <Input
-        type="search"
-        data-test="table-search"
-        value={term}
-        placeholder={label}
-        aria-label={label}
-        onChange={(event) => change(event.target.value)}
-        className={cn("px-8", "[&::-webkit-search-cancel-button]:hidden")}
-      />
-      {term !== "" && (
-        <IconButton
-          size="xs"
-          icon="x"
-          label={t("table.search.clear", "Clear search")}
-          data-test="table-search-clear"
-          className="absolute right-1.5 top-1/2 -translate-y-1/2"
-          onClick={clear}
-        />
-      )}
-    </div>
+    <DataTableSearch
+      clearButtonProps={{ "data-test": "table-search-clear" }}
+      clearLabel={t("table.search.clear", "Clear search")}
+      data-test="table-search"
+      onClear={clear}
+      onValueChange={change}
+      placeholder={t("table.search.placeholder", "Search")}
+      value={term}
+    />
   );
 }

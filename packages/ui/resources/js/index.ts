@@ -100,6 +100,8 @@ export * from "./lib/use-layout-effect";
 export * from "./lib/use-media-query";
 export * from "./lib/use-persistent-state";
 export * from "./lib/utils";
+export { Callout } from "./components/callouts/callout";
+export type { CalloutProps } from "./components/callouts/callout";
 export { normalizeCallout, onCallout, onRetractCallout } from "./toast/callout";
 export { normalizeToastMessage, onToast } from "./toast/bus";
 export type { ToastMessage } from "./toast/bus";
