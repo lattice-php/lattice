@@ -3,6 +3,7 @@ import { searchForWorkspaceRoot } from "vite";
 import type { Logger, Plugin } from "vite";
 import { describe, expect, it, vi } from "vitest";
 import {
+  buildLatticeSprite,
   collectComponentPackages,
   collectRootComponentPackage,
   componentPackagesPlugin,
@@ -390,5 +391,20 @@ describe("lattice Vite helper", () => {
       "/app/vendor/acme/signature/resources/icons",
       "/app/icons",
     ]);
+  });
+
+  it("builds an inline sprite from the same icon dirs the plugin serves", () => {
+    const appRoot = path.resolve(import.meta.dirname, "../../../..");
+    const root = path.resolve(appRoot, "packages/framework");
+
+    const sprite = buildLatticeSprite({ appRoot, root, icons: { dts: false } });
+
+    expect(sprite.href).toBe("");
+    expect(sprite.ids).toContain("chevron-down");
+    expect(sprite.source).toContain('<symbol id="chevron-down"');
+  });
+
+  it("builds an empty sprite when icons are disabled", () => {
+    expect(buildLatticeSprite({ icons: false })).toEqual({ href: "", ids: [], source: "" });
   });
 });
