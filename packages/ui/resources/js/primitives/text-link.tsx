@@ -1,5 +1,5 @@
-import { cn } from "../../lib/utils";
-import { useNavigation, type NavLinkProps } from "../../navigation";
+import { cn } from "../lib/utils";
+import { useNavigation, type NavLinkProps } from "../navigation";
 
 export function TextLink({ className = "", children, ...props }: NavLinkProps) {
   const { Link } = useNavigation();

@@ -1,6 +1,6 @@
 import { cn } from "@lattice-php/ui/lib/utils";
 import type { ColumnCellComponent } from "@lattice-php/table/registry";
-import { PreviewableImage } from "@lattice-php/ui/components/image/image-preview";
+import { PreviewableImage } from "@lattice-php/ui/primitives/image-preview";
 
 export const ImageCell: ColumnCellComponent<"column.image"> = ({ column, props, value }) => {
   const url = typeof value === "string" ? value : "";
