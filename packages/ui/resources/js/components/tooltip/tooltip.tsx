@@ -1,15 +1,23 @@
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { Icon } from "../../icons";
 import { UI_NAMESPACE, useT } from "../../i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover/popover";
+
+export type TooltipTriggerProps = Omit<
+  ComponentProps<"button">,
+  "children" | "className" | "type"
+> & {
+  [dataAttribute: `data-${string}`]: string | number | boolean | undefined;
+};
 
 export type TooltipProps = {
   "aria-label"?: string;
   content?: ReactNode;
   trigger?: ReactNode;
+  triggerProps?: TooltipTriggerProps;
 };
 
-export function Tooltip({ "aria-label": ariaLabel, content, trigger }: TooltipProps) {
+export function Tooltip({ "aria-label": ariaLabel, content, trigger, triggerProps }: TooltipProps) {
   const { t } = useT(UI_NAMESPACE);
 
   if (!hasContent(content)) {
@@ -21,6 +29,7 @@ export function Tooltip({ "aria-label": ariaLabel, content, trigger }: TooltipPr
   return (
     <Popover>
       <PopoverTrigger
+        {...triggerProps}
         type="button"
         aria-label={
           ariaLabel ?? (hasTrigger ? undefined : t("common.more-info", "More information"))

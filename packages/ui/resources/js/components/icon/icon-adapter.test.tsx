@@ -14,7 +14,7 @@ function renderIcon(props: {
 }) {
   return render(
     <SpriteProvider sprite={{ href: "", ids: [props.name] }}>
-      <IconAdapter node={fakeNode({ type: "icon", props })}>{null}</IconAdapter>
+      <IconAdapter node={fakeNode({ id: "page.icon", type: "icon", props })}>{null}</IconAdapter>
     </SpriteProvider>,
   );
 }
@@ -34,12 +34,15 @@ describe("Lattice icon component", () => {
 
     const wrapper = container.querySelector<HTMLSpanElement>("span.contents");
     expect(wrapper).not.toBeNull();
+    expect(wrapper).toHaveAttribute("data-lattice-component", "page.icon");
     expect(wrapper?.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });
 
-  it("omits the colour wrapper when no colour is set", () => {
+  it("leaves the wrapper colourless when no colour is set", () => {
     const { container } = renderIcon({ name: "house", size: "md", color: null, class: null });
 
-    expect(container.querySelector("span.contents")).toBeNull();
+    const wrapper = container.querySelector<HTMLSpanElement>("span.contents");
+    expect(wrapper).not.toBeNull();
+    expect(wrapper?.style.getPropertyValue("color")).toBe("");
   });
 });

@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader } from "../../primitives/dialog";
+import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { UI_NAMESPACE, useT } from "../../i18n";
 import { useEmbeddedModal } from "../../modal";
@@ -34,6 +35,7 @@ const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => {
     <Dialog open={context.open} onOpenChange={context.onOpenChange}>
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
+        data-lattice-component={nodeIdentity(node)}
         onCloseAutoFocus={context.onExited}
         placement={node.props.side ?? "center"}
         width={node.props.width}
