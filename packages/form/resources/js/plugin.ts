@@ -18,7 +18,7 @@ import {
   TextareaAdapter,
   TextInputComponent,
   TimeInputComponent,
-  ToggleComponent,
+  ToggleAdapter,
   WizardComponent,
   WizardStepComponent,
 } from "./components";
@@ -46,7 +46,7 @@ export const formComponents: Plugin = {
     "field.textarea": eagerComponent(TextareaAdapter),
     "field.text-input": eagerComponent(TextInputComponent),
     "field.time-input": eagerComponent(TimeInputComponent),
-    "field.toggle": eagerComponent(ToggleComponent),
+    "field.toggle": eagerComponent(ToggleAdapter),
     wizard: eagerComponent(WizardComponent),
     "wizard-step": eagerComponent(WizardStepComponent),
   } satisfies ComponentRegistryFor<FormNodeType>,
