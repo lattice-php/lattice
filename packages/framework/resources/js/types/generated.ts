@@ -1,5 +1,5 @@
 import type { Affix, Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
-import type { HttpMethod, Placement, Size, Translatable, Variant } from "@lattice-php/ui";
+import type { HttpMethod, Size, Translatable, Variant } from "@lattice-php/ui";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
@@ -18,7 +18,6 @@ export type ColumnNodeType =
   | "column.text";
 export type ComponentPropsMap = {
   callouts: Callouts;
-  dropdown: Dropdown;
   fragment: Fragment;
   menu: Menu;
   "menu-item": MenuItem;
@@ -30,10 +29,6 @@ export type DataList = {
   dataEndpoint: string | null;
   emptyLabel: string | null;
   remote: RemoteAccess | null;
-};
-export type Dropdown = {
-  placement: Placement;
-  trigger: Node[];
 };
 export type FilterNodeType =
   | "filter.date-range"
@@ -107,7 +102,7 @@ export type I18nConfig = {
   readonly saveMissing: boolean;
   readonly timezone: string | null;
 };
-export type LayoutNodeType = "callouts" | "dropdown" | "menu" | "menu-item" | "outlet";
+export type LayoutNodeType = "callouts" | "menu" | "menu-item" | "outlet";
 export type Listen = {
   readonly channel: string;
   effects: Effect[];
@@ -273,6 +268,7 @@ export type UiNodeType =
   | "code-block"
   | "collapsible"
   | "description-list"
+  | "dropdown"
   | "entry.badge"
   | "entry.boolean"
   | "entry.component"

@@ -10,6 +10,7 @@ import ChartAdapter from "./components/chart/chart-adapter";
 import CodeBlockAdapter from "./components/code-block/code-block-adapter";
 import CollapsibleAdapter from "./components/collapsible/collapsible-adapter";
 import DescriptionListAdapter from "./components/description-list/description-list-adapter";
+import DropdownAdapter from "./components/dropdown/dropdown-adapter";
 import FloatingPanelAdapter from "./components/floating-panel/floating-panel-adapter";
 import GridAdapter from "./components/grid/grid-adapter";
 import HeadingAdapter from "./components/heading/heading-adapter";
@@ -49,6 +50,7 @@ export const uiComponents: Plugin = {
     "code-block": eagerComponent(CodeBlockAdapter),
     collapsible: eagerComponent(CollapsibleAdapter),
     "description-list": eagerComponent(DescriptionListAdapter),
+    dropdown: eagerComponent(DropdownAdapter),
     "entry.badge": eagerComponent(BadgeEntryComponent),
     "entry.boolean": eagerComponent(BooleanEntryComponent),
     "entry.component": eagerComponent(ComponentEntryComponent),

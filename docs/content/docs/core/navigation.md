@@ -66,7 +66,7 @@ without nesting them in the sidebar tree:
 use Lattice\Ui\Components\Icon;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Placement;
-use Lattice\Layouts\Components\Dropdown;
+use Lattice\Ui\Components\Dropdown;
 use Lattice\Layouts\Components\MenuItem;
 
 Dropdown::make('account-menu')
@@ -111,7 +111,7 @@ use Lattice\Ui\Components\RawBlock;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Placement;
-use Lattice\Layouts\Components\Dropdown;
+use Lattice\Ui\Components\Dropdown;
 use Lattice\Layouts\Components\MenuItem;
 
 $user = $request->user();
@@ -160,7 +160,7 @@ bottom components to `->footer([...])`:
 use Lattice\Ui\Enums\Placement;
 use Lattice\Ui\Components\RawBlock;
 use Lattice\Ui\Components\Text;
-use Lattice\Layouts\Components\Dropdown;
+use Lattice\Ui\Components\Dropdown;
 use Lattice\Layouts\Components\Menu;
 use Lattice\Layouts\Components\MenuItem;
 use Lattice\Ui\Components\Sidebar;

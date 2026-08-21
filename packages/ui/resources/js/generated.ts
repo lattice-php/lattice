@@ -120,6 +120,7 @@ export type ComponentPropsMap = {
   "code-block": CodeBlock;
   collapsible: Collapsible;
   "description-list": DescriptionList;
+  dropdown: Dropdown;
   "entry.badge": BadgeEntry;
   "entry.boolean": BooleanEntry;
   "entry.component": ComponentEntry;
@@ -170,6 +171,10 @@ export type DescriptionList = {
 };
 export type Download = {
   readonly url: string;
+};
+export type Dropdown = {
+  placement: Placement;
+  trigger: Node[];
 };
 export type EffectPropsMap = {
   callout: Callout;
@@ -254,6 +259,7 @@ export type NodeType =
   | "code-block"
   | "collapsible"
   | "description-list"
+  | "dropdown"
   | "entry.badge"
   | "entry.boolean"
   | "entry.component"
@@ -448,6 +454,7 @@ export type UiNodeType =
   | "code-block"
   | "collapsible"
   | "description-list"
+  | "dropdown"
   | "entry.badge"
   | "entry.boolean"
   | "entry.component"

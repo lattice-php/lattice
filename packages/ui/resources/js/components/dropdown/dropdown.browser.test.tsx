@@ -1,24 +1,29 @@
-import { vi } from "vitest";
-vi.mock("@inertiajs/react", async () =>
-  (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
-);
-
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
+import { act } from "react";
 import { describe, expect, it } from "vitest";
-import { Popover } from "./popover";
+import { defaultNavigation, NavigationProvider } from "../../navigation";
+import { Dropdown } from "./dropdown";
 
-function renderPopover() {
-  return render(
-    <Popover trigger={<span>Open</span>} testId="pop">
+function renderDropdown(onNavigate?: (listener: () => void) => () => void) {
+  const menu = (
+    <Dropdown data-test="pop" trigger={<span>Open</span>}>
       <a href="/x">Item</a>
-    </Popover>,
+    </Dropdown>
+  );
+
+  return render(
+    onNavigate ? (
+      <NavigationProvider adapter={{ ...defaultNavigation, onNavigate }}>{menu}</NavigationProvider>
+    ) : (
+      menu
+    ),
   );
 }
 
-describe("Popover in a browser", () => {
-  it("opens positioned content near its trigger when clicked", async () => {
-    const screen = await renderPopover();
+describe("Dropdown in a browser", () => {
+  it("opens positioned menu content near its trigger when clicked", async () => {
+    const screen = await renderDropdown();
 
     await expect.element(screen.getByRole("link", { name: "Item" })).not.toBeInTheDocument();
 
@@ -43,12 +48,28 @@ describe("Popover in a browser", () => {
   });
 
   it("closes its content on Escape", async () => {
-    const screen = await renderPopover();
+    const screen = await renderDropdown();
 
     await screen.getByTestId("pop").click();
     await expect.element(screen.getByRole("link", { name: "Item" })).toBeVisible();
 
     await userEvent.keyboard("{Escape}");
+
+    await expect.element(screen.getByRole("link", { name: "Item" })).not.toBeInTheDocument();
+  });
+
+  it("closes when the navigation adapter reports a navigation", async () => {
+    const listeners: Array<() => void> = [];
+    const screen = await renderDropdown((listener) => {
+      listeners.push(listener);
+
+      return () => undefined;
+    });
+
+    await screen.getByTestId("pop").click();
+    await expect.element(screen.getByRole("link", { name: "Item" })).toBeVisible();
+
+    act(() => listeners.forEach((listener) => listener()));
 
     await expect.element(screen.getByRole("link", { name: "Item" })).not.toBeInTheDocument();
   });

@@ -8,7 +8,7 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import type { Affix } from "@lattice-php/core";
 import { ActionTrigger, type TriggerState, useClickBehavior } from "@lattice-php/ui/click-behavior";
 import { useCollapsed } from "@lattice-php/core/collapsed-context";
-import { Popover } from "./popover";
+import { Dropdown } from "@lattice-php/ui/components/dropdown/dropdown";
 
 const rowClass =
   "flex items-center gap-2 rounded-lt-sm px-3 py-2 text-base font-medium text-lt-fg transition-colors hover:bg-lt-muted";
@@ -186,10 +186,13 @@ function FlyoutGroup({
 }) {
   return (
     <li>
-      <Popover
-        className="min-w-48"
+      <Dropdown
+        aria-label={label}
+        className={cn(rowClass, "justify-center")}
+        contentClassName="min-w-48"
+        data-test={testId}
         placement="right"
-        testId={testId}
+        title={label}
         trigger={
           icon ? (
             <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} />
@@ -197,8 +200,6 @@ function FlyoutGroup({
             <span>{label}</span>
           )
         }
-        triggerClassName={cn(rowClass, "justify-center")}
-        triggerLabel={label}
       >
         <ul className="flex flex-col gap-1">
           <li className="px-3 py-1.5 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase">
@@ -206,7 +207,7 @@ function FlyoutGroup({
           </li>
           {children}
         </ul>
-      </Popover>
+      </Dropdown>
     </li>
   );
 }
