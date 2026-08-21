@@ -1,6 +1,6 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { useTimezone } from "@lattice-php/ui/i18n";
-import { DatePicker } from "./date-picker";
+import { DatePicker } from "../../primitives/date-picker";
 import { SimpleField } from "./simple-field";
 
 export const DateTimeInputComponent: RendererComponent<"field.date-time-input"> = ({ node }) => {

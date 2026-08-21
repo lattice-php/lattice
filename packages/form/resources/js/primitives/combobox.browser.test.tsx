@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
 import { useState } from "react";
 import { Combobox } from "./combobox";
-import { Dialog, DialogContent, DialogTitle } from "./dialog";
+import { Dialog, DialogContent, DialogTitle } from "@lattice-php/ui/primitives/dialog";
 
 const options = Array.from({ length: 40 }, (_, index) => ({
   data: {},

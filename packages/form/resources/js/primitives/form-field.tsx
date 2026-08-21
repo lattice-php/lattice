@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
-import { cn } from "../lib/utils";
-import { InfoTooltip } from "./info-tooltip";
+import { cn } from "@lattice-php/ui/lib/utils";
+import { InfoTooltip } from "@lattice-php/ui/primitives/info-tooltip";
 import InputError from "./input-error";
 import { Label } from "./label";
 

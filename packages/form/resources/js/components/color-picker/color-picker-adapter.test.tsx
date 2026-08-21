@@ -2,7 +2,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { renderWithForm } from "@lattice-php/form/test-support";
-import { ColorPickerFieldComponent } from "./color-picker-field";
+import { ColorPickerAdapter } from "./color-picker-adapter";
 
 function renderField(props: Record<string, unknown>, initial: Record<string, unknown> = {}) {
   const node = fakeNode({
@@ -16,13 +16,13 @@ function renderField(props: Record<string, unknown>, initial: Record<string, unk
     },
   });
 
-  return renderWithForm(<ColorPickerFieldComponent node={node}>{null}</ColorPickerFieldComponent>, {
+  return renderWithForm(<ColorPickerAdapter node={node}>{null}</ColorPickerAdapter>, {
     initial,
     context: { action: "/forms/tags", componentRef: "ref-1" },
   });
 }
 
-describe("ColorPickerFieldComponent", () => {
+describe("ColorPickerAdapter", () => {
   it("shows the placeholder when empty and commits a swatch pick", () => {
     const { container } = renderField({});
 

@@ -3,21 +3,21 @@ import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { FormValuesProvider } from "@lattice-php/form/hooks/values";
-import { OtpInputComponent } from "./otp-input";
+import { OtpInputAdapter } from "./otp-input-adapter";
 
 function renderOtp() {
   return render(
     <FormValuesProvider initial={{}}>
-      <OtpInputComponent
+      <OtpInputAdapter
         node={fakeNode({ type: "field.otp", props: { name: "code", label: "Code", length: 4 } })}
       >
         {null}
-      </OtpInputComponent>
+      </OtpInputAdapter>
     </FormValuesProvider>,
   );
 }
 
-describe("OtpInputComponent in a browser", () => {
+describe("OtpInputAdapter in a browser", () => {
   it("commits the typed code and renders it in the slots", async () => {
     const screen = await renderOtp();
     const input = screen.getByRole("textbox");

@@ -11,11 +11,11 @@ import {
 } from "@lattice-php/form/components/base/field";
 import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { Button } from "@lattice-php/ui/components/button/button";
-import { Combobox } from "@lattice-php/ui/primitives/combobox";
+import { Combobox } from "@lattice-php/form/primitives/combobox";
 import { CodeBlock } from "@lattice-php/ui";
 import { CopyButton } from "@lattice-php/ui/primitives/copyable-text";
 import { InfoTooltip } from "@lattice-php/ui/primitives/info-tooltip";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { Input } from "@lattice-php/form/primitives/input";
 import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { Spinner } from "@lattice-php/ui/primitives/spinner";

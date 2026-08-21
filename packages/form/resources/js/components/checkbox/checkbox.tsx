@@ -1,8 +1,8 @@
-import { Icon } from "../icons";
+import { Icon } from "@lattice-php/ui/icons";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import * as React from "react";
 
-import { cn } from "../lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 
 function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
   return (

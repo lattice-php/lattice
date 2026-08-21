@@ -1,7 +1,7 @@
 import type { RendererComponent } from "@lattice-php/core";
 import { testIdentity } from "@lattice-php/core/test-id";
-import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
-import { Label } from "@lattice-php/ui/primitives/label";
+import { Checkbox } from "./checkbox";
+import { Label } from "@lattice-php/form/primitives/label";
 import { toBoolean } from "@lattice-php/form/lib/conditions";
 import { useFormContext } from "@lattice-php/form/hooks/context";
 import { fieldDomName } from "@lattice-php/form/lib/field-dom-name";
@@ -11,7 +11,7 @@ import { useFieldCommit } from "@lattice-php/form/hooks/use-field-commit";
 import { useSeedDefault } from "@lattice-php/form/hooks/use-seed-default";
 import { useFormValue } from "@lattice-php/form/hooks/values";
 
-export const CheckboxComponent: RendererComponent<"field.checkbox"> = ({ node }) => {
+export const CheckboxAdapter: RendererComponent<"field.checkbox"> = ({ node }) => {
   const { hidden, readOnly, disabled } = useDependentField(node);
   const localName = node.props.name;
   const scope = useFieldScope();

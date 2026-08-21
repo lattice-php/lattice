@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { FOCUS_RING } from "../lib/control";
-import { cn } from "../lib/utils";
+import { FOCUS_RING } from "@lattice-php/ui/lib/control";
+import { cn } from "@lattice-php/ui/lib/utils";
 
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (

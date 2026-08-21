@@ -1,8 +1,8 @@
-import { Icon } from "../icons";
+import { Icon } from "@lattice-php/ui/icons";
 import type { ComponentProps, Ref } from "react";
 import { useState } from "react";
-import { Input } from "./input";
-import { cn } from "../lib/utils";
+import { Input } from "../../primitives/input";
+import { cn } from "@lattice-php/ui/lib/utils";
 
 type PasswordInputProps = Omit<ComponentProps<"input">, "type"> & {
   passwordrules?: string;

@@ -1,4 +1,4 @@
-import { Checkbox } from "@lattice-php/ui/primitives/checkbox";
+import { Checkbox } from "@lattice-php/form/components/checkbox/checkbox";
 import type { ColumnPinSide } from "@lattice-php/table/hooks/use-column-pinning";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { useT } from "@lattice-php/ui/i18n";

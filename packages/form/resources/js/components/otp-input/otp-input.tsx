@@ -1,6 +1,6 @@
 import { OTPInput, REGEXP_ONLY_DIGITS, type SlotProps } from "input-otp";
 import type { ComponentProps } from "react";
-import { cn } from "../lib/utils";
+import { cn } from "@lattice-php/ui/lib/utils";
 
 function Slot({ char, hasFakeCaret, isActive }: SlotProps) {
   return (

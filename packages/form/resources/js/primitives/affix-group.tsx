@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { IconRenderer } from "../icons";
-import { cn } from "../lib/utils";
-import type { Affix } from "../types";
+import { IconRenderer } from "@lattice-php/ui/icons";
+import { cn } from "@lattice-php/ui/lib/utils";
+import type { Affix } from "@lattice-php/core";
 
 function AffixSegment({
   affix,

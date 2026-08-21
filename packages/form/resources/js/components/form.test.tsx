@@ -6,7 +6,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import ButtonComponent from "@lattice-php/ui/components/button/button-adapter";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
-import { CheckboxComponent, ChoiceComponent, FormComponent, TextInputComponent } from ".";
+import { CheckboxAdapter, ChoiceComponent, FormComponent, TextInputComponent } from ".";
 
 const formSlotState = vi.hoisted(() => ({
   clearErrors: vi.fn<(field: string) => void>(),
@@ -202,7 +202,7 @@ describe("Lattice form schema components", () => {
       <FormComponent node={formNode}>
         <TextInputComponent node={nameNode}>{null}</TextInputComponent>
         <ChoiceComponent node={statusNode}>{null}</ChoiceComponent>
-        <CheckboxComponent node={featuredNode}>{null}</CheckboxComponent>
+        <CheckboxAdapter node={featuredNode}>{null}</CheckboxAdapter>
       </FormComponent>,
     );
 
