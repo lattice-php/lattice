@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Layouts\Components;
+namespace Lattice\Ui\Components;
 
 use Lattice\Core\Attributes\AsComponent;
-use Lattice\Ui\Components\Component;
-use Lattice\Ui\Components\ContainerComponent;
 use Lattice\Ui\Contracts\SchemaEntry;
 
 /**

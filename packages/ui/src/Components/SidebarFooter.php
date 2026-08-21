@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Layouts\Components;
+namespace Lattice\Ui\Components;
 
 use Lattice\Core\Attributes\AsComponent;
-use Lattice\Ui\Components\ContainerComponent;
 
 /**
  * The bottom-pinned region of a sidebar. Built via {@see Sidebar::footer()}.

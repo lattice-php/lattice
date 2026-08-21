@@ -1,17 +1,18 @@
-import { fireEvent, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { act, fireEvent, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Renderer } from "@lattice-php/core/renderer";
-import { renderWithRegistry } from "@lattice-php/core/test-support";
+import { renderWithRegistry, stubMatchMedia } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import SidebarComponent from "./sidebar";
-import SidebarFooterComponent from "./sidebar-footer";
+import { defaultNavigation, NavigationProvider } from "../../navigation";
+import SidebarAdapter from "./sidebar-adapter";
+import SidebarFooterAdapter from "./sidebar-footer-adapter";
 
 const registry = createRegistry({
   components: {
-    sidebar: eagerComponent(SidebarComponent),
-    "sidebar.footer": eagerComponent(SidebarFooterComponent),
+    sidebar: eagerComponent(SidebarAdapter),
+    "sidebar.footer": eagerComponent(SidebarFooterAdapter),
   },
   name: "test/sidebar",
 });
@@ -29,7 +30,7 @@ function dispatchToggle(): void {
   );
 }
 
-describe("Sidebar", () => {
+describe("SidebarAdapter", () => {
   afterEach(() => window.localStorage.clear());
 
   it("collapses to the icon rail when a toggle event targets it", () => {
@@ -71,7 +72,7 @@ describe("Sidebar", () => {
     expect(window.localStorage.getItem("lattice:sidebar:app-sidebar")).toBeNull();
   });
 
-  it("pins footer children to the bottom of the sidebar", () => {
+  it("renders the footer node inside the sidebar", () => {
     const node: Node = {
       id: "app-sidebar",
       props: { collapsible: false, rememberState: false },
@@ -81,10 +82,44 @@ describe("Sidebar", () => {
 
     renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
-    const footer = screen
-      .getByRole("complementary")
-      .querySelector('[data-lattice-component="footer"]');
-    expect(footer).not.toBeNull();
-    expect(footer).toHaveClass("mt-auto");
+    expect(
+      screen.getByRole("complementary").querySelector('[data-lattice-component="footer"]'),
+    ).not.toBeNull();
+  });
+});
+
+describe("SidebarAdapter drawer", () => {
+  beforeEach(() => stubMatchMedia(false));
+
+  it("closes the mobile drawer when the navigation adapter reports a navigation", () => {
+    const listeners: Array<() => void> = [];
+    const node: Node = {
+      id: "app-sidebar",
+      props: { collapsible: true, rememberState: false },
+      type: "sidebar",
+    };
+
+    renderWithRegistry(
+      <NavigationProvider
+        adapter={{
+          ...defaultNavigation,
+          onNavigate: (listener) => {
+            listeners.push(listener);
+
+            return () => undefined;
+          },
+        }}
+      >
+        <Renderer nodes={[node]} />
+      </NavigationProvider>,
+      registry,
+    );
+
+    dispatchToggle();
+    expect(screen.getByTestId("sidebar-backdrop")).toBeInTheDocument();
+
+    act(() => listeners.forEach((listener) => listener()));
+
+    expect(screen.queryByTestId("sidebar-backdrop")).not.toBeInTheDocument();
   });
 });

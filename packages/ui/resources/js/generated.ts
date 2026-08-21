@@ -138,11 +138,14 @@ export type ComponentPropsMap = {
   section: Section;
   "segmented-control": SegmentedControl;
   separator: Separator;
+  sidebar: Sidebar;
+  "sidebar.footer": SidebarFooter;
   stack: Stack;
   tab: Tab;
   tabs: Tabs;
   text: Text;
   tooltip: Tooltip;
+  topbar: Topbar;
 };
 export type DateEntry = {
   description: string | null;
@@ -269,11 +272,14 @@ export type NodeType =
   | "section"
   | "segmented-control"
   | "separator"
+  | "sidebar"
+  | "sidebar.footer"
   | "stack"
   | "tab"
   | "tabs"
   | "text"
-  | "tooltip";
+  | "tooltip"
+  | "topbar";
 export type NumberFormat = {
   currency: string | null;
   kind: string;
@@ -359,6 +365,11 @@ export type Separator = {
   orientation: Orientation;
 };
 export type Side = "start" | "end";
+export type Sidebar = {
+  collapsible: boolean;
+  rememberState: boolean;
+};
+export type SidebarFooter = Record<string, never>;
 export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type Stack = {
   align: Align | null;
@@ -419,6 +430,9 @@ export type Tooltip = {
   content: string | null;
   trigger: Node[];
 };
+export type Topbar = {
+  sticky: boolean;
+};
 export type Translatable = {
   key: string;
   payload: Record<string, string>;
@@ -452,10 +466,13 @@ export type UiNodeType =
   | "section"
   | "segmented-control"
   | "separator"
+  | "sidebar"
+  | "sidebar.footer"
   | "stack"
   | "tab"
   | "tabs"
   | "text"
-  | "tooltip";
+  | "tooltip"
+  | "topbar";
 export type Variant = "primary" | "secondary" | "success" | "info" | "warning" | "danger";
 export type Width = "full" | "auto" | "sm" | "md" | "lg" | "xl" | "fill";

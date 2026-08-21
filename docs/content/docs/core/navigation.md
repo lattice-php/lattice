@@ -163,7 +163,7 @@ use Lattice\Ui\Components\Text;
 use Lattice\Layouts\Components\Dropdown;
 use Lattice\Layouts\Components\Menu;
 use Lattice\Layouts\Components\MenuItem;
-use Lattice\Layouts\Components\Sidebar;
+use Lattice\Ui\Components\Sidebar;
 
 Sidebar::make('app-sidebar')->collapsible()
     ->items([

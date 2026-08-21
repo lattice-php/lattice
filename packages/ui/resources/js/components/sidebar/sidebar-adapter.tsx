@@ -1,11 +1,11 @@
-import { router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { Sidebar, SIDEBAR_DESKTOP_QUERY } from "@lattice-php/ui/components/sidebar/sidebar";
-import { useCollapsibleState } from "@lattice-php/ui/lib/use-collapsible-state";
+import { useCollapsibleState } from "../../lib/use-collapsible-state";
+import { useNavigation } from "../../navigation";
+import { Sidebar, SIDEBAR_DESKTOP_QUERY } from "./sidebar";
 
 function matchesTarget(event: Event, identity: string | undefined): boolean {
   const target = (event as CustomEvent<{ target?: string }>).detail?.target;
@@ -13,11 +13,12 @@ function matchesTarget(event: Event, identity: string | undefined): boolean {
   return target == null || target === identity;
 }
 
-const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
+const SidebarAdapter: RendererComponent<"sidebar"> = ({ children, node }) => {
   const collapsible = node.props.collapsible;
   const rememberState = node.props.rememberState;
   const identity = nodeIdentity(node);
   const storageKey = `lattice:sidebar:${identity ?? "default"}`;
+  const { onNavigate } = useNavigation();
 
   const [collapsed, toggleCollapsed] = useCollapsibleState(
     storageKey,
@@ -40,7 +41,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
     }
   });
 
-  useEffect(() => router.on("navigate", () => setMobileOpen(false)), []);
+  useEffect(() => onNavigate(() => setMobileOpen(false)), [onNavigate]);
 
   return (
     <Sidebar
@@ -56,4 +57,4 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
   );
 };
 
-export default SidebarComponent;
+export default SidebarAdapter;

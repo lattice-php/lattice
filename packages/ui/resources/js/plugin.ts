@@ -23,10 +23,13 @@ import RawBlockAdapter from "./components/raw-block/raw-block-adapter";
 import SectionAdapter from "./components/section/section-adapter";
 import SegmentedControlAdapter from "./components/segmented-control/segmented-control-adapter";
 import SeparatorAdapter from "./components/separator/separator-adapter";
+import SidebarAdapter from "./components/sidebar/sidebar-adapter";
+import SidebarFooterAdapter from "./components/sidebar/sidebar-footer-adapter";
 import StackAdapter from "./components/stack/stack-adapter";
 import TabAdapter, { TabsAdapter } from "./components/tabs/tabs-adapter";
 import TextAdapter from "./components/text/text-adapter";
 import TooltipAdapter from "./components/tooltip/tooltip-adapter";
+import TopbarAdapter from "./components/topbar/topbar-adapter";
 import {
   BadgeEntryComponent,
   BooleanEntryComponent,
@@ -64,11 +67,14 @@ export const uiComponents: Plugin = {
     section: eagerComponent(SectionAdapter),
     "segmented-control": eagerComponent(SegmentedControlAdapter),
     separator: eagerComponent(SeparatorAdapter),
+    sidebar: eagerComponent(SidebarAdapter),
+    "sidebar.footer": eagerComponent(SidebarFooterAdapter),
     stack: eagerComponent(StackAdapter),
     tab: eagerComponent(TabAdapter),
     tabs: eagerComponent(TabsAdapter),
     text: eagerComponent(TextAdapter),
     tooltip: eagerComponent(TooltipAdapter),
+    topbar: eagerComponent(TopbarAdapter),
   } satisfies ComponentRegistryFor<UiNodeType>,
   i18n: { namespace: UI_NAMESPACE },
   name: "lattice/ui",

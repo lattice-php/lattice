@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Lattice\Layouts\Components\Menu;
 use Lattice\Layouts\Components\MenuItem;
-use Lattice\Layouts\Components\Sidebar;
+use Lattice\Ui\Components\Sidebar;
 use Lattice\Ui\Components\Text;
 
 test('a sidebar serializes footer components in a trailing footer node', function (): void {

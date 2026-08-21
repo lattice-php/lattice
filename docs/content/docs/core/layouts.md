@@ -21,7 +21,7 @@ use Lattice\Core\PageSchema;
 use Lattice\Layouts\Components\Menu;
 use Lattice\Layouts\Components\MenuItem;
 use Lattice\Layouts\Components\Outlet;
-use Lattice\Layouts\Components\Sidebar;
+use Lattice\Ui\Components\Sidebar;
 use Lattice\Layouts\LayoutDefinition;
 
 #[AsLayout('app')]
@@ -96,7 +96,7 @@ scrolls, and `->items([...])` to fill it. A sticky topbar also claims its height
 offset (`--lt-sticky-offset`), which sticky stacks and vertical tab rails pin beneath:
 
 ```php
-use Lattice\Layouts\Components\Topbar;
+use Lattice\Ui\Components\Topbar;
 
 Topbar::make('app-topbar')->sticky()->items([
     Menu::make('topbar-settings')->items([

@@ -25,9 +25,6 @@ export type ComponentPropsMap = {
   notifications: Notifications;
   outlet: Outlet;
   "remote.data-list": DataList;
-  sidebar: Sidebar;
-  "sidebar.footer": SidebarFooter;
-  topbar: Topbar;
 };
 export type DataList = {
   dataEndpoint: string | null;
@@ -110,15 +107,7 @@ export type I18nConfig = {
   readonly saveMissing: boolean;
   readonly timezone: string | null;
 };
-export type LayoutNodeType =
-  | "callouts"
-  | "dropdown"
-  | "menu"
-  | "menu-item"
-  | "outlet"
-  | "sidebar"
-  | "sidebar.footer"
-  | "topbar";
+export type LayoutNodeType = "callouts" | "dropdown" | "menu" | "menu-item" | "outlet";
 export type Listen = {
   readonly channel: string;
   effects: Effect[];
@@ -272,16 +261,8 @@ export type SearchNodeType =
   | "search.preview"
   | "search.recent"
   | "search.results";
-export type Sidebar = {
-  collapsible: boolean;
-  rememberState: boolean;
-};
-export type SidebarFooter = Record<string, never>;
 export type SignatureExampleNodeType = "signature";
 export type TableNodeType = "table";
-export type Topbar = {
-  sticky: boolean;
-};
 export type UiNodeType =
   | "avatar"
   | "badge"
@@ -310,11 +291,14 @@ export type UiNodeType =
   | "section"
   | "segmented-control"
   | "separator"
+  | "sidebar"
+  | "sidebar.footer"
   | "stack"
   | "tab"
   | "tabs"
   | "text"
-  | "tooltip";
+  | "tooltip"
+  | "topbar";
 export type UnreadCount = {
   readonly unreadCount: number;
 };
