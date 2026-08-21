@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 return [
+    'breadcrumb' => 'Breadcrumb',
     'tabs' => 'Tabs',
     'loading' => 'Loading',
     'more-info' => 'More information',

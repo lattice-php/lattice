@@ -1,4 +1,4 @@
-import type { Affix, Color, Node, Option } from "@lattice-php/core";
+import type { Affix, Breadcrumb, Color, Node, Option } from "@lattice-php/core";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type Align = "center" | "left" | "start" | "stretch";
@@ -27,6 +27,9 @@ export type BooleanEntry = {
   name: string;
   trueIcon: string;
   value: unknown;
+};
+export type Breadcrumbs = {
+  items: Breadcrumb[];
 };
 export type Breakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type Button = {
@@ -110,6 +113,7 @@ export type ComponentEntry = {
 export type ComponentPropsMap = {
   avatar: Avatar;
   badge: Badge;
+  breadcrumbs: Breadcrumbs;
   button: Button;
   card: Card;
   chart: Chart;
@@ -240,6 +244,7 @@ export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type NodeType =
   | "avatar"
   | "badge"
+  | "breadcrumbs"
   | "button"
   | "card"
   | "chart"
@@ -422,6 +427,7 @@ export type Translatable = {
 export type UiNodeType =
   | "avatar"
   | "badge"
+  | "breadcrumbs"
   | "button"
   | "card"
   | "chart"

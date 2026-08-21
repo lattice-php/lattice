@@ -3,6 +3,7 @@ import type { UiNodeType } from "./generated";
 import { UI_NAMESPACE } from "./i18n";
 import AvatarAdapter from "./components/avatar/avatar-adapter";
 import BadgeAdapter from "./components/badge/badge-adapter";
+import BreadcrumbsAdapter from "./components/breadcrumbs/breadcrumbs-adapter";
 import ButtonAdapter from "./components/button/button-adapter";
 import CardAdapter from "./components/card/card-adapter";
 import ChartAdapter from "./components/chart/chart-adapter";
@@ -38,6 +39,7 @@ export const uiComponents: Plugin = {
   components: {
     avatar: eagerComponent(AvatarAdapter),
     badge: eagerComponent(BadgeAdapter),
+    breadcrumbs: eagerComponent(BreadcrumbsAdapter),
     button: eagerComponent(ButtonAdapter),
     card: eagerComponent(CardAdapter),
     chart: eagerComponent(ChartAdapter),

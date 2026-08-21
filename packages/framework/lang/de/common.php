@@ -4,7 +4,6 @@ declare(strict_types=1);
 return [
     'dismiss' => 'Schließen',
     'cancel' => 'Abbrechen',
-    'breadcrumb' => 'Navigationspfad',
     'action-group' => [
         'label' => 'Aktionen',
     ],

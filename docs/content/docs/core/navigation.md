@@ -143,7 +143,7 @@ reads whatever the active page returns from `Page::breadcrumbs()`, so drop it on
 header bar is the usual spot) and every page fills it in:
 
 ```php
-use Lattice\Layouts\Components\Breadcrumbs;
+use Lattice\Ui\Components\Breadcrumbs;
 
 Stack::make('app-main')->width(Width::Fill)->schema([
     Breadcrumbs::make(),

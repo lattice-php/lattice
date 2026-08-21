@@ -6,14 +6,16 @@ import { Provider } from "@lattice-php/lattice/provider";
 import { Renderer } from "@lattice-php/core/renderer";
 import { fakeNode } from "@lattice-php/core/test-support";
 
-const navigateListeners: Array<() => void> = [];
+type NavigateEvent = { detail: { page: { url: string } } };
+
+const navigateListeners: Array<(event: NavigateEvent) => void> = [];
 
 vi.mock("@inertiajs/react", async () => {
   const { inertiaMock } = await import("@lattice-php/ui/test/inertia-mock");
 
   return inertiaMock({
     router: {
-      on: (event: string, listener: () => void) => {
+      on: (event: string, listener: (event: NavigateEvent) => void) => {
         if (event === "navigate") {
           navigateListeners.push(listener);
         }
@@ -29,7 +31,7 @@ vi.mock("@inertiajs/react", async () => {
 function navigate(): void {
   act(() => {
     for (const listener of navigateListeners) {
-      listener();
+      listener({ detail: { page: { url: "/next" } } });
     }
   });
 }

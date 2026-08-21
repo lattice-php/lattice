@@ -3,7 +3,6 @@ import type { HttpMethod, Placement, Size, Translatable, Variant } from "@lattic
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
-export type Breadcrumbs = Record<string, never>;
 export type CalendarNodeType = "calendar";
 export type Callouts = Record<string, never>;
 export type ChannelVisibility = "public" | "private" | "presence";
@@ -18,7 +17,6 @@ export type ColumnNodeType =
   | "column.stack"
   | "column.text";
 export type ComponentPropsMap = {
-  breadcrumbs: Breadcrumbs;
   callouts: Callouts;
   dropdown: Dropdown;
   fragment: Fragment;
@@ -113,7 +111,6 @@ export type I18nConfig = {
   readonly timezone: string | null;
 };
 export type LayoutNodeType =
-  | "breadcrumbs"
   | "callouts"
   | "dropdown"
   | "menu"
@@ -288,6 +285,7 @@ export type Topbar = {
 export type UiNodeType =
   | "avatar"
   | "badge"
+  | "breadcrumbs"
   | "button"
   | "card"
   | "chart"
