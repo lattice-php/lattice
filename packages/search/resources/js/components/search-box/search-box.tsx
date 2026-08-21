@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useRef } from "react";
-import { useCollapsed } from "@lattice-php/core/collapsed-context";
-import type { RendererComponent } from "@lattice-php/core/types";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { type ModalHandle, useModal } from "@lattice-php/ui/components/modal/modal-host";
-import SearchPalette from "./search-palette";
+import { SearchPalette } from "./search-palette";
 
 function isEditingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) {
@@ -19,10 +17,35 @@ function isEditingTarget(target: EventTarget | null): boolean {
   );
 }
 
-const SearchBox: RendererComponent<"search.box"> = ({ node, children }) => {
-  const { placeholder, shortcut } = node.props;
+export type SearchBoxProps = {
+  endpoint: string;
+  perPage?: number;
+  placeholder?: string | null;
+  title?: string | null;
+  /** Register ⌘K / Ctrl+K to open (and close) the palette. */
+  shortcut?: boolean;
+  /** Icon-only trigger for collapsed chrome. */
+  collapsed?: boolean;
+  /** Custom palette composition; defaults to input, categories, results and preview. */
+  children?: ReactNode;
+  "data-test"?: string;
+};
+
+/**
+ * The search trigger: a button (plus optional keyboard shortcut) that opens a
+ * `SearchPalette` through the nearest `ModalProvider`.
+ */
+export function SearchBox({
+  endpoint,
+  perPage,
+  placeholder,
+  title,
+  shortcut = false,
+  collapsed = false,
+  children,
+  "data-test": testId,
+}: SearchBoxProps) {
   const { t } = useT("search");
-  const collapsed = useCollapsed();
   const host = useModal();
   const handleRef = useRef<ModalHandle | null>(null);
   const placeholderText = placeholder ?? t("search.placeholder", "Search…");
@@ -34,7 +57,10 @@ const SearchBox: RendererComponent<"search.box"> = ({ node, children }) => {
 
     handleRef.current = host.open(
       <SearchPalette
-        node={node}
+        endpoint={endpoint}
+        perPage={perPage}
+        placeholder={placeholder}
+        title={title}
         onClosed={() => {
           handleRef.current = null;
         }}
@@ -42,7 +68,7 @@ const SearchBox: RendererComponent<"search.box"> = ({ node, children }) => {
         {children}
       </SearchPalette>,
     );
-  }, [children, host, node]);
+  }, [children, endpoint, host, perPage, placeholder, title]);
 
   useEffect(() => {
     if (!shortcut) {
@@ -83,7 +109,7 @@ const SearchBox: RendererComponent<"search.box"> = ({ node, children }) => {
           ? "flex size-9 items-center justify-center rounded-lt border border-lt-border bg-lt-bg text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]"
           : "flex min-h-11 w-full max-w-sm items-center gap-2 rounded-lt border border-lt-border bg-lt-bg px-3 text-sm text-lt-muted-fg shadow-lt-xs hover:bg-lt-muted/60 focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)]"
       }
-      data-test="search-trigger"
+      data-test={testId}
       onClick={openPalette}
       type="button"
     >
@@ -96,6 +122,4 @@ const SearchBox: RendererComponent<"search.box"> = ({ node, children }) => {
       ) : null}
     </button>
   );
-};
-
-export default SearchBox;
+}

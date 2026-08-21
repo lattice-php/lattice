@@ -38,6 +38,23 @@ button; the keyboard shortcut keeps working.
 Pass your own `->schema([...])` of `SearchInput`, `SearchResults`, `SearchCategories`,
 `SearchRecent`, and `SearchPreview` components to replace the default composition entirely.
 
+### From your own React code
+
+The same pieces are props-based clients exported from `@lattice-php/search`, so an app can mount
+the trigger outside a Lattice page or compose its own palette:
+
+```tsx
+import { SearchBox, SearchInput, SearchResults } from "@lattice-php/search";
+
+<SearchBox endpoint="/lattice/search" placeholder="Find anything" shortcut>
+  <SearchInput />
+  <SearchResults />
+</SearchBox>;
+```
+
+`SearchBox` opens the palette through the nearest `ModalProvider`; the slot components read the
+active search from `SearchProvider`, which `SearchPalette` mounts around its children.
+
 ## Translations
 
 The component's strings ship with inline English defaults. With

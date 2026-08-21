@@ -1,11 +1,14 @@
-import type { RendererComponent } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/ui/i18n";
-import { useSearchContext } from "../context";
-import { searchResultDomId, useResultKeyboard } from "../use-result-keyboard";
-import { searchResultKey } from "../use-search";
-import { ResultRow } from "./result-row";
+import { useSearchContext } from "../../context";
+import { searchResultDomId, useResultKeyboard } from "../../use-result-keyboard";
+import { searchResultKey } from "../../use-search";
+import { ResultRow } from "../../primitives/result-row";
 
-const SearchRecent: RendererComponent<"search.recent"> = () => {
+export type SearchRecentProps = {
+  "data-test"?: string;
+};
+
+export function SearchRecent({ "data-test": testId }: SearchRecentProps = {}) {
   const { query, results, recent, focusedKey, setFocusedKey, openResult, instanceId } =
     useSearchContext();
   const { t } = useT("search");
@@ -17,6 +20,7 @@ const SearchRecent: RendererComponent<"search.recent"> = () => {
 
   return (
     <div
+      data-test={testId}
       aria-label={t("search.recent", "Recent")}
       className="flex max-h-full flex-col gap-1 overflow-y-auto p-1"
       id={`${instanceId}-recent`}
@@ -43,6 +47,4 @@ const SearchRecent: RendererComponent<"search.recent"> = () => {
       })}
     </div>
   );
-};
-
-export default SearchRecent;
+}

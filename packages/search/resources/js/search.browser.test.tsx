@@ -1,9 +1,9 @@
 import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { expect, it } from "vitest";
-import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
+import { jsonResponse } from "@lattice-php/core/test-support";
 import { withModal } from "@lattice-php/ui/test/modal";
-import SearchBox from "./components/search-box";
+import { SearchBox } from "./components/search-box/search-box";
 import { searchResponse, stubSearchFetch } from "./test-support";
 
 it("opens with the keyboard shortcut but leaves editing shortcuts alone", async () => {
@@ -14,18 +14,12 @@ it("opens with the keyboard shortcut but leaves editing shortcuts alone", async 
       <>
         <input aria-label="Editor" />
         <SearchBox
-          node={fakeNode({
-            type: "search.box",
-            props: {
-              endpoint: "/lattice/search",
-              perPage: 20,
-              placeholder: "Find anything",
-              shortcut: true,
-            },
-          })}
-        >
-          {null}
-        </SearchBox>
+          data-test="search-trigger"
+          endpoint="/lattice/search"
+          perPage={20}
+          placeholder="Find anything"
+          shortcut
+        />
       </>,
     ),
   );
@@ -47,18 +41,12 @@ it("closes with the keyboard shortcut even while the search input has focus, and
   const screen = await render(
     withModal(
       <SearchBox
-        node={fakeNode({
-          type: "search.box",
-          props: {
-            endpoint: "/lattice/search",
-            perPage: 20,
-            placeholder: "Find anything",
-            shortcut: true,
-          },
-        })}
-      >
-        {null}
-      </SearchBox>,
+        data-test="search-trigger"
+        endpoint="/lattice/search"
+        perPage={20}
+        placeholder="Find anything"
+        shortcut
+      />,
     ),
   );
 

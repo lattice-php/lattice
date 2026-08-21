@@ -1,13 +1,13 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
-import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
+import { jsonResponse } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
 import { withModal } from "@lattice-php/ui/test/modal";
-import SearchBox from "./components/search-box";
+import { SearchBox } from "./components/search-box/search-box";
+import type { SearchBoxProps } from "./components/search-box/search-box";
 import { searchResponse, stubSearchFetch } from "./test-support";
-import type { SearchBox as SearchBoxNode, SearchResult } from "./types";
+import type { SearchResult } from "./types";
 
 function dispatchNavigateClose(): void {
   act(() => {
@@ -41,16 +41,18 @@ const officeChair: SearchResult = {
   },
 };
 
-function renderSearch(props: Partial<SearchBoxNode> = {}) {
-  const node = fakeNode({
-    type: "search.box",
-    id: "global-search",
-    props: { endpoint: "/lattice/search", perPage: 20, shortcut: true, ...props },
-  });
-
+function renderSearch(props: Partial<SearchBoxProps> = {}) {
   return render(
     <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
-      {withModal(<SearchBox node={node}>{null}</SearchBox>)}
+      {withModal(
+        <SearchBox
+          data-test="search-trigger"
+          endpoint="/lattice/search"
+          perPage={20}
+          shortcut
+          {...props}
+        />,
+      )}
     </NavigationProvider>,
   );
 }
@@ -156,21 +158,7 @@ it("opens compact and expands the result grid once a query is typed", async () =
 
 it("renders an icon-only trigger inside a collapsed container", () => {
   stubSearchFetch(() => jsonResponse(searchResponse([], { mode: "recent" })));
-  const node = fakeNode({
-    type: "search.box",
-    id: "global-search",
-    props: { endpoint: "/lattice/search", perPage: 20, shortcut: true },
-  });
-
-  render(
-    <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
-      {withModal(
-        <CollapsedProvider collapsed={true}>
-          <SearchBox node={node}>{null}</SearchBox>
-        </CollapsedProvider>,
-      )}
-    </NavigationProvider>,
-  );
+  renderSearch({ collapsed: true });
 
   const trigger = screen.getByTestId("search-trigger");
   expect(trigger).toHaveAccessibleName("Search…");

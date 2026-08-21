@@ -1,12 +1,15 @@
 import { useEffect, useRef } from "react";
-import type { RendererComponent } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/ui/i18n";
-import { useSearchContext } from "../context";
-import { searchResultDomId, useResultKeyboard } from "../use-result-keyboard";
-import { searchResultKey } from "../use-search";
-import { ResultRow } from "./result-row";
+import { useSearchContext } from "../../context";
+import { searchResultDomId, useResultKeyboard } from "../../use-result-keyboard";
+import { searchResultKey } from "../../use-search";
+import { ResultRow } from "../../primitives/result-row";
 
-const SearchResults: RendererComponent<"search.results"> = () => {
+export type SearchResultsProps = {
+  "data-test"?: string;
+};
+
+export function SearchResults({ "data-test": testId }: SearchResultsProps = {}) {
   const {
     query,
     results,
@@ -42,22 +45,31 @@ const SearchResults: RendererComponent<"search.results"> = () => {
 
   if (status === "error") {
     return (
-      <div className="p-4 text-sm text-lt-danger">{t("search.error", "Something went wrong.")}</div>
+      <div data-test={testId} className="p-4 text-sm text-lt-danger">
+        {t("search.error", "Something went wrong.")}
+      </div>
     );
   }
 
   if (status === "loading" && results.length === 0) {
-    return <div className="p-4 text-sm text-lt-muted-fg">{t("search.loading", "Searching…")}</div>;
+    return (
+      <div data-test={testId} className="p-4 text-sm text-lt-muted-fg">
+        {t("search.loading", "Searching…")}
+      </div>
+    );
   }
 
   if (results.length === 0) {
     return query.trim() === "" && recent.length > 0 ? null : (
-      <div className="p-4 text-sm text-lt-muted-fg">{t("search.empty", "No results found.")}</div>
+      <div data-test={testId} className="p-4 text-sm text-lt-muted-fg">
+        {t("search.empty", "No results found.")}
+      </div>
     );
   }
 
   return (
     <div
+      data-test={testId}
       aria-activedescendant={
         focusedKey ? `${instanceId}-result-${encodeURIComponent(focusedKey)}` : undefined
       }
@@ -97,6 +109,4 @@ const SearchResults: RendererComponent<"search.results"> = () => {
       ) : null}
     </div>
   );
-};
-
-export default SearchResults;
+}
