@@ -23,10 +23,13 @@
     pinned to `.phpstan-cache/` (gitignored, `parameters.tmpDir` in `phpstan.neon.dist`/`phpstan-tests.neon.dist`) so
     it persists across commits — after the first run, only files that actually changed get re-analysed, keeping the
     hook fast despite running full-project.
-  - **pre-push** runs the fast static gate: Pint and PHPStan on the PHP side, `npm run check` (lint, format, type check,
-    type coverage, Vitest, library build) on the JS side. The full Pest suite is too slow to run on every push, so it
-    runs in CI and via explicit local runs (`composer test`) instead. Its PHPStan run is a safety net for commits made
-    with `--no-verify`; a normal commit has already satisfied it.
+  - **pre-push** runs the fast static gate, scoped to what the push changes: Pint and PHPStan on the PHP side (only
+    when PHP files changed), `npm run check:push` (lint, format, type check, type coverage, Vitest via `--changed`
+    against the push base, library build) on the JS side (only when JS/TS files changed). `check:package`
+    (publint/attw) runs only when a package manifest or Vite config changed. Unrecognized file types and unresolvable
+    diff bases fail toward the full gate (`npm run check`), and CI always runs everything unscoped. The full Pest
+    suite is too slow to run on every push, so it runs in CI and via explicit local runs (`composer test`) instead.
+    Its PHPStan run is a safety net for commits made with `--no-verify`; a normal commit has already satisfied it.
 - Never push on red. Use `git commit`/`git push --no-verify` only in emergencies.
 - The library build is part of the gate on purpose: it is the artifact consumers receive, and it catches bundling
   regressions (e.g. dependencies that must stay external) that the type check and tests do not.
