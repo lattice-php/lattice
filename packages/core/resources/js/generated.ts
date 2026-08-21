@@ -51,7 +51,7 @@ export type Op =
   | "empty"
   | "filled";
 export type PageLayout = "app" | "auth" | "none";
-export type PageWidth = "full" | "lg" | "md" | "sm";
+export type PageWidth = "full" | "xl" | "lg" | "md" | "sm";
 export type RemoteAccess = {
   readonly audience: string;
   readonly nodeId: string;

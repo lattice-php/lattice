@@ -40,6 +40,7 @@ it('stack serializes enums direction and key wire-identically', function (): voi
                 'justify' => null,
                 'height' => null,
                 'float' => null,
+                'sticky' => false,
             ],
             'schema' => [
                 ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]],
@@ -145,6 +146,7 @@ it('tabs serialize defaultValue queryKey and computed activeValue', function ():
                 'queryKey' => 'tabs',
                 'orientation' => 'horizontal',
                 'alignment' => 'stretch',
+                'sticky' => false,
                 'defaultValue' => 'security',
                 'activeValue' => 'security',
             ],
@@ -172,6 +174,7 @@ it('tabs with custom queryKey and no defaultValue keep empty activeValue', funct
                 'queryKey' => 'settings-tab',
                 'orientation' => 'horizontal',
                 'alignment' => 'stretch',
+                'sticky' => false,
                 'activeValue' => '',
                 'defaultValue' => null,
             ],

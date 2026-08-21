@@ -128,11 +128,19 @@
   --lt-sidebar-w: 16rem;
   --lt-sidebar-w-collapsed: 4rem;
   --lt-container-max: 80rem;
+  --lt-topbar-h: 3.5rem;
+
+  /* Viewport-top clearance for sticky content; a sticky topbar claims it below */
+  --lt-sticky-offset: 0px;
 
   /* Card / section content inset — the gutter apps can break out of */
   --lt-gutter: calc(var(--spacing) * 6);
 
   color-scheme: light;
+  }
+
+  :root:has([data-lattice-topbar][data-sticky]) {
+    --lt-sticky-offset: var(--lt-topbar-h);
   }
 }
 

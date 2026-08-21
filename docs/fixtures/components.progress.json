@@ -7,6 +7,7 @@
             "gap": "sm",
             "height": null,
             "justify": null,
+            "sticky": false,
             "width": null
         },
         "schema": [
@@ -44,6 +45,7 @@
                     "gap": "md",
                     "height": null,
                     "justify": null,
+                    "sticky": false,
                     "width": null
                 },
                 "schema": [

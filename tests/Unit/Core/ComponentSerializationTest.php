@@ -287,6 +287,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                 'justify' => null,
                 'height' => null,
                 'float' => null,
+                'sticky' => false,
             ],
             'schema' => [
                 [

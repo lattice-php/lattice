@@ -10,6 +10,7 @@ type Props = {
 
 const pageWidths: Record<string, string> = {
   full: "max-w-none",
+  xl: "max-w-6xl",
   lg: "max-w-4xl",
   md: "max-w-2xl",
   sm: "max-w-md",

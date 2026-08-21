@@ -92,7 +92,8 @@ An empty named slot disappears without affecting the `Outlet` or the page tree i
 
 `Topbar` is a horizontal bar for chrome that sits above the page — a logo, search, settings menu, or
 appearance switcher. Call `->sticky()` to keep it pinned to the top of the viewport as the page
-scrolls, and `->items([...])` to fill it:
+scrolls, and `->items([...])` to fill it. A sticky topbar also claims its height as the page's sticky
+offset (`--lt-sticky-offset`), which sticky stacks and vertical tab rails pin beneath:
 
 ```php
 use Lattice\Layouts\Components\Topbar;

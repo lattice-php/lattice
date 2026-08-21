@@ -29,6 +29,8 @@ class Stack extends ContainerComponent
 
     public ?Side $float = null;
 
+    public bool $sticky = false;
+
     public static function make(?string $key = null): static
     {
         return new static($key);
@@ -79,6 +81,19 @@ class Stack extends ContainerComponent
     public function direction(StackDirection $direction): static
     {
         $this->direction = $direction;
+
+        return $this;
+    }
+
+    /**
+     * Pin the stack below the sticky chrome above it while the page scrolls.
+     * The stack publishes its own height as the sticky offset for its
+     * siblings, so sticky content further down (a vertical tab rail, another
+     * sticky stack) stacks beneath it instead of sliding underneath.
+     */
+    public function sticky(bool $sticky = true): static
+    {
+        $this->sticky = $sticky;
 
         return $this;
     }

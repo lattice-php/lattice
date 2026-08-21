@@ -31,6 +31,7 @@ export type TabsProps = Omit<ComponentProps<"div">, "children" | "defaultValue" 
   items?: readonly TabsItem[];
   onValueChange?: (value: string) => void;
   orientation?: TabsOrientation;
+  sticky?: boolean;
   value?: string;
 };
 
@@ -49,6 +50,8 @@ type TabsContextValue = {
 type TabElement = ReactElement<TabProps, typeof Tab>;
 
 const TabsContext = createContext<TabsContextValue | null>(null);
+/** Pins the rail a gap below whatever sticky chrome the page publishes above it. */
+const stickyRailClassName = "sticky top-[calc(var(--lt-sticky-offset)+--spacing(6))]";
 const SELECT_COLLAPSE_THRESHOLD = 3;
 
 function useTabsContext(): TabsContextValue {
@@ -64,6 +67,7 @@ export function Tabs({
   items,
   onValueChange,
   orientation = "horizontal",
+  sticky = false,
   value,
   ...props
 }: TabsProps) {
@@ -138,7 +142,7 @@ export function Tabs({
       <div
         {...props}
         className={cn(
-          "gap-6",
+          "min-w-0 gap-6",
           isVertical && !collapseToSelect
             ? cn("flex", alignment === "end" && "flex-row-reverse")
             : "grid",
@@ -165,6 +169,7 @@ export function Tabs({
             className={cn(
               "gap-1",
               isVertical ? "flex w-44 shrink-0 flex-col self-start" : "rounded-lt bg-lt-muted p-1",
+              isVertical && sticky && stickyRailClassName,
               isStretched && "flex w-full",
               !isVertical &&
                 !isStretched &&
