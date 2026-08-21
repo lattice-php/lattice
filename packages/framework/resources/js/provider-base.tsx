@@ -6,7 +6,7 @@ import { useFlashEffects } from "./effects/use-flash-effects";
 import { NavigationProvider } from "@lattice-php/ui/navigation";
 import { ModalProvider } from "@lattice-php/ui/modal";
 import { EventBridge } from "./event-bridge";
-import { inertiaNavigation, useCloseModalsOnNavigate } from "./inertia-navigation";
+import { useCloseModalsOnNavigate, useInertiaNavigation } from "./inertia-navigation";
 import type { SpriteValue } from "@lattice-php/ui/icons/sprite";
 import { SpriteProvider } from "@lattice-php/ui/icons/sprite";
 import { Toaster } from "./toast";
@@ -16,6 +16,8 @@ const defaultSprite: SpriteValue = { href: "" };
 
 export type ProviderBaseProps = {
   children: ReactNode;
+  /** The url of the page being rendered, so the first render already knows it (SSR included). */
+  initialUrl?: string;
   registry: Registry;
   sprite?: SpriteValue;
   toaster?: boolean;
@@ -23,16 +25,18 @@ export type ProviderBaseProps = {
 
 export function ProviderBase({
   children,
+  initialUrl,
   registry,
   sprite = defaultSprite,
   toaster = true,
 }: ProviderBaseProps) {
   useFlashEffects();
   useCloseModalsOnNavigate();
+  const navigation = useInertiaNavigation(initialUrl);
 
   return (
     <RegistryProvider registry={registry}>
-      <NavigationProvider adapter={inertiaNavigation}>
+      <NavigationProvider adapter={navigation}>
         <ActionInteractionProvider>
           <SpriteProvider sprite={sprite}>
             <ModalProvider>

@@ -13,10 +13,23 @@ export type NavigationVisitOptions = {
   preserveState?: boolean;
 };
 
+export type NavigateListener = () => void;
+
 export type NavigationAdapter = {
   Link: ComponentType<NavLinkProps>;
   visit: (url: string, options?: NavigationVisitOptions) => void;
   reload: () => void;
+  /**
+   * The current location's path without query or hash. Defaults to
+   * `window.location.pathname`, which is undefined while rendering on the server.
+   */
+  currentUrl?: string;
+  /** Subscribes to completed navigations and returns the unsubscribe. */
+  onNavigate?: (listener: NavigateListener) => () => void;
+};
+
+export type Navigation = Required<Omit<NavigationAdapter, "currentUrl">> & {
+  currentUrl: string | undefined;
 };
 
 const warnedMethodHrefs = new Set<string>();
@@ -30,6 +43,14 @@ function AnchorLink({ href, method, ...props }: NavLinkProps) {
   }
 
   return <a href={href} {...props} />;
+}
+
+function currentPathname(): string | undefined {
+  return typeof window === "undefined" ? undefined : window.location.pathname;
+}
+
+function noopSubscription(): () => void {
+  return () => undefined;
 }
 
 export const defaultNavigation: NavigationAdapter = {
@@ -56,6 +77,14 @@ export function NavigationProvider({
   return <NavigationContext.Provider value={adapter}>{children}</NavigationContext.Provider>;
 }
 
-export function useNavigation(): NavigationAdapter {
-  return useContext(NavigationContext);
+export function useNavigation(): Navigation {
+  const adapter = useContext(NavigationContext);
+
+  return {
+    Link: adapter.Link,
+    visit: adapter.visit,
+    reload: adapter.reload,
+    currentUrl: adapter.currentUrl ?? currentPathname(),
+    onNavigate: adapter.onNavigate ?? noopSubscription,
+  };
 }
