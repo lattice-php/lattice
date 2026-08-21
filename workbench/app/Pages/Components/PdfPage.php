@@ -26,7 +26,7 @@ final class PdfPage extends WorkbenchPage
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->schema([
-            Stack::make('pdf-page')
+            Stack::make('pdf-demo')
                 ->gap(Gap::Large)
                 ->schema([
                     Heading::make(__('workbench.pages.pdf.heading')),

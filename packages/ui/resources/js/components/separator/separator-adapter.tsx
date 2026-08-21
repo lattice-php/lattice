@@ -5,7 +5,7 @@ import { Separator } from "./separator";
 const SeparatorAdapter: RendererComponent<"separator"> = ({ node }) => (
   <Separator
     bleed={node.props.bleed}
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     orientation={node.props.orientation}
   />
 );

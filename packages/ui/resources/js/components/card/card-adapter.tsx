@@ -10,7 +10,7 @@ const CardAdapter: RendererComponent<"card"> = ({ children, node }) => {
 
   return (
     <Card
-      data-lattice-component={nodeIdentity(node)}
+      data-test={nodeIdentity(node)}
       description={node.props.description}
       headerActions={headerActions.length > 0 ? <Renderer nodes={headerActions} /> : null}
       title={node.props.title}

@@ -37,8 +37,8 @@ describe("Callout", () => {
   });
 
   it("passes native div props through", () => {
-    render(<Callout variant="success" message="Done" data-lattice-component="banner" />);
+    render(<Callout variant="success" message="Done" data-test="banner" />);
 
-    expect(screen.getByRole("status")).toHaveAttribute("data-lattice-component", "banner");
+    expect(screen.getByRole("status")).toHaveAttribute("data-test", "banner");
   });
 });

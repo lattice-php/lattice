@@ -34,11 +34,8 @@ describe("DropdownAdapter in a browser", () => {
     const screen = await renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
     await expect.element(screen.getByRole("link", { name: "Profile" })).not.toBeInTheDocument();
-    await expect
-      .element(screen.getByTestId("account-menu"))
-      .toHaveAttribute("data-lattice-component", "account-menu");
 
-    await screen.getByRole("button", { name: "Account" }).click();
+    await screen.getByTestId("account-menu").click();
 
     const profile = screen.getByRole("link", { name: "Profile" });
     await expect.element(profile).toBeVisible();

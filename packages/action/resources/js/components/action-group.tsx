@@ -24,7 +24,7 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
           "inline-flex max-w-full gap-1",
           orientation === "vertical" ? "flex-col items-stretch" : "flex-row flex-wrap items-center",
         )}
-        data-lattice-component={node.id}
+        data-test={nodeIdentity(node)}
         role="group"
       >
         {children}
@@ -33,7 +33,7 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
   }
 
   return (
-    <div className="inline-flex" data-lattice-component={node.id}>
+    <div className="inline-flex">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button

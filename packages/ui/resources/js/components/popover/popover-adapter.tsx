@@ -12,7 +12,6 @@ const PopoverAdapter: RendererComponent<"popover"> = ({ children, node }) => {
     <Popover>
       <PopoverTrigger
         aria-label={node.props.label ?? undefined}
-        data-lattice-component={identity}
         data-test={identity ? `${identity}-trigger` : undefined}
         type="button"
       >

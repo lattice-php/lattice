@@ -4,7 +4,7 @@ import { Avatar } from "./avatar";
 
 const AvatarAdapter: RendererComponent<"avatar"> = ({ node }) => (
   <Avatar
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     name={node.props.name}
     shape={node.props.shape}
     size={node.props.size}

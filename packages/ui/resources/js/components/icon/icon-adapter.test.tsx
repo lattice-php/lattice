@@ -34,7 +34,7 @@ describe("Lattice icon component", () => {
 
     const wrapper = container.querySelector<HTMLSpanElement>("span.contents");
     expect(wrapper).not.toBeNull();
-    expect(wrapper).toHaveAttribute("data-lattice-component", "page.icon");
+    expect(wrapper).toHaveAttribute("data-test", "page.icon");
     expect(wrapper?.style.getPropertyValue("color")).toBe("var(--lt-color-danger)");
   });
 

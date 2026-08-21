@@ -12,7 +12,7 @@ const CollapsibleAdapter: RendererComponent<"collapsible"> = ({ children, node }
   return (
     <Collapsible
       {...(rememberState ? { storageKey: `lattice:collapsible:${identity ?? "default"}` } : {})}
-      data-lattice-component={identity}
+      data-test={identity}
       defaultOpen={node.props.collapsed === false}
       tooltip={node.props.tooltip}
       trigger={<Renderer nodes={trigger} />}

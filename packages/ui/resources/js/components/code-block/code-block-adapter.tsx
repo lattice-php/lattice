@@ -5,7 +5,7 @@ import { CodeBlock } from "./code-block";
 const CodeBlockAdapter: RendererComponent<"code-block"> = ({ node }) => (
   <CodeBlock
     copyable={node.props.copyable}
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     language={node.props.language}
     lineNumbers={node.props.lineNumbers}
     maxHeight={node.props.maxHeight}

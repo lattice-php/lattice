@@ -9,7 +9,7 @@ const TextAdapter: RendererComponent<"text"> = ({ node }) => (
     copyable={node.props.copyable}
     copyLabel={node.props.text}
     copyValue={node.props.text}
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     size={node.props.size}
   >
     {node.props.text}

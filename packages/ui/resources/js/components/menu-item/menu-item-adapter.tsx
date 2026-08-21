@@ -1,5 +1,5 @@
 import type { Affix } from "@lattice-php/core";
-import { nodeIdentity, prefixedNodeTestId } from "@lattice-php/core/test-id";
+import { prefixedNodeTestId } from "@lattice-php/core/test-id";
 import type { RendererComponent, Schema } from "@lattice-php/core/types";
 import { ActionTrigger, useClickBehavior } from "../../click-behavior";
 import { IconRenderer } from "../../icons";
@@ -26,10 +26,8 @@ const MenuItemAdapter: RendererComponent<"menu-item"> = ({ children, node }) => 
   const label = rawLabel ?? "";
   const { currentUrl } = useNavigation();
   const behavior = useClickBehavior(node.props);
-  const identity = nodeIdentity(node);
   const testId = prefixedNodeTestId("menu", node);
   const shared = {
-    "data-lattice-component": identity,
     "data-test": testId,
     icon: icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : undefined,
     label,

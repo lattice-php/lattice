@@ -34,12 +34,12 @@ it('opens a viewer in a modal through a server action and searches inside it', f
     $page->click('button:has-text("Open in modal")');
 
     assertSeeEventually($page, 'Sample document');
-    assertPresentEventually($page, '[data-lattice-component="modal-sample"] [data-test="pdf-page"] canvas');
+    assertPresentEventually($page, '[data-test="modal-sample"] [data-test="pdf-page"] canvas');
 
-    $page->fill('[data-lattice-component="modal-sample"] [aria-label="Search document…"]', 'quick');
+    $page->fill('[data-test="modal-sample"] [aria-label="Search document…"]', 'quick');
 
     retryUntil(function () use ($page): void {
-        expect($page->script('document.querySelector(\'[data-lattice-component="modal-sample"] [data-test="pdf-match-count"]\')?.textContent ?? ""'))
+        expect($page->script('document.querySelector(\'[data-test="modal-sample"] [data-test="pdf-match-count"]\')?.textContent ?? ""'))
             ->toBe('1 of 5');
     });
 
@@ -51,21 +51,21 @@ it('navigates through sidebar thumbnails and lists the embedded attachment', fun
 
     assertPresentEventually($page, '[data-test="pdf-page"] canvas');
 
-    $page->click('[data-lattice-component="sample"] [aria-label="Toggle sidebar"]');
+    $page->click('[data-test="sample"] [aria-label="Toggle sidebar"]');
 
     retryUntil(function () use ($page): void {
-        expect((int) $page->script('document.querySelectorAll(\'[data-lattice-component="sample"] [data-test="pdf-thumbnail"]\').length'))
+        expect((int) $page->script('document.querySelectorAll(\'[data-test="sample"] [data-test="pdf-thumbnail"]\').length'))
             ->toBe(5);
     });
 
-    $page->click('[data-lattice-component="sample"] [data-test="pdf-thumbnail"][data-page="3"]');
+    $page->click('[data-test="sample"] [data-test="pdf-thumbnail"][data-page="3"]');
 
     retryUntil(function () use ($page): void {
-        expect($page->script('document.querySelector(\'[data-lattice-component="sample"] [aria-label="Go to page"]\')?.value ?? ""'))
+        expect($page->script('document.querySelector(\'[data-test="sample"] [aria-label="Go to page"]\')?.value ?? ""'))
             ->toBe('3');
     });
 
-    $page->click('[data-lattice-component="sample"] [role="radio"]:has-text("Attachments")');
+    $page->click('[data-test="sample"] [role="radio"]:has-text("Attachments")');
 
     assertSeeEventually($page, 'invoice-data.csv');
 

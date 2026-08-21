@@ -58,7 +58,7 @@ describe("MenuAdapter", () => {
   it("marks the item matching the navigation adapter's current url as active", () => {
     renderMenu(menu);
 
-    expect(screen.getByRole("navigation")).toHaveAttribute("data-lattice-component", "main");
+    expect(screen.getByRole("navigation")).toHaveAttribute("data-test", "main");
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Home" })).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("aria-current", "page");

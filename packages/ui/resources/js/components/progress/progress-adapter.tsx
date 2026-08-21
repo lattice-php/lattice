@@ -5,7 +5,7 @@ import { Progress } from "./progress";
 const ProgressAdapter: RendererComponent<"progress"> = ({ node }) => (
   <Progress
     color={node.props.color}
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     max={node.props.max}
     shape={node.props.shape}
     showValue={node.props.showValue}

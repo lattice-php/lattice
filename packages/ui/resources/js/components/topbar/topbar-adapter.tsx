@@ -3,7 +3,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import { Topbar } from "./topbar";
 
 const TopbarAdapter: RendererComponent<"topbar"> = ({ children, node }) => (
-  <Topbar data-lattice-component={nodeIdentity(node)} sticky={node.props.sticky}>
+  <Topbar data-test={nodeIdentity(node)} sticky={node.props.sticky}>
     {children}
   </Topbar>
 );

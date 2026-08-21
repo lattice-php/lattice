@@ -35,7 +35,7 @@ const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => {
     <Dialog open={context.open} onOpenChange={context.onOpenChange}>
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
-        data-lattice-component={nodeIdentity(node)}
+        data-test={nodeIdentity(node)}
         onCloseAutoFocus={context.onExited}
         placement={node.props.side ?? "center"}
         width={node.props.width}

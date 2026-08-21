@@ -30,7 +30,6 @@ describe("PopoverAdapter", () => {
 
     const trigger = screen.getByRole("button", { name: "User details" });
 
-    expect(trigger).toHaveAttribute("data-lattice-component", "user-card");
     expect(trigger).toHaveAttribute("data-test", "user-card-trigger");
     expect(screen.getByText("Details")).toBeInTheDocument();
     expect(screen.queryByText("Card body")).not.toBeInTheDocument();

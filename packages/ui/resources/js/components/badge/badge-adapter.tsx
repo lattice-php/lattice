@@ -3,7 +3,7 @@ import type { RendererComponent } from "@lattice-php/core/types";
 import { Badge } from "./badge";
 
 const BadgeAdapter: RendererComponent<"badge"> = ({ node }) => (
-  <Badge color={node.props.color} data-lattice-component={nodeIdentity(node)}>
+  <Badge color={node.props.color} data-test={nodeIdentity(node)}>
     {node.props.label}
   </Badge>
 );

@@ -9,7 +9,7 @@ const BreadcrumbsAdapter: RendererComponent<"breadcrumbs"> = ({ node }) => {
   return (
     <Breadcrumbs
       aria-label={t("common.breadcrumb", "Breadcrumb")}
-      data-lattice-component={nodeIdentity(node)}
+      data-test={nodeIdentity(node)}
       items={node.props.items.map((crumb) => ({ href: crumb.href, label: crumb.title }))}
     />
   );

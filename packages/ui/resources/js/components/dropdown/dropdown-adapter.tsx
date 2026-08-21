@@ -10,7 +10,6 @@ const DropdownAdapter: RendererComponent<"dropdown"> = ({ children, node }) => {
   return (
     <Dropdown
       className="w-auto"
-      data-lattice-component={identity}
       data-test={identity}
       placement={node.props.placement}
       trigger={

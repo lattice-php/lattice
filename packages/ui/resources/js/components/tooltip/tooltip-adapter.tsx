@@ -13,10 +13,7 @@ const TooltipAdapter: RendererComponent<"tooltip"> = ({ node }) => {
     <Tooltip
       content={content ? <div dangerouslySetInnerHTML={{ __html: content }} /> : null}
       trigger={trigger.length > 0 ? <Renderer nodes={trigger} /> : null}
-      triggerProps={{
-        "data-lattice-component": identity,
-        "data-test": identity ? `${identity}-trigger` : undefined,
-      }}
+      triggerProps={{ "data-test": identity ? `${identity}-trigger` : undefined }}
     />
   );
 };

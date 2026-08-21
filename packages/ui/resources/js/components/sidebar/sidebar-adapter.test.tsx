@@ -82,9 +82,7 @@ describe("SidebarAdapter", () => {
 
     renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
-    expect(
-      screen.getByRole("complementary").querySelector('[data-lattice-component="footer"]'),
-    ).not.toBeNull();
+    expect(screen.getByRole("complementary").querySelector('[data-test="footer"]')).not.toBeNull();
   });
 });
 

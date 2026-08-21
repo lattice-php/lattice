@@ -26,7 +26,7 @@ describe("BreadcrumbsAdapter", () => {
     renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
     expect(screen.getByRole("navigation", { name: "Breadcrumb" })).toHaveAttribute(
-      "data-lattice-component",
+      "data-test",
       "trail",
     );
     expect(screen.getByRole("link", { name: "Dashboard" })).toHaveAttribute("href", "/dashboard");

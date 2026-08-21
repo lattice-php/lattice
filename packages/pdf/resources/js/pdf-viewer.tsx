@@ -23,8 +23,7 @@ const PdfViewerComponent: RendererComponent<"pdf"> = ({ node }) => {
   return (
     <div
       className="lt-pdf"
-      data-lattice-component={nodeIdentity(node)}
-      data-test="pdf-viewer"
+      data-test={nodeIdentity(node)}
       style={
         node.props.maxHeight === null
           ? { height: node.props.height }

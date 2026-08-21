@@ -128,7 +128,7 @@ describe("CalloutsAdapter", () => {
 
     emitCallout("Archived.");
 
-    expect(screen.getByRole("status").parentElement).toHaveAttribute("data-lattice-component", "c");
+    expect(screen.getByRole("status").parentElement).toHaveAttribute("data-test", "c");
   });
 
   it("replaces a keyed callout instead of stacking it", () => {

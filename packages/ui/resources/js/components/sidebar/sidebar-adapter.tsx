@@ -47,7 +47,6 @@ const SidebarAdapter: RendererComponent<"sidebar"> = ({ children, node }) => {
     <Sidebar
       backdropProps={{ "data-test": "sidebar-backdrop" }}
       collapsed={collapsible && collapsed}
-      data-lattice-component={identity}
       data-test="sidebar"
       onOpenChange={setMobileOpen}
       open={mobileOpen}

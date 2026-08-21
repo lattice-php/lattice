@@ -298,7 +298,7 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   const utilityPin = hasPinned ? { left: "left" as const, right: "right" as const } : null;
 
   return (
-    <DataTable data-lattice-component={node.id}>
+    <DataTable data-test={node.id}>
       {hasToolbar && (
         <DataTableToolbar
           start={node.props?.searchable && <TableSearch value={search} onSearch={setSearch} />}

@@ -195,7 +195,7 @@ function FormShell({ children, node }: { children: React.ReactNode; node: Node<"
       ref={formRef}
       action={action}
       data-slot="form"
-      data-lattice-component={node.id}
+      data-test={node.id}
       errorBag={errorBag}
       method={method}
       resetOnError={resetOnError}

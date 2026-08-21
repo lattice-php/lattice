@@ -16,7 +16,7 @@ const SectionAdapter: RendererComponent<"section"> = ({ children, node }) => {
         ? { storageKey: `lattice:section:${identity ?? "default"}` }
         : {})}
       collapsible={collapsible}
-      data-lattice-component={identity}
+      data-test={identity}
       defaultCollapsed={node.props.collapsed === true}
       description={node.props.description}
       headerActions={headerActions.length > 0 ? <Renderer nodes={headerActions} /> : null}

@@ -7,7 +7,7 @@ const ChartAdapter: RendererComponent<"chart"> = ({ node }) => (
     categoryFormat={node.props.categoryFormat}
     categoryKey={node.props.categoryKey}
     data={node.props.data}
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     description={node.props.description}
     grid={node.props.grid}
     height={node.props.height}

@@ -542,7 +542,7 @@ const TreeComponent: RendererComponent<"tree"> = ({ node }) => {
 
   return (
     <TreeContext.Provider value={value}>
-      <ul data-lattice-component={identity} role="tree">
+      <ul data-test={identity} role="tree">
         {roots.map((child, index) => (
           <TreeItem
             ancestors={[]}

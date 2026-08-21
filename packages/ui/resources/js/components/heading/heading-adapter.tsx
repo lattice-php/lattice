@@ -7,7 +7,7 @@ const HeadingAdapter: RendererComponent<"heading"> = ({ node }) => (
     copyable={node.props.copyable}
     copyLabel={node.props.text}
     copyValue={node.props.text}
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     level={node.props.level}
     tooltip={node.props.tooltip}
   >

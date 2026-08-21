@@ -14,7 +14,7 @@ const SegmentedControlAdapter: RendererComponent<"segmented-control"> = ({ node 
   return (
     <SegmentedControl
       aria-label={node.props.label ?? undefined}
-      data-lattice-component={nodeIdentity(node)}
+      data-test={nodeIdentity(node)}
       defaultValue={node.props.value || undefined}
       name={name}
       onValueChange={emitChange}

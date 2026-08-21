@@ -46,7 +46,7 @@ export function EntryRow({
   if (!disclosure) {
     if (semantic === "list") {
       return (
-        <div className={ROW} data-lattice-component={identity} role="listitem">
+        <div className={ROW} data-test={identity} role="listitem">
           <span className={LABEL}>{labelBody}</span>
           <span className={VALUE}>{children}</span>
         </div>
@@ -54,7 +54,7 @@ export function EntryRow({
     }
 
     return (
-      <div className={ROW} data-lattice-component={identity}>
+      <div className={ROW} data-test={identity}>
         <dt className={LABEL}>{labelBody}</dt>
         <dd className={VALUE}>{children}</dd>
       </div>
@@ -62,7 +62,7 @@ export function EntryRow({
   }
 
   return (
-    <div data-lattice-component={identity} role="listitem">
+    <div data-test={identity} role="listitem">
       <button
         aria-controls={panelId}
         aria-expanded={open}

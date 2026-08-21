@@ -19,7 +19,6 @@ const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   return (
     <Button
       className={isMenuItem ? actionMenuItemClassName : undefined}
-      data-lattice-component={node.id}
       data-test={testId}
       disabled={processing || !endpoint}
       onClick={requestSubmit}

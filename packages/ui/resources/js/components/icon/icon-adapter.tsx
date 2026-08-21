@@ -23,7 +23,7 @@ const IconAdapter: RendererComponent<"icon"> = ({ node }) => {
   return (
     <span
       className="contents"
-      data-lattice-component={nodeIdentity(node)}
+      data-test={nodeIdentity(node)}
       style={coerced ? { color: colorValue(coerced) } : undefined}
     >
       <IconRenderer icon={name} className={cn(sizeClass[size], className)} />

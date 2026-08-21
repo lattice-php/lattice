@@ -5,7 +5,7 @@ import { Stack } from "./stack";
 const StackAdapter: RendererComponent<"stack"> = ({ children, node }) => (
   <Stack
     align={node.props.align ?? undefined}
-    data-lattice-component={nodeIdentity(node)}
+    data-test={nodeIdentity(node)}
     direction={node.props.direction ?? undefined}
     float={node.props.float ?? undefined}
     gap={node.props.gap ?? undefined}

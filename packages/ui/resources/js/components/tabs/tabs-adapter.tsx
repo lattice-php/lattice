@@ -41,7 +41,7 @@ export const TabsAdapter: RendererComponent<"tabs"> = ({ children, node }) => {
     <Tabs
       aria-label={t("common.tabs", "Tabs")}
       alignment={node.props.alignment}
-      data-lattice-component={nodeIdentity(node)}
+      data-test={nodeIdentity(node)}
       items={tabs.map((tab) => ({ label: tab.label, value: tab.value }))}
       onValueChange={selectTab}
       orientation={node.props.orientation}

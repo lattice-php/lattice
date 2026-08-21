@@ -337,7 +337,7 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
   return (
     <div
       className="lt-map"
-      data-lattice-component={node.id}
+      data-test={node.id}
       data-status={status}
       style={{ height: node.props.height }}
     >

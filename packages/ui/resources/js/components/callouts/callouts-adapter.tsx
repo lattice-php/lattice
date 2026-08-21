@@ -68,7 +68,7 @@ const CalloutsAdapter: RendererComponent<"callouts"> = ({ node }) => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-2" data-lattice-component={nodeIdentity(node)}>
+    <div className="flex w-full flex-col gap-2" data-test={nodeIdentity(node)}>
       {callouts.map((callout) => (
         <Callout
           key={callout.id}
