@@ -191,6 +191,65 @@ describe("TimeGridView week", () => {
     });
   });
 
+  it("extends an all-day event by a day with ArrowRight on its end handle", async () => {
+    const event = calendarEvent({
+      id: "fair",
+      start: weekStart,
+      end: addDays(weekStart, 2),
+      label: "Fair",
+    });
+    fetchMock.mockResolvedValue(jsonResponse({ event: { ...event, end: addDays(weekStart, 3) } }));
+    renderWeek({ reschedulable: true, events: [event] });
+
+    fireEvent.keyDown(screen.getByTestId("calendar-allday-resize-end-fair"), {
+      key: "ArrowRight",
+    });
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({
+      id: "fair",
+      resourceId: null,
+      start: weekStart,
+      end: addDays(weekStart, 3),
+    });
+  });
+
+  it("refuses to shrink an all-day event below one day via its handles", () => {
+    renderWeek({
+      reschedulable: true,
+      events: [
+        calendarEvent({ id: "single", start: weekStart, end: addDays(weekStart, 1), label: "S" }),
+      ],
+    });
+
+    fireEvent.keyDown(screen.getByTestId("calendar-allday-resize-end-single"), {
+      key: "ArrowLeft",
+    });
+    fireEvent.keyDown(screen.getByTestId("calendar-allday-resize-start-single"), {
+      key: "ArrowRight",
+    });
+
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("offers no all-day resize handles on timed multi-day events", () => {
+    renderWeek({
+      reschedulable: true,
+      events: [
+        timedEvent({
+          id: "overnight",
+          start: `${weekStart}T22:00:00`,
+          end: `${addDays(weekStart, 1)}T02:00:00`,
+        }),
+      ],
+    });
+
+    expect(screen.getByTestId("calendar-event-overnight")).toBeInTheDocument();
+    expect(screen.queryByTestId("calendar-allday-resize-end-overnight")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("calendar-allday-resize-start-overnight")).not.toBeInTheDocument();
+  });
+
   it("offers no reschedule affordance when the calendar is not reschedulable", () => {
     renderWeek({ events: [timedEvent()] });
 

@@ -129,6 +129,36 @@ describe("calendar week view in a browser", () => {
     });
   });
 
+  it("extends an all-day event by dragging its end handle onto a later day", async () => {
+    const event = calendarEvent({
+      id: "fair",
+      start: "2026-08-10",
+      end: "2026-08-12",
+      label: "Fair",
+    });
+    const updated = { ...event, end: "2026-08-15" };
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(jsonResponse({ event: updated }));
+    vi.stubGlobal("fetch", fetchMock);
+    await renderWeek({ reschedulable: true, events: [event] });
+
+    await userEvent.dragAndDrop(
+      page.getByTestId("calendar-allday-resize-end-fair"),
+      page.getByTestId("calendar-allday-2026-08-14"),
+    );
+
+    await expect
+      .element(page.getByTestId("calendar-event-fair"))
+      .toHaveAttribute("data-end", "2026-08-15");
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({
+      id: "fair",
+      resourceId: null,
+      start: "2026-08-10",
+      end: "2026-08-15",
+    });
+  });
+
   it("rolls a rejected drop back and raises the rejection as a danger toast", async () => {
     const event = standup();
     const fetchMock = vi

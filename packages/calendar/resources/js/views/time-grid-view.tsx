@@ -33,6 +33,7 @@ import type { CalendarEventData, CalendarRescheduleRequest } from "../types";
 const MOVE_DRAG_TYPE = "lattice-calendar-timegrid-event";
 const RESIZE_DRAG_TYPE = "lattice-calendar-timegrid-resize";
 const DAY_DRAG_TYPE = "lattice-calendar-timegrid-day-event";
+const DAY_RESIZE_TYPE = "lattice-calendar-timegrid-day-resize";
 const SCROLL_TO_HOUR = 7;
 
 type Translate = (key: string, defaultValue?: string, options?: Record<string, unknown>) => string;
@@ -268,6 +269,34 @@ export function TimeGridView({
     [events, submitReschedule],
   );
 
+  const onDayResizeDrop = useCallback(
+    (data: Record<string | symbol, unknown>, boundary: string): void => {
+      const id = data.id;
+
+      if (typeof id !== "string") {
+        return;
+      }
+
+      const event = events.get(id);
+
+      if (!event || !event.allDay) {
+        return;
+      }
+
+      const request =
+        data.edge === "start"
+          ? { start: boundary < event.end ? boundary : addDays(event.end, -1), end: event.end }
+          : { start: event.start, end: boundary >= event.start ? addDays(boundary, 1) : event.end };
+
+      if (request.start === event.start && request.end === event.end) {
+        return;
+      }
+
+      void submitReschedule({ id: event.id, resourceId: event.resourceId, ...request });
+    },
+    [events, submitReschedule],
+  );
+
   const nowMinutes = currentWallMinutes();
 
   return (
@@ -331,39 +360,24 @@ export function TimeGridView({
           <div className="px-2 py-1 text-right text-[0.65rem] text-lt-muted-fg">
             {t("calendar.all-day", "All day")}
           </div>
-          <div className="lt-calendar-timegrid-allday" style={{ gridColumn: "2 / -1" }}>
-            <div className="lt-calendar-timegrid-allday-cells">
-              {days.map((date) => (
-                <AllDayCell
-                  canReschedule={canReschedule}
-                  date={date}
-                  key={date}
-                  label={dayFormatter.format(toNoonUtc(date))}
-                  onDayClick={onDayClick}
-                  onDrop={onDayShiftDrop}
-                />
-              ))}
-            </div>
-            <div
-              aria-hidden={onEventClick || canReschedule ? undefined : true}
-              className="lt-calendar-timegrid-allday-chips"
-            >
-              {allDayChips.map((chip) => (
-                <AllDayChip
-                  canReschedule={canReschedule}
-                  chip={chip}
-                  gridStart={gridStart}
-                  isRescheduling={isRescheduling(chip.id)}
-                  key={`${chip.id}-${chip.start}`}
-                  locale={locale}
-                  onDragStateChange={setDragging}
-                  onEventClick={onEventClick}
-                  onReschedule={submitAndRefocus}
-                  t={t}
-                />
-              ))}
-            </div>
-          </div>
+          <AllDayRow
+            canReschedule={canReschedule}
+            chips={allDayChips}
+            dayCount={dayCount}
+            dayFormatter={dayFormatter}
+            days={days}
+            gridStart={gridStart}
+            isRescheduling={isRescheduling}
+            locale={locale}
+            onDayClick={onDayClick}
+            onDragStateChange={setDragging}
+            onEventClick={onEventClick}
+            onMoveDrop={onDayShiftDrop}
+            onReschedule={submitAndRefocus}
+            onResizeDrop={onDayResizeDrop}
+            onResizeReschedule={submitResize}
+            t={t}
+          />
         </div>
 
         <div className="lt-calendar-timegrid-scroll" ref={scrollRef}>
@@ -418,53 +432,180 @@ export function TimeGridView({
   );
 }
 
-function AllDayCell({
+type AllDayPreview = { start: number; span: number };
+
+function dayIndexFromPointer(clientX: number, element: Element, dayCount: number): number {
+  const rect = element.getBoundingClientRect();
+  const index = Math.floor(((clientX - rect.left) / rect.width) * dayCount);
+
+  return Math.max(0, Math.min(dayCount - 1, index));
+}
+
+function AllDayRow({
   canReschedule,
-  date,
-  label,
+  chips,
+  dayCount,
+  dayFormatter,
+  days,
+  gridStart,
+  isRescheduling,
+  locale,
   onDayClick,
-  onDrop,
+  onDragStateChange,
+  onEventClick,
+  onMoveDrop,
+  onReschedule,
+  onResizeDrop,
+  onResizeReschedule,
+  t,
 }: {
   canReschedule: boolean;
-  date: string;
-  label: string;
+  chips: MonthChip[];
+  dayCount: number;
+  dayFormatter: Intl.DateTimeFormat;
+  days: string[];
+  gridStart: string;
+  isRescheduling: (id: string) => boolean;
+  locale: string;
   onDayClick: ((date: string) => void) | null;
-  onDrop: (data: Record<string | symbol, unknown>, date: string) => void;
+  onDragStateChange: (dragging: boolean) => void;
+  onEventClick: ((event: CalendarEventData) => void) | null;
+  onMoveDrop: (data: Record<string | symbol, unknown>, date: string) => void;
+  onReschedule: (request: CalendarRescheduleRequest) => void;
+  onResizeDrop: (data: Record<string | symbol, unknown>, boundary: string) => void;
+  onResizeReschedule: (request: CalendarRescheduleRequest) => void;
+  t: Translate;
 }) {
-  const cellRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [preview, setPreview] = useState<AllDayPreview | null>(null);
   const [dropActive, setDropActive] = useState(false);
 
+  const landing = useCallback(
+    (
+      data: Record<string | symbol, unknown>,
+      clientX: number,
+      row: Element,
+    ): AllDayPreview | null => {
+      const pointerIndex = dayIndexFromPointer(clientX, row, dayCount);
+      const clip = (from: number, to: number): AllDayPreview | null => {
+        const start = Math.max(0, from);
+        const span = Math.min(dayCount, to) - start;
+
+        return span > 0 ? { start, span } : null;
+      };
+
+      if (data.type === DAY_DRAG_TYPE) {
+        const grabOffsetDays = typeof data.grabOffsetDays === "number" ? data.grabOffsetDays : 0;
+        const durationDays = typeof data.durationDays === "number" ? data.durationDays : 1;
+        const from = pointerIndex - grabOffsetDays;
+
+        return clip(from, from + durationDays);
+      }
+
+      if (typeof data.dayStart !== "string" || typeof data.dayEnd !== "string") {
+        return null;
+      }
+
+      const startIndex = daysBetween(gridStart, data.dayStart);
+      const endIndex = daysBetween(gridStart, data.dayEnd);
+
+      if (data.edge === "start") {
+        return clip(Math.min(pointerIndex, endIndex - 1), endIndex);
+      }
+
+      return clip(startIndex, Math.max(startIndex + 1, pointerIndex + 1));
+    },
+    [dayCount, gridStart],
+  );
+
   useEffect(() => {
-    const element = cellRef.current;
+    const element = rowRef.current;
 
     if (!element || !canReschedule) {
       return;
     }
 
     return dropTargetForElements({
-      canDrop: ({ source }) => source.data.type === DAY_DRAG_TYPE,
+      canDrop: ({ source }) =>
+        source.data.type === DAY_DRAG_TYPE || source.data.type === DAY_RESIZE_TYPE,
       element,
+      onDrag: ({ location, source }) => {
+        setPreview(landing(source.data, location.current.input.clientX, element));
+      },
       onDragEnter: () => setDropActive(true),
-      onDragLeave: () => setDropActive(false),
-      onDrop: ({ source }) => {
+      onDragLeave: () => {
         setDropActive(false);
-        onDrop(source.data, date);
+        setPreview(null);
+      },
+      onDrop: ({ location, source }) => {
+        setDropActive(false);
+        setPreview(null);
+
+        const pointerIndex = dayIndexFromPointer(location.current.input.clientX, element, dayCount);
+        const date = addDays(gridStart, pointerIndex);
+
+        if (source.data.type === DAY_RESIZE_TYPE) {
+          onResizeDrop(source.data, date);
+
+          return;
+        }
+
+        onMoveDrop(source.data, date);
       },
     });
-  }, [canReschedule, date, onDrop]);
+  }, [canReschedule, dayCount, gridStart, landing, onMoveDrop, onResizeDrop]);
 
   return (
     <div
-      aria-label={label}
-      className={cn(
-        "lt-calendar-timegrid-allday-cell border-l border-lt-border",
-        onDayClick && "cursor-pointer",
-        dropActive && "bg-lt-primary/10",
-      )}
-      data-test={`calendar-allday-${date}`}
-      onClick={onDayClick ? () => onDayClick(date) : undefined}
-      ref={cellRef}
-    />
+      className={cn("lt-calendar-timegrid-allday", dropActive && "bg-lt-primary/5")}
+      ref={rowRef}
+      style={{ gridColumn: "2 / -1" }}
+    >
+      <div className="lt-calendar-timegrid-allday-cells">
+        {days.map((date) => (
+          <div
+            aria-label={dayFormatter.format(toNoonUtc(date))}
+            className={cn(
+              "lt-calendar-timegrid-allday-cell border-l border-lt-border",
+              onDayClick && "cursor-pointer",
+            )}
+            data-test={`calendar-allday-${date}`}
+            key={date}
+            onClick={onDayClick ? () => onDayClick(date) : undefined}
+          />
+        ))}
+      </div>
+      {preview ? (
+        <div
+          aria-hidden="true"
+          className="lt-calendar-timegrid-allday-preview rounded-lt-xs border-2 border-dashed border-lt-primary"
+          style={{
+            left: `${(preview.start / dayCount) * 100}%`,
+            width: `${(preview.span / dayCount) * 100}%`,
+          }}
+        />
+      ) : null}
+      <div
+        aria-hidden={onEventClick || canReschedule ? undefined : true}
+        className="lt-calendar-timegrid-allday-chips"
+      >
+        {chips.map((chip) => (
+          <AllDayChip
+            canReschedule={canReschedule}
+            chip={chip}
+            gridStart={gridStart}
+            isRescheduling={isRescheduling(chip.id)}
+            key={`${chip.id}-${chip.start}`}
+            locale={locale}
+            onDragStateChange={onDragStateChange}
+            onEventClick={onEventClick}
+            onReschedule={onReschedule}
+            onResizeReschedule={onResizeReschedule}
+            t={t}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -506,6 +647,7 @@ function AllDayChip({
   onDragStateChange,
   onEventClick,
   onReschedule,
+  onResizeReschedule,
   t,
 }: {
   canReschedule: boolean;
@@ -516,6 +658,7 @@ function AllDayChip({
   onDragStateChange: (dragging: boolean) => void;
   onEventClick: ((event: CalendarEventData) => void) | null;
   onReschedule: (request: CalendarRescheduleRequest) => void;
+  onResizeReschedule: (request: CalendarRescheduleRequest) => void;
   t: Translate;
 }) {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -540,6 +683,7 @@ function AllDayChip({
         const dayWidth = rect.width / span;
 
         return {
+          durationDays,
           grabOffsetDays: Math.max(
             0,
             Math.min(
@@ -582,8 +726,8 @@ function AllDayChip({
   }
 
   const tone = toneProps(coerceColor(event.color) ?? namedColor("primary"));
-  const className = cn(
-    "lt-calendar-chip mx-1 my-0.5 flex items-center gap-1 overflow-hidden px-1.5 text-left text-xs",
+  const chipClassName = cn(
+    "lt-calendar-chip flex h-full w-full items-center gap-1 overflow-hidden px-1.5 text-left text-xs",
     tone.className,
     chip.continuesBefore ? "rounded-l-none" : "rounded-l-lt-xs",
     chip.continuesAfter ? "rounded-r-none" : "rounded-r-lt-xs",
@@ -592,46 +736,167 @@ function AllDayChip({
     onEventClick && "cursor-pointer",
     canReschedule && !onEventClick && "cursor-grab",
   );
-  const style = {
+  const wrapperStyle = {
     gridColumn: `${chip.start + 1} / span ${chip.span}`,
     gridRow: chip.lane + 1,
-    ...tone.style,
   };
 
   if (!onEventClick && !canReschedule) {
     return (
-      <div
-        className={className}
-        data-end={event.end}
-        data-start={event.start}
-        data-test={`calendar-event-${chip.id}`}
-        style={style}
-      >
-        {chipContent(event, locale)}
+      <div className="relative mx-1 my-0.5" style={wrapperStyle}>
+        <div
+          className={chipClassName}
+          data-end={event.end}
+          data-start={event.start}
+          data-test={`calendar-event-${chip.id}`}
+          style={tone.style}
+        >
+          {chipContent(event, locale)}
+        </div>
       </div>
     );
   }
 
   return (
-    <button
-      aria-disabled={isRescheduling || undefined}
-      aria-keyshortcuts={
-        canReschedule ? "Control+Shift+ArrowLeft Control+Shift+ArrowRight" : undefined
-      }
-      aria-label={eventLabel(event, t, canReschedule)}
-      className={className}
-      data-end={event.end}
-      data-start={event.start}
-      data-test={`calendar-event-${chip.id}`}
-      onClick={onEventClick ? () => onEventClick(event) : undefined}
+    <div className="relative mx-1 my-0.5" style={wrapperStyle}>
+      <button
+        aria-disabled={isRescheduling || undefined}
+        aria-keyshortcuts={
+          canReschedule ? "Control+Shift+ArrowLeft Control+Shift+ArrowRight" : undefined
+        }
+        aria-label={eventLabel(event, t, canReschedule)}
+        className={chipClassName}
+        data-end={event.end}
+        data-start={event.start}
+        data-test={`calendar-event-${chip.id}`}
+        onClick={onEventClick ? () => onEventClick(event) : undefined}
+        onKeyDown={onKeyDown}
+        ref={buttonRef}
+        style={tone.style}
+        title={event.label}
+        type="button"
+      >
+        {chipContent(event, locale)}
+      </button>
+
+      {canReschedule && event.allDay && !chip.continuesBefore ? (
+        <AllDayResizeHandle
+          edge="start"
+          event={event}
+          isRescheduling={isRescheduling}
+          onReschedule={onResizeReschedule}
+          t={t}
+        />
+      ) : null}
+      {canReschedule && event.allDay && !chip.continuesAfter ? (
+        <AllDayResizeHandle
+          edge="end"
+          event={event}
+          isRescheduling={isRescheduling}
+          onReschedule={onResizeReschedule}
+          t={t}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function AllDayResizeHandle({
+  edge,
+  event,
+  isRescheduling,
+  onReschedule,
+  t,
+}: {
+  edge: "start" | "end";
+  event: CalendarEventData;
+  isRescheduling: boolean;
+  onReschedule: (request: CalendarRescheduleRequest) => void;
+  t: Translate;
+}) {
+  const handleRef = useRef<HTMLDivElement>(null);
+  const [resizing, setResizing] = useState(false);
+
+  useEffect(() => {
+    const element = handleRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    return draggable({
+      canDrag: () => !isRescheduling,
+      element,
+      getInitialData: () => ({
+        dayEnd: event.end,
+        dayStart: event.start,
+        edge,
+        id: event.id,
+        type: DAY_RESIZE_TYPE,
+      }),
+      onDragStart: () => {
+        setResizing(true);
+        announce(
+          t(
+            edge === "start" ? "calendar.resizing-start" : "calendar.resizing-end",
+            edge === "start" ? "Resizing start of {{label}}." : "Resizing end of {{label}}.",
+            { label: event.label },
+          ),
+        );
+      },
+      onDrop: () => setResizing(false),
+    });
+  }, [edge, event, isRescheduling, t]);
+
+  function onKeyDown(keyboardEvent: KeyboardEvent<HTMLDivElement>): void {
+    if (isRescheduling) {
+      return;
+    }
+
+    const delta =
+      keyboardEvent.key === "ArrowLeft" ? -1 : keyboardEvent.key === "ArrowRight" ? 1 : 0;
+
+    if (delta === 0) {
+      return;
+    }
+
+    const request =
+      edge === "start"
+        ? { start: addDays(event.start, delta), end: event.end }
+        : { start: event.start, end: addDays(event.end, delta) };
+
+    if (request.start >= request.end) {
+      return;
+    }
+
+    keyboardEvent.preventDefault();
+    keyboardEvent.stopPropagation();
+    onReschedule({ id: event.id, resourceId: event.resourceId, ...request });
+  }
+
+  return (
+    <div
+      aria-disabled={isRescheduling}
+      aria-keyshortcuts="ArrowLeft ArrowRight"
+      aria-label={t(
+        edge === "start" ? "calendar.resize-start" : "calendar.resize-end",
+        edge === "start" ? "Resize start of {{label}}" : "Resize end of {{label}}",
+        { label: event.label },
+      )}
+      aria-orientation="vertical"
+      aria-valuetext={edge === "start" ? event.start : event.end}
+      className={cn(
+        "lt-calendar-timegrid-allday-handle absolute inset-y-0 w-2 cursor-ew-resize touch-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-lt-primary after:absolute after:inset-y-0.5 after:left-1/2 after:w-px after:-translate-x-1/2 after:bg-current after:opacity-50",
+        edge === "start" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2",
+        resizing && "opacity-60",
+      )}
+      data-test={`calendar-allday-resize-${edge}-${event.id}`}
+      onClick={(clickEvent) => clickEvent.stopPropagation()}
       onKeyDown={onKeyDown}
-      ref={buttonRef}
-      style={style}
-      title={event.label}
-      type="button"
-    >
-      {chipContent(event, locale)}
-    </button>
+      ref={handleRef}
+      role="separator"
+      tabIndex={0}
+    />
   );
 }
 
@@ -708,7 +973,17 @@ function DayColumn({
             typeof source.data.durationMin === "number" ? source.data.durationMin : 0;
 
           setPreview({ startMin: moveStartMin(source.data, clientY, element), durationMin });
+
+          return;
         }
+
+        const startMin = typeof source.data.startMin === "number" ? source.data.startMin : 0;
+        const endMin = Math.max(
+          startMin + SNAP_MINUTES,
+          snapMinute(minuteFromPointer(clientY, element)),
+        );
+
+        setPreview({ startMin, durationMin: endMin - startMin });
       },
       onDragLeave: () => setPreview(null),
       onDrop: ({ location, source }) => {
@@ -991,6 +1266,7 @@ function ResizeHandle({
       getInitialData: () => ({
         date,
         id: event.id,
+        startMin: segment.startMin,
         type: RESIZE_DRAG_TYPE,
       }),
       onDragStart: () => {
@@ -999,7 +1275,7 @@ function ResizeHandle({
       },
       onDrop: () => setResizing(false),
     });
-  }, [date, event, isRescheduling, t]);
+  }, [date, event, isRescheduling, segment.startMin, t]);
 
   function onKeyDown(keyboardEvent: KeyboardEvent<HTMLDivElement>): void {
     if (isRescheduling) {
