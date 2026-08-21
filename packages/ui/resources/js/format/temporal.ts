@@ -80,6 +80,18 @@ export function weeksInMonth(dateISO: string, locale: string): number {
   return getWeeksInMonth(parseDate(dateISO), locale);
 }
 
+/** Shifts a floating `Y-m-dTH:i:s` datetime by whole minutes, rolling over day bounds. */
+export function addWallMinutes(dateTimeISO: string, minutes: number): string {
+  return parseDateTime(dateTimeISO).add({ minutes }).toString();
+}
+
+/** Minutes since midnight of a floating `Y-m-dTH:i:s` datetime's wall-clock time. */
+export function wallMinutesOfDay(dateTimeISO: string): number {
+  const parsed = parseDateTime(dateTimeISO);
+
+  return parsed.hour * 60 + parsed.minute;
+}
+
 /** Locale-formatted wall-clock time of a floating `Y-m-dTH:i:s` datetime, e.g. "09:30" / "9:30 AM". */
 export function formatWallTime(dateTimeISO: string, locale?: string): string {
   const parsed = parseDateTime(dateTimeISO);

@@ -9,5 +9,7 @@ use Lattice\Core\Attributes\TypeScript;
 enum CalendarView: string
 {
     case Month = 'month';
+    case Week = 'week';
+    case Day = 'day';
     case Timeline = 'timeline';
 }

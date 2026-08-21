@@ -76,6 +76,35 @@ it('throws when the timeline view is enabled without a resource-providing adapte
     wire(Calendar::use(MeetingsOnlyCalendar::class)->views([CalendarView::Month, CalendarView::Timeline]));
 })->throws(LogicException::class, 'timeline view');
 
+it('serializes week and day views without requiring a resource-providing adapter', function (): void {
+    $node = wire(Calendar::use(MeetingsOnlyCalendar::class)
+        ->views([CalendarView::Week, CalendarView::Day]));
+
+    expect($node['props']['views'])->toBe(['week', 'day'])
+        ->and($node['props']['defaultView'])->toBe('week')
+        ->and($node['props']['groups'])->toBe([]);
+});
+
+it('materializes the week window padded around the anchor date', function (): void {
+    $node = wire(Calendar::use(ProjectPlanCalendar::class)
+        ->views([CalendarView::Week])
+        ->date(CarbonImmutable::today()->addDays(20)));
+
+    expect(array_column($node['props']['events'], 'id'))
+        ->toContain('company-retreat')
+        ->not->toContain('sprint-review');
+});
+
+it('materializes only the anchor day for a day-only calendar', function (): void {
+    $node = wire(Calendar::use(ProjectPlanCalendar::class)
+        ->views([CalendarView::Day])
+        ->date(CarbonImmutable::today()));
+
+    expect(array_column($node['props']['events'], 'id'))
+        ->toContain('sprint-review')
+        ->not->toContain('company-retreat');
+});
+
 it('marks a calendar without a rescheduling adapter as read-only', function (): void {
     $node = wire(Calendar::use(MeetingsOnlyCalendar::class));
 

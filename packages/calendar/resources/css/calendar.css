@@ -65,6 +65,118 @@
   pointer-events: none;
 }
 
+.lt-calendar-timegrid {
+  --lt-calendar-hour-h: 3rem;
+  --lt-calendar-timegrid-h: 36rem;
+  --lt-calendar-timegrid-gutter-w: 3.5rem;
+}
+
+.lt-calendar-timegrid-row {
+  display: grid;
+  grid-template-columns:
+    var(--lt-calendar-timegrid-gutter-w)
+    repeat(var(--lt-calendar-timegrid-days, 7), minmax(0, 1fr));
+}
+
+.lt-calendar-timegrid-allday {
+  min-height: var(--lt-calendar-chip-h);
+  position: relative;
+}
+
+.lt-calendar-timegrid-allday-cells {
+  display: grid;
+  grid-template-columns: repeat(var(--lt-calendar-timegrid-days, 7), minmax(0, 1fr));
+  inset: 0;
+  position: absolute;
+}
+
+/*
+ * All-day chips span day columns, so they live in a grid overlay above the
+ * cell layer; the overlay ignores pointer events so the cells underneath stay
+ * clickable and droppable, while each chip opts back in.
+ */
+.lt-calendar-timegrid-allday-chips {
+  display: grid;
+  grid-auto-rows: var(--lt-calendar-chip-h);
+  grid-template-columns: repeat(var(--lt-calendar-timegrid-days, 7), minmax(0, 1fr));
+  pointer-events: none;
+  position: relative;
+}
+
+.lt-calendar-timegrid-scroll {
+  max-height: var(--lt-calendar-timegrid-h);
+  overflow-y: auto;
+  position: relative;
+}
+
+.lt-calendar-timegrid-gutter {
+  position: relative;
+}
+
+.lt-calendar-timegrid-hour-label {
+  padding-right: 0.5rem;
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.lt-calendar-timegrid-col {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--lt-border) 0,
+    var(--lt-border) 1px,
+    transparent 1px,
+    transparent var(--lt-calendar-hour-h)
+  );
+  height: calc(24 * var(--lt-calendar-hour-h));
+  position: relative;
+}
+
+.lt-calendar-timegrid-gutter,
+.lt-calendar-timegrid-col {
+  min-height: calc(24 * var(--lt-calendar-hour-h));
+}
+
+.lt-calendar-timegrid-block {
+  min-height: 1.25rem;
+  padding-inline: 1px;
+  position: absolute;
+}
+
+.lt-calendar-timegrid-preview {
+  inset-inline: 1px;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.lt-calendar-timegrid-now {
+  background-color: var(--lt-danger);
+  height: 2px;
+  inset-inline: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.lt-calendar-timegrid-resize {
+  bottom: 0;
+  cursor: ns-resize;
+  height: 0.5rem;
+  inset-inline: 0.25rem;
+  position: absolute;
+}
+
+/*
+ * Mid-drag the blocks and chips must not swallow the pointer, so the day
+ * columns and all-day cells stay hittable as drop targets wherever the cursor
+ * is.
+ */
+.lt-calendar-timegrid[data-dragging] .lt-calendar-chip,
+.lt-calendar-timegrid[data-dragging] .lt-calendar-timegrid-block {
+  pointer-events: none;
+}
+
 .lt-timeline {
   --lt-timeline-lane-height: 2rem;
   --lt-timeline-header-row-h: 2rem;

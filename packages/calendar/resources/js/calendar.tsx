@@ -6,10 +6,17 @@ import { runAction } from "@lattice-php/action";
 import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { currentTimezone, useT } from "@lattice-php/ui/i18n";
-import { addDays, addMonths, startOfMonthISO, todayISO } from "@lattice-php/ui/format/temporal";
+import {
+  addDays,
+  addMonths,
+  startOfMonthISO,
+  startOfWeekISO,
+  todayISO,
+} from "@lattice-php/ui/format/temporal";
 import { useCalendarEvents } from "./calendar-state";
 import { monthGridRange } from "./month-grid";
 import { MonthView } from "./views/month-view";
+import { TimeGridView } from "./views/time-grid-view";
 import { TimelineView } from "./views/timeline-view";
 import type {
   CalendarActionNode,
@@ -35,29 +42,46 @@ declare module "@lattice-php/core" {
 
 /**
  * Mirrors the server's initial materialization window (`Calendar::window()`):
- * the month view padded ±7 days, the timeline starting at the anchor date.
- * Seeding the loaded ranges with the same union means the first navigation
- * only fetches genuinely uncovered days.
+ * the month view padded ±7 days, the week view padded around the anchor
+ * because the server does not know the locale's week start, the day view
+ * covering the anchor date, and the timeline starting exactly at it. Seeding
+ * the loaded ranges with the same union means the first navigation only
+ * fetches genuinely uncovered days.
  */
 function initialWindow(
   props: Pick<CalendarWireProps, "date" | "days" | "views">,
 ): [string, string] {
   const monthStart = startOfMonthISO(props.date);
-  const month: [string, string] | null = props.views.includes("month")
-    ? [addDays(monthStart, -7), addDays(addMonths(monthStart, 1), 7)]
-    : null;
-  const timeline: [string, string] | null = props.views.includes("timeline")
-    ? [props.date, addDays(props.date, props.days)]
-    : null;
+  const ranges: [string, string][] = [];
 
-  if (month === null || timeline === null) {
-    return month ?? timeline ?? [props.date, addDays(props.date, props.days)];
+  if (props.views.includes("month")) {
+    ranges.push([addDays(monthStart, -7), addDays(addMonths(monthStart, 1), 7)]);
   }
 
-  return [
-    month[0] < timeline[0] ? month[0] : timeline[0],
-    month[1] > timeline[1] ? month[1] : timeline[1],
-  ];
+  if (props.views.includes("week")) {
+    ranges.push([addDays(props.date, -6), addDays(props.date, 7)]);
+  }
+
+  if (props.views.includes("day")) {
+    ranges.push([props.date, addDays(props.date, 1)]);
+  }
+
+  if (props.views.includes("timeline")) {
+    ranges.push([props.date, addDays(props.date, props.days)]);
+  }
+
+  if (ranges.length === 0) {
+    return [props.date, addDays(props.date, props.days)];
+  }
+
+  let [from, to] = ranges[0];
+
+  for (const [start, end] of ranges) {
+    from = start < from ? start : from;
+    to = end > to ? end : to;
+  }
+
+  return [from, to];
 }
 
 async function runComponentAction(
@@ -91,6 +115,7 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
   const { date, dayAction, days, defaultView, eventAction, views } = node.props;
   const [activeView, setActiveView] = useState<CalendarView>(defaultView);
   const [month, setMonth] = useState(() => startOfMonthISO(date));
+  const [timeGridFrom, setTimeGridFrom] = useState(date);
   const [timelineFrom, setTimelineFrom] = useState(date);
   const [today] = useState(() => todayISO(currentTimezone()));
   const [[initialFrom, initialTo]] = useState(() => initialWindow(node.props));
@@ -116,6 +141,14 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
     state.ensureRange(nextFrom, addDays(nextFrom, days));
   }
 
+  function navigateTimeGrid(nextFrom: string, dayCount: number): void {
+    setTimeGridFrom(nextFrom);
+
+    const gridStart = dayCount === 1 ? nextFrom : startOfWeekISO(nextFrom, locale);
+
+    state.ensureRange(addDays(gridStart, -dayCount), addDays(gridStart, dayCount * 2));
+  }
+
   const onEventClick = eventAction
     ? (event: CalendarEventData) => {
         void runComponentAction(eventAction, { eventId: event.id, ...event.context }, dispatch);
@@ -130,13 +163,16 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
   const canReschedule =
     node.props.endpoint !== null && node.props.ref !== null && node.props.reschedulable;
 
+  const viewLabels: Record<CalendarView, string> = {
+    month: t("calendar.view-month", "Month"),
+    week: t("calendar.view-week", "Week"),
+    day: t("calendar.view-day", "Day"),
+    timeline: t("calendar.view-timeline", "Timeline"),
+  };
   const viewOptions: Option[] = views.map((view) => ({
     data: null,
     value: view,
-    label:
-      view === "month"
-        ? t("calendar.view-month", "Month")
-        : t("calendar.view-timeline", "Timeline"),
+    label: viewLabels[view],
   }));
 
   return (
@@ -161,6 +197,19 @@ const CalendarComponent: RendererComponent<"calendar"> = ({ node }) => {
           onDayClick={onDayClick}
           onEventClick={onEventClick}
           onNavigate={navigateMonth}
+          state={state}
+          t={t}
+          today={today}
+        />
+      ) : activeView === "week" || activeView === "day" ? (
+        <TimeGridView
+          canReschedule={canReschedule}
+          dayCount={activeView === "week" ? 7 : 1}
+          from={timeGridFrom}
+          locale={locale}
+          onDayClick={onDayClick}
+          onEventClick={onEventClick}
+          onNavigate={(nextFrom) => navigateTimeGrid(nextFrom, activeView === "week" ? 7 : 1)}
           state={state}
           t={t}
           today={today}
