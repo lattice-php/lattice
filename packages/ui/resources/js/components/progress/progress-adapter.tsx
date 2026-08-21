@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Progress } from "./progress";
 
-const ProgressAdapter: RendererComponent<"progress"> = ({ node }) => (
+export const ProgressAdapter: RendererComponent<"progress"> = ({ node }) => (
   <Progress
     color={node.props.color}
     data-test={nodeIdentity(node)}
@@ -13,5 +13,3 @@ const ProgressAdapter: RendererComponent<"progress"> = ({ node }) => (
     value={node.props.value}
   />
 );
-
-export default ProgressAdapter;

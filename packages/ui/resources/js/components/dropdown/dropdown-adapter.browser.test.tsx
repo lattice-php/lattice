@@ -4,10 +4,10 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
-import LinkAdapter from "../link/link-adapter";
-import RawBlockAdapter from "../raw-block/raw-block-adapter";
-import TextAdapter from "../text/text-adapter";
-import DropdownAdapter from "./dropdown-adapter";
+import { LinkAdapter } from "../link/link-adapter";
+import { RawBlockAdapter } from "../raw-block/raw-block-adapter";
+import { TextAdapter } from "../text/text-adapter";
+import { DropdownAdapter } from "./dropdown-adapter";
 
 const registry = createRegistry({
   components: {

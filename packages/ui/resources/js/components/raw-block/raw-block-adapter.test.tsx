@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import RawBlockAdapter from "./raw-block-adapter";
+import { RawBlockAdapter } from "./raw-block-adapter";
 
 describe("RawBlock", () => {
   it("renders trusted server html without adding layout", () => {

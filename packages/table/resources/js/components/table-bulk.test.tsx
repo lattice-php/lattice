@@ -19,7 +19,7 @@ vi.mock("@inertiajs/react", async () =>
   (await import("@lattice-php/ui/test/inertia-mock")).inertiaMock(),
 );
 
-const { default: TableComponent } = await import("./table");
+const { TableComponent } = await import("./table");
 
 function renderTable(ui: ReactElement) {
   return render(

@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { SegmentedControl } from "./segmented-control";
 
-const SegmentedControlAdapter: RendererComponent<"segmented-control"> = ({ node }) => {
+export const SegmentedControlAdapter: RendererComponent<"segmented-control"> = ({ node }) => {
   const { emits, name, options } = node.props;
 
   function emitChange(value: string): void {
@@ -22,5 +22,3 @@ const SegmentedControlAdapter: RendererComponent<"segmented-control"> = ({ node 
     />
   );
 };
-
-export default SegmentedControlAdapter;

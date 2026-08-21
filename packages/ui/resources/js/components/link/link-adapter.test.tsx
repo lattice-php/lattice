@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import LinkAdapter from "./link-adapter";
+import { LinkAdapter } from "./link-adapter";
 
 describe("Lattice link component", () => {
   it("renders prefix and suffix affixes around the label", () => {

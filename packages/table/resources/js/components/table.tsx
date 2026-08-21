@@ -103,7 +103,7 @@ function handleRowAuxClick(event: MouseEvent<HTMLDivElement>, url: string | null
   window.open(url, "_blank");
 }
 
-const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
+export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
   const { t } = useT("lattice");
   const {
     columns,
@@ -639,5 +639,3 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
     </DataTable>
   );
 };
-
-export default TableComponent;

@@ -4,8 +4,8 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
-import MenuItemAdapter from "../menu-item/menu-item-adapter";
-import MenuAdapter from "./menu-adapter";
+import { MenuItemAdapter } from "../menu-item/menu-item-adapter";
+import { MenuAdapter } from "./menu-adapter";
 
 const registry = createRegistry({
   components: {

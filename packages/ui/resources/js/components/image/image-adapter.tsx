@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Image } from "./image";
 
-const ImageAdapter: RendererComponent<"image"> = ({ node }) => (
+export const ImageAdapter: RendererComponent<"image"> = ({ node }) => (
   <Image
     alt={node.props.alt}
     circular={node.props.circular}
@@ -13,5 +13,3 @@ const ImageAdapter: RendererComponent<"image"> = ({ node }) => (
     testId={nodeIdentity(node)}
   />
 );
-
-export default ImageAdapter;

@@ -16,7 +16,7 @@ const sizeClass: Record<Size, string> = {
   "4xl": "size-lt-icon-4xl",
 };
 
-const IconAdapter: RendererComponent<"icon"> = ({ node }) => {
+export const IconAdapter: RendererComponent<"icon"> = ({ node }) => {
   const { name, size, color, class: className } = node.props;
   const coerced = coerceColor(color);
 
@@ -30,5 +30,3 @@ const IconAdapter: RendererComponent<"icon"> = ({ node }) => {
     </span>
   );
 };
-
-export default IconAdapter;

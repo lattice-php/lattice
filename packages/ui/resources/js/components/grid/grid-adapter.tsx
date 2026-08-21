@@ -5,7 +5,7 @@ import type { RendererComponent } from "@lattice-php/core/types";
 import { Grid, GridItem } from "./grid";
 import type { GridBreakpointMap } from "./grid";
 
-const GridAdapter: RendererComponent<"grid"> = ({ node }) => (
+export const GridAdapter: RendererComponent<"grid"> = ({ node }) => (
   <Grid
     columns={(node.props.columns ?? undefined) as GridBreakpointMap | undefined}
     data-test={nodeIdentity(node)}
@@ -20,5 +20,3 @@ const GridAdapter: RendererComponent<"grid"> = ({ node }) => (
     ))}
   </Grid>
 );
-
-export default GridAdapter;

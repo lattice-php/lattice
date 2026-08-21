@@ -3,7 +3,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { TextProbe } from "@lattice-php/core/test-support";
-import GridAdapter from "./grid-adapter";
+import { GridAdapter } from "./grid-adapter";
 
 const registry = createRegistry({
   components: {

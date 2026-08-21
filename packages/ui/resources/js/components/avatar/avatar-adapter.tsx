@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Avatar } from "./avatar";
 
-const AvatarAdapter: RendererComponent<"avatar"> = ({ node }) => (
+export const AvatarAdapter: RendererComponent<"avatar"> = ({ node }) => (
   <Avatar
     data-test={nodeIdentity(node)}
     name={node.props.name}
@@ -11,5 +11,3 @@ const AvatarAdapter: RendererComponent<"avatar"> = ({ node }) => (
     src={node.props.src}
   />
 );
-
-export default AvatarAdapter;

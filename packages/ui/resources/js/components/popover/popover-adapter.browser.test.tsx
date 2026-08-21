@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode } from "@lattice-php/core/test-support";
-import BadgeAdapter from "../badge/badge-adapter";
-import PopoverAdapter from "./popover-adapter";
+import { BadgeAdapter } from "../badge/badge-adapter";
+import { PopoverAdapter } from "./popover-adapter";
 
 const registry = createRegistry({
   components: { badge: eagerComponent(BadgeAdapter), popover: eagerComponent(PopoverAdapter) },

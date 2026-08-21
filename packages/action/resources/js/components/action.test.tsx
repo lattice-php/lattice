@@ -6,7 +6,7 @@ import { IconRendererProvider } from "@lattice-php/ui/icons";
 import type { IconRendererFunction } from "@lattice-php/ui/icons";
 import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
 import { renderWithModal } from "@lattice-php/ui/test/modal";
-import ActionComponent from "./action";
+import { ActionComponent } from "./action";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
 

@@ -6,7 +6,7 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import { NavigationProvider, type NavigationAdapter } from "../../navigation";
-import ButtonAdapter from "./button-adapter";
+import { ButtonAdapter } from "./button-adapter";
 
 describe("ButtonAdapter client effects", () => {
   const registry = createRegistry({

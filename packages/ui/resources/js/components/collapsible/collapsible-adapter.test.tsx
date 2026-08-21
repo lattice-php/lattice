@@ -4,9 +4,9 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import CollapsibleAdapter from "./collapsible-adapter";
-import StackAdapter from "../stack/stack-adapter";
-import TextAdapter from "../text/text-adapter";
+import { CollapsibleAdapter } from "./collapsible-adapter";
+import { StackAdapter } from "../stack/stack-adapter";
+import { TextAdapter } from "../text/text-adapter";
 
 const registry = createRegistry({
   components: {

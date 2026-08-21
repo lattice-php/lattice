@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
-import BreadcrumbsAdapter from "./breadcrumbs-adapter";
+import { BreadcrumbsAdapter } from "./breadcrumbs-adapter";
 
 const registry = createRegistry({
   components: { breadcrumbs: eagerComponent(BreadcrumbsAdapter) },

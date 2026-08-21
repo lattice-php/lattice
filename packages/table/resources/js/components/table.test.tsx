@@ -6,7 +6,7 @@ import { fakeNode } from "@lattice-php/core/test-support";
 import { ActionInteractionProvider } from "@lattice-php/action";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
 import { col, pagination, requestOptions, tableFetch, tableQuery } from "../test-support";
-import TableComponent from "./table";
+import { TableComponent } from "./table";
 
 describe("Lattice table component", () => {
   afterEach(() => {

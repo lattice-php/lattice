@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import { EmbeddedModalProvider } from "./modal-host";
-import ModalAdapter from "./modal-adapter";
+import { ModalAdapter } from "./modal-adapter";
 
 function renderModal(node: Node<"modal">, open = true, onOpenChange = vi.fn(), onExited = vi.fn()) {
   render(

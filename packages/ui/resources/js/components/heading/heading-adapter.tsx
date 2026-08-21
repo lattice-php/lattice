@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Heading } from "./heading";
 
-const HeadingAdapter: RendererComponent<"heading"> = ({ node }) => (
+export const HeadingAdapter: RendererComponent<"heading"> = ({ node }) => (
   <Heading
     copyable={node.props.copyable}
     copyLabel={node.props.text}
@@ -14,5 +14,3 @@ const HeadingAdapter: RendererComponent<"heading"> = ({ node }) => (
     {node.props.text}
   </Heading>
 );
-
-export default HeadingAdapter;

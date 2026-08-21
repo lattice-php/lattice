@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Chart } from "./chart";
 
-const ChartAdapter: RendererComponent<"chart"> = ({ node }) => (
+export const ChartAdapter: RendererComponent<"chart"> = ({ node }) => (
   <Chart
     categoryFormat={node.props.categoryFormat}
     categoryKey={node.props.categoryKey}
@@ -20,5 +20,3 @@ const ChartAdapter: RendererComponent<"chart"> = ({ node }) => (
     yAxis={node.props.yAxis}
   />
 );
-
-export default ChartAdapter;

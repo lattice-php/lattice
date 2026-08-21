@@ -4,7 +4,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Dropdown } from "./dropdown";
 
-const DropdownAdapter: RendererComponent<"dropdown"> = ({ children, node }) => {
+export const DropdownAdapter: RendererComponent<"dropdown"> = ({ children, node }) => {
   const identity = nodeIdentity(node) ?? "dropdown";
 
   return (
@@ -22,5 +22,3 @@ const DropdownAdapter: RendererComponent<"dropdown"> = ({ children, node }) => {
     </Dropdown>
   );
 };
-
-export default DropdownAdapter;

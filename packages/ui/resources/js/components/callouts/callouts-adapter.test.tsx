@@ -5,8 +5,8 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
 import { defaultNavigation, NavigationProvider } from "../../navigation";
-import LinkAdapter from "../link/link-adapter";
-import CalloutsAdapter from "./callouts-adapter";
+import { LinkAdapter } from "../link/link-adapter";
+import { CalloutsAdapter } from "./callouts-adapter";
 
 const navigateListeners: Array<() => void> = [];
 

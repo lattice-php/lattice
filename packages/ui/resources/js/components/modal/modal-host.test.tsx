@@ -4,12 +4,12 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { renderWithRegistry, fakeNode } from "@lattice-php/core/test-support";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import type { Node } from "@lattice-php/core/types";
-import ModalComponent from "./modal-adapter";
+import { ModalAdapter } from "./modal-adapter";
 import type { ModalHandle } from "./modal-host";
 import { ModalProvider, useEmbeddedModal, useModal } from "./modal-host";
 
 const registry = createRegistry({
-  components: { modal: eagerComponent(ModalComponent) },
+  components: { modal: eagerComponent(ModalAdapter) },
   name: "test/modal",
 });
 
@@ -320,9 +320,9 @@ describe("ModalProvider", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     renderWithRegistry(
-      <ModalComponent node={modalNode("welcome", "Welcome")}>
+      <ModalAdapter node={modalNode("welcome", "Welcome")}>
         <p>Body content</p>
-      </ModalComponent>,
+      </ModalAdapter>,
       registry,
     );
 

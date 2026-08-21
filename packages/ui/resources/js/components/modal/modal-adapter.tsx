@@ -17,7 +17,7 @@ function warnMissingHost(): void {
   );
 }
 
-const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => {
+export const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => {
   const { t } = useT(UI_NAMESPACE);
   const context = useEmbeddedModal();
 
@@ -47,5 +47,3 @@ const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => {
     </Dialog>
   );
 };
-
-export default ModalAdapter;

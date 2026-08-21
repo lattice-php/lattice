@@ -13,7 +13,7 @@ function matchesTarget(event: Event, identity: string | undefined): boolean {
   return target == null || target === identity;
 }
 
-const SidebarAdapter: RendererComponent<"sidebar"> = ({ children, node }) => {
+export const SidebarAdapter: RendererComponent<"sidebar"> = ({ children, node }) => {
   const collapsible = node.props.collapsible;
   const rememberState = node.props.rememberState;
   const identity = nodeIdentity(node);
@@ -55,5 +55,3 @@ const SidebarAdapter: RendererComponent<"sidebar"> = ({ children, node }) => {
     </Sidebar>
   );
 };
-
-export default SidebarAdapter;

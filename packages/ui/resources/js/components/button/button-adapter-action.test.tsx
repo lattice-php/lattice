@@ -4,7 +4,7 @@ import { ActionInteractionProvider } from "@lattice-php/action";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import type { Node, ComponentPropsOf } from "@lattice-php/core/types";
 import { ModalProvider } from "../modal/modal-host";
-import ButtonAdapter from "./button-adapter";
+import { ButtonAdapter } from "./button-adapter";
 
 const apiFetch = vi.hoisted(() => vi.fn<() => Promise<Response>>());
 

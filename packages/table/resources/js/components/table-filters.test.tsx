@@ -4,7 +4,7 @@ import { registry } from "@lattice-php/lattice/registry";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import type { FilterNode, TableNode } from "@lattice-php/table/types";
 import { col, tableFetch, tableNode, tableQuery } from "../test-support";
-import TableComponent from "./table";
+import { TableComponent } from "./table";
 
 const filters: FilterNode[] = [
   {

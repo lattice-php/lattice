@@ -3,7 +3,7 @@ import type { RendererComponent } from "@lattice-php/core/types";
 import { UI_NAMESPACE, useT } from "../../i18n";
 import { Breadcrumbs } from "./breadcrumbs";
 
-const BreadcrumbsAdapter: RendererComponent<"breadcrumbs"> = ({ node }) => {
+export const BreadcrumbsAdapter: RendererComponent<"breadcrumbs"> = ({ node }) => {
   const { t } = useT(UI_NAMESPACE);
 
   return (
@@ -14,5 +14,3 @@ const BreadcrumbsAdapter: RendererComponent<"breadcrumbs"> = ({ node }) => {
     />
   );
 };
-
-export default BreadcrumbsAdapter;

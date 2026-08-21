@@ -4,7 +4,7 @@ import { nodeIdentity, prefixedTestId } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Section } from "./section";
 
-const SectionAdapter: RendererComponent<"section"> = ({ children, node }) => {
+export const SectionAdapter: RendererComponent<"section"> = ({ children, node }) => {
   const collapsible = node.props.collapsible === true;
   const headerActions = toNodes(node.props.headerActions);
   const identity = nodeIdentity(node);
@@ -30,5 +30,3 @@ const SectionAdapter: RendererComponent<"section"> = ({ children, node }) => {
     </Section>
   );
 };
-
-export default SectionAdapter;

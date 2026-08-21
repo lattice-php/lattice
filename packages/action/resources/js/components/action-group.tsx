@@ -11,7 +11,7 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
 
-const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
+export const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
   const { t } = useT("lattice");
   const label = node.props.label ?? t("common.action-group.label", "Actions");
   const orientation = node.props.orientation;
@@ -60,5 +60,3 @@ const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, nod
     </div>
   );
 };
-
-export default ActionGroupComponent;

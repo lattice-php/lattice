@@ -2,7 +2,10 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { DescriptionList } from "./description-list";
 
-const DescriptionListAdapter: RendererComponent<"description-list"> = ({ children, node }) => (
+export const DescriptionListAdapter: RendererComponent<"description-list"> = ({
+  children,
+  node,
+}) => (
   <DescriptionList
     bleed={node.props.bleed}
     data-test={nodeIdentity(node)}
@@ -13,5 +16,3 @@ const DescriptionListAdapter: RendererComponent<"description-list"> = ({ childre
     {children}
   </DescriptionList>
 );
-
-export default DescriptionListAdapter;

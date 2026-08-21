@@ -68,7 +68,7 @@ function labelWithTextAffixes(label: string, prefix?: Affix | null, suffix?: Aff
     .join(" ");
 }
 
-const LinkAdapter: RendererComponent<"link"> = ({ node }) => {
+export const LinkAdapter: RendererComponent<"link"> = ({ node }) => {
   const isMenuItem = useActionMenu();
   const { icon, label: rawLabel, prefix, suffix } = node.props;
   const label = rawLabel ?? "";
@@ -120,5 +120,3 @@ const LinkAdapter: RendererComponent<"link"> = ({ node }) => {
     </TextLink>
   );
 };
-
-export default LinkAdapter;

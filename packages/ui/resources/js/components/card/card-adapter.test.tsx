@@ -3,7 +3,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { fakeNode, renderWithRegistry } from "@lattice-php/core/test-support";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { describe, expect, it, vi } from "vitest";
-import CardAdapter from "./card-adapter";
+import { CardAdapter } from "./card-adapter";
 
 const onAction = vi.fn();
 

@@ -5,7 +5,7 @@ import { renderWithRegistry, stubMatchMedia, TextProbe } from "@lattice-php/core
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { defaultNavigation, NavigationProvider } from "../../navigation";
-import TabAdapter, { TabsAdapter } from "./tabs-adapter";
+import { TabAdapter, TabsAdapter } from "./tabs-adapter";
 
 const visit = vi.fn();
 

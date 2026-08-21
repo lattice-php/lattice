@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearRefreshedRefs } from "@lattice-php/core/component-ref";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
-import ButtonComponent from "@lattice-php/ui/components/button/button-adapter";
+import { ButtonAdapter } from "@lattice-php/ui/components/button/button-adapter";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { renderWithRegistry } from "@lattice-php/core/test-support";
 import { CheckboxAdapter, ChoiceAdapter, FormAdapter, TextInputAdapter } from "..";
@@ -147,7 +147,7 @@ describe("Lattice form schema components", () => {
 
     render(
       <FormAdapter node={formNode}>
-        <ButtonComponent node={submitNode}>{null}</ButtonComponent>
+        <ButtonAdapter node={submitNode}>{null}</ButtonAdapter>
       </FormAdapter>,
     );
 
@@ -452,7 +452,7 @@ describe("Lattice form schema components", () => {
 
   it("renders custom submit buttons, substituting the managed submit button", () => {
     const registry = createRegistry({
-      components: { button: eagerComponent(ButtonComponent) },
+      components: { button: eagerComponent(ButtonAdapter) },
       name: "test/form-submit-buttons",
     });
 

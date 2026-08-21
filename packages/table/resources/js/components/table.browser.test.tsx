@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { col, tableNode } from "../test-support";
-import TableComponent from "./table";
+import { TableComponent } from "./table";
 
 function wideColumns(pinnedIndexes: Partial<Record<number, "left" | "right">> = {}) {
   return Array.from({ length: 8 }, (_, index) =>

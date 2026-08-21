@@ -1,7 +1,7 @@
 import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { TableNodeType } from "./generated";
 import type { RendererComponent } from "@lattice-php/core/types";
-import TableComponent from "./components/table";
+import { TableComponent } from "./components/table";
 
 // The table renders an enriched TableNode (rows/pagination/state the server
 // hydrates onto it); the registry erases per-component node types here.

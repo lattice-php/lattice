@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Text } from "./text";
 
-const TextAdapter: RendererComponent<"text"> = ({ node }) => (
+export const TextAdapter: RendererComponent<"text"> = ({ node }) => (
   <Text
     align={node.props.align === "center" ? "center" : "left"}
     color={node.props.color}
@@ -15,5 +15,3 @@ const TextAdapter: RendererComponent<"text"> = ({ node }) => (
     {node.props.text}
   </Text>
 );
-
-export default TextAdapter;

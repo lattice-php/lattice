@@ -21,7 +21,7 @@ function schemaContainsPath(schema: Schema | undefined, path: string | undefined
   );
 }
 
-const MenuItemAdapter: RendererComponent<"menu-item"> = ({ children, node }) => {
+export const MenuItemAdapter: RendererComponent<"menu-item"> = ({ children, node }) => {
   const { icon, label: rawLabel, prefix, suffix } = node.props;
   const label = rawLabel ?? "";
   const { currentUrl } = useNavigation();
@@ -66,5 +66,3 @@ const MenuItemAdapter: RendererComponent<"menu-item"> = ({ children, node }) => 
     </MenuItem>
   );
 };
-
-export default MenuItemAdapter;

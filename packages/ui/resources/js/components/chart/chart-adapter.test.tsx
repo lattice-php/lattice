@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Node } from "@lattice-php/core/types";
 import ChartComponent from "./chart-view";
-import ChartWrapper from "./chart-adapter";
+import { ChartAdapter } from "./chart-adapter";
 
 vi.mock("recharts", async () => {
   const React = await import("react");
@@ -422,7 +422,7 @@ describe("Chart component", () => {
       tooltip: false,
     });
 
-    render(<ChartWrapper node={node}>{null}</ChartWrapper>);
+    render(<ChartAdapter node={node}>{null}</ChartAdapter>);
 
     expect(await screen.findByTestId("responsive-container")).toBeInTheDocument();
   });

@@ -4,7 +4,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Tooltip } from "./tooltip";
 
-const TooltipAdapter: RendererComponent<"tooltip"> = ({ node }) => {
+export const TooltipAdapter: RendererComponent<"tooltip"> = ({ node }) => {
   const content = node.props.content;
   const trigger = toNodes(node.props.trigger);
   const identity = nodeIdentity(node);
@@ -17,5 +17,3 @@ const TooltipAdapter: RendererComponent<"tooltip"> = ({ node }) => {
     />
   );
 };
-
-export default TooltipAdapter;

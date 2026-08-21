@@ -2,7 +2,7 @@ import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { Stack } from "./stack";
 
-const StackAdapter: RendererComponent<"stack"> = ({ children, node }) => (
+export const StackAdapter: RendererComponent<"stack"> = ({ children, node }) => (
   <Stack
     align={node.props.align ?? undefined}
     data-test={nodeIdentity(node)}
@@ -17,5 +17,3 @@ const StackAdapter: RendererComponent<"stack"> = ({ children, node }) => (
     {children}
   </Stack>
 );
-
-export default StackAdapter;

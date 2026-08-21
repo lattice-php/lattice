@@ -5,13 +5,13 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, fakeNode, TextProbe } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
 import { ModalProvider } from "../modal/modal-host";
-import ModalComponent from "../modal/modal-adapter";
-import MenuItemAdapter from "./menu-item-adapter";
+import { ModalAdapter } from "../modal/modal-adapter";
+import { MenuItemAdapter } from "./menu-item-adapter";
 
 const registry = createRegistry({
   components: {
     "menu-item": eagerComponent(MenuItemAdapter),
-    modal: eagerComponent(ModalComponent),
+    modal: eagerComponent(ModalAdapter),
     text: eagerComponent(TextProbe),
   },
   name: "test/menu-item-modal",
