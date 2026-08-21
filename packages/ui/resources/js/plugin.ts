@@ -35,11 +35,11 @@ import TextAdapter from "./components/text/text-adapter";
 import TooltipAdapter from "./components/tooltip/tooltip-adapter";
 import TopbarAdapter from "./components/topbar/topbar-adapter";
 import {
-  BadgeEntryComponent,
-  BooleanEntryComponent,
-  ComponentEntryComponent,
-  DateEntryComponent,
-  TextEntryComponent,
+  BadgeEntryAdapter,
+  BooleanEntryAdapter,
+  ComponentEntryAdapter,
+  DateEntryAdapter,
+  TextEntryAdapter,
 } from "./components/entries/entries";
 
 export const uiComponents: Plugin = {
@@ -55,11 +55,11 @@ export const uiComponents: Plugin = {
     collapsible: eagerComponent(CollapsibleAdapter),
     "description-list": eagerComponent(DescriptionListAdapter),
     dropdown: eagerComponent(DropdownAdapter),
-    "entry.badge": eagerComponent(BadgeEntryComponent),
-    "entry.boolean": eagerComponent(BooleanEntryComponent),
-    "entry.component": eagerComponent(ComponentEntryComponent),
-    "entry.date": eagerComponent(DateEntryComponent),
-    "entry.text": eagerComponent(TextEntryComponent),
+    "entry.badge": eagerComponent(BadgeEntryAdapter),
+    "entry.boolean": eagerComponent(BooleanEntryAdapter),
+    "entry.component": eagerComponent(ComponentEntryAdapter),
+    "entry.date": eagerComponent(DateEntryAdapter),
+    "entry.text": eagerComponent(TextEntryAdapter),
     "floating-panel": eagerComponent(FloatingPanelAdapter),
     grid: eagerComponent(GridAdapter),
     heading: eagerComponent(HeadingAdapter),

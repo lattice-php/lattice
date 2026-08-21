@@ -2,7 +2,7 @@ import { userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
-import { TextEntryComponent } from "../entries/entries";
+import { TextEntryAdapter } from "../entries/entries";
 import { DescriptionList } from "./description-list";
 
 describe("DescriptionList in a browser", () => {
@@ -16,7 +16,7 @@ describe("DescriptionList in a browser", () => {
     const screen = await render(
       <div className="px-lt-gutter" style={{ width: 400 }} data-testid="panel">
         <DescriptionList bleed semantic="list">
-          <TextEntryComponent
+          <TextEntryAdapter
             node={fakeNode({
               type: "entry.text",
               id: "entry-name",
@@ -24,7 +24,7 @@ describe("DescriptionList in a browser", () => {
             })}
           >
             {null}
-          </TextEntryComponent>
+          </TextEntryAdapter>
         </DescriptionList>
       </div>,
     );
@@ -44,7 +44,7 @@ describe("DescriptionList in a browser", () => {
   it("reveals and hides an entry's disclosure content when its row is used", async () => {
     const screen = await render(
       <DescriptionList semantic="list">
-        <TextEntryComponent
+        <TextEntryAdapter
           node={fakeNode({
             type: "entry.text",
             id: "entry-password",
@@ -53,7 +53,7 @@ describe("DescriptionList in a browser", () => {
           })}
         >
           <p>Change your password</p>
-        </TextEntryComponent>
+        </TextEntryAdapter>
       </DescriptionList>,
     );
 
