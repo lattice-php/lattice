@@ -58,11 +58,13 @@ test('class-string gate checks resolve the configured model policy', function ()
     actingAs(workbenchTestUser());
     $request = new Request;
 
-    expect((new MediaTable)->authorize($request))->toBeTrue();
+    $allowedTable = new MediaTable;
+    expect($allowedTable->authorize($request))->toBeTrue();
 
     Gate::policy(CustomMedia::class, DenyMediaPolicy::class);
 
-    expect((new MediaTable)->authorize($request))->toBeFalse()
+    $deniedTable = new MediaTable;
+    expect($deniedTable->authorize($request))->toBeFalse()
         ->and(app(UploadMediaAction::class)->authorize($request))->toBeFalse()
         ->and(app(UpdateMediaAction::class)->authorize($request))->toBeFalse()
         ->and(app(DeleteMediaAction::class)->authorize($request))->toBeFalse();

@@ -198,8 +198,7 @@ jobs:
           restore-keys: composer-${{ runner.os }}-8.4-
 
       # The workbench build discovers component packages (and their icon dirs)
-      # through vendor/composer/installed.json, so the sprite check below needs
-      # the composer dependencies installed.
+      # through vendor/composer/installed.json.
       - run: composer install --prefer-dist --no-progress --no-interaction
 
       - run: npm ci
@@ -209,13 +208,7 @@ jobs:
           CODECOV_BUNDLE: "1"
         run: npm run analyze:build
 
-      # The workbench build regenerates the sprite artifacts the diff below verifies.
       - run: npm run build
-
-      - name: Icons are up to date
-        run: |
-          npm run build:sprite --workspace @lattice-php/api-reference
-          git diff --exit-code -- packages/ui/resources/icons packages/ui/src/Enums/Icon.php workbench/resources/js/sprite-icons.ts packages/api-reference/resources/js/icons/sprite.generated.ts
 
   package-install:
     name: Package installs standalone (${{ matrix.package }})

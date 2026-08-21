@@ -39,7 +39,7 @@ it('writes an augmentation file for app components, not built-ins', function ():
             ->toContain('"sample-extension": {')
             ->toContain('enabled: boolean');
 
-        expect(is_string($contents) && str_contains($contents, '"badge"'))->toBeFalse();
+        expect(str_contains($contents, '"badge"'))->toBeFalse();
 
         // Quote style depends on whether oxfmt is available (absent on the CI
         // PHP jobs), so the built-in-descendant union asserts on a normalized form.
