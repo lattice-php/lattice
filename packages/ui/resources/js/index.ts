@@ -9,6 +9,7 @@ export * from "./components/avatar/avatar";
 export * from "./components/collapsible/collapsible";
 export * from "./components/description-list/description-list";
 export * from "./components/floating-panel/floating-panel";
+export * from "./primitives/form-field";
 export * from "./components/grid/grid";
 export * from "./components/heading/heading";
 export * from "./components/image/image";

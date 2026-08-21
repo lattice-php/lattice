@@ -1,20 +1,20 @@
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
-import { FormFieldFrame } from "./field";
+import { FormField } from "./form-field";
 
-describe("FormFieldFrame in a browser", () => {
+describe("FormField in a browser", () => {
   it("keeps a required field's control at the same height as an optional sibling", async () => {
     await render(
       <div style={{ display: "flex", gap: "16px", width: "400px" }}>
         <div style={{ flex: 1 }}>
-          <FormFieldFrame id="required-field" label="Steuersatzart" required>
+          <FormField id="required-field" label="Steuersatzart" required>
             {(controlProps) => <input {...controlProps} data-test="required-control" />}
-          </FormFieldFrame>
+          </FormField>
         </div>
         <div style={{ flex: 1 }}>
-          <FormFieldFrame id="optional-field" label="Steuerkategorie">
+          <FormField id="optional-field" label="Steuerkategorie">
             {(controlProps) => <input {...controlProps} data-test="optional-control" />}
-          </FormFieldFrame>
+          </FormField>
         </div>
       </div>,
     );

@@ -94,6 +94,16 @@ export const ColorPickerComponent: RendererComponent<"field.color-picker"> = ({ 
 
 `node.props` contains all the serialized field data — name, value, label, required, and any extra properties you added to the PHP class.
 
+To give a custom control the same label, required marker, helper text, tooltip, and error frame the built-in fields use, wrap it in `FormField` from `@lattice-php/ui`. It passes the `id` and `aria-*` wiring for the control through a render prop; pass `bare` to keep only a visually hidden label, as fields inside a repeater table cell do:
+
+```tsx
+import { FormField } from "@lattice-php/ui";
+
+<FormField id="color" label="Color" helperText="Pick a swatch" error={error} required>
+  {(controlProps) => <input {...controlProps} type="color" />}
+</FormField>;
+```
+
 ## 5. The registry entry
 
 The generator appended an entry to `resources/js/registry.ts`, wrapping the renderer in `eagerComponent`:
