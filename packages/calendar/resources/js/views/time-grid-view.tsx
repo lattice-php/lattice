@@ -367,7 +367,18 @@ export function TimeGridView({
         </div>
 
         <div className="lt-calendar-timegrid-scroll" ref={scrollRef}>
-          <div className="lt-calendar-timegrid-row">
+          <div className="lt-calendar-timegrid-row lt-calendar-timegrid-body">
+            <div aria-hidden="true" className="lt-calendar-timegrid-lines">
+              {hourLabels.map((label, hour) =>
+                hour > 0 ? (
+                  <div
+                    className="lt-calendar-timegrid-line"
+                    key={label}
+                    style={{ top: `${(hour / 24) * 100}%` }}
+                  />
+                ) : null,
+              )}
+            </div>
             <div aria-hidden="true" className="lt-calendar-timegrid-gutter">
               {hourLabels.map((label, hour) =>
                 hour > 0 ? (

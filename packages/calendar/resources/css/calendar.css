@@ -120,14 +120,30 @@
   transform: translateY(-50%);
 }
 
+.lt-calendar-timegrid-body {
+  position: relative;
+}
+
+/*
+ * The hour lines are real elements, not a background gradient: Safari's
+ * compositor drops gradient tiles on tall elements inside a scroller, so the
+ * lines vanish further down the day while positioned elements keep painting.
+ */
+.lt-calendar-timegrid-lines {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.lt-calendar-timegrid-line {
+  background-color: var(--lt-border);
+  height: 1px;
+  left: var(--lt-calendar-timegrid-gutter-w);
+  position: absolute;
+  right: 0;
+}
+
 .lt-calendar-timegrid-col {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--lt-border) 0,
-    var(--lt-border) 1px,
-    transparent 1px,
-    transparent var(--lt-calendar-hour-h)
-  );
   height: calc(24 * var(--lt-calendar-hour-h));
   position: relative;
 }
