@@ -17,6 +17,7 @@ function textColumn(props: Partial<ColumnPropsOf<"column.text">> = {}): ColumnNo
       link: null,
       multiple: null,
       options: [],
+      pinned: null,
       sortable: false,
       toggleable: false,
       width: "md",

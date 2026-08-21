@@ -9,6 +9,7 @@ use Lattice\Core\Attributes\WireEnvelope;
 use Lattice\Table\Contracts\Filterable;
 use Lattice\Table\Contracts\Sortable;
 use Lattice\Table\Enums\ColumnAlign;
+use Lattice\Table\Enums\ColumnPin;
 use Lattice\Table\RelationBinding;
 use Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Ui\Concerns\GatesRendering;
@@ -31,6 +32,8 @@ abstract class Column implements JsonSerializable, Renderable
     public ColumnWidth $width = ColumnWidth::Md;
 
     public ColumnAlign $align = ColumnAlign::Start;
+
+    public ?ColumnPin $pinned = null;
 
     /** Generation-source declaration only; the wire value is computed in {@see self::decorateProps()}. */
     public bool $sortable = false;
@@ -108,6 +111,13 @@ abstract class Column implements JsonSerializable, Renderable
     public function align(ColumnAlign $align): static
     {
         $this->align = $align;
+
+        return $this;
+    }
+
+    public function pinned(ColumnPin $pinned = ColumnPin::Left): static
+    {
+        $this->pinned = $pinned;
 
         return $this;
     }

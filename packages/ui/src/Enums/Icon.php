@@ -12,6 +12,8 @@ enum Icon: string
     case AlignLeft = 'align-left';
     case AlignRight = 'align-right';
     case ArrowDown = 'arrow-down';
+    case ArrowLeftToLine = 'arrow-left-to-line';
+    case ArrowRightToLine = 'arrow-right-to-line';
     case ArrowUp = 'arrow-up';
     case Bell = 'bell';
     case Bold = 'bold';

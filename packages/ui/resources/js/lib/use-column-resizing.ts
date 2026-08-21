@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef } from "react";
 import { usePersistentState } from "./use-persistent-state";
 import {
   buildColumnGridTemplate,
+  buildPinnedOffsets,
   defaultColumnWidthPx,
   maxColumnWidthPx,
   minColumnWidthPx,
@@ -33,6 +34,9 @@ export function useColumnResizing({
   columnGapPx = 0,
   columns,
   enabled,
+  hasActions = false,
+  hasExpander = false,
+  hasSelection = false,
   leadingTracks = emptyTracks,
   showIndicator = false,
   storageKey,
@@ -41,6 +45,9 @@ export function useColumnResizing({
   columnGapPx?: number;
   columns: SizableColumn[];
   enabled: boolean;
+  hasActions?: boolean;
+  hasExpander?: boolean;
+  hasSelection?: boolean;
   leadingTracks?: string[];
   showIndicator?: boolean;
   storageKey?: string;
@@ -71,12 +78,33 @@ export function useColumnResizing({
     [columns, enabled, leadingTracks, trailingTracks],
   );
 
+  const pinOffsetsForOverrides = useCallback(
+    (nextOverrides: Record<string, number | undefined>): Record<string, string> =>
+      buildPinnedOffsets({
+        columns,
+        hasActions,
+        hasExpander,
+        hasSelection,
+        leadingTracks,
+        overrides: enabled ? nextOverrides : {},
+        trailingTracks,
+      }),
+    [columns, enabled, hasActions, hasExpander, hasSelection, leadingTracks, trailingTracks],
+  );
+
   const gridTemplateColumns = useMemo(
     () => templateForOverrides(overrides),
     [overrides, templateForOverrides],
   );
 
-  const applyTemplate = useCallback((template: string): void => {
+  const pinOffsetVars = useMemo(
+    () => pinOffsetsForOverrides(overrides),
+    [overrides, pinOffsetsForOverrides],
+  );
+
+  const appliedPinVarsRef = useRef<string[]>([]);
+
+  const applyTemplate = useCallback((template: string, offsets: Record<string, string>): void => {
     const root = resizeRootRef.current;
 
     if (!root) {
@@ -85,15 +113,34 @@ export function useColumnResizing({
 
     root.style.gridTemplateColumns = template;
     root.style.setProperty("--lattice-table-columns", template);
+
+    for (const key of appliedPinVarsRef.current) {
+      if (!(key in offsets)) {
+        root.style.removeProperty(key);
+      }
+    }
+
+    for (const [key, value] of Object.entries(offsets)) {
+      root.style.setProperty(key, value);
+    }
+
+    appliedPinVarsRef.current = Object.keys(offsets);
   }, []);
+
+  const applyOverrides = useCallback(
+    (next: Record<string, number | undefined>): void => {
+      applyTemplate(templateForOverrides(next), pinOffsetsForOverrides(next));
+    },
+    [applyTemplate, pinOffsetsForOverrides, templateForOverrides],
+  );
 
   const commitOverrides = useCallback(
     (next: Record<string, number | undefined>) => {
       overridesRef.current = next;
       setOverrides(next);
-      applyTemplate(templateForOverrides(next));
+      applyOverrides(next);
     },
-    [applyTemplate, setOverrides, templateForOverrides],
+    [applyOverrides, setOverrides],
   );
 
   const overridesWithColumnWidth = useCallback(
@@ -253,7 +300,7 @@ export function useColumnResizing({
 
           active.overrides = next;
           overridesRef.current = next;
-          applyTemplate(templateForOverrides(next));
+          applyOverrides(next);
         },
         onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
           finishDrag(event, true);
@@ -274,13 +321,12 @@ export function useColumnResizing({
       currentColumnWidth,
       enabled,
       leadingTracks,
-      applyTemplate,
+      applyOverrides,
       commitOverrides,
       overridesWithColumnWidth,
       resetColumnWidth,
       setColumnWidth,
       showIndicator,
-      templateForOverrides,
       trailingTracks,
     ],
   );
@@ -289,6 +335,7 @@ export function useColumnResizing({
     getResizeHandleProps,
     gridTemplateColumns,
     hasOverrides,
+    pinOffsetVars,
     resizeRootRef,
     resetColumns,
     resetColumnWidth,

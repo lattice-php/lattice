@@ -32,6 +32,9 @@ return [
     'columns' => [
         'label' => 'Spalten',
         'reset' => 'Zurücksetzen',
+        'pin-left' => 'Links anheften',
+        'pin-right' => 'Rechts anheften',
+        'unpin' => 'Lösen',
     ],
     'search' => [
         'placeholder' => 'Suchen',

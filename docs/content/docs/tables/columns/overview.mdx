@@ -85,6 +85,53 @@ TextColumn::make('updated_at')->label('Updated')
   defaults.
 </Info>
 
+## Pinned
+
+`->pinned()` keeps a column fixed at the left edge of the table while the rest of the columns scroll
+underneath it — useful for an identifying column like a SKU or name in a wide table. Pass
+`ColumnPin::Right` to pin a column to the right edge instead.
+
+```php
+use Lattice\Table\Enums\ColumnPin;
+
+TextColumn::make('sku')->label('SKU')->pinned();                        // pinned left
+BadgeColumn::make('status')->label('Status')->pinned(ColumnPin::Right); // pinned right
+```
+
+<ComponentExample
+  php={`TextColumn::make('sku')->label('SKU')->pinned();
+TextColumn::make('name')->label('Name');
+NumberColumn::make('price')->label('Price');
+BadgeColumn::make('status')->label('Status')
+    ->colors(['active' => 'green', 'archived' => 'gray'])
+    ->pinned(ColumnPin::Right);`}
+  fixture="table.pinned"
+/>
+
+The row-selection checkbox and the row-actions column pin themselves automatically whenever any data
+column is pinned, so they stay reachable at the edge nearest their side.
+
+<Info>
+  Once a table has a pinned column, every column keeps its declared or resized width instead of
+  stretching to fill the container — the table switches to a fixed layout so pinned columns line up
+  precisely as the rest of the table scrolls underneath them.
+</Info>
+
+Enable `->pinnableColumns()` on the table definition to let viewers pin and unpin columns themselves,
+alongside show/hide, from the **Columns** menu:
+
+```php
+public function pinnableColumns(): bool
+{
+    return true;
+}
+```
+
+<Info>
+  Like column visibility, each viewer's pin choices are remembered per table in the browser
+  (`localStorage`), so they survive reloads. **Reset** in the same menu restores the defaults.
+</Info>
+
 ## Sortable and filterable
 
 `->sortable()` and `->filterable()` are **capabilities** a column opts into, not display options. They

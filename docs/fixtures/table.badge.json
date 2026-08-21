@@ -18,6 +18,7 @@
                         "link": null,
                         "multiple": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -66,6 +67,7 @@
                         "hiddenByDefault": false,
                         "label": "Status",
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -104,6 +106,7 @@
                 "total": 3
             },
             "perPageOptions": [],
+            "pinnableColumns": false,
             "query": {
                 "filters": [],
                 "mode": null,

@@ -113,20 +113,23 @@ class ProductsTable extends TableDefinition
 Everything except the source is declared the same way whatever backs the table. `TableDefinition`
 exposes these hooks beyond `columns()` and `source()`:
 
-| Method               | Purpose                                                                           |
-| -------------------- | --------------------------------------------------------------------------------- |
-| `columns()`          | The columns to render — see [Columns](/tables/columns/overview/).                 |
-| `source()`           | The [data source](/tables/data-sources/) that turns a query into rows.            |
-| `filters()`          | Table-level [dedicated filters](/tables/filtering/#dedicated-filters).            |
-| `perPage()`          | Rows per page (default `25`).                                                     |
-| `pagination()`       | The [pagination mode](/tables/sorting-and-pagination/#pagination).                |
-| `striped()`          | Alternate row shading.                                                            |
-| `resizableColumns()` | Let users drag column borders to resize. Widths persist per table in the browser. |
-| `resizeIndicator()`  | Show a drag indicator on column borders when resizing is enabled.                 |
-| `emptyLabel()`       | Text shown when the table has no rows (default "No results").                     |
-| `actionsLabel()`     | Accessible label for the row-actions column (default "Actions").                  |
-| `actions($row)`      | Per-row [actions](/tables/actions/).                                              |
-| `bulkActions()`      | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.                  |
+| Method               | Purpose                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `columns()`          | The columns to render — see [Columns](/tables/columns/overview/).                             |
+| `source()`           | The [data source](/tables/data-sources/) that turns a query into rows.                        |
+| `filters()`          | Table-level [dedicated filters](/tables/filtering/#dedicated-filters).                        |
+| `perPage()`          | Rows per page (default `25`).                                                                 |
+| `pagination()`       | The [pagination mode](/tables/sorting-and-pagination/#pagination).                            |
+| `striped()`          | Alternate row shading.                                                                        |
+| `resizableColumns()` | Let users drag column borders to resize. Widths persist per table in the browser.             |
+| `resizeIndicator()`  | Show a drag indicator on column borders when resizing is enabled.                             |
+| `pinnableColumns()`  | Let users pin columns from the columns menu — see [Pinned](/tables/columns/overview/#pinned). |
+| `emptyLabel()`       | Text shown when the table has no rows (default "No results").                                 |
+| `actionsLabel()`     | Accessible label for the row-actions column (default "Actions").                              |
+| `actions($row)`      | Per-row [actions](/tables/actions/).                                                          |
+| `rowDetail($row)`    | Expandable [row detail](/tables/row-detail/) fragment.                                        |
+| `rowUrl($row)`       | Makes the whole row clickable — see [Row links](/tables/row-detail/#row-links).               |
+| `bulkActions()`      | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.                              |
 
 Each hook is a method you override. For example, to enable resizable columns with a drag indicator:
 

@@ -9,6 +9,7 @@ export type BadgeColumn = {
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -19,6 +20,7 @@ export type BooleanColumn = {
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -29,6 +31,7 @@ export type Column = {
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -62,6 +65,7 @@ export type ColumnNodeType =
   | "column.number"
   | "column.stack"
   | "column.text";
+export type ColumnPin = "left" | "right";
 export type ColumnPropsMap = {
   "column.badge": BadgeColumn;
   "column.boolean": BooleanColumn;
@@ -117,6 +121,7 @@ export type IconColumn = {
   icons: Record<string | number, string> | null;
   label: string | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -128,6 +133,7 @@ export type ImageColumn = {
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
+  pinned: ColumnPin | null;
   previewable: boolean;
   size: number | null;
   sortable: boolean;
@@ -145,6 +151,7 @@ export type MoneyColumn = {
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -160,6 +167,7 @@ export type NumberColumn = {
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   unit: NumberFormatUnit | null;
@@ -180,6 +188,7 @@ export type StackColumn = {
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -196,6 +205,7 @@ export type Table = {
   lazy: boolean;
   pagination: TablePagination | null;
   perPageOptions: (number | string)[];
+  pinnableColumns: boolean;
   query: TableQuery | null;
   ref: string | null;
   resizableColumns: boolean;
@@ -260,6 +270,7 @@ export type TextColumn = {
   } | null;
   multiple: string | null;
   options: Option[];
+  pinned: ColumnPin | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;

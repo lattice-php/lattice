@@ -170,6 +170,10 @@ export function getRowDetail(row: TableRow): Node | null {
     : null;
 }
 
+export function getRowUrl(row: TableRow): string | null {
+  return typeof row.rowUrl === "string" ? row.rowUrl : null;
+}
+
 export function getRowPopover(row: TableRow, columnKey: string): Node | null {
   const popovers = row.popovers;
 

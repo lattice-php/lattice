@@ -220,10 +220,37 @@ export function getVisiblePages(currentPage: number, lastPage: number): number[]
   return Array.from({ length: 5 }, (_, index) => start + index);
 }
 
-export function getTableSizingColumns(columns: TableColumn[]) {
+export function orderPinnedColumns<T>(
+  columns: T[],
+  pinOf: (column: T) => "left" | "right" | null,
+): T[] {
+  const left: T[] = [];
+  const middle: T[] = [];
+  const right: T[] = [];
+
+  for (const column of columns) {
+    const pin = pinOf(column);
+
+    if (pin === "left") {
+      left.push(column);
+    } else if (pin === "right") {
+      right.push(column);
+    } else {
+      middle.push(column);
+    }
+  }
+
+  return [...left, ...middle, ...right];
+}
+
+export function getTableSizingColumns(
+  columns: TableColumn[],
+  pinOf?: (column: TableColumn) => "left" | "right" | null,
+) {
   return columns.map((column) => ({
     key: column.key,
     label: column.props.label,
+    pin: pinOf?.(column) ?? undefined,
     width: columnWidthOrDefault(column),
   }));
 }

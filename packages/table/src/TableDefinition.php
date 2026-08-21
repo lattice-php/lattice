@@ -71,6 +71,11 @@ abstract class TableDefinition extends Definition
         return false;
     }
 
+    public function pinnableColumns(): bool
+    {
+        return false;
+    }
+
     public function resizeIndicator(): bool
     {
         return false;
@@ -99,6 +104,14 @@ abstract class TableDefinition extends Definition
      * @param  array<string, mixed>  $row
      */
     public function rowDetail(array $row): ?Component
+    {
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    public function rowUrl(array $row): ?string
     {
         return null;
     }

@@ -83,6 +83,7 @@ final class TableRegistry extends DefinitionRegistry
                     ->layout($definition->layout())
                     ->striped($definition->striped())
                     ->resizableColumns($definition->resizableColumns(), $definition->resizeIndicator())
+                    ->pinnableColumns($definition->pinnableColumns())
                     ->actionsLabel($definition->actionsLabel())
                     ->emptyLabel($definition->emptyLabel())
                     ->bulkActions($this->bulkActions($definition, $key, $context))
@@ -241,11 +242,12 @@ final class TableRegistry extends DefinitionRegistry
         return $result->decorateRows(function (array $row) use ($definition, $rowKeys, $popoverColumns, $linkColumns): array {
             $actions = $this->renderableComponents($definition->actions($row));
             $detail = $this->renderableComponents(array_filter([$definition->rowDetail($row)]));
+            $url = $definition->rowUrl($row);
             $popovers = $this->popovers($popoverColumns, $row);
             $links = $this->resolvedLinks($linkColumns, $row);
             $projected = array_intersect_key($row, array_flip($rowKeys));
 
-            unset($projected['actions'], $projected['detail'], $projected['popovers'], $projected['links']);
+            unset($projected['actions'], $projected['detail'], $projected['rowUrl'], $projected['popovers'], $projected['links']);
 
             if ($detail !== []) {
                 $projected['detail'] = $detail[0];
@@ -253,6 +255,10 @@ final class TableRegistry extends DefinitionRegistry
 
             if ($actions !== []) {
                 $projected['actions'] = $actions;
+            }
+
+            if ($url !== null) {
+                $projected['rowUrl'] = $url;
             }
 
             if ($popovers !== []) {

@@ -24,6 +24,8 @@ const componentPackages = discoverComponentPackages(import.meta.dirname);
 const latticeIcons = [
   // Server-driven defaults (names components emit / consumers commonly use)
   "arrow-down",
+  "arrow-left-to-line",
+  "arrow-right-to-line",
   "arrow-up",
   "check",
   "chevrons-up-down",

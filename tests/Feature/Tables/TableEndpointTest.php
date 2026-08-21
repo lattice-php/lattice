@@ -75,6 +75,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                     [
@@ -103,6 +104,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                     [
@@ -122,6 +124,7 @@ test('registered tables serialize their configured endpoint columns state and in
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                 ],
@@ -141,6 +144,7 @@ test('registered tables serialize their configured endpoint columns state and in
                     'mode' => null,
                 ],
                 'pagination' => null,
+                'pinnableColumns' => false,
             ],
         ]);
 });
@@ -187,6 +191,7 @@ test('registered tables can serialize lazily without running their query', funct
                             'multiple' => null,
                             'width' => 'md',
                             'align' => 'start',
+                            'pinned' => null,
                         ],
                     ],
                 ],
@@ -212,6 +217,7 @@ test('registered tables can serialize lazily without running their query', funct
                     'hasMore' => false,
                     'nextPage' => null,
                 ],
+                'pinnableColumns' => false,
             ],
         ]);
 });
@@ -241,6 +247,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                     'filter' => null,
                     'width' => 'xl',
                     'align' => 'start',
+                    'pinned' => null,
                 ],
                 'schema' => [
                     [
@@ -284,6 +291,7 @@ test('registered tables serialize grid layout stack columns and row actions', fu
                     'multiple' => null,
                     'width' => 'md',
                     'align' => 'start',
+                    'pinned' => null,
                 ],
             ],
         ])
@@ -394,14 +402,23 @@ test('registered table responses expose only declared columns row identity and g
     expect($row)->toBeArray();
     assert(is_array($row));
 
-    expect(array_keys($row))->toBe(['id', 'name', 'sku', 'status', 'actions'])
+    expect(array_keys($row))->toBe(['id', 'name', 'sku', 'status', 'actions', 'rowUrl'])
         ->and($row['id'])->toBe($product->getKey())
         ->and($row['name'])->toBe('Projected Product')
         ->and($row['sku'])->toBe('PROJECT-001')
         ->and($row['status'])->toBe('active')
         ->and($row['actions'][0]['type'])->toBe('link')
         ->and($row['actions'][0]['key'])->toBe('edit-product')
-        ->and($row['actions'][0]['props']['href'])->toBe("/products/{$product->getKey()}/edit");
+        ->and($row['actions'][0]['props']['href'])->toBe("/products/{$product->getKey()}/edit")
+        ->and($row['rowUrl'])->toBe("/products/{$product->getKey()}");
+});
+
+test('registered table responses omit the row url when a table declares no rowUrl', function (): void {
+    Lattice::tables([WorkbenchUsersTable::class]);
+
+    $row = wire(Table::use(WorkbenchUsersTable::class))['props']['data'][0];
+
+    expect($row)->not->toHaveKey('rowUrl');
 });
 
 test('registered table responses prune hidden columns from the row payload', function (): void {
@@ -610,6 +627,12 @@ class WorkbenchProjectedProductsTable extends EloquentTableDefinition
             Link::make('Edit', 'edit-product')
                 ->href("/products/{$row['id']}/edit"),
         ];
+    }
+
+    #[Override]
+    public function rowUrl(array $row): ?string
+    {
+        return "/products/{$row['id']}";
     }
 }
 

@@ -35,6 +35,7 @@
                         "link": null,
                         "multiple": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": true,
                         "toggleable": false,
                         "width": "md"
@@ -71,6 +72,7 @@
                         "maximumFractionDigits": null,
                         "minimumFractionDigits": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": true,
                         "toggleable": false,
                         "unit": null,
@@ -99,6 +101,7 @@
                         "hiddenByDefault": false,
                         "label": "Featured",
                         "options": [],
+                        "pinned": null,
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -121,6 +124,7 @@
                         "link": null,
                         "multiple": null,
                         "options": [],
+                        "pinned": null,
                         "sortable": true,
                         "toggleable": false,
                         "width": "md"
@@ -165,6 +169,7 @@
                 "total": 3
             },
             "perPageOptions": [],
+            "pinnableColumns": false,
             "query": {
                 "filters": [],
                 "mode": null,

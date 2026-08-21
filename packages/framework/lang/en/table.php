@@ -32,6 +32,9 @@ return [
     'columns' => [
         'label' => 'Columns',
         'reset' => 'Reset',
+        'pin-left' => 'Pin left',
+        'pin-right' => 'Pin right',
+        'unpin' => 'Unpin',
     ],
     'search' => [
         'placeholder' => 'Search',

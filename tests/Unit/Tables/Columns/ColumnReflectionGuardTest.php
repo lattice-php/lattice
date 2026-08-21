@@ -28,7 +28,7 @@ function publicColumnProps(string $class): array
     );
 }
 
-const COMMON_COLUMN_PROPS = ['label', 'width', 'align', 'sortable', 'toggleable', 'hiddenByDefault', 'filter', 'options'];
+const COMMON_COLUMN_PROPS = ['label', 'width', 'align', 'sortable', 'toggleable', 'hiddenByDefault', 'filter', 'options', 'pinned'];
 
 it('exposes exactly the common wire props on the base Column', function (): void {
     expect(publicColumnProps(Column::class))->toEqualCanonicalizing(COMMON_COLUMN_PROPS);

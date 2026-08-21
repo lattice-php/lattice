@@ -415,6 +415,7 @@ return [
         'columns' => 'Spalten',
         'columns-custom' => 'Eigene Spalte',
         'columns-number' => 'Zahl & Währung',
+        'columns-pinned' => 'Angeheftet',
         'columns-text' => 'Text',
         'columns-visual' => 'Icon, Bild & Boolean',
         'components' => 'Komponenten',
@@ -777,6 +778,10 @@ return [
                 'table' => 'Tabelle',
                 'table-heading' => 'Tabellenpaginierung',
                 'title' => 'Paginierung',
+            ],
+            'pinned-columns' => [
+                'description' => 'Angeheftete Spalten bleiben sichtbar, während der Rest der Tabelle horizontal scrollt.',
+                'title' => 'Angeheftete Spalten',
             ],
             'text-columns' => [
                 'description' => 'Textspalten mit Badges, Daten und kopierbaren Werten.',
