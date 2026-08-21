@@ -1,5 +1,6 @@
 #!/bin/sh
-# Fast static gate. Mirrors the local Verification routine in .ai/guidelines/development.md.
+# Fast static gate, scoped to what the push actually changes. Mirrors the local
+# Verification routine in .ai/guidelines/development.md.
 # Bypass with `git push --no-verify` (emergencies only — never push on red).
 #
 # The PHP side only runs Pint and PHPStan here — the full Pest suite and Rector are left
@@ -11,18 +12,23 @@
 # workbench assets and Playwright browsers. docs:typecheck (docs/tsconfig.json)
 # and the icons-freshness diff also stay CI-only for the same local-drift reasons.
 #
+# Each gate runs only when the push touches its side: a PHP-only push skips the JS gate
+# entirely and vice versa, Vitest runs only the tests reachable from the changed files
+# (module graph via --changed), and check:package runs only when a package manifest or
+# build config changed. Any file the classification does not recognize — and any push
+# whose diff base cannot be resolved — fails toward running both gates in full. CI always
+# runs everything, so a scoped skip here is never the last line of defense.
+#
 # The PHP and JS gates are independent, so they run concurrently — JS logs to a
 # temp file that is replayed only on failure, PHP streams live.
 
 root="$(git rev-parse --show-toplevel)"
 cd "$root"
 
-# Skip the gate when the push contains nothing to verify: only deletions, or only
-# docs/meta files (*.md, .github/, .githooks/). Any doubt (unknown sha, missing
-# origin/main) fails toward running the gate.
 gate_required=""
 have_update=""
 changed_files=""
+vitest_base=""
 
 while read -r local_ref local_sha remote_ref remote_sha; do
     case "$local_sha" in
@@ -44,6 +50,12 @@ while read -r local_ref local_sha remote_ref remote_sha; do
 "
     else
         gate_required=1
+        continue
+    fi
+    if [ -z "$vitest_base" ]; then
+        vitest_base="$base"
+    elif [ "$vitest_base" != "$base" ]; then
+        gate_required=1
     fi
 done
 
@@ -52,43 +64,78 @@ if [ -z "$have_update" ]; then
     exit 0
 fi
 
-if [ -z "$gate_required" ]; then
-    docs_only=1
+php_gate=""
+js_gate=""
+js_full=""
+pkg_check=""
+
+if [ -n "$gate_required" ]; then
+    php_gate=1
+    js_gate=1
+    js_full=1
+else
     IFS='
 '
     for f in $changed_files; do
         case "$f" in
-            *.md | .github/* | .githooks/*) ;;
+            *.md | *.mdx | .github/* | .githooks/*) ;;
+            *.php | *composer.json | composer.lock | phpstan*.neon* | pint.json | rector.php) php_gate=1 ;;
+            *package.json | package-lock.json | *vite.config.*) js_gate=1 pkg_check=1 ;;
+            *.ts | *.tsx | *.css | *.js | *.jsx | *.mjs | *.cjs | *.json | *.snap) js_gate=1 ;;
             *)
-                docs_only=""
-                break
+                php_gate=1
+                js_gate=1
+                js_full=1
                 ;;
         esac
     done
     unset IFS
-    if [ -n "$docs_only" ]; then
-        echo "✓ pre-push: docs/meta-only changes, skipping gate"
-        exit 0
-    fi
 fi
 
-js_log="$(mktemp)"
-trap 'rm -f "$js_log"' EXIT
+if [ -z "$php_gate" ] && [ -z "$js_gate" ]; then
+    echo "✓ pre-push: no PHP or JS changes, skipping gate"
+    exit 0
+fi
 
-echo "▶ pre-push: PHP gate (pint + phpstan) + npm run check (concurrent)"
+run_js_gate() {
+    if [ -n "$js_full" ]; then
+        npm run check
+        return $?
+    fi
+    VITEST_CHANGED_BASE="$vitest_base" npm run check:push || return 1
+    if [ -n "$pkg_check" ]; then
+        npm run check:package || return 1
+    fi
+}
 
-npm run check >"$js_log" 2>&1 &
-js_pid=$!
+js_status=0
+js_pid=""
+js_log=""
 
-vendor/bin/pint --parallel --test && vendor/bin/phpstan analyse && vendor/bin/phpstan analyse -c phpstan-tests.neon.dist
-php_status=$?
+if [ -n "$js_gate" ]; then
+    js_log="$(mktemp)"
+    trap 'rm -f "$js_log"' EXIT
+    run_js_gate >"$js_log" 2>&1 &
+    js_pid=$!
+fi
 
-wait "$js_pid"
-js_status=$?
+php_status=0
+if [ -n "$php_gate" ]; then
+    [ -n "$js_gate" ] && concurrent=" + JS gate (concurrent)" || concurrent=""
+    echo "▶ pre-push: PHP gate (pint + phpstan)$concurrent"
+    vendor/bin/pint --parallel --test && vendor/bin/phpstan analyse && vendor/bin/phpstan analyse -c phpstan-tests.neon.dist
+    php_status=$?
+elif [ -n "$js_gate" ]; then
+    echo "▶ pre-push: JS gate only (no PHP changes)"
+fi
 
-if [ "$js_status" -ne 0 ]; then
-    echo "✗ npm run check failed:"
-    cat "$js_log"
+if [ -n "$js_pid" ]; then
+    wait "$js_pid"
+    js_status=$?
+    if [ "$js_status" -ne 0 ]; then
+        echo "✗ JS gate failed:"
+        cat "$js_log"
+    fi
 fi
 
 if [ "$php_status" -ne 0 ] || [ "$js_status" -ne 0 ]; then
