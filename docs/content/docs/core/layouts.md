@@ -161,3 +161,7 @@ Lattice::layouts([AppLayout::class]);
 The shell is built from the same components as a page, plus a set made for navigation chrome —
 `Sidebar`, `Topbar`, `Menu`, `MenuItem`, `Dropdown`, and `Breadcrumbs`. Those are covered in
 [Navigation](/core/navigation/).
+
+The chrome itself is plain React underneath: `Sidebar`, `SidebarFooter`, `Topbar`, and `Breadcrumbs`
+are exported from `@lattice-php/ui` for custom pages and component packages that want the same shell
+without the wire nodes — see [Navigation → Client-side chrome](/core/navigation/#client-side-chrome).

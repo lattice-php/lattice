@@ -1,15 +1,11 @@
 import { router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import type { RendererComponent } from "@lattice-php/core/types";
-import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { nodeIdentity } from "@lattice-php/core/test-id";
-import { cn } from "@lattice-php/ui/lib/utils";
-import { useMediaQuery } from "@lattice-php/ui/lib/use-media-query";
+import { Sidebar, SIDEBAR_DESKTOP_QUERY } from "@lattice-php/ui/components/sidebar/sidebar";
 import { useCollapsibleState } from "@lattice-php/ui/lib/use-collapsible-state";
-
-const DESKTOP_QUERY = "(min-width: 768px)";
 
 function matchesTarget(event: Event, identity: string | undefined): boolean {
   const target = (event as CustomEvent<{ target?: string }>).detail?.target;
@@ -22,7 +18,6 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
   const rememberState = node.props.rememberState;
   const identity = nodeIdentity(node);
   const storageKey = `lattice:sidebar:${identity ?? "default"}`;
-  const isDesktop = useMediaQuery(DESKTOP_QUERY, true);
 
   const [collapsed, toggleCollapsed] = useCollapsibleState(
     storageKey,
@@ -36,7 +31,7 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
       return;
     }
 
-    if (window.matchMedia?.(DESKTOP_QUERY).matches ?? true) {
+    if (window.matchMedia?.(SIDEBAR_DESKTOP_QUERY).matches ?? true) {
       if (collapsible) {
         toggleCollapsed();
       }
@@ -47,44 +42,17 @@ const SidebarComponent: RendererComponent<"sidebar"> = ({ children, node }) => {
 
   useEffect(() => router.on("navigate", () => setMobileOpen(false)), []);
 
-  useWindowEvent(
-    "keydown",
-    (event) => {
-      if ((event as KeyboardEvent).key === "Escape") {
-        setMobileOpen(false);
-      }
-    },
-    { enabled: mobileOpen },
-  );
-
-  const isCollapsed = collapsible && collapsed && isDesktop;
-
   return (
-    <CollapsedProvider collapsed={isCollapsed}>
-      {mobileOpen ? (
-        <div
-          aria-hidden="true"
-          className="fixed inset-0 z-lt-overlay bg-lt-overlay md:hidden"
-          data-test="sidebar-backdrop"
-          onClick={() => setMobileOpen(false)}
-        />
-      ) : null}
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-lt-modal flex h-svh w-72 max-w-[80vw] shrink-0 flex-col gap-4 border-r border-lt-border bg-lt-bg p-4 transition-transform",
-          "md:sticky md:top-0 md:z-auto md:max-w-none md:translate-x-0 md:transition-[width]",
-          mobileOpen ? "translate-x-0" : "-translate-x-full",
-          isCollapsed
-            ? "md:w-16 md:overflow-visible"
-            : "md:w-64 md:overflow-x-hidden md:overflow-y-auto",
-        )}
-        data-collapsed={isCollapsed ? "true" : "false"}
-        data-lattice-component={identity}
-        data-test="sidebar"
-      >
-        {children}
-      </aside>
-    </CollapsedProvider>
+    <Sidebar
+      backdropProps={{ "data-test": "sidebar-backdrop" }}
+      collapsed={collapsible && collapsed}
+      data-lattice-component={identity}
+      data-test="sidebar"
+      onOpenChange={setMobileOpen}
+      open={mobileOpen}
+    >
+      {children}
+    </Sidebar>
   );
 };
 
