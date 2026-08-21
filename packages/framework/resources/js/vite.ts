@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { svgSprite } from "@lattice-php/vite-svg-sprite";
-import type { IconTypesOptions, SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
+import { buildSprite, svgSprite } from "@lattice-php/vite-svg-sprite";
+import type { IconTypesOptions, Sprite, SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
 import { searchForWorkspaceRoot } from "vite";
 import type { Plugin, PluginOption, UserConfig } from "vite";
 import { refreshTypeScriptTypes } from "./vite-typescript-refresh.ts";
@@ -390,6 +390,27 @@ export function resolveIconOptions(
     ],
     ...(dts === false ? {} : { dts: { ...defaultTypes, ...dts } }),
   };
+}
+
+/**
+ * Builds the same icon sprite the `lattice()` Vite plugin serves, outside of
+ * Vite: ui's icon set, every discovered component package's icons, and the
+ * app's own `icons.dirs`. The result is a `SpriteValue` for `SpriteProvider`
+ * (`href: ""` inlines the markup), which is what a Storybook, a design-system
+ * export, a prerender script, or a test needs to render `Icon` without a
+ * dev server or an emitted asset.
+ */
+export function buildLatticeSprite(options: LatticeViteOptions = {}): Sprite & { href: "" } {
+  const { appRoot } = resolveRoots(options);
+  const iconOptions = resolveIconOptions(options, discoverComponentPackages(appRoot));
+
+  if (!iconOptions) {
+    return { href: "", ids: [], source: "" };
+  }
+
+  const { iconDirs = [], symbolId, svgoConfig } = iconOptions;
+
+  return { href: "", ...buildSprite(iconDirs, { symbolId, svgoConfig }) };
 }
 
 function resolveRoots(options: LatticeViteOptions): Roots {

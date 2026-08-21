@@ -203,6 +203,22 @@ MenuItem::make('Home')->icon(Icon::House);
 
 Re-run the build (or dev server) after adding icons to refresh the generated files.
 
+## The sprite outside Vite
+
+Storybook stories, a design-system export, prerender scripts, and tests render the same components
+without a dev server or an emitted asset. `buildLatticeSprite()` builds the sprite the plugin would
+serve — Lattice's icons, every installed component package's icons, and your `icons.dirs` — and
+returns an inline `SpriteValue` for `SpriteProvider`:
+
+```ts
+import { buildLatticeSprite } from "@lattice-php/lattice/vite";
+
+const sprite = buildLatticeSprite({ icons: { dirs: ["resources/icons"] } });
+// { href: "", ids: ["check", "spark", …], source: "<svg …>…</svg>" }
+```
+
+It takes the same options as `lattice()`, so the sprite stays identical to the one your app ships.
+
 ## Custom rendering
 
 Server-driven icons resolve through a stack of renderer functions, so you can override how a name

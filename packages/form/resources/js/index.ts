@@ -1,11 +1,17 @@
 export { ActionForm, useLazyActionForm } from "./action-form";
 export { FormFieldFrame, type FormFieldControlProps } from "./components/base/field";
 export { Checkbox } from "./components/checkbox/checkbox";
+export { FileUpload } from "./components/file-upload/file-upload";
+export type { FileUploadItem, FileUploadProps } from "./components/file-upload/file-upload";
 export * from "./components/color-picker/color-picker";
 export * from "./components/index";
 export * from "./components/otp/otp";
 export { default as PasswordInput } from "./components/password-input/password-input";
+export { MultiSelect } from "./components/select/select";
+export type { MultiSelectItem, MultiSelectProps } from "./components/select/select";
 export { Textarea } from "./components/textarea/textarea";
+export { Toggle } from "./components/toggle/toggle";
+export type { ToggleProps } from "./components/toggle/toggle";
 export { FormValuesProvider } from "./hooks/values";
 export { formComponents } from "./plugin";
 export * from "./primitives/affix-group";
