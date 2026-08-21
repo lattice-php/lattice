@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
-import type { DatePickerFieldProps } from "./date-picker-field";
+import type { DatePickerFieldProps } from "./date-picker-view";
 
 const DatePickerField = lazy(async () => {
-  const { DatePickerField } = await import("./date-picker-field");
+  const { DatePickerField } = await import("./date-picker-view");
 
   return { default: DatePickerField };
 });

@@ -1,5 +1,5 @@
 import type { RendererComponent } from "@lattice-php/core";
-import { DatePicker } from "./date-picker";
+import { DatePicker } from "../../primitives/date-picker";
 import { SimpleField } from "./simple-field";
 
 export const DateInputComponent: RendererComponent<"field.date-input"> = ({ node }) => {

@@ -6,10 +6,14 @@ import {
   PopoverTrigger,
 } from "@lattice-php/ui/components/popover/popover";
 import { Icon } from "@lattice-php/ui/icons";
-import { Input } from "@lattice-php/ui/primitives/input";
+import { Input } from "@lattice-php/form/primitives/input";
 import { SimpleField } from "./simple-field";
-import { TimePicker } from "./time-picker";
-import { formatTimeValue, parseTimeString, secondsEnabled } from "./time-picker-columns";
+import { TimePicker } from "../../primitives/time-picker";
+import {
+  formatTimeValue,
+  parseTimeString,
+  secondsEnabled,
+} from "../../primitives/time-picker-columns";
 
 export const TimeInputComponent: RendererComponent<"field.time-input"> = ({ node }) => {
   const props = node.props;
