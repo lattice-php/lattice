@@ -24,7 +24,7 @@ export type CalendarEventData = {
   readonly start: string;
 };
 export type CalendarNodeType = "calendar";
-export type CalendarView = "month" | "timeline";
+export type CalendarView = "month" | "week" | "day" | "timeline";
 export type ComponentPropsMap = {
   calendar: Calendar;
 };

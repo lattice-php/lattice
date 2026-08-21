@@ -76,15 +76,16 @@ export type MonthChip = {
 };
 
 /**
- * Clips every event overlapping the week to its `[0, 7)` day columns, then
- * packs the clipped chips into lanes. Lanes are assigned per week row, so a
+ * Clips every event overlapping the window to its `[0, dayCount)` day columns,
+ * then packs the clipped chips into lanes. Lanes are assigned per row, so a
  * multi-week event keeps its column span but may change lanes between rows.
  */
 export function weekChips(
   events: Iterable<CalendarEventData>,
   weekStart: string,
+  dayCount = 7,
 ): { chips: MonthChip[]; laneCount: number } {
-  const weekEnd = addDays(weekStart, 7);
+  const weekEnd = addDays(weekStart, dayCount);
   const clipped: (Omit<MonthChip, "lane"> & { order: string })[] = [];
 
   for (const event of events) {
@@ -95,7 +96,7 @@ export function weekChips(
     }
 
     const start = Math.max(0, daysBetween(weekStart, dayStart));
-    const end = Math.min(7, daysBetween(weekStart, dayEnd));
+    const end = Math.min(dayCount, daysBetween(weekStart, dayEnd));
 
     clipped.push({
       id: event.id,

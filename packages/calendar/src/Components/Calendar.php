@@ -225,27 +225,46 @@ class Calendar extends Component implements InteractiveComponent
     }
 
     /**
-     * The union of every enabled view's initial window. The month view pads
-     * seven days on either side because the client's locale week start is
-     * unknown here; the timeline view starts exactly at the anchor date.
+     * The union of every enabled view's initial window. The month and week
+     * views pad around the anchor because the client's locale week start is
+     * unknown here; the day view covers only the anchor date and the timeline
+     * view starts exactly at it.
      *
      * @return array{CarbonImmutable, CarbonImmutable}
      */
     private function window(CarbonImmutable $date): array
     {
         $monthStart = $date->startOfMonth();
-        $month = in_array(CalendarView::Month, $this->views, true)
-            ? [$monthStart->subDays(7), $monthStart->addMonth()->addDays(7)]
-            : null;
-        $timeline = in_array(CalendarView::Timeline, $this->views, true)
-            ? [$date, $date->addDays($this->days)]
-            : null;
+        $ranges = [];
 
-        if ($month === null || $timeline === null) {
-            return $month ?? $timeline ?? [$date, $date->addDays($this->days)];
+        if (in_array(CalendarView::Month, $this->views, true)) {
+            $ranges[] = [$monthStart->subDays(7), $monthStart->addMonth()->addDays(7)];
         }
 
-        return [$month[0]->min($timeline[0]), $month[1]->max($timeline[1])];
+        if (in_array(CalendarView::Week, $this->views, true)) {
+            $ranges[] = [$date->subDays(6), $date->addDays(7)];
+        }
+
+        if (in_array(CalendarView::Day, $this->views, true)) {
+            $ranges[] = [$date, $date->addDay()];
+        }
+
+        if (in_array(CalendarView::Timeline, $this->views, true)) {
+            $ranges[] = [$date, $date->addDays($this->days)];
+        }
+
+        if ($ranges === []) {
+            return [$date, $date->addDays($this->days)];
+        }
+
+        [$from, $until] = $ranges[0];
+
+        foreach ($ranges as [$start, $end]) {
+            $from = $from->min($start);
+            $until = $until->max($end);
+        }
+
+        return [$from, $until];
     }
 
     /**

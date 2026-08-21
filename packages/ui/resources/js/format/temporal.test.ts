@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   addDays,
   addMonths,
+  addWallMinutes,
   daysBetween,
   formatDateValue,
   formatWallTime,
@@ -11,6 +12,7 @@ import {
   startOfWeekISO,
   toDate,
   todayISO,
+  wallMinutesOfDay,
   weeksInMonth,
 } from "./temporal";
 
@@ -93,6 +95,25 @@ describe("formatWallTime", () => {
     vi.stubEnv("TZ", "Pacific/Kiritimati");
 
     expect(formatWallTime("2026-08-15T23:45:00", "de-DE")).toBe("23:45");
+  });
+});
+
+describe("addWallMinutes / wallMinutesOfDay", () => {
+  it("shifts wall-clock datetimes by minutes", () => {
+    expect(addWallMinutes("2026-08-15T09:30:00", 45)).toBe("2026-08-15T10:15:00");
+    expect(addWallMinutes("2026-08-15T09:30:00", -90)).toBe("2026-08-15T08:00:00");
+  });
+
+  it("rolls over day, month, and year bounds", () => {
+    expect(addWallMinutes("2026-08-15T23:45:00", 30)).toBe("2026-08-16T00:15:00");
+    expect(addWallMinutes("2026-12-31T23:45:00", 30)).toBe("2027-01-01T00:15:00");
+    expect(addWallMinutes("2026-03-01T00:15:00", -30)).toBe("2026-02-28T23:45:00");
+  });
+
+  it("returns minutes since midnight", () => {
+    expect(wallMinutesOfDay("2026-08-15T00:00:00")).toBe(0);
+    expect(wallMinutesOfDay("2026-08-15T09:30:00")).toBe(570);
+    expect(wallMinutesOfDay("2026-08-15T23:59:00")).toBe(1439);
   });
 });
 

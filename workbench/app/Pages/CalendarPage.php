@@ -30,9 +30,9 @@ final class CalendarPage extends WorkbenchPage
                 ->gap(Gap::ExtraLarge)
                 ->schema([
                     Heading::make($this->title()),
-                    Text::make('Switch between the month grid and the resource timeline; drag an assignment in either view to reschedule it.'),
+                    Text::make('Switch between the month grid, the week and day time grids, and the resource timeline; drag an assignment in any view to reschedule it.'),
                     Calendar::use(ProjectPlanCalendar::class)
-                        ->views([CalendarView::Month, CalendarView::Timeline])
+                        ->views([CalendarView::Month, CalendarView::Week, CalendarView::Day, CalendarView::Timeline])
                         ->eventAction(ShowCalendarEventAction::class)
                         ->dayAction(PlanCalendarDayAction::class),
                 ]),

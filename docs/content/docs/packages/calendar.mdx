@@ -1,6 +1,6 @@
 ---
 title: Calendar
-description: Multi-view calendar with a month grid and a resource-planning timeline, lazy window fetching, and server-driven actions.
+description: Multi-view calendar with a month grid, week and day time grids, and a resource-planning timeline, lazy window fetching, and server-driven actions.
 ---
 
 import BundleReport from "@components/BundleReport.astro";
@@ -9,9 +9,10 @@ import Warning from "@components/Warning.astro";
 
 The calendar package renders one `Calendar` component with switchable views over a single event
 source: a **month grid** with multi-day event spanning, per-day overflow, and keyboard navigation,
-and a resource-planning **timeline** ("Plantafel") of resource rows against a day-granular date
-axis. Both views support drag-to-reschedule and share the same adapter, endpoint, and client-side
-event cache — switching views reuses everything already loaded.
+**week and day time grids** with hour-precise event blocks, and a resource-planning **timeline**
+("Plantafel") of resource rows against a day-granular date axis. Every view supports
+drag-to-reschedule and shares the same adapter, endpoint, and client-side event cache — switching
+views reuses everything already loaded.
 
 ## Installation
 
@@ -79,7 +80,7 @@ use Lattice\Calendar\CalendarView;
 use Lattice\Calendar\Components\Calendar;
 
 Calendar::use(CompanyCalendar::class)
-    ->views([CalendarView::Month, CalendarView::Timeline])
+    ->views([CalendarView::Month, CalendarView::Week, CalendarView::Day, CalendarView::Timeline])
     ->defaultView(CalendarView::Month)
     ->date('2026-08-01')
     ->days(90);
@@ -87,9 +88,9 @@ Calendar::use(CompanyCalendar::class)
 
 `->views()` picks the enabled views (default: month only); with more than one, the client shows a
 view switcher. `->defaultView()` chooses the initially active view and falls back to the first
-enabled one. `->date()` anchors both views — the month view opens on that date's month, the
-timeline window starts on it (default: today). `->days()` sets the timeline's initially rendered
-window (default 90).
+enabled one. `->date()` anchors every view — the month view opens on that date's month, the week
+and day views on its week and day, and the timeline window starts on it (default: today).
+`->days()` sets the timeline's initially rendered window (default 90).
 
 ### Events
 
@@ -150,7 +151,7 @@ final class ProjectPlanAdapter implements CalendarAdapter, ProvidesCalendarResou
   `['id' => ..., 'label' => ...]` rows or a closure returning the same shape, evaluated once per
   render. Timeline lanes lay out the events bound to a resource via `->resource()`; the month view
   shows every event regardless of binding.
-- **`ReschedulesCalendarEvents`** enables drag-to-reschedule in both views. Without it the
+- **`ReschedulesCalendarEvents`** enables drag-to-reschedule in every view. Without it the
   calendar renders read-only and its `PATCH` endpoint responds `405`.
 
 ### Actions
@@ -188,6 +189,28 @@ segment of a multi-week event moves the whole event, anchored to the day the dra
 Keyboard users can focus a chip and press <kbd>Control</kbd>+<kbd>Shift</kbd> with an arrow key:
 left/right moves by one day, up/down by one week. The optimistic update, rollback, and announced
 error handling match the [timeline's rescheduling](#rescheduling-and-resizing).
+
+## Week and day views
+
+The week and day views share one time grid: a scrollable 24-hour axis (opening at 07:00) with
+hour-precise event blocks, an all-day row on top, and a now indicator on today's column. The week
+view follows the viewer's locale for its first weekday; the day view is the same grid with a
+single column. All-day events and events spanning several calendar days render as chips in the
+all-day row; single-day timed events become blocks positioned by their wall-clock times, and
+overlapping blocks split the column side by side.
+
+### Hour-precise rescheduling
+
+With [`ReschedulesCalendarEvents`](#capabilities), dragging a block moves the event to the day and
+time under the cursor, snapped to 15 minutes with the duration intact; a dashed preview shows the
+snapped target while dragging. Dragging the handle at a block's lower edge changes the event's end
+time instead, down to a 15-minute minimum. All-day chips move by whole days, exactly like in the
+[month view](#rescheduling). Keyboard users can focus a block and press
+
+<kbd>Control</kbd>+<kbd>Shift</kbd> with an arrow key — left/right moves by one day, up/down by 15
+minutes — or focus the resize handle and press an arrow key alone to adjust the end time. The
+optimistic update, rollback, and announced error handling match the [timeline's
+rescheduling](#rescheduling-and-resizing).
 
 ## Timeline view
 
