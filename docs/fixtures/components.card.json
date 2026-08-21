@@ -15,6 +15,7 @@
                     "gap": "sm",
                     "height": null,
                     "justify": null,
+                    "sticky": false,
                     "width": null
                 },
                 "schema": [

@@ -198,6 +198,10 @@
                 "value": "full"
             },
             {
+                "name": "ExtraLarge",
+                "value": "xl"
+            },
+            {
                 "name": "Large",
                 "value": "lg"
             },
@@ -1186,6 +1190,10 @@
             {
                 "name": "Large",
                 "value": "lg"
+            },
+            {
+                "name": "ExtraLarge",
+                "value": "xl"
             },
             {
                 "name": "Fill",

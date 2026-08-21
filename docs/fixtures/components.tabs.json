@@ -5,7 +5,8 @@
             "alignment": "stretch",
             "defaultValue": "details",
             "orientation": "horizontal",
-            "queryKey": "tabs"
+            "queryKey": "tabs",
+            "sticky": false
         },
         "schema": [
             {
