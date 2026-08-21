@@ -40,7 +40,7 @@ import {
   ComponentEntryAdapter,
   DateEntryAdapter,
   TextEntryAdapter,
-} from "./components/entries/entries";
+} from "./components/description-list/entries";
 
 export const uiComponents: Plugin = {
   components: {

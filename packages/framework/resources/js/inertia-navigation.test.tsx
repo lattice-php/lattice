@@ -3,7 +3,7 @@ import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { stubMatchMedia } from "@lattice-php/core/test-support";
 import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
-import { useEmbeddedModal, useModal } from "@lattice-php/ui/modal";
+import { useEmbeddedModal, useModal } from "@lattice-php/ui/components/modal/modal-host";
 import { useNavigation } from "@lattice-php/ui/navigation";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";

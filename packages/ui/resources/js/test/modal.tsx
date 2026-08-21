@@ -1,6 +1,6 @@
 import { createElement, type ReactElement, type ReactNode } from "react";
 import { render, type RenderResult } from "@testing-library/react";
-import { ModalProvider } from "../modal";
+import { ModalProvider } from "../components/modal/modal-host";
 
 /** Wraps `ui` in the host every action confirm/form overlay opens against. */
 export function withModal(ui: ReactNode): ReactElement {

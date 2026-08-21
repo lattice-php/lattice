@@ -63,7 +63,7 @@ export * from "./i18n/index";
 export * from "./i18n/translatable";
 export * from "./primitives/image-preview";
 export * from "./primitives/info-tooltip";
-export * from "./modal";
+export * from "./components/modal/modal-host";
 export * from "./primitives/native-select";
 export * from "./navigation";
 export * from "./components/popover/popover";

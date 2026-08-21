@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader } from "../../primitives/dialog";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { UI_NAMESPACE, useT } from "../../i18n";
-import { useEmbeddedModal } from "../../modal";
+import { useEmbeddedModal } from "./modal-host";
 
 let warnedMissingHost = false;
 

@@ -15,7 +15,7 @@ import {
 } from "@lattice-php/ui/components/popover/popover";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
-import { type ModalHandle, useModal } from "@lattice-php/ui/modal";
+import { type ModalHandle, useModal } from "@lattice-php/ui/components/modal/modal-host";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { useNotifications } from "../store";
 import type { NotificationItem } from "../types";

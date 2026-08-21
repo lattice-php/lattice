@@ -4,7 +4,7 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { Renderer } from "@lattice-php/core/renderer";
 import { renderWithRegistry, fakeNode, TextProbe } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import { ModalProvider } from "../../modal";
+import { ModalProvider } from "../modal/modal-host";
 import ModalComponent from "../modal/modal-adapter";
 import MenuItemAdapter from "./menu-item-adapter";
 

@@ -4,9 +4,9 @@ import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { renderWithRegistry, fakeNode } from "@lattice-php/core/test-support";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import type { Node } from "@lattice-php/core/types";
-import ModalComponent from "./components/modal/modal-adapter";
-import type { ModalHandle } from "./modal";
-import { ModalProvider, useEmbeddedModal, useModal } from "./modal";
+import ModalComponent from "./modal-adapter";
+import type { ModalHandle } from "./modal-host";
+import { ModalProvider, useEmbeddedModal, useModal } from "./modal-host";
 
 const registry = createRegistry({
   components: { modal: eagerComponent(ModalComponent) },

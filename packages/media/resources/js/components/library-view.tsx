@@ -4,7 +4,7 @@ import type { Node } from "@lattice-php/core/types";
 import { useT } from "@lattice-php/ui/i18n";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/modal";
+import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/components/modal/modal-host";
 import { useTable } from "@lattice-php/table/hooks/use-table";
 import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
