@@ -160,6 +160,94 @@ Table::use(ProductsTable::class);
 `Table::lazy()` renders the same table but defers the first data load until the component mounts —
 useful inside a tab or a section that isn't visible on page load.
 
+## Client-side shell
+
+The presentational shell of the table — the bordered frame, toolbar, header and body grids, pinned
+tracks, empty state, and footer — is exported from `@lattice-php/table` as a set of `DataTable*`
+primitives. They take plain props instead of wire nodes and carry no data loading, sorting, or
+selection state; the Lattice table composes them, so a static table built from the same primitives
+looks identical to a live one.
+
+```tsx
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableEmpty,
+  DataTableFooter,
+  DataTableGrid,
+  DataTableHeader,
+  DataTableHeaderCell,
+  DataTableHeaderRow,
+  DataTablePagination,
+  DataTableRow,
+  DataTableSearch,
+  DataTableSortButton,
+  DataTableToolbar,
+} from "@lattice-php/table";
+import { buildColumnGridTemplate } from "@lattice-php/ui";
+
+const columns = [
+  { key: "name", label: "Name", width: "lg" },
+  { key: "price", label: "Price", width: "sm", align: "end" },
+] as const;
+
+<DataTable>
+  <DataTableToolbar
+    start={
+      <DataTableSearch
+        value={term}
+        placeholder="Search"
+        clearLabel="Clear search"
+        onValueChange={setTerm}
+        onClear={() => setTerm("")}
+      />
+    }
+  />
+  <DataTableGrid columns={buildColumnGridTemplate({ columns })}>
+    <DataTableHeader>
+      <DataTableHeaderRow>
+        <DataTableHeaderCell sortDirection="asc" bottomBordered>
+          <DataTableSortButton direction="asc">Name</DataTableSortButton>
+        </DataTableHeaderCell>
+        <DataTableHeaderCell align="end" bottomBordered>
+          Price
+        </DataTableHeaderCell>
+      </DataTableHeaderRow>
+    </DataTableHeader>
+    <DataTableBody>
+      {rows.length === 0 && <DataTableEmpty>No results</DataTableEmpty>}
+      {rows.map((row) => (
+        <DataTableRow key={row.id} striped>
+          <DataTableCell label="Name">{row.name}</DataTableCell>
+          <DataTableCell label="Price" align="end">
+            {row.price}
+          </DataTableCell>
+        </DataTableRow>
+      ))}
+    </DataTableBody>
+  </DataTableGrid>
+  <DataTableFooter>
+    <span>Showing 1-25 of 80</span>
+    <DataTablePagination
+      page={1}
+      pages={[1, 2, 3, 4]}
+      hasNextPage
+      onPageChange={setPage}
+      labels={{ previous: "Previous", next: "Next", page: (page) => `Page ${page}` }}
+    />
+  </DataTableFooter>
+</DataTable>;
+```
+
+`DataTableGrid` takes the grid tracks as a string; `buildColumnGridTemplate()` turns column widths
+(`xs`–`xl`) into the same `minmax()` tracks the table uses, and `dataTableUtilityTracks()` adds the
+fixed leading and trailing tracks for an expander, selection checkbox, or row actions. Utility cells
+take `kind="expander" | "selection" | "actions"`; pinned tracks take `pinned="left" | "right"` plus
+the column's `pinIndex` and are positioned by the `--lt-pin-offset-*` variables from
+`buildPinnedOffsets()`. Every cell renders its `label` as a stacked caption below the `md`
+breakpoint, where rows collapse into cards.
+
 ## Next steps
 
 - [Data sources](/tables/data-sources/) — the `TableSource` contract and backing a table with anything.
