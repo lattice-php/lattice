@@ -6,6 +6,8 @@ export const iconNames = [
   "align-left",
   "align-right",
   "arrow-down",
+  "arrow-left-to-line",
+  "arrow-right-to-line",
   "arrow-up",
   "bell",
   "bold",
@@ -82,6 +84,8 @@ declare module "@lattice-php/ui" {
     "align-left": true;
     "align-right": true;
     "arrow-down": true;
+    "arrow-left-to-line": true;
+    "arrow-right-to-line": true;
     "arrow-up": true;
     bell: true;
     bold: true;

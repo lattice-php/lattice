@@ -78,6 +78,7 @@ use Workbench\App\Pages\Tables\CustomColumnPage;
 use Workbench\App\Pages\Tables\FiltersPage;
 use Workbench\App\Pages\Tables\NumberColumnsPage;
 use Workbench\App\Pages\Tables\PaginationPage;
+use Workbench\App\Pages\Tables\PinnedColumnsPage;
 use Workbench\App\Pages\Tables\TextColumnsPage;
 use Workbench\App\Pages\Tables\VisualColumnsPage;
 use Workbench\App\Pages\WizardPage;
@@ -156,6 +157,7 @@ class AppLayout extends LayoutDefinition
                         MenuItem::fromPage(NumberColumnsPage::class)->key('columns-number')->label(__('workbench.navigation.columns-number')),
                         MenuItem::fromPage(VisualColumnsPage::class)->key('columns-visual')->label(__('workbench.navigation.columns-visual')),
                         MenuItem::fromPage(CustomColumnPage::class)->key('columns-custom')->label(__('workbench.navigation.columns-custom')),
+                        MenuItem::fromPage(PinnedColumnsPage::class)->key('columns-pinned')->label(__('workbench.navigation.columns-pinned')),
                     ]),
                     MenuItem::fromPage(FiltersPage::class)->key('table-filters')->label(__('workbench.navigation.table-filters')),
                     MenuItem::fromPage(PaginationPage::class)->key('pagination-modes')->label(__('workbench.navigation.pagination-modes')),
