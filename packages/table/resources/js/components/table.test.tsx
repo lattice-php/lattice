@@ -1,8 +1,10 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import "@lattice-php/lattice/provider";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
+import { ActionInteractionProvider } from "@lattice-php/action";
+import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
 import { col, pagination, requestOptions, tableFetch, tableQuery } from "../test-support";
 import TableComponent from "./table";
 
@@ -979,5 +981,183 @@ describe("column pinning", () => {
     expect(container.querySelector("[data-pinned]")).not.toBeInTheDocument();
     expect(screen.getByRole("table")).toHaveClass("min-w-full");
     expect(screen.getByRole("table")).not.toHaveClass("min-w-max");
+  });
+
+  it("marks the boundary edges of the pinned groups with data-pin-boundary", () => {
+    const node = {
+      id: "workbench.pinned-boundary",
+      props: {
+        columns: [
+          col({ key: "a", label: "A" }),
+          col({ key: "b", label: "B", pinned: "left" }),
+          col({ key: "c", label: "C" }),
+          col({ key: "d", label: "D", pinned: "right" }),
+        ],
+        data: [
+          {
+            id: 1,
+            a: "A1",
+            b: "B1",
+            c: "C1",
+            d: "D1",
+            actions: [{ type: "link", props: { href: "/edit/1", label: "Edit" } }],
+          },
+        ],
+        query: tableQuery(),
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    const headers = screen.getAllByRole("columnheader");
+
+    expect(headers.map((header) => header.textContent)).toEqual(["B", "A", "C", "D", "Actions"]);
+    expect(headers[0]).toHaveAttribute("data-pin-boundary", "end");
+    expect(headers[1]).not.toHaveAttribute("data-pin-boundary");
+    expect(headers[2]).not.toHaveAttribute("data-pin-boundary");
+    expect(headers[3]).toHaveAttribute("data-pin-boundary", "start");
+    expect(headers[4]).not.toHaveAttribute("data-pin-boundary");
+
+    const rows = screen.getAllByRole("row");
+    const bodyRow = rows[rows.length - 1]!;
+    const cells = within(bodyRow).getAllByRole("cell");
+
+    expect(cells[0]).toHaveAttribute("data-pin-boundary", "end");
+    expect(cells[1]).not.toHaveAttribute("data-pin-boundary");
+    expect(cells[2]).not.toHaveAttribute("data-pin-boundary");
+    expect(cells[3]).toHaveAttribute("data-pin-boundary", "start");
+    expect(cells[4]).not.toHaveAttribute("data-pin-boundary");
+  });
+
+  it("lets the selection cell own the left boundary when no column is left-pinned", () => {
+    const node = {
+      id: "workbench.pinned-boundary-selection",
+      props: {
+        bulkActions: [
+          fakeNode({
+            type: "action",
+            id: "workbench.archive-selected",
+            props: {
+              label: "Archive selected",
+              method: "patch",
+              endpoint: "/lattice/bulk-actions/workbench.archive-selected",
+              ref: "sealed-ref",
+            },
+          }),
+        ],
+        columns: [col({ key: "a", label: "A" }), col({ key: "b", label: "B", pinned: "right" })],
+        data: [{ id: 1, a: "A1", b: "B1" }],
+        query: tableQuery(),
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    render(<TableComponent node={node}>{null}</TableComponent>);
+
+    const headers = screen.getAllByRole("columnheader");
+    const selectionHeader = headers[0]!;
+
+    expect(selectionHeader).toHaveAttribute("data-pinned", "left");
+    expect(selectionHeader).toHaveAttribute("data-pin-boundary", "end");
+
+    const rows = screen.getAllByRole("row");
+    const bodyRow = rows[rows.length - 1]!;
+    const selectionCell = within(bodyRow).getAllByRole("cell")[0]!;
+
+    expect(selectionCell).toHaveAttribute("data-pinned", "left");
+    expect(selectionCell).toHaveAttribute("data-pin-boundary", "end");
+  });
+});
+
+describe("row links", () => {
+  const visit = vi.fn();
+
+  afterEach(() => {
+    visit.mockClear();
+  });
+
+  function renderLinkedTable(overrides: Partial<TableNode["props"]> = {}) {
+    const node = {
+      id: "workbench.row-links",
+      props: {
+        columns: [col({ key: "name", label: "Name" })],
+        data: [{ id: 1, name: "Lamp" }],
+        query: tableQuery(),
+        ...overrides,
+      },
+      type: "table",
+    } satisfies TableNode;
+
+    return render(
+      <ActionInteractionProvider>
+        <NavigationProvider adapter={{ ...defaultNavigation, visit }}>
+          <TableComponent node={node}>{null}</TableComponent>
+        </NavigationProvider>
+      </ActionInteractionProvider>,
+    );
+  }
+
+  it("marks a row carrying a url and visits it when a plain cell is clicked", () => {
+    renderLinkedTable({ data: [{ id: 1, name: "Lamp", rowUrl: "/products/1" }] });
+
+    const row = screen.getByRole("cell", { name: "Lamp" }).closest('[data-slot="table-row"]');
+
+    expect(row).toHaveAttribute("data-row-link", "/products/1");
+
+    fireEvent.click(screen.getByRole("cell", { name: "Lamp" }));
+
+    expect(visit).toHaveBeenCalledWith("/products/1");
+  });
+
+  it("does not navigate when clicking a row action link inside a linked row", () => {
+    renderLinkedTable({
+      data: [
+        {
+          id: 1,
+          name: "Lamp",
+          rowUrl: "/products/1",
+          actions: [{ type: "link", props: { href: "/edit/1", label: "Edit" } }],
+        },
+      ],
+    });
+
+    fireEvent.click(screen.getByRole("link", { name: "Edit" }));
+
+    expect(visit).not.toHaveBeenCalled();
+  });
+
+  it("does not navigate when clicking a row's selection checkbox inside a linked row", () => {
+    renderLinkedTable({
+      bulkActions: [
+        fakeNode({
+          type: "action",
+          id: "workbench.archive-selected",
+          props: {
+            label: "Archive selected",
+            method: "patch",
+            endpoint: "/lattice/bulk-actions/workbench.archive-selected",
+            ref: "sealed-ref",
+          },
+        }),
+      ],
+      data: [{ id: 1, name: "Lamp", rowUrl: "/products/1" }],
+    });
+
+    fireEvent.click(screen.getByTestId("select-row-1"));
+
+    expect(visit).not.toHaveBeenCalled();
+  });
+
+  it("renders no row-link markup for a row without a url", () => {
+    renderLinkedTable();
+
+    const row = screen.getByRole("cell", { name: "Lamp" }).closest('[data-slot="table-row"]');
+
+    expect(row).not.toHaveAttribute("data-row-link");
+
+    fireEvent.click(screen.getByRole("cell", { name: "Lamp" }));
+
+    expect(visit).not.toHaveBeenCalled();
   });
 });

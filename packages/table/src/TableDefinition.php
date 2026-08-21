@@ -109,6 +109,14 @@ abstract class TableDefinition extends Definition
     }
 
     /**
+     * @param  array<string, mixed>  $row
+     */
+    public function rowUrl(array $row): ?string
+    {
+        return null;
+    }
+
+    /**
      * @return array<int, Component&InteractiveComponent>
      */
     public function bulkActions(): array

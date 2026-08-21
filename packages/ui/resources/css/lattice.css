@@ -142,6 +142,7 @@
   --lt-table-pinned-bg: var(--lt-bg);
   --lt-table-pinned-muted-bg: color-mix(in oklab, var(--lt-muted) 50%, var(--lt-bg));
   --lt-table-pinned-stripe-bg: color-mix(in oklab, var(--lt-muted) 30%, var(--lt-bg));
+  --lt-table-pinned-hover-bg: color-mix(in oklab, var(--lt-muted) 50%, var(--lt-bg));
 
   color-scheme: light;
   }

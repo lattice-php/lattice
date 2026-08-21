@@ -56,3 +56,19 @@ signed per-row endpoint, authorization, the loading skeleton, and per-fragment r
 `rowDetail()` returns a `Fragment` and nothing else — the detail always loads over AJAX. This keeps
 large or expensive detail off the initial table response.
 :::
+
+## Row links
+
+Override `rowUrl()` to make a whole row navigate, like a link, to a detail page. Clicking anywhere on
+the row visits the URL; the row gets a hover highlight and a pointer cursor.
+
+```php
+public function rowUrl(array $row): ?string
+{
+    return route('products.edit', $row['id']);
+}
+```
+
+Return `null` for rows that should not navigate. Clicks on an interactive element inside the row — a
+checkbox, the expand chevron, an action button or link — are left alone. Cmd/ctrl-click and
+middle-click open the URL in a new tab instead of navigating in place.

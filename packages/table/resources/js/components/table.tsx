@@ -1,6 +1,7 @@
-import { type CSSProperties, type ReactNode, Fragment, useMemo } from "react";
+import { type CSSProperties, type MouseEvent, type ReactNode, Fragment, useMemo } from "react";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
+import { useNavigation } from "@lattice-php/ui/navigation";
 import { Renderer, RenderNode } from "@lattice-php/core/renderer";
 import { useColumnResizing } from "@lattice-php/ui/lib/use-column-resizing";
 import { useColumnPinning } from "@lattice-php/table/hooks/use-column-pinning";
@@ -12,11 +13,14 @@ import { Icon } from "@lattice-php/ui/icons";
 import { alignJustifyItems, alignText } from "@lattice-php/table/lib/align";
 import type { TableNode } from "@lattice-php/table/types";
 import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
+import type { PinBoundary } from "@lattice-php/table/lib/pin-boundary";
+import { pinBoundaryClassName } from "@lattice-php/table/lib/pin-boundary";
 import {
   getPerPageOptions,
   getRowActions,
   getRowDetail,
   getRowKey,
+  getRowUrl,
 } from "@lattice-php/table/lib/payload";
 import {
   getQueryParams,
@@ -51,14 +55,65 @@ function pinnedHeaderBg(pinned: boolean): string {
   return pinned ? "bg-[var(--lt-table-pinned-muted-bg)]" : "bg-lt-muted/50";
 }
 
-function pinnedBodyBg(pinned: boolean, striped: boolean): string | undefined {
+function pinnedBodyBg(pinned: boolean, striped: boolean, linked: boolean): string | undefined {
   if (!pinned) {
     return undefined;
   }
 
-  return striped
-    ? "bg-[var(--lt-table-pinned-bg)] group-odd/row:bg-[var(--lt-table-pinned-stripe-bg)]"
-    : "bg-[var(--lt-table-pinned-bg)]";
+  return cn(
+    "bg-[var(--lt-table-pinned-bg)]",
+    striped && "group-odd/row:bg-[var(--lt-table-pinned-stripe-bg)]",
+    linked && "group-hover/row:bg-[var(--lt-table-pinned-hover-bg)]",
+  );
+}
+
+function dataColumnPinBoundary(
+  pin: "left" | "right" | null,
+  index: number,
+  leftBoundaryColumnIndex: number,
+  fillerIndex: number,
+): PinBoundary | undefined {
+  if (pin === "left" && index === leftBoundaryColumnIndex) {
+    return "end";
+  }
+
+  if (pin === "right" && index === fillerIndex) {
+    return "start";
+  }
+
+  return undefined;
+}
+
+const ROW_LINK_INTERACTIVE_SELECTOR =
+  "a, button, input, label, select, textarea, [role=menuitem], [role=checkbox]";
+
+function isRowLinkInteractiveTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest(ROW_LINK_INTERACTIVE_SELECTOR) != null;
+}
+
+function handleRowClick(
+  event: MouseEvent<HTMLDivElement>,
+  url: string | null,
+  visit: (url: string) => void,
+): void {
+  if (!url || isRowLinkInteractiveTarget(event.target)) {
+    return;
+  }
+
+  if (event.metaKey || event.ctrlKey) {
+    window.open(url, "_blank");
+    return;
+  }
+
+  visit(url);
+}
+
+function handleRowAuxClick(event: MouseEvent<HTMLDivElement>, url: string | null): void {
+  if (!url || event.button !== 1 || isRowLinkInteractiveTarget(event.target)) {
+    return;
+  }
+
+  window.open(url, "_blank");
 }
 
 const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
@@ -101,9 +156,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
         actions: getRowActions(row),
         detail: getRowDetail(row),
         key: getRowKey(row, index),
+        url: getRowUrl(row),
       })),
     [rows],
   );
+  const { visit } = useNavigation();
   const selection = useTableSelection(rowEntries.map((entry) => entry.key));
   const { isExpanded, toggle: toggleRow } = useExpandedRows();
   const hasExpandable = rowEntries.some((entry) => entry.detail != null);
@@ -178,6 +235,31 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
   );
   const hasDedicatedFilters = filterDefinitions.length > 0;
   const hasTrailingUtility = hasActions;
+  const leftBoundaryColumnIndex = hasPinned
+    ? orderedColumns.reduce((acc, column, index) => (pinFor(column) === "left" ? index : acc), -1)
+    : -1;
+  const leftBoundaryOwner = !hasPinned
+    ? null
+    : leftBoundaryColumnIndex !== -1
+      ? "column"
+      : hasBulkActions
+        ? "selection"
+        : hasExpandable
+          ? "expander"
+          : null;
+  const rightBoundaryOwner = !hasPinned
+    ? null
+    : fillerIndex !== -1
+      ? "column"
+      : hasTrailingUtility
+        ? "actions"
+        : null;
+  const expanderPinBoundary: PinBoundary | undefined =
+    leftBoundaryOwner === "expander" ? "end" : undefined;
+  const selectionPinBoundary: PinBoundary | undefined =
+    leftBoundaryOwner === "selection" ? "end" : undefined;
+  const actionsPinBoundary: PinBoundary | undefined =
+    rightBoundaryOwner === "actions" ? "start" : undefined;
   const toolbarNodes = useMemo(
     () => (Array.isArray(node.props?.toolbar) ? node.props.toolbar : []),
     [node.props?.toolbar],
@@ -331,7 +413,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       "px-2 py-3",
                       hasPinned && "md:sticky z-[1]",
                       !hasFilters && "border-b border-lt-border",
+                      pinBoundaryClassName(expanderPinBoundary),
                     )}
+                    data-pin-boundary={expanderPinBoundary}
                     data-pinned={hasPinned ? "left" : undefined}
                     role="columnheader"
                     aria-hidden="true"
@@ -345,7 +429,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       pinnedHeaderBg(hasPinned),
                       hasPinned && "md:sticky z-[1]",
                       !hasFilters && "border-b border-lt-border",
+                      pinBoundaryClassName(selectionPinBoundary),
                     )}
+                    data-pin-boundary={selectionPinBoundary}
                     data-pinned={hasPinned ? "left" : undefined}
                     role="columnheader"
                     style={hasPinned ? selectionPinStyle : undefined}
@@ -363,10 +449,24 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
 
                   return (
                     <Fragment key={column.key}>
-                      {hasPinned && index === fillerIndex && <div aria-hidden="true" />}
+                      {hasPinned && index === fillerIndex && (
+                        <div
+                          aria-hidden="true"
+                          className={cn(
+                            "bg-lt-muted/50",
+                            !hasFilters && "border-b border-lt-border",
+                          )}
+                        />
+                      )}
                       <ColumnHeader
                         column={column}
                         processing={processing}
+                        pinBoundary={dataColumnPinBoundary(
+                          pin,
+                          index,
+                          leftBoundaryColumnIndex,
+                          fillerIndex,
+                        )}
                         pinned={pin ?? undefined}
                         pinStyle={pin ? columnPinStyle(index, pin) : undefined}
                         resizeHandleProps={
@@ -379,7 +479,12 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                     </Fragment>
                   );
                 })}
-                {hasPinned && fillerIndex === -1 && <div aria-hidden="true" />}
+                {hasPinned && fillerIndex === -1 && (
+                  <div
+                    aria-hidden="true"
+                    className={cn("bg-lt-muted/50", !hasFilters && "border-b border-lt-border")}
+                  />
+                )}
                 {hasTrailingUtility && (
                   <div
                     className={cn(
@@ -387,7 +492,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       pinnedHeaderBg(hasPinned),
                       hasPinned && "md:sticky z-[1]",
                       !hasFilters && "border-b border-lt-border",
+                      pinBoundaryClassName(actionsPinBoundary),
                     )}
+                    data-pin-boundary={actionsPinBoundary}
                     data-pinned={hasPinned ? "right" : undefined}
                     role="columnheader"
                     style={hasPinned ? actionsPinStyle : undefined}
@@ -409,7 +516,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         "border-t border-b border-lt-border px-2 py-2",
                         pinnedHeaderBg(hasPinned),
                         hasPinned && "md:sticky z-[1]",
+                        pinBoundaryClassName(expanderPinBoundary),
                       )}
+                      data-pin-boundary={expanderPinBoundary}
                       data-pinned={hasPinned ? "left" : undefined}
                       role="cell"
                       style={hasPinned ? expanderPinStyle : undefined}
@@ -421,7 +530,9 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         "border-t border-b border-lt-border px-4 py-2",
                         pinnedHeaderBg(hasPinned),
                         hasPinned && "md:sticky z-[1]",
+                        pinBoundaryClassName(selectionPinBoundary),
                       )}
+                      data-pin-boundary={selectionPinBoundary}
                       data-pinned={hasPinned ? "left" : undefined}
                       role="cell"
                       style={hasPinned ? selectionPinStyle : undefined}
@@ -429,16 +540,29 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   )}
                   {orderedColumns.map((column, index) => {
                     const pin = hasPinned ? pinFor(column) : null;
+                    const pinBoundary = dataColumnPinBoundary(
+                      pin,
+                      index,
+                      leftBoundaryColumnIndex,
+                      fillerIndex,
+                    );
 
                     return (
                       <Fragment key={column.key}>
-                        {hasPinned && index === fillerIndex && <div aria-hidden="true" />}
+                        {hasPinned && index === fillerIndex && (
+                          <div
+                            aria-hidden="true"
+                            className="border-t border-b border-lt-border bg-lt-muted/50"
+                          />
+                        )}
                         <div
                           className={cn(
                             "min-w-0 border-t border-b border-lt-border px-2 py-2",
                             pinnedHeaderBg(Boolean(pin)),
                             pin && "md:sticky z-[1]",
+                            pinBoundaryClassName(pinBoundary),
                           )}
+                          data-pin-boundary={pinBoundary}
                           data-pinned={pin ?? undefined}
                           role="cell"
                           style={pin ? columnPinStyle(index, pin) : undefined}
@@ -463,14 +587,21 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                       </Fragment>
                     );
                   })}
-                  {hasPinned && fillerIndex === -1 && <div aria-hidden="true" />}
+                  {hasPinned && fillerIndex === -1 && (
+                    <div
+                      aria-hidden="true"
+                      className="border-t border-b border-lt-border bg-lt-muted/50"
+                    />
+                  )}
                   {hasTrailingUtility && (
                     <div
                       className={cn(
                         "border-t border-b border-lt-border px-4 py-2",
                         pinnedHeaderBg(hasPinned),
                         hasPinned && "md:sticky z-[1]",
+                        pinBoundaryClassName(actionsPinBoundary),
                       )}
+                      data-pin-boundary={actionsPinBoundary}
                       data-pinned={hasPinned ? "right" : undefined}
                       role="cell"
                       style={hasPinned ? actionsPinStyle : undefined}
@@ -493,28 +624,35 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                   <div role="cell">{node.props?.emptyLabel ?? t("table.empty", "No results")}</div>
                 </div>
               ) : (
-                rowEntries.map(({ row, actions, detail, key }) => {
+                rowEntries.map(({ row, actions, detail, key, url }) => {
                   const expanded = detail != null && isExpanded(key);
                   const detailId = `${nodeIdentity(node) ?? "table"}-row-detail-${key}`;
+                  const linked = url != null;
 
                   return (
                     <Fragment key={key}>
                       <div
                         data-slot="table-row"
+                        data-row-link={url ?? undefined}
                         className={cn(
                           "grid grid-cols-1 border-b border-lt-border last:border-b-0 md:grid-cols-[var(--lattice-table-columns)]",
                           striped && "odd:bg-lt-muted/30",
-                          hasPinned && "group/row",
+                          (hasPinned || linked) && "group/row",
+                          linked && "cursor-pointer hover:bg-lt-muted/50",
                         )}
                         role="row"
+                        onClick={(event) => handleRowClick(event, url, visit)}
+                        onAuxClick={(event) => handleRowAuxClick(event, url)}
                       >
                         {hasExpandable && (
                           <div
                             className={cn(
                               "flex items-center px-2 py-lt-cell-y",
-                              pinnedBodyBg(hasPinned, striped),
+                              pinnedBodyBg(hasPinned, striped, linked),
                               hasPinned && "md:sticky z-[1]",
+                              pinBoundaryClassName(expanderPinBoundary),
                             )}
+                            data-pin-boundary={expanderPinBoundary}
                             data-pinned={hasPinned ? "left" : undefined}
                             role="cell"
                             style={hasPinned ? expanderPinStyle : undefined}
@@ -545,9 +683,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                           <div
                             className={cn(
                               "flex items-center px-lt-cell-x py-lt-cell-y",
-                              pinnedBodyBg(hasPinned, striped),
+                              pinnedBodyBg(hasPinned, striped, linked),
                               hasPinned && "md:sticky z-[1]",
+                              pinBoundaryClassName(selectionPinBoundary),
                             )}
+                            data-pin-boundary={selectionPinBoundary}
                             data-pinned={hasPinned ? "left" : undefined}
                             role="cell"
                             style={hasPinned ? selectionPinStyle : undefined}
@@ -562,6 +702,12 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                         )}
                         {orderedColumns.map((column, index) => {
                           const pin = hasPinned ? pinFor(column) : null;
+                          const pinBoundary = dataColumnPinBoundary(
+                            pin,
+                            index,
+                            leftBoundaryColumnIndex,
+                            fillerIndex,
+                          );
 
                           return (
                             <Fragment key={column.key}>
@@ -572,9 +718,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                                   "grid min-w-0 content-center gap-1 overflow-hidden px-lt-cell-x py-lt-cell-y",
                                   alignText(column.props.align),
                                   alignJustifyItems(column.props.align),
-                                  pinnedBodyBg(Boolean(pin), striped),
+                                  pinnedBodyBg(Boolean(pin), striped, linked),
                                   pin && "md:sticky z-[1]",
+                                  pinBoundaryClassName(pinBoundary),
                                 )}
+                                data-pin-boundary={pinBoundary}
                                 data-pinned={pin ?? undefined}
                                 role="cell"
                                 style={pin ? columnPinStyle(index, pin) : undefined}
@@ -601,9 +749,11 @@ const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => 
                             className={cn(
                               "items-center justify-start gap-2 px-lt-cell-x py-lt-cell-y md:justify-end",
                               actions.length > 0 ? "flex" : "hidden md:flex",
-                              pinnedBodyBg(hasPinned, striped),
+                              pinnedBodyBg(hasPinned, striped, linked),
                               hasPinned && "md:sticky z-[1]",
+                              pinBoundaryClassName(actionsPinBoundary),
                             )}
+                            data-pin-boundary={actionsPinBoundary}
                             data-pinned={hasPinned ? "right" : undefined}
                             role="cell"
                             style={hasPinned ? actionsPinStyle : undefined}

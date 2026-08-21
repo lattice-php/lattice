@@ -3,6 +3,8 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import type { CSSProperties, HTMLAttributes } from "react";
 import { alignJustify, alignText } from "@lattice-php/table/lib/align";
 import { useT } from "@lattice-php/ui/i18n";
+import type { PinBoundary } from "@lattice-php/table/lib/pin-boundary";
+import { pinBoundaryClassName } from "@lattice-php/table/lib/pin-boundary";
 import { getColumnAriaSort, getColumnSort } from "@lattice-php/table/lib/query";
 import type { TableColumn, TableSort, TableQuery } from "@lattice-php/table/types";
 
@@ -27,6 +29,7 @@ function SortIndicator({ sort }: { sort: TableSort | undefined }) {
 export function ColumnHeader({
   bottomBordered,
   column,
+  pinBoundary,
   pinned,
   pinStyle,
   processing,
@@ -36,6 +39,7 @@ export function ColumnHeader({
 }: {
   bottomBordered?: boolean;
   column: TableColumn;
+  pinBoundary?: PinBoundary;
   pinned?: "left" | "right";
   pinStyle?: CSSProperties;
   processing: boolean;
@@ -55,8 +59,10 @@ export function ColumnHeader({
         pinned ? "bg-[var(--lt-table-pinned-muted-bg)]" : "bg-lt-muted/50",
         pinned && "md:sticky z-[1]",
         bottomBordered && "border-b border-lt-border",
+        pinBoundaryClassName(pinBoundary),
         alignText(align),
       )}
+      data-pin-boundary={pinBoundary}
       data-pinned={pinned}
       role="columnheader"
       style={pinStyle}
