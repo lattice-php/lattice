@@ -1,5 +1,5 @@
 import type { PagePayload } from "@lattice-php/lattice";
-import type { NotificationItem } from "@lattice-php/lattice/notifications/types";
+import type { NotificationItem } from "./notifications/types";
 
 export function payload(lattice: Partial<PagePayload> = {}): PagePayload {
   return {
