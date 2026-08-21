@@ -8,7 +8,7 @@ export { FileUploadAdapter } from "./file-upload/file-upload-adapter";
 export { FormAdapter } from "./form/form-adapter";
 export { HiddenInputAdapter } from "./hidden-input/hidden-input-adapter";
 export { NumberInputAdapter } from "./number-input/number-input-adapter";
-export { OtpInputAdapter } from "./otp-input/otp-input-adapter";
+export { OtpAdapter } from "./otp/otp-adapter";
 export { PasswordInputAdapter } from "./password-input/password-input-adapter";
 export { RepeaterAdapter } from "./repeater/repeater-adapter";
 export { SelectAdapter } from "./select/select-adapter";
