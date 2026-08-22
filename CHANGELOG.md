@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.63.1](https://github.com/lattice-php/lattice/compare/0.63.0...0.63.1) (2026-08-22)
+
+
+### Bug Fixes
+
+* **map,pdf:** drop tsconfig extends that is missing in the Composer package ([#537](https://github.com/lattice-php/lattice/issues/537)) ([8a3b949](https://github.com/lattice-php/lattice/commit/8a3b94931462c16f3819840af1312d4ff9e66d01))
+
+
+### Documentation
+
+* describe what Lattice provides for Claude Design's design-sync ([#535](https://github.com/lattice-php/lattice/issues/535)) ([5ad01b0](https://github.com/lattice-php/lattice/commit/5ad01b04a48bb5cc68851563b570b644390ad43b))
+
 ## [0.63.0](https://github.com/lattice-php/lattice/compare/0.62.0...0.63.0) (2026-08-21)
 
 
