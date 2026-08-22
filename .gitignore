@@ -53,8 +53,3 @@ docs/superpowers
 # Vitest browser-mode failure artifacts
 __screenshots__/
 .vitest-attachments/
-.ds-sync/
-ds-bundle/
-.design-sync/.cache/
-.design-sync/learnings/
-.design-sync/node_modules
