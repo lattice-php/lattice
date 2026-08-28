@@ -1,30 +1,30 @@
 export type UploadItem = {
-  id: string;
-  name: string;
-  status: "uploading" | "error";
-  progress: number;
-  reason?: string;
-  file: File;
+    id: string;
+    name: string;
+    status: "uploading" | "error";
+    progress: number;
+    reason?: string;
+    file: File;
 };
 export type UploadedMedia = {
-  id: number;
-  name: string;
-  url: string | null;
-  preview_url: string | null;
-  mime_type: string;
+    id: number;
+    name: string;
+    url: string | null;
+    preview_url: string | null;
+    mime_type: string;
 };
 export type UploadTarget = {
-  endpoint: string;
-  ref: string;
-  signed: boolean;
-  /** Called once per settled batch with the display descriptors of every stored upload. */
-  onUploaded?: (media: UploadedMedia[]) => void;
+    endpoint: string;
+    ref: string;
+    signed: boolean;
+    /** Called once per settled batch with the display descriptors of every stored upload. */
+    onUploaded?: (media: UploadedMedia[]) => void;
 };
 export type MediaUpload = {
-  uploads: UploadItem[];
-  addFiles: (files: FileList | File[] | null) => void;
-  retry: (item: UploadItem) => void;
-  dismiss: (id: string) => void;
+    uploads: UploadItem[];
+    addFiles: (files: FileList | File[] | null) => void;
+    retry: (item: UploadItem) => void;
+    dismiss: (id: string) => void;
 };
 /**
  * Drives the media library's uploads. Each file gets its own request, so
@@ -33,9 +33,4 @@ export type MediaUpload = {
  * batch has settled, brings the new rows into the grid — so `uploads` only
  * ever holds in-flight and failed files.
  */
-export declare function useMediaUpload({
-  endpoint,
-  ref,
-  signed,
-  onUploaded,
-}: UploadTarget): MediaUpload;
+export declare function useMediaUpload({ endpoint, ref, signed, onUploaded }: UploadTarget): MediaUpload;

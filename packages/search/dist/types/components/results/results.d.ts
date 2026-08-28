@@ -1,6 +1,4 @@
 export type SearchResultsProps = {
-  "data-test"?: string;
+    "data-test"?: string;
 };
-export declare function SearchResults({
-  "data-test": testId,
-}?: SearchResultsProps): import("react").JSX.Element | null;
+export declare function SearchResults({ "data-test": testId }?: SearchResultsProps): import("react").JSX.Element | null;

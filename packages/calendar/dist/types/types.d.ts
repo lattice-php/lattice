@@ -1,10 +1,5 @@
-import { Calendar, ResourceGroupData } from "./generated";
-export type {
-  Calendar as CalendarWireProps,
-  CalendarEventData,
-  CalendarView,
-  ResourceGroupData,
-} from "./generated";
+import { Calendar, ResourceGroupData } from './generated';
+export type { Calendar as CalendarWireProps, CalendarEventData, CalendarView, ResourceGroupData, } from './generated';
 export type CalendarResourceData = ResourceGroupData["resources"][number];
 export type CalendarActionNode = NonNullable<Calendar["eventAction"]>;
 /**
@@ -13,8 +8,8 @@ export type CalendarActionNode = NonNullable<Calendar["eventAction"]>;
  * `null` for resource-less events; adapters validate what they accept.
  */
 export type CalendarRescheduleRequest = {
-  id: string;
-  resourceId: string | null;
-  start: string;
-  end: string;
+    id: string;
+    resourceId: string | null;
+    start: string;
+    end: string;
 };

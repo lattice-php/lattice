@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.64.0](https://github.com/lattice-php/lattice/compare/0.63.1...0.64.0) (2026-08-28)
+
+
+### Features
+
+* **lattice:** add a components barrel entry ([903a3f6](https://github.com/lattice-php/lattice/commit/903a3f6140c4788138486e2f2d37f40b33330460))
+* **lattice:** add a preview runtime ([1f260e3](https://github.com/lattice-php/lattice/commit/1f260e32860c3dbe821ce4f5ac40458b81199e82))
+* **lattice:** export the compiled full stylesheet as css-full ([879c361](https://github.com/lattice-php/lattice/commit/879c361aa2b46ddca59df6d32372655724cadef9))
+* **pdf:** allow overriding the worker url per viewer ([3dae830](https://github.com/lattice-php/lattice/commit/3dae830e09d6358364e56b4fa80ea359ddd13a81))
+* ship .d.ts in the composer dist of source-shipped packages ([16fae39](https://github.com/lattice-php/lattice/commit/16fae39a3704dd36803eadabbef0169920e8b244))
+* **ui:** add an unstyled Link variant ([511fc27](https://github.com/lattice-php/lattice/commit/511fc270943581efdca425bc0a7ef055d2804fab))
+* **ui:** controlled open state for Tooltip and PreviewableImage ([cab1d8b](https://github.com/lattice-php/lattice/commit/cab1d8b25d07ec69bd1c6b4f793145f602555676))
+* **ui:** extract an inline ToastCard from Toast ([296a60e](https://github.com/lattice-php/lattice/commit/296a60ef7fc309bf935903eec68c1b44552197b8))
+* **ui:** support class() on every component ([5b20fa8](https://github.com/lattice-php/lattice/commit/5b20fa84e680482408062edeed2e3ee04b7cd047))
+
+
+### Bug Fixes
+
+* **tests:** satisfy phpstan under laravel 13.29 ([#540](https://github.com/lattice-php/lattice/issues/540)) ([75c16c0](https://github.com/lattice-php/lattice/commit/75c16c0c665cb7593e041113a21be269d6122e2e))
+
 ## [0.63.1](https://github.com/lattice-php/lattice/compare/0.63.0...0.63.1) (2026-08-22)
 
 

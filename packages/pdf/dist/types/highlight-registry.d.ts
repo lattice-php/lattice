@@ -1,8 +1,8 @@
 export declare const MATCH_HIGHLIGHT = "lt-pdf-match";
 export declare const CURRENT_MATCH_HIGHLIGHT = "lt-pdf-match-current";
 export type HighlightRanges = {
-  all: Range[];
-  current: Range[];
+    all: Range[];
+    current: Range[];
 };
 export declare function supportsHighlightApi(): boolean;
 /**

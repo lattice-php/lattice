@@ -1,14 +1,11 @@
-import { ReactNode } from "react";
-import { UseSearchReturn } from "./types";
+import { ReactNode } from 'react';
+import { UseSearchReturn } from './types';
 export type SearchContextValue = UseSearchReturn & {
-  instanceId: string;
-  placeholder: string;
+    instanceId: string;
+    placeholder: string;
 };
-export declare function SearchProvider({
-  value,
-  children,
-}: {
-  value: SearchContextValue;
-  children: ReactNode;
+export declare function SearchProvider({ value, children, }: {
+    value: SearchContextValue;
+    children: ReactNode;
 }): import("react").JSX.Element;
 export declare function useSearchContext(): SearchContextValue;

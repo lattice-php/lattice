@@ -1,4 +1,4 @@
-import { CalendarEventData } from "./types";
+import { CalendarEventData } from './types';
 export declare const MINUTES_PER_DAY: number;
 export declare const SNAP_MINUTES = 15;
 /**
@@ -8,22 +8,17 @@ export declare const SNAP_MINUTES = 15;
  */
 export declare function belongsInAllDayRow(event: CalendarEventData): boolean;
 export type TimedSegment = {
-  event: CalendarEventData;
-  startMin: number;
-  endMin: number;
+    event: CalendarEventData;
+    startMin: number;
+    endMin: number;
 };
 export type PositionedSegment = TimedSegment & {
-  column: number;
-  columns: number;
+    column: number;
+    columns: number;
 };
 /** Single-day timed events occupying `date`, as minute spans within that day. */
-export declare function timedSegmentsOnDay(
-  events: Iterable<CalendarEventData>,
-  date: string,
-): TimedSegment[];
-export declare function eventDurationMinutes(
-  event: Pick<CalendarEventData, "start" | "end">,
-): number;
+export declare function timedSegmentsOnDay(events: Iterable<CalendarEventData>, date: string): TimedSegment[];
+export declare function eventDurationMinutes(event: Pick<CalendarEventData, "start" | "end">): number;
 /**
  * Cluster-based overlap layout: segments overlapping transitively share a
  * cluster and split its width into equal columns (each segment takes the
