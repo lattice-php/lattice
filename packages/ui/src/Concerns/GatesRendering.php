@@ -67,9 +67,7 @@ trait GatesRendering
 
     public function shouldRender(): bool
     {
-        if ($this->resolvedVisibility === null) {
-            $this->resolvedVisibility = $this->passesAuthorization() && $this->passesVisibleCondition();
-        }
+        $this->resolvedVisibility ??= $this->passesAuthorization() && $this->passesVisibleCondition();
 
         return $this->resolvedVisibility;
     }
