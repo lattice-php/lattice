@@ -305,6 +305,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
                     'props' => [
                         'href' => '/register',
                         'label' => 'Register',
+                        'unstyled' => false,
                         'method' => null,
                         'tabIndex' => null,
                         'action' => null,
@@ -505,4 +506,12 @@ test('every component serializes class() into its wire props and omits it when u
 
     expect(wire(Stack::make('chrome')->class('app-logo-lockup')))
         ->props->toMatchArray(['class' => 'app-logo-lockup']);
+});
+
+test('links serialize unstyled() for chrome lockups', function (): void {
+    expect(wire(Link::make('Home')->href('/')))
+        ->props->toMatchArray(['unstyled' => false]);
+
+    expect(wire(Link::make('Home')->href('/')->unstyled()->class('app-logo')))
+        ->props->toMatchArray(['unstyled' => true, 'class' => 'app-logo']);
 });

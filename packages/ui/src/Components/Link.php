@@ -17,11 +17,24 @@ class Link extends Component
     use HasTabIndex;
     use Triggerable;
 
+    public bool $unstyled = false;
+
     public static function make(string $label, ?string $key = null): static
     {
         $link = new static($key);
         $link->label = $label;
 
         return $link;
+    }
+
+    /**
+     * Render without the default text-link styling (underline and colors),
+     * e.g. for custom lockups styled via class().
+     */
+    public function unstyled(bool $unstyled = true): static
+    {
+        $this->unstyled = $unstyled;
+
+        return $this;
     }
 }
