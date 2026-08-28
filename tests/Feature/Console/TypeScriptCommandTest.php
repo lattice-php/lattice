@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\File;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 
@@ -21,10 +22,9 @@ it('writes an augmentation file for app components, not built-ins', function ():
 
         artisan('lattice:typescript')->assertSuccessful();
 
-        $contents = file_get_contents($output);
+        $contents = File::get($output);
 
         expect($contents)
-            ->toBeString()
             ->toContain('declare module "@lattice-php/core"')
             ->toContain('interface ComponentProps')
             ->toContain('"field.sample"')
@@ -43,7 +43,7 @@ it('writes an augmentation file for app components, not built-ins', function ():
 
         // Quote style depends on whether oxfmt is available (absent on the CI
         // PHP jobs), so the built-in-descendant union asserts on a normalized form.
-        expect(str_replace("'", '"', (string) $contents))
+        expect(str_replace("'", '"', $contents))
             ->toContain('Node<"action"> | Node<"action.bulk">');
     });
 });
@@ -58,7 +58,7 @@ it('resolves built-in enum and value-object references instead of emitting undef
 
         artisan('lattice:typescript')->assertSuccessful();
 
-        $contents = (string) file_get_contents($output);
+        $contents = File::get($output);
 
         expect($contents)
             ->toContain('columnWidth: ColumnWidth;')

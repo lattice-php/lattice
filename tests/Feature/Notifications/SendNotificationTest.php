@@ -11,8 +11,7 @@ test('send persists a lattice payload to the native notifications table', functi
 
     expect($user->notifications()->count())->toBe(1);
 
-    $row = $user->notifications()->first();
-    expect($row)->not->toBeNull();
+    $row = $user->notifications()->firstOrFail();
 
     expect($row->getAttribute('data'))->toMatchArray([
         'format' => 'lattice',
@@ -29,8 +28,7 @@ test('send persists a translatable title and body as their wire shape', function
         ->body(rt('orders.shipped.body')->with(['order' => 1234]))
         ->send($user);
 
-    $row = $user->notifications()->first();
-    expect($row)->not->toBeNull();
+    $row = $user->notifications()->firstOrFail();
     $data = $row->getAttribute('data');
 
     expect($data['title'])->toBe(['key' => 'orders.shipped.title', 'payload' => [], 'replacements' => []])

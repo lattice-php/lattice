@@ -17,8 +17,9 @@ it('surfaces discovery state in the lattice section of php artisan about', funct
     $discoverRoot = realpath($signaturePath.'/src');
     $pluginPath = realpath($signaturePath.'/resources/js/plugin.ts');
 
-    expect($discoverRoot)->not->toBeFalse()
-        ->and($pluginPath)->not->toBeFalse();
+    if (! is_string($discoverRoot) || ! is_string($pluginPath)) {
+        throw new RuntimeException('The signature-example package paths could not be resolved.');
+    }
 
     Artisan::call('about', ['--json' => true]);
     $data = json_decode((string) Artisan::output(), true);
