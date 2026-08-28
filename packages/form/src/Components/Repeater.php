@@ -8,17 +8,18 @@ use Illuminate\Http\Request;
 use Lattice\Core\Contracts\ContainerComponent;
 use Lattice\Core\Facades\Evaluate;
 use Lattice\Form\Attributes\AsField;
+use Lattice\Form\Components\Concerns\CollectsSchemaFields;
 use Lattice\Form\Components\Concerns\HasRowActions;
 use Lattice\Form\Components\Concerns\HasRowLayout;
 use Lattice\Form\Enums\FieldType;
 use Lattice\Form\FormData;
-use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Concerns\HasChildSchema;
 use Stringable;
 
 #[AsField(FieldType::Repeater)]
 class Repeater extends RowsField implements ContainerComponent
 {
+    use CollectsSchemaFields;
     use HasChildSchema;
     use HasRowActions;
     use HasRowLayout;
@@ -52,10 +53,7 @@ class Repeater extends RowsField implements ContainerComponent
      */
     public function childFields(): array
     {
-        return array_values(array_filter(
-            $this->resolvedChildren(),
-            static fn (Component $child): bool => $child instanceof Field,
-        ));
+        return $this->collectFields($this->resolvedChildren());
     }
 
     /**
