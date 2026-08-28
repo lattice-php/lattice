@@ -4,7 +4,7 @@ import { DataTableBulkBar } from "@lattice-php/table/primitives/data-table";
 import { Spinner } from "@lattice-php/ui/primitives/spinner";
 import { prefixedTestId } from "@lattice-php/core/test-id";
 import { useT } from "@lattice-php/ui/i18n";
-import type { Node } from "@lattice-php/core/types";
+import type { BulkActionNode } from "@lattice-php/table/lib/bulk";
 
 export function BulkBar({
   actions,
@@ -16,7 +16,7 @@ export function BulkBar({
   onSelectAllMatching,
   onCompleted,
 }: {
-  actions: Node<"action" | "action.bulk">[];
+  actions: BulkActionNode[];
   selectedKeys: string[];
   allMatching: boolean;
   total?: number;
