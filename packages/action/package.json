@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/action",
-  "version": "0.64.1",
+  "version": "0.65.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lattice-php/lattice.git",
@@ -35,9 +35,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lattice-php/core": "0.64.1",
-    "@lattice-php/form": "0.64.1",
-    "@lattice-php/ui": "0.64.1"
+    "@lattice-php/core": "0.65.0",
+    "@lattice-php/form": "0.65.0",
+    "@lattice-php/ui": "0.65.0"
   },
   "peerDependencies": {
     "@inertiajs/core": "^3.0.0",
