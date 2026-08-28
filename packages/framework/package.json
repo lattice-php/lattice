@@ -37,6 +37,10 @@
       "types": "./dist/components.d.ts",
       "import": "./dist/components.js"
     },
+    "./preview": {
+      "types": "./dist/preview.d.ts",
+      "import": "./dist/preview.js"
+    },
     "./appearance": {
       "types": "./dist/appearance/index.d.ts",
       "import": "./dist/appearance/index.js"
