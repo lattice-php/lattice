@@ -151,6 +151,13 @@ Import Lattice's stylesheet from your main CSS entry, after Tailwind. It defines
 @import "@lattice-php/lattice/css";
 ```
 
+No Tailwind pipeline — for example a prototyping or design tool that consumes the components
+directly — means the utilities the components rely on never get compiled. For that case import the
+precompiled stylesheet instead: `@lattice-php/lattice/css-full` ships the full standalone sheet
+(Tailwind preflight, the utilities every Lattice package uses, `tw-animate-css`, and the theme
+tokens). Layer your own `--lt-*` overrides after it. In a normal app build, stay on
+`@lattice-php/lattice/css` — your Tailwind compiles exactly the utilities you use.
+
 The component tokens (`--lt-*`) ship sensible defaults inside a cascade layer, so the UI is styled out of the box — and any `--lt-*` value you declare in your own CSS (or via the [PHP `Theme` builder](/theming/)) overrides them regardless of import order.
 
 ### Register the Inertia renderer
