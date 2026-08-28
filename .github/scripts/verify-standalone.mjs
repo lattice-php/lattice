@@ -2,18 +2,53 @@ import { existsSync, readFileSync } from "node:fs";
 
 const artifacts = [
   { package: "packages/framework", manifest: "dist-standalone/manifest.json" },
-  { package: "packages/calendar", manifest: "dist/manifest.json", module: "dist/plugin.js" },
-  { package: "packages/chat", manifest: "dist/manifest.json", module: "dist/plugin.js" },
-  { package: "packages/map", manifest: "dist/manifest.json", module: "dist/plugin.js" },
-  { package: "packages/pdf", manifest: "dist/manifest.json", module: "dist/plugin.js" },
-  { package: "packages/tree", manifest: "dist/manifest.json", module: "dist/plugin.js" },
-  { package: "packages/media", manifest: "dist/manifest.json", module: "dist/plugin.js" },
+  {
+    package: "packages/calendar",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types",
+  },
+  {
+    package: "packages/chat",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types/index.d.ts",
+  },
+  {
+    package: "packages/map",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types/index.d.ts",
+  },
+  {
+    package: "packages/pdf",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types/index.d.ts",
+  },
+  {
+    package: "packages/tree",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types/index.d.ts",
+  },
+  {
+    package: "packages/media",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types",
+  },
   {
     package: "packages/api-reference",
     manifest: "dist-standalone/manifest.json",
     module: "dist-standalone/plugin.js",
   },
-  { package: "packages/search", manifest: "dist/manifest.json", module: "dist/plugin.js" },
+  {
+    package: "packages/search",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types/index.d.ts",
+  },
 ];
 
 let failed = false;
@@ -23,7 +58,7 @@ const fail = (message) => {
   failed = true;
 };
 
-for (const { package: pkg, manifest, module } of artifacts) {
+for (const { package: pkg, manifest, module, types } of artifacts) {
   const manifestPath = `${pkg}/${manifest}`;
 
   if (!existsSync(manifestPath)) {
@@ -40,6 +75,10 @@ for (const { package: pkg, manifest, module } of artifacts) {
 
   if (module !== undefined && !existsSync(`${pkg}/${module}`)) {
     fail(`${pkg}/${module} is missing`);
+  }
+
+  if (types !== undefined && !existsSync(`${pkg}/${types}`)) {
+    fail(`${pkg}/${types} is missing`);
   }
 }
 

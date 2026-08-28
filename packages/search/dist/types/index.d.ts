@@ -1,0 +1,26 @@
+export { default as searchPlugin } from "./plugin";
+export { SearchBox } from "./components/search-box/search-box";
+export type { SearchBoxProps } from "./components/search-box/search-box";
+export { SearchPalette } from "./components/search-box/search-palette";
+export type { SearchPaletteProps } from "./components/search-box/search-palette";
+export { SearchCategories } from "./components/categories/categories";
+export { SearchInput } from "./components/input/input";
+export { SearchPreview } from "./components/preview/preview";
+export { SearchRecent } from "./components/recent/recent";
+export { SearchResults } from "./components/results/results";
+export { ResultRow } from "./primitives/result-row";
+export { SearchProvider, useSearchContext } from "./context";
+export type { SearchContextValue } from "./context";
+export { searchResultKey, useSearch } from "./use-search";
+export type {
+  RecordSelectionResponse,
+  SearchCategory,
+  SearchMode,
+  SearchPagination,
+  SearchResponse,
+  SearchResult,
+  SearchState,
+  SearchStatus,
+  UseSearchOptions,
+  UseSearchReturn,
+} from "./types";
