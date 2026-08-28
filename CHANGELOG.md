@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.65.0](https://github.com/lattice-php/lattice/compare/0.64.1...0.65.0) (2026-08-28)
+
+
+### Features
+
+* **ui:** let Image open a larger previewSrc in the lightbox ([#544](https://github.com/lattice-php/lattice/issues/544)) ([9cfec00](https://github.com/lattice-php/lattice/commit/9cfec0051291a1804f0e09f53e94c8ce9d94e9ab))
+
 ## [0.64.1](https://github.com/lattice-php/lattice/compare/0.64.0...0.64.1) (2026-08-28)
 
 
