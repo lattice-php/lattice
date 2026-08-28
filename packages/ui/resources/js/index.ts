@@ -97,6 +97,8 @@ export type { ToastMessage } from "./toast/bus";
 export { normalizeCallout, onCallout, onRetractCallout } from "./toast/callout";
 export { Toast } from "./toast/toast";
 export type { ToastProps } from "./toast/toast";
+export { ToastCard, toastCardClassName } from "./toast/toast-card";
+export type { ToastCardProps } from "./toast/toast-card";
 export { Toaster } from "./toast/toaster";
 export { variantStyles } from "./toast/variant-styles";
 export * from "./types";
