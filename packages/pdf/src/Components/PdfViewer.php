@@ -42,6 +42,8 @@ final class PdfViewer extends Component
 
     private Closure|string|null $urlSource = null;
 
+    private ?string $workerUrlOverride = null;
+
     public static function make(?string $key = null): static
     {
         return new self($key);
@@ -187,8 +189,24 @@ final class PdfViewer extends Component
         return $data;
     }
 
+    /**
+     * Overrides the worker script URL for this viewer, taking precedence over
+     * config('pdf.worker_url') and the packaged worker route. Useful where the
+     * packaged route is unreachable (static previews, strict CSPs).
+     */
+    public function workerUrl(string $url): static
+    {
+        $this->workerUrlOverride = $url;
+
+        return $this;
+    }
+
     private function resolveWorkerUrl(): string
     {
+        if ($this->workerUrlOverride !== null) {
+            return $this->workerUrlOverride;
+        }
+
         $configured = $this->configuredUrl('pdf.worker_url');
 
         if ($configured !== null) {

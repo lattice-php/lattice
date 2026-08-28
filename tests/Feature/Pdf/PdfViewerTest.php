@@ -29,6 +29,26 @@ it('serializes the viewer with a resolved url and defaults', function (): void {
         ->and($node['props']['workerUrl'])->toContain('lattice/pdf/worker.js');
 });
 
+it('honors a per-viewer workerUrl override before config and the packaged route', function (): void {
+    $node = wire(
+        PdfViewer::make()
+            ->url('https://files.example.test/manual.pdf')
+            ->workerUrl('blob:preview-worker'),
+    );
+
+    expect($node['props']['workerUrl'])->toBe('blob:preview-worker');
+
+    config()->set('pdf.worker_url', 'https://cdn.example.test/worker.js');
+
+    $overridden = wire(
+        PdfViewer::make()
+            ->url('https://files.example.test/manual.pdf')
+            ->workerUrl('blob:preview-worker'),
+    );
+
+    expect($overridden['props']['workerUrl'])->toBe('blob:preview-worker');
+});
+
 it('resolves a closure url at serialization time', function (): void {
     $node = wire(PdfViewer::make()->url(fn (): string => 'https://files.example.test/from-closure.pdf'));
 
