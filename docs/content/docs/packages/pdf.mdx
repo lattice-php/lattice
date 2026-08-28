@@ -89,7 +89,8 @@ long documents stay responsive.
 
 `->height()` fixes the viewer's height; `->maxHeight()` lets it grow with the document instead and
 only caps it — a single A4 page then shows without dead space below, while longer documents scroll
-inside the cap:
+inside the cap. Both accept a pixel integer or a CSS length such as `'80vh'` or `'100%'`; without an
+explicit height the viewer fills `80vh`:
 
 ```php
 PdfViewer::make('manual')
