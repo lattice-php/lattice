@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.64.1](https://github.com/lattice-php/lattice/compare/0.64.0...0.64.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* **form:** collect repeater row fields through layout containers ([#542](https://github.com/lattice-php/lattice/issues/542)) ([0676acf](https://github.com/lattice-php/lattice/commit/0676acff2b98473ea7162be4a5a366e2cf47ea1e))
+
 ## [0.64.0](https://github.com/lattice-php/lattice/compare/0.63.1...0.64.0) (2026-08-28)
 
 
