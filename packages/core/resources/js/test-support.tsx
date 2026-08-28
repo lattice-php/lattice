@@ -3,7 +3,7 @@ import type { ReactElement } from "react";
 import { onTestFinished, vi } from "vitest";
 import type { Registry } from "./registry";
 import { RegistryProvider } from "./registry-context";
-import type { ComponentPropsOf, Node, RendererComponent, Schema } from "./types";
+import type { CommonNodeProps, ComponentPropsOf, Node, RendererComponent, Schema } from "./types";
 
 /**
  * Build a node fixture for tests with only the props a case cares about. The wire
@@ -16,7 +16,7 @@ export function fakeNode<TType extends string>(node: {
   id?: string;
   key?: string;
   schema?: Schema;
-  props?: Partial<ComponentPropsOf<TType>>;
+  props?: Partial<ComponentPropsOf<TType> & CommonNodeProps>;
 }): Node<TType> {
   return node as unknown as Node<TType>;
 }

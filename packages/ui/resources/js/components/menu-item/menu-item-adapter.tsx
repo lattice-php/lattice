@@ -28,6 +28,7 @@ export const MenuItemAdapter: RendererComponent<"menu-item"> = ({ children, node
   const behavior = useClickBehavior(node.props);
   const testId = prefixedNodeTestId("menu", node);
   const shared = {
+    className: node.props.class ?? undefined,
     "data-test": testId,
     icon: icon ? <IconRenderer className="size-lt-icon-md shrink-0" icon={icon} /> : undefined,
     label,

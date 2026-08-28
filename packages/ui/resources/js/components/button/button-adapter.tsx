@@ -6,7 +6,7 @@ import { ActionTrigger, type TriggerState, useClickBehavior } from "../../click-
 import { useNavigation } from "../../navigation";
 
 export const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
-  const { label, icon } = node.props;
+  const { label, icon, class: className } = node.props;
   const variant = node.props.variant ?? null;
   const emphasis = node.props.emphasis ?? "solid";
   const testId = nodeIdentity(node);
@@ -24,6 +24,7 @@ export const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
 
   const triggerButton = ({ onClick, processing }: TriggerState) => (
     <Button
+      className={className ?? undefined}
       data-test={testId}
       disabled={processing}
       emphasis={emphasis}
@@ -37,7 +38,14 @@ export const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
 
   if (behavior.kind === "navigate") {
     return (
-      <Button asChild data-test={testId} emphasis={emphasis} variant={variant} size={size}>
+      <Button
+        asChild
+        className={className ?? undefined}
+        data-test={testId}
+        emphasis={emphasis}
+        variant={variant}
+        size={size}
+      >
         <Link href={behavior.href} method={behavior.method ?? undefined}>
           {content}
         </Link>
@@ -55,6 +63,7 @@ export const ButtonAdapter: RendererComponent<"button"> = ({ node }) => {
 
   return (
     <Button
+      className={className ?? undefined}
       data-test={testId}
       emphasis={emphasis}
       size={size}

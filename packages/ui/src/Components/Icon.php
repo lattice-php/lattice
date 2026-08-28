@@ -19,21 +19,12 @@ class Icon extends Component
 
     public string $name = '';
 
-    public ?string $class = null;
-
     public static function make(BackedEnum|string $name, ?string $key = null): static
     {
         $icon = new static($key);
         $icon->name = Wire::scalar($name);
 
         return $icon;
-    }
-
-    public function class(string $class): static
-    {
-        $this->class = $class;
-
-        return $this;
     }
 
     protected static function primaryBindableProp(): string

@@ -4,6 +4,7 @@ import { Avatar } from "./avatar";
 
 export const AvatarAdapter: RendererComponent<"avatar"> = ({ node }) => (
   <Avatar
+    className={node.props.class ?? undefined}
     data-test={nodeIdentity(node)}
     name={node.props.name}
     shape={node.props.shape}

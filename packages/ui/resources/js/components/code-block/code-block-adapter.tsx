@@ -4,6 +4,7 @@ import { CodeBlock } from "./code-block";
 
 export const CodeBlockAdapter: RendererComponent<"code-block"> = ({ node }) => (
   <CodeBlock
+    className={node.props.class ?? undefined}
     copyable={node.props.copyable}
     data-test={nodeIdentity(node)}
     language={node.props.language}

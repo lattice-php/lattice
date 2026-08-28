@@ -5,6 +5,7 @@ import { Text } from "./text";
 export const TextAdapter: RendererComponent<"text"> = ({ node }) => (
   <Text
     align={node.props.align === "center" ? "center" : "left"}
+    className={node.props.class ?? undefined}
     color={node.props.color}
     copyable={node.props.copyable}
     copyLabel={node.props.text}

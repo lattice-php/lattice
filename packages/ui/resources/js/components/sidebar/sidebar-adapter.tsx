@@ -46,6 +46,7 @@ export const SidebarAdapter: RendererComponent<"sidebar"> = ({ children, node })
   return (
     <Sidebar
       backdropProps={{ "data-test": "sidebar-backdrop" }}
+      className={node.props.class ?? undefined}
       collapsed={collapsible && collapsed}
       data-test="sidebar"
       onOpenChange={setMobileOpen}

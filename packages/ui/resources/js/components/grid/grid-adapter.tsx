@@ -7,6 +7,7 @@ import type { GridBreakpointMap } from "./grid";
 
 export const GridAdapter: RendererComponent<"grid"> = ({ node }) => (
   <Grid
+    className={node.props.class ?? undefined}
     columns={(node.props.columns ?? undefined) as GridBreakpointMap | undefined}
     data-test={nodeIdentity(node)}
   >

@@ -8,6 +8,7 @@ export const DescriptionListAdapter: RendererComponent<"description-list"> = ({
 }) => (
   <DescriptionList
     bleed={node.props.bleed}
+    className={node.props.class ?? undefined}
     data-test={nodeIdentity(node)}
     divided={node.props.divided}
     emptyLabel={node.props.emptyLabel}

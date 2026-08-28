@@ -279,11 +279,10 @@ it('resolves a backed enum name and defaults size to md', function (): void {
     $data = wire(Icon::make(IconName::Send));
 
     expect($data['type'])->toBe('icon')
-        ->and($data['props'])->toHaveCount(4)
+        ->and($data['props'])->toHaveCount(3)
         ->and($data['props'])->toMatchArray([
             'name' => 'send',
             'size' => 'md',
             'color' => null,
-            'class' => null,
         ]);
 });

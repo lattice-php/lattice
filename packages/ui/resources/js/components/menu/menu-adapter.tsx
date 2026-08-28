@@ -3,5 +3,7 @@ import type { RendererComponent } from "@lattice-php/core/types";
 import { Menu } from "./menu";
 
 export const MenuAdapter: RendererComponent<"menu"> = ({ children, node }) => (
-  <Menu data-test={nodeIdentity(node)}>{children}</Menu>
+  <Menu className={node.props?.class ?? undefined} data-test={nodeIdentity(node)}>
+    {children}
+  </Menu>
 );

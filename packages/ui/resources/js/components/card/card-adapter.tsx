@@ -10,6 +10,7 @@ export const CardAdapter: RendererComponent<"card"> = ({ children, node }) => {
 
   return (
     <Card
+      className={node.props.class ?? undefined}
       data-test={nodeIdentity(node)}
       description={node.props.description}
       headerActions={headerActions.length > 0 ? <Renderer nodes={headerActions} /> : null}

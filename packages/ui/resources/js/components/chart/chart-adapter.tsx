@@ -6,6 +6,7 @@ export const ChartAdapter: RendererComponent<"chart"> = ({ node }) => (
   <Chart
     categoryFormat={node.props.categoryFormat}
     categoryKey={node.props.categoryKey}
+    className={node.props.class ?? undefined}
     data={node.props.data}
     data-test={nodeIdentity(node)}
     description={node.props.description}
