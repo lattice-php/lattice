@@ -11,6 +11,22 @@ describe("Tooltip", () => {
     expect(screen.getByText("Available on paid plans")).toBeVisible();
   });
 
+  it("renders its content statically when open is controlled", () => {
+    render(<Tooltip content={<strong>Static capture</strong>} open />);
+
+    expect(screen.getByText("Static capture")).toBeVisible();
+  });
+
+  it("starts revealed with defaultOpen and still closes on toggle", () => {
+    render(<Tooltip content={<strong>Starts open</strong>} defaultOpen />);
+
+    expect(screen.getByText("Starts open")).toBeVisible();
+
+    fireEvent.click(screen.getByRole("button", { name: "More information" }));
+
+    expect(screen.queryByText("Starts open")).not.toBeInTheDocument();
+  });
+
   it("reveals arbitrary React content from a custom trigger", () => {
     render(
       <Tooltip content={<a href="/releases">Release details</a>} trigger={<span>Beta</span>} />,

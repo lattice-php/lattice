@@ -15,6 +15,9 @@ export type TooltipProps = {
   "aria-label"?: string;
   className?: string;
   content?: ReactNode;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
   trigger?: ReactNode;
   triggerProps?: TooltipTriggerProps;
 };
@@ -23,6 +26,9 @@ export function Tooltip({
   "aria-label": ariaLabel,
   className,
   content,
+  defaultOpen,
+  onOpenChange,
+  open,
   trigger,
   triggerProps,
 }: TooltipProps) {
@@ -35,7 +41,7 @@ export function Tooltip({
   const hasTrigger = hasContent(trigger);
 
   return (
-    <Popover>
+    <Popover defaultOpen={defaultOpen} onOpenChange={onOpenChange} open={open}>
       <PopoverTrigger
         {...triggerProps}
         type="button"
