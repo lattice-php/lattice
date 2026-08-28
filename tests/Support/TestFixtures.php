@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Validation\ValidationException;
 use Lattice\Core\Contracts\OptionSource;
 use Lattice\Core\Discovery\DiscoveryManifest;
@@ -32,6 +34,17 @@ function subRequest(Request $request): array
     }
 
     return [$request, $sub];
+}
+
+function namedRoute(string $name): Route
+{
+    $route = Router::getRoutes()->getByName($name);
+
+    if (! $route instanceof Route) {
+        throw new RuntimeException("Route [{$name}] is not registered.");
+    }
+
+    return $route;
 }
 
 function discoverFixtures(): void

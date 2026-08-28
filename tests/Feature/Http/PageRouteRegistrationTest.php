@@ -120,9 +120,7 @@ test('Lattice::pageRegistry()->all() resolves route metadata for registered page
     Lattice::pages([RegWidgetsPage::class]);
 
     $widgets = collect(Lattice::pageRegistry()->all())
-        ->firstWhere('class', RegWidgetsPage::class);
-
-    expect($widgets)->not->toBeNull();
+        ->firstOrFail('class', RegWidgetsPage::class);
 
     expect($widgets->route)->toBe('/widgets')
         ->and($widgets->name)->toBe('widgets.index')
@@ -142,9 +140,7 @@ test('the service provider builds a named GET route for each page', function ():
 
     new LatticeServiceProvider(app())->bootPages();
 
-    $route = Route::getRoutes()->getByName('widgets.index');
-
-    expect($route)->not->toBeNull();
+    $route = namedRoute('widgets.index');
 
     expect($route->uri())->toBe('widgets')
         ->and($route->getActionName())->toBe(RegWidgetsPage::class.'@render')
@@ -156,8 +152,7 @@ test('a page without attribute middleware registers with the configured default'
 
     new LatticeServiceProvider(app())->bootPages();
 
-    $route = Route::getRoutes()->getByName('gadgets.index');
-    expect($route)->not->toBeNull();
+    $route = namedRoute('gadgets.index');
 
     expect($route->gatherMiddleware())->toBe(['web']);
 });
@@ -168,8 +163,7 @@ test('the page middleware default is configurable', function (): void {
 
     new LatticeServiceProvider(app())->bootPages();
 
-    $route = Route::getRoutes()->getByName('gadgets.index');
-    expect($route)->not->toBeNull();
+    $route = namedRoute('gadgets.index');
 
     expect($route->gatherMiddleware())->toBe(['web', 'auth']);
 });
@@ -180,10 +174,8 @@ test('attribute middleware merges after the configured default without duplicate
 
     new LatticeServiceProvider(app())->bootPages();
 
-    $authRoute = Route::getRoutes()->getByName('auth.index');
-    $widgetsRoute = Route::getRoutes()->getByName('widgets.index');
-    expect($authRoute)->not->toBeNull()
-        ->and($widgetsRoute)->not->toBeNull();
+    $authRoute = namedRoute('auth.index');
+    $widgetsRoute = namedRoute('widgets.index');
 
     expect($authRoute->gatherMiddleware())->toBe(['web', 'auth'])
         ->and($widgetsRoute->gatherMiddleware())->toBe(['web']);
@@ -194,8 +186,7 @@ test('an empty middleware attribute keeps the configured default', function (): 
 
     new LatticeServiceProvider(app())->bootPages();
 
-    $route = Route::getRoutes()->getByName('bare.index');
-    expect($route)->not->toBeNull();
+    $route = namedRoute('bare.index');
 
     expect($route->gatherMiddleware())->toBe(['web']);
 });
@@ -205,8 +196,7 @@ test('a declared ability registers as can middleware after the page middleware',
 
     new LatticeServiceProvider(app())->bootPages();
 
-    $route = Route::getRoutes()->getByName('guarded.index');
-    expect($route)->not->toBeNull();
+    $route = namedRoute('guarded.index');
 
     expect($route->gatherMiddleware())
         ->toBe(['web', 'can:manage-widgets', 'can:inspect-widgets']);
@@ -217,8 +207,7 @@ test('a page with empty attribute middleware still registers its declared abilit
 
     new LatticeServiceProvider(app())->bootPages();
 
-    $route = Route::getRoutes()->getByName('guarded-bare.index');
-    expect($route)->not->toBeNull();
+    $route = namedRoute('guarded-bare.index');
 
     expect($route->gatherMiddleware())
         ->toBe(['web', 'can:manage-widgets']);
