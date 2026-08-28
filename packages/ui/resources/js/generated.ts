@@ -222,6 +222,7 @@ export type Icon = {
 export type Image = {
   alt: string | null;
   circular: boolean;
+  previewSrc: string | null;
   previewable: boolean;
   size: number | null;
   src: string;

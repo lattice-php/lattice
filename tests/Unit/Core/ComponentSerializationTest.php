@@ -79,22 +79,25 @@ test('images serialize their source and preview configuration', function (): voi
                 'size' => null,
                 'circular' => false,
                 'previewable' => true,
+                'previewSrc' => null,
             ],
         ]);
 
-    expect(wire(Image::make('https://example.test/p.png')
+    expect(wire(Image::make('https://example.test/p-thumb.png')
         ->alt('Product photo')
         ->size(64)
         ->circular()
-        ->previewable(false)))
+        ->previewable(false)
+        ->previewSrc('https://example.test/p.png')))
         ->toMatchArray([
             'type' => 'image',
             'props' => [
-                'src' => 'https://example.test/p.png',
+                'src' => 'https://example.test/p-thumb.png',
                 'alt' => 'Product photo',
                 'size' => 64,
                 'circular' => true,
                 'previewable' => false,
+                'previewSrc' => 'https://example.test/p.png',
             ],
         ]);
 });

@@ -15,6 +15,7 @@
                 "props": {
                     "alt": "Coffee brewing setup",
                     "circular": false,
+                    "previewSrc": null,
                     "previewable": true,
                     "size": 96,
                     "src": "https://picsum.photos/id/1060/600/400"
@@ -25,6 +26,7 @@
                 "props": {
                     "alt": "Strawberries",
                     "circular": true,
+                    "previewSrc": null,
                     "previewable": true,
                     "size": 96,
                     "src": "https://picsum.photos/id/1080/600/400"
@@ -35,6 +37,7 @@
                 "props": {
                     "alt": "Walrus resting",
                     "circular": false,
+                    "previewSrc": null,
                     "previewable": false,
                     "size": 96,
                     "src": "https://picsum.photos/id/1084/600/400"
