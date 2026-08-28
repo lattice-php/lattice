@@ -17,7 +17,7 @@ function pdfNode() {
       filename: null,
       downloadable: true,
       searchable: true,
-      height: 480,
+      height: "480px",
       maxHeight: null,
       sidebar: true,
       initialZoom: null,

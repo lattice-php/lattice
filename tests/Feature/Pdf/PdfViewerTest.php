@@ -23,7 +23,7 @@ it('serializes the viewer with a resolved url and defaults', function (): void {
             'filename' => 'manual.pdf',
             'downloadable' => true,
             'searchable' => true,
-            'height' => 600,
+            'height' => '600px',
             'initialZoom' => 1.5,
         ])
         ->and($node['props']['workerUrl'])->toContain('lattice/pdf/worker.js');
@@ -67,10 +67,31 @@ it('rejects heights below the minimum', function (): void {
     PdfViewer::make()->height(120);
 })->throws(InvalidArgumentException::class, 'PdfViewer height must be at least 240 pixels.');
 
+it('defaults to a viewport-relative height', function (): void {
+    $node = wire(PdfViewer::make()->url('https://files.example.test/manual.pdf'));
+
+    expect($node['props'])->toMatchArray(['height' => '80vh', 'maxHeight' => null]);
+});
+
+it('accepts css lengths for height and max height', function (): void {
+    $node = wire(
+        PdfViewer::make()
+            ->url('https://files.example.test/manual.pdf')
+            ->height('70vh')
+            ->maxHeight('100%'),
+    );
+
+    expect($node['props'])->toMatchArray(['height' => '70vh', 'maxHeight' => '100%']);
+});
+
+it('rejects a height that is not a css length', function (): void {
+    PdfViewer::make()->height('calc(100% - 2rem)');
+})->throws(InvalidArgumentException::class, 'PdfViewer height must be a CSS length such as 600px, 80vh, or 100%.');
+
 it('serializes a max height cap instead of the fixed height', function (): void {
     $node = wire(PdfViewer::make()->url('https://files.example.test/manual.pdf')->maxHeight(900));
 
-    expect($node['props'])->toMatchArray(['maxHeight' => 900, 'height' => 720]);
+    expect($node['props'])->toMatchArray(['maxHeight' => '900px', 'height' => '80vh']);
 });
 
 it('rejects max heights below the minimum', function (): void {
