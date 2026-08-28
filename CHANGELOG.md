@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.66.0](https://github.com/lattice-php/lattice/compare/0.65.0...0.66.0) (2026-08-28)
+
+
+### Features
+
+* **pdf:** accept css lengths for viewer height and default to 80vh ([#546](https://github.com/lattice-php/lattice/issues/546)) ([8a48ad4](https://github.com/lattice-php/lattice/commit/8a48ad4b9ddd75c940f453a09acd3f4d58b2b0be))
+* **ui:** Accordion — one-open coordination for Collapsible and Section ([#548](https://github.com/lattice-php/lattice/issues/548)) ([0893803](https://github.com/lattice-php/lattice/commit/0893803e356903583e444aeea685de5ec893f6bc))
+
 ## [0.65.0](https://github.com/lattice-php/lattice/compare/0.64.1...0.65.0) (2026-08-28)
 
 
