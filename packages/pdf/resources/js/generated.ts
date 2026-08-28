@@ -7,9 +7,9 @@ export type PdfViewer = {
   cmapUrl: string | null;
   downloadable: boolean;
   filename: string | null;
-  height: number;
+  height: string;
   initialZoom: number | null;
-  maxHeight: number | null;
+  maxHeight: string | null;
   searchable: boolean;
   sidebar: boolean;
   standardFontDataUrl: string | null;
