@@ -4,6 +4,7 @@ import path from "node:path";
 import Sonda from "sonda/vite";
 import { esmExternalRequirePlugin } from "vite";
 import type { Plugin, UserConfig } from "vite";
+import dts from "vite-plugin-dts";
 
 const runtimeSpecifier = "@lattice-php/lattice/runtime";
 const redirectedModuleId = "\0lattice:runtime-redirect";
@@ -74,6 +75,34 @@ export function standalonePluginConfig(
         external: ["react", "react-dom", "react/jsx-runtime", runtimeSpecifier],
       }),
       manifest(version),
+      // Composer consumers receive these packages as source (no npm dist), so
+      // the standalone build also emits the declarations that give tooling —
+      // editors, design-sync, custom bundlers — the real prop contracts.
+      ...(isAnalyze
+        ? []
+        : [
+            dts({
+              tsconfigPath: path.join(packageRoot, "tsconfig.json"),
+              include: ["resources/js"],
+              exclude: [
+                "resources/js/**/*.test.*",
+                "resources/js/**/*.test-d.*",
+                "resources/js/**/fixtures/**",
+                "resources/js/**/test-support.*",
+                "resources/js/test/**",
+                // The plugin entries wire the runtime and are consumed as built
+                // JS, not as a typed API; their inferred registration types are
+                // not portable outside the monorepo.
+                "resources/js/plugin.ts",
+                "resources/js/plugin.composer.ts",
+              ],
+              outDirs: "dist/types",
+              copyDtsFiles: true,
+              compilerOptions: {
+                rootDir: path.join(packageRoot, "resources/js"),
+              },
+            }),
+          ]),
       ...(isAnalyze
         ? [
             Sonda({
