@@ -1,6 +1,10 @@
 import type { Affix, Breadcrumb, Color, Node, Option } from "@lattice-php/core";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
+export type Accordion = {
+  defaultOpen: string | null;
+  gap: Gap | null;
+};
 export type Align = "center" | "left" | "start" | "stretch";
 export type Avatar = {
   name: string | null;
@@ -112,6 +116,7 @@ export type ComponentEntry = {
   value: unknown;
 };
 export type ComponentPropsMap = {
+  accordion: Accordion;
   avatar: Avatar;
   badge: Badge;
   breadcrumbs: Breadcrumbs;
@@ -267,6 +272,7 @@ export type Modal = {
 export type ModalHeight = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type NodeType =
+  | "accordion"
   | "avatar"
   | "badge"
   | "breadcrumbs"
@@ -465,6 +471,7 @@ export type Translatable = {
   replacements: Record<string, boolean | number | string>;
 };
 export type UiNodeType =
+  | "accordion"
   | "avatar"
   | "badge"
   | "breadcrumbs"

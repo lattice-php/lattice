@@ -33,7 +33,7 @@ const flexAlignments: Partial<Record<StackAlign, string>> = {
   stretch: "items-stretch justify-stretch",
 };
 
-const stackGaps: Record<StackGap, string> = {
+export const stackGaps: Record<StackGap, string> = {
   none: "gap-0",
   xs: "gap-1",
   sm: "gap-2",

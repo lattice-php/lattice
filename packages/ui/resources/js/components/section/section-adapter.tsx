@@ -2,6 +2,7 @@ import { Renderer } from "@lattice-php/core/renderer";
 import { toNodes } from "@lattice-php/core/nodes";
 import { nodeIdentity, prefixedTestId } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
+import { useAccordionItem } from "../accordion/accordion";
 import { Section } from "./section";
 
 export const SectionAdapter: RendererComponent<"section"> = ({ children, node }) => {
@@ -9,12 +10,18 @@ export const SectionAdapter: RendererComponent<"section"> = ({ children, node })
   const headerActions = toNodes(node.props.headerActions);
   const identity = nodeIdentity(node);
   const rememberState = node.props.rememberState !== false;
+  const accordionItem = useAccordionItem(identity);
 
   return (
     <Section
-      {...(collapsible && rememberState
-        ? { storageKey: `lattice:section:${identity ?? "default"}` }
-        : {})}
+      {...(collapsible && accordionItem
+        ? {
+            collapsed: !accordionItem.open,
+            onCollapsedChange: (collapsed: boolean) => accordionItem.setOpen(!collapsed),
+          }
+        : collapsible && rememberState
+          ? { storageKey: `lattice:section:${identity ?? "default"}` }
+          : {})}
       className={node.props.class ?? undefined}
       collapsible={collapsible}
       data-test={identity}

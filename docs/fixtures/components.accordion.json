@@ -1,0 +1,78 @@
+[
+    {
+        "key": "faq",
+        "props": {
+            "defaultOpen": "shipping",
+            "gap": null
+        },
+        "schema": [
+            {
+                "key": "shipping",
+                "props": {
+                    "collapsed": true,
+                    "rememberState": false,
+                    "tooltip": null,
+                    "trigger": [
+                        {
+                            "props": {
+                                "align": null,
+                                "color": null,
+                                "copyable": false,
+                                "size": "md",
+                                "text": "When does my order ship?"
+                            },
+                            "type": "text"
+                        }
+                    ]
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Orders placed before noon ship the same day."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "collapsible"
+            },
+            {
+                "key": "returns",
+                "props": {
+                    "collapsed": true,
+                    "rememberState": false,
+                    "tooltip": null,
+                    "trigger": [
+                        {
+                            "props": {
+                                "align": null,
+                                "color": null,
+                                "copyable": false,
+                                "size": "md",
+                                "text": "How do returns work?"
+                            },
+                            "type": "text"
+                        }
+                    ]
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "size": "md",
+                            "text": "Print a label from your account within 30 days."
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "collapsible"
+            }
+        ],
+        "type": "accordion"
+    }
+]
