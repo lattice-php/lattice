@@ -9,6 +9,7 @@ export const BreadcrumbsAdapter: RendererComponent<"breadcrumbs"> = ({ node }) =
   return (
     <Breadcrumbs
       aria-label={t("common.breadcrumb", "Breadcrumb")}
+      className={node.props.class ?? undefined}
       data-test={nodeIdentity(node)}
       items={node.props.items.map((crumb) => ({ href: crumb.href, label: crumb.title }))}
     />

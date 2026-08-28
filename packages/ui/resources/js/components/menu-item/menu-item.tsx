@@ -17,6 +17,7 @@ export type MenuItemProps = DataAttributes & {
   active?: boolean;
   /** Nested items turn this item into a group: collapsible when expanded, a flyout in a collapsed rail. */
   children?: ReactNode;
+  className?: string;
   defaultOpen?: boolean;
   disabled?: boolean;
   href?: string;
@@ -45,6 +46,7 @@ function accessibleName(label: ReactNode): string | undefined {
 export function MenuItem({
   active = false,
   children,
+  className,
   defaultOpen = false,
   disabled = false,
   href,
@@ -93,7 +95,7 @@ export function MenuItem({
   if (children) {
     if (collapsed) {
       return (
-        <li>
+        <li className={className}>
           <Dropdown
             {...dataAttributes}
             aria-label={name}
@@ -117,6 +119,7 @@ export function MenuItem({
     return (
       <MenuGroup
         {...dataAttributes}
+        className={className}
         content={content}
         defaultOpen={defaultOpen}
         onOpenChange={onOpenChange}
@@ -129,7 +132,7 @@ export function MenuItem({
 
   if (href !== undefined) {
     return (
-      <li>
+      <li className={className}>
         <Link
           {...dataAttributes}
           aria-current={active ? "page" : undefined}
@@ -146,7 +149,7 @@ export function MenuItem({
 
   if (onClick) {
     return (
-      <li>
+      <li className={className}>
         <button
           {...dataAttributes}
           aria-label={ariaLabel}
@@ -166,7 +169,7 @@ export function MenuItem({
   }
 
   return (
-    <li>
+    <li className={className}>
       <span
         {...dataAttributes}
         className="flex items-center gap-2 px-3 py-2 text-xs font-semibold tracking-wide text-lt-muted-fg uppercase"
@@ -179,6 +182,7 @@ export function MenuItem({
 
 function MenuGroup({
   children,
+  className,
   content,
   defaultOpen,
   onOpenChange,
@@ -186,6 +190,7 @@ function MenuGroup({
   ...dataAttributes
 }: DataAttributes & {
   children: ReactNode;
+  className?: string;
   content: ReactNode;
   defaultOpen: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -203,7 +208,7 @@ function MenuGroup({
   }
 
   return (
-    <li>
+    <li className={className}>
       <button
         {...dataAttributes}
         aria-expanded={isOpen}

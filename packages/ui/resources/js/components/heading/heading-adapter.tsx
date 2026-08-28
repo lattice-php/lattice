@@ -4,6 +4,7 @@ import { Heading } from "./heading";
 
 export const HeadingAdapter: RendererComponent<"heading"> = ({ node }) => (
   <Heading
+    className={node.props.class ?? undefined}
     copyable={node.props.copyable}
     copyLabel={node.props.text}
     copyValue={node.props.text}

@@ -11,6 +11,7 @@ export const FloatingPanelAdapter: RendererComponent<"floating-panel"> = ({ chil
   return (
     <FloatingPanel
       aria-label={node.props.label ?? undefined}
+      className={node.props.class ?? undefined}
       data-test={identity}
       offset={node.props.offset ?? 16}
       placement={node.props.placement ?? "bottom-end"}

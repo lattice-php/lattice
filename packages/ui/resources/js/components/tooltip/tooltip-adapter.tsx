@@ -11,6 +11,7 @@ export const TooltipAdapter: RendererComponent<"tooltip"> = ({ node }) => {
 
   return (
     <Tooltip
+      className={node.props.class ?? undefined}
       content={content ? <div dangerouslySetInnerHTML={{ __html: content }} /> : null}
       trigger={trigger.length > 0 ? <Renderer nodes={trigger} /> : null}
       triggerProps={{ "data-test": identity ? `${identity}-trigger` : undefined }}

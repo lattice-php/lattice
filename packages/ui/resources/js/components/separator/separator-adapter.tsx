@@ -5,6 +5,7 @@ import { Separator } from "./separator";
 export const SeparatorAdapter: RendererComponent<"separator"> = ({ node }) => (
   <Separator
     bleed={node.props.bleed}
+    className={node.props.class ?? undefined}
     data-test={nodeIdentity(node)}
     orientation={node.props.orientation}
   />

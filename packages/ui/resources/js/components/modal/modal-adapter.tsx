@@ -35,6 +35,7 @@ export const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => 
     <Dialog open={context.open} onOpenChange={context.onOpenChange}>
       <DialogContent
         {...(description ? {} : { "aria-describedby": undefined })}
+        className={node.props.class ?? undefined}
         data-test={nodeIdentity(node)}
         onCloseAutoFocus={context.onExited}
         placement={node.props.side ?? "center"}

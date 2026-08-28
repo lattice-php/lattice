@@ -215,7 +215,6 @@ export type Heading = {
 export type Height = "full" | "screen";
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
 export type Icon = {
-  class: string | null;
   color: Color | null;
   name: string;
   size: Size;

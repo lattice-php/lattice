@@ -3,6 +3,8 @@ import type { ComponentType as ReactComponentType, ReactNode } from "react";
 export type NodeProps = Record<string, unknown>;
 
 export type CommonNodeProps = {
+  /** Extra classes the server merged onto this node; adapters merge it onto their root element. */
+  class?: string | null;
   columnSpan?: Record<string, number | string> | null;
   dataBindings?: Record<string, string> | null;
   hideWhenCollapsed?: boolean | null;

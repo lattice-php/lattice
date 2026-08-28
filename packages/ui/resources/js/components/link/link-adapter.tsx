@@ -70,7 +70,7 @@ function labelWithTextAffixes(label: string, prefix?: Affix | null, suffix?: Aff
 
 export const LinkAdapter: RendererComponent<"link"> = ({ node }) => {
   const isMenuItem = useActionMenu();
-  const { icon, label: rawLabel, prefix, suffix } = node.props;
+  const { class: nodeClass, icon, label: rawLabel, prefix, suffix } = node.props;
   const label = rawLabel ?? "";
   const behavior = useClickBehavior(node.props);
   const className = isMenuItem ? actionMenuItemClassName : undefined;
@@ -89,7 +89,7 @@ export const LinkAdapter: RendererComponent<"link"> = ({ node }) => {
   const triggerButton = ({ onClick, processing }: TriggerState) => (
     <button
       aria-label={ariaLabel}
-      className={cn(textLinkClassName, className)}
+      className={cn(textLinkClassName, className, nodeClass)}
       data-test={testId}
       disabled={processing}
       onClick={onClick}
@@ -110,7 +110,7 @@ export const LinkAdapter: RendererComponent<"link"> = ({ node }) => {
   return (
     <TextLink
       aria-label={ariaLabel}
-      className={className}
+      className={cn(className, nodeClass)}
       data-test={testId}
       href={behavior.kind === "navigate" ? behavior.href : "#"}
       method={behavior.kind === "navigate" ? behavior.method : "get"}

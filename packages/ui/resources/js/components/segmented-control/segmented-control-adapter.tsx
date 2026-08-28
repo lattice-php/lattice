@@ -14,6 +14,7 @@ export const SegmentedControlAdapter: RendererComponent<"segmented-control"> = (
   return (
     <SegmentedControl
       aria-label={node.props.label ?? undefined}
+      className={node.props.class ?? undefined}
       data-test={nodeIdentity(node)}
       defaultValue={node.props.value || undefined}
       name={name}

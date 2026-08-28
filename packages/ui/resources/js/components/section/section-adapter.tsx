@@ -15,6 +15,7 @@ export const SectionAdapter: RendererComponent<"section"> = ({ children, node })
       {...(collapsible && rememberState
         ? { storageKey: `lattice:section:${identity ?? "default"}` }
         : {})}
+      className={node.props.class ?? undefined}
       collapsible={collapsible}
       data-test={identity}
       defaultCollapsed={node.props.collapsed === true}

@@ -4,6 +4,7 @@ import { Progress } from "./progress";
 
 export const ProgressAdapter: RendererComponent<"progress"> = ({ node }) => (
   <Progress
+    className={node.props.class ?? undefined}
     color={node.props.color}
     data-test={nodeIdentity(node)}
     max={node.props.max}

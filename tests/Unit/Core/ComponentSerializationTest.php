@@ -495,3 +495,14 @@ test('responsive visibility rejects the default breakpoint', function (): void {
     expect(fn (): Text => Text::make('x')->visibleFrom(Breakpoint::Default))
         ->toThrow(InvalidArgumentException::class);
 });
+
+test('every component serializes class() into its wire props and omits it when unset', function (): void {
+    expect(wire(Text::make('Plain')))
+        ->props->not->toHaveKey('class');
+
+    expect(wire(Text::make('Styled')->class('font-mono text-xs')))
+        ->props->toMatchArray(['class' => 'font-mono text-xs']);
+
+    expect(wire(Stack::make('chrome')->class('app-logo-lockup')))
+        ->props->toMatchArray(['class' => 'app-logo-lockup']);
+});

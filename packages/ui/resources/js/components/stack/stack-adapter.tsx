@@ -5,6 +5,7 @@ import { Stack } from "./stack";
 export const StackAdapter: RendererComponent<"stack"> = ({ children, node }) => (
   <Stack
     align={node.props.align ?? undefined}
+    className={node.props.class ?? undefined}
     data-test={nodeIdentity(node)}
     direction={node.props.direction ?? undefined}
     float={node.props.float ?? undefined}

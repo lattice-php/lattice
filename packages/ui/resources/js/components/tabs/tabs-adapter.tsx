@@ -41,6 +41,7 @@ export const TabsAdapter: RendererComponent<"tabs"> = ({ children, node }) => {
     <Tabs
       aria-label={t("common.tabs", "Tabs")}
       alignment={node.props.alignment}
+      className={node.props.class ?? undefined}
       data-test={nodeIdentity(node)}
       items={tabs.map((tab) => ({ label: tab.label, value: tab.value }))}
       onValueChange={selectTab}

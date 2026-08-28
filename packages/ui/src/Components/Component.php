@@ -38,6 +38,8 @@ abstract class Component implements CanBeHidden, JsonSerializable, Renderable, S
      */
     protected ?array $columnSpan = null;
 
+    protected ?string $class = null;
+
     public function __construct(protected ?string $key = null) {}
 
     /**
@@ -48,6 +50,16 @@ abstract class Component implements CanBeHidden, JsonSerializable, Renderable, S
     public function key(string $key): static
     {
         $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * Extra classes merged onto the rendered component's root element.
+     */
+    public function class(string $class): static
+    {
+        $this->class = $class;
 
         return $this;
     }
@@ -169,6 +181,10 @@ abstract class Component implements CanBeHidden, JsonSerializable, Renderable, S
 
         if ($this->columnSpan !== null) {
             $props['columnSpan'] = Wire::map($this->columnSpan);
+        }
+
+        if ($this->class !== null) {
+            $props['class'] = $this->class;
         }
 
         return $props;

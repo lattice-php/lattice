@@ -17,7 +17,11 @@ export const PopoverAdapter: RendererComponent<"popover"> = ({ children, node })
       >
         <Renderer nodes={trigger} />
       </PopoverTrigger>
-      <PopoverContent align={node.props.align} side={node.props.side}>
+      <PopoverContent
+        align={node.props.align}
+        className={node.props.class ?? undefined}
+        side={node.props.side}
+      >
         {children}
       </PopoverContent>
     </Popover>

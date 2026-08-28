@@ -6,6 +6,7 @@ export const ImageAdapter: RendererComponent<"image"> = ({ node }) => (
   <Image
     alt={node.props.alt}
     circular={node.props.circular}
+    className={node.props.class ?? undefined}
     data-test={nodeIdentity(node)}
     previewable={node.props.previewable}
     size={node.props.size}
