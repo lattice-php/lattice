@@ -5,6 +5,9 @@ import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "
 
 export type PreviewableImageProps = Omit<ComponentProps<"img">, "children"> & {
   alt: string;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
   previewable: boolean;
   testId?: string;
 };
@@ -12,6 +15,9 @@ export type PreviewableImageProps = Omit<ComponentProps<"img">, "children"> & {
 export function PreviewableImage({
   src,
   alt,
+  defaultOpen = false,
+  onOpenChange,
+  open: controlledOpen,
   previewable,
   width,
   height,
@@ -21,7 +27,12 @@ export function PreviewableImage({
   ...props
 }: PreviewableImageProps): ReactNode {
   const { t } = useT(UI_NAMESPACE);
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const open = controlledOpen ?? uncontrolledOpen;
+  const setOpen = (next: boolean) => {
+    setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
 
   const image = (
     <img
