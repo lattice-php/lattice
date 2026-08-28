@@ -108,6 +108,7 @@ export type Listen = {
 export type MapNodeType = "map";
 export type MediumNodeType = "media.library";
 export type NodeType =
+  | "accordion"
   | "action"
   | "action.bulk"
   | "action.group"
@@ -243,6 +244,7 @@ export type SearchNodeType =
 export type SignatureExampleNodeType = "signature";
 export type TableNodeType = "table";
 export type UiNodeType =
+  | "accordion"
   | "avatar"
   | "badge"
   | "breadcrumbs"

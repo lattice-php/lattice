@@ -11,6 +11,7 @@ export type {
   ClickBehavior,
   TriggerState,
 } from "./click-behavior";
+export * from "./components/accordion/accordion";
 export * from "./components/avatar/avatar";
 export * from "./components/badge/badge";
 export * from "./components/breadcrumbs/breadcrumbs";

@@ -1,6 +1,7 @@
 import { eagerComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
 import type { UiNodeType } from "./generated";
 import { UI_NAMESPACE } from "./i18n";
+import { AccordionAdapter } from "./components/accordion/accordion-adapter";
 import { AvatarAdapter } from "./components/avatar/avatar-adapter";
 import { BadgeAdapter } from "./components/badge/badge-adapter";
 import { BreadcrumbsAdapter } from "./components/breadcrumbs/breadcrumbs-adapter";
@@ -44,6 +45,7 @@ import {
 
 export const uiComponents: Plugin = {
   components: {
+    accordion: eagerComponent(AccordionAdapter),
     avatar: eagerComponent(AvatarAdapter),
     badge: eagerComponent(BadgeAdapter),
     breadcrumbs: eagerComponent(BreadcrumbsAdapter),

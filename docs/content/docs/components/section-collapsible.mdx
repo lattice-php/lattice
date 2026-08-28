@@ -1,6 +1,6 @@
 ---
 title: Section & Collapsible
-description: The two disclosure containers — a titled panel that folds and carries header actions, and an untitled clickable trigger.
+description: The disclosure containers — a titled panel that folds and carries header actions, an untitled clickable trigger, and an accordion that keeps one of them open at a time.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
@@ -46,4 +46,28 @@ Call `->tooltip('…')` to attach an ⓘ info popover in the trigger row; the co
     ->tooltip('Shown on invoices and receipts.')
     ->content([Text::make('Update the name shown on your account.')]);`}
   fixture="components.collapsible"
+/>
+
+## Accordion
+
+`Accordion::make()` wraps `Collapsible` or collapsible `Section` children and keeps **at most one of
+them open**: opening an item closes its open sibling, and clicking the open item closes it, so the
+accordion can also sit fully folded. Coordination runs on the children's keys — give every item one —
+and only reaches the accordion's direct children, so a collapsible nested inside an item's content
+keeps its own local state. Pass the key of the item that should start open to `->defaultOpen('…')`;
+inside an accordion it wins over a child's own `collapsed()` and `rememberState()`. `->gap()` spaces
+the items like a `Stack`.
+
+<ComponentExample
+  php={`Accordion::make('faq')
+    ->defaultOpen('shipping')
+    ->schema([
+        Collapsible::make('shipping')
+            ->trigger([Text::make('When does my order ship?')])
+            ->content([Text::make('Orders placed before noon ship the same day.')]),
+        Collapsible::make('returns')
+            ->trigger([Text::make('How do returns work?')])
+            ->content([Text::make('Print a label from your account within 30 days.')]),
+    ]);`}
+  fixture="components.accordion"
 />
