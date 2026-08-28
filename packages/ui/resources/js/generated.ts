@@ -238,6 +238,7 @@ export type Link = {
   prefix: Affix | null;
   suffix: Affix | null;
   tabIndex: number | null;
+  unstyled: boolean;
 };
 export type LocaleChange = {
   readonly locale: string;

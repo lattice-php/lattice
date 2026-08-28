@@ -23,6 +23,19 @@ describe("Lattice link component", () => {
     expect(screen.getByText("new")).toBeVisible();
   });
 
+  it("drops the text-link styling when unstyled", () => {
+    const node = fakeNode({
+      props: { class: "app-logo", href: "/", label: "Home", unstyled: true },
+      type: "link",
+    });
+
+    render(<LinkAdapter node={node}>{null}</LinkAdapter>);
+
+    const link = screen.getByRole("link", { name: "Home" });
+    expect(link).not.toHaveClass("underline");
+    expect(link).toHaveClass("app-logo");
+  });
+
   it("renders icon-only links with the label as their accessible name", () => {
     const node = fakeNode({
       props: {
