@@ -34,6 +34,8 @@ press <kbd>Esc</kbd>, click the backdrop, or use the close button to dismiss it.
 - `->circular()` clips the image to a circle. For people, prefer the [Avatar](/components/avatar/)
   component and its initials fallback.
 - `->previewable(false)` turns the lightbox off and renders a plain image.
+- `->previewSrc($url)` gives the lightbox a larger source than the inline `src` — render a thumbnail
+  conversion inline and open the original on click.
 
 <Info>
   The [Image column](/tables/columns/image/) renders through the same lightbox, so table thumbnails

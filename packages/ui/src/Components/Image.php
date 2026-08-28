@@ -21,6 +21,8 @@ class Image extends Component
 
     public bool $previewable = true;
 
+    public ?string $previewSrc = null;
+
     public static function make(string $src, ?string $key = null): static
     {
         $image = new static($key);
@@ -60,6 +62,17 @@ class Image extends Component
     public function previewable(bool $previewable = true): static
     {
         $this->previewable = $previewable;
+
+        return $this;
+    }
+
+    /**
+     * A larger source the lightbox opens instead of `src`, so a thumbnail
+     * conversion can render inline while the original stays one click away.
+     */
+    public function previewSrc(?string $previewSrc): static
+    {
+        $this->previewSrc = $previewSrc;
 
         return $this;
     }

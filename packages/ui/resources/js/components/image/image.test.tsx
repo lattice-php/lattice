@@ -13,6 +13,29 @@ describe("Image", () => {
     expect(document.querySelector('[data-slot="image-lightbox"]')).not.toBeInTheDocument();
   });
 
+  it("opens the lightbox on the preview source while the thumbnail keeps its own", () => {
+    render(
+      <Image
+        alt="Product photo"
+        previewable
+        previewSrc="https://example.test/product.png"
+        src="https://example.test/product-thumb.png"
+      />,
+    );
+
+    expect(screen.getByAltText("Product photo")).toHaveAttribute(
+      "src",
+      "https://example.test/product-thumb.png",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "View image" }));
+
+    expect(document.querySelector('[data-slot="image-lightbox"]')).toHaveAttribute(
+      "src",
+      "https://example.test/product.png",
+    );
+  });
+
   it("renders a plain image when previewable is off", () => {
     render(<Image alt="Product photo" src="https://example.test/product.png" />);
 

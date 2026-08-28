@@ -9,6 +9,7 @@ export type PreviewableImageProps = Omit<ComponentProps<"img">, "children"> & {
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
   previewable: boolean;
+  previewSrc?: string | null;
   testId?: string;
 };
 
@@ -19,6 +20,7 @@ export function PreviewableImage({
   onOpenChange,
   open: controlledOpen,
   previewable,
+  previewSrc,
   width,
   height,
   className,
@@ -66,7 +68,7 @@ export function PreviewableImage({
         <DialogTitle className="sr-only">{alt || openLabel}</DialogTitle>
         <img
           alt={alt}
-          src={src}
+          src={previewSrc ?? src}
           data-slot="image-lightbox"
           className="max-h-[90vh] max-w-[90vw] rounded-lt object-contain"
         />
