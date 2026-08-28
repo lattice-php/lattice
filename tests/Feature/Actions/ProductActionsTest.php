@@ -153,7 +153,7 @@ test('bulk form actions validate the submitted reason before archiving', functio
         ->assertJsonPath('data.archived', 1)
         ->assertJsonPath('data.reason', 'Counterfeit');
 
-    expect($product->fresh()->status)->toBe('archived');
+    expect($product->fresh()?->status)->toBe('archived');
 });
 
 test('bulk form actions validate precognitively without archiving', function (): void {

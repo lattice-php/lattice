@@ -11,9 +11,7 @@ use function Pest\Laravel\postJson;
 test('a user can mark a single notification read', function (): void {
     $user = workbenchTestUser();
     Notification::make()->title('One')->send($user);
-    $notification = $user->notifications()->first();
-    expect($notification)->not->toBeNull();
-    $id = $notification->id;
+    $id = $user->notifications()->firstOrFail()->id;
 
     actingAs($user);
 
@@ -21,8 +19,7 @@ test('a user can mark a single notification read', function (): void {
         ->assertOk()
         ->assertJsonPath('unreadCount', 0);
 
-    $updated = $user->notifications()->first();
-    expect($updated)->not->toBeNull();
+    $updated = $user->notifications()->firstOrFail();
     expect($updated->getAttribute('read_at'))->not->toBeNull();
 });
 
@@ -44,9 +41,7 @@ test('a user can dismiss and clear notifications', function (): void {
     $user = workbenchTestUser();
     Notification::make()->title('One')->send($user);
     Notification::make()->title('Two')->send($user);
-    $notification = $user->notifications()->first();
-    expect($notification)->not->toBeNull();
-    $id = $notification->id;
+    $id = $user->notifications()->firstOrFail()->id;
 
     actingAs($user);
 
@@ -61,16 +56,13 @@ test('a user cannot mutate another users notification', function (): void {
     $me = workbenchTestUser();
     $other = workbenchTestUser();
     Notification::make()->title('Theirs')->send($other);
-    $notification = $other->notifications()->first();
-    expect($notification)->not->toBeNull();
-    $id = $notification->id;
+    $id = $other->notifications()->firstOrFail()->id;
 
     actingAs($me);
 
     patchJson("/lattice/notifications/{$id}/read")->assertNotFound();
     deleteJson("/lattice/notifications/{$id}")->assertNotFound();
 
-    $stillUnread = $other->notifications()->first();
-    expect($stillUnread)->not->toBeNull();
+    $stillUnread = $other->notifications()->firstOrFail();
     expect($stillUnread->getAttribute('read_at'))->toBeNull();
 });
