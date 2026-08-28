@@ -1,62 +1,60 @@
-import { Node } from "@lattice-php/core";
-import { FieldConditions } from "@lattice-php/form";
-import { ColumnWidth } from "@lattice-php/ui";
+import { Node } from '@lattice-php/core';
+import { FieldConditions } from '@lattice-php/form';
+import { ColumnWidth } from '@lattice-php/ui';
 export type ComponentPropsMap = {
-  "field.media-picker": MediaPicker;
-  "media.library": MediaLibrary;
+    "field.media-picker": MediaPicker;
+    "media.library": MediaLibrary;
 };
 export type EditorExtensionPropsMap = {
-  "media-image": EditorMediaImage;
+    "media-image": EditorMediaImage;
 };
 export type EditorMediaImage = {
-  conversions: string[];
-  library: Node<"media.library"> | null;
+    conversions: string[];
+    library: Node<"media.library"> | null;
 };
 export type FilterNodeType = "filter.media-type";
 export type FilterPropsMap = {
-  "filter.media-type": MediaTypeFilter;
+    "filter.media-type": MediaTypeFilter;
 };
 export type FormFieldNodeType = "field.media-picker";
 export type FormNodeType = "field.media-picker";
 export type MediaLibrary = {
-  accept: string | null;
-  picker: boolean;
-  signed: boolean;
+    accept: string | null;
+    picker: boolean;
+    signed: boolean;
 };
 export type MediaPicker = {
-  columnWidth: ColumnWidth;
-  conditions: FieldConditions | null;
-  dependsOnAny: boolean;
-  dependsOnKeys: string[] | null;
-  disabled: boolean;
-  editablePrefill: boolean;
-  helperText: string | null;
-  label: string | null;
-  labelAction: Node | null;
-  maxFiles: number | null;
-  multiple: boolean;
-  name: string;
-  pickerLabel: string | null;
-  prefillRefreshOn: string[] | null;
-  prefillResetOn: string[] | null;
-  readOnly: boolean;
-  required: boolean;
-  selected:
-    | {
+    columnWidth: ColumnWidth;
+    conditions: FieldConditions | null;
+    dependsOnAny: boolean;
+    dependsOnKeys: string[] | null;
+    disabled: boolean;
+    editablePrefill: boolean;
+    helperText: string | null;
+    label: string | null;
+    labelAction: Node | null;
+    maxFiles: number | null;
+    multiple: boolean;
+    name: string;
+    pickerLabel: string | null;
+    prefillRefreshOn: string[] | null;
+    prefillResetOn: string[] | null;
+    readOnly: boolean;
+    required: boolean;
+    selected: {
         id: number;
         mime_type: string;
         name: string;
         preview_url: string | null;
         url: string | null;
         values: Record<string, unknown>;
-      }[]
-    | null;
-  tooltip: string | null;
-  uploadOnly: boolean;
-  value: unknown;
+    }[] | null;
+    tooltip: string | null;
+    uploadOnly: boolean;
+    value: unknown;
 };
 export type MediaTypeFilter = {
-  label: string;
+    label: string;
 };
 export type MediumNodeType = "media.library";
 export type NodeType = "field.media-picker" | "media.library";

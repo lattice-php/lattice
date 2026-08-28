@@ -1,20 +1,20 @@
-import { Node } from "@lattice-php/core/types";
+import { Node } from '@lattice-php/core/types';
 export type MediaRow = {
-  id: number;
-  url: string | null;
-  /** The library conversion when it was generated, the original otherwise. */
-  preview_url: string | null;
-  name: string;
-  mime_type: string;
-  size: number;
-  alt: string | null;
-  created_at: string;
-  attachments_count: number;
+    id: number;
+    url: string | null;
+    /** The library conversion when it was generated, the original otherwise. */
+    preview_url: string | null;
+    name: string;
+    mime_type: string;
+    size: number;
+    alt: string | null;
+    created_at: string;
+    attachments_count: number;
 };
 export type PickMode = {
-  multiple: boolean;
-  max?: number;
-  onConfirm: (items: MediaRow[]) => void;
+    multiple: boolean;
+    max?: number;
+    onConfirm: (items: MediaRow[]) => void;
 };
 /**
  * The grid face of the media table: it drives the same `useTable` state the
@@ -22,10 +22,7 @@ export type PickMode = {
  * `reload-component` effect all behave identically — only the presentation and
  * the selection affordances differ.
  */
-export declare function LibraryView({
-  node,
-  pick,
-}: {
-  node: Node;
-  pick?: PickMode;
+export declare function LibraryView({ node, pick }: {
+    node: Node;
+    pick?: PickMode;
 }): import("react").JSX.Element;
