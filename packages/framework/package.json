@@ -32,6 +32,10 @@
       "import": "./dist/index.js"
     },
     "./css": "./dist/lattice.css",
+    "./components": {
+      "types": "./dist/components.d.ts",
+      "import": "./dist/components.js"
+    },
     "./appearance": {
       "types": "./dist/appearance/index.d.ts",
       "import": "./dist/appearance/index.js"
