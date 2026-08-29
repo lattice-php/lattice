@@ -8,4 +8,7 @@ return [
     'search-placeholder' => 'Karten durchsuchen',
     'moved' => 'Karte verschoben',
     'move-failed' => 'Karte konnte nicht verschoben werden',
+    'add-card' => 'Karte hinzufügen',
+    'add-card-placeholder' => 'Titel eingeben...',
+    'card-actions' => 'Kartenaktionen',
 ];

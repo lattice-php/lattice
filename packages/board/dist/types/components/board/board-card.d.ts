@@ -1,9 +1,11 @@
 import { Schema } from "@lattice-php/core";
 import { BoardFocusDirection } from "../../board-keyboard";
 import { BoardCard } from "../../board-store";
+import { Board as BoardWireProps } from "../../generated";
 export type BoardCardItemProps = {
   canMove: boolean;
   card: BoardCard;
+  cardAction: BoardWireProps["cardAction"];
   cardId: string;
   columnKey: string;
   "data-test"?: string;

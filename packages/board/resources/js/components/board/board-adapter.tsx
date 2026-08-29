@@ -3,12 +3,15 @@ import { nodeIdentity } from "@lattice-php/core";
 import { Board } from "./board";
 
 export const BoardAdapter: RendererComponent<"board"> = ({ node }) => {
-  const { columns, endpoint, moveAction, perColumn, ref, result } = node.props;
+  const { cardAction, columns, createAction, endpoint, moveAction, perColumn, ref, result } =
+    node.props;
 
   return (
     <Board
+      cardAction={cardAction}
       columns={columns}
       componentRef={ref}
+      createAction={createAction}
       data-test={nodeIdentity(node)}
       endpoint={endpoint}
       identity={nodeIdentity(node)}

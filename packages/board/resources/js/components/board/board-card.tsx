@@ -1,7 +1,9 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
-import type { KeyboardEvent } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
 import { materializeSchema, Renderer } from "@lattice-php/core";
 import type { Schema } from "@lattice-php/core";
+import { useCallAction } from "@lattice-php/action";
+import { useNavigation } from "@lattice-php/ui/navigation";
 import { cn } from "@lattice-php/ui/lib/utils";
 import {
   combine,
@@ -14,12 +16,15 @@ import {
 import type { Edge } from "@lattice-php/lattice/dnd";
 import { boardCardDragData, boardCardDropTargetData, boardDragSource } from "../../board-dnd";
 import { BOARD_FOCUS_KEYS, type BoardFocusDirection } from "../../board-keyboard";
-import type { BoardCard } from "../../board-store";
+import { getCardActions, getCardUrl, type BoardCard } from "../../board-store";
+import type { Board as BoardWireProps } from "../../generated";
+import { BoardCardActions } from "./board-card-actions";
 
-const FORM_CONTROL_SELECTOR = "input, textarea, select, label, [contenteditable]";
+const CARD_INTERACTIVE_SELECTOR =
+  "a, button, input, textarea, select, label, [contenteditable], [role=menuitem], [role=checkbox]";
 
-function isFormControlTarget(target: EventTarget | null): boolean {
-  return target instanceof Element && target.closest(FORM_CONTROL_SELECTOR) !== null;
+function isCardInteractiveTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest(CARD_INTERACTIVE_SELECTOR) !== null;
 }
 
 function dropIndicatorClass(edge: Edge | null): string | null {
@@ -36,6 +41,7 @@ function dropIndicatorClass(edge: Edge | null): string | null {
 export type BoardCardItemProps = {
   canMove: boolean;
   card: BoardCard;
+  cardAction: BoardWireProps["cardAction"];
   cardId: string;
   columnKey: string;
   "data-test"?: string;
@@ -50,6 +56,7 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
   {
     canMove,
     card,
+    cardAction,
     cardId,
     columnKey,
     "data-test": testId,
@@ -64,6 +71,10 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
   const elementRef = useRef<HTMLLIElement>(null);
   const [dragging, setDragging] = useState(false);
   const [edge, setEdge] = useState<Edge | null>(null);
+  const { visit } = useNavigation();
+  const runAction = useCallAction();
+  const url = getCardUrl(card);
+  const actions = getCardActions(card);
 
   const setRefs = useCallback(
     (element: HTMLLIElement | null) => {
@@ -78,18 +89,67 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
     [forwardedRef],
   );
 
+  const activate = useCallback(
+    (options: { newTab?: boolean } = {}) => {
+      if (url) {
+        if (options.newTab) {
+          window.open(url, "_blank");
+        } else {
+          visit(url);
+        }
+
+        return;
+      }
+
+      if (cardAction) {
+        void runAction(cardAction, { cardId, columnKey });
+      }
+    },
+    [cardAction, cardId, columnKey, runAction, url, visit],
+  );
+
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLLIElement>) => {
+      if (isCardInteractiveTarget(event.target)) {
+        return;
+      }
+
+      activate({ newTab: event.metaKey || event.ctrlKey });
+    },
+    [activate],
+  );
+
+  const handleAuxClick = useCallback(
+    (event: MouseEvent<HTMLLIElement>) => {
+      if (!url || event.button !== 1 || isCardInteractiveTarget(event.target)) {
+        return;
+      }
+
+      window.open(url, "_blank");
+    },
+    [url],
+  );
+
   const handleKeyDown = useCallback(
     (event: KeyboardEvent<HTMLLIElement>) => {
       const direction = BOARD_FOCUS_KEYS[event.key];
 
-      if (!direction) {
+      if (direction) {
+        event.preventDefault();
+        onMoveFocus(direction);
         return;
       }
 
-      event.preventDefault();
-      onMoveFocus(direction);
+      if (
+        (event.key === "Enter" || event.key === " ") &&
+        event.target === elementRef.current &&
+        (url || cardAction)
+      ) {
+        event.preventDefault();
+        activate();
+      }
     },
-    [onMoveFocus],
+    [activate, cardAction, onMoveFocus, url],
   );
 
   useEffect(() => {
@@ -108,8 +168,8 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
       const focused = element.ownerDocument.activeElement;
 
       if (
-        isFormControlTarget(event.target) ||
-        (element.contains(focused) && isFormControlTarget(focused))
+        isCardInteractiveTarget(event.target) ||
+        (element.contains(focused) && isCardInteractiveTarget(focused))
       ) {
         event.preventDefault();
       }
@@ -160,20 +220,26 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
   return (
     <li
       className={cn(
-        "lt-board-card rounded-lt border border-lt-border bg-lt-surface p-3 text-sm text-lt-surface-fg shadow-lt-sm",
+        "lt-board-card relative rounded-lt border border-lt-border bg-lt-surface p-3 text-sm text-lt-surface-fg shadow-lt-sm",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary",
         canMove && "cursor-grab",
+        (url || cardAction) && "cursor-pointer",
         dragging && "opacity-50",
         dropIndicatorClass(edge),
       )}
       data-drop-instruction={edge ?? undefined}
       data-test={testId}
+      onAuxClick={handleAuxClick}
+      onClick={handleClick}
       onFocus={onFocus}
       onKeyDown={handleKeyDown}
       ref={setRefs}
       role="listitem"
       tabIndex={tabIndex}
     >
+      {actions.length > 0 ? (
+        <BoardCardActions actions={actions} data-test={testId ? `${testId}-actions` : undefined} />
+      ) : null}
       <Renderer nodes={materializeSchema(schema, card)} />
     </li>
   );

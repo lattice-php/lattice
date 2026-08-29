@@ -1,5 +1,8 @@
+import { Node } from "@lattice-php/core";
 import { BoardColumnCards, BoardColumnData, BoardResult } from "./generated";
 export type BoardCard = Record<string, unknown>;
+export declare function getCardUrl(card: BoardCard): string | null;
+export declare function getCardActions(card: BoardCard): Node[];
 export type BoardColumnMeta = {
   hasMore: boolean;
   loading: boolean;
@@ -35,6 +38,17 @@ export declare function replaceAll(state: BoardStoreState, result: BoardResult):
  * `generation` untouched: this is a partial update, not a reload.
  */
 export declare function appendColumn(
+  state: BoardStoreState,
+  columnCards: BoardColumnCards,
+): BoardStoreState;
+/**
+ * A single column's fresh first page, replacing its cards, order, and meta
+ * wholesale — the quick-add follow-up refetch, so a card created out of
+ * position order (or a stale local page) doesn't linger. Unlike `replaceAll`,
+ * this touches only one column and leaves `generation` untouched: it is a
+ * partial update, not a full board reload.
+ */
+export declare function replaceColumn(
   state: BoardStoreState,
   columnCards: BoardColumnCards,
 ): BoardStoreState;

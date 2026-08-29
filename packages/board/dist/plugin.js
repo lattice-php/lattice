@@ -28,10 +28,16 @@ var b = m((() => {}));
 //#endregion
 //#region resources/js/board-store.ts
 function x(e) {
+	return typeof e.cardUrl == "string" ? e.cardUrl : null;
+}
+function S(e) {
+	return Array.isArray(e.actions) ? e.actions : [];
+}
+function C(e) {
 	let t = e.id;
 	return typeof t == "string" || typeof t == "number" ? String(t) : "";
 }
-function S() {
+function w() {
 	return {
 		hasMore: !1,
 		loading: !1,
@@ -39,9 +45,9 @@ function S() {
 		total: 0
 	};
 }
-function C(e) {
+function T(e) {
 	let t = /* @__PURE__ */ new Map(), n = /* @__PURE__ */ new Map();
-	for (let r of e) t.set(r.key, S()), n.set(r.key, []);
+	for (let r of e) t.set(r.key, w()), n.set(r.key, []);
 	return {
 		cards: /* @__PURE__ */ new Map(),
 		generation: 0,
@@ -50,12 +56,12 @@ function C(e) {
 		order: n
 	};
 }
-function w(e, t) {
+function E(e, t) {
 	let n = /* @__PURE__ */ new Map(), r = /* @__PURE__ */ new Map(), i = /* @__PURE__ */ new Map();
 	for (let e of t.columns) {
 		let t = [];
 		for (let r of e.cards) {
-			let e = x(r);
+			let e = C(r);
 			e !== "" && (n.set(e, r), t.push(e));
 		}
 		r.set(e.key, t), i.set(e.key, {
@@ -73,10 +79,10 @@ function w(e, t) {
 		order: r
 	};
 }
-function T(e, t) {
+function D(e, t) {
 	let n = new Map(e.cards), r = e.order.get(t.key) ?? [], i = new Set(r), a = [];
 	for (let e of t.cards) {
-		let t = x(e);
+		let t = C(e);
 		t !== "" && (n.set(t, e), i.has(t) || (i.add(t), a.push(t)));
 	}
 	let o = [...r, ...a], s = new Map(e.order);
@@ -94,7 +100,28 @@ function T(e, t) {
 		order: s
 	};
 }
-function E(e, t, n) {
+function O(e, t) {
+	let n = new Map(e.cards), r = [];
+	for (let e of t.cards) {
+		let t = C(e);
+		t !== "" && (n.set(t, e), r.push(t));
+	}
+	let i = new Map(e.order);
+	i.set(t.key, r);
+	let a = new Map(e.meta);
+	return a.set(t.key, {
+		hasMore: t.hasMore,
+		loading: !1,
+		offset: r.length,
+		total: t.total
+	}), {
+		...e,
+		cards: n,
+		meta: a,
+		order: i
+	};
+}
+function k(e, t, n) {
 	let r = e.meta.get(t);
 	if (!r || r.loading === n) return e;
 	let i = new Map(e.meta);
@@ -106,10 +133,10 @@ function E(e, t, n) {
 		meta: i
 	};
 }
-function D(e, t) {
+function A(e, t) {
 	return (e.order.get(t) ?? []).map((t) => e.cards.get(t)).filter((e) => e !== void 0);
 }
-function O(e, t) {
+function j(e, t) {
 	if (!e.cards.has(t.cardId) || !e.order.has(t.columnKey)) return null;
 	let n = null;
 	for (let [r, i] of e.order) if (i.includes(t.cardId)) {
@@ -139,10 +166,10 @@ function O(e, t) {
 		order: l
 	};
 }
-var k = m((() => {}));
+var M = m((() => {}));
 //#endregion
 //#region resources/js/use-board-state.ts
-async function A(e, t, n) {
+async function N(e, t, n) {
 	let r = e.props.endpoint;
 	return !r || (0, v.runAction)(() => (0, v.apiFetch)(r, {
 		body: JSON.stringify(t),
@@ -152,7 +179,7 @@ async function A(e, t, n) {
 		throwOnError: !1
 	}), n);
 }
-function j(e) {
+function P(e) {
 	let t = e, n = /* @__PURE__ */ new Set();
 	return {
 		getState: () => t,
@@ -164,10 +191,10 @@ function j(e) {
 		})
 	};
 }
-function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: u, perColumn: d, result: f }) {
+function F({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: u, perColumn: d, result: f }) {
 	let [p] = o(() => {
-		let t = C(e);
-		return j(f ? w(t, f) : t);
+		let t = T(e);
+		return P(f ? E(t, f) : t);
 	}), m = s(p.subscribe, p.getState), h = a(/* @__PURE__ */ new Set()), g = a({
 		columns: e,
 		result: f
@@ -177,8 +204,8 @@ function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: 
 			columns: e,
 			result: f
 		}, h.current.clear(), p.setState((t) => {
-			let n = C(e);
-			return f ? w({
+			let n = T(e);
+			return f ? E({
 				...n,
 				generation: t.generation
 			}, f) : {
@@ -201,9 +228,9 @@ function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: 
 		(0, v.apiJson)(`${c}?${i.toString()}`, { ref: r ?? "" }).then((t) => {
 			if (p.getState().generation !== n) return;
 			let r = t.columns.find((t) => t.key === e);
-			p.setState((t) => r ? T(t, r) : E(t, e, !1));
+			p.setState((t) => r ? D(t, r) : k(t, e, !1));
 		}).catch(() => {
-			p.setState((t) => E(t, e, !1));
+			p.setState((t) => k(t, e, !1));
 		}).finally(() => {
 			h.current.delete(e);
 		});
@@ -215,7 +242,7 @@ function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: 
 	]), x = t((e) => {
 		if (!y || h.current.has(e)) return;
 		let t = p.getState().meta.get(e);
-		!t || !t.hasMore || t.loading || (h.current.add(e), p.setState((t) => E(t, e, !0)), b(e, t.offset));
+		!t || !t.hasMore || t.loading || (h.current.add(e), p.setState((t) => k(t, e, !0)), b(e, t.offset));
 	}, [
 		y,
 		b,
@@ -225,23 +252,41 @@ function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: 
 		h.current.clear();
 		let e = p.getState().generation;
 		(0, v.apiJson)(c, { ref: r ?? "" }).then((t) => {
-			p.getState().generation === e && p.setState((e) => w(e, t));
+			p.getState().generation === e && p.setState((e) => E(e, t));
 		}).catch(() => {});
 	}, [
 		y,
 		r,
 		c,
 		p
-	]), k = t(async (e) => {
+	]), C = t((e) => {
+		if (!y || !c) return;
+		let t = p.getState().generation, n = new URLSearchParams({
+			column: e,
+			limit: String(d),
+			offset: "0"
+		});
+		(0, v.apiJson)(`${c}?${n.toString()}`, { ref: r ?? "" }).then((n) => {
+			if (p.getState().generation !== t) return;
+			let r = n.columns.find((t) => t.key === e);
+			r && p.setState((e) => O(e, r));
+		}).catch(() => {});
+	}, [
+		y,
+		r,
+		c,
+		d,
+		p
+	]), w = t(async (e) => {
 		if (!u || p.getState().moving) return !1;
-		let t = p.getState(), n = O(t, e);
+		let t = p.getState(), n = j(t, e);
 		if (!n) return !1;
 		let r = t.generation;
 		p.setState(() => ({
 			...n,
 			moving: !0
 		}));
-		let i = await A(u, e, _);
+		let i = await N(u, e, _);
 		return !i && p.getState().generation === r ? p.setState(() => ({
 			...t,
 			moving: !1
@@ -258,12 +303,12 @@ function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: 
 		let t = e.detail;
 		l !== void 0 && t?.component === l && S();
 	});
-	let M = i(() => e.map((e) => e.key), [e]), N = i(() => {
+	let M = i(() => e.map((e) => e.key), [e]), F = i(() => {
 		let e = /* @__PURE__ */ new Map();
 		for (let t of M) {
 			let n = m.meta.get(t);
 			e.set(t, {
-				cards: D(m, t),
+				cards: A(m, t),
 				hasMore: n?.hasMore ?? !1,
 				loading: n?.loading ?? !1,
 				total: n?.total ?? 0
@@ -274,31 +319,32 @@ function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: 
 	return {
 		canMove: !!u,
 		columnKeys: M,
-		columnsView: N,
+		columnsView: F,
 		loadMore: x,
-		move: k,
-		moving: m.moving
+		move: w,
+		moving: m.moving,
+		resetColumn: C
 	};
 }
-var N = m((() => {
-	b(), k();
+var ee = m((() => {
+	b(), M();
 }));
 //#endregion
 //#region resources/js/board-dnd.ts
-function P(e) {
+function te(e) {
 	return {
 		cardId: e.id,
 		columnKey: e.columnKey,
 		type: B
 	};
 }
-function F(e) {
+function I(e) {
 	return e.type !== "lattice-board-card" || typeof e.cardId != "string" || typeof e.columnKey != "string" ? null : {
 		columnKey: e.columnKey,
 		id: e.cardId
 	};
 }
-function I(e, t) {
+function ne(e, t) {
 	return (0, v.attachClosestEdge)({
 		cardId: e.cardId,
 		columnKey: e.columnKey,
@@ -376,7 +422,7 @@ var B, V, H = m((() => {
 }));
 //#endregion
 //#region resources/js/board-keyboard.ts
-function ee(e, t, n, r, i) {
+function re(e, t, n, r, i) {
 	let a = t.get(n) ?? [], o = a.indexOf(r);
 	if (i === "next" || i === "prev") {
 		if (o === -1) return null;
@@ -398,7 +444,7 @@ function ee(e, t, n, r, i) {
 	}
 	return null;
 }
-function te() {
+function ie() {
 	let e = a(/* @__PURE__ */ new Map()), n = t((t, n) => {
 		n ? e.current.set(t, n) : e.current.delete(t);
 	}, []);
@@ -418,41 +464,103 @@ var U, W = m((() => {
 	};
 }));
 //#endregion
-//#region resources/js/components/board/board-card.tsx
-function G(e) {
-	return e instanceof Element && e.closest(q) !== null;
+//#region resources/js/components/board/board-card-actions.tsx
+function G({ actions: e, "data-test": t }) {
+	let { t: n } = (0, v.useT)("board"), r = n("board.card-actions", "Card actions");
+	return /* @__PURE__ */ c("div", {
+		className: "lt-board-card-actions",
+		"data-test": t,
+		children: /* @__PURE__ */ l(v.DropdownMenu, { children: [/* @__PURE__ */ c(v.DropdownMenuTrigger, {
+			asChild: !0,
+			children: /* @__PURE__ */ c(v.Button, {
+				"aria-label": r,
+				className: "size-lt-control-sm text-lt-muted-fg shadow-none hover:text-lt-fg",
+				size: "icon",
+				type: "button",
+				emphasis: "ghost",
+				children: /* @__PURE__ */ c(v.Icon, {
+					"aria-hidden": "true",
+					className: "size-lt-icon-md",
+					name: "more-horizontal"
+				})
+			})
+		}), /* @__PURE__ */ c(v.DropdownMenuContent, {
+			align: "end",
+			"aria-label": r,
+			className: "min-w-44 gap-0.5 p-1.5",
+			sideOffset: 4,
+			children: /* @__PURE__ */ c(v.ActionMenuProvider, { children: /* @__PURE__ */ c(v.Renderer, { nodes: e }) })
+		})] })
+	});
 }
-function K(e) {
+var K = m((() => {
+	b();
+}));
+//#endregion
+//#region resources/js/components/board/board-card.tsx
+function q(e) {
+	return e instanceof Element && e.closest(Y) !== null;
+}
+function J(e) {
 	switch (e) {
 		case "top": return "border-t-lt-primary";
 		case "bottom": return "border-b-lt-primary";
 		default: return null;
 	}
 }
-var q, J, Y = m((() => {
-	b(), H(), W(), q = "input, textarea, select, label, [contenteditable]", J = e(function({ canMove: e, card: r, cardId: i, columnKey: s, "data-test": l, moving: u, onFocus: d, onMoveFocus: f, schema: p, tabIndex: m }, h) {
-		let g = a(null), [_, y] = o(!1), [b, x] = o(null), S = t((e) => {
-			g.current = e, typeof h == "function" ? h(e) : h && (h.current = e);
-		}, [h]), C = t((e) => {
+var Y, X, ae = m((() => {
+	b(), H(), W(), M(), K(), Y = "a, button, input, textarea, select, label, [contenteditable], [role=menuitem], [role=checkbox]", X = e(function({ canMove: e, card: r, cardAction: i, cardId: s, columnKey: u, "data-test": d, moving: f, onFocus: p, onMoveFocus: m, schema: h, tabIndex: g }, _) {
+		let y = a(null), [b, C] = o(!1), [w, T] = o(null), { visit: E } = (0, v.useNavigation)(), D = (0, v.useCallAction)(), O = x(r), k = S(r), A = t((e) => {
+			y.current = e, typeof _ == "function" ? _(e) : _ && (_.current = e);
+		}, [_]), j = t((e = {}) => {
+			if (O) {
+				e.newTab ? window.open(O, "_blank") : E(O);
+				return;
+			}
+			i && D(i, {
+				cardId: s,
+				columnKey: u
+			});
+		}, [
+			i,
+			s,
+			u,
+			D,
+			O,
+			E
+		]), M = t((e) => {
+			q(e.target) || j({ newTab: e.metaKey || e.ctrlKey });
+		}, [j]), N = t((e) => {
+			!O || e.button !== 1 || q(e.target) || window.open(O, "_blank");
+		}, [O]), P = t((e) => {
 			let t = U[e.key];
-			t && (e.preventDefault(), f(t));
-		}, [f]);
+			if (t) {
+				e.preventDefault(), m(t);
+				return;
+			}
+			(e.key === "Enter" || e.key === " ") && e.target === y.current && (O || i) && (e.preventDefault(), j());
+		}, [
+			j,
+			i,
+			m,
+			O
+		]);
 		return n(() => {
-			let t = g.current;
+			let t = y.current;
 			if (!t || !e) return;
 			let n = (e) => {
 				let n = t.ownerDocument.activeElement;
-				(G(e.target) || t.contains(n) && G(n)) && e.preventDefault();
+				(q(e.target) || t.contains(n) && q(n)) && e.preventDefault();
 			};
 			return t.addEventListener("dragstart", n, !0), (0, v.combine)(() => t.removeEventListener("dragstart", n, !0), (0, v.draggable)({
-				canDrag: () => !u,
+				canDrag: () => !f,
 				element: t,
-				getInitialData: () => P({
-					columnKey: s,
-					id: i
+				getInitialData: () => te({
+					columnKey: u,
+					id: s
 				}),
-				onDragStart: () => y(!0),
-				onDrop: () => y(!1),
+				onDragStart: () => C(!0),
+				onDrop: () => C(!1),
 				onGenerateDragPreview: ({ nativeSetDragImage: e }) => {
 					(0, v.setCustomNativeDragPreview)({
 						getOffset: (0, v.pointerOutsideOfPreview)({
@@ -468,210 +576,282 @@ var q, J, Y = m((() => {
 				}
 			}), (0, v.dropTargetForElements)({
 				canDrop: ({ source: e }) => {
-					let t = F(e.data);
-					return t !== null && t.id !== i;
+					let t = I(e.data);
+					return t !== null && t.id !== s;
 				},
 				element: t,
-				getData: ({ element: e, input: t }) => I({
-					cardId: i,
-					columnKey: s
+				getData: ({ element: e, input: t }) => ne({
+					cardId: s,
+					columnKey: u
 				}, {
 					element: e,
 					input: t
 				}),
-				onDrag: ({ self: e }) => x((0, v.extractClosestEdge)(e.data)),
-				onDragEnter: ({ self: e }) => x((0, v.extractClosestEdge)(e.data)),
-				onDragLeave: () => x(null),
-				onDrop: () => x(null)
+				onDrag: ({ self: e }) => T((0, v.extractClosestEdge)(e.data)),
+				onDragEnter: ({ self: e }) => T((0, v.extractClosestEdge)(e.data)),
+				onDragLeave: () => T(null),
+				onDrop: () => T(null)
 			}));
 		}, [
 			e,
-			i,
 			s,
-			u
-		]), /* @__PURE__ */ c("li", {
-			className: (0, v.cn)("lt-board-card rounded-lt border border-lt-border bg-lt-surface p-3 text-sm text-lt-surface-fg shadow-lt-sm", "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary", e && "cursor-grab", _ && "opacity-50", K(b)),
-			"data-drop-instruction": b ?? void 0,
-			"data-test": l,
-			onFocus: d,
-			onKeyDown: C,
-			ref: S,
+			u,
+			f
+		]), /* @__PURE__ */ l("li", {
+			className: (0, v.cn)("lt-board-card relative rounded-lt border border-lt-border bg-lt-surface p-3 text-sm text-lt-surface-fg shadow-lt-sm", "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary", e && "cursor-grab", (O || i) && "cursor-pointer", b && "opacity-50", J(w)),
+			"data-drop-instruction": w ?? void 0,
+			"data-test": d,
+			onAuxClick: N,
+			onClick: M,
+			onFocus: p,
+			onKeyDown: P,
+			ref: A,
 			role: "listitem",
-			tabIndex: m,
-			children: /* @__PURE__ */ c(v.Renderer, { nodes: (0, v.materializeSchema)(p, r) })
+			tabIndex: g,
+			children: [k.length > 0 ? /* @__PURE__ */ c(G, {
+				actions: k,
+				"data-test": d ? `${d}-actions` : void 0
+			}) : null, /* @__PURE__ */ c(v.Renderer, { nodes: (0, v.materializeSchema)(h, r) })]
 		});
 	});
 }));
 //#endregion
+//#region resources/js/components/board/quick-add.tsx
+function oe({ columnKey: e, createAction: n, onCreated: r }) {
+	let { t: i } = (0, v.useT)("board"), s = (0, v.useCallAction)(), [u, d] = o(!1), [f, p] = o(""), [m, h] = o(!1), g = a(null), _ = t(() => {
+		d(!1), p("");
+	}, []), y = t(async () => {
+		if (!n || m) return;
+		let t = f.trim();
+		if (t === "") return;
+		h(!0);
+		let i = await s(n, {
+			column: e,
+			title: t
+		});
+		h(!1), i.ok && (p(""), r(), requestAnimationFrame(() => g.current?.focus()));
+	}, [
+		e,
+		n,
+		r,
+		s,
+		m,
+		f
+	]), b = t((e) => {
+		e.key === "Enter" ? (e.preventDefault(), y()) : e.key === "Escape" && _();
+	}, [_, y]), x = t(() => {
+		m || _();
+	}, [_, m]);
+	return n ? u ? /* @__PURE__ */ c("input", {
+		autoFocus: !0,
+		className: "mt-2 w-full rounded-lt-sm border border-lt-border bg-lt-surface px-2 py-1.5 text-sm text-lt-fg outline-none focus-visible:ring-2 focus-visible:ring-lt-primary",
+		"data-test": `board-quick-add-${e}-input`,
+		disabled: m,
+		onBlur: x,
+		onChange: (e) => p(e.target.value),
+		onKeyDown: b,
+		placeholder: i("board.add-card-placeholder", "Enter a title..."),
+		ref: g,
+		value: f
+	}) : /* @__PURE__ */ l("button", {
+		className: "mt-2 flex items-center gap-1.5 rounded-lt-sm px-2 py-1.5 text-left text-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg",
+		"data-test": `board-quick-add-${e}`,
+		onClick: () => d(!0),
+		type: "button",
+		children: [/* @__PURE__ */ c(v.Icon, {
+			"aria-hidden": "true",
+			className: "size-lt-icon-sm",
+			name: "plus"
+		}), i("board.add-card", "Add card")]
+	}) : null;
+}
+var se = m((() => {
+	b();
+}));
+//#endregion
 //#region resources/js/components/board/board-column.tsx
-function X({ canMove: e, cardSchema: t, column: i, focusedCardId: s, moving: u, onFocusCard: d, onLoadMore: f, onMoveFocus: p, registerCardRef: m, view: h }) {
-	let { t: g } = (0, v.useT)("board"), _ = r(), y = (0, v.toneProps)((0, v.coerceColor)(i.color ?? void 0) ?? (0, v.namedColor)("gray")), b = a(null), [S, C] = o(!1);
+function ce({ canMove: e, cardAction: t, cardSchema: i, column: s, createAction: u, focusedCardId: d, moving: f, onFocusCard: p, onLoadMore: m, onMoveFocus: h, onResetColumn: g, registerCardRef: _, view: y }) {
+	let { t: b } = (0, v.useT)("board"), x = r(), S = (0, v.toneProps)((0, v.coerceColor)(s.color ?? void 0) ?? (0, v.namedColor)("gray")), w = a(null), [T, E] = o(!1);
 	return n(() => {
-		let t = b.current;
+		let t = w.current;
 		if (!(!t || !e)) return (0, v.combine)((0, v.dropTargetForElements)({
-			canDrop: ({ source: e }) => F(e.data) !== null,
+			canDrop: ({ source: e }) => I(e.data) !== null,
 			element: t,
-			getData: () => L(i.key),
-			onDragEnter: () => C(!0),
-			onDragLeave: () => C(!1),
-			onDrop: () => C(!1)
+			getData: () => L(s.key),
+			onDragEnter: () => E(!0),
+			onDragLeave: () => E(!1),
+			onDrop: () => E(!1)
 		}), (0, v.autoScrollForElements)({ element: t }));
-	}, [e, i.key]), /* @__PURE__ */ l("section", {
+	}, [e, s.key]), /* @__PURE__ */ l("section", {
 		className: "lt-board-column",
-		"data-test": `board-column-${i.key}`,
+		"data-test": `board-column-${s.key}`,
 		children: [
 			/* @__PURE__ */ l("header", {
 				className: "flex items-center gap-2 pb-2",
 				children: [
-					i.icon ? /* @__PURE__ */ c(v.IconRenderer, {
-						className: (0, v.cn)("size-lt-icon-md shrink-0", y.className),
-						icon: i.icon
+					s.icon ? /* @__PURE__ */ c(v.IconRenderer, {
+						className: (0, v.cn)("size-lt-icon-md shrink-0", S.className),
+						icon: s.icon
 					}) : null,
 					/* @__PURE__ */ c("h3", {
 						className: "min-w-0 flex-1 truncate text-sm font-semibold text-lt-fg",
-						id: _,
-						children: i.label
+						id: x,
+						children: s.label
 					}),
 					/* @__PURE__ */ c(v.Badge, {
-						"aria-label": g("board.card-count", "{{count}} cards", { count: h.total }),
-						className: y.className,
-						style: y.style,
-						children: h.total
+						"aria-label": b("board.card-count", "{{count}} cards", { count: y.total }),
+						className: S.className,
+						style: S.style,
+						children: y.total
 					})
 				]
 			}),
 			/* @__PURE__ */ l("ul", {
-				"aria-labelledby": _,
-				className: (0, v.cn)("lt-board-column-list", S && "lt-board-column-list-drop-target"),
-				ref: b,
+				"aria-labelledby": x,
+				className: (0, v.cn)("lt-board-column-list", T && "lt-board-column-list-drop-target"),
+				ref: w,
 				role: "list",
-				children: [h.cards.map((n) => {
-					let r = x(n);
-					return /* @__PURE__ */ c(J, {
-						canMove: e,
-						card: n,
-						cardId: r,
-						columnKey: i.key,
-						"data-test": `board-card-${r}`,
-						moving: u,
-						onFocus: () => d(r),
-						onMoveFocus: (e) => p(r, e),
-						ref: (e) => m(r, e),
-						schema: t,
-						tabIndex: s === r ? 0 : -1
-					}, r);
-				}), h.cards.length === 0 && !h.loading ? /* @__PURE__ */ c("li", {
-					className: "px-1 py-2 text-sm text-lt-muted-fg",
-					children: g("board.empty-column", "No cards")
-				}) : null]
+				children: [
+					y.cards.map((n) => {
+						let r = C(n);
+						return /* @__PURE__ */ c(X, {
+							canMove: e,
+							card: n,
+							cardAction: t,
+							cardId: r,
+							columnKey: s.key,
+							"data-test": `board-card-${r}`,
+							moving: f,
+							onFocus: () => p(r),
+							onMoveFocus: (e) => h(r, e),
+							ref: (e) => _(r, e),
+							schema: i,
+							tabIndex: d === r ? 0 : -1
+						}, r);
+					}),
+					y.cards.length === 0 && !y.loading ? /* @__PURE__ */ c("li", {
+						className: "px-1 py-2 text-sm text-lt-muted-fg",
+						children: b("board.empty-column", "No cards")
+					}) : null,
+					u ? /* @__PURE__ */ c("li", { children: /* @__PURE__ */ c(oe, {
+						columnKey: s.key,
+						createAction: u,
+						onCreated: g
+					}) }) : null
+				]
 			}),
-			h.hasMore ? /* @__PURE__ */ c("button", {
+			y.hasMore ? /* @__PURE__ */ c("button", {
 				className: "mt-2 rounded-lt-sm px-2 py-1.5 text-left text-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg",
-				disabled: h.loading,
-				onClick: f,
+				disabled: y.loading,
+				onClick: m,
 				type: "button",
-				children: g("board.load-more", "Load more")
+				children: b("board.load-more", "Load more")
 			}) : null
 		]
 	});
 }
 var Z = m((() => {
-	b(), H(), k(), Y();
+	b(), H(), M(), ae(), se();
 }));
 //#endregion
 //#region resources/js/components/board/board.tsx
 function Q(e, t) {
 	for (let n of e) {
 		let e = t.get(n)?.cards[0];
-		if (e) return x(e);
+		if (e) return C(e);
 	}
 	return null;
 }
-function ne({ columns: e, componentRef: r, "data-test": s, endpoint: l, identity: u, moveAction: d, perColumn: f, result: p, schema: m }) {
-	let { canMove: h, columnKeys: g, columnsView: _, loadMore: y, move: b, moving: S } = M({
-		columns: e,
-		componentRef: r,
-		endpoint: l,
-		identity: u,
-		moveAction: d,
-		perColumn: f,
-		result: p
-	}), { t: C } = (0, v.useT)("board"), { focusCard: w, registerCard: T } = te(), [E, D] = o(() => Q(g, _)), O = i(() => {
+function le({ cardAction: e, columns: r, componentRef: s, createAction: l, "data-test": u, endpoint: d, identity: f, moveAction: p, perColumn: m, result: h, schema: g }) {
+	let { canMove: _, columnKeys: y, columnsView: b, loadMore: x, move: S, moving: w, resetColumn: T } = F({
+		columns: r,
+		componentRef: s,
+		endpoint: d,
+		identity: f,
+		moveAction: p,
+		perColumn: m,
+		result: h
+	}), { t: E } = (0, v.useT)("board"), { focusCard: D, registerCard: O } = ie(), [k, A] = o(() => Q(y, b)), j = i(() => {
 		let e = /* @__PURE__ */ new Map();
-		for (let t of g) e.set(t, (_.get(t)?.cards ?? []).map((e) => x(e)));
+		for (let t of y) e.set(t, (b.get(t)?.cards ?? []).map((e) => C(e)));
 		return e;
-	}, [g, _]), k = a(O);
-	k.current = O, n(() => {
-		if (h) return (0, v.monitorForElements)({
-			canMonitor: ({ source: e }) => F(e.data) !== null,
+	}, [y, b]), M = a(j);
+	M.current = j, n(() => {
+		if (_) return (0, v.monitorForElements)({
+			canMonitor: ({ source: e }) => I(e.data) !== null,
 			onDrop: ({ location: e, source: t }) => {
-				let n = F(t.data), r = R(e.current.dropTargets);
+				let n = I(t.data), r = R(e.current.dropTargets);
 				if (!n || !r) return;
-				let i = z(n, r, k.current);
-				i && b(i).then((e) => {
-					(0, v.announce)(e ? C("board.moved", "Card moved") : C("board.move-failed", "Could not move card"));
+				let i = z(n, r, M.current);
+				i && S(i).then((e) => {
+					(0, v.announce)(e ? E("board.moved", "Card moved") : E("board.move-failed", "Could not move card"));
 				});
 			}
 		});
 	}, [
-		h,
-		b,
-		C
-	]), n(() => {
-		E !== null && [...O.values()].some((e) => e.includes(E)) || D(Q(g, _));
-	}, [
-		O,
-		g,
 		_,
+		S,
 		E
-	]);
-	let A = t((e, t, n) => {
-		let r = ee(g, O, e, t, n);
-		r && (D(r.cardId), w(r.cardId));
+	]), n(() => {
+		k !== null && [...j.values()].some((e) => e.includes(k)) || A(Q(y, b));
 	}, [
-		O,
-		g,
-		w
+		j,
+		y,
+		b,
+		k
+	]);
+	let N = t((e, t, n) => {
+		let r = re(y, j, e, t, n);
+		r && (A(r.cardId), D(r.cardId));
+	}, [
+		j,
+		y,
+		D
 	]);
 	return /* @__PURE__ */ c("div", {
 		className: "lt-board",
-		"data-test": s,
-		children: e.map((e) => /* @__PURE__ */ c(X, {
-			canMove: h,
-			cardSchema: m,
-			column: e,
-			focusedCardId: E,
-			moving: S,
-			onFocusCard: D,
-			onLoadMore: () => y(e.key),
-			onMoveFocus: (t, n) => A(e.key, t, n),
-			registerCardRef: T,
-			view: _.get(e.key) ?? {
+		"data-test": u,
+		children: r.map((t) => /* @__PURE__ */ c(ce, {
+			canMove: _,
+			cardAction: e,
+			cardSchema: g,
+			column: t,
+			createAction: l,
+			focusedCardId: k,
+			moving: w,
+			onFocusCard: A,
+			onLoadMore: () => x(t.key),
+			onMoveFocus: (e, n) => N(t.key, e, n),
+			onResetColumn: () => T(t.key),
+			registerCardRef: O,
+			view: b.get(t.key) ?? {
 				cards: [],
 				hasMore: !1,
 				loading: !1,
 				total: 0
 			}
-		}, e.key))
+		}, t.key))
 	});
 }
-var re = m((() => {
-	b(), N(), H(), k(), W(), Z();
-})), ie = /* @__PURE__ */ h({
+var ue = m((() => {
+	b(), ee(), H(), M(), W(), Z();
+})), de = /* @__PURE__ */ h({
 	BoardAdapter: () => $,
 	default: () => $
-}), $, ae = m((() => {
-	b(), re(), $ = ({ node: e }) => {
-		let { columns: t, endpoint: n, moveAction: r, perColumn: i, ref: a, result: o } = e.props;
-		return /* @__PURE__ */ c(ne, {
-			columns: t,
-			componentRef: a,
+}), $, fe = m((() => {
+	b(), ue(), $ = ({ node: e }) => {
+		let { cardAction: t, columns: n, createAction: r, endpoint: i, moveAction: a, perColumn: o, ref: s, result: l } = e.props;
+		return /* @__PURE__ */ c(le, {
+			cardAction: t,
+			columns: n,
+			componentRef: s,
+			createAction: r,
 			"data-test": (0, v.nodeIdentity)(e),
-			endpoint: n,
+			endpoint: i,
 			identity: (0, v.nodeIdentity)(e),
-			moveAction: r,
-			perColumn: i,
-			result: o,
+			moveAction: a,
+			perColumn: o,
+			result: l,
 			schema: e.schema ?? []
 		});
 	};
@@ -679,10 +859,10 @@ var re = m((() => {
 //#endregion
 //#region resources/js/plugin.ts
 b();
-var oe = {
+var pe = {
 	name: "lattice/board",
-	components: { board: (0, v.lazyComponent)(() => Promise.resolve().then(() => (ae(), ie))) },
+	components: { board: (0, v.lazyComponent)(() => Promise.resolve().then(() => (fe(), de))) },
 	i18n: { namespace: "board" }
 };
 //#endregion
-export { oe as default };
+export { pe as default };

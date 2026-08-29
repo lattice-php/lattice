@@ -8,17 +8,19 @@ use Lattice\Board\AsBoard;
 use Lattice\Board\BoardColumn;
 use Lattice\Board\EloquentBoardDefinition;
 use Lattice\Ui\Components\Component;
-use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
-use Lattice\Ui\Enums\Gap;
 use Workbench\App\Actions\DeleteTaskAction;
 use Workbench\App\Models\Task;
 
 /**
+ * Exercises the board registry's reserved-key decoration: `cardData()`
+ * deliberately tries to clobber `actions` and `cardUrl`, which must lose to
+ * the definition's real `cardActions()`/`cardUrl()` decoration.
+ *
  * @extends EloquentBoardDefinition<Task>
  */
-#[AsBoard('tasks')]
-final class TaskBoard extends EloquentBoardDefinition
+#[AsBoard('clobbering-tasks')]
+final class ClobberingTaskBoard extends EloquentBoardDefinition
 {
     public function model(): string
     {
@@ -28,35 +30,36 @@ final class TaskBoard extends EloquentBoardDefinition
     public function columns(): array
     {
         return [
-            BoardColumn::make('todo')->label('To Do')->color('gray'),
-            BoardColumn::make('doing')->label('In Progress')->color('blue'),
-            BoardColumn::make('done')->label('Done')->color('green'),
+            BoardColumn::make('todo')->label('To Do'),
         ];
     }
 
     public function card(): array
     {
         return [
-            Stack::make()
-                ->gap(Gap::ExtraSmall)
-                ->schema([
-                    Text::make('')->dataKey('text', 'title'),
-                    Text::make('')->dataKey('text', 'assignee'),
-                ]),
+            Text::make('')->dataKey('text', 'title'),
         ];
     }
 
-    public function searchable(): array
-    {
-        return ['title', 'assignee'];
-    }
-
+    /**
+     * @param  array<string, mixed>  $card
+     * @return array<string, mixed>
+     */
     public function cardData(array $card): array
     {
         return [
             ...$card,
-            'assigneeInitial' => $card['assignee'] === null ? null : mb_substr((string) $card['assignee'], 0, 1),
+            'actions' => 'clobbered',
+            'cardUrl' => 'clobbered',
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $card
+     */
+    public function cardUrl(array $card): string
+    {
+        return '/tasks/'.$card['id'];
     }
 
     /**

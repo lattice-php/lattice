@@ -1,8 +1,9 @@
-import type { RenderResult } from "@testing-library/react";
+import type { RenderOptions, RenderResult } from "@testing-library/react";
 import { vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core";
-import type { RendererComponent } from "@lattice-php/core";
+import type { Node, RendererComponent } from "@lattice-php/core";
 import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
+import { actionComponents } from "@lattice-php/action";
 import BoardAdapter from "./components/board/board-adapter";
 import type { BoardColumnCards, BoardColumnData, BoardResult } from "./generated";
 
@@ -11,7 +12,7 @@ export const TestText: RendererComponent = ({ node }) => (
   <span>{String(node.props?.text ?? "")}</span>
 );
 
-export const testRegistry = createRegistry({
+export const testRegistry = createRegistry(actionComponents, {
   components: {
     board: eagerComponent(BoardAdapter),
     "test.text": eagerComponent(TestText),
@@ -54,6 +55,29 @@ export const moveAction = fakeNode({
   type: "action",
 });
 
+export const cardAction = fakeNode({
+  props: { endpoint: "/lattice/actions/open-task", method: "post", ref: "card-ref" },
+  type: "action",
+});
+
+export const createAction = fakeNode({
+  props: { endpoint: "/lattice/actions/create-task", method: "post", ref: "create-ref" },
+  type: "action",
+});
+
+export function deleteAction(cardId: string | number, label = "Delete"): Node {
+  return fakeNode({
+    id: `delete-${cardId}`,
+    props: {
+      endpoint: `/lattice/actions/delete-task-${cardId}`,
+      label,
+      method: "delete",
+      ref: `delete-ref-${cardId}`,
+    },
+    type: "action",
+  });
+}
+
 export function stubMoveFetch(status = 200) {
   const fetchMock = vi
     .fn<typeof fetch>()
@@ -63,11 +87,17 @@ export function stubMoveFetch(status = 200) {
   return fetchMock;
 }
 
-export function renderBoard(props: Record<string, unknown>, id = "b1"): RenderResult {
+export function renderBoard(
+  props: Record<string, unknown>,
+  id = "b1",
+  options?: RenderOptions,
+): RenderResult {
   const node = fakeNode({
     id,
     props: {
+      cardAction: null,
       columns: [],
+      createAction: null,
       endpoint: null,
       moveAction: null,
       perColumn: 25,
@@ -79,5 +109,5 @@ export function renderBoard(props: Record<string, unknown>, id = "b1"): RenderRe
     type: "board",
   });
 
-  return renderWithRegistry(<BoardAdapter node={node}>{null}</BoardAdapter>, testRegistry);
+  return renderWithRegistry(<BoardAdapter node={node}>{null}</BoardAdapter>, testRegistry, options);
 }

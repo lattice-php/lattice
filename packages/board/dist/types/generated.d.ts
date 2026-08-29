@@ -1,6 +1,8 @@
 import { Color, Node } from "@lattice-php/core";
 export type Board = {
+  cardAction: Node<"action"> | Node<"action.bulk"> | null;
   columns: BoardColumnData[];
+  createAction: Node<"action"> | Node<"action.bulk"> | null;
   endpoint: string | null;
   moveAction: Node<"action"> | Node<"action.bulk"> | null;
   perColumn: number;

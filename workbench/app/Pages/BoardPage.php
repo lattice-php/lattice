@@ -10,7 +10,9 @@ use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\PageSchema;
+use Workbench\App\Actions\CreateTaskAction;
 use Workbench\App\Actions\MoveTaskAction;
+use Workbench\App\Actions\OpenTaskAction;
 use Workbench\App\Boards\TaskBoard;
 
 #[AsPage(route: '/board')]
@@ -29,7 +31,10 @@ final class BoardPage extends WorkbenchPage
                 ->schema([
                     Heading::make($this->title()),
                     Text::make('A kanban board rendered by the lattice-php/board component package.'),
-                    Board::use(TaskBoard::class)->moveAction(MoveTaskAction::class),
+                    Board::use(TaskBoard::class)
+                        ->moveAction(MoveTaskAction::class)
+                        ->createAction(CreateTaskAction::class)
+                        ->cardAction(OpenTaskAction::class),
                 ]),
         ]);
     }

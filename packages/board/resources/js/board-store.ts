@@ -1,6 +1,15 @@
+import type { Node } from "@lattice-php/core";
 import type { BoardColumnCards, BoardColumnData, BoardResult } from "./generated";
 
 export type BoardCard = Record<string, unknown>;
+
+export function getCardUrl(card: BoardCard): string | null {
+  return typeof card.cardUrl === "string" ? card.cardUrl : null;
+}
+
+export function getCardActions(card: BoardCard): Node[] {
+  return Array.isArray(card.actions) ? (card.actions as Node[]) : [];
+}
 
 export type BoardColumnMeta = {
   hasMore: boolean;
@@ -110,6 +119,45 @@ export function appendColumn(
   }
 
   const ids = [...existingIds, ...appendedIds];
+  const order = new Map(state.order);
+  order.set(columnCards.key, ids);
+
+  const meta = new Map(state.meta);
+  meta.set(columnCards.key, {
+    hasMore: columnCards.hasMore,
+    loading: false,
+    offset: ids.length,
+    total: columnCards.total,
+  });
+
+  return { ...state, cards, meta, order };
+}
+
+/**
+ * A single column's fresh first page, replacing its cards, order, and meta
+ * wholesale — the quick-add follow-up refetch, so a card created out of
+ * position order (or a stale local page) doesn't linger. Unlike `replaceAll`,
+ * this touches only one column and leaves `generation` untouched: it is a
+ * partial update, not a full board reload.
+ */
+export function replaceColumn(
+  state: BoardStoreState,
+  columnCards: BoardColumnCards,
+): BoardStoreState {
+  const cards = new Map(state.cards);
+  const ids: string[] = [];
+
+  for (const card of columnCards.cards) {
+    const key = cardKey(card);
+
+    if (key === "") {
+      continue;
+    }
+
+    cards.set(key, card);
+    ids.push(key);
+  }
+
   const order = new Map(state.order);
   order.set(columnCards.key, ids);
 

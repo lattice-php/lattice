@@ -56,4 +56,21 @@ abstract class BoardDefinition extends Definition
     {
         return null;
     }
+
+    /**
+     * @param  array<string, mixed>  $card
+     */
+    public function cardUrl(array $card): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $card
+     * @return array<int, Component>
+     */
+    public function cardActions(array $card): array
+    {
+        return [];
+    }
 }

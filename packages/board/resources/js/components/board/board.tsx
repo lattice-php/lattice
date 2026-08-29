@@ -14,8 +14,10 @@ import {
 import { BoardColumn } from "./board-column";
 
 export type BoardProps = {
+  cardAction: BoardWireProps["cardAction"];
   columns: BoardColumnData[];
   componentRef: string | null;
+  createAction: BoardWireProps["createAction"];
   "data-test"?: string;
   endpoint: string | null;
   identity?: string;
@@ -41,8 +43,10 @@ function firstCardId(
 }
 
 export function Board({
+  cardAction,
   columns,
   componentRef,
+  createAction,
   "data-test": testId,
   endpoint,
   identity,
@@ -51,7 +55,7 @@ export function Board({
   result,
   schema,
 }: BoardProps) {
-  const { canMove, columnKeys, columnsView, loadMore, move, moving } = useBoardState({
+  const { canMove, columnKeys, columnsView, loadMore, move, moving, resetColumn } = useBoardState({
     columns,
     componentRef,
     endpoint,
@@ -148,14 +152,17 @@ export function Board({
       {columns.map((column) => (
         <BoardColumn
           canMove={canMove}
+          cardAction={cardAction}
           cardSchema={schema}
           column={column}
+          createAction={createAction}
           focusedCardId={focusedCardId}
           key={column.key}
           moving={moving}
           onFocusCard={setFocusedCardId}
           onLoadMore={() => loadMore(column.key)}
           onMoveFocus={(cardId, direction) => moveFocus(column.key, cardId, direction)}
+          onResetColumn={() => resetColumn(column.key)}
           registerCardRef={registerCard}
           view={
             columnsView.get(column.key) ?? { cards: [], hasMore: false, loading: false, total: 0 }

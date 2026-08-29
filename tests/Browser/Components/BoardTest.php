@@ -56,3 +56,28 @@ it('reorders a task within its own column with a real pointer drag', function ()
 
     $page->assertNoJavaScriptErrors();
 });
+
+it('quick-adds a card to a column and persists it', function (): void {
+    seedTaskBoard();
+
+    $page = $this->visitAsWorkbenchUser('/board')
+        ->assertSee('Write spec');
+
+    $page->click('[data-test="board-quick-add-done"]');
+
+    assertPresentEventually($page, '[data-test="board-quick-add-done-input"]');
+
+    $page
+        ->fill('[data-test="board-quick-add-done-input"]', 'Write release notes')
+        ->keys('[data-test="board-quick-add-done-input"]', ['Enter']);
+
+    $page->assertSee('Write release notes');
+
+    retryUntil(function (): void {
+        $task = Task::query()->where('title', 'Write release notes')->firstOrFail();
+
+        expect($task->status)->toBe('done');
+    });
+
+    $page->assertNoJavaScriptErrors();
+});

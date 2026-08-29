@@ -155,3 +155,50 @@ describe("useBoardState move", () => {
     expect(result.current.canMove).toBe(false);
   });
 });
+
+describe("useBoardState resetColumn", () => {
+  it("requests the column's first page and replaces its cards", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(
+        boardResult([
+          boardColumnCards("todo", [boardCard(1, "Write spec"), boardCard(3, "New card")], {
+            hasMore: false,
+            offset: 2,
+            total: 2,
+          }),
+        ]),
+      ),
+    );
+
+    const { result } = renderState();
+
+    await act(async () => {
+      result.current.resetColumn("todo");
+      await waitFor(() => expect(cardIds(result.current.columnsView, "todo")).toContain(3));
+    });
+
+    expect(cardIds(result.current.columnsView, "todo")).toEqual([1, 3]);
+
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    const requested = new URL(url, "http://localhost");
+    expect(requested.pathname).toBe("/lattice/boards/tasks");
+    expect(requested.searchParams.get("column")).toBe("todo");
+    expect(requested.searchParams.get("offset")).toBe("0");
+    expect((init.headers as Record<string, string>)["X-Lattice-Ref"]).toBe("board-ref");
+  });
+
+  it("leaves other columns untouched", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse(boardResult([boardColumnCards("todo", [boardCard(1, "Write spec")])])),
+    );
+
+    const { result } = renderState();
+
+    await act(async () => {
+      result.current.resetColumn("todo");
+      await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    });
+
+    expect(cardIds(result.current.columnsView, "done")).toEqual([]);
+  });
+});

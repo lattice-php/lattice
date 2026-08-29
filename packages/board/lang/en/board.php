@@ -8,4 +8,7 @@ return [
     'search-placeholder' => 'Search cards',
     'moved' => 'Card moved',
     'move-failed' => 'Could not move card',
+    'add-card' => 'Add card',
+    'add-card-placeholder' => 'Enter a title...',
+    'card-actions' => 'Card actions',
 ];

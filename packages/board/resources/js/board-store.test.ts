@@ -3,8 +3,11 @@ import {
   appendColumn,
   cardsFor,
   createBoardState,
+  getCardActions,
+  getCardUrl,
   optimisticMove,
   replaceAll,
+  replaceColumn,
   setColumnLoading,
 } from "./board-store";
 import { boardCard, boardColumnCards, boardResult } from "./test-support";
@@ -158,5 +161,66 @@ describe("optimisticMove", () => {
 
     expect(cardsFor(moved!, "done")).toEqual([]);
     expect(cardsFor(moved!, "todo").map((card) => card.id)).toEqual([1, 3, 2]);
+  });
+});
+
+describe("replaceColumn", () => {
+  it("replaces only the targeted column's cards, order, and meta", () => {
+    const loaded = replaceAll(
+      createBoardState(columns),
+      boardResult([
+        boardColumnCards("todo", [boardCard(1, "Write spec")], { hasMore: true, total: 3 }),
+        boardColumnCards("done", [boardCard(9, "Ship release")], { total: 1 }),
+      ]),
+    );
+
+    const replaced = replaceColumn(
+      loaded,
+      boardColumnCards("todo", [boardCard(1, "Write spec"), boardCard(2, "Fresh card")], {
+        hasMore: false,
+        total: 2,
+      }),
+    );
+
+    expect(cardsFor(replaced, "todo").map((card) => card.id)).toEqual([1, 2]);
+    expect(replaced.meta.get("todo")).toEqual({
+      hasMore: false,
+      loading: false,
+      offset: 2,
+      total: 2,
+    });
+    expect(cardsFor(replaced, "done").map((card) => card.id)).toEqual([9]);
+  });
+
+  it("leaves generation untouched, unlike a full reload", () => {
+    const loaded = replaceAll(
+      createBoardState(columns),
+      boardResult([boardColumnCards("todo", [])]),
+    );
+    const replaced = replaceColumn(loaded, boardColumnCards("todo", [boardCard(1, "Write spec")]));
+
+    expect(replaced.generation).toBe(loaded.generation);
+  });
+});
+
+describe("getCardUrl", () => {
+  it("reads a string cardUrl from the card payload", () => {
+    expect(getCardUrl(boardCard(1, "Write spec", { cardUrl: "/tasks/1" }))).toBe("/tasks/1");
+  });
+
+  it("returns null when the card has no cardUrl", () => {
+    expect(getCardUrl(boardCard(1, "Write spec"))).toBeNull();
+  });
+});
+
+describe("getCardActions", () => {
+  it("reads the card's action nodes", () => {
+    const actions = [{ id: "delete", props: {}, type: "action" }];
+
+    expect(getCardActions(boardCard(1, "Write spec", { actions }))).toBe(actions);
+  });
+
+  it("returns an empty array when the card has no actions", () => {
+    expect(getCardActions(boardCard(1, "Write spec"))).toEqual([]);
   });
 });

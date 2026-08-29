@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 use Lattice\Board\Components\Board;
+use Workbench\App\Actions\CreateTaskAction;
+use Workbench\App\Actions\OpenTaskAction;
 use Workbench\App\Boards\DeniedBoard;
 use Workbench\App\Boards\ScopedTaskBoard;
 use Workbench\App\Boards\TaskBoard;
@@ -76,5 +78,31 @@ it('keeps interactive props inert on a plain board', function (): void {
     expect($node['props']['ref'])->toBeNull()
         ->and($node['props']['endpoint'])->toBeNull()
         ->and($node['props']['columns'])->toBe([])
-        ->and($node['props']['result'])->toBeNull();
+        ->and($node['props']['result'])->toBeNull()
+        ->and($node['props']['cardAction'])->toBeNull()
+        ->and($node['props']['createAction'])->toBeNull();
+});
+
+it('serializes cardAction and createAction as action nodes', function (): void {
+    seedTaskBoard();
+
+    $node = wire(
+        Board::use(TaskBoard::class)
+            ->cardAction(OpenTaskAction::class)
+            ->createAction(CreateTaskAction::class),
+    );
+
+    expect($node['props']['cardAction']['type'])->toBe('action')
+        ->and($node['props']['cardAction']['props']['endpoint'])->toBe('/lattice/actions/workbench.board.open-task')
+        ->and($node['props']['createAction']['type'])->toBe('action')
+        ->and($node['props']['createAction']['props']['endpoint'])->toBe('/lattice/actions/workbench.board.create-task');
+});
+
+it('leaves cardAction and createAction null when not configured', function (): void {
+    seedTaskBoard();
+
+    $node = wire(Board::use(TaskBoard::class));
+
+    expect($node['props']['cardAction'])->toBeNull()
+        ->and($node['props']['createAction'])->toBeNull();
 });

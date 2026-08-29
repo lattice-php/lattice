@@ -13,6 +13,7 @@ export type UseBoardStateResult = {
   loadMore: (columnKey: string) => void;
   move: (request: BoardMoveRequest) => Promise<boolean>;
   moving: boolean;
+  resetColumn: (columnKey: string) => void;
 };
 export declare function useBoardState({
   columns,

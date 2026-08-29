@@ -41,4 +41,12 @@ final class ScopedTaskBoard extends EloquentBoardDefinition
             Text::make('')->dataKey('text', 'title'),
         ];
     }
+
+    /**
+     * @param  array<string, mixed>  $card
+     */
+    public function cardUrl(array $card): string
+    {
+        return '/tasks/'.$card['id'];
+    }
 }

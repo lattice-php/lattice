@@ -1,28 +1,34 @@
 import { Schema } from "@lattice-php/core";
 import { BoardFocusDirection } from "../../board-keyboard";
 import { BoardColumnView } from "../../use-board-state";
-import { BoardColumnData } from "../../generated";
+import { Board as BoardWireProps, BoardColumnData } from "../../generated";
 export type BoardColumnProps = {
   canMove: boolean;
+  cardAction: BoardWireProps["cardAction"];
   cardSchema: Schema;
   column: BoardColumnData;
+  createAction: BoardWireProps["createAction"];
   focusedCardId: string | null;
   moving: boolean;
   onFocusCard: (cardId: string) => void;
   onLoadMore: () => void;
   onMoveFocus: (cardId: string, direction: BoardFocusDirection) => void;
+  onResetColumn: () => void;
   registerCardRef: (cardId: string, element: HTMLLIElement | null) => void;
   view: BoardColumnView;
 };
 export declare function BoardColumn({
   canMove,
+  cardAction,
   cardSchema,
   column,
+  createAction,
   focusedCardId,
   moving,
   onFocusCard,
   onLoadMore,
   onMoveFocus,
+  onResetColumn,
   registerCardRef,
   view,
 }: BoardColumnProps): import("react").JSX.Element;

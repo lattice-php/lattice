@@ -5,13 +5,18 @@ namespace Lattice\Board;
 
 use Illuminate\Http\Request;
 use Lattice\Board\Components\Board;
+use Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Core\DefinitionRegistry;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 /**
  * @extends DefinitionRegistry<BoardDefinition>
  */
 final class BoardRegistry extends DefinitionRegistry
 {
+    use FiltersRenderableComponents;
+
     /**
      * @param  class-string<BoardDefinition>  $board
      * @param  array<string, mixed>  $context
@@ -33,7 +38,7 @@ final class BoardRegistry extends DefinitionRegistry
                     ))
                     ->perColumn($perColumn)
                     ->schema($definition->card())
-                    ->result($this->decorateResult($definition, $definition->source()->query(BoardQuery::empty($perColumn))));
+                    ->result($this->decorateResult($definition, $key, $definition->source()->query(BoardQuery::empty($perColumn))));
             },
             $context,
         );
@@ -46,7 +51,7 @@ final class BoardRegistry extends DefinitionRegistry
 
         $this->guardColumn($definition, $query);
 
-        return $this->decorateResult($definition, $definition->source()->query($query));
+        return $this->decorateResult($definition, $key, $definition->source()->query($query));
     }
 
     private function guardColumn(BoardDefinition $definition, BoardQuery $query): void
@@ -60,9 +65,30 @@ final class BoardRegistry extends DefinitionRegistry
         abort_unless(in_array($query->column, $known, true), 422);
     }
 
-    private function decorateResult(BoardDefinition $definition, BoardResult $result): BoardResult
+    private function decorateResult(BoardDefinition $definition, string $key, BoardResult $result): BoardResult
     {
-        return $result->decorateCards($definition->cardData(...));
+        return $result->decorateCards(function (array $card) use ($definition, $key): array {
+            $actions = $this->renderableComponents($definition->cardActions($card));
+            $url = $definition->cardUrl($card);
+            $data = $definition->cardData($card);
+
+            unset($data['actions'], $data['cardUrl']);
+
+            if ($actions !== []) {
+                $data['actions'] = array_map(
+                    fn (Component $action): Component => $action instanceof InteractiveComponent
+                        ? $action->mergeContext([], ['board' => $key])
+                        : $action,
+                    $actions,
+                );
+            }
+
+            if ($url !== null) {
+                $data['cardUrl'] = $url;
+            }
+
+            return $data;
+        });
     }
 
     protected function definitionClass(): string

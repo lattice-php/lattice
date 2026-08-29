@@ -10,6 +10,7 @@ import {
   createBoardState,
   optimisticMove,
   replaceAll,
+  replaceColumn,
   setColumnLoading,
   type BoardCard,
   type BoardMoveRequest,
@@ -74,6 +75,7 @@ export type UseBoardStateResult = {
   loadMore: (columnKey: string) => void;
   move: (request: BoardMoveRequest) => Promise<boolean>;
   moving: boolean;
+  resetColumn: (columnKey: string) => void;
 };
 
 export function useBoardState({
@@ -196,6 +198,42 @@ export function useBoardState({
       .catch(() => {});
   }, [canLoad, componentRef, endpoint, store]);
 
+  /**
+   * The quick-add follow-up: refetches a single column's first page and
+   * replaces its cards wholesale, rather than optimistically inserting the
+   * created card client-side — the server's `cardData()`/`cardActions()`
+   * decoration and its own ordering stay authoritative.
+   */
+  const resetColumn = useCallback(
+    (columnKey: string) => {
+      if (!canLoad || !endpoint) {
+        return;
+      }
+
+      const generation = store.getState().generation;
+      const params = new URLSearchParams({
+        column: columnKey,
+        limit: String(perColumn),
+        offset: "0",
+      });
+
+      void apiJson<BoardResult>(`${endpoint}?${params.toString()}`, { ref: componentRef ?? "" })
+        .then((payload) => {
+          if (store.getState().generation !== generation) {
+            return;
+          }
+
+          const columnCards = payload.columns.find((entry) => entry.key === columnKey);
+
+          if (columnCards) {
+            store.setState((current) => replaceColumn(current, columnCards));
+          }
+        })
+        .catch(() => {});
+    },
+    [canLoad, componentRef, endpoint, perColumn, store],
+  );
+
   const move = useCallback(
     async (request: BoardMoveRequest): Promise<boolean> => {
       if (!moveAction || store.getState().moving) {
@@ -259,5 +297,6 @@ export function useBoardState({
     loadMore,
     move,
     moving: state.moving,
+    resetColumn,
   };
 }

@@ -33,6 +33,10 @@ class Board extends Component implements InteractiveComponent
 
     public ?Action $moveAction = null;
 
+    public ?Action $cardAction = null;
+
+    public ?Action $createAction = null;
+
     public static function make(?string $key = null): static
     {
         return new static($key);
@@ -98,6 +102,36 @@ class Board extends Component implements InteractiveComponent
 
         if ($this->signatureKey !== null) {
             $this->moveAction->mergeContext([], ['board' => $this->signatureKey]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param  class-string<ActionDefinition>  $action
+     * @param  array<string, mixed>  $context
+     */
+    public function cardAction(string $action, array $context = []): static
+    {
+        $this->cardAction = Action::use($action, $context);
+
+        if ($this->signatureKey !== null) {
+            $this->cardAction->mergeContext([], ['board' => $this->signatureKey]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param  class-string<ActionDefinition>  $action
+     * @param  array<string, mixed>  $context
+     */
+    public function createAction(string $action, array $context = []): static
+    {
+        $this->createAction = Action::use($action, $context);
+
+        if ($this->signatureKey !== null) {
+            $this->createAction->mergeContext([], ['board' => $this->signatureKey]);
         }
 
         return $this;
