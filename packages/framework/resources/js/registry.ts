@@ -29,6 +29,7 @@ import { uiComponents } from "@lattice-php/ui";
 // here rather than belonging to a registered plugin's union.
 type OptInNodeType =
   | "api-reference"
+  | "board"
   | "calendar"
   | "chat.box"
   | "chat.part.text"

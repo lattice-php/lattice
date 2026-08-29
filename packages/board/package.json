@@ -1,0 +1,19 @@
+{
+  "name": "@lattice-php/board",
+  "version": "0.65.0",
+  "private": true,
+  "description": "Dev workspace for the board component package; ships to consumers via Composer, not npm.",
+  "type": "module",
+  "scripts": {
+    "build:standalone": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@lattice-php/action": "0.65.0",
+    "@lattice-php/core": "0.65.0",
+    "@lattice-php/form": "0.65.0",
+    "@lattice-php/lattice": "0.65.0",
+    "@lattice-php/table": "0.65.0",
+    "@lattice-php/ui": "0.65.0"
+  }
+}
