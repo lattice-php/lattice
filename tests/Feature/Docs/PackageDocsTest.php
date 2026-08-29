@@ -8,6 +8,7 @@ use Lattice\Core\Enums\ColorName;
 use Lattice\Core\Support\Wire;
 use Lattice\Map\Components\Map;
 use Lattice\Map\Marker;
+use Lattice\Map\Route;
 use Lattice\Media\Components\MediaLibrary;
 use Lattice\Media\Forms\Components\MediaPicker;
 use Lattice\Pdf\Components\PdfViewer;
@@ -49,6 +50,32 @@ describe('package docs fixtures', function (): void {
                         ->position(53.5511, 9.9937)
                         ->label('Hamburg office')
                         ->color(ColorName::Warning),
+                ]),
+        ]));
+    });
+
+    it('matches the map routes example fixture', function (): void {
+        assertFixtureMatches('packages.map-routes', Wire::toWire([
+            Map::make('commute')
+                ->height(360)
+                ->routes([
+                    Route::make('berlin-potsdam')
+                        ->path([
+                            [52.5200, 13.4050],
+                            [52.5063, 13.3320],
+                            [52.4581, 13.2107],
+                            [52.3989, 13.0657],
+                        ])
+                        ->color(ColorName::Info)
+                        ->weight(4),
+                ])
+                ->markers([
+                    Marker::make('berlin')
+                        ->position(52.5200, 13.4050)
+                        ->label('Berlin office'),
+                    Marker::make('potsdam')
+                        ->position(52.3989, 13.0657)
+                        ->label('Potsdam office'),
                 ]),
         ]));
     });

@@ -11,4 +11,5 @@ export type {
   MapNodeType,
   MapProviderData,
   MarkerData,
+  RouteData,
 } from "./generated";

@@ -193,6 +193,15 @@
   color: var(--lt-accent-fg);
 }
 
+.lt-map__reset {
+  overflow: hidden;
+  margin: 0.75rem;
+  border: 1px solid var(--lt-border);
+  border-radius: var(--lt-radius);
+  background: var(--lt-popover);
+  box-shadow: var(--lt-shadow-sm);
+}
+
 .lt-map__reset-button {
   display: grid;
   width: 2.5rem;
@@ -233,6 +242,10 @@
   height: auto;
   color: inherit;
   text-decoration: underline;
+}
+
+.lt-map-route {
+  stroke: var(--lt-tone-fg, var(--lt-primary));
 }
 
 .lt-map-marker {
@@ -344,4 +357,26 @@
 .leaflet-popup-close-button:focus-visible {
   background: var(--lt-accent);
   color: var(--lt-accent-fg) !important;
+}
+
+/* The rotated pin's tip extends below its layout box; Google anchors the
+   content box's bottom edge at the coordinate, so pad the tip back in. */
+.gm-style .lt-map-marker {
+  padding-bottom: 0.375rem;
+}
+
+.gm-style .gm-style-iw-c {
+  border: 1px solid var(--lt-border);
+  border-radius: var(--lt-radius-lg);
+  background: var(--lt-popover);
+  color: var(--lt-popover-fg);
+  box-shadow: var(--lt-shadow-lg);
+}
+
+.gm-style .gm-style-iw-tc::after {
+  background: var(--lt-popover);
+}
+
+.gm-style .gm-ui-hover-effect > span {
+  background-color: var(--lt-muted-fg);
 }

@@ -9,6 +9,7 @@ use Lattice\Map\Contracts\MapProvider;
 use Lattice\Map\MapProviderData;
 use Lattice\Map\MapProviderRegistry;
 use Lattice\Map\Marker;
+use Lattice\Map\Route;
 use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Icon;
@@ -62,6 +63,46 @@ it('serializes provider-neutral map data with marker popup schemas', function ()
         ->and(array_column($node['props']['features'][0]['schema'], 'type'))->toBe(['heading', 'text']);
 });
 
+it('serializes routes alongside markers', function (): void {
+    $node = wire(
+        Map::make('commute')
+            ->markers([Marker::make('berlin')->position(52.52, 13.405)])
+            ->routes([
+                Route::make('berlin-potsdam')
+                    ->path([[52.52, 13.405], [52.43, 13.2], [52.39, 13.06]])
+                    ->color(ColorName::Info)
+                    ->weight(5),
+            ]),
+    );
+
+    expect($node['props']['features'][0])->toMatchArray([
+        'type' => 'route',
+        'id' => 'berlin-potsdam',
+        'color' => ['kind' => 'named', 'value' => 'info', 'dark' => null],
+        'weight' => 5,
+    ])
+        ->and($node['props']['features'][0]['path'])->toBe([
+            ['latitude' => 52.52, 'longitude' => 13.405],
+            ['latitude' => 52.43, 'longitude' => 13.2],
+            ['latitude' => 52.39, 'longitude' => 13.06],
+        ])
+        ->and($node['props']['features'][1])->toMatchArray(['type' => 'marker', 'id' => 'berlin']);
+});
+
+it('rejects duplicate feature ids across markers and routes', function (): void {
+    wire(Map::make()
+        ->markers([Marker::make('shared')->position(1, 1)])
+        ->routes([Route::make('shared')->path([[1, 1], [2, 2]])]));
+})->throws(InvalidArgumentException::class, 'Map feature ids must be unique.');
+
+it('rejects a route with fewer than two points', function (): void {
+    wire(Map::make()->routes([Route::make('short')->path([[1, 1]])]));
+})->throws(InvalidArgumentException::class, 'Map route [short] requires at least two points.');
+
+it('rejects a route weight below one', function (): void {
+    Route::make('thin')->weight(0);
+})->throws(InvalidArgumentException::class, 'Map route weight must be at least 1.');
+
 it('resolves an application-registered provider without changing the map component', function (): void {
     app(MapProviderRegistry::class)->register(new class implements MapProvider
     {
@@ -105,6 +146,31 @@ it('rejects invalid coordinates', function (float $latitude, float $longitude): 
 it('rejects zoom outside the active provider range', function (): void {
     wire(Map::make()->zoom(20));
 })->throws(InvalidArgumentException::class, 'Map zoom must be between 1 and 19 for provider [openstreetmap].');
+
+it('serializes google maps provider data when an api key is configured', function (): void {
+    config()->set('map.providers.googlemaps.api_key', 'test-key');
+
+    $node = wire(Map::make()->provider('googlemaps')->zoom(21));
+
+    expect($node['props']['provider'])->toBe([
+        'name' => 'googlemaps',
+        'options' => ['apiKey' => 'test-key', 'mapId' => 'DEMO_MAP_ID'],
+        'minimumZoom' => 0,
+        'maximumZoom' => 22,
+    ]);
+});
+
+it('does not register google maps without an api key', function (): void {
+    config()->set('map.providers.googlemaps.api_key');
+
+    wire(Map::make()->provider('googlemaps'));
+})->throws(InvalidArgumentException::class, 'Map provider [googlemaps] is not registered. Available providers: openstreetmap.');
+
+it('rejects zoom outside the google maps range', function (): void {
+    config()->set('map.providers.googlemaps.api_key', 'test-key');
+
+    wire(Map::make()->provider('googlemaps')->zoom(23));
+})->throws(InvalidArgumentException::class, 'Map zoom must be between 0 and 22 for provider [googlemaps].');
 
 it('serves both bundled map locales', function (): void {
     expect(__('map::map.loading'))->toBe('Loading map…');

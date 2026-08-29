@@ -19,7 +19,7 @@ it("names an unavailable provider in its error state", () => {
       provider: {
         maximumZoom: 22,
         minimumZoom: 0,
-        name: "google-maps",
+        name: "acme-maps",
         options: {},
       },
     },
@@ -27,7 +27,5 @@ it("names an unavailable provider in its error state", () => {
 
   renderWithRegistry(<Renderer nodes={[node]} />, registry);
 
-  expect(screen.getByRole("alert")).toHaveTextContent(
-    "Map provider “google-maps” is not available.",
-  );
+  expect(screen.getByRole("alert")).toHaveTextContent("Map provider “acme-maps” is not available.");
 });

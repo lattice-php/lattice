@@ -8,7 +8,7 @@ export { ActionConfirmOverlay } from "@lattice-php/action/components/action-conf
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
 export { useExtensionRegistry } from "@lattice-php/core/registry-context";
 export { RenderNode } from "@lattice-php/core/renderer";
-export { coerceColor, toneProps } from "@lattice-php/ui/lib/color";
+export { coerceColor, colorValue, toneProps } from "@lattice-php/ui/lib/color";
 export { nodeIdentity } from "@lattice-php/core/test-id";
 export { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 export { SimpleField } from "@lattice-php/form/components/base/simple-field";

@@ -7,10 +7,10 @@ export type CoordinateData = {
   readonly latitude: number;
   readonly longitude: number;
 };
-export type FeatureType = "marker";
+export type FeatureType = "marker" | "route";
 export type Map = {
   center: CoordinateData | null;
-  features: MarkerData[];
+  features: (MarkerData | RouteData)[];
   height: number;
   navigationControls: boolean;
   provider: MapProviderData;
@@ -35,3 +35,10 @@ export type MarkerData = {
   readonly type: FeatureType;
 };
 export type NodeType = "map";
+export type RouteData = {
+  readonly color: Color | null;
+  readonly id: string;
+  readonly path: CoordinateData[];
+  readonly type: FeatureType;
+  readonly weight: number | null;
+};

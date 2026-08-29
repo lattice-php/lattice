@@ -485,6 +485,10 @@ return [
                 'heading' => 'Potsdam studio',
                 'description' => 'Clicking this marker renders a different server-provided schema.',
             ],
+            'googlemaps' => [
+                'heading' => 'Google Maps',
+                'description' => 'The same markers and route rendered by the Google Maps provider.',
+            ],
         ],
         'charts' => [
             'channels' => [

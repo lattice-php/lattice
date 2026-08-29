@@ -1,44 +1,17 @@
 import { createPortal } from "react-dom";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { Node } from "@lattice-php/core";
-import { Renderer } from "@lattice-php/core";
+import { useEffect, useRef, useState } from "react";
 import { useT } from "@lattice-php/ui/i18n";
 import { IconRenderer } from "@lattice-php/ui/icons";
-import { coerceColor, toneProps } from "@lattice-php/ui/lib/color";
 import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
+import type { MarkerIcon, PopupPortal } from "./pin";
+import { applyTone, isRouteFeature, markerPinHtml, PopupSchema, styleMarkerPin } from "./pin";
 import type { MapProviderProps } from "./provider-registry";
-import type { MarkerData } from "./types";
+import type { MarkerData, RouteData } from "./types";
 
 type OpenStreetMapOptions = {
   attribution: string;
   tileUrl: string;
 };
-
-type PopupPortal = {
-  host: HTMLElement;
-  id: string;
-  schema: Node[];
-  update: () => void;
-};
-
-type MarkerIcon = {
-  host: HTMLElement;
-  icon: string;
-  id: string;
-};
-
-function PopupSchema({ portal }: { portal: PopupPortal }) {
-  useLayoutEffect(() => {
-    portal.update();
-
-    const resizeObserver = new ResizeObserver(() => portal.update());
-    resizeObserver.observe(portal.host);
-
-    return () => resizeObserver.disconnect();
-  }, [portal]);
-
-  return <Renderer nodes={portal.schema} />;
-}
 
 function providerOptions(options: Record<string, unknown>): OpenStreetMapOptions {
   if (typeof options.attribution !== "string" || typeof options.tileUrl !== "string") {
@@ -56,8 +29,10 @@ function setInitialView(
   map: LeafletMap,
   node: MapProviderProps["node"],
 ): void {
-  const positions = node.props.features.map(
-    (feature) => [feature.position.latitude, feature.position.longitude] as [number, number],
+  const positions = node.props.features.flatMap((feature) =>
+    isRouteFeature(feature)
+      ? feature.path.map((point) => [point.latitude, point.longitude] as [number, number])
+      : [[feature.position.latitude, feature.position.longitude] as [number, number]],
   );
 
   if (node.props.center) {
@@ -118,23 +93,14 @@ function addResetControl(
   control.addTo(map);
 }
 
-function styleMarkerPin(element: HTMLElement | undefined, feature: MarkerData): HTMLElement | null {
-  const pin = element?.querySelector<HTMLElement>(".lt-map-marker__pin") ?? null;
-  const color = coerceColor(feature.color);
+function addRoute(leaflet: typeof import("leaflet"), map: LeafletMap, feature: RouteData): void {
+  const polyline = leaflet.polyline(
+    feature.path.map((point) => [point.latitude, point.longitude] as [number, number]),
+    { className: "lt-map-route", weight: feature.weight ?? 3 },
+  );
 
-  if (pin && color) {
-    const tone = toneProps(color);
-
-    if (tone.className) {
-      pin.classList.add(...tone.className.split(" "));
-    }
-
-    for (const [property, value] of Object.entries(tone.style ?? {})) {
-      pin.style.setProperty(property, String(value));
-    }
-  }
-
-  return pin;
+  polyline.addTo(map);
+  applyTone((polyline.getElement() as SVGElement | undefined) ?? null, feature.color);
 }
 
 function addMarker(
@@ -146,12 +112,9 @@ function addMarker(
   setPopup: (portal: PopupPortal | null) => void,
   addIcon: (markerIcon: MarkerIcon) => void,
 ): void {
-  const pinClass = feature.icon
-    ? "lt-map-marker__pin lt-map-marker__pin--icon"
-    : "lt-map-marker__pin";
   const icon = leaflet.divIcon({
     className: "lt-map-marker",
-    html: `<span class="${pinClass}" aria-hidden="true"></span>`,
+    html: markerPinHtml(feature),
     iconAnchor: [14, 36],
     iconSize: [28, 36],
     popupAnchor: [0, -34],
@@ -278,6 +241,11 @@ export default function OpenStreetMap({ node }: MapProviderProps) {
         const icons: MarkerIcon[] = [];
 
         for (const feature of node.props.features) {
+          if (isRouteFeature(feature)) {
+            addRoute(leaflet, map, feature);
+            continue;
+          }
+
           addMarker(
             leaflet,
             map,
