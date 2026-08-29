@@ -30,7 +30,7 @@ async function renderViewer(extra: Partial<PdfViewer> = {}, into = registry) {
       filename: "sample.pdf",
       downloadable: true,
       searchable: true,
-      height: 480,
+      height: "480px",
       maxHeight: null,
       sidebar: true,
       initialZoom: null,
@@ -255,7 +255,7 @@ it("keeps the toolbar in place while search navigation scrolls only the page con
 });
 
 it("grows with the document under maxHeight instead of forcing a fixed height", async () => {
-  await renderViewer({ maxHeight: 5000, initialZoom: 0.5 });
+  await renderViewer({ maxHeight: "5000px", initialZoom: 0.5 });
 
   await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0, WAIT).toBe(true);
 

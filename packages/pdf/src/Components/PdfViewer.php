@@ -28,9 +28,9 @@ final class PdfViewer extends Component
 
     public bool $sidebar = true;
 
-    public int $height = 720;
+    public string $height = '80vh';
 
-    public ?int $maxHeight = null;
+    public ?string $maxHeight = null;
 
     public ?float $initialZoom = null;
 
@@ -121,26 +121,37 @@ final class PdfViewer extends Component
         return $this;
     }
 
-    public function height(int $height): static
+    public function height(int|string $height): static
     {
-        if ($height < 240) {
-            throw new InvalidArgumentException('PdfViewer height must be at least 240 pixels.');
-        }
-
-        $this->height = $height;
+        $this->height = $this->cssLength($height, 'height');
 
         return $this;
     }
 
-    public function maxHeight(int $maxHeight): static
+    public function maxHeight(int|string $maxHeight): static
     {
-        if ($maxHeight < 240) {
-            throw new InvalidArgumentException('PdfViewer maxHeight must be at least 240 pixels.');
-        }
-
-        $this->maxHeight = $maxHeight;
+        $this->maxHeight = $this->cssLength($maxHeight, 'maxHeight');
 
         return $this;
+    }
+
+    private function cssLength(int|string $value, string $property): string
+    {
+        if (is_int($value)) {
+            if ($value < 240) {
+                throw new InvalidArgumentException("PdfViewer {$property} must be at least 240 pixels.");
+            }
+
+            return "{$value}px";
+        }
+
+        $value = trim($value);
+
+        if (preg_match('/^\d+(\.\d+)?(px|rem|em|vh|svh|dvh|lvh|vw|%)$/', $value) !== 1) {
+            throw new InvalidArgumentException("PdfViewer {$property} must be a CSS length such as 600px, 80vh, or 100%.");
+        }
+
+        return $value;
     }
 
     public function zoom(float $zoom): static
