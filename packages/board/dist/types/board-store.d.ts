@@ -58,12 +58,20 @@ export declare function setColumnLoading(
   loading: boolean,
 ): BoardStoreState;
 export declare function cardsFor(state: BoardStoreState, columnKey: string): BoardCard[];
+export type BoardCardLocation = {
+  columnKey: string;
+  index: number;
+};
+export declare function locateCard(
+  state: BoardStoreState,
+  cardId: string,
+): BoardCardLocation | null;
 /**
  * The optimistic mirror of the server's `BoardMovePlanner`: moves a card
- * within or across columns and adjusts both columns' totals, without waiting
- * for the move action's response. Returns null for a no-op move (unknown
- * card, unknown destination column, or a drop back at the card's own
- * position) so callers can skip the request entirely.
+ * within or across columns and adjusts both columns' totals and offsets,
+ * without waiting for the move action's response. Returns null for a no-op
+ * move (unknown card, unknown destination column, or a drop back at the
+ * card's own position) so callers can skip the request entirely.
  */
 export declare function optimisticMove(
   state: BoardStoreState,

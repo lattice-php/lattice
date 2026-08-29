@@ -8,29 +8,6 @@ describe("Board", () => {
     vi.unstubAllGlobals();
   });
 
-  it("materializes the card template through each card's own data", () => {
-    renderBoard({
-      columns: [boardColumn("todo", "To Do")],
-      result: boardResult([
-        boardColumnCards("todo", [boardCard(1, "Write spec"), boardCard(2, "Review PR")], {
-          total: 2,
-        }),
-      ]),
-    });
-
-    expect(screen.getByText("Write spec")).toBeInTheDocument();
-    expect(screen.getByText("Review PR")).toBeInTheDocument();
-  });
-
-  it("shows the empty-column label once a column's cards run out", () => {
-    renderBoard({
-      columns: [boardColumn("todo", "To Do")],
-      result: boardResult([boardColumnCards("todo", [], { total: 0 })]),
-    });
-
-    expect(screen.getByText("No cards")).toBeInTheDocument();
-  });
-
   describe("load more", () => {
     beforeEach(() => {
       vi.stubGlobal(

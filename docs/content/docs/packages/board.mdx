@@ -1,0 +1,372 @@
+---
+title: Board
+description: Kanban-style board with configurable columns, drag-and-drop moving, quick-add, per-card actions, per-column paging, and table filters/search reused for the toolbar.
+---
+
+import BundleReport from "@components/BundleReport.astro";
+import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+The board package renders a Trello-style kanban board over an Eloquent (or custom) data source:
+configurable columns, drag-and-drop card moving with a persisted manual order, a quick-add input
+per column, per-card click/context-menu actions, and a toolbar that reuses the [table
+package](/tables/overview/)'s filter classes and search. Each column pages independently over a
+signed endpoint, so a board with thousands of cards only ever loads what is on screen.
+
+## Installation
+
+```bash
+composer require lattice-php/board
+```
+
+That is the whole integration: the package ships its React renderer as source, and the
+`lattice()` Vite plugin compiles it into your app's bundle via `virtual:lattice/plugins`
+(see [Component packages](/extending/component-packages/)). The PHP classes are picked up by
+Lattice's discovery and TypeScript generation automatically.
+[No-build apps](/introduction/no-build/) use the precompiled module the package also ships:
+run `php artisan lattice:assets` after installation.
+
+:::note
+There is no npm package — Composer is the only install. `lattice-php/board` depends on
+`lattice-php/table` for its filter classes and wire format.
+:::
+
+## Usage
+
+<ComponentExample
+  php={`Board::make('sprint')
+    ->columns([
+        BoardColumn::make('backlog')->label('Backlog')->color('gray')->data(),
+        BoardColumn::make('doing')->label('In Progress')->color('blue')->data(),
+        BoardColumn::make('done')->label('Done')->color('green')->data(),
+    ])
+    ->schema([
+        Stack::make()->gap(Gap::ExtraSmall)->schema([
+            Text::make('')->dataKey('text', 'title'),
+            Text::make('')->dataKey('text', 'assignee'),
+        ]),
+    ])
+    ->result(BoardResult::make([
+        new BoardColumnCards('backlog', [
+            ['id' => 1, 'title' => 'Design onboarding flow', 'assignee' => 'Mina'],
+        ], 4, true, 1),
+        new BoardColumnCards('doing', [
+            ['id' => 2, 'title' => 'Wire up billing webhook', 'assignee' => 'Theo'],
+        ], 1, false, 1),
+        new BoardColumnCards('done', [
+            ['id' => 3, 'title' => 'Migrate avatars to S3', 'assignee' => 'Priya'],
+        ], 1, false, 1),
+    ]));`}
+  fixture="packages.board"
+/>
+
+That example builds a board by hand — every card, count, and column set directly. In an
+application you register a `BoardDefinition` instead and let `Board::use()` populate all of it
+from a real data source, discovered and endpoint-backed like any Lattice definition.
+
+## Defining a board
+
+`EloquentBoardDefinition` is the main path: back a board with a model, a status column, and a
+manual-order column.
+
+```php
+use Lattice\Board\AsBoard;
+use Lattice\Board\BoardColumn;
+use Lattice\Board\EloquentBoardDefinition;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Gap;
+
+#[AsBoard('tasks')]
+final class TaskBoard extends EloquentBoardDefinition
+{
+    public function model(): string
+    {
+        return Task::class;
+    }
+
+    public function columns(): array
+    {
+        return [
+            BoardColumn::make('todo')->label('To Do')->color('gray'),
+            BoardColumn::make('doing')->label('In Progress')->color('blue'),
+            BoardColumn::make('done')->label('Done')->color('green'),
+        ];
+    }
+
+    // The single card template — serialized once, materialized per card client-side.
+    public function card(): array
+    {
+        return [
+            Stack::make()->gap(Gap::ExtraSmall)->schema([
+                Text::make('')->dataKey('text', 'title'),
+                Text::make('')->dataKey('text', 'assignee'),
+            ]),
+        ];
+    }
+}
+```
+
+```php
+Board::use(TaskBoard::class);
+```
+
+`columnField()` (default `'status'`) and `positionField()` (default `'position'`) name the columns
+the built-in `EloquentBoardSource` groups and orders cards by. Override `query(Builder $query)` to
+scope the underlying query (tenancy, soft deletes, eager loads) — it runs before both the per-column
+card query and the totals query, so a scope always applies to counts too. `perColumn()` (default 25)
+sets the initial page size and the load-more page size per column.
+
+<Warning title="One template, not per-record schemas">
+Every card in every column renders the same `card()` schema — there is no per-record schema
+variance. Bind whatever fields differ (title, assignee, a badge color) through `->dataKey()`, and
+use `cardData()` to compute derived values (an initial, a formatted date) before they reach the
+client.
+</Warning>
+
+Any other backing store implements the two-method `Lattice\Board\Contracts\BoardSource` contract
+(`query(BoardQuery): BoardResult`), or use `Lattice\Board\Sources\CallbackBoardSource` as a closure
+escape hatch.
+
+## Moving cards
+
+`moveAction()` wires a registered Lattice [action](/actions/overview/) to receive `{ cardId,
+columnKey, position }` on every drop:
+
+```php
+Board::use(TaskBoard::class)->moveAction(MoveTaskAction::class);
+```
+
+The client drags cards within and across columns, applies the move optimistically, and rolls back
+if the action rejects it. Keyboard focus moves with the arrow keys within and across columns;
+keyboard-driven moves are a planned follow-up.
+
+<Info>
+  The consuming application owns persistence and authoritative validation — the package never writes
+  a position column itself.
+</Info>
+
+### Planning a move with `BoardMovePlanner`
+
+Every `moveAction` handler re-implements the same splice-and-resequence algorithm.
+`BoardMovePlanner` owns it as a pure function: give it the current placements of the board — id,
+column key, position per card — plus the wire payload, and it returns only the placements that
+must change, with contiguous zero-based positions in both the source and destination columns. It
+returns `null` when the move is structurally impossible: unknown card, or a destination column
+that is not one of the board's declared columns. A move that changes nothing returns an empty
+plan. The planner never writes anything — persistence, locking, and domain rules stay with your
+application:
+
+```php
+use Illuminate\Support\Facades\DB;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\ActionResult;
+use Lattice\Board\BoardColumn;
+use Lattice\Board\BoardRegistry;
+use Lattice\Board\Support\BoardMovePlanner;
+use Lattice\Board\Support\CardPlacement;
+
+final class MoveTaskAction extends ActionDefinition
+{
+    public function __construct(private readonly BoardRegistry $boards) {}
+
+    public function handle(Request $request): ActionResult
+    {
+        $payload = $request->validate([
+            'cardId' => ['required', 'string'],
+            'columnKey' => ['required', 'string'],
+            'position' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $board = $this->boards->resolve($this->contextString('board'));
+        $columnKeys = array_map(fn (BoardColumn $column): string => $column->key(), $board->columns());
+
+        $card = Task::query()->find($payload['cardId']);
+
+        if (! $card) {
+            return ActionResult::failure('The task cannot be moved there.');
+        }
+
+        $tasks = Task::query()->whereIn('status', [$card->status, $payload['columnKey']])->get();
+
+        $plan = BoardMovePlanner::plan(
+            $tasks->map(fn (Task $task): CardPlacement => new CardPlacement($task->id, $task->status, $task->position)),
+            $columnKeys,
+            $payload['cardId'],
+            $payload['columnKey'],
+            $payload['position'],
+        );
+
+        if ($plan === null) {
+            return ActionResult::failure('The task cannot be moved there.');
+        }
+
+        DB::transaction(function () use ($plan): void {
+            foreach ($plan as $placement) {
+                Task::query()->whereKey($placement->id)->update([
+                    'status' => $placement->columnKey,
+                    'position' => $placement->position,
+                ]);
+            }
+        });
+
+        return ActionResult::success($payload);
+    }
+}
+```
+
+`$this->boards->resolve($this->contextString('board'))` recovers the board key `Board::use()`
+sealed into the action's context, so a move handler shared by multiple boards can look up the
+right column set. Ids compare by string identity — the wire payload's string `"5"` matches an
+integer primary key `5` — while the emitted placements keep your rows' original id types.
+
+## Quick-add
+
+`createAction()` wires the inline "+ card" input at the end of each column to a registered action
+receiving `{ column, title }`:
+
+```php
+Board::use(TaskBoard::class)->createAction(CreateTaskAction::class);
+```
+
+```php
+final class CreateTaskAction extends ActionDefinition
+{
+    public function handle(Request $request): ActionResult
+    {
+        $payload = $request->validate([
+            'column' => ['required', 'string'],
+            'title' => ['required', 'string', 'max:255'],
+        ]);
+
+        $position = (int) (Task::query()->where('status', $payload['column'])->max('position') ?? -1) + 1;
+        $task = Task::query()->create(['title' => $payload['title'], 'status' => $payload['column'], 'position' => $position]);
+
+        return ActionResult::success(['cardId' => (string) $task->id])->toast('Task added.');
+    }
+}
+```
+
+After a successful create, the client refetches that column's first page rather than optimistically
+inserting the new card — the server's `cardData()`/`cardActions()` decoration and its own ordering
+stay authoritative.
+
+## Card click and per-card actions
+
+A whole-card click is one component-wide action, configurable as either a registered action or a
+plain URL:
+
+```php
+Board::use(TaskBoard::class)->cardAction(OpenTaskAction::class); // { cardId, columnKey }
+```
+
+```php
+final class ScopedTaskBoard extends EloquentBoardDefinition
+{
+    public function cardUrl(array $card): string
+    {
+        return '/tasks/'.$card['id'];
+    }
+}
+```
+
+`cardActions($card)` decorates each card with its own context-menu actions, serialized with the
+board key sealed into their context:
+
+```php
+final class TaskBoard extends EloquentBoardDefinition
+{
+    public function cardActions(array $card): array
+    {
+        return [
+            Action::use(DeleteTaskAction::class, ['card_id' => $card['id']]),
+        ];
+    }
+}
+```
+
+<Warning title="Actions live outside the card template">
+  Do not embed action buttons inside `card()` — the template is serialized once and shared by every
+  card. `cardActions()` decorates the reserved `actions` key server-side per card instead; the
+  client renders it as the card's context menu.
+</Warning>
+
+## Filters and search
+
+A board reuses `lattice-php/table`'s filter classes and wire format for its toolbar. Declare
+`searchable()` fields for full-text `q` search across the source, and `filters()` for dedicated
+filter controls:
+
+```php
+use Lattice\EloquentOptions;
+use Lattice\Table\Filters\SelectFilter;
+
+final class TaskBoard extends EloquentBoardDefinition
+{
+    public function searchable(): array
+    {
+        return ['title', 'assignee'];
+    }
+
+    public function filters(): array
+    {
+        return [
+            SelectFilter::make('assignee')
+                ->label('Assignee')
+                ->optionsFrom(EloquentOptions::make(Task::class)->label('assignee')->value('assignee'))
+                ->searchable(),
+        ];
+    }
+}
+```
+
+The toolbar renders only when the board declares `searchable()` fields or `filters()` — it stays
+hidden entirely otherwise. Search and filter changes refetch every column's first page; the current
+`q`/`tf` state is preserved across load-more requests, so paging further into a filtered column
+keeps the same filter applied. A searchable `SelectFilter`'s options are resolved through the same
+sub-request seam the table endpoint uses, scoped to the board's own declared filters.
+
+<Info>
+  Filter validation, indicator serialization, and the `tf` wire format are exactly the table
+  package's — see [Filtering](/tables/filtering/) for the full filter reference (types, option
+  sources, custom filters).
+</Info>
+
+## Configuration
+
+```php
+// config/lattice.php
+'boards' => [
+    'endpoint' => 'lattice/boards/{board}',
+    'middleware' => ['web', 'auth'],
+],
+```
+
+The definition is discovered like any Lattice definition (`#[AsBoard]` + Lattice's discovery
+paths), and the serialized board carries a sealed reference — the same
+[signing machinery](/core/authorization/) Lattice tables use — that the package's
+`lattice/boards/{board}` endpoint verifies before resolving the definition again with the identical
+context. `authorize()` on the definition gates both the initial render and every fetch.
+
+## Per-column paging
+
+The initial render fetches each column's first `perColumn()` cards plus a server-computed total.
+"Load more" requests one column at a time (`?column=<key>&offset=<n>`), fetching one extra row to
+derive `hasMore` without a second count query. Positions are absolute, since loading is a strict
+per-column prefix — a drop's index is already the final position.
+
+## Translations
+
+The component's strings ship with inline English defaults. With
+[laravel-i18next](https://github.com/bambamboole/laravel-i18next) enabled, the plugin's `board`
+namespace is loaded automatically and serves the bundled `en`/`de` translations (override them
+like any Laravel package translation — see [Internationalization](/core/i18n/)).
+
+## Bundle size
+
+The breakdown below measures the package's built plugin — React and the
+[framework runtime](/advanced/bundle-size/) are external, so this is exactly what the board package
+adds on top of an app that already ships Lattice. It is regenerated on every docs build.
+
+<BundleReport target="board" />

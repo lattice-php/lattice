@@ -7,8 +7,13 @@ use Illuminate\Http\Request;
 use Lattice\Board\Components\Board;
 use Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Core\DefinitionRegistry;
+use Lattice\Core\Http\SubRequest;
+use Lattice\Core\Option;
+use Lattice\Table\Filters\FilterFieldOptionsResolver;
+use Lattice\Table\TableRegistry;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\FiltersRenderableComponents;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @extends DefinitionRegistry<BoardDefinition>
@@ -28,6 +33,7 @@ final class BoardRegistry extends DefinitionRegistry
             fn (string $key): Board => Board::make($key),
             function (BoardDefinition $definition, Board $component, string $key): Board {
                 $perColumn = $definition->perColumn();
+                $query = BoardQuery::empty($perColumn);
 
                 return $component
                     ->id($key)
@@ -36,9 +42,11 @@ final class BoardRegistry extends DefinitionRegistry
                         fn (BoardColumn $column): BoardColumnData => $column->data(),
                         $definition->columns(),
                     ))
+                    ->filters($definition->filters())
+                    ->searchable($definition->searchable() !== [])
                     ->perColumn($perColumn)
                     ->schema($definition->card())
-                    ->result($this->decorateResult($definition, $key, $definition->source()->query(BoardQuery::empty($perColumn))));
+                    ->result($this->decorateResult($definition, $key, $definition->source()->query($query)->withIndicators($query->tableFilterIndicators)));
             },
             $context,
         );
@@ -47,11 +55,31 @@ final class BoardRegistry extends DefinitionRegistry
     public function response(string $key, Request $request, ?BoardDefinition $definition = null): BoardResult
     {
         $definition ??= $this->resolve($key);
-        $query = BoardQuery::fromRequest($request, $key, $definition->perColumn());
+        $query = BoardQuery::fromRequest($request, $key, $definition->perColumn(), $definition->filters());
 
         $this->guardColumn($definition, $query);
 
-        return $this->decorateResult($definition, $key, $definition->source()->query($query));
+        return $this->decorateResult($definition, $key, $definition->source()->query($query)->withIndicators($query->tableFilterIndicators));
+    }
+
+    /**
+     * Resolve options for a searchable filter from the user's query (the
+     * search sub-request of the board endpoint). Mirrors
+     * {@see TableRegistry::searchFilterOptions()} — a board
+     * only has dedicated filters, so only the `filter:<key>.<field>` target
+     * is supported.
+     *
+     * @return array{options: list<Option>}
+     */
+    public function searchFilterOptions(string $key, Request $request, SubRequest $sub, ?BoardDefinition $definition = null): array
+    {
+        $definition ??= $this->resolve($key);
+
+        if (str_starts_with($sub->target, 'filter:')) {
+            return ['options' => FilterFieldOptionsResolver::resolve($definition->filters(), substr($sub->target, strlen('filter:')), $sub->query, $request)];
+        }
+
+        abort(Response::HTTP_NOT_FOUND);
     }
 
     private function guardColumn(BoardDefinition $definition, BoardQuery $query): void

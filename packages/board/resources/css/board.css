@@ -1,5 +1,18 @@
 @source "../js";
 
+.lt-board-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.lt-board-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .lt-board {
   display: flex;
   gap: 1rem;

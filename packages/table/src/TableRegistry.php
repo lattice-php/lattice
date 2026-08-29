@@ -9,9 +9,6 @@ use Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Core\DefinitionRegistry;
 use Lattice\Core\Http\SubRequest;
 use Lattice\Core\Option;
-use Lattice\Form\Components\Select;
-use Lattice\Form\FormData;
-use Lattice\Form\FormSchemaWalker;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Columns\TextColumn;
@@ -19,6 +16,7 @@ use Lattice\Table\Components\Table as TableComponent;
 use Lattice\Table\Contracts\Filterable;
 use Lattice\Table\Contracts\Searchable;
 use Lattice\Table\Filters\Filter;
+use Lattice\Table\Filters\FilterFieldOptionsResolver;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Symfony\Component\HttpFoundation\Response;
@@ -135,23 +133,7 @@ final class TableRegistry extends DefinitionRegistry
      */
     private function searchFilterFieldOptions(TableDefinition $definition, string $target, string $query, Request $request): array
     {
-        [$filterKey, $fieldKey] = str_contains($target, '.')
-            ? explode('.', $target, 2)
-            : [$target, 'value'];
-
-        $filter = array_find($definition->filters(), fn (Filter $filter): bool => $filter->key() === $filterKey);
-
-        abort_if($filter === null, Response::HTTP_NOT_FOUND);
-
-        $instance = app(FormSchemaWalker::class)->find($filter->schema(), $fieldKey, FormData::fromRequest($request));
-
-        abort_if($instance === null, Response::HTTP_NOT_FOUND);
-
-        $field = $instance->field;
-
-        abort_unless($field instanceof Select && $field->isSearchable(), Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        return $field->resolveSearch($query, $instance->scope, $request);
+        return FilterFieldOptionsResolver::resolve($definition->filters(), $target, $query, $request);
     }
 
     /**

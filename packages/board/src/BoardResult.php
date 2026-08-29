@@ -4,15 +4,18 @@ declare(strict_types=1);
 namespace Lattice\Board;
 
 use Lattice\Core\Attributes\TypeScript;
+use Lattice\Table\Filters\FilterIndicator;
 
 #[TypeScript]
 final readonly class BoardResult
 {
     /**
      * @param  list<BoardColumnCards>  $columns
+     * @param  list<FilterIndicator>  $indicators
      */
     public function __construct(
         public array $columns,
+        public array $indicators = [],
     ) {}
 
     /**
@@ -21,6 +24,14 @@ final readonly class BoardResult
     public static function make(array $columns): self
     {
         return new self($columns);
+    }
+
+    /**
+     * @param  list<FilterIndicator>  $indicators
+     */
+    public function withIndicators(array $indicators): self
+    {
+        return new self($this->columns, $indicators);
     }
 
     /**
@@ -36,6 +47,6 @@ final readonly class BoardResult
                 array_map($callback, $column->cards),
             ),
             $this->columns,
-        ));
+        ), $this->indicators);
     }
 }

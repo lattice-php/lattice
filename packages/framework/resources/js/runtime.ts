@@ -5,6 +5,7 @@ export { defaultNavigation, NavigationProvider, useNavigation } from "@lattice-p
 export { callAction, runAction, useCallAction } from "@lattice-php/action";
 export type { CallActionResult } from "@lattice-php/action";
 export { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";
+export { ActionsDropdown } from "@lattice-php/action/components/actions-dropdown";
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
 export { useExtensionRegistry } from "@lattice-php/core/registry-context";
 export { RenderNode } from "@lattice-php/core/renderer";
@@ -17,6 +18,10 @@ export * from "@lattice-php/form/toolkit";
 export { useTable } from "@lattice-php/table/hooks/use-table";
 export { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 export { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
+export { TableSearch } from "@lattice-php/table/components/table-search";
+export { FilterBar, FilterMenu } from "@lattice-php/table/components/filter-bar";
+export { appendTableFilters, fetchFilterOptions } from "@lattice-php/table/lib/query";
+export { isActiveFilterValue } from "@lattice-php/table/lib/filter-values";
 export { useAction } from "@lattice-php/action/hooks/use-action";
 export {
   MODAL_MISSING_ERROR,
@@ -50,6 +55,7 @@ export * from "@lattice-php/ui/i18n";
 export {
   announce,
   attachTreeItemInstruction,
+  cancelDragStartFromInteractive,
   combine,
   draggable,
   dropTargetForElements,

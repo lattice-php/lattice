@@ -12,13 +12,16 @@ use Lattice\Board\BoardRegistry;
 use Lattice\Board\BoardResult;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Contracts\InteractiveComponent;
+use Lattice\Table\Filters\Filter;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Concerns\HasChildSchema;
 use Lattice\Ui\Components\IsInteractive;
+use Lattice\Ui\Concerns\FiltersRenderableComponents;
 
 #[AsComponent('board')]
 class Board extends Component implements InteractiveComponent
 {
+    use FiltersRenderableComponents;
     use HasChildSchema;
     use IsInteractive;
 
@@ -26,6 +29,11 @@ class Board extends Component implements InteractiveComponent
 
     /** @var list<BoardColumnData> */
     public array $columns = [];
+
+    /** @var list<Filter> */
+    public array $filters = [];
+
+    public bool $searchable = false;
 
     public ?BoardResult $result = null;
 
@@ -81,6 +89,23 @@ class Board extends Component implements InteractiveComponent
         return $this;
     }
 
+    /**
+     * @param  list<Filter>  $filters
+     */
+    public function filters(array $filters): static
+    {
+        $this->filters = $this->renderableComponents($filters);
+
+        return $this;
+    }
+
+    public function searchable(bool $searchable = true): static
+    {
+        $this->searchable = $searchable;
+
+        return $this;
+    }
+
     public function perColumn(int $perColumn): static
     {
         if ($perColumn < 1) {
@@ -98,11 +123,7 @@ class Board extends Component implements InteractiveComponent
      */
     public function moveAction(string $action, array $context = []): static
     {
-        $this->moveAction = Action::use($action, $context);
-
-        if ($this->signatureKey !== null) {
-            $this->moveAction->mergeContext([], ['board' => $this->signatureKey]);
-        }
+        $this->moveAction = $this->boardAction($action, $context);
 
         return $this;
     }
@@ -113,11 +134,7 @@ class Board extends Component implements InteractiveComponent
      */
     public function cardAction(string $action, array $context = []): static
     {
-        $this->cardAction = Action::use($action, $context);
-
-        if ($this->signatureKey !== null) {
-            $this->cardAction->mergeContext([], ['board' => $this->signatureKey]);
-        }
+        $this->cardAction = $this->boardAction($action, $context);
 
         return $this;
     }
@@ -128,12 +145,23 @@ class Board extends Component implements InteractiveComponent
      */
     public function createAction(string $action, array $context = []): static
     {
-        $this->createAction = Action::use($action, $context);
-
-        if ($this->signatureKey !== null) {
-            $this->createAction->mergeContext([], ['board' => $this->signatureKey]);
-        }
+        $this->createAction = $this->boardAction($action, $context);
 
         return $this;
+    }
+
+    /**
+     * @param  class-string<ActionDefinition>  $action
+     * @param  array<string, mixed>  $context
+     */
+    private function boardAction(string $action, array $context): Action
+    {
+        $built = Action::use($action, $context);
+
+        if ($this->signatureKey !== null) {
+            $built->mergeContext([], ['board' => $this->signatureKey]);
+        }
+
+        return $built;
     }
 }

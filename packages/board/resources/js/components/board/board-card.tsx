@@ -6,6 +6,7 @@ import { useCallAction } from "@lattice-php/action";
 import { useNavigation } from "@lattice-php/ui/navigation";
 import { cn } from "@lattice-php/ui/lib/utils";
 import {
+  cancelDragStartFromInteractive,
   combine,
   draggable,
   dropTargetForElements,
@@ -159,26 +160,8 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
       return;
     }
 
-    // Browsers retarget dragstart to the closest draggable ancestor, so neither
-    // canDrag() nor event.target can see an inline form control the gesture
-    // started in; without this capture-phase cancel, selecting text in it drags
-    // the card. The control is focused by the initiating mousedown, so a
-    // focused control inside the card marks the drag as text selection.
-    const cancelFormControlDrag = (event: Event): void => {
-      const focused = element.ownerDocument.activeElement;
-
-      if (
-        isCardInteractiveTarget(event.target) ||
-        (element.contains(focused) && isCardInteractiveTarget(focused))
-      ) {
-        event.preventDefault();
-      }
-    };
-
-    element.addEventListener("dragstart", cancelFormControlDrag, true);
-
     return combine(
-      () => element.removeEventListener("dragstart", cancelFormControlDrag, true),
+      cancelDragStartFromInteractive(element, isCardInteractiveTarget),
       draggable({
         canDrag: () => !moving,
         element,

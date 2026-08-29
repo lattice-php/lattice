@@ -14,6 +14,8 @@ use Lattice\Board\Contracts\BoardSource;
 use Lattice\Core\Enums\Op;
 use Lattice\Table\Enums\FilterType;
 use Lattice\Table\FilterApplier;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\Filters\TableFilterApplier;
 
 /**
  * @template TModel of Model
@@ -29,6 +31,7 @@ final readonly class EloquentBoardSource implements BoardSource
      * @param  class-string<TModel>  $model
      * @param  list<BoardColumn>  $columns
      * @param  list<string>  $searchable
+     * @param  list<Filter>  $filters
      * @param  (Closure(Builder<TModel>): (Builder<TModel>|mixed))|null  $scope
      */
     public function __construct(
@@ -37,6 +40,7 @@ final readonly class EloquentBoardSource implements BoardSource
         private string $columnField = 'status',
         private string $positionField = 'position',
         private array $searchable = [],
+        private array $filters = [],
         private ?Closure $scope = null,
         private FilterApplier $filterApplier = new FilterApplier,
     ) {}
@@ -72,7 +76,13 @@ final readonly class EloquentBoardSource implements BoardSource
      */
     private function totals(BoardQuery $query): array
     {
-        $counts = $this->baseQuery($query)
+        $builder = $this->baseQuery($query);
+
+        if ($query->column !== null) {
+            $builder->where($this->columnField, $query->column);
+        }
+
+        $counts = $builder
             ->select($this->columnField)
             ->selectRaw('count(*) as aggregate')
             ->groupBy($this->columnField)
@@ -131,9 +141,18 @@ final readonly class EloquentBoardSource implements BoardSource
             }
         }
 
+        $this->applyTableFilters($builder, $query);
         $this->applySearch($builder, $query);
 
         return $builder;
+    }
+
+    /**
+     * @param  Builder<TModel>  $builder
+     */
+    private function applyTableFilters(Builder $builder, BoardQuery $query): void
+    {
+        TableFilterApplier::apply($query->tableFilters, $this->filters, $builder);
     }
 
     /**

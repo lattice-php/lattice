@@ -51,3 +51,4 @@ export {
   autoScrollWindowForElements,
 } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 export { pointerOutsideOfPreview } from "@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview";
+export { cancelDragStartFromInteractive } from "./cancel-drag-start";

@@ -5,6 +5,7 @@ namespace Lattice\Board;
 
 use Lattice\Board\Contracts\BoardSource;
 use Lattice\Core\Definition;
+use Lattice\Table\Filters\Filter;
 use Lattice\Ui\Components\Component;
 
 /**
@@ -39,6 +40,16 @@ abstract class BoardDefinition extends Definition
      * @return list<string>
      */
     public function searchable(): array
+    {
+        return [];
+    }
+
+    /**
+     * Dedicated, table-level filter classes rendered in the board toolbar.
+     *
+     * @return list<Filter>
+     */
+    public function filters(): array
     {
         return [];
     }

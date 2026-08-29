@@ -1,6 +1,8 @@
 export { ActionComponent } from "./components/action";
 export { ActionForm } from "./components/action-form";
 export { ActionGroupComponent } from "./components/action-group";
+export { ActionsDropdown } from "./components/actions-dropdown";
+export type { ActionsDropdownProps } from "./components/actions-dropdown";
 export { ActionInteractionProvider, ActionTrigger } from "./components/action-trigger-provider";
 export {
   ActionMenuProvider,

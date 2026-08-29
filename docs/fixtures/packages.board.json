@@ -1,0 +1,134 @@
+[
+    {
+        "key": "sprint",
+        "props": {
+            "cardAction": null,
+            "columns": [
+                {
+                    "color": {
+                        "dark": null,
+                        "kind": "named",
+                        "value": "gray"
+                    },
+                    "icon": null,
+                    "key": "backlog",
+                    "label": "Backlog"
+                },
+                {
+                    "color": {
+                        "dark": null,
+                        "kind": "named",
+                        "value": "blue"
+                    },
+                    "icon": null,
+                    "key": "doing",
+                    "label": "In Progress"
+                },
+                {
+                    "color": {
+                        "dark": null,
+                        "kind": "named",
+                        "value": "green"
+                    },
+                    "icon": null,
+                    "key": "done",
+                    "label": "Done"
+                }
+            ],
+            "createAction": null,
+            "endpoint": null,
+            "filters": [],
+            "moveAction": null,
+            "perColumn": 25,
+            "result": {
+                "columns": [
+                    {
+                        "cards": [
+                            {
+                                "assignee": "Mina",
+                                "id": 1,
+                                "title": "Design onboarding flow"
+                            }
+                        ],
+                        "hasMore": true,
+                        "key": "backlog",
+                        "offset": 1,
+                        "total": 4
+                    },
+                    {
+                        "cards": [
+                            {
+                                "assignee": "Theo",
+                                "id": 2,
+                                "title": "Wire up billing webhook"
+                            }
+                        ],
+                        "hasMore": false,
+                        "key": "doing",
+                        "offset": 1,
+                        "total": 1
+                    },
+                    {
+                        "cards": [
+                            {
+                                "assignee": "Priya",
+                                "id": 3,
+                                "title": "Migrate avatars to S3"
+                            }
+                        ],
+                        "hasMore": false,
+                        "key": "done",
+                        "offset": 1,
+                        "total": 1
+                    }
+                ],
+                "indicators": []
+            },
+            "searchable": false
+        },
+        "schema": [
+            {
+                "props": {
+                    "align": null,
+                    "direction": null,
+                    "float": null,
+                    "gap": "xs",
+                    "height": null,
+                    "justify": null,
+                    "sticky": false,
+                    "width": null
+                },
+                "schema": [
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "dataBindings": {
+                                "text": "title"
+                            },
+                            "size": "md",
+                            "text": ""
+                        },
+                        "type": "text"
+                    },
+                    {
+                        "props": {
+                            "align": null,
+                            "color": null,
+                            "copyable": false,
+                            "dataBindings": {
+                                "text": "assignee"
+                            },
+                            "size": "md",
+                            "text": ""
+                        },
+                        "type": "text"
+                    }
+                ],
+                "type": "stack"
+            }
+        ],
+        "type": "board"
+    }
+]

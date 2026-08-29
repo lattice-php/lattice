@@ -10,3 +10,4 @@ export type {
   BoardQuery,
   BoardResult,
 } from "./generated";
+export type { FilterIndicator, FilterNode } from "@lattice-php/table";

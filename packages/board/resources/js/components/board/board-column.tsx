@@ -84,7 +84,7 @@ export function BoardColumn({
           {column.label}
         </h3>
         <Badge
-          aria-label={t("board.card-count", "{{count}} cards", { count: view.total })}
+          aria-label={t("board.card-count", "Cards: {{count}}", { count: view.total })}
           className={tone.className}
           style={tone.style}
         >

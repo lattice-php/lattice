@@ -7,6 +7,9 @@ use Lattice\Actions\Components\Action;
 use Lattice\Board\AsBoard;
 use Lattice\Board\BoardColumn;
 use Lattice\Board\EloquentBoardDefinition;
+use Lattice\EloquentOptions;
+use Lattice\Table\Filters\Filter;
+use Lattice\Table\Filters\SelectFilter;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
@@ -49,6 +52,19 @@ final class TaskBoard extends EloquentBoardDefinition
     public function searchable(): array
     {
         return ['title', 'assignee'];
+    }
+
+    /**
+     * @return list<Filter>
+     */
+    public function filters(): array
+    {
+        return [
+            SelectFilter::make('assignee')
+                ->label('Assignee')
+                ->optionsFrom(EloquentOptions::make(Task::class)->label('assignee')->value('assignee'))
+                ->searchable(),
+        ];
     }
 
     public function cardData(array $card): array

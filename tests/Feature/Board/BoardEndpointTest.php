@@ -64,6 +64,13 @@ it('keeps the column total independent of the requested offset', function (): vo
     )->json('columns.0.total');
 
     expect($withoutOffset)->toBe(2)->and($withOffset)->toBe(2);
+
+    $doingTotal = getJson(
+        $board['props']['endpoint'].'?column=doing&offset=0',
+        ['X-Lattice-Ref' => $board['props']['ref']],
+    )->json('columns.0.total');
+
+    expect($doingTotal)->toBe(1);
 });
 
 it('filters cards by the search term across searchable fields', function (): void {

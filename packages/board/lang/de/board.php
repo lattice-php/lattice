@@ -4,8 +4,7 @@ declare(strict_types=1);
 return [
     'load-more' => 'Mehr laden',
     'empty-column' => 'Keine Karten',
-    'card-count' => ':count Karten',
-    'search-placeholder' => 'Karten durchsuchen',
+    'card-count' => 'Karten: :count',
     'moved' => 'Karte verschoben',
     'move-failed' => 'Karte konnte nicht verschoben werden',
     'add-card' => 'Karte hinzufügen',

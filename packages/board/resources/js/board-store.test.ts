@@ -144,6 +144,21 @@ describe("optimisticMove", () => {
     expect(moved!.meta.get("done")?.total).toBe(2);
   });
 
+  it("keeps offset in sync with order length after a cross-column move", () => {
+    const moved = optimisticMove(loaded, { cardId: "1", columnKey: "done", position: 0 });
+
+    expect(moved).not.toBeNull();
+    expect(moved!.meta.get("todo")?.offset).toBe(cardsFor(moved!, "todo").length);
+    expect(moved!.meta.get("done")?.offset).toBe(cardsFor(moved!, "done").length);
+  });
+
+  it("leaves offset untouched for a same-column reorder", () => {
+    const moved = optimisticMove(loaded, { cardId: "2", columnKey: "todo", position: 0 });
+
+    expect(moved).not.toBeNull();
+    expect(moved!.meta.get("todo")?.offset).toBe(loaded.meta.get("todo")?.offset);
+  });
+
   it("returns null for a drop back at the card's own position", () => {
     expect(optimisticMove(loaded, { cardId: "1", columnKey: "todo", position: 0 })).toBeNull();
   });

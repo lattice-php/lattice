@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\File;
+use Lattice\Board\BoardColumn;
+use Lattice\Board\BoardColumnCards;
+use Lattice\Board\BoardResult;
+use Lattice\Board\Components\Board;
 use Lattice\Chat\Components\ChatBox;
 use Lattice\Core\Enums\ColorName;
 use Lattice\Core\Support\Wire;
@@ -23,6 +27,34 @@ use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Gap;
 
 describe('package docs fixtures', function (): void {
+    it('matches the board example fixture', function (): void {
+        assertFixtureMatches('packages.board', Wire::toWire([
+            Board::make('sprint')
+                ->columns([
+                    BoardColumn::make('backlog')->label('Backlog')->color('gray')->data(),
+                    BoardColumn::make('doing')->label('In Progress')->color('blue')->data(),
+                    BoardColumn::make('done')->label('Done')->color('green')->data(),
+                ])
+                ->schema([
+                    Stack::make()->gap(Gap::ExtraSmall)->schema([
+                        Text::make('')->dataKey('text', 'title'),
+                        Text::make('')->dataKey('text', 'assignee'),
+                    ]),
+                ])
+                ->result(BoardResult::make([
+                    new BoardColumnCards('backlog', [
+                        ['assignee' => 'Mina', 'id' => 1, 'title' => 'Design onboarding flow'],
+                    ], 4, true, 1),
+                    new BoardColumnCards('doing', [
+                        ['assignee' => 'Theo', 'id' => 2, 'title' => 'Wire up billing webhook'],
+                    ], 1, false, 1),
+                    new BoardColumnCards('done', [
+                        ['assignee' => 'Priya', 'id' => 3, 'title' => 'Migrate avatars to S3'],
+                    ], 1, false, 1),
+                ])),
+        ]));
+    });
+
     it('matches the chat example fixture', function (): void {
         assertFixtureMatches('packages.chat', Wire::toWire([
             ChatBox::make('assistant')

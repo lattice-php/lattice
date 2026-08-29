@@ -57,6 +57,25 @@ it('reorders a task within its own column with a real pointer drag', function ()
     $page->assertNoJavaScriptErrors();
 });
 
+it('narrows the board to matching cards via the toolbar search', function (): void {
+    seedTaskBoard();
+
+    $page = $this->visitAsWorkbenchUser('/board')
+        ->assertSee('Write spec')
+        ->assertSee('Review PR')
+        ->assertSee('Build feature')
+        ->assertSee('Ship release');
+
+    $page->fill('[data-test="table-search"]', 'Anna');
+
+    assertDontSeeEventually($page, 'Review PR');
+
+    $page->assertSee('Write spec')
+        ->assertSee('Build feature')
+        ->assertDontSee('Ship release')
+        ->assertNoJavaScriptErrors();
+});
+
 it('quick-adds a card to a column and persists it', function (): void {
     seedTaskBoard();
 

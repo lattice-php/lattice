@@ -6,6 +6,7 @@ import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/te
 import { actionComponents } from "@lattice-php/action";
 import BoardAdapter from "./components/board/board-adapter";
 import type { BoardColumnCards, BoardColumnData, BoardResult } from "./generated";
+import type { FilterIndicator, FilterNode } from "@lattice-php/table";
 
 /** Stand-in body component for a card's materialized schema. */
 export const TestText: RendererComponent = ({ node }) => (
@@ -40,12 +41,33 @@ export function boardColumnCards(
   return { cards, hasMore: false, offset: 0, total: cards.length, ...extra, key };
 }
 
-export function boardResult(columns: BoardColumnCards[]): BoardResult {
-  return { columns };
+export function boardResult(
+  columns: BoardColumnCards[],
+  indicators: FilterIndicator[] = [],
+): BoardResult {
+  return { columns, indicators };
 }
 
-export function stubBoardFetch(...responses: BoardResult[]) {
-  return responses.map((response) => jsonResponse(response));
+export function boardFilter(key: string, extra: Partial<FilterNode> = {}): FilterNode {
+  return {
+    key,
+    props: { label: key },
+    schema: [
+      {
+        type: "field.select",
+        props: {
+          name: "value",
+          label: key,
+          options: [],
+          multiple: false,
+          searchable: false,
+          placeholder: null,
+        },
+      },
+    ],
+    type: "filter.select",
+    ...extra,
+  };
 }
 
 export const cardTemplate = [{ props: { dataBindings: { text: "title" } }, type: "test.text" }];
@@ -99,10 +121,12 @@ export function renderBoard(
       columns: [],
       createAction: null,
       endpoint: null,
+      filters: [],
       moveAction: null,
       perColumn: 25,
       ref: null,
       result: null,
+      searchable: false,
       ...props,
     },
     schema: cardTemplate,

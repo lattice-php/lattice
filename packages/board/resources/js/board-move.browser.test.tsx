@@ -20,10 +20,12 @@ function renderBoard(props: Record<string, unknown>) {
     props: {
       columns: [],
       endpoint: null,
+      filters: [],
       moveAction,
       perColumn: 25,
       ref: null,
       result: null,
+      searchable: false,
       ...props,
     },
     schema: cardTemplate,

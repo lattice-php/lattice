@@ -5,3 +5,7 @@ export * from "./primitives/data-table";
 export { columnCell } from "./registry";
 export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "./registry";
 export type * from "./types";
+export { TableSearch } from "./components/table-search";
+export { FilterBar, FilterMenu } from "./components/filter-bar";
+export { appendTableFilters, fetchFilterOptions } from "./lib/query";
+export { isActiveFilterValue } from "./lib/filter-values";

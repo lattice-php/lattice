@@ -7,7 +7,7 @@ import type { Board as BoardWireProps } from "../../generated";
 
 export type QuickAddProps = {
   columnKey: string;
-  createAction: BoardWireProps["createAction"];
+  createAction: NonNullable<BoardWireProps["createAction"]>;
   onCreated: () => void;
 };
 
@@ -25,7 +25,7 @@ export function QuickAdd({ columnKey, createAction, onCreated }: QuickAddProps) 
   }, []);
 
   const submit = useCallback(async () => {
-    if (!createAction || submitting) {
+    if (submitting) {
       return;
     }
 
@@ -71,10 +71,6 @@ export function QuickAdd({ columnKey, createAction, onCreated }: QuickAddProps) 
       collapse();
     }
   }, [collapse, submitting]);
-
-  if (!createAction) {
-    return null;
-  }
 
   if (!expanded) {
     return (

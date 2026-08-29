@@ -197,12 +197,26 @@ export function cardsFor(state: BoardStoreState, columnKey: string): BoardCard[]
     .filter((card): card is BoardCard => card !== undefined);
 }
 
+export type BoardCardLocation = { columnKey: string; index: number };
+
+export function locateCard(state: BoardStoreState, cardId: string): BoardCardLocation | null {
+  for (const [columnKey, ids] of state.order) {
+    const index = ids.indexOf(cardId);
+
+    if (index !== -1) {
+      return { columnKey, index };
+    }
+  }
+
+  return null;
+}
+
 /**
  * The optimistic mirror of the server's `BoardMovePlanner`: moves a card
- * within or across columns and adjusts both columns' totals, without waiting
- * for the move action's response. Returns null for a no-op move (unknown
- * card, unknown destination column, or a drop back at the card's own
- * position) so callers can skip the request entirely.
+ * within or across columns and adjusts both columns' totals and offsets,
+ * without waiting for the move action's response. Returns null for a no-op
+ * move (unknown card, unknown destination column, or a drop back at the
+ * card's own position) so callers can skip the request entirely.
  */
 export function optimisticMove(
   state: BoardStoreState,
@@ -212,22 +226,16 @@ export function optimisticMove(
     return null;
   }
 
-  let sourceColumnKey: string | null = null;
+  const location = locateCard(state, move.cardId);
 
-  for (const [columnKey, ids] of state.order) {
-    if (ids.includes(move.cardId)) {
-      sourceColumnKey = columnKey;
-      break;
-    }
-  }
-
-  if (sourceColumnKey === null) {
+  if (location === null) {
     return null;
   }
 
+  const sourceColumnKey = location.columnKey;
   const sameColumn = sourceColumnKey === move.columnKey;
   const sourceIds = state.order.get(sourceColumnKey) ?? [];
-  const sourceIndex = sourceIds.indexOf(move.cardId);
+  const sourceIndex = location.index;
   const withoutCard = sourceIds.filter((id) => id !== move.cardId);
   const destinationIds = sameColumn ? withoutCard : [...(state.order.get(move.columnKey) ?? [])];
   const position = Math.max(0, Math.min(move.position, destinationIds.length));
@@ -249,11 +257,19 @@ export function optimisticMove(
     const destinationMeta = meta.get(move.columnKey);
 
     if (sourceMeta) {
-      meta.set(sourceColumnKey, { ...sourceMeta, total: Math.max(0, sourceMeta.total - 1) });
+      meta.set(sourceColumnKey, {
+        ...sourceMeta,
+        offset: Math.max(0, sourceMeta.offset - 1),
+        total: Math.max(0, sourceMeta.total - 1),
+      });
     }
 
     if (destinationMeta) {
-      meta.set(move.columnKey, { ...destinationMeta, total: destinationMeta.total + 1 });
+      meta.set(move.columnKey, {
+        ...destinationMeta,
+        offset: destinationMeta.offset + 1,
+        total: destinationMeta.total + 1,
+      });
     }
   }
 

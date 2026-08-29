@@ -15,7 +15,16 @@ import {
 function renderBoard(props: Record<string, unknown>) {
   const node = fakeNode({
     id: "kb-board",
-    props: { columns: [], endpoint: null, perColumn: 25, ref: null, result: null, ...props },
+    props: {
+      columns: [],
+      endpoint: null,
+      filters: [],
+      perColumn: 25,
+      ref: null,
+      result: null,
+      searchable: false,
+      ...props,
+    },
     schema: cardTemplate,
     type: "board",
   });

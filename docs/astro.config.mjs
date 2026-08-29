@@ -198,6 +198,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { label: "API Reference", link: "/packages/api-reference/" },
+            { label: "Board", link: "/packages/board/" },
             { label: "Calendar", link: "/packages/calendar/" },
             { label: "Chat", link: "/packages/chat/" },
             { label: "Map", link: "/packages/map/" },

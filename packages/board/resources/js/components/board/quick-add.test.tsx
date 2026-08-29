@@ -18,14 +18,6 @@ describe("QuickAdd", () => {
     vi.unstubAllGlobals();
   });
 
-  it("renders nothing without a create action", () => {
-    const { container } = render(
-      <QuickAdd columnKey="todo" createAction={null} onCreated={() => {}} />,
-    );
-
-    expect(container).toBeEmptyDOMElement();
-  });
-
   it("expands into a title input when the trigger is clicked", () => {
     render(<QuickAdd columnKey="todo" createAction={fakeCreateAction} onCreated={() => {}} />);
 

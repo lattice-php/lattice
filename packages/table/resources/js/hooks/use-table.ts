@@ -1,4 +1,4 @@
-import { apiFetch, apiJson } from "@lattice-php/core/api";
+import { apiJson } from "@lattice-php/core/api";
 import { LATTICE_EVENT, type ReloadComponentEvent } from "@lattice-php/core/event-names";
 import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -11,7 +11,7 @@ import {
   getQuery,
   type PerPageOption,
 } from "@lattice-php/table/lib/payload";
-import { buildEndpoint, nextSort } from "@lattice-php/table/lib/query";
+import { buildEndpoint, fetchFilterOptions, nextSort } from "@lattice-php/table/lib/query";
 import type {
   FilterClause,
   TableColumn,
@@ -150,30 +150,8 @@ export function useTable(node: TableNode) {
   }
 
   const searchFilterOptions = useCallback(
-    async (searchKey: string, search: string, signal?: AbortSignal): Promise<Option[]> => {
-      if (!endpoint) {
-        return [];
-      }
-
-      const url = new URL(endpoint, window.location.origin);
-      url.searchParams.set("_sub", "search");
-      url.searchParams.set("_target", searchKey);
-      url.searchParams.set("_q", search);
-
-      const response = await apiFetch(`${url.pathname}${url.search}`, {
-        ref: componentRef,
-        signal,
-        throwOnError: false,
-      });
-
-      if (!response.ok) {
-        return [];
-      }
-
-      const result = (await response.json()) as { options?: Option[] };
-
-      return result.options ?? [];
-    },
+    (searchKey: string, search: string, signal?: AbortSignal): Promise<Option[]> =>
+      fetchFilterOptions(endpoint, componentRef, searchKey, search, signal),
     [endpoint, componentRef],
   );
 

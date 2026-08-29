@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Schema } from "@lattice-php/core";
 import { announce, monitorForElements } from "@lattice-php/lattice/dnd";
+import type { FilterNode } from "@lattice-php/table";
 import { useT } from "@lattice-php/ui/i18n";
 import type { Board as BoardWireProps, BoardColumnData, BoardResult } from "../../generated";
 import { useBoardState, type BoardColumnView } from "../../use-board-state";
@@ -12,6 +13,7 @@ import {
   type BoardFocusDirection,
 } from "../../board-keyboard";
 import { BoardColumn } from "./board-column";
+import { BoardToolbar } from "./board-toolbar";
 
 export type BoardProps = {
   cardAction: BoardWireProps["cardAction"];
@@ -20,11 +22,13 @@ export type BoardProps = {
   createAction: BoardWireProps["createAction"];
   "data-test"?: string;
   endpoint: string | null;
+  filters: FilterNode[];
   identity?: string;
   moveAction: BoardWireProps["moveAction"];
   perColumn: number;
   result: BoardResult | null;
   schema: Schema;
+  searchable: boolean;
 };
 
 function firstCardId(
@@ -49,13 +53,30 @@ export function Board({
   createAction,
   "data-test": testId,
   endpoint,
+  filters,
   identity,
   moveAction,
   perColumn,
   result,
   schema,
+  searchable,
 }: BoardProps) {
-  const { canMove, columnKeys, columnsView, loadMore, move, moving, resetColumn } = useBoardState({
+  const {
+    canMove,
+    columnKeys,
+    columnsView,
+    indicators,
+    loadMore,
+    move,
+    moving,
+    resetColumn,
+    resetFilters,
+    search,
+    searchFilterOptions,
+    setSearch,
+    setTableFilter,
+    tableFilters,
+  } = useBoardState({
     columns,
     componentRef,
     endpoint,
@@ -148,27 +169,40 @@ export function Board({
   );
 
   return (
-    <div className="lt-board" data-test={testId}>
-      {columns.map((column) => (
-        <BoardColumn
-          canMove={canMove}
-          cardAction={cardAction}
-          cardSchema={schema}
-          column={column}
-          createAction={createAction}
-          focusedCardId={focusedCardId}
-          key={column.key}
-          moving={moving}
-          onFocusCard={setFocusedCardId}
-          onLoadMore={() => loadMore(column.key)}
-          onMoveFocus={(cardId, direction) => moveFocus(column.key, cardId, direction)}
-          onResetColumn={() => resetColumn(column.key)}
-          registerCardRef={registerCard}
-          view={
-            columnsView.get(column.key) ?? { cards: [], hasMore: false, loading: false, total: 0 }
-          }
-        />
-      ))}
+    <div className="lt-board-container">
+      <BoardToolbar
+        filters={filters}
+        indicators={indicators}
+        onReset={resetFilters}
+        onSearch={setSearch}
+        onSearchFilterOptions={searchFilterOptions}
+        onTableFilter={setTableFilter}
+        search={search}
+        searchable={searchable}
+        tableFilters={tableFilters}
+      />
+      <div className="lt-board" data-test={testId}>
+        {columns.map((column) => (
+          <BoardColumn
+            canMove={canMove}
+            cardAction={cardAction}
+            cardSchema={schema}
+            column={column}
+            createAction={createAction}
+            focusedCardId={focusedCardId}
+            key={column.key}
+            moving={moving}
+            onFocusCard={setFocusedCardId}
+            onLoadMore={() => loadMore(column.key)}
+            onMoveFocus={(cardId, direction) => moveFocus(column.key, cardId, direction)}
+            onResetColumn={() => resetColumn(column.key)}
+            registerCardRef={registerCard}
+            view={
+              columnsView.get(column.key) ?? { cards: [], hasMore: false, loading: false, total: 0 }
+            }
+          />
+        ))}
+      </div>
     </div>
   );
 }

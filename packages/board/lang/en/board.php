@@ -4,8 +4,7 @@ declare(strict_types=1);
 return [
     'load-more' => 'Load more',
     'empty-column' => 'No cards',
-    'card-count' => ':count cards',
-    'search-placeholder' => 'Search cards',
+    'card-count' => 'Cards: :count',
     'moved' => 'Card moved',
     'move-failed' => 'Could not move card',
     'add-card' => 'Add card',

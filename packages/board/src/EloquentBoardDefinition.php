@@ -45,6 +45,7 @@ abstract class EloquentBoardDefinition extends BoardDefinition
             columnField: $this->columnField(),
             positionField: $this->positionField(),
             searchable: $this->searchable(),
+            filters: $this->filters(),
             scope: fn (Builder $query): Builder => $this->query($query),
         );
     }

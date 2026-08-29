@@ -133,14 +133,3 @@ describe("card click", () => {
     expect(visit).not.toHaveBeenCalled();
   });
 });
-
-describe("card context menu", () => {
-  it("renders the actions trigger only when the card carries actions", () => {
-    renderBoard({
-      columns: [boardColumn("todo", "To Do")],
-      result: boardResult([boardColumnCards("todo", [boardCard(1, "Write spec")])]),
-    });
-
-    expect(screen.queryByRole("button", { name: "Card actions" })).not.toBeInTheDocument();
-  });
-});

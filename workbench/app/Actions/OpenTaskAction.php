@@ -25,7 +25,6 @@ final class OpenTaskAction extends ActionDefinition
     {
         $payload = $request->validate([
             'cardId' => ['required', 'string'],
-            'columnKey' => ['required', 'string'],
         ]);
 
         $this->boards->resolve($this->contextString('board'));
