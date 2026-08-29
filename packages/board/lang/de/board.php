@@ -6,4 +6,6 @@ return [
     'empty-column' => 'Keine Karten',
     'card-count' => ':count Karten',
     'search-placeholder' => 'Karten durchsuchen',
+    'moved' => 'Karte verschoben',
+    'move-failed' => 'Karte konnte nicht verschoben werden',
 ];

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Lattice\Board\Components;
 
 use InvalidArgumentException;
+use Lattice\Actions\ActionDefinition;
+use Lattice\Actions\Components\Action;
 use Lattice\Board\BoardColumnData;
 use Lattice\Board\BoardDefinition;
 use Lattice\Board\BoardRegistry;
@@ -28,6 +30,8 @@ class Board extends Component implements InteractiveComponent
     public ?BoardResult $result = null;
 
     public int $perColumn = 25;
+
+    public ?Action $moveAction = null;
 
     public static function make(?string $key = null): static
     {
@@ -80,6 +84,21 @@ class Board extends Component implements InteractiveComponent
         }
 
         $this->perColumn = $perColumn;
+
+        return $this;
+    }
+
+    /**
+     * @param  class-string<ActionDefinition>  $action
+     * @param  array<string, mixed>  $context
+     */
+    public function moveAction(string $action, array $context = []): static
+    {
+        $this->moveAction = Action::use($action, $context);
+
+        if ($this->signatureKey !== null) {
+            $this->moveAction->mergeContext([], ['board' => $this->signatureKey]);
+        }
 
         return $this;
     }

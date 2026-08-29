@@ -10,7 +10,13 @@ export type BoardStoreState = {
   cards: Map<string, BoardCard>;
   generation: number;
   meta: Map<string, BoardColumnMeta>;
+  moving: boolean;
   order: Map<string, string[]>;
+};
+export type BoardMoveRequest = {
+  cardId: string;
+  columnKey: string;
+  position: number;
 };
 export declare function cardKey(card: BoardCard): string;
 export declare function createBoardState(columns: BoardColumnData[]): BoardStoreState;
@@ -38,3 +44,14 @@ export declare function setColumnLoading(
   loading: boolean,
 ): BoardStoreState;
 export declare function cardsFor(state: BoardStoreState, columnKey: string): BoardCard[];
+/**
+ * The optimistic mirror of the server's `BoardMovePlanner`: moves a card
+ * within or across columns and adjusts both columns' totals, without waiting
+ * for the move action's response. Returns null for a no-op move (unknown
+ * card, unknown destination column, or a drop back at the card's own
+ * position) so callers can skip the request entirely.
+ */
+export declare function optimisticMove(
+  state: BoardStoreState,
+  move: BoardMoveRequest,
+): BoardStoreState | null;

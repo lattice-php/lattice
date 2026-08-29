@@ -1,4 +1,5 @@
 import type { RenderResult } from "@testing-library/react";
+import { vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core";
 import type { RendererComponent } from "@lattice-php/core";
 import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
@@ -48,10 +49,32 @@ export function stubBoardFetch(...responses: BoardResult[]) {
 
 export const cardTemplate = [{ props: { dataBindings: { text: "title" } }, type: "test.text" }];
 
+export const moveAction = fakeNode({
+  props: { endpoint: "/lattice/actions/move-task", method: "post", ref: "move-ref" },
+  type: "action",
+});
+
+export function stubMoveFetch(status = 200) {
+  const fetchMock = vi
+    .fn<typeof fetch>()
+    .mockResolvedValue(jsonResponse({ effects: [] }, { status }));
+  vi.stubGlobal("fetch", fetchMock);
+
+  return fetchMock;
+}
+
 export function renderBoard(props: Record<string, unknown>, id = "b1"): RenderResult {
   const node = fakeNode({
     id,
-    props: { columns: [], endpoint: null, perColumn: 25, ref: null, result: null, ...props },
+    props: {
+      columns: [],
+      endpoint: null,
+      moveAction: null,
+      perColumn: 25,
+      ref: null,
+      result: null,
+      ...props,
+    },
     schema: cardTemplate,
     type: "board",
   });

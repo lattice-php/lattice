@@ -6,4 +6,6 @@ return [
     'empty-column' => 'No cards',
     'card-count' => ':count cards',
     'search-placeholder' => 'Search cards',
+    'moved' => 'Card moved',
+    'move-failed' => 'Could not move card',
 ];

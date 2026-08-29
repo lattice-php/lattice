@@ -1,16 +1,44 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { apiJson, LATTICE_EVENT, useWindowEvent } from "@lattice-php/core";
+import { runAction } from "@lattice-php/action";
+import { apiFetch, apiJson, LATTICE_EVENT, useWindowEvent } from "@lattice-php/core";
 import type { ReloadComponentEvent } from "@lattice-php/core";
-import type { BoardColumnData, BoardResult } from "./generated";
+import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
+import type { Board as BoardWireProps, BoardColumnData, BoardResult } from "./generated";
 import {
   appendColumn,
   cardsFor,
   createBoardState,
+  optimisticMove,
   replaceAll,
   setColumnLoading,
   type BoardCard,
+  type BoardMoveRequest,
   type BoardStoreState,
 } from "./board-store";
+
+async function runBoardMoveAction(
+  action: NonNullable<BoardWireProps["moveAction"]>,
+  payload: BoardMoveRequest,
+  dispatch: ReturnType<typeof useEffectDispatcher>,
+): Promise<boolean> {
+  const endpoint = action.props.endpoint;
+
+  if (!endpoint) {
+    return true;
+  }
+
+  return runAction(
+    () =>
+      apiFetch(endpoint, {
+        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json" },
+        method: action.props.method ?? "post",
+        ref: action.props.ref ?? "",
+        throwOnError: false,
+      }),
+    dispatch,
+  );
+}
 
 function createStore(initial: BoardStoreState) {
   let state = initial;
@@ -40,9 +68,12 @@ export type BoardColumnView = {
 };
 
 export type UseBoardStateResult = {
+  canMove: boolean;
   columnKeys: string[];
   columnsView: Map<string, BoardColumnView>;
   loadMore: (columnKey: string) => void;
+  move: (request: BoardMoveRequest) => Promise<boolean>;
+  moving: boolean;
 };
 
 export function useBoardState({
@@ -50,6 +81,7 @@ export function useBoardState({
   componentRef,
   endpoint,
   identity,
+  moveAction,
   perColumn,
   result,
 }: {
@@ -57,6 +89,7 @@ export function useBoardState({
   componentRef: string | null;
   endpoint: string | null;
   identity: string | undefined;
+  moveAction: BoardWireProps["moveAction"];
   perColumn: number;
   result: BoardResult | null;
 }): UseBoardStateResult {
@@ -68,6 +101,7 @@ export function useBoardState({
   const state = useSyncExternalStore(store.subscribe, store.getState);
   const inFlightRef = useRef<Set<string>>(new Set());
   const wireRef = useRef({ columns, result });
+  const dispatch = useEffectDispatcher();
 
   useEffect(() => {
     if (wireRef.current.columns === columns && wireRef.current.result === result) {
@@ -162,6 +196,35 @@ export function useBoardState({
       .catch(() => {});
   }, [canLoad, componentRef, endpoint, store]);
 
+  const move = useCallback(
+    async (request: BoardMoveRequest): Promise<boolean> => {
+      if (!moveAction || store.getState().moving) {
+        return false;
+      }
+
+      const previous = store.getState();
+      const next = optimisticMove(previous, request);
+
+      if (!next) {
+        return false;
+      }
+
+      const generation = previous.generation;
+      store.setState(() => ({ ...next, moving: true }));
+
+      const accepted = await runBoardMoveAction(moveAction, request, dispatch);
+
+      if (!accepted && store.getState().generation === generation) {
+        store.setState(() => ({ ...previous, moving: false }));
+      } else {
+        store.setState((current) => ({ ...current, moving: false }));
+      }
+
+      return accepted;
+    },
+    [dispatch, moveAction, store],
+  );
+
   useWindowEvent(LATTICE_EVENT.reloadComponent, (event) => {
     const detail = (event as ReloadComponentEvent).detail;
 
@@ -189,5 +252,12 @@ export function useBoardState({
     return map;
   }, [columnKeys, state]);
 
-  return { columnKeys, columnsView, loadMore };
+  return {
+    canMove: Boolean(moveAction),
+    columnKeys,
+    columnsView,
+    loadMore,
+    move,
+    moving: state.moving,
+  };
 }

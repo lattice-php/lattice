@@ -46,6 +46,7 @@ function C(e) {
 		cards: /* @__PURE__ */ new Map(),
 		generation: 0,
 		meta: t,
+		moving: !1,
 		order: n
 	};
 }
@@ -68,6 +69,7 @@ function w(e, t) {
 		cards: n,
 		generation: e.generation + 1,
 		meta: i,
+		moving: !1,
 		order: r
 	};
 }
@@ -107,10 +109,50 @@ function E(e, t, n) {
 function D(e, t) {
 	return (e.order.get(t) ?? []).map((t) => e.cards.get(t)).filter((e) => e !== void 0);
 }
-var O = m((() => {}));
+function O(e, t) {
+	if (!e.cards.has(t.cardId) || !e.order.has(t.columnKey)) return null;
+	let n = null;
+	for (let [r, i] of e.order) if (i.includes(t.cardId)) {
+		n = r;
+		break;
+	}
+	if (n === null) return null;
+	let r = n === t.columnKey, i = e.order.get(n) ?? [], a = i.indexOf(t.cardId), o = i.filter((e) => e !== t.cardId), s = r ? o : [...e.order.get(t.columnKey) ?? []], c = Math.max(0, Math.min(t.position, s.length));
+	if (r && a === c) return null;
+	s.splice(c, 0, t.cardId);
+	let l = new Map(e.order);
+	l.set(n, o), l.set(t.columnKey, s);
+	let u = new Map(e.meta);
+	if (!r) {
+		let e = u.get(n), r = u.get(t.columnKey);
+		e && u.set(n, {
+			...e,
+			total: Math.max(0, e.total - 1)
+		}), r && u.set(t.columnKey, {
+			...r,
+			total: r.total + 1
+		});
+	}
+	return {
+		...e,
+		meta: u,
+		order: l
+	};
+}
+var k = m((() => {}));
 //#endregion
 //#region resources/js/use-board-state.ts
-function k(e) {
+async function A(e, t, n) {
+	let r = e.props.endpoint;
+	return !r || (0, v.runAction)(() => (0, v.apiFetch)(r, {
+		body: JSON.stringify(t),
+		headers: { "Content-Type": "application/json" },
+		method: e.props.method ?? "post",
+		ref: e.props.ref ?? "",
+		throwOnError: !1
+	}), n);
+}
+function j(e) {
 	let t = e, n = /* @__PURE__ */ new Set();
 	return {
 		getState: () => t,
@@ -122,104 +164,219 @@ function k(e) {
 		})
 	};
 }
-function A({ columns: e, componentRef: r, endpoint: c, identity: l, perColumn: u, result: d }) {
-	let [f] = o(() => {
+function M({ columns: e, componentRef: r, endpoint: c, identity: l, moveAction: u, perColumn: d, result: f }) {
+	let [p] = o(() => {
 		let t = C(e);
-		return k(d ? w(t, d) : t);
-	}), p = s(f.subscribe, f.getState), m = a(/* @__PURE__ */ new Set()), h = a({
+		return j(f ? w(t, f) : t);
+	}), m = s(p.subscribe, p.getState), h = a(/* @__PURE__ */ new Set()), g = a({
 		columns: e,
-		result: d
-	});
+		result: f
+	}), _ = (0, v.useEffectDispatcher)();
 	n(() => {
-		(h.current.columns !== e || h.current.result !== d) && (h.current = {
+		(g.current.columns !== e || g.current.result !== f) && (g.current = {
 			columns: e,
-			result: d
-		}, m.current.clear(), f.setState((t) => {
+			result: f
+		}, h.current.clear(), p.setState((t) => {
 			let n = C(e);
-			return d ? w({
+			return f ? w({
 				...n,
 				generation: t.generation
-			}, d) : {
+			}, f) : {
 				...n,
 				generation: t.generation + 1
 			};
 		}));
 	}, [
 		e,
-		d,
-		f
+		f,
+		p
 	]);
-	let g = c !== null && c !== "", _ = t((e, t) => {
+	let y = c !== null && c !== "", b = t((e, t) => {
 		if (!c) return;
-		let n = f.getState().generation, i = new URLSearchParams({
+		let n = p.getState().generation, i = new URLSearchParams({
 			column: e,
-			limit: String(u),
+			limit: String(d),
 			offset: String(t)
 		});
 		(0, v.apiJson)(`${c}?${i.toString()}`, { ref: r ?? "" }).then((t) => {
-			if (f.getState().generation !== n) return;
+			if (p.getState().generation !== n) return;
 			let r = t.columns.find((t) => t.key === e);
-			f.setState((t) => r ? T(t, r) : E(t, e, !1));
+			p.setState((t) => r ? T(t, r) : E(t, e, !1));
 		}).catch(() => {
-			f.setState((t) => E(t, e, !1));
+			p.setState((t) => E(t, e, !1));
 		}).finally(() => {
-			m.current.delete(e);
+			h.current.delete(e);
 		});
 	}, [
 		r,
 		c,
-		u,
-		f
-	]), y = t((e) => {
-		if (!g || m.current.has(e)) return;
-		let t = f.getState().meta.get(e);
-		!t || !t.hasMore || t.loading || (m.current.add(e), f.setState((t) => E(t, e, !0)), _(e, t.offset));
+		d,
+		p
+	]), x = t((e) => {
+		if (!y || h.current.has(e)) return;
+		let t = p.getState().meta.get(e);
+		!t || !t.hasMore || t.loading || (h.current.add(e), p.setState((t) => E(t, e, !0)), b(e, t.offset));
 	}, [
-		g,
-		_,
-		f
-	]), b = t(() => {
-		if (!g || !c) return;
-		m.current.clear();
-		let e = f.getState().generation;
+		y,
+		b,
+		p
+	]), S = t(() => {
+		if (!y || !c) return;
+		h.current.clear();
+		let e = p.getState().generation;
 		(0, v.apiJson)(c, { ref: r ?? "" }).then((t) => {
-			f.getState().generation === e && f.setState((e) => w(e, t));
+			p.getState().generation === e && p.setState((e) => w(e, t));
 		}).catch(() => {});
 	}, [
-		g,
+		y,
 		r,
 		c,
-		f
+		p
+	]), k = t(async (e) => {
+		if (!u || p.getState().moving) return !1;
+		let t = p.getState(), n = O(t, e);
+		if (!n) return !1;
+		let r = t.generation;
+		p.setState(() => ({
+			...n,
+			moving: !0
+		}));
+		let i = await A(u, e, _);
+		return !i && p.getState().generation === r ? p.setState(() => ({
+			...t,
+			moving: !1
+		})) : p.setState((e) => ({
+			...e,
+			moving: !1
+		})), i;
+	}, [
+		_,
+		u,
+		p
 	]);
 	(0, v.useWindowEvent)(v.LATTICE_EVENT.reloadComponent, (e) => {
 		let t = e.detail;
-		l !== void 0 && t?.component === l && b();
+		l !== void 0 && t?.component === l && S();
 	});
-	let x = i(() => e.map((e) => e.key), [e]);
+	let M = i(() => e.map((e) => e.key), [e]), N = i(() => {
+		let e = /* @__PURE__ */ new Map();
+		for (let t of M) {
+			let n = m.meta.get(t);
+			e.set(t, {
+				cards: D(m, t),
+				hasMore: n?.hasMore ?? !1,
+				loading: n?.loading ?? !1,
+				total: n?.total ?? 0
+			});
+		}
+		return e;
+	}, [M, m]);
 	return {
-		columnKeys: x,
-		columnsView: i(() => {
-			let e = /* @__PURE__ */ new Map();
-			for (let t of x) {
-				let n = p.meta.get(t);
-				e.set(t, {
-					cards: D(p, t),
-					hasMore: n?.hasMore ?? !1,
-					loading: n?.loading ?? !1,
-					total: n?.total ?? 0
-				});
-			}
-			return e;
-		}, [x, p]),
-		loadMore: y
+		canMove: !!u,
+		columnKeys: M,
+		columnsView: N,
+		loadMore: x,
+		move: k,
+		moving: m.moving
 	};
 }
-var j = m((() => {
-	b(), O();
+var N = m((() => {
+	b(), k();
+}));
+//#endregion
+//#region resources/js/board-dnd.ts
+function P(e) {
+	return {
+		cardId: e.id,
+		columnKey: e.columnKey,
+		type: B
+	};
+}
+function F(e) {
+	return e.type !== "lattice-board-card" || typeof e.cardId != "string" || typeof e.columnKey != "string" ? null : {
+		columnKey: e.columnKey,
+		id: e.cardId
+	};
+}
+function I(e, t) {
+	return (0, v.attachClosestEdge)({
+		cardId: e.cardId,
+		columnKey: e.columnKey,
+		type: B
+	}, {
+		...t,
+		allowedEdges: ["top", "bottom"]
+	});
+}
+function L(e) {
+	return {
+		columnKey: e,
+		type: V
+	};
+}
+function R(e) {
+	for (let t of e) {
+		let e = t.data;
+		if (e.type === "lattice-board-card" && typeof e.cardId == "string" && typeof e.columnKey == "string") return {
+			cardId: e.cardId,
+			columnKey: e.columnKey,
+			edge: (0, v.extractClosestEdge)(e),
+			type: "card"
+		};
+		if (e.type === "lattice-board-column" && typeof e.columnKey == "string") return {
+			columnKey: e.columnKey,
+			type: "column"
+		};
+	}
+	return null;
+}
+function z(e, t, n) {
+	if (t.type === "column") {
+		let r = n.get(t.columnKey);
+		if (!r) return null;
+		let i = t.columnKey === e.columnKey ? r.length - 1 : r.length;
+		return {
+			cardId: e.id,
+			columnKey: t.columnKey,
+			position: Math.max(0, i)
+		};
+	}
+	if (t.cardId === e.id) return null;
+	let r = t.edge ?? "bottom";
+	if (t.columnKey === e.columnKey) {
+		let i = n.get(e.columnKey);
+		if (!i) return null;
+		let a = i.indexOf(e.id), o = i.indexOf(t.cardId);
+		if (a === -1 || o === -1) return null;
+		let s = (0, v.getReorderDestinationIndex)({
+			axis: "vertical",
+			closestEdgeOfTarget: r,
+			indexOfTarget: o,
+			startIndex: a
+		});
+		return {
+			cardId: e.id,
+			columnKey: t.columnKey,
+			position: s
+		};
+	}
+	let i = n.get(t.columnKey);
+	if (!i) return null;
+	let a = i.indexOf(t.cardId);
+	if (a === -1) return null;
+	let o = r === "bottom" ? a + 1 : a;
+	return {
+		cardId: e.id,
+		columnKey: t.columnKey,
+		position: o
+	};
+}
+var B, V, H = m((() => {
+	b(), B = "lattice-board-card", V = "lattice-board-column";
 }));
 //#endregion
 //#region resources/js/board-keyboard.ts
-function M(e, t, n, r, i) {
+function ee(e, t, n, r, i) {
 	let a = t.get(n) ?? [], o = a.indexOf(r);
 	if (i === "next" || i === "prev") {
 		if (o === -1) return null;
@@ -241,7 +398,7 @@ function M(e, t, n, r, i) {
 	}
 	return null;
 }
-function N() {
+function te() {
 	let e = a(/* @__PURE__ */ new Map()), n = t((t, n) => {
 		n ? e.current.set(t, n) : e.current.delete(t);
 	}, []);
@@ -252,143 +409,244 @@ function N() {
 		registerCard: n
 	};
 }
-var P, F = m((() => {
-	P = {
+var U, W = m((() => {
+	U = {
 		ArrowDown: "next",
 		ArrowLeft: "left",
 		ArrowRight: "right",
 		ArrowUp: "prev"
 	};
-})), I, L = m((() => {
-	b(), F(), I = e(function({ card: e, "data-test": n, onFocus: r, onMoveFocus: i, schema: a, tabIndex: o }, s) {
-		let l = t((e) => {
-			let t = P[e.key];
-			t && (e.preventDefault(), i(t));
-		}, [i]);
-		return /* @__PURE__ */ c("li", {
-			className: (0, v.cn)("lt-board-card rounded-lt border border-lt-border bg-lt-surface p-3 text-sm text-lt-surface-fg shadow-lt-sm", "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary"),
-			"data-test": n,
-			onFocus: r,
-			onKeyDown: l,
-			ref: s,
+}));
+//#endregion
+//#region resources/js/components/board/board-card.tsx
+function G(e) {
+	return e instanceof Element && e.closest(q) !== null;
+}
+function K(e) {
+	switch (e) {
+		case "top": return "border-t-lt-primary";
+		case "bottom": return "border-b-lt-primary";
+		default: return null;
+	}
+}
+var q, J, Y = m((() => {
+	b(), H(), W(), q = "input, textarea, select, label, [contenteditable]", J = e(function({ canMove: e, card: r, cardId: i, columnKey: s, "data-test": l, moving: u, onFocus: d, onMoveFocus: f, schema: p, tabIndex: m }, h) {
+		let g = a(null), [_, y] = o(!1), [b, x] = o(null), S = t((e) => {
+			g.current = e, typeof h == "function" ? h(e) : h && (h.current = e);
+		}, [h]), C = t((e) => {
+			let t = U[e.key];
+			t && (e.preventDefault(), f(t));
+		}, [f]);
+		return n(() => {
+			let t = g.current;
+			if (!t || !e) return;
+			let n = (e) => {
+				let n = t.ownerDocument.activeElement;
+				(G(e.target) || t.contains(n) && G(n)) && e.preventDefault();
+			};
+			return t.addEventListener("dragstart", n, !0), (0, v.combine)(() => t.removeEventListener("dragstart", n, !0), (0, v.draggable)({
+				canDrag: () => !u,
+				element: t,
+				getInitialData: () => P({
+					columnKey: s,
+					id: i
+				}),
+				onDragStart: () => y(!0),
+				onDrop: () => y(!1),
+				onGenerateDragPreview: ({ nativeSetDragImage: e }) => {
+					(0, v.setCustomNativeDragPreview)({
+						getOffset: (0, v.pointerOutsideOfPreview)({
+							x: "16px",
+							y: "8px"
+						}),
+						nativeSetDragImage: e,
+						render: ({ container: e }) => {
+							let n = t.cloneNode(!0);
+							return n.style.width = `${t.offsetWidth}px`, n.style.opacity = "0.9", e.appendChild(n), () => n.remove();
+						}
+					});
+				}
+			}), (0, v.dropTargetForElements)({
+				canDrop: ({ source: e }) => {
+					let t = F(e.data);
+					return t !== null && t.id !== i;
+				},
+				element: t,
+				getData: ({ element: e, input: t }) => I({
+					cardId: i,
+					columnKey: s
+				}, {
+					element: e,
+					input: t
+				}),
+				onDrag: ({ self: e }) => x((0, v.extractClosestEdge)(e.data)),
+				onDragEnter: ({ self: e }) => x((0, v.extractClosestEdge)(e.data)),
+				onDragLeave: () => x(null),
+				onDrop: () => x(null)
+			}));
+		}, [
+			e,
+			i,
+			s,
+			u
+		]), /* @__PURE__ */ c("li", {
+			className: (0, v.cn)("lt-board-card rounded-lt border border-lt-border bg-lt-surface p-3 text-sm text-lt-surface-fg shadow-lt-sm", "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lt-primary", e && "cursor-grab", _ && "opacity-50", K(b)),
+			"data-drop-instruction": b ?? void 0,
+			"data-test": l,
+			onFocus: d,
+			onKeyDown: C,
+			ref: S,
 			role: "listitem",
-			tabIndex: o,
-			children: /* @__PURE__ */ c(v.Renderer, { nodes: (0, v.materializeSchema)(a, e) })
+			tabIndex: m,
+			children: /* @__PURE__ */ c(v.Renderer, { nodes: (0, v.materializeSchema)(p, r) })
 		});
 	});
 }));
 //#endregion
 //#region resources/js/components/board/board-column.tsx
-function R({ cardSchema: e, column: t, focusedCardId: n, onFocusCard: i, onLoadMore: a, onMoveFocus: o, registerCardRef: s, view: u }) {
-	let { t: d } = (0, v.useT)("board"), f = r(), p = (0, v.toneProps)((0, v.coerceColor)(t.color ?? void 0) ?? (0, v.namedColor)("gray"));
-	return /* @__PURE__ */ l("section", {
+function X({ canMove: e, cardSchema: t, column: i, focusedCardId: s, moving: u, onFocusCard: d, onLoadMore: f, onMoveFocus: p, registerCardRef: m, view: h }) {
+	let { t: g } = (0, v.useT)("board"), _ = r(), y = (0, v.toneProps)((0, v.coerceColor)(i.color ?? void 0) ?? (0, v.namedColor)("gray")), b = a(null), [S, C] = o(!1);
+	return n(() => {
+		let t = b.current;
+		if (!(!t || !e)) return (0, v.combine)((0, v.dropTargetForElements)({
+			canDrop: ({ source: e }) => F(e.data) !== null,
+			element: t,
+			getData: () => L(i.key),
+			onDragEnter: () => C(!0),
+			onDragLeave: () => C(!1),
+			onDrop: () => C(!1)
+		}), (0, v.autoScrollForElements)({ element: t }));
+	}, [e, i.key]), /* @__PURE__ */ l("section", {
 		className: "lt-board-column",
-		"data-test": `board-column-${t.key}`,
+		"data-test": `board-column-${i.key}`,
 		children: [
 			/* @__PURE__ */ l("header", {
 				className: "flex items-center gap-2 pb-2",
 				children: [
-					t.icon ? /* @__PURE__ */ c(v.IconRenderer, {
-						className: (0, v.cn)("size-lt-icon-md shrink-0", p.className),
-						icon: t.icon
+					i.icon ? /* @__PURE__ */ c(v.IconRenderer, {
+						className: (0, v.cn)("size-lt-icon-md shrink-0", y.className),
+						icon: i.icon
 					}) : null,
 					/* @__PURE__ */ c("h3", {
 						className: "min-w-0 flex-1 truncate text-sm font-semibold text-lt-fg",
-						id: f,
-						children: t.label
+						id: _,
+						children: i.label
 					}),
 					/* @__PURE__ */ c(v.Badge, {
-						"aria-label": d("board.card-count", "{{count}} cards", { count: u.total }),
-						className: p.className,
-						style: p.style,
-						children: u.total
+						"aria-label": g("board.card-count", "{{count}} cards", { count: h.total }),
+						className: y.className,
+						style: y.style,
+						children: h.total
 					})
 				]
 			}),
-			/* @__PURE__ */ c("ul", {
-				"aria-labelledby": f,
-				className: "lt-board-column-list",
+			/* @__PURE__ */ l("ul", {
+				"aria-labelledby": _,
+				className: (0, v.cn)("lt-board-column-list", S && "lt-board-column-list-drop-target"),
+				ref: b,
 				role: "list",
-				children: u.cards.map((t) => {
-					let r = x(t);
-					return /* @__PURE__ */ c(I, {
-						card: t,
+				children: [h.cards.map((n) => {
+					let r = x(n);
+					return /* @__PURE__ */ c(J, {
+						canMove: e,
+						card: n,
+						cardId: r,
+						columnKey: i.key,
 						"data-test": `board-card-${r}`,
-						onFocus: () => i(r),
-						onMoveFocus: (e) => o(r, e),
-						ref: (e) => s(r, e),
-						schema: e,
-						tabIndex: n === r ? 0 : -1
+						moving: u,
+						onFocus: () => d(r),
+						onMoveFocus: (e) => p(r, e),
+						ref: (e) => m(r, e),
+						schema: t,
+						tabIndex: s === r ? 0 : -1
 					}, r);
-				})
+				}), h.cards.length === 0 && !h.loading ? /* @__PURE__ */ c("li", {
+					className: "px-1 py-2 text-sm text-lt-muted-fg",
+					children: g("board.empty-column", "No cards")
+				}) : null]
 			}),
-			u.cards.length === 0 && !u.loading ? /* @__PURE__ */ c("p", {
-				className: "px-1 py-2 text-sm text-lt-muted-fg",
-				children: d("board.empty-column", "No cards")
-			}) : null,
-			u.hasMore ? /* @__PURE__ */ c("button", {
+			h.hasMore ? /* @__PURE__ */ c("button", {
 				className: "mt-2 rounded-lt-sm px-2 py-1.5 text-left text-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg",
-				disabled: u.loading,
-				onClick: a,
+				disabled: h.loading,
+				onClick: f,
 				type: "button",
-				children: d("board.load-more", "Load more")
+				children: g("board.load-more", "Load more")
 			}) : null
 		]
 	});
 }
-var z = m((() => {
-	b(), O(), L();
+var Z = m((() => {
+	b(), H(), k(), Y();
 }));
 //#endregion
 //#region resources/js/components/board/board.tsx
-function B(e, t) {
+function Q(e, t) {
 	for (let n of e) {
 		let e = t.get(n)?.cards[0];
 		if (e) return x(e);
 	}
 	return null;
 }
-function V({ columns: e, componentRef: r, "data-test": a, endpoint: s, identity: l, perColumn: u, result: d, schema: f }) {
-	let { columnKeys: p, columnsView: m, loadMore: h } = A({
+function ne({ columns: e, componentRef: r, "data-test": s, endpoint: l, identity: u, moveAction: d, perColumn: f, result: p, schema: m }) {
+	let { canMove: h, columnKeys: g, columnsView: _, loadMore: y, move: b, moving: S } = M({
 		columns: e,
 		componentRef: r,
-		endpoint: s,
-		identity: l,
-		perColumn: u,
-		result: d
-	}), { focusCard: g, registerCard: _ } = N(), [v, y] = o(() => B(p, m)), b = i(() => {
+		endpoint: l,
+		identity: u,
+		moveAction: d,
+		perColumn: f,
+		result: p
+	}), { t: C } = (0, v.useT)("board"), { focusCard: w, registerCard: T } = te(), [E, D] = o(() => Q(g, _)), O = i(() => {
 		let e = /* @__PURE__ */ new Map();
-		for (let t of p) e.set(t, (m.get(t)?.cards ?? []).map((e) => x(e)));
+		for (let t of g) e.set(t, (_.get(t)?.cards ?? []).map((e) => x(e)));
 		return e;
-	}, [p, m]);
-	n(() => {
-		v !== null && [...b.values()].some((e) => e.includes(v)) || y(B(p, m));
+	}, [g, _]), k = a(O);
+	k.current = O, n(() => {
+		if (h) return (0, v.monitorForElements)({
+			canMonitor: ({ source: e }) => F(e.data) !== null,
+			onDrop: ({ location: e, source: t }) => {
+				let n = F(t.data), r = R(e.current.dropTargets);
+				if (!n || !r) return;
+				let i = z(n, r, k.current);
+				i && b(i).then((e) => {
+					(0, v.announce)(e ? C("board.moved", "Card moved") : C("board.move-failed", "Could not move card"));
+				});
+			}
+		});
 	}, [
+		h,
 		b,
-		p,
-		m,
-		v
+		C
+	]), n(() => {
+		E !== null && [...O.values()].some((e) => e.includes(E)) || D(Q(g, _));
+	}, [
+		O,
+		g,
+		_,
+		E
 	]);
-	let S = t((e, t, n) => {
-		let r = M(p, b, e, t, n);
-		r && (y(r.cardId), g(r.cardId));
+	let A = t((e, t, n) => {
+		let r = ee(g, O, e, t, n);
+		r && (D(r.cardId), w(r.cardId));
 	}, [
-		b,
-		p,
-		g
+		O,
+		g,
+		w
 	]);
 	return /* @__PURE__ */ c("div", {
 		className: "lt-board",
-		"data-test": a,
-		children: e.map((e) => /* @__PURE__ */ c(R, {
-			cardSchema: f,
+		"data-test": s,
+		children: e.map((e) => /* @__PURE__ */ c(X, {
+			canMove: h,
+			cardSchema: m,
 			column: e,
-			focusedCardId: v,
-			onFocusCard: y,
-			onLoadMore: () => h(e.key),
-			onMoveFocus: (t, n) => S(e.key, t, n),
-			registerCardRef: _,
-			view: m.get(e.key) ?? {
+			focusedCardId: E,
+			moving: S,
+			onFocusCard: D,
+			onLoadMore: () => y(e.key),
+			onMoveFocus: (t, n) => A(e.key, t, n),
+			registerCardRef: T,
+			view: _.get(e.key) ?? {
 				cards: [],
 				hasMore: !1,
 				loading: !1,
@@ -397,22 +655,23 @@ function V({ columns: e, componentRef: r, "data-test": a, endpoint: s, identity:
 		}, e.key))
 	});
 }
-var H = m((() => {
-	j(), O(), F(), z();
-})), U = /* @__PURE__ */ h({
-	BoardAdapter: () => W,
-	default: () => W
-}), W, G = m((() => {
-	b(), H(), W = ({ node: e }) => {
-		let { columns: t, endpoint: n, perColumn: r, ref: i, result: a } = e.props;
-		return /* @__PURE__ */ c(V, {
+var re = m((() => {
+	b(), N(), H(), k(), W(), Z();
+})), ie = /* @__PURE__ */ h({
+	BoardAdapter: () => $,
+	default: () => $
+}), $, ae = m((() => {
+	b(), re(), $ = ({ node: e }) => {
+		let { columns: t, endpoint: n, moveAction: r, perColumn: i, ref: a, result: o } = e.props;
+		return /* @__PURE__ */ c(ne, {
 			columns: t,
-			componentRef: i,
+			componentRef: a,
 			"data-test": (0, v.nodeIdentity)(e),
 			endpoint: n,
 			identity: (0, v.nodeIdentity)(e),
-			perColumn: r,
-			result: a,
+			moveAction: r,
+			perColumn: i,
+			result: o,
 			schema: e.schema ?? []
 		});
 	};
@@ -420,10 +679,10 @@ var H = m((() => {
 //#endregion
 //#region resources/js/plugin.ts
 b();
-var K = {
+var oe = {
 	name: "lattice/board",
-	components: { board: (0, v.lazyComponent)(() => Promise.resolve().then(() => (G(), U))) },
+	components: { board: (0, v.lazyComponent)(() => Promise.resolve().then(() => (ae(), ie))) },
 	i18n: { namespace: "board" }
 };
 //#endregion
-export { K as default };
+export { oe as default };

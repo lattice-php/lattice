@@ -1,8 +1,9 @@
-import type { Color } from "@lattice-php/core";
+import type { Color, Node } from "@lattice-php/core";
 
 export type Board = {
   columns: BoardColumnData[];
   endpoint: string | null;
+  moveAction: Node<"action"> | Node<"action.bulk"> | null;
   perColumn: number;
   ref: string | null;
   result: BoardResult | null;

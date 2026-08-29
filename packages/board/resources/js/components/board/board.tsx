@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Schema } from "@lattice-php/core";
-import type { BoardColumnData, BoardResult } from "../../generated";
+import { announce, monitorForElements } from "@lattice-php/lattice/dnd";
+import { useT } from "@lattice-php/ui/i18n";
+import type { Board as BoardWireProps, BoardColumnData, BoardResult } from "../../generated";
 import { useBoardState, type BoardColumnView } from "../../use-board-state";
+import { boardDragSource, boardDropTarget, computeBoardDropIntent } from "../../board-dnd";
 import { cardKey } from "../../board-store";
 import {
   focusTargetForDirection,
@@ -16,6 +19,7 @@ export type BoardProps = {
   "data-test"?: string;
   endpoint: string | null;
   identity?: string;
+  moveAction: BoardWireProps["moveAction"];
   perColumn: number;
   result: BoardResult | null;
   schema: Schema;
@@ -42,18 +46,21 @@ export function Board({
   "data-test": testId,
   endpoint,
   identity,
+  moveAction,
   perColumn,
   result,
   schema,
 }: BoardProps) {
-  const { columnKeys, columnsView, loadMore } = useBoardState({
+  const { canMove, columnKeys, columnsView, loadMore, move, moving } = useBoardState({
     columns,
     componentRef,
     endpoint,
     identity,
+    moveAction,
     perColumn,
     result,
   });
+  const { t } = useT("board");
   const { focusCard, registerCard } = useCardFocusRegistry();
   const [focusedCardId, setFocusedCardId] = useState<string | null>(() =>
     firstCardId(columnKeys, columnsView),
@@ -71,6 +78,41 @@ export function Board({
 
     return map;
   }, [columnKeys, columnsView]);
+
+  const orderRef = useRef(cardsByColumn);
+  orderRef.current = cardsByColumn;
+
+  useEffect(() => {
+    if (!canMove) {
+      return;
+    }
+
+    return monitorForElements({
+      canMonitor: ({ source }) => boardDragSource(source.data) !== null,
+      onDrop: ({ location, source }) => {
+        const dragSource = boardDragSource(source.data);
+        const target = boardDropTarget(location.current.dropTargets);
+
+        if (!dragSource || !target) {
+          return;
+        }
+
+        const intent = computeBoardDropIntent(dragSource, target, orderRef.current);
+
+        if (!intent) {
+          return;
+        }
+
+        void move(intent).then((accepted) => {
+          announce(
+            accepted
+              ? t("board.moved", "Card moved")
+              : t("board.move-failed", "Could not move card"),
+          );
+        });
+      },
+    });
+  }, [canMove, move, t]);
 
   useEffect(() => {
     if (
@@ -105,10 +147,12 @@ export function Board({
     <div className="lt-board" data-test={testId}>
       {columns.map((column) => (
         <BoardColumn
+          canMove={canMove}
           cardSchema={schema}
           column={column}
           focusedCardId={focusedCardId}
           key={column.key}
+          moving={moving}
           onFocusCard={setFocusedCardId}
           onLoadMore={() => loadMore(column.key)}
           onMoveFocus={(cardId, direction) => moveFocus(column.key, cardId, direction)}

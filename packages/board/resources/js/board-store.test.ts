@@ -3,6 +3,7 @@ import {
   appendColumn,
   cardsFor,
   createBoardState,
+  optimisticMove,
   replaceAll,
   setColumnLoading,
 } from "./board-store";
@@ -108,5 +109,54 @@ describe("setColumnLoading", () => {
 
     expect(loading.meta.get("todo")?.loading).toBe(true);
     expect(loading.meta.get("done")?.loading).toBe(false);
+  });
+});
+
+describe("optimisticMove", () => {
+  const loaded = replaceAll(
+    createBoardState(columns),
+    boardResult([
+      boardColumnCards("todo", [boardCard(1, "Write spec"), boardCard(2, "Review PR")], {
+        total: 2,
+      }),
+      boardColumnCards("done", [boardCard(3, "Ship release")], { total: 1 }),
+    ]),
+  );
+
+  it("reorders a card within its own column, leaving totals untouched", () => {
+    const moved = optimisticMove(loaded, { cardId: "2", columnKey: "todo", position: 0 });
+
+    expect(moved).not.toBeNull();
+    expect(cardsFor(moved!, "todo").map((card) => card.id)).toEqual([2, 1]);
+    expect(moved!.meta.get("todo")?.total).toBe(2);
+  });
+
+  it("moves a card across columns and adjusts both columns' totals", () => {
+    const moved = optimisticMove(loaded, { cardId: "1", columnKey: "done", position: 0 });
+
+    expect(moved).not.toBeNull();
+    expect(cardsFor(moved!, "todo").map((card) => card.id)).toEqual([2]);
+    expect(cardsFor(moved!, "done").map((card) => card.id)).toEqual([1, 3]);
+    expect(moved!.meta.get("todo")?.total).toBe(1);
+    expect(moved!.meta.get("done")?.total).toBe(2);
+  });
+
+  it("returns null for a drop back at the card's own position", () => {
+    expect(optimisticMove(loaded, { cardId: "1", columnKey: "todo", position: 0 })).toBeNull();
+  });
+
+  it("returns null for an unknown card", () => {
+    expect(optimisticMove(loaded, { cardId: "ghost", columnKey: "todo", position: 0 })).toBeNull();
+  });
+
+  it("returns null for an unknown destination column", () => {
+    expect(optimisticMove(loaded, { cardId: "1", columnKey: "archived", position: 0 })).toBeNull();
+  });
+
+  it("marks moving cards as still present after the move", () => {
+    const moved = optimisticMove(loaded, { cardId: "3", columnKey: "todo", position: 1 });
+
+    expect(cardsFor(moved!, "done")).toEqual([]);
+    expect(cardsFor(moved!, "todo").map((card) => card.id)).toEqual([1, 3, 2]);
   });
 });

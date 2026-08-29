@@ -13,8 +13,11 @@ export type BoardStoreState = {
   cards: Map<string, BoardCard>;
   generation: number;
   meta: Map<string, BoardColumnMeta>;
+  moving: boolean;
   order: Map<string, string[]>;
 };
+
+export type BoardMoveRequest = { cardId: string; columnKey: string; position: number };
 
 export function cardKey(card: BoardCard): string {
   const id = card.id;
@@ -35,7 +38,7 @@ export function createBoardState(columns: BoardColumnData[]): BoardStoreState {
     order.set(column.key, []);
   }
 
-  return { cards: new Map(), generation: 0, meta, order };
+  return { cards: new Map(), generation: 0, meta, moving: false, order };
 }
 
 /**
@@ -73,7 +76,7 @@ export function replaceAll(state: BoardStoreState, result: BoardResult): BoardSt
     });
   }
 
-  return { cards, generation: state.generation + 1, meta, order };
+  return { cards, generation: state.generation + 1, meta, moving: false, order };
 }
 
 /**
@@ -144,4 +147,67 @@ export function cardsFor(state: BoardStoreState, columnKey: string): BoardCard[]
   return ids
     .map((id) => state.cards.get(id))
     .filter((card): card is BoardCard => card !== undefined);
+}
+
+/**
+ * The optimistic mirror of the server's `BoardMovePlanner`: moves a card
+ * within or across columns and adjusts both columns' totals, without waiting
+ * for the move action's response. Returns null for a no-op move (unknown
+ * card, unknown destination column, or a drop back at the card's own
+ * position) so callers can skip the request entirely.
+ */
+export function optimisticMove(
+  state: BoardStoreState,
+  move: BoardMoveRequest,
+): BoardStoreState | null {
+  if (!state.cards.has(move.cardId) || !state.order.has(move.columnKey)) {
+    return null;
+  }
+
+  let sourceColumnKey: string | null = null;
+
+  for (const [columnKey, ids] of state.order) {
+    if (ids.includes(move.cardId)) {
+      sourceColumnKey = columnKey;
+      break;
+    }
+  }
+
+  if (sourceColumnKey === null) {
+    return null;
+  }
+
+  const sameColumn = sourceColumnKey === move.columnKey;
+  const sourceIds = state.order.get(sourceColumnKey) ?? [];
+  const sourceIndex = sourceIds.indexOf(move.cardId);
+  const withoutCard = sourceIds.filter((id) => id !== move.cardId);
+  const destinationIds = sameColumn ? withoutCard : [...(state.order.get(move.columnKey) ?? [])];
+  const position = Math.max(0, Math.min(move.position, destinationIds.length));
+
+  if (sameColumn && sourceIndex === position) {
+    return null;
+  }
+
+  destinationIds.splice(position, 0, move.cardId);
+
+  const order = new Map(state.order);
+  order.set(sourceColumnKey, withoutCard);
+  order.set(move.columnKey, destinationIds);
+
+  const meta = new Map(state.meta);
+
+  if (!sameColumn) {
+    const sourceMeta = meta.get(sourceColumnKey);
+    const destinationMeta = meta.get(move.columnKey);
+
+    if (sourceMeta) {
+      meta.set(sourceColumnKey, { ...sourceMeta, total: Math.max(0, sourceMeta.total - 1) });
+    }
+
+    if (destinationMeta) {
+      meta.set(move.columnKey, { ...destinationMeta, total: destinationMeta.total + 1 });
+    }
+  }
+
+  return { ...state, meta, order };
 }

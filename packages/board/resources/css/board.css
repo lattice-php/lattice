@@ -16,15 +16,21 @@
 }
 
 /*
- * `min-height: 0` lets the list shrink inside a column whose height is
- * constrained by an ancestor (the page layout, a fixed-height card), at
- * which point it scrolls independently of the column header and the
- * load-more control below it.
+ * The small `min-height` floor keeps an empty column a real drop target —
+ * with no cards it would otherwise collapse to 0px — while still letting the
+ * list shrink inside a column whose height is constrained by an ancestor
+ * (the page layout, a fixed-height card), at which point it scrolls
+ * independently of the column header and the load-more control below it.
  */
 .lt-board-column-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  min-height: 0;
+  min-height: 2.5rem;
   overflow-y: auto;
+}
+
+.lt-board-column-list-drop-target {
+  background-color: var(--lt-muted);
+  border-radius: var(--lt-radius-sm);
 }
