@@ -1,11 +1,7 @@
-import { Board as BoardWireProps } from "../../generated";
+import { Board as BoardWireProps } from '../../generated';
 export type QuickAddProps = {
-  columnKey: string;
-  createAction: NonNullable<BoardWireProps["createAction"]>;
-  onCreated: () => void;
+    columnKey: string;
+    createAction: NonNullable<BoardWireProps["createAction"]>;
+    onCreated: () => void;
 };
-export declare function QuickAdd({
-  columnKey,
-  createAction,
-  onCreated,
-}: QuickAddProps): import("react").JSX.Element;
+export declare function QuickAdd({ columnKey, createAction, onCreated }: QuickAddProps): import("react").JSX.Element;
