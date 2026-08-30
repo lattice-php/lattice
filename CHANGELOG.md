@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.67.0](https://github.com/lattice-php/lattice/compare/0.66.0...0.67.0) (2026-08-30)
+
+
+### Features
+
+* board package (kanban) ([#550](https://github.com/lattice-php/lattice/issues/550)) ([a60ed1c](https://github.com/lattice-php/lattice/commit/a60ed1c8b109d200c1bbeb4a8987a7e97a416e66))
+* **form:** slash-command block menu with add-block plus button ([#552](https://github.com/lattice-php/lattice/issues/552)) ([17153a8](https://github.com/lattice-php/lattice/commit/17153a8bb4178224a5d4bbc4b45ed35cfe290610))
+* **map:** draw routes and ship a built-in Google Maps provider ([#549](https://github.com/lattice-php/lattice/issues/549)) ([ea24861](https://github.com/lattice-php/lattice/commit/ea2486163c2d67334783e521a753b19cf54dc3ef))
+* sync table and board query state to the page URL ([#553](https://github.com/lattice-php/lattice/issues/553)) ([6f7c558](https://github.com/lattice-php/lattice/commit/6f7c5581db7a2ba2f57e37c7f07c48f0d78f05bb))
+
 ## [0.66.0](https://github.com/lattice-php/lattice/compare/0.65.0...0.66.0) (2026-08-28)
 
 
