@@ -102,3 +102,45 @@ it('omits option data when none is configured', function (): void {
 
     expect(EloquentOptions::make(Product::class)->label('name')->search('gamma')[0]->data)->toBeNull();
 });
+
+it('collapses duplicate rows to one option per distinct value once value() is set explicitly', function (): void {
+    Product::factory()->create(['name' => 'Alpha Chair', 'status' => 'active']);
+    Product::factory()->create(['name' => 'Beta Table', 'status' => 'active']);
+    Product::factory()->create(['name' => 'Gamma Shelf', 'status' => 'archived']);
+
+    $source = EloquentOptions::make(Product::class)->label('status')->value('status');
+
+    expect($source->search(''))->toHaveCount(2)
+        ->and(array_map(fn (Option $o): string => $o->value, $source->search('')))->toEqualCanonicalizing(['active', 'archived']);
+
+    $selected = $source->selected(['active']);
+    expect($selected)->toHaveCount(1)
+        ->and($selected[0]->value)->toBe('active');
+});
+
+it('still returns one option per row when value() is never called (primary-key fallback)', function (): void {
+    Product::factory()->create(['name' => 'Chair', 'status' => 'active']);
+    Product::factory()->create(['name' => 'Chair', 'status' => 'active']);
+
+    $options = EloquentOptions::make(Product::class)->label('name')->search('chair');
+
+    expect($options)->toHaveCount(2)
+        ->and(array_unique(array_map(fn (Option $o): string => $o->value, $options)))->toHaveCount(2);
+});
+
+it('still returns one option per row when data() is configured alongside an explicit value()', function (): void {
+    Product::factory()->create(['name' => 'Alpha Chair', 'sku' => 'SKU-1', 'status' => 'active']);
+    Product::factory()->create(['name' => 'Beta Table', 'sku' => 'SKU-2', 'status' => 'active']);
+
+    $options = EloquentOptions::make(Product::class)
+        ->label('status')
+        ->value('status')
+        ->data(['sku'])
+        ->search('');
+
+    expect($options)->toHaveCount(2)
+        ->and(array_map(fn (Option $o): ?array => $o->data, $options))->toEqualCanonicalizing([
+            ['sku' => 'SKU-1'],
+            ['sku' => 'SKU-2'],
+        ]);
+});

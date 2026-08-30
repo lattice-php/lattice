@@ -69,6 +69,15 @@ it('serializes the declared filters and searchable flag on the board wire', func
         ->and($board['props']['filters'][0]['type'])->toBe('filter.select');
 });
 
+it('deduplicates the eagerly-resolved filter options, even though multiple tasks share an assignee', function (): void {
+    seedTaskBoard();
+    $board = $this->sealBoard(fn (): Board => Board::use(TaskBoard::class));
+
+    $options = array_column($board['props']['filters'][0]['props']['options'], 'label');
+
+    expect($options)->toEqualCanonicalizing(['Anna', 'Ben']);
+});
+
 it('resolves searchable select filter options through the board sub-request seam', function (): void {
     seedTaskBoard();
     $board = $this->sealBoard(fn (): Board => Board::use(TaskBoard::class));
@@ -81,7 +90,7 @@ it('resolves searchable select filter options through the board sub-request seam
     $response->assertOk();
     $options = array_column($response->json('options'), 'label');
 
-    expect($options)->toContain('Anna')->not->toContain('Ben');
+    expect($options)->toBe(['Anna'])->not->toContain('Ben');
 });
 
 it('404s a filter-option search for an unknown filter key', function (): void {
