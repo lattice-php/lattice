@@ -814,12 +814,7 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 	}
 	r(() => {
 		let n = H.current;
-		if (!n || !g || q) return;
-		let r = (e) => {
-			let t = n.ownerDocument.activeElement;
-			(fe(e.target) || n.contains(t) && fe(t)) && e.preventDefault();
-		};
-		return n.addEventListener("dragstart", r, !0), (0, y.combine)(() => n.removeEventListener("dragstart", r, !0), (0, y.draggable)({
+		if (!(!n || !g || q)) return (0, y.combine)((0, y.cancelDragStartFromInteractive)(n, fe), (0, y.draggable)({
 			canDrag: () => !A,
 			element: n,
 			getInitialData: () => M(he, {

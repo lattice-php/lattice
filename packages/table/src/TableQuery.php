@@ -16,7 +16,7 @@ use Lattice\Table\Contracts\Sortable;
 use Lattice\Table\Enums\PaginationType;
 use Lattice\Table\Filters\Filter;
 use Lattice\Table\Filters\FilterIndicator;
-use Lattice\Table\Filters\FilterValueValidator;
+use Lattice\Table\Filters\TableFilterParser;
 use stdClass;
 
 #[TypeScript]
@@ -58,7 +58,7 @@ final readonly class TableQuery implements JsonSerializable
         self::validateFilters($clauses, $index, $table);
         self::validateSorts($sorts, $index, $table);
 
-        [$tableFilters, $tableFilterIndicators] = self::parseTableFilters($request->input('tf'), $filters, $table, $request);
+        [$tableFilters, $tableFilterIndicators] = TableFilterParser::parse($request->input('tf'), $filters, $table, $request);
 
         return new self(
             $clauses,
@@ -124,42 +124,6 @@ final readonly class TableQuery implements JsonSerializable
             'search' => $this->search,
             'mode' => $this->mode,
         ];
-    }
-
-    /**
-     * Parse and validate the `tf` request param against the table's declared
-     * filters, keeping only values that satisfy the filter schema.
-     *
-     * @param  array<int, Filter>  $filters
-     * @return array{0: array<string, array<string, mixed>>, 1: list<FilterIndicator>}
-     */
-    private static function parseTableFilters(mixed $tableFilters, array $filters, string $table, Request $request): array
-    {
-        if (! is_array($tableFilters) || $tableFilters === []) {
-            return [[], []];
-        }
-
-        $index = collect($filters)->keyBy(fn (Filter $filter): string => $filter->key());
-        $parsed = [];
-        $indicators = [];
-        $validator = app(FilterValueValidator::class);
-
-        foreach ($tableFilters as $key => $value) {
-            $filter = $index->get($key);
-
-            if (! $filter instanceof Filter) {
-                throw InvalidTableQuery::filter((string) $key, $table);
-            }
-
-            $data = $validator->validate($filter, $value, $request);
-
-            if ($data !== null) {
-                $parsed[$key] = $data->all();
-                array_push($indicators, ...$filter->indicators($data));
-            }
-        }
-
-        return [$parsed, $indicators];
     }
 
     /**

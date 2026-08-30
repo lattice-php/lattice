@@ -16,6 +16,8 @@
       "@lattice-php/action/*": ["./packages/action/resources/js/*"],
       "@lattice-php/api-reference": ["./packages/api-reference/resources/js/plugin.ts"],
       "@lattice-php/api-reference/*": ["./packages/api-reference/resources/js/*"],
+      "@lattice-php/board": ["./packages/board/resources/js/index.ts"],
+      "@lattice-php/board/*": ["./packages/board/resources/js/*"],
       "@lattice-php/tree": ["./packages/tree/resources/js/index.ts"],
       "@lattice-php/tree/*": ["./packages/tree/resources/js/*"],
       "@lattice-php/chat": ["./packages/chat/resources/js/index.ts"],

@@ -4,6 +4,7 @@ import { prefixedTestId } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { IconRenderer } from "@lattice-php/ui/icons";
 import { actionMenuItemClassName, useActionMenu } from "@lattice-php/ui/action-menu-context";
+import { useActionNodeOptions } from "@lattice-php/ui/click-behavior";
 import { useAction } from "@lattice-php/action/hooks/use-action";
 import { actionLabel } from "@lattice-php/action/lib/action-label";
 
@@ -13,7 +14,8 @@ export const ActionComponent: RendererComponent<"action"> = ({ node }) => {
   const label = actionLabel(node);
   const isMenuItem = useActionMenu();
   const { variant, emphasis } = node.props;
-  const { processing, requestSubmit } = useAction(node);
+  const nodeOptions = useActionNodeOptions(node);
+  const { processing, requestSubmit } = useAction(node, nodeOptions);
   const testId = node.key ?? prefixedTestId("action", node.id);
 
   return (

@@ -34,11 +34,13 @@ final class SchemaTypeScriptEmitter
      * type` from this module instead — `emitPackageModule()`'s counterpart to
      * `PRELUDE_DEFS`. `Node`/`Schema`/`CommonNodeProps` are `@lattice-php/core`'s
      * hand-written `types.ts`; `ColumnNode`/`FilterNode` are table's own
-     * `./types.ts` (relative — only ever referenced from table's own
-     * document); `Effect` is ui's own hand-written, augmentable
-     * `effects/types.ts` (relative import paths resolve identically as a
-     * self-reference, so the bare module specifier below is safe even when
-     * ui's own document is what's referencing it).
+     * hand-written `types.ts`, and `Effect` is ui's own hand-written,
+     * augmentable `effects/types.ts` — all three use their package's npm
+     * alias rather than a relative path, since a package's own document also
+     * goes through this map (self-reference resolves identically through the
+     * alias) and another package's document may reference the same marker
+     * (e.g. a board `filters: Filter[]` property needs `FilterNode` from
+     * table, not a `./types` relative to board's own generated.ts).
      *
      * @var array<string, string>
      */
@@ -46,8 +48,8 @@ final class SchemaTypeScriptEmitter
         'Node' => '@lattice-php/core',
         'Schema' => '@lattice-php/core',
         'CommonNodeProps' => '@lattice-php/core',
-        'ColumnNode' => './types',
-        'FilterNode' => './types',
+        'ColumnNode' => '@lattice-php/table/types',
+        'FilterNode' => '@lattice-php/table/types',
         'Effect' => '@lattice-php/ui/effects/types',
     ];
 

@@ -51,6 +51,7 @@ it('publishes standalone modules from discovered component packages', function (
         ->and(File::exists(public_path('vendor/lattice/plugins/lattice-php/signature-example.js')))->toBeTrue()
         ->and($manifest['plugins'])->toBe([
             'plugins/lattice-php/api-reference.js',
+            'plugins/lattice-php/board.js',
             'plugins/lattice-php/calendar.js',
             'plugins/lattice-php/chat.js',
             'plugins/lattice-php/map.js',

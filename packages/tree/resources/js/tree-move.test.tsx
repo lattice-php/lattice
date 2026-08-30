@@ -11,6 +11,7 @@ import { moveAction, renderTree, treeNode } from "./test-support";
 vi.mock("@lattice-php/lattice/dnd", () => ({
   announce: vi.fn(),
   attachTreeItemInstruction: (data: Record<string, unknown>) => data,
+  cancelDragStartFromInteractive: () => () => {},
   combine:
     (...cleanups: Array<() => void>) =>
     () =>

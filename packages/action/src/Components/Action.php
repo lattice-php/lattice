@@ -42,6 +42,8 @@ class Action extends Component implements InteractiveComponent
 
     public ?ModalWidth $modalWidth = null;
 
+    public ?bool $removesRecord = null;
+
     public static function make(string $id): static
     {
         return (new static)->id($id);
@@ -116,6 +118,18 @@ class Action extends Component implements InteractiveComponent
     public function modalWidth(ModalWidth $width): static
     {
         $this->modalWidth = $width;
+
+        return $this;
+    }
+
+    /**
+     * A client hint: when this action succeeds, the record/row/card it was
+     * rendered for is gone. Drives optimistic client-side removal (e.g. a
+     * board card) instead of waiting for a reload.
+     */
+    public function removesRecord(bool $removesRecord = true): static
+    {
+        $this->removesRecord = $removesRecord;
 
         return $this;
     }

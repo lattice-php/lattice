@@ -20,6 +20,8 @@ export type TriggerState = { onClick: () => void; processing: boolean };
 export type ActionSubmitOptions = {
   /** Evaluated fresh at submit time, e.g. a bulk action's current selection. */
   extraData?: () => Record<string, unknown>;
+  onBefore?: () => void;
+  onError?: () => void;
   onSuccess?: () => void;
 };
 
@@ -65,6 +67,30 @@ export function ActionTrigger({
   }
 
   return <>{render({ action, children, options })}</>;
+}
+
+export type ActionNodeOptionsResolver = (node: Node) => ActionSubmitOptions | undefined;
+
+const ActionNodeOptionsContext = createContext<ActionNodeOptionsResolver | null>(null);
+
+export function ActionNodeOptionsProvider({
+  children,
+  resolve,
+}: {
+  children: ReactNode;
+  resolve: ActionNodeOptionsResolver;
+}) {
+  return (
+    <ActionNodeOptionsContext.Provider value={resolve}>
+      {children}
+    </ActionNodeOptionsContext.Provider>
+  );
+}
+
+export function useActionNodeOptions(node: Node): ActionSubmitOptions | undefined {
+  const resolve = useContext(ActionNodeOptionsContext);
+
+  return resolve?.(node);
 }
 
 export function useClickBehavior(props: {

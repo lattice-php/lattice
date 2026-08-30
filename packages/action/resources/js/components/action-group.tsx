@@ -1,15 +1,8 @@
-import { Icon } from "@lattice-php/ui/icons";
-import { Button } from "@lattice-php/ui/components/button/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@lattice-php/ui/primitives/dropdown-menu";
 import { nodeIdentity } from "@lattice-php/core/test-id";
 import type { RendererComponent } from "@lattice-php/core/types";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
-import { ActionMenuProvider } from "@lattice-php/ui/action-menu-context";
+import { ActionsDropdown } from "./actions-dropdown";
 
 export const ActionGroupComponent: RendererComponent<"action.group"> = ({ children, node }) => {
   const { t } = useT("lattice");
@@ -33,30 +26,8 @@ export const ActionGroupComponent: RendererComponent<"action.group"> = ({ childr
   }
 
   return (
-    <div className="inline-flex">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            aria-label={label}
-            className="size-lt-control-sm text-lt-muted-fg shadow-none hover:text-lt-fg"
-            data-test={nodeIdentity(node)}
-            size="icon"
-            type="button"
-            emphasis="ghost"
-          >
-            <Icon name="more-horizontal" aria-hidden="true" className="size-lt-icon-md" />
-          </Button>
-        </DropdownMenuTrigger>
-
-        <DropdownMenuContent
-          align="end"
-          aria-label={label}
-          className="min-w-44 gap-0.5 p-1.5"
-          sideOffset={8}
-        >
-          <ActionMenuProvider>{children}</ActionMenuProvider>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <ActionsDropdown data-test={nodeIdentity(node)} label={label}>
+      {children}
+    </ActionsDropdown>
   );
 };

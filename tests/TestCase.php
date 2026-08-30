@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
+use Lattice\Board\BoardServiceProvider;
+use Lattice\Board\Components\Board;
 use Lattice\Calendar\CalendarServiceProvider;
 use Lattice\Calendar\Components\Calendar;
 use Lattice\Chat\ChatServiceProvider;
@@ -76,6 +78,15 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * @param  \Closure(): Board  $build
+     * @return array<string, mixed>
+     */
+    public function sealBoard(\Closure $build): array
+    {
+        return $this->sealLatticeComponent($build);
+    }
+
+    /**
      * @param  \Closure(): Calendar  $build
      * @return array<string, mixed>
      */
@@ -90,6 +101,7 @@ abstract class TestCase extends BaseTestCase
         return [
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
+            BoardServiceProvider::class,
             CalendarServiceProvider::class,
             ChatServiceProvider::class,
             MapServiceProvider::class,

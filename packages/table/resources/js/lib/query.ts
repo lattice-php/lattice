@@ -1,3 +1,5 @@
+import { apiFetch } from "@lattice-php/core/api";
+import type { Option } from "@lattice-php/core";
 import { translate } from "@lattice-php/ui/i18n";
 import { DEFAULT_COLUMN_WIDTH } from "@lattice-php/ui/lib/column-sizing";
 import type { ColumnWidth } from "@lattice-php/ui/types";
@@ -35,7 +37,7 @@ export function buildEndpoint(endpoint: string, query: TableQuery): string {
   return `${url.pathname}${url.search}`;
 }
 
-function appendTableFilters(url: URL, tableFilters: Record<string, unknown>): void {
+export function appendTableFilters(url: URL, tableFilters: Record<string, unknown>): void {
   for (const [key, value] of Object.entries(getTableFilterParams(tableFilters))) {
     appendTableFilterParam(url, `tf[${key}]`, value);
   }
@@ -111,6 +113,41 @@ function appendTableFilterParam(url: URL, key: string, value: unknown): void {
   }
 
   url.searchParams.append(key, String(value));
+}
+
+/**
+ * The `_sub=search` sub-request every searchable select/filter/board field
+ * uses to look up options against a component's own endpoint.
+ */
+export async function fetchFilterOptions(
+  endpoint: string | null,
+  componentRef: string,
+  searchKey: string,
+  query: string,
+  signal?: AbortSignal,
+): Promise<Option[]> {
+  if (!endpoint) {
+    return [];
+  }
+
+  const url = new URL(endpoint, window.location.origin);
+  url.searchParams.set("_sub", "search");
+  url.searchParams.set("_target", searchKey);
+  url.searchParams.set("_q", query);
+
+  const response = await apiFetch(`${url.pathname}${url.search}`, {
+    ref: componentRef,
+    signal,
+    throwOnError: false,
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const body = (await response.json()) as { options?: Option[] };
+
+  return body.options ?? [];
 }
 
 export function getQueryParams(query: TableQuery): Record<string, unknown> {

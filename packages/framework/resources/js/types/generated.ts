@@ -3,6 +3,7 @@ import type { Size, Translatable, Variant } from "@lattice-php/ui";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
+export type BoardNodeType = "board";
 export type CalendarNodeType = "calendar";
 export type ChannelVisibility = "public" | "private" | "presence";
 export type ChatNodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
@@ -115,6 +116,7 @@ export type NodeType =
   | "api-reference"
   | "avatar"
   | "badge"
+  | "board"
   | "breadcrumbs"
   | "button"
   | "calendar"

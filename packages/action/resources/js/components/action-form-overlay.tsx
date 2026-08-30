@@ -6,10 +6,14 @@ import { confirmationLabels } from "@lattice-php/action/lib/confirmation";
 export function ActionFormOverlay({
   node,
   extraData,
+  onBefore,
+  onError,
   onSuccess,
 }: {
   node: Node<"action" | "action.bulk">;
   extraData?: Record<string, unknown>;
+  onBefore?: () => void;
+  onError?: () => void;
   onSuccess?: () => void;
 }) {
   const context = useEmbeddedModal();
@@ -37,7 +41,9 @@ export function ActionFormOverlay({
       extraData={extraData}
       formNode={formNode}
       method={method}
+      onBefore={onBefore}
       onClose={() => context.onOpenChange(false)}
+      onError={onError}
       onSuccess={() => {
         context.onOpenChange(false);
         onSuccess?.();

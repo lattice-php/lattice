@@ -30,6 +30,8 @@ final class EloquentOptions implements OptionSource
 
     private ?string $resolvedValueKey = null;
 
+    private bool $valueExplicit = false;
+
     /**
      * @param  class-string<Model>  $model
      */
@@ -70,6 +72,7 @@ final class EloquentOptions implements OptionSource
     {
         $this->valueKey = $column;
         $this->resolvedValueKey = null;
+        $this->valueExplicit = true;
 
         return $this;
     }
@@ -151,7 +154,25 @@ final class EloquentOptions implements OptionSource
             }
         }
 
+        if ($this->shouldNarrow()) {
+            $builder->select(array_values(array_unique([$this->labelKey, $this->valueColumn()])))->distinct();
+        }
+
         return $builder;
+    }
+
+    /**
+     * Narrow the select to just the label/value columns and dedupe with
+     * `distinct()` when the value column was explicitly chosen: mapping every
+     * row to an Option would otherwise yield one option per row instead of
+     * per distinct value (e.g. a `->value('assignee')` filter over a tasks
+     * table). Left at today's full-row behavior when the value falls back to
+     * the model key (every row's key is already unique) or a `data()`
+     * accessor needs the full row.
+     */
+    private function shouldNarrow(): bool
+    {
+        return $this->valueExplicit && $this->data === null;
     }
 
     /**

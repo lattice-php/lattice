@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Lattice\Core\Enums\Op;
-use Lattice\Form\FormData;
 use Lattice\Table\Columns\Column;
 use Lattice\Table\Contracts\Filterable;
 use Lattice\Table\Contracts\Searchable;
@@ -19,6 +18,7 @@ use Lattice\Table\Enums\FilterType;
 use Lattice\Table\Enums\PaginationType;
 use Lattice\Table\FilterApplier;
 use Lattice\Table\Filters\Filter;
+use Lattice\Table\Filters\TableFilterApplier;
 use Lattice\Table\RelationBinding;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableResult;
@@ -132,15 +132,7 @@ final readonly class EloquentTableSource implements TableSource
             $this->filterApplier->apply($operator, $builder, $column->filterType(), $clause->field, $clause->value);
         }
 
-        $filters = collect($this->filters)->keyBy(fn (Filter $filter): string => $filter->key());
-
-        foreach ($query->tableFilters as $key => $value) {
-            $filter = $filters->get($key);
-
-            if ($filter instanceof Filter) {
-                $filter->apply($builder, FormData::make((array) $value));
-            }
-        }
+        TableFilterApplier::apply($query->tableFilters, $this->filters, $builder);
 
         $this->applySearch($builder, $query, $relations);
 

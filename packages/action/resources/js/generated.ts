@@ -14,6 +14,7 @@ export type Action = {
   modalSide: Side | null;
   modalWidth: ModalWidth | null;
   ref: string | null;
+  removesRecord: boolean | null;
   variant: Variant | null;
 };
 export type ActionGroup = {
@@ -38,6 +39,7 @@ export type BulkAction = {
   modalSide: Side | null;
   modalWidth: ModalWidth | null;
   ref: string | null;
+  removesRecord: boolean | null;
   variant: Variant | null;
 };
 export type ComponentPropsMap = {

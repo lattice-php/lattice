@@ -1,0 +1,55 @@
+@source "../js";
+
+.lt-board-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.lt-board-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.lt-board {
+  display: flex;
+  gap: 1rem;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.lt-board-column {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 18rem;
+  min-height: 0;
+  min-width: 0;
+}
+
+/*
+ * The small `min-height` floor keeps an empty column a real drop target —
+ * with no cards it would otherwise collapse to 0px — while still letting the
+ * list shrink inside a column whose height is constrained by an ancestor
+ * (the page layout, a fixed-height card), at which point it scrolls
+ * independently of the column header and the load-more control below it.
+ */
+.lt-board-column-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  overflow-y: auto;
+}
+
+.lt-board-column-list-drop-target {
+  background-color: var(--lt-muted);
+  border-radius: var(--lt-radius-sm);
+}
+
+.lt-board-card-actions {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+}

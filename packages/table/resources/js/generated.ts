@@ -1,5 +1,5 @@
-import type { ColumnNode, FilterNode } from "./types";
 import type { Color, Node, Op, Option } from "@lattice-php/core";
+import type { ColumnNode, FilterNode } from "@lattice-php/table/types";
 import type { ColumnWidth, DateTimeStyle, NumberFormatUnit } from "@lattice-php/ui";
 
 export type BadgeColumn = {

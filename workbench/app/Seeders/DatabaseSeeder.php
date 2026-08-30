@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Lattice\Media\Models\Media;
 use Orchestra\Testbench\Factories\UserFactory;
 use Workbench\App\Factories\GroupFactory;
+use Workbench\App\Factories\TaskFactory;
 use Workbench\App\Models\Category;
 use Workbench\App\Models\Group;
 use Workbench\App\Models\Product;
@@ -80,6 +81,36 @@ class DatabaseSeeder extends Seeder
             ->forBusinessPartner($customer)
             ->withLines($products)
             ->create();
+
+        $tasksByStatus = [
+            'todo' => [
+                ['Draft the Q4 roadmap', 'Ada'],
+                ['Fix login redirect loop', 'Grace'],
+                ['Refresh the pricing page', null],
+                ['Design empty states', 'Ada'],
+                ['Audit npm dependencies', null],
+            ],
+            'doing' => [
+                ['Migrate billing webhooks', 'Linus'],
+                ['Write board package docs', 'Grace'],
+                ['Stabilise browser suite', 'Ada'],
+            ],
+            'done' => [
+                ['Ship dark mode', 'Linus'],
+                ['Rotate API keys', 'Grace'],
+                ['Upgrade to Pest 5', 'Ada'],
+                ['Consolidate lang files', null],
+            ],
+        ];
+
+        foreach ($tasksByStatus as $status => $tasks) {
+            foreach ($tasks as $position => [$title, $assignee]) {
+                TaskFactory::new()->status($status)->position($position)->create([
+                    'title' => $title,
+                    'assignee' => $assignee,
+                ]);
+            }
+        }
 
         $mediaProduct = Product::factory()->create(['name' => __('workbench.pages.product-media.product')]);
         $images = Media::factory()->count(6)->create();

@@ -1,0 +1,23 @@
+import { Schema } from "@lattice-php/core";
+import { BoardFocusDirection } from "../../board-keyboard";
+import { BoardCard } from "../../board-store";
+import { Board as BoardWireProps } from "../../generated";
+import { BoardCardRemoval } from "../../use-board-state";
+export type BoardCardItemProps = {
+  canMove: boolean;
+  card: BoardCard;
+  cardAction: BoardWireProps["cardAction"];
+  cardId: string;
+  columnKey: string;
+  "data-test"?: string;
+  moving: boolean;
+  onFocus: () => void;
+  onMoveFocus: (direction: BoardFocusDirection) => void;
+  removeCard: (cardId: string) => BoardCardRemoval | null;
+  restoreCard: (removal: BoardCardRemoval | null) => void;
+  schema: Schema;
+  tabIndex: -1 | 0;
+};
+export declare const BoardCardItem: import("react").ForwardRefExoticComponent<
+  BoardCardItemProps & import("react").RefAttributes<HTMLLIElement>
+>;
