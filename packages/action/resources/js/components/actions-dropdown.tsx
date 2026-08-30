@@ -24,12 +24,13 @@ export function ActionsDropdown({
   sideOffset = 8,
 }: ActionsDropdownProps) {
   return (
-    <div className={className ?? "inline-flex"} data-test={testId}>
+    <div className={className ?? "inline-flex"}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             aria-label={label}
             className="size-lt-control-sm text-lt-muted-fg shadow-none hover:text-lt-fg"
+            data-test={testId}
             size="icon"
             type="button"
             emphasis="ghost"
