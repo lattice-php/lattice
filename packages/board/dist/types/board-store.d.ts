@@ -66,6 +66,29 @@ export declare function locateCard(
   state: BoardStoreState,
   cardId: string,
 ): BoardCardLocation | null;
+export type BoardCardSnapshot = {
+  card: BoardCard;
+  cardId: string;
+  columnKey: string;
+  index: number;
+};
+/**
+ * Drops a card from its column, adjusting that column's offset/total to
+ * match — the optimistic mirror of the server-side delete the card's action
+ * is expected to perform. A no-op (returns `state` unchanged) for an unknown
+ * card id.
+ */
+export declare function removeCard(state: BoardStoreState, cardId: string): BoardStoreState;
+/**
+ * Re-inserts a card previously dropped by `removeCard`, at its recorded
+ * column and index, restoring that column's offset/total — the rollback for
+ * a failed optimistic delete. A no-op for an unknown column or a card id
+ * that is already present (the snapshot is stale).
+ */
+export declare function restoreCard(
+  state: BoardStoreState,
+  snapshot: BoardCardSnapshot,
+): BoardStoreState;
 /**
  * The optimistic mirror of the server's `BoardMovePlanner`: moves a card
  * within or across columns and adjusts both columns' totals and offsets,

@@ -2,6 +2,7 @@ import { Schema } from "@lattice-php/core";
 import { BoardFocusDirection } from "../../board-keyboard";
 import { BoardCard } from "../../board-store";
 import { Board as BoardWireProps } from "../../generated";
+import { BoardCardRemoval } from "../../use-board-state";
 export type BoardCardItemProps = {
   canMove: boolean;
   card: BoardCard;
@@ -12,6 +13,8 @@ export type BoardCardItemProps = {
   moving: boolean;
   onFocus: () => void;
   onMoveFocus: (direction: BoardFocusDirection) => void;
+  removeCard: (cardId: string) => BoardCardRemoval | null;
+  restoreCard: (removal: BoardCardRemoval | null) => void;
   schema: Schema;
   tabIndex: -1 | 0;
 };

@@ -13,10 +13,14 @@ import { confirmationLabels } from "@lattice-php/action/lib/confirmation";
 export function ActionConfirmOverlay({
   node,
   extraData,
+  onBefore,
+  onError,
   onSuccess,
 }: {
   node: Node<"action" | "action.bulk">;
   extraData?: Record<string, unknown>;
+  onBefore?: () => void;
+  onError?: () => void;
   onSuccess?: () => void;
 }) {
   const context = useEmbeddedModal();
@@ -46,6 +50,7 @@ export function ActionConfirmOverlay({
       return;
     }
 
+    onBefore?.();
     setProcessing(true);
 
     const ok = await runAction(
@@ -64,6 +69,8 @@ export function ActionConfirmOverlay({
     if (ok) {
       context.onOpenChange(false);
       onSuccess?.();
+    } else {
+      onError?.();
     }
   };
 

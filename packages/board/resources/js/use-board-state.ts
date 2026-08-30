@@ -17,10 +17,13 @@ import {
   createBoardState,
   locateCard,
   optimisticMove,
+  removeCard as removeCardState,
   replaceAll,
   replaceColumn,
+  restoreCard as restoreCardState,
   setColumnLoading,
   type BoardCard,
+  type BoardCardSnapshot,
   type BoardMoveRequest,
   type BoardStoreState,
 } from "./board-store";
@@ -52,6 +55,8 @@ export type BoardColumnView = {
   total: number;
 };
 
+export type BoardCardRemoval = BoardCardSnapshot & { generation: number };
+
 export type UseBoardStateResult = {
   canMove: boolean;
   columnKeys: string[];
@@ -60,8 +65,10 @@ export type UseBoardStateResult = {
   loadMore: (columnKey: string) => void;
   move: (request: BoardMoveRequest) => Promise<boolean>;
   moving: boolean;
+  removeCard: (cardId: string) => BoardCardRemoval | null;
   resetColumn: (columnKey: string) => void;
   resetFilters: () => void;
+  restoreCard: (removal: BoardCardRemoval | null) => void;
   search: string;
   searchFilterOptions: (
     searchKey: string,
@@ -333,6 +340,42 @@ export function useBoardState({
     [dispatch, moveAction, store],
   );
 
+  const removeCard = useCallback(
+    (cardId: string): BoardCardRemoval | null => {
+      const current = store.getState();
+      const location = locateCard(current, cardId);
+      const card = current.cards.get(cardId);
+
+      if (!location || !card) {
+        return null;
+      }
+
+      const removal: BoardCardRemoval = {
+        card,
+        cardId,
+        columnKey: location.columnKey,
+        generation: current.generation,
+        index: location.index,
+      };
+
+      store.setState((state) => removeCardState(state, cardId));
+
+      return removal;
+    },
+    [store],
+  );
+
+  const restoreCard = useCallback(
+    (removal: BoardCardRemoval | null) => {
+      if (!removal || store.getState().generation !== removal.generation) {
+        return;
+      }
+
+      store.setState((state) => restoreCardState(state, removal));
+    },
+    [store],
+  );
+
   useWindowEvent(LATTICE_EVENT.reloadComponent, (event) => {
     const detail = (event as ReloadComponentEvent).detail;
 
@@ -368,8 +411,10 @@ export function useBoardState({
     loadMore,
     move,
     moving: state.moving,
+    removeCard,
     resetColumn,
     resetFilters,
+    restoreCard,
     search: query.q,
     searchFilterOptions,
     setSearch,

@@ -76,6 +76,29 @@ it('narrows the board to matching cards via the toolbar search', function (): vo
         ->assertNoJavaScriptErrors();
 });
 
+it('optimistically removes a card via the context menu delete action', function (): void {
+    seedTaskBoard();
+    $writeSpec = Task::query()->where('title', 'Write spec')->firstOrFail();
+
+    $page = $this->visitAsWorkbenchUser('/board')
+        ->assertSee('Write spec');
+
+    assertPresentEventually($page, "[data-test=\"board-card-{$writeSpec->id}\"]");
+
+    $page->click("[data-test=\"board-card-{$writeSpec->id}-actions\"] button")
+        ->click('@action-delete-task')
+        ->assertSee('Delete task')
+        ->click('@confirm-accept');
+
+    assertDontSeeEventually($page, 'Write spec');
+
+    retryUntil(function () use ($writeSpec): void {
+        expect(Task::query()->whereKey($writeSpec->id)->exists())->toBeFalse();
+    });
+
+    $page->assertNoJavaScriptErrors();
+});
+
 it('quick-adds a card to a column and persists it', function (): void {
     seedTaskBoard();
 

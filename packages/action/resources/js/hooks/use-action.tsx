@@ -56,6 +56,7 @@ export function useAction(
       return;
     }
 
+    options?.onBefore?.();
     setProcessing(true);
 
     const ok = await runAction(
@@ -73,6 +74,8 @@ export function useAction(
 
     if (ok) {
       options?.onSuccess?.();
+    } else {
+      options?.onError?.();
     }
   };
 
@@ -86,6 +89,8 @@ export function useAction(
         <ActionFormOverlay
           node={node}
           extraData={options?.extraData?.()}
+          onBefore={options?.onBefore}
+          onError={options?.onError}
           onSuccess={options?.onSuccess}
         />,
       );
@@ -102,6 +107,8 @@ export function useAction(
         <ActionConfirmOverlay
           node={node}
           extraData={options?.extraData?.()}
+          onBefore={options?.onBefore}
+          onError={options?.onError}
           onSuccess={options?.onSuccess}
         />,
       );

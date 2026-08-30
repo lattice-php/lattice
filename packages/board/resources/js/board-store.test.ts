@@ -6,8 +6,10 @@ import {
   getCardActions,
   getCardUrl,
   optimisticMove,
+  removeCard,
   replaceAll,
   replaceColumn,
+  restoreCard,
   setColumnLoading,
 } from "./board-store";
 import { boardCard, boardColumnCards, boardResult } from "./test-support";
@@ -176,6 +178,102 @@ describe("optimisticMove", () => {
 
     expect(cardsFor(moved!, "done")).toEqual([]);
     expect(cardsFor(moved!, "todo").map((card) => card.id)).toEqual([1, 3, 2]);
+  });
+});
+
+describe("removeCard", () => {
+  const loaded = replaceAll(
+    createBoardState(columns),
+    boardResult([
+      boardColumnCards("todo", [boardCard(1, "Write spec"), boardCard(2, "Review PR")], {
+        total: 2,
+      }),
+      boardColumnCards("done", [boardCard(3, "Ship release")], { total: 1 }),
+    ]),
+  );
+
+  it("drops the card and decrements the column's offset and total", () => {
+    const next = removeCard(loaded, "1");
+
+    expect(cardsFor(next, "todo").map((card) => card.id)).toEqual([2]);
+    expect(next.meta.get("todo")).toEqual({ hasMore: false, loading: false, offset: 1, total: 1 });
+  });
+
+  it("leaves the other column untouched", () => {
+    const next = removeCard(loaded, "1");
+
+    expect(cardsFor(next, "done").map((card) => card.id)).toEqual([3]);
+    expect(next.meta.get("done")).toEqual(loaded.meta.get("done"));
+  });
+
+  it("is a no-op for an unknown card id", () => {
+    const next = removeCard(loaded, "ghost");
+
+    expect(next).toBe(loaded);
+  });
+});
+
+describe("restoreCard", () => {
+  const loaded = replaceAll(
+    createBoardState(columns),
+    boardResult([
+      boardColumnCards("todo", [boardCard(1, "Write spec"), boardCard(2, "Review PR")], {
+        total: 2,
+      }),
+      boardColumnCards("done", [boardCard(3, "Ship release")], { total: 1 }),
+    ]),
+  );
+
+  it("re-inserts the card at its recorded index and increments offset and total", () => {
+    const removed = removeCard(loaded, "1");
+    const restored = restoreCard(removed, {
+      card: boardCard(1, "Write spec"),
+      cardId: "1",
+      columnKey: "todo",
+      index: 0,
+    });
+
+    expect(cardsFor(restored, "todo").map((card) => card.id)).toEqual([1, 2]);
+    expect(restored.meta.get("todo")).toEqual({
+      hasMore: false,
+      loading: false,
+      offset: 2,
+      total: 2,
+    });
+  });
+
+  it("restores the card at a later index too", () => {
+    const removed = removeCard(loaded, "1");
+    const restored = restoreCard(removed, {
+      card: boardCard(1, "Write spec"),
+      cardId: "1",
+      columnKey: "todo",
+      index: 1,
+    });
+
+    expect(cardsFor(restored, "todo").map((card) => card.id)).toEqual([2, 1]);
+  });
+
+  it("is a no-op when the target column no longer exists", () => {
+    const restored = restoreCard(loaded, {
+      card: boardCard(9, "Ghost"),
+      cardId: "9",
+      columnKey: "archived",
+      index: 0,
+    });
+
+    expect(restored).toBe(loaded);
+  });
+
+  it("is a no-op when the card id is already present", () => {
+    const restored = restoreCard(loaded, {
+      card: boardCard(1, "Write spec"),
+      cardId: "1",
+      columnKey: "todo",
+      index: 0,
+    });
+
+    expect(restored).toBe(loaded);
   });
 });
 

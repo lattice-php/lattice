@@ -8,7 +8,7 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import { autoScrollForElements, combine, dropTargetForElements } from "@lattice-php/lattice/dnd";
 import { boardColumnDropTargetData, boardDragSource } from "../../board-dnd";
 import type { BoardFocusDirection } from "../../board-keyboard";
-import type { BoardColumnView } from "../../use-board-state";
+import type { BoardCardRemoval, BoardColumnView } from "../../use-board-state";
 import type { Board as BoardWireProps, BoardColumnData } from "../../generated";
 import { cardKey } from "../../board-store";
 import { BoardCardItem } from "./board-card";
@@ -27,6 +27,8 @@ export type BoardColumnProps = {
   onMoveFocus: (cardId: string, direction: BoardFocusDirection) => void;
   onResetColumn: () => void;
   registerCardRef: (cardId: string, element: HTMLLIElement | null) => void;
+  removeCard: (cardId: string) => BoardCardRemoval | null;
+  restoreCard: (removal: BoardCardRemoval | null) => void;
   view: BoardColumnView;
 };
 
@@ -43,6 +45,8 @@ export function BoardColumn({
   onMoveFocus,
   onResetColumn,
   registerCardRef,
+  removeCard,
+  restoreCard,
   view,
 }: BoardColumnProps) {
   const { t } = useT("board");
@@ -113,6 +117,8 @@ export function BoardColumn({
               onFocus={() => onFocusCard(id)}
               onMoveFocus={(direction) => onMoveFocus(id, direction)}
               ref={(element) => registerCardRef(id, element)}
+              removeCard={removeCard}
+              restoreCard={restoreCard}
               schema={cardSchema}
               tabIndex={focusedCardId === id ? 0 : -1}
             />

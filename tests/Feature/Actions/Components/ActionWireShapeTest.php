@@ -91,9 +91,16 @@ it('serializes null defaults for the form, the modal presentation and the group 
         'form' => null,
         'modalSide' => null,
         'modalWidth' => null,
+        'removesRecord' => null,
     ])
         ->and(wire(ActionGroup::make('row-actions')->actions([Action::make('a')->label('A')]))['props']['label'])
         ->toBeNull();
+});
+
+it('serializes the removesRecord client hint when set', function (): void {
+    $action = Action::make('delete')->removesRecord();
+
+    expect(wire($action)['props']['removesRecord'])->toBeTrue();
 });
 
 it('serializes the full confirmation shape', function (): void {

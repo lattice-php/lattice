@@ -69,8 +69,10 @@ export function Board({
     loadMore,
     move,
     moving,
+    removeCard,
     resetColumn,
     resetFilters,
+    restoreCard,
     search,
     searchFilterOptions,
     setSearch,
@@ -197,6 +199,8 @@ export function Board({
             onMoveFocus={(cardId, direction) => moveFocus(column.key, cardId, direction)}
             onResetColumn={() => resetColumn(column.key)}
             registerCardRef={registerCard}
+            removeCard={removeCard}
+            restoreCard={restoreCard}
             view={
               columnsView.get(column.key) ?? { cards: [], hasMore: false, loading: false, total: 0 }
             }

@@ -19,6 +19,7 @@ import { boardCardDragData, boardCardDropTargetData, boardDragSource } from "../
 import { BOARD_FOCUS_KEYS, type BoardFocusDirection } from "../../board-keyboard";
 import { getCardActions, getCardUrl, type BoardCard } from "../../board-store";
 import type { Board as BoardWireProps } from "../../generated";
+import type { BoardCardRemoval } from "../../use-board-state";
 import { BoardCardActions } from "./board-card-actions";
 
 const CARD_INTERACTIVE_SELECTOR =
@@ -49,6 +50,8 @@ export type BoardCardItemProps = {
   moving: boolean;
   onFocus: () => void;
   onMoveFocus: (direction: BoardFocusDirection) => void;
+  removeCard: (cardId: string) => BoardCardRemoval | null;
+  restoreCard: (removal: BoardCardRemoval | null) => void;
   schema: Schema;
   tabIndex: -1 | 0;
 };
@@ -64,6 +67,8 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
     moving,
     onFocus,
     onMoveFocus,
+    removeCard,
+    restoreCard,
     schema,
     tabIndex,
   },
@@ -221,7 +226,14 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
       tabIndex={tabIndex}
     >
       {actions.length > 0 ? (
-        <BoardCardActions actions={actions} data-test={testId ? `${testId}-actions` : undefined} />
+        <BoardCardActions
+          actions={actions}
+          cardId={cardId}
+          columnKey={columnKey}
+          data-test={testId ? `${testId}-actions` : undefined}
+          removeCard={removeCard}
+          restoreCard={restoreCard}
+        />
       ) : null}
       <Renderer nodes={materializeSchema(schema, card)} />
     </li>

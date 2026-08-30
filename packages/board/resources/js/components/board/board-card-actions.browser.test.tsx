@@ -3,6 +3,7 @@ import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import BoardAdapter from "./board-adapter";
 import {
+  archiveAction,
   boardCard,
   boardColumn,
   boardColumnCards,
@@ -78,5 +79,71 @@ describe("Board card actions in a browser", () => {
 
     await expect.poll(() => fetchMock.mock.calls.length).toBeGreaterThan(0);
     expect(fetchMock.mock.calls[0]?.[0]).toBe("/lattice/actions/delete-task-1");
+  });
+
+  it("removes the card from the board immediately, before the delete response resolves", async () => {
+    let resolveFetch: (response: Response) => void = () => {};
+    const fetchMock = vi.fn<typeof fetch>(
+      () =>
+        new Promise<Response>((resolve) => {
+          resolveFetch = resolve;
+        }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const screen = await renderBoard({
+      columns: [boardColumn("todo", "To Do")],
+      result: boardResult([
+        boardColumnCards("todo", [boardCard(1, "Write spec", { actions: [deleteAction(1)] })]),
+      ]),
+    });
+
+    await screen.getByRole("button", { name: "Card actions" }).click();
+    await screen.getByRole("button", { name: "Delete" }).click();
+
+    await expect.element(screen.getByText("Write spec")).not.toBeInTheDocument();
+
+    resolveFetch(jsonResponse({ effects: [] }, { status: 200 }));
+    await expect.poll(() => fetchMock.mock.calls.length).toBeGreaterThan(0);
+    await expect.element(screen.getByText("Write spec")).not.toBeInTheDocument();
+  });
+
+  it("restores the card when the delete action's response fails", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ effects: [] }, { status: 422 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const screen = await renderBoard({
+      columns: [boardColumn("todo", "To Do")],
+      result: boardResult([
+        boardColumnCards("todo", [boardCard(1, "Write spec", { actions: [deleteAction(1)] })]),
+      ]),
+    });
+
+    await screen.getByRole("button", { name: "Card actions" }).click();
+    await screen.getByRole("button", { name: "Delete" }).click();
+
+    await expect.element(screen.getByText("Write spec")).toBeVisible();
+  });
+
+  it("leaves the board untouched when an action without removesRecord is clicked", async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ effects: [] }, { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const screen = await renderBoard({
+      columns: [boardColumn("todo", "To Do")],
+      result: boardResult([
+        boardColumnCards("todo", [boardCard(1, "Write spec", { actions: [archiveAction(1)] })]),
+      ]),
+    });
+
+    await screen.getByRole("button", { name: "Card actions" }).click();
+    await screen.getByRole("button", { name: "Archive" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBeGreaterThan(0);
+    await expect.element(screen.getByText("Write spec")).toBeVisible();
   });
 });

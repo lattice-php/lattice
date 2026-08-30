@@ -95,6 +95,21 @@ export function deleteAction(cardId: string | number, label = "Delete"): Node {
       label,
       method: "delete",
       ref: `delete-ref-${cardId}`,
+      removesRecord: true,
+    },
+    type: "action",
+  });
+}
+
+/** An action without the `removesRecord` hint — optimistic removal must not fire for it. */
+export function archiveAction(cardId: string | number, label = "Archive"): Node {
+  return fakeNode({
+    id: `archive-${cardId}`,
+    props: {
+      endpoint: `/lattice/actions/archive-task-${cardId}`,
+      label,
+      method: "post",
+      ref: `archive-ref-${cardId}`,
     },
     type: "action",
   });

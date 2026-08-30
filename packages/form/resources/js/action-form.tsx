@@ -41,7 +41,9 @@ type ActionFormProps = {
   /** The form to render; null while a lazy schema is still being fetched. */
   formNode: Node | null;
   method: string;
+  onBefore?: () => void;
   onClose: () => void;
+  onError?: () => void;
   /** Called by the host stack once the dialog's exit animation finishes. */
   onExited?: (event: Event) => void;
   onSuccess: (response: ActionResponse) => void;
@@ -110,7 +112,9 @@ function ActionFormBody({
   fieldLabels,
   formNode,
   method,
+  onBefore,
   onClose,
+  onError,
   onSuccess,
   precognitive,
   submitLabel,
@@ -217,6 +221,7 @@ function ActionFormBody({
 
   const submit = useCallback(() => {
     setProcessing(true);
+    onBefore?.();
 
     void request()
       .then(async (response) => {
@@ -228,19 +233,25 @@ function ActionFormBody({
 
         if (response.status === 422 && body.errors) {
           setErrors(firstErrors(body.errors));
+          onError?.();
 
           return;
         }
 
         if (!response.ok) {
+          onError?.();
+
           return;
         }
 
         onSuccess(body);
       })
-      .catch((error: unknown) => dispatchActionError(error))
+      .catch((error: unknown) => {
+        dispatchActionError(error);
+        onError?.();
+      })
       .finally(() => setProcessing(false));
-  }, [dispatch, onSuccess, request]);
+  }, [dispatch, onBefore, onError, onSuccess, request]);
 
   const context = useMemo(
     () => ({

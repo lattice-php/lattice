@@ -82,7 +82,7 @@ final class TaskBoard extends EloquentBoardDefinition
     public function cardActions(array $card): array
     {
         return [
-            Action::use(DeleteTaskAction::class, ['card_id' => $card['id']]),
+            Action::use(DeleteTaskAction::class, ['card_id' => $card['id']])->removesRecord(),
         ];
     }
 }

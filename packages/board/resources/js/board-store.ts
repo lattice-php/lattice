@@ -211,6 +211,87 @@ export function locateCard(state: BoardStoreState, cardId: string): BoardCardLoc
   return null;
 }
 
+export type BoardCardSnapshot = {
+  card: BoardCard;
+  cardId: string;
+  columnKey: string;
+  index: number;
+};
+
+/**
+ * Drops a card from its column, adjusting that column's offset/total to
+ * match — the optimistic mirror of the server-side delete the card's action
+ * is expected to perform. A no-op (returns `state` unchanged) for an unknown
+ * card id.
+ */
+export function removeCard(state: BoardStoreState, cardId: string): BoardStoreState {
+  const location = locateCard(state, cardId);
+
+  if (location === null) {
+    return state;
+  }
+
+  const { columnKey } = location;
+  const ids = state.order.get(columnKey) ?? [];
+  const order = new Map(state.order);
+  order.set(
+    columnKey,
+    ids.filter((id) => id !== cardId),
+  );
+
+  const cards = new Map(state.cards);
+  cards.delete(cardId);
+
+  const meta = new Map(state.meta);
+  const current = meta.get(columnKey);
+
+  if (current) {
+    meta.set(columnKey, {
+      ...current,
+      offset: Math.max(0, current.offset - 1),
+      total: Math.max(0, current.total - 1),
+    });
+  }
+
+  return { ...state, cards, meta, order };
+}
+
+/**
+ * Re-inserts a card previously dropped by `removeCard`, at its recorded
+ * column and index, restoring that column's offset/total — the rollback for
+ * a failed optimistic delete. A no-op for an unknown column or a card id
+ * that is already present (the snapshot is stale).
+ */
+export function restoreCard(state: BoardStoreState, snapshot: BoardCardSnapshot): BoardStoreState {
+  if (!state.order.has(snapshot.columnKey) || state.cards.has(snapshot.cardId)) {
+    return state;
+  }
+
+  const cards = new Map(state.cards);
+  cards.set(snapshot.cardId, snapshot.card);
+
+  const ids = state.order.get(snapshot.columnKey) ?? [];
+  const nextIds = [...ids];
+  const position = Math.max(0, Math.min(snapshot.index, nextIds.length));
+  nextIds.splice(position, 0, snapshot.cardId);
+
+  const order = new Map(state.order);
+  order.set(snapshot.columnKey, nextIds);
+
+  const meta = new Map(state.meta);
+  const current = meta.get(snapshot.columnKey);
+
+  if (current) {
+    meta.set(snapshot.columnKey, {
+      ...current,
+      offset: current.offset + 1,
+      total: current.total + 1,
+    });
+  }
+
+  return { ...state, cards, meta, order };
+}
+
 /**
  * The optimistic mirror of the server's `BoardMovePlanner`: moves a card
  * within or across columns and adjusts both columns' totals and offsets,

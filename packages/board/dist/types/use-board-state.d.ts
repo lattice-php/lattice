@@ -1,12 +1,15 @@
 import { Option } from "@lattice-php/core";
 import { FilterIndicator } from "@lattice-php/table";
 import { Board as BoardWireProps, BoardColumnData, BoardResult } from "./generated";
-import { BoardCard, BoardMoveRequest } from "./board-store";
+import { BoardCard, BoardCardSnapshot, BoardMoveRequest } from "./board-store";
 export type BoardColumnView = {
   cards: BoardCard[];
   hasMore: boolean;
   loading: boolean;
   total: number;
+};
+export type BoardCardRemoval = BoardCardSnapshot & {
+  generation: number;
 };
 export type UseBoardStateResult = {
   canMove: boolean;
@@ -16,8 +19,10 @@ export type UseBoardStateResult = {
   loadMore: (columnKey: string) => void;
   move: (request: BoardMoveRequest) => Promise<boolean>;
   moving: boolean;
+  removeCard: (cardId: string) => BoardCardRemoval | null;
   resetColumn: (columnKey: string) => void;
   resetFilters: () => void;
+  restoreCard: (removal: BoardCardRemoval | null) => void;
   search: string;
   searchFilterOptions: (
     searchKey: string,

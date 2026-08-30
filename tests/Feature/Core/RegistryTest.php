@@ -74,6 +74,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'modalWidth' => null,
                 'variant' => null,
                 'emphasis' => null,
+                'removesRecord' => null,
             ],
         ])
         ->and($fragment)
