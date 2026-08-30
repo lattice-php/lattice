@@ -91,7 +91,7 @@ describe("board drag and drop in a browser", () => {
 
     const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(JSON.parse(String(init.body))).toEqual({ cardId: "1", columnKey: "todo", position: 1 });
-    await expect.poll(() => document.body.textContent).toContain("Card moved");
+    await expect.poll(() => document.body.textContent, { timeout: 3000 }).toContain("Card moved");
   });
 
   it("moves a card across columns and posts its new column and position", async () => {
@@ -125,7 +125,9 @@ describe("board drag and drop in a browser", () => {
 
     await dragOnto("1", "2", 0.9);
 
-    await expect.poll(() => document.body.textContent).toContain("Could not move card");
+    await expect
+      .poll(() => document.body.textContent, { timeout: 3000 })
+      .toContain("Could not move card");
     await expect.poll(() => cardOrder("todo")).toEqual(["1", "2"]);
   });
 

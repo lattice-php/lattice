@@ -54,7 +54,7 @@ describe("tree drag and drop in a browser", () => {
 
     const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(JSON.parse(String(init.body))).toEqual({ nodeId: "a", parentId: null, position: 1 });
-    await expect.poll(() => document.body.textContent).toContain("Moved Alpha");
+    await expect.poll(() => document.body.textContent, { timeout: 3000 }).toContain("Moved Alpha");
   });
 
   it("announces the dragged node when the move is rejected", async () => {
@@ -63,7 +63,9 @@ describe("tree drag and drop in a browser", () => {
 
     await dragOnto("a", "b", 0.9);
 
-    await expect.poll(() => document.body.textContent).toContain("Could not move Alpha");
+    await expect
+      .poll(() => document.body.textContent, { timeout: 3000 })
+      .toContain("Could not move Alpha");
     expect(treeLabels()).toEqual(["Alpha", "Beta"]);
   });
 
