@@ -121,6 +121,7 @@ export const RICH_EDITOR_EXTENSIONS: EditorExtension[] = [
   { type: "table", props: {} },
   { type: "details", props: {} },
   { type: "emoji", props: {} },
+  { type: "slash-menu", props: {} },
 ];
 
 export function priceField(): Node {

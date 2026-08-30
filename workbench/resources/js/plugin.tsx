@@ -23,6 +23,14 @@ export const appPlugin = {
             ),
           },
         ],
+        commands: () => [
+          {
+            icon: "check",
+            key: "stamp",
+            label: "Stamp",
+            run: (editor) => editor.chain().focus().insertContent("Stamped!").run(),
+          },
+        ],
       },
     } satisfies RichEditorExtensionRegistry,
     "table.columns": {

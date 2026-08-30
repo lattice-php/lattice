@@ -15,6 +15,7 @@ use Lattice\Form\RichEditor\Extensions\HorizontalRule;
 use Lattice\Form\RichEditor\Extensions\Italic;
 use Lattice\Form\RichEditor\Extensions\Link;
 use Lattice\Form\RichEditor\Extensions\OrderedList;
+use Lattice\Form\RichEditor\Extensions\SlashMenu;
 use Lattice\Form\RichEditor\Extensions\Strike;
 use Lattice\Form\RichEditor\Extensions\Table;
 use Lattice\Form\RichEditor\Extensions\TextAlign;
@@ -140,6 +141,11 @@ it('rejects an empty emoji list', function (): void {
     Emoji::make()->emojis();
 })->throws(InvalidArgumentException::class);
 
+it('wires the slash menu without props or server types', function (): void {
+    expect(SlashMenu::make()->toWire())->toEqual(['type' => 'slash-menu', 'props' => new stdClass])
+        ->and(SlashMenu::make()->serverTypes())->toBe([]);
+});
+
 it('discovers every built-in extension', function (): void {
     $types = array_keys(EditorExtensionRegistry::withBuiltins()->all());
     sort($types);
@@ -158,6 +164,7 @@ it('discovers every built-in extension', function (): void {
         'italic',
         'link',
         'ordered-list',
+        'slash-menu',
         'strike',
         'table',
         'text-align',

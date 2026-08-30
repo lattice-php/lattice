@@ -42,6 +42,9 @@ enum Icon: string
     case Heading1 = 'heading-1';
     case Heading2 = 'heading-2';
     case Heading3 = 'heading-3';
+    case Heading4 = 'heading-4';
+    case Heading5 = 'heading-5';
+    case Heading6 = 'heading-6';
     case Highlighter = 'highlighter';
     case Info = 'info';
     case Italic = 'italic';

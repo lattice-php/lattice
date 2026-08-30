@@ -39,12 +39,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.6.0",
     "@internationalized/date": "3.12.3",
     "@lattice-php/core": "0.66.0",
     "@lattice-php/ui": "0.66.0",
     "@tiptap/core": "^3.30.0",
     "@tiptap/extension-details": "^3.30.0",
     "@tiptap/extension-document": "^3.30.0",
+    "@tiptap/extension-floating-menu": "^3.30.0",
     "@tiptap/extension-highlight": "^3.30.0",
     "@tiptap/extension-paragraph": "^3.30.0",
     "@tiptap/extension-table": "^3.30.0",
@@ -53,6 +55,7 @@
     "@tiptap/extensions": "^3.30.0",
     "@tiptap/react": "^3.30.0",
     "@tiptap/starter-kit": "^3.30.0",
+    "@tiptap/suggestion": "^3.30.0",
     "@zag-js/date-picker": "^1.43.0",
     "@zag-js/react": "^1.43.0"
   },

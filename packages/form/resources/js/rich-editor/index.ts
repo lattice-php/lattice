@@ -1,5 +1,6 @@
 export {
   RICH_EDITOR_EXTENSION,
+  type BlockCommand,
   type EditorExtensionPayloadOf,
   type EditorExtensionProps,
   type RichEditorExtensionDefinition,

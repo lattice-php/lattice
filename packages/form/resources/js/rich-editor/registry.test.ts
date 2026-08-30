@@ -1,10 +1,12 @@
 import type { AnyExtension } from "@tiptap/core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  assembleBlockCommands,
   assembleStarterKitOptions,
   assembleTiptapExtensions,
   assembleToolbar,
   resolveRichEditorExtensions,
+  type BlockCommand,
   type RichEditorExtensionRegistry,
   type ToolbarButton,
 } from "./registry";
@@ -132,6 +134,49 @@ describe("assembleToolbar", () => {
     );
 
     expect(entries.filter((entry) => entry === "separator")).toHaveLength(0);
+  });
+});
+
+describe("assembleBlockCommands", () => {
+  function command(key: string): BlockCommand {
+    return { icon: "check", key, label: key, run: () => {} };
+  }
+
+  it("keeps wire order, tags each command with its group, and skips silent extensions", () => {
+    const registry: RichEditorExtensionRegistry = {
+      "block-a": { group: "blocks", commands: () => [command("a"), command("b")] },
+      silent: { toolbar: () => [button("quiet")] },
+      "insert-c": { commands: () => [command("c")] },
+    };
+
+    const commands = assembleBlockCommands(
+      resolveRichEditorExtensions(
+        [
+          { type: "block-a", props: {} },
+          { type: "silent", props: {} },
+          { type: "insert-c", props: {} },
+        ],
+        registry,
+      ),
+    );
+
+    expect(commands.map((entry) => `${entry.group}:${entry.key}`)).toEqual([
+      "blocks:a",
+      "blocks:b",
+      "insert-c:c",
+    ]);
+  });
+
+  it("passes the wire props to the contribution", () => {
+    const registry: RichEditorExtensionRegistry = {
+      sized: { commands: (props) => [command(`size-${props.size as number}`)] },
+    };
+
+    const commands = assembleBlockCommands(
+      resolveRichEditorExtensions([{ type: "sized", props: { size: 4 } }], registry),
+    );
+
+    expect(commands.map((entry) => entry.key)).toEqual(["size-4"]);
   });
 });
 

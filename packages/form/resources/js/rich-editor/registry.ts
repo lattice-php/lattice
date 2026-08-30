@@ -42,11 +42,27 @@ export type ToolbarItem = ToolbarButton | ToolbarControl;
 
 export type ToolbarEntry = ToolbarItem | "separator";
 
+export type BlockCommand = {
+  /** i18n key suffix (`form.editor.{key}`), test id (`editor-block-{key}`) and identity. */
+  key: string;
+  icon: string;
+  label: string;
+  /** Untranslated search aliases, e.g. `["h1", "title"]`. */
+  keywords?: string[];
+  isAvailable?: (editor: Editor) => boolean;
+  /** The slash-menu controller deletes the suggestion range before invoking this. */
+  run: (editor: Editor) => void;
+};
+
+export type BlockCommandEntry = BlockCommand & { group: string };
+
 export type RichEditorExtensionDefinition<P = Record<string, unknown>> = {
   extensions?: (props: P) => AnyExtension[];
   /** Contribution to the single shared StarterKit configuration. */
   starterKit?: (props: P) => Partial<StarterKitOptions>;
   toolbar?: (props: P) => ToolbarItem[];
+  /** Contribution to the slash-command block menu. */
+  commands?: (props: P) => BlockCommand[];
   /**
    * Adjacent toolbar contributions from the same group render without a
    * separator between them; defaults to the extension's own wire type.
@@ -134,6 +150,17 @@ export function assembleTiptapExtensions(
 ): AnyExtension[] {
   return extensions.flatMap(
     (extension) => extension.definition.extensions?.(extension.props) ?? [],
+  );
+}
+
+export function assembleBlockCommands(
+  extensions: ResolvedRichEditorExtension[],
+): BlockCommandEntry[] {
+  return extensions.flatMap((extension) =>
+    (extension.definition.commands?.(extension.props) ?? []).map((command) => ({
+      ...command,
+      group: extension.group,
+    })),
   );
 }
 

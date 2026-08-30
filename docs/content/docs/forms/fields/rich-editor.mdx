@@ -39,6 +39,16 @@ sanitizes the output, so it is safe to render directly. `toText()` returns a pla
 
 `->placeholder()` sets the muted hint shown while the editor is empty.
 
+## Toolbar
+
+`->withoutToolbar()` hides the formatting toolbar. Combined with the
+[slash menu](#slash-menu-and-plus-button) this gives a clean, Notion-like writing surface where
+blocks are inserted through `/` and the plus button:
+
+```php
+RichEditor::make('notes')->withoutToolbar();
+```
+
 ## Extensions
 
 Which editor features are active — and their toolbar order — is controlled from PHP. Every feature
@@ -103,10 +113,43 @@ RichEditor::defaultExtensionsUsing(fn (): array => [
 | `Table`          | `table`           | Insert defaults: `->rows(3)`, `->cols(3)`, `->withHeaderRow()`                                |
 | `Details`        | `details`         | —                                                                                             |
 | `Emoji`          | `emoji`           | `->emojis('🍕', '🌮')` — the picker set (default 16 common emoji)                             |
+| `SlashMenu`      | `slash-menu`      | —                                                                                             |
 
 Configured extensions serialize their props onto the wire — `Heading::make()->levels(2, 3)` becomes
 `{"type": "heading", "props": {"levels": [2, 3]}}` — and the client reads them when it assembles
 the editor.
+
+### Slash menu and plus button
+
+With the default set, typing `/` at the start of a line or after a space opens a block menu at the
+caret — type to filter, pick with the arrow keys and `Enter`, dismiss with `Escape` (the typed `/`
+stays in the text, like in Notion). On an empty line a plus button appears left of the caret and
+opens the same menu.
+
+The menu lists the block commands of the active extensions — headings at their configured levels,
+lists, blockquote, code block, horizontal rule, table and details. Remove the feature per field with
+`->withoutExtensions(SlashMenu::class)` or app-wide via `defaultExtensionsUsing()`.
+
+Extensions contribute their own entries through `commands` in their client definition:
+
+```tsx
+mention: {
+  commands: () => [
+    {
+      icon: "at-sign",
+      key: "mention",
+      label: "Mention",
+      keywords: ["person", "user"],
+      run: (editor) => editor.chain().focus().insertContent("@").run(),
+    },
+  ],
+},
+```
+
+The menu deletes the typed `/query` before it invokes `run`, so a command inserts exactly what a
+toolbar button would. `key` doubles as the translation key (`form.editor.{key}`) and filtering
+matches the translated label, the `label` fallback, the `key` and the `keywords`. An optional
+`isAvailable: (editor) => boolean` hides a command where it can't run.
 
 ### Custom extensions
 
@@ -177,11 +220,11 @@ export const appPlugin = {
 } satisfies Plugin;
 ```
 
-A definition can contribute three things, all optional: `extensions` (Tiptap instances),
+A definition can contribute four things, all optional: `extensions` (Tiptap instances),
 `starterKit` (options merged into the one shared StarterKit — how the built-in marks re-enable
-features), and `toolbar` (buttons, or a `component` for custom controls like the heading dropdown;
+features), `toolbar` (buttons, or a `component` for custom controls like the heading dropdown;
 `ToolbarIconButton` is exported from the same entry point so custom controls match the built-in
-styling).
+styling), and `commands` (entries for the [slash menu](#slash-menu-and-plus-button)).
 Toolbar contributions from different extensions are separated automatically; definitions sharing a
 `group` render side by side.
 

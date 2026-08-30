@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { EditorExtension } from "../generated";
 import { builtinRichEditorExtensions } from "./builtins";
 import {
+  assembleBlockCommands,
   assembleStarterKitOptions,
   assembleToolbar,
   resolveRichEditorExtensions,
@@ -25,13 +26,14 @@ const DEFAULT_SET: EditorExtension[] = [
   { type: "table", props: {} },
   { type: "details", props: {} },
   { type: "emoji", props: {} },
+  { type: "slash-menu", props: {} },
 ];
 
 describe("built-in definitions", () => {
   it("resolves the whole default set without warnings", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    expect(resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions)).toHaveLength(17);
+    expect(resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions)).toHaveLength(18);
     expect(warn).not.toHaveBeenCalled();
 
     warn.mockRestore();
@@ -100,6 +102,40 @@ describe("built-in definitions", () => {
       "|",
       "insert-emoji",
     ]);
+  });
+
+  it("assembles the default block commands in wire order", () => {
+    const commands = assembleBlockCommands(
+      resolveRichEditorExtensions(DEFAULT_SET, builtinRichEditorExtensions),
+    );
+
+    expect(commands.map((command) => command.key)).toEqual([
+      "heading-1",
+      "heading-2",
+      "heading-3",
+      "heading-4",
+      "heading-5",
+      "heading-6",
+      "bullet-list",
+      "ordered-list",
+      "blockquote",
+      "code-block",
+      "horizontal-rule",
+      "insert-table",
+      "details",
+    ]);
+  });
+
+  it("derives heading block commands from the configured levels", () => {
+    const commands = assembleBlockCommands(
+      resolveRichEditorExtensions(
+        [{ type: "heading", props: { levels: [2, 3] } }],
+        builtinRichEditorExtensions,
+      ),
+    );
+
+    expect(commands.map((command) => command.key)).toEqual(["heading-2", "heading-3"]);
+    expect(commands[0].keywords).toContain("h2");
   });
 
   it("renders only the configured text-align buttons", () => {

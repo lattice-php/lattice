@@ -292,6 +292,9 @@ return [
             'default' => 'Standard-Set',
             'restricted' => 'Eingeschränktes Set',
             'summary' => 'Zusammenfassung',
+            'no-toolbar' => 'Ohne Toolbar',
+            'notes' => 'Notizen',
+            'notes-placeholder' => 'Tippe / um einen Block einzufügen…',
         ],
         'tree' => [
             'heading' => 'Überschrift',

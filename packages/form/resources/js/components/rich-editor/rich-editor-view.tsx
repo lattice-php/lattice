@@ -1,7 +1,7 @@
 import { Placeholder } from "@tiptap/extensions";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import { useExtensionRegistry } from "@lattice-php/core/registry-context";
@@ -14,12 +14,19 @@ import { useDependentField } from "../../hooks/use-dependent-field";
 import { useFieldCommit } from "../../hooks/use-field-commit";
 import { useFormValue } from "../../hooks/values";
 import { builtinRichEditorExtensions } from "../../rich-editor/builtins";
+import { BlockMenuController } from "../../rich-editor/block-menu/block-menu-controller";
 import {
+  createSlashMenuExtension,
+  type SlashMenuHandle,
+} from "../../rich-editor/block-menu/slash-extension";
+import {
+  assembleBlockCommands,
   assembleStarterKitOptions,
   assembleTiptapExtensions,
   assembleToolbar,
   RICH_EDITOR_EXTENSION,
   resolveRichEditorExtensions,
+  type BlockCommandEntry,
   type RichEditorExtensionRegistry,
   type ToolbarEntry,
 } from "../../rich-editor/registry";
@@ -86,13 +93,30 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
     [customExtensions, node.props.extensions],
   );
   const toolbar = useMemo(() => assembleToolbar(resolved), [resolved]);
+  const blockCommands = useMemo(() => assembleBlockCommands(resolved), [resolved]);
+  const slashMenuEnabled = resolved.some((extension) => extension.type === "slash-menu");
+  const blockCommandsRef = useRef<BlockCommandEntry[]>(blockCommands);
+  const slashMenuHandleRef = useRef<SlashMenuHandle | null>(null);
+
+  useEffect(() => {
+    blockCommandsRef.current = blockCommands;
+  }, [blockCommands]);
+
   const extensions = useMemo(
     () => [
       StarterKit.configure(assembleStarterKitOptions(resolved)),
       Placeholder.configure({ placeholder: node.props.placeholder ?? "" }),
+      ...(slashMenuEnabled
+        ? [
+            createSlashMenuExtension({
+              commands: () => blockCommandsRef.current,
+              handle: slashMenuHandleRef,
+            }),
+          ]
+        : []),
       ...assembleTiptapExtensions(resolved),
     ],
-    [resolved, node.props.placeholder],
+    [resolved, node.props.placeholder, slashMenuEnabled],
   );
 
   const editor = useEditor({
@@ -106,7 +130,8 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
     shouldRerenderOnTransaction: true,
     editorProps: {
       attributes: {
-        class: "lattice-prose min-h-32 px-3 py-2 outline-none",
+        // The slash menu reserves a left gutter for the add-block plus button.
+        class: cn("lattice-prose min-h-32 px-3 py-2 outline-none", slashMenuEnabled && "pl-9"),
       },
     },
     onUpdate: ({ editor: instance }) => {
@@ -147,8 +172,13 @@ const RichEditorField: RendererComponent<"field.rich-editor"> = ({ node }) => {
             )}
             role="group"
           >
-            {editor && !locked && toolbar.length > 0 && <Toolbar editor={editor} items={toolbar} />}
+            {editor && !locked && node.props.toolbar && toolbar.length > 0 && (
+              <Toolbar editor={editor} items={toolbar} />
+            )}
             <EditorContent editor={editor} />
+            {editor && !locked && slashMenuEnabled && (
+              <BlockMenuController editor={editor} handleRef={slashMenuHandleRef} />
+            )}
           </div>
           <input name={domName} type="hidden" value={submittedValue} />
         </>

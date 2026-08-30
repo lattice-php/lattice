@@ -24,6 +24,7 @@ use Lattice\Form\RichEditor\Extensions\HorizontalRule;
 use Lattice\Form\RichEditor\Extensions\Italic;
 use Lattice\Form\RichEditor\Extensions\Link;
 use Lattice\Form\RichEditor\Extensions\OrderedList;
+use Lattice\Form\RichEditor\Extensions\SlashMenu;
 use Lattice\Form\RichEditor\Extensions\Strike;
 use Lattice\Form\RichEditor\Extensions\Table;
 use Lattice\Form\RichEditor\Extensions\TextAlign;
@@ -43,6 +44,8 @@ class RichEditor extends Field
      * @var list<EditorExtension>
      */
     public array $extensions = [];
+
+    public bool $toolbar = true;
 
     /**
      * The active set keyed by wire type (insertion-ordered), null while the
@@ -103,6 +106,16 @@ class RichEditor extends Field
     }
 
     /**
+     * Hide the formatting toolbar; the slash menu stays the way to insert blocks.
+     */
+    public function withoutToolbar(): static
+    {
+        $this->toolbar = false;
+
+        return $this;
+    }
+
+    /**
      * App-wide override of the set a fresh field starts from; null restores
      * the built-in defaults. Resolved lazily at serialization, so the hook
      * also applies to fields built before it was registered.
@@ -140,6 +153,7 @@ class RichEditor extends Field
             Table::make(),
             Details::make(),
             Emoji::make(),
+            SlashMenu::make(),
         ];
     }
 

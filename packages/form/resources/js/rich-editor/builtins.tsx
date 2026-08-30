@@ -262,6 +262,19 @@ export const builtinRichEditorExtensions = {
         },
       ];
     },
+    commands: (props) =>
+      headingLevels(props.levels).map((level) => ({
+        key: `heading-${level}`,
+        icon: `heading-${level}`,
+        label: `Heading ${level}`,
+        keywords: [`h${level}`, "title"],
+        run: (editor) =>
+          editor
+            .chain()
+            .focus()
+            .setHeading({ level: level as HeadingLevels[number] })
+            .run(),
+      })),
   },
 
   "bullet-list": {
@@ -273,6 +286,15 @@ export const builtinRichEditorExtensions = {
         key: "bullet-list",
         label: "Bullet list",
         isActive: (editor) => editor.isActive("bulletList"),
+        run: (editor) => editor.chain().focus().toggleBulletList().run(),
+      },
+    ],
+    commands: () => [
+      {
+        icon: "list",
+        key: "bullet-list",
+        label: "Bullet list",
+        keywords: ["ul", "unordered"],
         run: (editor) => editor.chain().focus().toggleBulletList().run(),
       },
     ],
@@ -290,6 +312,15 @@ export const builtinRichEditorExtensions = {
         run: (editor) => editor.chain().focus().toggleOrderedList().run(),
       },
     ],
+    commands: () => [
+      {
+        icon: "list-ordered",
+        key: "ordered-list",
+        label: "Ordered list",
+        keywords: ["ol", "numbered"],
+        run: (editor) => editor.chain().focus().toggleOrderedList().run(),
+      },
+    ],
   },
 
   blockquote: {
@@ -301,6 +332,15 @@ export const builtinRichEditorExtensions = {
         key: "blockquote",
         label: "Blockquote",
         isActive: (editor) => editor.isActive("blockquote"),
+        run: (editor) => editor.chain().focus().toggleBlockquote().run(),
+      },
+    ],
+    commands: () => [
+      {
+        icon: "quote",
+        key: "blockquote",
+        label: "Blockquote",
+        keywords: ["quote", "cite"],
         run: (editor) => editor.chain().focus().toggleBlockquote().run(),
       },
     ],
@@ -318,6 +358,15 @@ export const builtinRichEditorExtensions = {
         run: (editor) => editor.chain().focus().toggleCodeBlock().run(),
       },
     ],
+    commands: () => [
+      {
+        icon: "code",
+        key: "code-block",
+        label: "Code block",
+        keywords: ["codeblock", "pre", "fence"],
+        run: (editor) => editor.chain().focus().toggleCodeBlock().run(),
+      },
+    ],
   },
 
   "horizontal-rule": {
@@ -329,6 +378,15 @@ export const builtinRichEditorExtensions = {
         key: "horizontal-rule",
         label: "Horizontal rule",
         isActive: () => false,
+        run: (editor) => editor.chain().focus().setHorizontalRule().run(),
+      },
+    ],
+    commands: () => [
+      {
+        icon: "minus",
+        key: "horizontal-rule",
+        label: "Horizontal rule",
+        keywords: ["hr", "divider", "rule"],
         run: (editor) => editor.chain().focus().setHorizontalRule().run(),
       },
     ],
@@ -411,6 +469,25 @@ export const builtinRichEditorExtensions = {
         run: (editor) => editor.chain().focus().deleteTable().run(),
       },
     ],
+    commands: (props) => [
+      {
+        icon: "table",
+        key: "insert-table",
+        label: "Insert table",
+        keywords: ["table", "grid"],
+        isAvailable: (editor) => editor.can().insertTable(),
+        run: (editor) =>
+          editor
+            .chain()
+            .focus()
+            .insertTable({
+              rows: props.rows ?? 3,
+              cols: props.cols ?? 3,
+              withHeaderRow: props.withHeaderRow ?? true,
+            })
+            .run(),
+      },
+    ],
   },
 
   details: {
@@ -433,7 +510,19 @@ export const builtinRichEditorExtensions = {
         },
       },
     ],
+    commands: () => [
+      {
+        icon: "chevron-right",
+        key: "details",
+        label: "Details",
+        keywords: ["toggle", "collapse", "accordion"],
+        isAvailable: (editor) => editor.can().setDetails(),
+        run: (editor) => editor.chain().focus().setDetails().run(),
+      },
+    ],
   },
+
+  "slash-menu": {},
 
   emoji: {
     toolbar: (props) => {

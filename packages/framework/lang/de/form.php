@@ -35,6 +35,9 @@ return [
         'delete-table' => 'Tabelle löschen',
         'details' => 'Details',
         'insert-emoji' => 'Emoji einfügen',
+        'add-block' => 'Block hinzufügen',
+        'block-menu' => 'Block einfügen',
+        'block-menu-empty' => 'Keine Ergebnisse',
     ],
     'file-upload' => [
         'dropzone' => 'Dateien hierher ziehen oder zum Auswählen klicken',
