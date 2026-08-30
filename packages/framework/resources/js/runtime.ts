@@ -20,8 +20,17 @@ export { useTableSelection } from "@lattice-php/table/hooks/use-table-selection"
 export { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 export { TableSearch } from "@lattice-php/table/components/table-search";
 export { FilterBar, FilterMenu } from "@lattice-php/table/components/filter-bar";
-export { appendTableFilters, fetchFilterOptions } from "@lattice-php/table/lib/query";
+export {
+  appendTableFilters,
+  fetchFilterOptions,
+  getUrlQueryParams,
+} from "@lattice-php/table/lib/query";
 export { isActiveFilterValue } from "@lattice-php/table/lib/filter-values";
+export {
+  BOARD_OWNED_QUERY_KEYS,
+  claimUrlSyncScope,
+  writeQueryToUrl,
+} from "@lattice-php/table/lib/url-sync";
 export { useAction } from "@lattice-php/action/hooks/use-action";
 export {
   MODAL_MISSING_ERROR,

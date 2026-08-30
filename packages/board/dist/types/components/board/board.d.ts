@@ -12,9 +12,12 @@ export type BoardProps = {
   identity?: string;
   moveAction: BoardWireProps["moveAction"];
   perColumn: number;
+  query: BoardWireProps["query"];
+  queryKey: BoardWireProps["queryKey"];
   result: BoardResult | null;
   schema: Schema;
   searchable: boolean;
+  syncQuery: BoardWireProps["syncQuery"];
 };
 export declare function Board({
   cardAction,
@@ -27,7 +30,10 @@ export declare function Board({
   identity,
   moveAction,
   perColumn,
+  query,
+  queryKey,
   result,
   schema,
   searchable,
+  syncQuery,
 }: BoardProps): import("react").JSX.Element;

@@ -1,6 +1,7 @@
 import { Option } from "@lattice-php/core";
 import { FilterIndicator } from "@lattice-php/table";
 import { Board as BoardWireProps, BoardColumnData, BoardResult } from "./generated";
+import { BoardQueryState } from "./board-endpoint";
 import { BoardCard, BoardCardSnapshot, BoardMoveRequest } from "./board-store";
 export type BoardColumnView = {
   cards: BoardCard[];
@@ -40,7 +41,10 @@ export declare function useBoardState({
   identity,
   moveAction,
   perColumn,
+  query: queryProp,
+  queryKey,
   result,
+  syncQuery,
 }: {
   columns: BoardColumnData[];
   componentRef: string | null;
@@ -48,5 +52,8 @@ export declare function useBoardState({
   identity: string | undefined;
   moveAction: BoardWireProps["moveAction"];
   perColumn: number;
+  query: BoardQueryState;
+  queryKey: string | null;
   result: BoardResult | null;
+  syncQuery: boolean;
 }): UseBoardStateResult;

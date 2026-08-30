@@ -17,6 +17,7 @@ use Lattice\Table\Contracts\Filterable;
 use Lattice\Table\Contracts\Searchable;
 use Lattice\Table\Filters\Filter;
 use Lattice\Table\Filters\FilterFieldOptionsResolver;
+use Lattice\Table\Support\QueryUrlScope;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,7 +71,17 @@ final class TableRegistry extends DefinitionRegistry
             fn (string $key): TableComponent => TableComponent::make($key),
             function (TableDefinition $definition, TableComponent $component, string $key) use ($result, $context, $lazy): TableComponent {
                 $columns = $definition->columns();
-                $query = TableQuery::empty($definition->perPage());
+                $query = $definition->syncsQueryToUrl()
+                    ? TableQuery::fromRequest(
+                        QueryUrlScope::request($this->container->make(Request::class), $definition->urlQueryKey()),
+                        $columns,
+                        $key,
+                        $definition->perPage(),
+                        $definition->filters(),
+                        $definition->perPageOptions(),
+                        strict: false,
+                    )
+                    : TableQuery::empty($definition->perPage());
 
                 $component
                     ->endpoint($this->endpointFor($key))
@@ -86,6 +97,9 @@ final class TableRegistry extends DefinitionRegistry
                     ->emptyLabel($definition->emptyLabel())
                     ->bulkActions($this->bulkActions($definition, $key, $context))
                     ->toolbar($this->toolbarComponents($definition, $key, $context))
+                    ->syncQuery($definition->syncsQueryToUrl())
+                    ->queryKey($definition->urlQueryKey())
+                    ->defaultPerPage($definition->perPage())
                     ->result($this->decorateResult($definition, $result($definition, $query), $columns), $query);
 
                 $component->lazy = $lazy;

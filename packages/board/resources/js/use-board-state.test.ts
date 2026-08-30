@@ -27,10 +27,13 @@ function initialProps(overrides: Partial<Props> = {}): Props {
     identity: "tasks-board",
     moveAction,
     perColumn: 25,
+    query: { q: "", tf: {} },
+    queryKey: null,
     result: boardResult([
       boardColumnCards("todo", [boardCard(1, "Write spec")], { total: 1 }),
       boardColumnCards("done", [], { total: 0 }),
     ]),
+    syncQuery: false,
     ...overrides,
   };
 }
@@ -509,6 +512,91 @@ describe("useBoardState search and filters", () => {
     });
 
     await waitFor(() => expect(cardIds(result.current.columnsView, "todo")).toEqual([2]));
+    expect(result.current.search).toBe("Ben");
+  });
+});
+
+describe("useBoardState url sync", () => {
+  beforeEach(() => {
+    window.history.replaceState({}, "", "/board");
+  });
+
+  it("seeds search and table filters from the query prop", () => {
+    const { result } = renderState({
+      query: { q: "Anna", tf: { assignee: { value: "Anna" } } },
+    });
+
+    expect(result.current.search).toBe("Anna");
+    expect(result.current.tableFilters).toEqual({ assignee: { value: "Anna" } });
+  });
+
+  it("does not touch the url when syncQuery is off", async () => {
+    fetchMock.mockResolvedValue(jsonResponse(boardResult([boardColumnCards("todo", [])])));
+
+    const { result } = renderState({ syncQuery: false });
+
+    await act(async () => {
+      result.current.setSearch("Anna");
+      await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    });
+
+    expect(window.location.search).toBe("");
+  });
+
+  it("writes a search change onto the url when synced", async () => {
+    fetchMock.mockResolvedValue(jsonResponse(boardResult([boardColumnCards("todo", [])])));
+
+    const { result } = renderState({ syncQuery: true });
+
+    await act(async () => {
+      result.current.setSearch("Anna");
+      await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    });
+
+    expect(window.location.search).toBe("?q=Anna");
+  });
+
+  it("writes a table filter change onto the url when synced", async () => {
+    fetchMock.mockResolvedValue(jsonResponse(boardResult([boardColumnCards("todo", [])])));
+
+    const { result } = renderState({ syncQuery: true });
+
+    await act(async () => {
+      result.current.setTableFilter("assignee", { value: "Anna" });
+      await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    });
+
+    expect(window.location.search).toBe("?tf%5Bassignee%5D%5Bvalue%5D=Anna");
+  });
+
+  it("clears the owned url params on resetFilters, leaving a foreign one untouched", async () => {
+    window.history.replaceState({}, "", "/board?tabs=details&q=old");
+    fetchMock.mockResolvedValue(jsonResponse(boardResult([boardColumnCards("todo", [])])));
+
+    const { result } = renderState({ query: { q: "old", tf: {} }, syncQuery: true });
+
+    await act(async () => {
+      result.current.resetFilters();
+      await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    });
+
+    expect(window.location.search).toBe("?tabs=details");
+  });
+
+  it("resets to the prop-derived query, not an empty one, when the wire props change", () => {
+    const { rerender, result } = renderState({
+      query: { q: "Anna", tf: {} },
+    });
+
+    expect(result.current.search).toBe("Anna");
+
+    rerender(
+      initialProps({
+        query: { q: "Ben", tf: {} },
+        result: boardResult([boardColumnCards("todo", [boardCard(2, "Fresh card")])]),
+      }),
+    );
+
     expect(result.current.search).toBe("Ben");
   });
 });

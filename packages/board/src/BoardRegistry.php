@@ -10,6 +10,7 @@ use Lattice\Core\DefinitionRegistry;
 use Lattice\Core\Http\SubRequest;
 use Lattice\Core\Option;
 use Lattice\Table\Filters\FilterFieldOptionsResolver;
+use Lattice\Table\Support\QueryUrlScope;
 use Lattice\Table\TableRegistry;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\FiltersRenderableComponents;
@@ -33,7 +34,14 @@ final class BoardRegistry extends DefinitionRegistry
             fn (string $key): Board => Board::make($key),
             function (BoardDefinition $definition, Board $component, string $key): Board {
                 $perColumn = $definition->perColumn();
-                $query = BoardQuery::empty($perColumn);
+                $query = $definition->syncsQueryToUrl()
+                    ? BoardQuery::forPage(
+                        QueryUrlScope::request($this->container->make(Request::class), $definition->urlQueryKey()),
+                        $key,
+                        $perColumn,
+                        $definition->filters(),
+                    )
+                    : BoardQuery::empty($perColumn);
 
                 return $component
                     ->id($key)
@@ -46,6 +54,9 @@ final class BoardRegistry extends DefinitionRegistry
                     ->searchable($definition->searchable() !== [])
                     ->perColumn($perColumn)
                     ->schema($definition->card())
+                    ->syncQuery($definition->syncsQueryToUrl())
+                    ->queryKey($definition->urlQueryKey())
+                    ->query(['q' => $query->search, 'tf' => $query->tableFilters])
                     ->result($this->decorateResult($definition, $key, $definition->source()->query($query)->withIndicators($query->tableFilterIndicators)));
             },
             $context,

@@ -11,7 +11,17 @@ import {
   getQuery,
   type PerPageOption,
 } from "@lattice-php/table/lib/payload";
-import { buildEndpoint, fetchFilterOptions, nextSort } from "@lattice-php/table/lib/query";
+import {
+  buildEndpoint,
+  fetchFilterOptions,
+  getUrlQueryParams,
+  nextSort,
+} from "@lattice-php/table/lib/query";
+import {
+  claimUrlSyncScope,
+  TABLE_OWNED_QUERY_KEYS,
+  writeQueryToUrl,
+} from "@lattice-php/table/lib/url-sync";
 import type {
   FilterClause,
   TableColumn,
@@ -217,6 +227,28 @@ export function useTable(node: TableNode) {
       void load(query);
     }
   });
+
+  const syncQuery = node.props?.syncQuery === true;
+  const queryKey = node.props?.queryKey ?? null;
+
+  useEffect(() => {
+    if (!syncQuery) {
+      return;
+    }
+
+    return claimUrlSyncScope({ key: queryKey, ownedKeys: TABLE_OWNED_QUERY_KEYS }, componentRef);
+  }, [componentRef, queryKey, syncQuery]);
+
+  useEffect(() => {
+    if (!syncQuery) {
+      return;
+    }
+
+    writeQueryToUrl(getUrlQueryParams(query, node.props?.defaultPerPage ?? 25), {
+      key: queryKey,
+      ownedKeys: TABLE_OWNED_QUERY_KEYS,
+    });
+  }, [node.props?.defaultPerPage, query, queryKey, syncQuery]);
 
   useEffect(() => {
     if (

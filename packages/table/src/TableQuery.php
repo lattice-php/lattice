@@ -49,16 +49,16 @@ final readonly class TableQuery implements JsonSerializable
      * @param  array<int, Filter>  $filters
      * @param  array<int, int|PaginationType::Infinite>  $perPageOptions
      */
-    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = [], array $perPageOptions = []): self
+    public static function fromRequest(Request $request, array $columns, string $table, int $defaultPerPage = 25, array $filters = [], array $perPageOptions = [], bool $strict = true): self
     {
-        $clauses = self::parseFilters($request->input('filter'), $table);
+        $clauses = self::parseFilters($request->input('filter'), $table, $strict);
         $sorts = self::parseSorts($request->input('sort'));
         $index = Column::index($columns);
 
-        self::validateFilters($clauses, $index, $table);
-        self::validateSorts($sorts, $index, $table);
+        $clauses = self::validateFilters($clauses, $index, $table, $strict);
+        $sorts = self::validateSorts($sorts, $index, $table, $strict);
 
-        [$tableFilters, $tableFilterIndicators] = TableFilterParser::parse($request->input('tf'), $filters, $table, $request);
+        [$tableFilters, $tableFilterIndicators] = TableFilterParser::parse($request->input('tf'), $filters, $table, $request, $strict);
 
         return new self(
             $clauses,
@@ -129,14 +129,14 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @return array<int, FilterClause>
      */
-    private static function parseFilters(mixed $filter, string $table): array
+    private static function parseFilters(mixed $filter, string $table, bool $strict): array
     {
         if (! is_string($filter) || $filter === '') {
             return [];
         }
 
         return array_values(array_filter(array_map(
-            fn (string $clause): ?FilterClause => self::parseClause($clause, $table),
+            fn (string $clause): ?FilterClause => self::parseClause($clause, $table, $strict),
             explode(',', $filter),
         )));
     }
@@ -144,9 +144,10 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * Parse a `field:operator:value` clause into a validated FilterClause: an
      * incomplete clause (blank field/operator, or a value-taking operator with no
-     * value) is dropped; a non-empty operator that isn't a known Op is rejected.
+     * value) is dropped; a non-empty operator that isn't a known Op is rejected in
+     * strict mode, dropped otherwise.
      */
-    private static function parseClause(string $clause, string $table): ?FilterClause
+    private static function parseClause(string $clause, string $table, bool $strict): ?FilterClause
     {
         $parts = explode(':', $clause, 3);
         $field = $parts[0];
@@ -160,7 +161,11 @@ final readonly class TableQuery implements JsonSerializable
         $operator = Op::tryFrom($rawOperator);
 
         if ($operator === null) {
-            throw InvalidTableQuery::operator($rawOperator, $field, $table);
+            if ($strict) {
+                throw InvalidTableQuery::operator($rawOperator, $field, $table);
+            }
+
+            return null;
         }
 
         if ($operator->requiresValue() && $value === '') {
@@ -207,38 +212,68 @@ final readonly class TableQuery implements JsonSerializable
     /**
      * @param  array<int, FilterClause>  $filters
      * @param  Collection<string, Column>  $index
+     * @return array<int, FilterClause>
      */
-    private static function validateFilters(array $filters, Collection $index, string $table): void
+    private static function validateFilters(array $filters, Collection $index, string $table, bool $strict): array
     {
+        $valid = [];
+
         foreach ($filters as $filter) {
             $column = $index->get($filter->field);
 
             if (! $column instanceof Filterable || ! $column->isFilterable()) {
-                throw InvalidTableQuery::filter($filter->field, $table);
+                if ($strict) {
+                    throw InvalidTableQuery::filter($filter->field, $table);
+                }
+
+                continue;
             }
 
             if (! in_array($filter->operator, $column->availableOperators(), true)) {
-                throw InvalidTableQuery::operator($filter->operator->value, $filter->field, $table);
+                if ($strict) {
+                    throw InvalidTableQuery::operator($filter->operator->value, $filter->field, $table);
+                }
+
+                continue;
             }
 
             if ($filter->operator->requiresValue() && ! $column->filterType()->acceptsValue($filter->value)) {
-                throw InvalidTableQuery::value($filter->value, $filter->field, $table);
+                if ($strict) {
+                    throw InvalidTableQuery::value($filter->value, $filter->field, $table);
+                }
+
+                continue;
             }
+
+            $valid[] = $filter;
         }
+
+        return $valid;
     }
 
     /**
      * @param  array<int, TableSort>  $sorts
      * @param  Collection<string, Column>  $index
+     * @return array<int, TableSort>
      */
-    private static function validateSorts(array $sorts, Collection $index, string $table): void
+    private static function validateSorts(array $sorts, Collection $index, string $table, bool $strict): array
     {
+        $valid = [];
+
         foreach ($sorts as $sort) {
             $column = $index->get($sort->key);
 
             if (! $column instanceof Sortable || ! $column->isSortable()) {
-                throw InvalidTableQuery::sort($sort->key, $table);
+                if ($strict) {
+                    throw InvalidTableQuery::sort($sort->key, $table);
+                }
+
+                continue;
             }
+
+            $valid[] = $sort;
         }
+
+        return $valid;
     }
 }

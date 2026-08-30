@@ -28,6 +28,11 @@ final class TaskBoard extends EloquentBoardDefinition
         return Task::class;
     }
 
+    public function syncsQueryToUrl(): bool
+    {
+        return true;
+    }
+
     public function columns(): array
     {
         return [

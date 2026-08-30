@@ -59,6 +59,12 @@ class Table extends Component implements InteractiveComponent
 
     public bool $lazy = false;
 
+    public bool $syncQuery = false;
+
+    public ?string $queryKey = null;
+
+    public int $defaultPerPage = 25;
+
     public bool $resizableColumns = false;
 
     public bool $pinnableColumns = false;
@@ -202,6 +208,27 @@ class Table extends Component implements InteractiveComponent
     public function searchable(bool $searchable = true): static
     {
         $this->searchable = $searchable;
+
+        return $this;
+    }
+
+    public function syncQuery(bool $syncQuery): static
+    {
+        $this->syncQuery = $syncQuery;
+
+        return $this;
+    }
+
+    public function queryKey(?string $queryKey): static
+    {
+        $this->queryKey = $queryKey;
+
+        return $this;
+    }
+
+    public function defaultPerPage(int $defaultPerPage): static
+    {
+        $this->defaultPerPage = $defaultPerPage;
 
         return $this;
     }

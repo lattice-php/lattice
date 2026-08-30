@@ -152,6 +152,7 @@
                     "updated_at": "2026-06-08 08:05:00"
                 }
             ],
+            "defaultPerPage": 25,
             "emptyLabel": null,
             "endpoint": null,
             "filters": [],
@@ -180,10 +181,12 @@
                 "tableFilterIndicators": [],
                 "tableFilters": {}
             },
+            "queryKey": null,
             "resizableColumns": false,
             "resizeIndicator": false,
             "searchable": false,
             "striped": false,
+            "syncQuery": false,
             "toolbar": []
         },
         "type": "table"

@@ -333,6 +333,33 @@ sub-request seam the table endpoint uses, scoped to the board's own declared fil
   sources, custom filters).
 </Info>
 
+### Syncing search and filters to the URL
+
+A board can restore its search and dedicated filters from the page URL on load, and keep the URL
+updated as the user searches or filters — the same opt-in mechanism a table uses. Override
+`syncsQueryToUrl()` on the definition:
+
+```php
+final class TaskBoard extends EloquentBoardDefinition
+{
+    public function syncsQueryToUrl(): bool
+    {
+        return true;
+    }
+}
+```
+
+Only `q` and `tf[...]` are restored — a board's `column`/`offset`/`limit` load-more state is
+ephemeral, so the initial render always paints the first `perColumn()` of every column regardless of
+what's in the URL. As with tables, restoring is tolerant: an unknown `tf` key is dropped instead of
+rejected, and the URL is updated via `history.replaceState` only, so filtering never creates a
+browser history entry.
+
+When a page has more than one synced table or board, give every one but one a `urlQueryKey()` so
+each owns a distinct, bracketed slice of the URL instead of colliding on the unprefixed params — see
+[Syncing filters to the URL](/tables/filtering/#more-than-one-synced-table-on-a-page) for the full
+scoping rules.
+
 ## Configuration
 
 ```php

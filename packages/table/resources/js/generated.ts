@@ -198,6 +198,7 @@ export type Table = {
   bulkActions: Node[];
   columns: ColumnNode[];
   data: Record<string, unknown>[] | null;
+  defaultPerPage: number;
   emptyLabel: string | null;
   endpoint: string | null;
   filters: FilterNode[];
@@ -207,11 +208,13 @@ export type Table = {
   perPageOptions: (number | string)[];
   pinnableColumns: boolean;
   query: TableQuery | null;
+  queryKey: string | null;
   ref: string | null;
   resizableColumns: boolean;
   resizeIndicator: boolean;
   searchable: boolean;
   striped: boolean;
+  syncQuery: boolean;
   toolbar: Node[];
 };
 export type TableNodeType = "table";

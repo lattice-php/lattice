@@ -56,6 +56,29 @@ final readonly class BoardQuery
         );
     }
 
+    /**
+     * Seeds the initial page render from the URL for a board opted into
+     * `syncsQueryToUrl()`: only `q` and `tf` are restored, tolerantly. `column`,
+     * `offset`, and `limit` are never read from the URL here — a URL-supplied
+     * `column` would collapse the initial render to a single column, and
+     * load-more offset/limit state is ephemeral by design.
+     *
+     * @param  list<Filter>  $filters
+     */
+    public static function forPage(Request $request, string $board, int $limit, array $filters): self
+    {
+        [$tableFilters, $tableFilterIndicators] = TableFilterParser::parse($request->input('tf'), $filters, $board, $request, strict: false);
+
+        return new self(
+            null,
+            0,
+            self::clampLimit($limit),
+            $request->string('q')->trim()->toString(),
+            $tableFilters,
+            $tableFilterIndicators,
+        );
+    }
+
     private static function clampOffset(int $offset): int
     {
         return max(0, $offset);

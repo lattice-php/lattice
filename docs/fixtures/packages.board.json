@@ -40,6 +40,11 @@
             "filters": [],
             "moveAction": null,
             "perColumn": 25,
+            "query": {
+                "q": "",
+                "tf": []
+            },
+            "queryKey": null,
             "result": {
                 "columns": [
                     {
@@ -84,7 +89,8 @@
                 ],
                 "indicators": []
             },
-            "searchable": false
+            "searchable": false,
+            "syncQuery": false
         },
         "schema": [
             {
