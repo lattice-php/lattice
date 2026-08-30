@@ -121,6 +121,10 @@
                         ]
                     },
                     "type": "emoji"
+                },
+                {
+                    "props": {},
+                    "type": "slash-menu"
                 }
             ],
             "helperText": null,
@@ -132,6 +136,7 @@
             "prefillResetOn": null,
             "readOnly": false,
             "required": false,
+            "toolbar": true,
             "tooltip": null,
             "value": null
         },

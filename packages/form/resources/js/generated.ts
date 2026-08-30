@@ -203,6 +203,7 @@ export type EditorExtensionPropsMap = {
   italic: EditorItalic;
   link: EditorLink;
   "ordered-list": EditorOrderedList;
+  "slash-menu": EditorSlashMenu;
   strike: EditorStrike;
   table: EditorTable;
   "text-align": EditorTextAlign;
@@ -219,6 +220,7 @@ export type EditorLink = {
   protocols: string[];
 };
 export type EditorOrderedList = Record<string, never>;
+export type EditorSlashMenu = Record<string, never>;
 export type EditorStrike = Record<string, never>;
 export type EditorTable = {
   cols: number;
@@ -529,6 +531,7 @@ export type RichEditor = {
   prefillResetOn: string[] | null;
   readOnly: boolean;
   required: boolean;
+  toolbar: boolean;
   tooltip: string | null;
   value: unknown;
 };

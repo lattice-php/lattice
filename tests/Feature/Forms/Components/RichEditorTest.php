@@ -40,6 +40,7 @@ describe('extensions', function (): void {
             'link',
             'table', 'details',
             'emoji',
+            'slash-menu',
         ]);
     });
 
@@ -94,9 +95,9 @@ describe('extensions', function (): void {
     it('adds to the default set when nothing was configured', function (): void {
         $types = editorExtensionTypes(RichEditor::make('body')->withExtensions('mention'));
 
-        expect($types)->toHaveCount(18)
+        expect($types)->toHaveCount(19)
             ->and($types[0])->toBe('bold')
-            ->and($types[17])->toBe('mention');
+            ->and($types[18])->toBe('mention');
     });
 
     it('reconfigures a default extension in place', function (): void {
@@ -104,7 +105,7 @@ describe('extensions', function (): void {
 
         $extensions = editorExtensions($field);
 
-        expect(array_column($extensions, 'type'))->toHaveCount(17)
+        expect(array_column($extensions, 'type'))->toHaveCount(18)
             ->and($extensions[6])->toBe(['type' => 'heading', 'props' => ['levels' => [2, 3]]]);
     });
 
@@ -113,7 +114,7 @@ describe('extensions', function (): void {
             RichEditor::make('body')->withoutExtensions(Details::class, 'emoji'),
         );
 
-        expect($types)->toHaveCount(15)
+        expect($types)->toHaveCount(16)
             ->and($types)->not->toContain('details')
             ->and($types)->not->toContain('emoji');
     });
@@ -131,6 +132,13 @@ describe('extensions', function (): void {
 
     it('serializes an explicitly empty set as an empty list', function (): void {
         expect(editorExtensions(RichEditor::make('body')->extensions([])))->toBe([]);
+    });
+});
+
+describe('toolbar', function (): void {
+    it('shows the toolbar by default and hides it via withoutToolbar', function (): void {
+        expect(wire(RichEditor::make('body'))['props']['toolbar'])->toBeTrue()
+            ->and(wire(RichEditor::make('body')->withoutToolbar())['props']['toolbar'])->toBeFalse();
     });
 });
 

@@ -21,6 +21,26 @@ it('runs a client-registered custom extension from the toolbar', function (): vo
         ->assertNoJavaScriptErrors();
 });
 
+it('inserts a block through the slash menu', function (): void {
+    $this->visitAsWorkbenchUser('/form/fields/rich-editor')
+        ->click('[id="default-panel"] .lattice-prose')
+        ->keys('[id="default-panel"] .lattice-prose', '/')
+        ->assertPresent('[data-test="editor-block-menu"]')
+        ->click('[data-test="editor-block-blockquote"]')
+        ->assertPresent('[id="default-panel"] .lattice-prose blockquote')
+        ->assertNoJavaScriptErrors();
+});
+
+it('keeps the slash menu working with the toolbar hidden', function (): void {
+    $this->visitAsWorkbenchUser('/form/fields/rich-editor?type=no-toolbar')
+        ->assertNotPresent('[id="no-toolbar-panel"] [data-test="editor-bold"]')
+        ->click('[id="no-toolbar-panel"] .lattice-prose')
+        ->keys('[id="no-toolbar-panel"] .lattice-prose', '/')
+        ->click('[data-test="editor-block-bullet-list"]')
+        ->assertPresent('[id="no-toolbar-panel"] .lattice-prose ul li')
+        ->assertNoJavaScriptErrors();
+});
+
 it('inserts a details block on the default set', function (): void {
     $this->visitAsWorkbenchUser('/form/fields/rich-editor')
         ->click('[aria-label="Details"]')

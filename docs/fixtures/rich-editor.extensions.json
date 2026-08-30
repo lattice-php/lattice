@@ -45,6 +45,7 @@
             "prefillResetOn": null,
             "readOnly": false,
             "required": false,
+            "toolbar": true,
             "tooltip": null,
             "value": null
         },

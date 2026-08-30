@@ -292,6 +292,9 @@ return [
             'default' => 'Default set',
             'restricted' => 'Restricted set',
             'summary' => 'Summary',
+            'no-toolbar' => 'Without toolbar',
+            'notes' => 'Notes',
+            'notes-placeholder' => 'Type / to insert a block…',
         ],
         'tree' => [
             'heading' => 'Heading',

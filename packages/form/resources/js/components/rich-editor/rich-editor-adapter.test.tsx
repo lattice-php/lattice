@@ -23,7 +23,7 @@ describe("RichEditorAdapter", () => {
     renderField(
       fakeNode({
         type: "field.rich-editor",
-        props: { name: "body", label: "Body", extensions: RICH_EDITOR_EXTENSIONS },
+        props: { name: "body", label: "Body", toolbar: true, extensions: RICH_EDITOR_EXTENSIONS },
       }),
     );
 
@@ -42,6 +42,7 @@ describe("RichEditorAdapter", () => {
         props: {
           name: "body",
           label: "Body",
+          toolbar: true,
           extensions: [{ type: "heading", props: { levels: [1, 2] } }],
         },
       }),
@@ -61,6 +62,7 @@ describe("RichEditorAdapter", () => {
         props: {
           name: "body",
           label: "Body",
+          toolbar: true,
           extensions: [
             { type: "bold", props: {} },
             { type: "stamp", props: {} },

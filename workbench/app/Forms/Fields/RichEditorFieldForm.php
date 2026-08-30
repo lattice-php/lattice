@@ -39,6 +39,11 @@ class RichEditorFieldForm extends FormDefinition
                                 'stamp',
                             ]),
                     ]),
+                    Tab::make('no-toolbar', __('workbench.fields.rich-editor.no-toolbar'))->schema([
+                        RichEditor::make('notes', __('workbench.fields.rich-editor.notes'))
+                            ->withoutToolbar()
+                            ->placeholder(__('workbench.fields.rich-editor.notes-placeholder')),
+                    ]),
                 ]),
         ]);
     }

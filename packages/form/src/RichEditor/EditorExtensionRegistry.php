@@ -18,6 +18,7 @@ use Lattice\Form\RichEditor\Extensions\HorizontalRule;
 use Lattice\Form\RichEditor\Extensions\Italic;
 use Lattice\Form\RichEditor\Extensions\Link;
 use Lattice\Form\RichEditor\Extensions\OrderedList;
+use Lattice\Form\RichEditor\Extensions\SlashMenu;
 use Lattice\Form\RichEditor\Extensions\Strike;
 use Lattice\Form\RichEditor\Extensions\Table;
 use Lattice\Form\RichEditor\Extensions\TextAlign;
@@ -47,6 +48,7 @@ final class EditorExtensionRegistry extends WireTypeRegistry
         Italic::class,
         Link::class,
         OrderedList::class,
+        SlashMenu::class,
         Strike::class,
         Table::class,
         TextAlign::class,
