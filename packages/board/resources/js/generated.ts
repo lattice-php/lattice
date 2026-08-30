@@ -10,9 +10,15 @@ export type Board = {
   filters: FilterNode[];
   moveAction: Node<"action"> | Node<"action.bulk"> | null;
   perColumn: number;
+  query: {
+    q: string;
+    tf: Record<string, unknown>;
+  };
+  queryKey: string | null;
   ref: string | null;
   result: BoardResult | null;
   searchable: boolean;
+  syncQuery: boolean;
 };
 export type BoardColumnCards = {
   readonly cards: Record<string, unknown>[];

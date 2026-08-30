@@ -39,6 +39,13 @@ class Board extends Component implements InteractiveComponent
 
     public int $perColumn = 25;
 
+    public bool $syncQuery = false;
+
+    public ?string $queryKey = null;
+
+    /** @var array{q: string, tf: array<string, mixed>} */
+    public array $query = ['q' => '', 'tf' => []];
+
     public ?Action $moveAction = null;
 
     public ?Action $cardAction = null;
@@ -113,6 +120,30 @@ class Board extends Component implements InteractiveComponent
         }
 
         $this->perColumn = $perColumn;
+
+        return $this;
+    }
+
+    public function syncQuery(bool $syncQuery): static
+    {
+        $this->syncQuery = $syncQuery;
+
+        return $this;
+    }
+
+    public function queryKey(?string $queryKey): static
+    {
+        $this->queryKey = $queryKey;
+
+        return $this;
+    }
+
+    /**
+     * @param  array{q: string, tf: array<string, mixed>}  $query
+     */
+    public function query(array $query): static
+    {
+        $this->query = $query;
 
         return $this;
     }

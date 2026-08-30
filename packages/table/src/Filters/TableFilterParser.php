@@ -15,7 +15,7 @@ final class TableFilterParser
      * @param  array<int, Filter>  $filters
      * @return array{0: array<string, array<string, mixed>>, 1: list<FilterIndicator>}
      */
-    public static function parse(mixed $tableFilters, array $filters, string $context, Request $request): array
+    public static function parse(mixed $tableFilters, array $filters, string $context, Request $request, bool $strict = true): array
     {
         if (! is_array($tableFilters) || $tableFilters === []) {
             return [[], []];
@@ -30,7 +30,11 @@ final class TableFilterParser
             $filter = $index->get($key);
 
             if (! $filter instanceof Filter) {
-                throw InvalidTableQuery::filter((string) $key, $context);
+                if ($strict) {
+                    throw InvalidTableQuery::filter((string) $key, $context);
+                }
+
+                continue;
             }
 
             $data = $validator->validate($filter, $value, $request);

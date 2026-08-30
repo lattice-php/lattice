@@ -10,6 +10,24 @@ export function emptyBoardQuery(): BoardQueryState {
 }
 
 /**
+ * The params a URL-synced board writes back: `q` and `tf`, omitted when
+ * empty so a clean URL round-trips to a no-op write.
+ */
+export function getBoardUrlQueryParams(query: BoardQueryState): Record<string, unknown> {
+  const params: Record<string, unknown> = {};
+
+  if (query.q !== "") {
+    params.q = query.q;
+  }
+
+  if (Object.keys(query.tf).length > 0) {
+    params.tf = query.tf;
+  }
+
+  return params;
+}
+
+/**
  * Builds a board endpoint URL carrying the current search/filter state plus
  * any per-request params (column, offset, limit) — every board request
  * (initial reload, load-more, quick-add's column reset) goes through this so

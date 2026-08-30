@@ -37,6 +37,26 @@ abstract class BoardDefinition extends Definition
     }
 
     /**
+     * Opts the board into restoring its query (search, table filters) from
+     * the page request's URL on initial render, and writing client-side query
+     * changes back to the URL. Off by default.
+     */
+    public function syncsQueryToUrl(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Nests the synced query under a bracketed key (`tasks[q]`, …) instead of
+     * the unprefixed params, so more than one synced component can share a
+     * page. Null keeps the params unprefixed.
+     */
+    public function urlQueryKey(): ?string
+    {
+        return null;
+    }
+
+    /**
      * @return list<string>
      */
     public function searchable(): array

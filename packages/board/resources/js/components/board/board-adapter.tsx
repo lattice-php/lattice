@@ -11,9 +11,12 @@ export const BoardAdapter: RendererComponent<"board"> = ({ node }) => {
     filters,
     moveAction,
     perColumn,
+    query,
+    queryKey,
     ref,
     result,
     searchable,
+    syncQuery,
   } = node.props;
 
   return (
@@ -28,9 +31,12 @@ export const BoardAdapter: RendererComponent<"board"> = ({ node }) => {
       identity={nodeIdentity(node)}
       moveAction={moveAction}
       perColumn={perColumn}
+      query={query}
+      queryKey={queryKey}
       result={result}
       schema={node.schema ?? []}
       searchable={searchable}
+      syncQuery={syncQuery}
     />
   );
 };

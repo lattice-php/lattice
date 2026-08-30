@@ -249,3 +249,54 @@ receive the query. See [Closure evaluation](/core/closure-evaluation/) for the r
   with an operator and render in the column header; dedicated filters are named, drive their own query,
   and live in the filter bar.
 </Info>
+
+## Syncing filters to the URL
+
+A table can restore its filters, sort, search, and page from the page URL on load, and keep the URL
+updated as the user changes them — so a filtered view survives a refresh and can be shared as a link.
+It's opt-in: override `syncsQueryToUrl()` on the definition.
+
+```php
+final class ProductsTable extends EloquentTableDefinition
+{
+    public function syncsQueryToUrl(): bool
+    {
+        return true;
+    }
+}
+```
+
+The URL params are the same names the table's endpoint already accepts — `filter`, `sort`, `q`,
+`page`, `per_page`, and `tf[...]` for dedicated filters — so a synced table's shared link is
+human-readable and doubles as the endpoint's own query string. `page` is omitted while on the first
+page and `per_page` while it matches the definition's default, so a clean URL stays clean.
+
+Unlike the endpoint, a synced page render is **tolerant**: an unknown filter field, an unsortable sort
+key, an unknown operator, or an unknown `tf` key is silently dropped instead of rejected, and the page
+renders the rest of the query normally. This keeps a stale or hand-edited URL from breaking the page —
+only the endpoint itself still 422s on an invalid request.
+
+<Info>
+  `mode` (table vs. infinite pagination) is never restored — it's a display preference, and pairing
+  `mode=infinite` with a specific `page` is incoherent, since infinite state is append-only. The URL
+  write-back also only ever calls `history.replaceState`, never `pushState`: filter changes don't
+  create browser history entries, so back/forward continues to behave exactly as it does today.
+</Info>
+
+### More than one synced table on a page
+
+At most one synced table (or [board](/packages/board/#syncing-search-and-filters-to-the-url)) may own
+the unprefixed params on a given page. When a page has more than one, give every synced component but
+one a `urlQueryKey()` — it nests that component's params under one bracketed key instead:
+
+```php
+public function urlQueryKey(): ?string
+{
+    return 'products';
+}
+```
+
+With `urlQueryKey('products')`, the table's params become `products[filter]`, `products[sort]`,
+`products[q]`, `products[page]`, `products[per_page]`, and `products[tf][status][value]`. A synced
+component only ever reads and writes its own scope, so unprefixed params — and another component's
+prefixed ones — are left untouched.

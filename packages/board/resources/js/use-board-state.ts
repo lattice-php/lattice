@@ -2,7 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore
 import { callAction } from "@lattice-php/action";
 import { apiJson, LATTICE_EVENT, useWindowEvent } from "@lattice-php/core";
 import type { Option, ReloadComponentEvent } from "@lattice-php/core";
-import { fetchFilterOptions, isActiveFilterValue, type FilterIndicator } from "@lattice-php/table";
+import {
+  BOARD_OWNED_QUERY_KEYS,
+  claimUrlSyncScope,
+  fetchFilterOptions,
+  isActiveFilterValue,
+  writeQueryToUrl,
+  type FilterIndicator,
+} from "@lattice-php/table";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import type {
   Board as BoardWireProps,
@@ -10,7 +17,12 @@ import type {
   BoardColumnData,
   BoardResult,
 } from "./generated";
-import { buildBoardEndpoint, emptyBoardQuery, type BoardQueryState } from "./board-endpoint";
+import {
+  buildBoardEndpoint,
+  emptyBoardQuery,
+  getBoardUrlQueryParams,
+  type BoardQueryState,
+} from "./board-endpoint";
 import {
   appendColumn,
   cardsFor,
@@ -87,7 +99,10 @@ export function useBoardState({
   identity,
   moveAction,
   perColumn,
+  query: queryProp,
+  queryKey,
   result,
+  syncQuery,
 }: {
   columns: BoardColumnData[];
   componentRef: string | null;
@@ -95,7 +110,10 @@ export function useBoardState({
   identity: string | undefined;
   moveAction: BoardWireProps["moveAction"];
   perColumn: number;
+  query: BoardQueryState;
+  queryKey: string | null;
   result: BoardResult | null;
+  syncQuery: boolean;
 }): UseBoardStateResult {
   const [store] = useState(() => {
     const initial = createBoardState(columns);
@@ -106,7 +124,7 @@ export function useBoardState({
   const inFlightRef = useRef<Set<string>>(new Set());
   const wireRef = useRef({ columns, result });
   const dispatch = useEffectDispatcher();
-  const [query, setQuery] = useState<BoardQueryState>(emptyBoardQuery());
+  const [query, setQuery] = useState<BoardQueryState>(queryProp);
   const queryRef = useRef(query);
   queryRef.current = query;
   const [indicators, setIndicators] = useState<FilterIndicator[]>(result?.indicators ?? []);
@@ -118,7 +136,7 @@ export function useBoardState({
 
     wireRef.current = { columns, result };
     inFlightRef.current.clear();
-    setQuery(emptyBoardQuery());
+    setQuery(queryProp);
     setIndicators(result?.indicators ?? []);
     store.setState((current) => {
       const base = createBoardState(columns);
@@ -127,7 +145,26 @@ export function useBoardState({
         ? replaceAll({ ...base, generation: current.generation }, result)
         : { ...base, generation: current.generation + 1 };
     });
-  }, [columns, result, store]);
+  }, [columns, queryProp, result, store]);
+
+  useEffect(() => {
+    if (!syncQuery || identity === undefined) {
+      return;
+    }
+
+    return claimUrlSyncScope({ key: queryKey, ownedKeys: BOARD_OWNED_QUERY_KEYS }, identity);
+  }, [identity, queryKey, syncQuery]);
+
+  useEffect(() => {
+    if (!syncQuery) {
+      return;
+    }
+
+    writeQueryToUrl(getBoardUrlQueryParams(query), {
+      key: queryKey,
+      ownedKeys: BOARD_OWNED_QUERY_KEYS,
+    });
+  }, [query, queryKey, syncQuery]);
 
   const canLoad = endpoint !== null && endpoint !== "";
 

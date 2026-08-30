@@ -4,6 +4,7 @@ description: Make columns sortable, and choose how a table's rows are paged.
 ---
 
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
 
 Sorting and pagination are handled for you once a column opts in and a mode is chosen. The table sends
 the current sort and page to its [endpoint](/advanced/security/), and the
@@ -79,3 +80,9 @@ public function perPageOptions(): array
 
 The endpoint accepts only declared sizes and falls back to `perPage()` for anything else. Tables
 without options keep their fixed page size and mode.
+
+<Info>
+  `sort` and `page`/`per_page` are among the params a [URL-synced
+  table](/tables/filtering/#syncing-filters-to-the-url) restores from — and writes back to — the
+  page URL, so a sorted, paged view survives a refresh.
+</Info>

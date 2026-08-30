@@ -34,6 +34,26 @@ abstract class TableDefinition extends Definition
     }
 
     /**
+     * Opts the table into restoring its query (filters, sort, search, page,
+     * per-page) from the page request's URL on initial render, and writing
+     * client-side query changes back to the URL. Off by default.
+     */
+    public function syncsQueryToUrl(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Nests the synced query under a bracketed key (`products[q]`, …) instead
+     * of the unprefixed params, so more than one synced component can share a
+     * page. Null keeps the params unprefixed.
+     */
+    public function urlQueryKey(): ?string
+    {
+        return null;
+    }
+
+    /**
      * Page-size choices offered in the pagination bar; empty hides the control.
      * `PaginationType::Infinite` offers switching to infinite pagination.
      *

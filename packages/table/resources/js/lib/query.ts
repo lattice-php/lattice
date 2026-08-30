@@ -95,7 +95,7 @@ function normalizeTableFilterMember(value: unknown): unknown | undefined {
   return String(value);
 }
 
-function appendTableFilterParam(url: URL, key: string, value: unknown): void {
+export function appendTableFilterParam(url: URL, key: string, value: unknown): void {
   if (Array.isArray(value)) {
     for (const item of value) {
       appendTableFilterParam(url, `${key}[]`, item);
@@ -169,6 +169,29 @@ export function getQueryParams(query: TableQuery): Record<string, unknown> {
 
   if (query.search !== "") {
     params.q = query.search;
+  }
+
+  return params;
+}
+
+/**
+ * `getQueryParams()` plus `page`/`per_page`, the two params only a URL-synced
+ * table restores: `page` when it isn't the implicit first page, `per_page`
+ * when it differs from the definition's default (so a clean URL round-trips
+ * to a no-op write).
+ */
+export function getUrlQueryParams(
+  query: TableQuery,
+  defaultPerPage: number,
+): Record<string, unknown> {
+  const params = getQueryParams(query);
+
+  if (query.page > 1) {
+    params.page = query.page;
+  }
+
+  if (query.perPage !== defaultPerPage) {
+    params.per_page = query.perPage;
   }
 
   return params;

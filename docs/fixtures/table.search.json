@@ -86,6 +86,7 @@
                     "team": "Research"
                 }
             ],
+            "defaultPerPage": 25,
             "emptyLabel": null,
             "endpoint": null,
             "filters": [],
@@ -114,10 +115,12 @@
                 "tableFilterIndicators": [],
                 "tableFilters": {}
             },
+            "queryKey": null,
             "resizableColumns": false,
             "resizeIndicator": false,
             "searchable": true,
             "striped": false,
+            "syncQuery": false,
             "toolbar": []
         },
         "type": "table"
