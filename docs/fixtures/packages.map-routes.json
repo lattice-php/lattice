@@ -1,0 +1,78 @@
+[
+    {
+        "key": "commute",
+        "props": {
+            "center": null,
+            "features": [
+                {
+                    "color": {
+                        "dark": null,
+                        "kind": "named",
+                        "value": "info"
+                    },
+                    "id": "berlin-potsdam",
+                    "path": [
+                        {
+                            "latitude": 52.52,
+                            "longitude": 13.405
+                        },
+                        {
+                            "latitude": 52.5063,
+                            "longitude": 13.332
+                        },
+                        {
+                            "latitude": 52.4581,
+                            "longitude": 13.2107
+                        },
+                        {
+                            "latitude": 52.3989,
+                            "longitude": 13.0657
+                        }
+                    ],
+                    "type": "route",
+                    "weight": 4
+                },
+                {
+                    "color": null,
+                    "icon": null,
+                    "id": "berlin",
+                    "label": "Berlin office",
+                    "open": false,
+                    "position": {
+                        "latitude": 52.52,
+                        "longitude": 13.405
+                    },
+                    "schema": [],
+                    "type": "marker"
+                },
+                {
+                    "color": null,
+                    "icon": null,
+                    "id": "potsdam",
+                    "label": "Potsdam office",
+                    "open": false,
+                    "position": {
+                        "latitude": 52.3989,
+                        "longitude": 13.0657
+                    },
+                    "schema": [],
+                    "type": "marker"
+                }
+            ],
+            "height": 360,
+            "navigationControls": true,
+            "provider": {
+                "maximumZoom": 19,
+                "minimumZoom": 1,
+                "name": "openstreetmap",
+                "options": {
+                    "attribution": "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+                    "tileUrl": "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                }
+            },
+            "scrollZoom": false,
+            "zoom": null
+        },
+        "type": "map"
+    }
+]

@@ -5,20 +5,29 @@ import type { MapProviderProps } from "./provider-registry";
 
 type DistPluginModule = {
   default: {
-    extensions: { "map.providers": { openstreetmap: ComponentType<MapProviderProps> } };
+    extensions: {
+      "map.providers": {
+        googlemaps: ComponentType<MapProviderProps>;
+        openstreetmap: ComponentType<MapProviderProps>;
+      };
+    };
   };
 };
 
 const distPlugin = (): Promise<DistPluginModule> => import("../../dist/plugin.js");
 
-const OpenStreetMapProvider = lazy(async () => {
-  const { default: plugin } = await distPlugin();
-  const Provider = plugin.extensions["map.providers"].openstreetmap;
+const distProvider = (name: keyof DistPluginModule["default"]["extensions"]["map.providers"]) =>
+  lazy(async () => {
+    const { default: plugin } = await distPlugin();
+    const Provider = plugin.extensions["map.providers"][name];
 
-  // React.lazy rejects a lazy component as its resolved value, and the dist
-  // artifact exports one — unwrap through a plain component.
-  return { default: (props: MapProviderProps) => createElement(Provider, props) };
-});
+    // React.lazy rejects a lazy component as its resolved value, and the dist
+    // artifact exports one — unwrap through a plain component.
+    return { default: (props: MapProviderProps) => createElement(Provider, props) };
+  });
+
+const OpenStreetMapProvider = distProvider("openstreetmap");
+const GoogleMapsProvider = distProvider("googlemaps");
 
 /**
  * The Composer-facing plugin entry: a consumer's Vite build compiles only this
@@ -36,6 +45,7 @@ export default {
   extensions: {
     "map.providers": {
       openstreetmap: OpenStreetMapProvider,
+      googlemaps: GoogleMapsProvider,
     },
   },
   i18n: {

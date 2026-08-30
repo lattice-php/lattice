@@ -485,6 +485,10 @@ return [
                 'heading' => 'Studio Potsdam',
                 'description' => 'Ein Klick auf diesen Marker rendert ein anderes serverseitig geliefertes Schema.',
             ],
+            'googlemaps' => [
+                'heading' => 'Google Maps',
+                'description' => 'Dieselben Marker und dieselbe Route, gerendert vom Google-Maps-Provider.',
+            ],
         ],
         'charts' => [
             'channels' => [

@@ -10,4 +10,5 @@ use Lattice\Core\Attributes\TypeScript;
 enum FeatureType: string
 {
     case Marker = 'marker';
+    case Route = 'route';
 }

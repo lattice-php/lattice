@@ -12,6 +12,7 @@ node_modules
 /.rector-cache
 /vendor/orchestra/testbench-core/laravel
 /public/build
+/workbench/.env
 /workbench/database/*.sqlite
 /tests/Browser/Screenshots
 /tests/Browser/FailureScreenshots

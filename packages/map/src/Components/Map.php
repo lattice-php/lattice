@@ -12,6 +12,8 @@ use Lattice\Map\MapProviderData;
 use Lattice\Map\MapProviderRegistry;
 use Lattice\Map\Marker;
 use Lattice\Map\MarkerData;
+use Lattice\Map\Route;
+use Lattice\Map\RouteData;
 use Lattice\Ui\Components\Component;
 
 #[AsComponent('map')]
@@ -29,13 +31,16 @@ final class Map extends Component
 
     public bool $navigationControls = true;
 
-    /** @var list<MarkerData> */
+    /** @var list<MarkerData|RouteData> */
     public array $features = [];
 
     private ?string $providerName = null;
 
     /** @var list<Marker> */
     private array $markers = [];
+
+    /** @var list<Route> */
+    private array $routes = [];
 
     public static function make(?string $key = null): static
     {
@@ -106,6 +111,14 @@ final class Map extends Component
         return $this;
     }
 
+    /** @param list<Route> $routes */
+    public function routes(array $routes): static
+    {
+        $this->routes = $routes;
+
+        return $this;
+    }
+
     /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
@@ -115,18 +128,23 @@ final class Map extends Component
     {
         $providerName = $this->providerName ?? (string) config('map.default_provider');
         $provider = app(MapProviderRegistry::class)->get($providerName);
-        $features = array_map(
-            static fn (Marker $marker): MarkerData => $marker->data(),
-            $this->markers,
-        );
+        $features = [
+            ...array_map(static fn (Route $route): RouteData => $route->data(), $this->routes),
+            ...array_map(static fn (Marker $marker): MarkerData => $marker->data(), $this->markers),
+        ];
 
-        $ids = array_map(static fn (MarkerData $feature): string => $feature->id, $features);
+        $ids = array_map(static fn (MarkerData|RouteData $feature): string => $feature->id, $features);
 
         if (count($ids) !== count(array_unique($ids))) {
-            throw new InvalidArgumentException('Map marker ids must be unique.');
+            throw new InvalidArgumentException('Map feature ids must be unique.');
         }
 
-        if (count(array_filter($features, static fn (MarkerData $feature): bool => $feature->open)) > 1) {
+        $openMarkers = array_filter(
+            $features,
+            static fn (MarkerData|RouteData $feature): bool => $feature instanceof MarkerData && $feature->open,
+        );
+
+        if (count($openMarkers) > 1) {
             throw new InvalidArgumentException('Only one map marker may be opened initially.');
         }
 

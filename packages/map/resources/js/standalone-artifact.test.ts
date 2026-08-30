@@ -21,7 +21,7 @@ it("dist/plugin.js bundles the map engine and only imports host externals", () =
 });
 
 it(
-  "dist/plugin.js registers the component and OpenStreetMap provider",
+  "dist/plugin.js registers the component and both bundled providers",
   { timeout: 30_000 },
   async () => {
     const { default: plugin } = (await import("../../dist/plugin.js")) as {
@@ -34,6 +34,9 @@ it(
 
     expect(plugin.name).toBe("lattice/map");
     expect(Object.keys(plugin.components)).toEqual(["map"]);
-    expect(Object.keys(plugin.extensions["map.providers"])).toEqual(["openstreetmap"]);
+    expect(Object.keys(plugin.extensions["map.providers"])).toEqual([
+      "openstreetmap",
+      "googlemaps",
+    ]);
   },
 );

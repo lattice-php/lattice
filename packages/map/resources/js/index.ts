@@ -1,3 +1,4 @@
+export { isMarkerFeature, isRouteFeature } from "./pin";
 export { MAP_PROVIDER_REGISTRY_EXTENSION, useMapProviderRegistry } from "./provider-registry";
 export type {
   MapProviderComponent,
@@ -11,4 +12,5 @@ export type {
   MapProviderData,
   MapWireProps,
   MarkerData,
+  RouteData,
 } from "./types";

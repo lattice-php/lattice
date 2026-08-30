@@ -7,7 +7,7 @@ import type { Plugin } from "@lattice-php/core";
 import mapPlugin from "./plugin";
 import composerPlugin from "./plugin.composer";
 import distPlugin from "../../dist/plugin.js";
-import type { MapWireProps, MarkerData } from "./types";
+import type { MapWireProps, MarkerData, RouteData } from "./types";
 import "../css/map.css";
 
 const transparentTile =
@@ -106,6 +106,37 @@ it("renders the standalone artifact's own map component against the runtime barr
   await renderMap({}, distRegistry);
 
   await expect.element(page.getByText("Berlin office content")).toBeVisible();
+});
+
+it("fits the view around a toned route so its full path stays visible", async () => {
+  const route: RouteData = {
+    color: { dark: null, kind: "named", value: "info" },
+    id: "commute",
+    path: [
+      { latitude: 52.52, longitude: 13.405 },
+      { latitude: 52.43, longitude: 13.2 },
+      { latitude: 52.39, longitude: 13.06 },
+    ],
+    type: "route",
+    weight: 5,
+  };
+
+  await renderMap({
+    features: [route, marker("berlin", "Berlin office", 52.52, 13.405)],
+  });
+
+  await expect.poll(() => document.querySelector("path.lt-map-route")).toBeTruthy();
+
+  const path = document.querySelector<SVGPathElement>("path.lt-map-route")!;
+  const canvas = document.querySelector(".lt-map__canvas")!.getBoundingClientRect();
+  const drawn = path.getBoundingClientRect();
+
+  expect(path.classList.contains("lt-tone-info")).toBe(true);
+  expect(path.getAttribute("stroke-width")).toBe("5");
+  expect(drawn.left).toBeGreaterThanOrEqual(canvas.left);
+  expect(drawn.right).toBeLessThanOrEqual(canvas.right);
+  expect(drawn.top).toBeGreaterThanOrEqual(canvas.top);
+  expect(drawn.bottom).toBeLessThanOrEqual(canvas.bottom);
 });
 
 it("reports invalid provider configuration without leaving the map pending", async () => {

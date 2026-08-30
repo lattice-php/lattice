@@ -5,15 +5,18 @@ description: Provider-neutral interactive maps with server-driven markers and La
 
 import BundleReport from "@components/BundleReport.astro";
 import ComponentExample from "@components/ComponentExample.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
 
 The map package renders interactive maps from server-defined features. The public PHP and wire
-APIs use coordinates, providers, and typed features rather than Leaflet concepts. OpenStreetMap is
-the built-in provider; another package can add a Google Maps provider without changing page
-definitions.
+APIs use coordinates, providers, and typed features rather than provider concepts. OpenStreetMap
+and [Google Maps](#google-maps) are the built-in providers; another package can add its own
+provider without changing page definitions.
 
-The first release supports markers. A marker can display any Lattice component schema in a popup,
-including links, forms, and registered actions. Lines, polygons, editing, geocoding, routing, and
-clustering are outside the initial API.
+The package supports markers and routes. A marker can display any Lattice component schema in a
+popup, including links, forms, and registered actions. A route draws a server-supplied path as a
+line; computing that path is the application's concern. Polygons, editing, geocoding, and
+clustering are outside the API.
 
 ## Installation
 
@@ -22,8 +25,8 @@ composer require lattice-php/map
 ```
 
 Composer is the only install. The `lattice()` Vite plugin discovers the package through Composer
-and adds only a small entry to the app bundle: the map component and its precompiled renderer —
-with Leaflet bundled inside it, while React and the Lattice runtime remain shared with the host
+and adds only a small entry to the app bundle: the map component and its precompiled renderers —
+with Leaflet bundled inside, while React and the Lattice runtime remain shared with the host
 app — load on demand the first time a page renders a map, so pages without a map never pay for
 Leaflet. For a [no-build app](/introduction/no-build/), run `php artisan lattice:assets` after
 installation; it publishes the same self-contained renderer as a single standalone plugin.
@@ -89,6 +92,47 @@ When a default zoom is set with `->zoom()`, the map shows a reset control below 
 that returns the viewport to its initial center and zoom after panning or zooming away.
 `->navigationControls(false)` hides it together with the zoom buttons.
 
+## Routes
+
+`->routes()` draws server-supplied paths as lines on the map. A route takes a list of coordinates —
+`[latitude, longitude]` pairs or `CoordinateData` instances — and optional styling. Routes take part
+in the automatic viewport fit exactly like markers:
+
+<ComponentExample
+  php={`Map::make('commute')
+    ->height(360)
+    ->routes([
+        Route::make('berlin-potsdam')
+            ->path([
+                [52.5200, 13.4050],
+                [52.5063, 13.3320],
+                [52.4581, 13.2107],
+                [52.3989, 13.0657],
+            ])
+            ->color(ColorName::Info)
+            ->weight(4),
+    ])
+    ->markers([
+        Marker::make('berlin')
+            ->position(52.5200, 13.4050)
+            ->label('Berlin office'),
+        Marker::make('potsdam')
+            ->position(52.3989, 13.0657)
+            ->label('Potsdam office'),
+    ]);`}
+  fixture="packages.map-routes"
+/>
+
+A route needs at least two points and an id that is unique across all features on the map, markers
+included. `->color()` accepts the same named Lattice colors and CSS colors as markers; without one
+the route uses the primary color. `->weight()` sets the stroke width in pixels.
+
+<Info>
+  The map draws whatever path the server provides — it does not calculate one. To display driving
+  or walking directions, resolve the geometry in your application (for example through OSRM,
+  GraphHopper, or the Google Routes API) and pass the resulting coordinates to `->path()`.
+</Info>
+
 ## OpenStreetMap Tiles
 
 The built-in provider uses the public OpenStreetMap tile service and includes the required
@@ -116,6 +160,37 @@ return [
 ];
 ```
 
+## Google Maps
+
+The Google Maps provider ships with the package and activates once an API key is configured:
+
+```dotenv
+GOOGLE_MAPS_API_KEY=your-browser-key
+```
+
+Select it per map with `Map::make()->provider('googlemaps')`, or make it the app-wide default with
+`'default_provider' => 'googlemaps'` in `config/map.php`. Markers, popups, routes, viewport, and
+controls behave exactly as on OpenStreetMap; the provider supports zoom levels `0–22`. Without a
+configured key the provider is not registered, so unconfigured apps keep working with
+OpenStreetMap alone.
+
+The renderer loads the Google Maps JavaScript API from `maps.googleapis.com` at runtime — nothing
+Google-specific is bundled. If your app sets a Content Security Policy, allow that origin for
+scripts and its tile hosts for images.
+
+Markers render as [Advanced Markers](https://developers.google.com/maps/documentation/javascript/advanced-markers/overview),
+which require a map id. The provider defaults to Google's `DEMO_MAP_ID`:
+
+```dotenv
+GOOGLE_MAPS_MAP_ID=your-map-id
+```
+
+<Warning>
+  The API key is sent to the browser, as every Google Maps JavaScript key is — restrict it to your
+  application's domains in the Google Cloud console. `DEMO_MAP_ID` is intended for development;
+  create your own map id for production use.
+</Warning>
+
 ## Adding a Provider
 
 A provider has one server and one client registration. The server implementation returns its
@@ -126,41 +201,42 @@ use Lattice\Map\Contracts\MapProvider;
 use Lattice\Map\MapProviderData;
 use Lattice\Map\MapProviderRegistry;
 
-final class GoogleMapsProvider implements MapProvider
+final class MapboxProvider implements MapProvider
 {
     public function data(): MapProviderData
     {
         return new MapProviderData(
-            name: 'google-maps',
-            options: ['apiKey' => config('services.google_maps.key')],
+            name: 'mapbox',
+            options: ['accessToken' => config('services.mapbox.token')],
             minimumZoom: 0,
             maximumZoom: 22,
         );
     }
 }
 
-app(MapProviderRegistry::class)->register(app(GoogleMapsProvider::class));
+app(MapProviderRegistry::class)->register(app(MapboxProvider::class));
 ```
 
 Its Lattice plugin registers a React component under the matching `map.providers` key:
 
 ```ts
 import type { Plugin } from "@lattice-php/core";
-import GoogleMap from "./google-map";
+import MapboxMap from "./mapbox-map";
 
 export default {
-  name: "acme/google-maps",
+  name: "acme/mapbox",
   extensions: {
     "map.providers": {
-      "google-maps": GoogleMap,
+      mapbox: MapboxMap,
     },
   },
 } satisfies Plugin;
 ```
 
-Applications then select it with `Map::make()->provider('google-maps')`. The map component keeps
-the same markers, popup schemas, viewport, and controls contract; only the provider options and
-renderer change.
+Applications then select it with `Map::make()->provider('mapbox')`. The map component keeps the
+same markers, routes, popup schemas, viewport, and controls contract; only the provider options and
+renderer change. The `isMarkerFeature` and `isRouteFeature` guards exported from
+`@lattice-php/map` narrow the wire features to the type a renderer is drawing.
 
 ## Bundle Size
 
