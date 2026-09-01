@@ -440,7 +440,7 @@ function TreeItem({
     >
       <div
         className={cn(
-          "flex items-center gap-2 rounded-lt-sm border-y border-transparent px-2 py-1.5 text-sm text-lt-fg",
+          "flex items-center gap-2 rounded-lt-sm px-2 py-1.5 text-sm text-lt-fg",
           isActive && "bg-lt-muted font-medium",
           isDisabled && "pointer-events-none opacity-50",
           canMove && !isDisabled && "cursor-grab",

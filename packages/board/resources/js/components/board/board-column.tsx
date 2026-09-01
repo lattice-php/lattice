@@ -6,13 +6,59 @@ import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { coerceColor, namedColor, toneProps } from "@lattice-php/ui/lib/color";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { autoScrollForElements, combine, dropTargetForElements } from "@lattice-php/lattice/dnd";
-import { boardColumnDropTargetData, boardDragSource } from "../../board-dnd";
+import {
+  boardColumnDropTargetData,
+  boardDragSource,
+  boardDropTarget,
+  type BoardDropTarget,
+} from "../../board-dnd";
 import type { BoardFocusDirection } from "../../board-keyboard";
 import type { BoardCardRemoval, BoardColumnView } from "../../use-board-state";
 import type { Board as BoardWireProps, BoardColumnData } from "../../generated";
 import { cardKey } from "../../board-store";
 import { BoardCardItem } from "./board-card";
 import { QuickAdd } from "./quick-add";
+
+type CardPlaceholder = { height: number; index: number };
+
+function dropPlaceholder(placeholder: CardPlaceholder) {
+  return (
+    <li
+      aria-hidden
+      className="shrink-0 rounded-lt border-2 border-dashed border-lt-primary/40 bg-lt-primary/5"
+      key="drop-placeholder"
+      style={{ height: placeholder.height }}
+    />
+  );
+}
+
+/**
+ * Where the drop gap opens in this column's card list, mirroring the drop
+ * intent the same hover would produce: above/below the hovered card, or at
+ * the end for the column's empty space. Null when the hover targets another
+ * column.
+ */
+function placeholderIndexFor(
+  target: BoardDropTarget,
+  cardIds: string[],
+  columnKey: string,
+): number | null {
+  if (target.type === "column") {
+    return target.columnKey === columnKey ? cardIds.length : null;
+  }
+
+  if (target.columnKey !== columnKey) {
+    return null;
+  }
+
+  const index = cardIds.indexOf(target.cardId);
+
+  if (index === -1) {
+    return null;
+  }
+
+  return target.edge === "bottom" ? index + 1 : index;
+}
 
 export type BoardColumnProps = {
   canMove: boolean;
@@ -53,7 +99,9 @@ export function BoardColumn({
   const headingId = useId();
   const tone = toneProps(coerceColor(column.color ?? undefined) ?? namedColor("gray"));
   const listRef = useRef<HTMLUListElement>(null);
-  const [draggedOver, setDraggedOver] = useState(false);
+  const [placeholder, setPlaceholder] = useState<CardPlaceholder | null>(null);
+  const cardIdsRef = useRef<string[]>([]);
+  cardIdsRef.current = view.cards.map((card) => cardKey(card));
 
   useEffect(() => {
     const element = listRef.current;
@@ -62,14 +110,39 @@ export function BoardColumn({
       return;
     }
 
+    const updatePlaceholder = ({
+      location,
+      source,
+    }: {
+      location: { current: { dropTargets: readonly { data: Record<string | symbol, unknown> }[] } };
+      source: { element: HTMLElement };
+    }) => {
+      const target = boardDropTarget(location.current.dropTargets);
+      const index = target ? placeholderIndexFor(target, cardIdsRef.current, column.key) : null;
+
+      if (index === null) {
+        setPlaceholder(null);
+        return;
+      }
+
+      const height = source.element.getBoundingClientRect().height;
+
+      setPlaceholder((current) =>
+        current !== null && current.index === index && current.height === height
+          ? current
+          : { height, index },
+      );
+    };
+
     return combine(
       dropTargetForElements({
         canDrop: ({ source }) => boardDragSource(source.data) !== null,
         element,
         getData: () => boardColumnDropTargetData(column.key),
-        onDragEnter: () => setDraggedOver(true),
-        onDragLeave: () => setDraggedOver(false),
-        onDrop: () => setDraggedOver(false),
+        onDrag: updatePlaceholder,
+        onDragEnter: updatePlaceholder,
+        onDragLeave: () => setPlaceholder(null),
+        onDrop: () => setPlaceholder(null),
       }),
       autoScrollForElements({ element }),
     );
@@ -95,16 +168,10 @@ export function BoardColumn({
           {view.total}
         </Badge>
       </header>
-      <ul
-        aria-labelledby={headingId}
-        className={cn("lt-board-column-list", draggedOver && "lt-board-column-list-drop-target")}
-        ref={listRef}
-        role="list"
-      >
-        {view.cards.map((card) => {
+      <ul aria-labelledby={headingId} className="lt-board-column-list" ref={listRef} role="list">
+        {view.cards.flatMap((card, index) => {
           const id = cardKey(card);
-
-          return (
+          const item = (
             <BoardCardItem
               canMove={canMove}
               card={card}
@@ -123,8 +190,13 @@ export function BoardColumn({
               tabIndex={focusedCardId === id ? 0 : -1}
             />
           );
+
+          return placeholder?.index === index ? [dropPlaceholder(placeholder), item] : [item];
         })}
-        {view.cards.length === 0 && !view.loading ? (
+        {placeholder !== null && placeholder.index >= view.cards.length
+          ? dropPlaceholder(placeholder)
+          : null}
+        {view.cards.length === 0 && !view.loading && placeholder === null ? (
           <li className="px-1 py-2 text-sm text-lt-muted-fg">
             {t("board.empty-column", "No cards")}
           </li>
