@@ -60,6 +60,52 @@ test('a lattice response flashes the trait-provided effects', function (): void 
     expect(wire(app(EffectFlasher::class)->all()[1])['type'])->toBe('locale-change');
 });
 
+test('a json request gets the effects as a body instead of a redirect', function (): void {
+    $request = request();
+    $request->headers->set('Accept', 'application/json');
+
+    $response = LatticeResponse::make()
+        ->toast('Saved.', Variant::Success)
+        ->reloadComponent('projects.summary')
+        ->toResponse($request);
+
+    expect($response->getStatusCode())->toBe(200);
+    expect($response->headers->get('Content-Type'))->toContain('application/json');
+
+    $effects = json_decode((string) $response->getContent(), true)['effects'];
+    expect($effects)->toHaveCount(2);
+    expect($effects[0]['type'])->toBe('toast');
+    expect($effects[1])->toBe(['type' => 'reload-component', 'props' => ['component' => 'projects.summary']]);
+    expect(app(EffectFlasher::class)->all())->toBe([]);
+});
+
+test('a json request carries an explicit redirect as a redirect effect', function (): void {
+    $request = request();
+    $request->headers->set('Accept', 'application/json');
+
+    $response = LatticeResponse::make()
+        ->toast('Saved.')
+        ->toRoute('after-save')
+        ->toResponse($request);
+
+    $effects = json_decode((string) $response->getContent(), true)['effects'];
+    expect($effects)->toHaveCount(2);
+    expect($effects[1])->toBe(['type' => 'redirect', 'props' => ['url' => route('after-save')]]);
+});
+
+test('an inertia request keeps the redirect flow even when it accepts json', function (): void {
+    $request = request();
+    $request->headers->set('Accept', 'application/json');
+    $request->headers->set('X-Inertia', 'true');
+
+    $response = LatticeResponse::make()
+        ->toast('Saved.')
+        ->toResponse($request);
+
+    expect($response->getStatusCode())->toBe(302);
+    expect(app(EffectFlasher::class)->all())->toHaveCount(1);
+});
+
 test('Effects::respond starts a fluent response', function (): void {
     $response = Effects::respond()
         ->toast('Done.')

@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearRefreshedRefs } from "@lattice-php/core/component-ref";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { createRegistry, eagerComponent } from "@lattice-php/core/registry";
 import { ButtonAdapter } from "@lattice-php/ui/components/button/button-adapter";
 import { fakeNode } from "@lattice-php/core/test-support";
@@ -474,5 +475,91 @@ describe("Lattice form schema components", () => {
     expect(screen.getByRole("button", { name: "Cancel" })).toHaveAttribute("type", "button");
     expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute("type", "submit");
     expect(screen.queryByRole("button", { name: "Submit" })).not.toBeInTheDocument();
+  });
+});
+
+describe("async Lattice forms", () => {
+  afterEach(() => {
+    clearRefreshedRefs();
+    vi.unstubAllGlobals();
+  });
+
+  const nameNode = fakeNode({
+    props: { label: "Name", name: "name", value: "" },
+    type: "field.text-input",
+  });
+
+  function renderAsyncForm(response: { body: unknown; status: number }) {
+    const fetchMock = vi.fn<typeof fetch>(
+      async () =>
+        ({
+          ok: response.status < 300,
+          status: response.status,
+          json: async () => response.body,
+        }) as unknown as Response,
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const formNode = fakeNode({
+      id: "answers.form",
+      props: {
+        action: "/lattice/forms/answers",
+        async: true,
+        method: "post",
+        ref: "sealed-ref",
+        submitButton: true,
+      },
+      schema: [nameNode],
+      type: "form",
+    });
+
+    render(
+      <FormAdapter node={formNode}>
+        <TextInputAdapter node={nameNode}>{null}</TextInputAdapter>
+      </FormAdapter>,
+    );
+
+    return fetchMock;
+  }
+
+  it("submits over fetch and dispatches the response effects without navigating", async () => {
+    const reloaded: string[] = [];
+    const listener = (event: Event) =>
+      reloaded.push((event as CustomEvent<{ component: string }>).detail.component);
+    window.addEventListener(LATTICE_EVENT.reloadComponent, listener);
+
+    const fetchMock = renderAsyncForm({
+      body: { effects: [{ type: "reload-component", props: { component: "projects.summary" } }] },
+      status: 200,
+    });
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Widget" },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    });
+
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe("/lattice/forms/answers");
+    expect(init?.method).toBe("POST");
+    expect(JSON.parse(init?.body as string)).toMatchObject({ name: "Widget" });
+    expect(reloaded).toEqual(["projects.summary"]);
+
+    window.removeEventListener(LATTICE_EVENT.reloadComponent, listener);
+  });
+
+  it("maps a 422 body onto field errors instead of dispatching effects", async () => {
+    renderAsyncForm({
+      body: { errors: { name: ["The name is required."] } },
+      status: 422,
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    });
+
+    expect(screen.getByText("The name is required.")).toBeInTheDocument();
   });
 });

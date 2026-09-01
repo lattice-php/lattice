@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Lattice\Form\Components\FileUpload;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\PasswordInput;
 use Lattice\Form\Components\TextInput;
@@ -65,6 +66,17 @@ test('editable computed fields serialize an explicit client prefill flag', funct
         'prefillRefreshOn' => ['@customer'],
     ])->not->toHaveKey('prefill');
 });
+
+test('forms serialize the async submit mode', function (): void {
+    expect(wire(Form::make('answers'))['props']['async'])->toBeFalse()
+        ->and(wire(Form::make('answers')->async())['props']['async'])->toBeTrue();
+});
+
+test('async forms reject file uploads', function (): void {
+    wire(Form::make('attachments')->async()->schema([
+        FileUpload::make('document', 'Document'),
+    ]));
+})->throws(LogicException::class, 'An async form cannot contain file uploads');
 
 test('forms serialize submit row configuration', function (): void {
     $wire = wire(Form::make('checkout')

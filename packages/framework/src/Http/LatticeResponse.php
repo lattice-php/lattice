@@ -6,8 +6,12 @@ namespace Lattice\Http;
 use BackedEnum;
 use Closure;
 use Illuminate\Contracts\Support\Responsable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Lattice\Core\Support\Wire;
 use Lattice\Facades\Effects;
+use Lattice\Ui\Effects\Builtin\Redirect;
 use Lattice\Ui\Effects\Concerns\QueuesEffects;
 use Lattice\Ui\Effects\Effect;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +22,11 @@ use Symfony\Component\HttpFoundation\Response;
  * modal close, …) and a redirect. The effects survive the redirect through the
  * `latticeEffects` flash bag, giving plain controllers the same ergonomics
  * ActionResult gives actions. Defaults to redirecting back.
+ *
+ * A plain JSON request (no `X-Inertia` header — an async form submit, a raw
+ * fetch) gets the effects as a JSON body instead, in the shape the action
+ * effect dispatcher already consumes; an explicit redirect travels along as a
+ * redirect effect, so `toRoute()` navigates in both worlds.
  *
  * @phpstan-consistent-constructor
  */
@@ -66,11 +75,38 @@ readonly class LatticeResponse implements Responsable
 
     public function toResponse($request): Response
     {
+        if ($this->wantsEffectsJson($request)) {
+            return new JsonResponse(['effects' => [...$this->effects, ...$this->redirectEffect()]]);
+        }
+
         if ($this->effects !== []) {
             Effects::flash(...$this->effects);
         }
 
         return ($this->redirect ?? fn (): Response => redirect()->back())();
+    }
+
+    private function wantsEffectsJson(Request $request): bool
+    {
+        return ! $request->headers->has('X-Inertia') && $request->expectsJson();
+    }
+
+    /**
+     * The default back() is deliberately not carried over: a fetch client that
+     * asked for JSON has nowhere to go "back" to — staying on the page is the
+     * point of submitting asynchronously.
+     *
+     * @return array<int, Effect>
+     */
+    private function redirectEffect(): array
+    {
+        if (! $this->redirect instanceof Closure) {
+            return [];
+        }
+
+        $response = ($this->redirect)();
+
+        return $response instanceof RedirectResponse ? [new Redirect($response->getTargetUrl())] : [];
     }
 
     private function withRedirect(Closure $redirect): static

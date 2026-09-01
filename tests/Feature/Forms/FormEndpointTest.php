@@ -5,12 +5,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Facades\Effects;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\NumberInput;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
+use Lattice\Http\LatticeResponse;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\HttpMethod;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,6 +52,7 @@ test('registered forms serialize their configured endpoint and isolated error ba
                 'submitEmphasis' => null,
                 'submitButtons' => null,
                 'validationSummaryLabel' => 'Fix these fields to continue:',
+                'async' => false,
                 'precognitive' => false,
                 'validationTimeout' => null,
                 'resetOnSuccess' => null,
@@ -111,6 +114,22 @@ test('registered form submissions validate before handle is called', function ()
     expect(session('handled-required-profile'))->toBeNull();
 });
 
+test('an async form submit gets its effects as json instead of a redirect', function (): void {
+    Lattice::forms([WorkbenchAsyncProfileForm::class]);
+
+    $ref = $this->latticeRef(wire(Form::use(WorkbenchAsyncProfileForm::class)));
+
+    patchJson('/lattice/forms/workbench.async-profile', [
+        'name' => 'Taylor',
+    ], $this->latticeHeaders($ref))
+        ->assertOk()
+        ->assertJsonPath('effects.0.type', 'toast')
+        ->assertJsonPath('effects.1.type', 'reload-component')
+        ->assertJsonPath('effects.1.props.component', 'projects.summary');
+
+    expect(session('handled-async-form'))->toBe('Taylor');
+});
+
 test('registered forms receive the current request while serializing definitions', function (): void {
     Lattice::forms([WorkbenchRequestAwareForm::class]);
 
@@ -167,6 +186,29 @@ class WorkbenchProfileForm extends FormDefinition
         $request->session()->put('handled-form-team', $this->context('team'));
 
         return redirect('/submitted');
+    }
+}
+
+#[AsForm('workbench.async-profile')]
+class WorkbenchAsyncProfileForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form
+            ->method(HttpMethod::Patch)
+            ->async()
+            ->schema([
+                TextInput::make('name', 'Name')->required(),
+            ]);
+    }
+
+    public function handle(Request $request): LatticeResponse
+    {
+        $request->session()->put('handled-async-form', $request->string('name')->toString());
+
+        return Effects::respond()
+            ->toast('Saved.')
+            ->reloadComponent('projects.summary');
     }
 }
 

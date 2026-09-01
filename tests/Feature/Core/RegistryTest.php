@@ -37,6 +37,7 @@ test('lattice can discover attributed definitions from a path and namespace', fu
                 'ref' => $this->latticeRef($form),
                 'submitLabel' => null,
                 'validationSummaryLabel' => 'Fix these fields to continue:',
+                'async' => false,
                 'precognitive' => false,
                 'validationTimeout' => null,
                 'submitButton' => true,
