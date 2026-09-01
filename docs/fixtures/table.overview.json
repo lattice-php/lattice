@@ -76,7 +76,7 @@
                         "sortable": true,
                         "toggleable": false,
                         "unit": null,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.number"
                 },
@@ -104,7 +104,7 @@
                         "pinned": null,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "xs"
                     },
                     "type": "column.boolean"
                 },

@@ -37,7 +37,7 @@ it('serializes the table component wire shape', function (): void {
         'width' => 'lg',
         'sortable' => true,
     ]);
-    expect($payload['props']['columns'][1]['props']['width'])->toBe('md');
+    expect($payload['props']['columns'][1]['props']['width'])->toBe('sm');
     expect($payload['props']['columns'][0]['props'])->toHaveKey('filter');
     expect($payload['props']['data'])->toBe([['name' => 'A'], ['name' => 'B']]);
     expect($payload['props']['query'])->toBe([

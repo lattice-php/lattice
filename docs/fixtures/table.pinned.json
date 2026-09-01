@@ -61,7 +61,7 @@
                         "sortable": false,
                         "toggleable": false,
                         "unit": null,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.number"
                 },
@@ -88,7 +88,7 @@
                         "pinned": "right",
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.badge"
                 }

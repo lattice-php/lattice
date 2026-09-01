@@ -5,10 +5,13 @@ namespace Lattice\Table\Columns;
 
 use Lattice\Table\Attributes\AsColumn;
 use Lattice\Table\Enums\ColumnType;
+use Lattice\Ui\Enums\ColumnWidth;
 
 #[AsColumn(ColumnType::Image)]
 final class ImageColumn extends Column
 {
+    public ColumnWidth $width = ColumnWidth::Xs;
+
     public bool $circular = false;
 
     public ?int $size = null;

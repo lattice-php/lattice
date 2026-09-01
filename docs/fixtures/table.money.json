@@ -41,7 +41,7 @@
                         "pinned": null,
                         "sortable": true,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.money"
                 },
@@ -61,7 +61,7 @@
                         "pinned": null,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.money"
                 }
