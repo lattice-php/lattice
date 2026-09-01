@@ -7,7 +7,6 @@ export type ComponentPropsMap = {
 };
 export type FormFieldNodeType = "field.tree";
 export type FormNodeType = "field.tree";
-export type NodeType = "field.tree" | "tree";
 export type Tree = {
     activeId: string | null;
     activePath: string[] | null;
@@ -60,3 +59,4 @@ export type TreeNodeData = {
     readonly label: string;
     readonly schema: Node[];
 };
+export type TreeNodeType = "tree";

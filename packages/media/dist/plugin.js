@@ -10058,10 +10058,7 @@ function Zd({ libraryNode: e, multiple: t, disabled: n, onUploaded: r }) {
 }
 var Qd, $d = C((() => {
 	E(), Ld(), kd(), Md(), Qd = ({ node: e }) => {
-		let { t } = (0, T.useT)("media"), n = e.props, r = (0, T.useModal)(), [i, a] = f((n.selected ?? []).map((e) => ({
-			...e,
-			values: e.values ?? {}
-		}))), o = d(i);
+		let { t } = (0, T.useT)("media"), n = e.props, r = (0, T.useModal)(), [i, a] = f(n.selected ?? []), o = d(i);
 		o.current = i;
 		let s = e.schema?.find((e) => e.type === "media.library"), c = e.schema?.filter((e) => e.type !== "media.library") ?? [], l = c.length > 0, u = n.multiple, p = n.maxFiles, m = u && p !== null ? Math.max(0, p - i.length) : void 0;
 		return /* @__PURE__ */ _(T.SimpleField, {

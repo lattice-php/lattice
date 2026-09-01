@@ -48,4 +48,3 @@ export type BoardResult = {
 export type ComponentPropsMap = {
     board: Board;
 };
-export type NodeType = "board";

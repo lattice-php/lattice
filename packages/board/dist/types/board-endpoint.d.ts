@@ -1,7 +1,5 @@
-export type BoardQueryState = {
-    q: string;
-    tf: Record<string, unknown>;
-};
+import { Board } from './generated';
+export type BoardQueryState = Board["query"];
 export declare function emptyBoardQuery(): BoardQueryState;
 /**
  * The params a URL-synced board writes back: `q` and `tf`, omitted when

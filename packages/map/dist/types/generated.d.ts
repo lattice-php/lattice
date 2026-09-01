@@ -33,7 +33,6 @@ export type MarkerData = {
     readonly schema: Node[];
     readonly type: FeatureType;
 };
-export type NodeType = "map";
 export type RouteData = {
     readonly color: Color | null;
     readonly id: string;
