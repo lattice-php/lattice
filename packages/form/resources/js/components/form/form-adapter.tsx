@@ -307,6 +307,7 @@ function FormShell({ children, node }: { children: React.ReactNode; node: Node<"
       data-test={node.id}
       errorBag={errorBag}
       method={method}
+      options={{ preserveScroll: true }}
       resetOnError={resetOnError}
       resetOnSuccess={resetOnSuccess}
       validationTimeout={precognitive ? validationTimeout : undefined}
