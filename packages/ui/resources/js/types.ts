@@ -8,12 +8,15 @@ declare module "@lattice-php/core" {
 export type { Affix, Color, ColorKind, ColorName } from "@lattice-php/core";
 export type {
   Align,
+  AvatarShape,
   Breakpoint,
   Callout,
   ColumnWidth,
   ComponentPropsMap,
   DateFormat,
   DateTimeStyle,
+  Gap,
+  Height,
   HttpMethod,
   Justify,
   ModalHeight,
@@ -22,12 +25,17 @@ export type {
   NumberFormatUnit,
   Orientation,
   Placement,
+  ProgressShape,
   RetractCallout,
   Side,
   Size,
+  StackDirection,
+  TabsAlignment,
+  TextAlign,
   Toast,
   Translatable,
   UiNodeType,
+  Width,
 } from "./generated";
 
 export type UiNode = NodeUnionOf<UiNodeType>;

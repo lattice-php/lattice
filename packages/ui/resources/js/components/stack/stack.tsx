@@ -4,38 +4,30 @@ import { justifyClasses } from "../../lib/justify";
 import { useStickyOffsetPublisher } from "../../lib/use-sticky-offset";
 import { cn } from "../../lib/utils";
 
-export type StackAlign = Align;
-export type { StackDirection } from "../../generated";
-export type StackGap = Gap;
-export type StackHeight = Height;
-export type StackJustify = Justify;
-export type StackSide = Side;
-export type StackWidth = Width;
-
 export type StackProps = Omit<ComponentProps<"div">, "align"> & {
-  align?: StackAlign;
+  align?: Align;
   direction?: StackDirection;
-  float?: StackSide;
-  gap?: StackGap;
-  height?: StackHeight;
-  justify?: StackJustify;
+  float?: Side;
+  gap?: Gap;
+  height?: Height;
+  justify?: Justify;
   sticky?: boolean;
-  width?: StackWidth;
+  width?: Width;
 };
 
-const gridAlignments: Partial<Record<StackAlign, string>> = {
+const gridAlignments: Record<Align, string> = {
   center: "justify-items-center text-center",
   start: "justify-items-start text-left",
   stretch: "justify-items-stretch",
 };
 
-const flexAlignments: Partial<Record<StackAlign, string>> = {
+const flexAlignments: Record<Align, string> = {
   center: "items-center text-center",
   start: "items-center text-left",
   stretch: "items-stretch justify-stretch",
 };
 
-export const stackGaps: Record<StackGap, string> = {
+export const stackGaps: Record<Gap, string> = {
   none: "gap-0",
   xs: "gap-1",
   sm: "gap-2",
@@ -44,7 +36,7 @@ export const stackGaps: Record<StackGap, string> = {
   xl: "gap-8",
 };
 
-const stackWidths: Record<StackWidth, string> = {
+const stackWidths: Record<Width, string> = {
   full: "w-full",
   auto: "w-auto",
   sm: "mx-auto w-full max-w-md",
@@ -54,12 +46,12 @@ const stackWidths: Record<StackWidth, string> = {
   fill: "min-w-0 flex-1",
 };
 
-const stackHeights: Record<StackHeight, string> = {
+const stackHeights: Record<Height, string> = {
   full: "h-full",
   screen: "min-h-screen",
 };
 
-const floatClasses: Record<StackSide, string> = {
+const floatClasses: Record<Side, string> = {
   start: "mr-auto",
   end: "ml-auto",
 };
@@ -94,9 +86,7 @@ export function Stack({
       ref={ref}
       className={cn(
         isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid content-start",
-        isFlex
-          ? (flexAlignments[align] ?? flexAlignments.stretch)
-          : (gridAlignments[align] ?? gridAlignments.stretch),
+        isFlex ? flexAlignments[align] : gridAlignments[align],
         stackGaps[gap],
         stackWidths[width],
         justify ? justifyClasses[justify] : null,

@@ -13,25 +13,22 @@ import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { Input } from "@lattice-php/form/primitives/input";
 import type { ColumnAlign, ColumnPin, SortDirection } from "../generated";
 
-export type DataTableAlign = ColumnAlign;
-export type DataTablePinSide = ColumnPin;
 export type DataTablePinBoundary = "start" | "end";
 export type DataTableTrack = "column" | "expander" | "selection" | "actions" | "filler";
-export type DataTableSortDirection = SortDirection;
 
-const alignText: Record<DataTableAlign, string> = {
+const alignText: Record<ColumnAlign, string> = {
   start: "text-start",
   center: "text-center",
   end: "text-end",
 };
 
-const alignJustify: Record<DataTableAlign, string> = {
+const alignJustify: Record<ColumnAlign, string> = {
   start: "justify-start",
   center: "justify-center",
   end: "justify-end",
 };
 
-const alignJustifyItems: Record<DataTableAlign, string> = {
+const alignJustifyItems: Record<ColumnAlign, string> = {
   start: "justify-items-start",
   center: "justify-items-center",
   end: "justify-items-end",
@@ -80,7 +77,7 @@ export function pinBoundaryClassName(
 type PinProps = {
   pinBoundary?: DataTablePinBoundary;
   pinIndex?: number;
-  pinned?: DataTablePinSide;
+  pinned?: ColumnPin;
 };
 
 function pinOffsetStyle(
@@ -337,7 +334,7 @@ const headerCellClassName: Record<DataTableTrack, string> = {
 };
 
 function ariaSort(
-  direction: DataTableSortDirection | null | undefined,
+  direction: SortDirection | null | undefined,
 ): "ascending" | "descending" | undefined {
   if (direction === "asc") {
     return "ascending";
@@ -352,10 +349,10 @@ function ariaSort(
 
 export type DataTableHeaderCellProps = ComponentProps<"div"> &
   PinProps & {
-    align?: DataTableAlign;
+    align?: ColumnAlign;
     bottomBordered?: boolean;
     kind?: DataTableTrack;
-    sortDirection?: DataTableSortDirection | null;
+    sortDirection?: SortDirection | null;
   };
 
 export function DataTableHeaderCell({
@@ -394,7 +391,7 @@ export function DataTableHeaderCell({
   );
 }
 
-function SortIndicator({ direction }: { direction: DataTableSortDirection | null | undefined }) {
+function SortIndicator({ direction }: { direction: SortDirection | null | undefined }) {
   if (direction === "asc") {
     return <Icon name="arrow-up" aria-hidden="true" className="size-lt-icon-sm shrink-0" />;
   }
@@ -413,8 +410,8 @@ function SortIndicator({ direction }: { direction: DataTableSortDirection | null
 }
 
 export type DataTableSortButtonProps = ComponentProps<"button"> & {
-  align?: DataTableAlign;
-  direction?: DataTableSortDirection | null;
+  align?: ColumnAlign;
+  direction?: SortDirection | null;
 };
 
 export function DataTableSortButton({
@@ -441,7 +438,7 @@ export function DataTableSortButton({
 }
 
 export type DataTableHeaderLabelProps = ComponentProps<"span"> & {
-  align?: DataTableAlign;
+  align?: ColumnAlign;
 };
 
 export function DataTableHeaderLabel({
@@ -545,7 +542,7 @@ const bodyCellClassName: Record<DataTableTrack, string> = {
 
 export type DataTableCellProps = ComponentProps<"div"> &
   PinProps & {
-    align?: DataTableAlign;
+    align?: ColumnAlign;
     kind?: DataTableTrack;
     label?: ReactNode;
   };

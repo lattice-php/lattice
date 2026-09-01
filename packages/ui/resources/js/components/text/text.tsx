@@ -3,10 +3,7 @@ import { CopyableText } from "../../primitives/copyable-text";
 import { coerceColor, colorValue, namedColor } from "../../lib/color";
 import { cn } from "../../lib/utils";
 import type { Color } from "../../types";
-import type { Align, Size } from "../../generated";
-
-export type TextAlign = Extract<Align, "center" | "left">;
-export type TextSize = Size;
+import type { Size, TextAlign } from "../../generated";
 
 export type TextProps = Omit<ComponentProps<"p">, "children" | "color"> & {
   align?: TextAlign;
@@ -15,7 +12,7 @@ export type TextProps = Omit<ComponentProps<"p">, "children" | "color"> & {
   copyable?: boolean;
   copyLabel?: string;
   copyValue?: string;
-  size?: TextSize;
+  size?: Size;
 };
 
 const textAlignments: Record<TextAlign, string> = {
@@ -23,7 +20,7 @@ const textAlignments: Record<TextAlign, string> = {
   left: "text-left",
 };
 
-const textSizes: Record<TextSize, string> = {
+const textSizes: Record<Size, string> = {
   xs: "text-xs leading-5",
   sm: "text-sm leading-6",
   md: "text-base leading-7",

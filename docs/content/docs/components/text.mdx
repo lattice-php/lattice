@@ -37,11 +37,11 @@ Heading::make('sk-live-4242', 3)->copyable();
 - `->size(Size::…)` — text size (`Md` by default).
 - `->color()` — a colour name (`Color::success()`, `'success'`) or any CSS colour; text renders in
   the `muted` colour when unset.
-- `->align(Align::Center)` — alignment.
+- `->align(TextAlign::Center)` — alignment.
 - `->copyable()` — render a copy-to-clipboard affordance.
 
 ```php
-Text::make('Invoices are sent on the first of each month.')->align(Align::Center);
+Text::make('Invoices are sent on the first of each month.')->align(TextAlign::Center);
 ```
 
 ## Badge

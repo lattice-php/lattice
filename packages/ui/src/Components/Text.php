@@ -8,7 +8,7 @@ use Lattice\Ui\Components\Concerns\HasPrimaryBinding;
 use Lattice\Ui\Concerns\HasColor;
 use Lattice\Ui\Concerns\HasCopyable;
 use Lattice\Ui\Concerns\HasSize;
-use Lattice\Ui\Enums\Align;
+use Lattice\Ui\Enums\TextAlign;
 
 #[AsComponent('text')]
 class Text extends Component
@@ -20,7 +20,7 @@ class Text extends Component
 
     public string $text = '';
 
-    public ?Align $align = null;
+    public ?TextAlign $align = null;
 
     public static function make(string $text, ?string $key = null): static
     {
@@ -30,7 +30,7 @@ class Text extends Component
         return $component;
     }
 
-    public function align(Align $align): static
+    public function align(TextAlign $align): static
     {
         $this->align = $align;
 

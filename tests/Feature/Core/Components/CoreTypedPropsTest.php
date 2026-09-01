@@ -20,6 +20,7 @@ use Lattice\Ui\Enums\Side;
 use Lattice\Ui\Enums\Size;
 use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\TabsAlignment;
+use Lattice\Ui\Enums\TextAlign;
 use Lattice\Ui\Enums\Width;
 
 it('stack serializes enums direction and key wire-identically', function (): void {
@@ -248,7 +249,7 @@ it('serializes the justify prop', function (): void {
 it('serializes text size and color styling', function (): void {
     $data = wire(
         Text::make('Manuel Christlieb')
-            ->align(Align::Center)
+            ->align(TextAlign::Center)
             ->size(Size::Sm)
             ->color(Color::default()),
     );

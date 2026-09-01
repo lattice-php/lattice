@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import type { RemoteAccess } from "@lattice-php/core/api";
 import type { ResolveAccessToken } from "./access-token";
 import { parseOperation } from "./parse";
-import { RequestPlayground, type TwoColumnBreakpoint } from "./RequestPlayground";
+import type { Breakpoint } from "@lattice-php/ui";
+import { RequestPlayground } from "./RequestPlayground";
 
 type OperationViewProps = {
   spec: unknown;
@@ -12,7 +13,7 @@ type OperationViewProps = {
   remoteTokens?: RemoteAccess[] | null;
   resolveAccessToken?: ResolveAccessToken | null;
   expandDepth?: number;
-  twoColumnBreakpoint?: TwoColumnBreakpoint;
+  twoColumnBreakpoint?: Breakpoint;
   hideHeaderIdentity?: boolean;
 };
 

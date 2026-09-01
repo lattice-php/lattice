@@ -1,7 +1,8 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../../lib/utils";
-import { stackGaps, type StackGap } from "../stack/stack";
+import type { Gap } from "../../generated";
+import { stackGaps } from "../stack/stack";
 
 type AccordionContextValue = {
   items: readonly string[];
@@ -14,7 +15,7 @@ const AccordionContext = createContext<AccordionContextValue | null>(null);
 export type AccordionProps = Omit<ComponentProps<"div">, "children"> & {
   children?: ReactNode;
   defaultOpen?: string | null;
-  gap?: StackGap;
+  gap?: Gap;
   items: readonly string[];
 };
 

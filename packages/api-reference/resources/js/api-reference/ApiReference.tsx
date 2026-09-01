@@ -9,7 +9,7 @@ import { operationToMarkdown } from "./operation-markdown";
 import { OperationView } from "./OperationView";
 import { buildNavigation, filterNavigationByTags, parseOperation } from "./parse";
 import { operationUrl } from "./request-builder";
-import type { TwoColumnBreakpoint } from "./RequestPlayground";
+import type { Breakpoint } from "@lattice-php/ui";
 import { ServerPicker } from "./ServerPicker";
 import type { ApiInfo, Navigation } from "./types";
 
@@ -29,7 +29,7 @@ export type ApiReferenceProps = {
   /** Overrides the spec's info.title in the header. */
   title?: string | null;
   expandDepth?: number;
-  twoColumnBreakpoint?: TwoColumnBreakpoint;
+  twoColumnBreakpoint?: Breakpoint;
   /** Pre-fills the playground's bearer token. */
   token?: string | null;
   /** Sealed per-scope-set token accesses; execute fetches a scoped token lazily. Wins over token. */
