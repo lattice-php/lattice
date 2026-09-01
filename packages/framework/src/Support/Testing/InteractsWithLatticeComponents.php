@@ -61,6 +61,7 @@ trait InteractsWithLatticeComponents
             $component['props']['action'],
             $data,
             $this->latticeRef($component),
+            asInertia: ! ($component['props']['async'] ?? false),
         );
     }
 
@@ -331,12 +332,21 @@ trait InteractsWithLatticeComponents
     }
 
     /**
+     * A non-async form is submitted by Inertia's `<Form>` in the browser, so the
+     * simulated request carries the `X-Inertia` header and exercises the redirect
+     * branch of LatticeResponse; an async form submits as a plain JSON fetch and
+     * receives its effects as a JSON body instead.
+     *
      * @param  array<string, mixed>  $data
      * @return LatticeTestResponse<Response>
      */
-    private function latticeRequest(string $method, string $url, array $data, string $ref): LatticeTestResponse
+    private function latticeRequest(string $method, string $url, array $data, string $ref, bool $asInertia = false): LatticeTestResponse
     {
         $headers = $this->latticeHeaders($ref);
+
+        if ($asInertia) {
+            $headers['X-Inertia'] = 'true';
+        }
 
         $response = match (strtolower($method)) {
             'put' => $this->putJson($url, $data, $headers),
