@@ -130,6 +130,23 @@ test('an async form submit gets its effects as json instead of a redirect', func
     expect(session('handled-async-form'))->toBe('Taylor');
 });
 
+test('the submit helper keeps the redirect flow for a non-async form returning effects', function (): void {
+    Lattice::forms([WorkbenchEffectsProfileForm::class]);
+
+    $this->submitForm(WorkbenchEffectsProfileForm::class, ['name' => 'Taylor'])
+        ->assertRedirect();
+
+    expect(session('handled-effects-form'))->toBe('Taylor');
+});
+
+test('the submit helper receives effects json for an async form', function (): void {
+    Lattice::forms([WorkbenchAsyncProfileForm::class]);
+
+    $this->submitForm(WorkbenchAsyncProfileForm::class, ['name' => 'Taylor'])
+        ->assertOk()
+        ->assertJsonPath('effects.0.type', 'toast');
+});
+
 test('registered forms receive the current request while serializing definitions', function (): void {
     Lattice::forms([WorkbenchRequestAwareForm::class]);
 
@@ -186,6 +203,24 @@ class WorkbenchProfileForm extends FormDefinition
         $request->session()->put('handled-form-team', $this->context('team'));
 
         return redirect('/submitted');
+    }
+}
+
+#[AsForm('workbench.effects-profile')]
+class WorkbenchEffectsProfileForm extends FormDefinition
+{
+    public function definition(Form $form, Request $request): Form
+    {
+        return $form->schema([
+            TextInput::make('name', 'Name'),
+        ]);
+    }
+
+    public function handle(Request $request): LatticeResponse
+    {
+        $request->session()->put('handled-effects-form', $request->string('name')->toString());
+
+        return Effects::respond()->toast('Saved.');
     }
 }
 
