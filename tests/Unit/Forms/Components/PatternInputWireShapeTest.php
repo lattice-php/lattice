@@ -21,8 +21,17 @@ it('serializes tokens inside props and echoes the separator', function (): void 
     expect($wire['type'])->toBe('field.pattern-input')
         ->and($wire['props']['name'])->toBe('pattern')
         ->and($wire['props']['separator'])->toBe('-')
+        ->and($wire['props']['multiline'])->toBeFalse()
+        ->and($wire['props']['rows'])->toBeNull()
         ->and($wire['props']['tokens'])->toHaveCount(2)
         ->and($wire['props']['tokens'][0]['name'])->toBe('NUMBER')
         ->and($wire['props']['tokens'][0]['schema'][0]['props']['name'])->toBe('padding')
         ->and($wire['props']['tokens'][1]['name'])->toBe('YYYY');
+});
+
+it('serializes the multiline flag and row count', function (): void {
+    $wire = wire(PatternInput::make('pattern')->multiline()->rows(5));
+
+    expect($wire['props']['multiline'])->toBeTrue()
+        ->and($wire['props']['rows'])->toBe(5);
 });

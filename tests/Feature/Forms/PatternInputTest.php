@@ -66,6 +66,34 @@ it('rejects a pattern value that is neither an array nor a JSON-encoded array st
         ->toThrow(ValidationException::class);
 });
 
+it('keeps leading and trailing whitespace of text segments submitted as the JSON wire string', function (): void {
+    // The client submits JSON.stringify(segments) precisely so TrimStrings
+    // cannot strip whitespace (or multiline \n boundaries) from leaf values.
+    $request = Request::create('/', 'POST', ['pattern' => json_encode([
+        ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '4']],
+        ['type' => 'text', 'value' => ' - '],
+        ['type' => 'token', 'token' => 'YYYY'],
+    ])]);
+
+    $validated = (new FieldValidator)->validate([documentNumberPattern()], $request);
+
+    expect($validated['pattern'][1])->toBe(['type' => 'text', 'value' => ' - ']);
+});
+
+it('casts a multiline pattern through with its line breaks intact', function (): void {
+    $request = Request::create('/', 'POST', ['pattern' => [
+        ['type' => 'text', 'value' => "Muster GmbH\nMusterweg 1"],
+        ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '4']],
+    ]]);
+
+    $validated = (new FieldValidator)->validate([documentNumberPattern()->multiline()], $request);
+
+    expect($validated['pattern'])->toBe([
+        ['type' => 'text', 'value' => "Muster GmbH\nMusterweg 1"],
+        ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '4']],
+    ]);
+});
+
 it('drops a segment for a token no longer declared on the field', function (): void {
     $field = documentNumberPattern();
 
