@@ -159,7 +159,7 @@ abstract class RowsField extends Field implements ProvidesRowFields
         $originals = array_values($value);
 
         return array_map(
-            fn (array $castRow, mixed $original): array => $this->castRow($castRow, $original),
+            $this->castRow(...),
             $this->castRows($originals),
             $originals,
         );

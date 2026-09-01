@@ -97,14 +97,14 @@ export function treeItemDropTarget(options: {
 export function dropIndicatorClass(instruction: TreeItemInstruction["type"] | null): string | null {
   switch (instruction) {
     case "reorder-above":
-      return "border-t-lt-primary";
+      return "relative before:absolute before:inset-x-0 before:-top-px before:h-0.5 before:bg-lt-primary";
     case "reorder-below":
-      return "border-b-lt-primary";
+      return "relative after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-lt-primary";
     case "make-child":
     case "reparent":
-      return "ring-1 ring-lt-primary";
+      return "bg-lt-primary/10";
     case "instruction-blocked":
-      return "ring-1 ring-lt-danger/50";
+      return "bg-lt-danger/10";
     default:
       return null;
   }

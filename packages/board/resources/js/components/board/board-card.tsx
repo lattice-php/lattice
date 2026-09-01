@@ -10,11 +10,9 @@ import {
   combine,
   draggable,
   dropTargetForElements,
-  extractClosestEdge,
-  pointerOutsideOfPreview,
+  preserveOffsetOnSource,
   setCustomNativeDragPreview,
 } from "@lattice-php/lattice/dnd";
-import type { Edge } from "@lattice-php/lattice/dnd";
 import { boardCardDragData, boardCardDropTargetData, boardDragSource } from "../../board-dnd";
 import { BOARD_FOCUS_KEYS, type BoardFocusDirection } from "../../board-keyboard";
 import { getCardActions, getCardUrl, type BoardCard } from "../../board-store";
@@ -27,17 +25,6 @@ const CARD_INTERACTIVE_SELECTOR =
 
 function isCardInteractiveTarget(target: EventTarget | null): boolean {
   return target instanceof Element && target.closest(CARD_INTERACTIVE_SELECTOR) !== null;
-}
-
-function dropIndicatorClass(edge: Edge | null): string | null {
-  switch (edge) {
-    case "top":
-      return "border-t-lt-primary";
-    case "bottom":
-      return "border-b-lt-primary";
-    default:
-      return null;
-  }
 }
 
 export type BoardCardItemProps = {
@@ -76,7 +63,6 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
 ) {
   const elementRef = useRef<HTMLLIElement>(null);
   const [dragging, setDragging] = useState(false);
-  const [edge, setEdge] = useState<Edge | null>(null);
   const { visit } = useNavigation();
   const runAction = useCallAction();
   const url = getCardUrl(card);
@@ -173,9 +159,9 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
         getInitialData: () => boardCardDragData({ columnKey, id: cardId }),
         onDragStart: () => setDragging(true),
         onDrop: () => setDragging(false),
-        onGenerateDragPreview: ({ nativeSetDragImage }) => {
+        onGenerateDragPreview: ({ location, nativeSetDragImage }) => {
           setCustomNativeDragPreview({
-            getOffset: pointerOutsideOfPreview({ x: "16px", y: "8px" }),
+            getOffset: preserveOffsetOnSource({ element, input: location.current.input }),
             nativeSetDragImage,
             render: ({ container }) => {
               const clone = element.cloneNode(true) as HTMLElement;
@@ -197,10 +183,7 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
         element,
         getData: ({ element: target, input }) =>
           boardCardDropTargetData({ cardId, columnKey }, { element: target, input }),
-        onDrag: ({ self }) => setEdge(extractClosestEdge(self.data)),
-        onDragEnter: ({ self }) => setEdge(extractClosestEdge(self.data)),
-        onDragLeave: () => setEdge(null),
-        onDrop: () => setEdge(null),
+        getIsSticky: () => true,
       }),
     );
   }, [canMove, cardId, columnKey, moving]);
@@ -213,9 +196,7 @@ export const BoardCardItem = forwardRef<HTMLLIElement, BoardCardItemProps>(funct
         canMove && "cursor-grab",
         (url || cardAction) && "cursor-pointer",
         dragging && "opacity-50",
-        dropIndicatorClass(edge),
       )}
-      data-drop-instruction={edge ?? undefined}
       data-test={testId}
       onAuxClick={handleAuxClick}
       onClick={handleClick}
