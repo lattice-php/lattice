@@ -52,6 +52,15 @@ either literal text or a placed token:
 Reading this array is application logic — the field itself has no opinion on how a pattern like
 this turns into an actual document number.
 
+On a [multiline](#multiline) field, line breaks appear as `\n` inside text segments; single-line
+fields reject values containing `\n`.
+
+On the wire the client submits the segments as one JSON-encoded string — deliberately, so Laravel's
+`TrimStrings` middleware cannot strip leading/trailing whitespace (or multiline `\n` boundaries)
+from individual text segments. Server-side casting always hands your `handle()` the decoded array,
+but a `->dependsOn()` closure sees the raw wire value — run it through `PatternSegments::decode()`
+before reading segments.
+
 ## Tokens
 
 `->tokens()` takes the list of token types the pattern offers. Each is a `PatternToken::make($name)`
@@ -98,6 +107,20 @@ patterns, not a stored or validated part of the value:
 
 ```php
 PatternInput::make('pattern')->separator('-');
+```
+
+## Multiline
+
+`->multiline()` lets Enter start a new line — the pattern becomes a small block of text with chips,
+for content like an address footer built from variables. Line breaks are stored as `\n` inside text
+segments, so the wire format is unchanged. `->rows()` sets the minimum visible height in text rows
+(defaults to 3):
+
+```php
+PatternInput::make('footer')
+    ->tokens([...])
+    ->multiline()
+    ->rows(5);
 ```
 
 ## Common options

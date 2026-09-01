@@ -1,4 +1,4 @@
-import { page } from "vitest/browser";
+import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-react";
 import { describe, expect, it } from "vitest";
 import { fakeNode } from "@lattice-php/core/test-support";
@@ -21,7 +21,7 @@ function paddingField(): Node {
   });
 }
 
-function patternInputNode(): Node<"field.pattern-input"> {
+function patternInputNode(extraProps: Record<string, unknown> = {}): Node<"field.pattern-input"> {
   return fakeNode({
     type: "field.pattern-input",
     props: {
@@ -32,15 +32,22 @@ function patternInputNode(): Node<"field.pattern-input"> {
         { name: "NUMBER", label: "Number", schema: [paddingField()] },
         { name: "YYYY", label: "Year", schema: [] },
       ],
+      ...extraProps,
     },
   });
 }
 
-function renderPatternInput(initial: Record<string, unknown> = {}) {
+function renderPatternInput(
+  initial: Record<string, unknown> = {},
+  extraProps: Record<string, unknown> = {},
+) {
   return render(
-    formFrame(<PatternInputAdapter node={patternInputNode()}>{null}</PatternInputAdapter>, {
-      initial,
-    }),
+    formFrame(
+      <PatternInputAdapter node={patternInputNode(extraProps)}>{null}</PatternInputAdapter>,
+      {
+        initial,
+      },
+    ),
   );
 }
 
@@ -87,6 +94,45 @@ describe("PatternInputAdapter in a browser", () => {
     expect(segments).toContainEqual({ type: "text", value: "RE-" });
     expect(segments).toContainEqual({ type: "token", token: "YYYY", config: {} });
     expect(segments).toContainEqual({ type: "token", token: "NUMBER", config: { padding: "4" } });
+  });
+
+  it("splits lines on enter in a multiline editor", async () => {
+    const screen = await renderPatternInput({}, { multiline: true, rows: 3 });
+
+    const editable = screen.container.querySelector('[contenteditable="true"]');
+    expect(editable).not.toBeNull();
+    await userEvent.click(editable as Element);
+    await userEvent.keyboard("one{Enter}two");
+
+    const input = await findNamedInput("pattern");
+    await expect.poll(() => JSON.parse(input.value)).toEqual([{ type: "text", value: "one\ntwo" }]);
+  });
+
+  it("renders a seeded multiline value as paragraphs", async () => {
+    const screen = await renderPatternInput(
+      { pattern: [{ type: "text", value: "one\ntwo" }] },
+      { multiline: true },
+    );
+
+    await expect.element(page.getByText("two")).toBeVisible();
+    expect(screen.container.querySelectorAll('[contenteditable="true"] p')).toHaveLength(2);
+  });
+
+  it("keeps swallowing enter and strips seeded line breaks in a single-line editor", async () => {
+    const screen = await renderPatternInput({ pattern: [{ type: "text", value: "one\ntwo" }] });
+
+    expect(screen.container.querySelectorAll('[contenteditable="true"] p')).toHaveLength(1);
+
+    const editable = screen.container.querySelector('[contenteditable="true"]');
+    await userEvent.click(editable as Element);
+    await userEvent.keyboard("{Enter}x");
+
+    const input = await findNamedInput("pattern");
+    await expect
+      .poll(() =>
+        (JSON.parse(input.value) as { value: string }[]).map((segment) => segment.value).join(""),
+      )
+      .not.toContain("\n");
   });
 
   it("changes a token's config through its popover", async () => {

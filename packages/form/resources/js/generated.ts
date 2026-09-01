@@ -465,11 +465,13 @@ export type PatternInput = {
   helperText: string | null;
   label: string | null;
   labelAction: Node | null;
+  multiline: boolean;
   name: string;
   prefillRefreshOn: string[] | null;
   prefillResetOn: string[] | null;
   readOnly: boolean;
   required: boolean;
+  rows: number | null;
   separator: string;
   tokens: PatternTokenData[];
   tooltip: string | null;

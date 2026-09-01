@@ -631,6 +631,12 @@ return [
                     'title' => 'Start-Sheet',
                     'trigger' => 'Start-Sheet öffnen',
                 ],
+                'max' => [
+                    'body' => 'Ein Modal in maximaler Breite und Höhe, das den Viewport mit kleinem Rand füllt.',
+                    'description' => 'Breite und Höhe auf max gesetzt.',
+                    'title' => 'Max-Modal',
+                    'trigger' => 'Max-Modal öffnen',
+                ],
                 'title' => 'Modals & Sheets',
             ],
             'notifications' => [

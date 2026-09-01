@@ -31,6 +31,21 @@ describe("ModalAdapter", () => {
     expect(screen.queryByText("Welcome")).not.toBeInTheDocument();
   });
 
+  it("fills the viewport at width and height max", () => {
+    renderModal(
+      fakeNode({
+        type: "modal",
+        id: "welcome",
+        props: { title: "Welcome", width: "max", height: "max" },
+      }),
+    );
+
+    const content = document.querySelector('[data-slot="dialog-content"]');
+    expect(content).toHaveClass("max-w-[calc(100vw-2rem)]");
+    expect(content).toHaveClass("h-[calc(100vh-2rem)]");
+    expect(content).toHaveClass("max-h-[calc(100vh-2rem)]");
+  });
+
   it("tells the host to close when the dialog close button is clicked", () => {
     const onOpenChange = renderModal(
       fakeNode({ type: "modal", id: "welcome", props: { title: "Welcome" } }),

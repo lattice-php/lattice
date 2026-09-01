@@ -11,6 +11,7 @@ use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\ModalHeight;
 use Lattice\Ui\Enums\ModalWidth;
 use Lattice\Ui\Enums\Side;
 use Lattice\Ui\Enums\StackDirection;
@@ -66,6 +67,17 @@ final class ModalsPage extends WorkbenchPage
                                         ->slideOut(Side::Start)
                                         ->schema([
                                             Text::make(__('workbench.pages.components.modals.sheet-start.body')),
+                                        ]),
+                                ),
+                            Button::make(__('workbench.pages.components.modals.max.trigger'), 'open-max')
+                                ->modal(
+                                    Modal::make('demo-max')
+                                        ->title(__('workbench.pages.components.modals.max.title'))
+                                        ->description(__('workbench.pages.components.modals.max.description'))
+                                        ->width(ModalWidth::Max)
+                                        ->height(ModalHeight::Max)
+                                        ->schema([
+                                            Text::make(__('workbench.pages.components.modals.max.body')),
                                         ]),
                                 ),
                             Action::use(SubmitFeedbackAction::class),

@@ -878,6 +878,18 @@
             {
                 "name": "Xl3",
                 "value": "3xl"
+            },
+            {
+                "name": "Xl4",
+                "value": "4xl"
+            },
+            {
+                "name": "Xl5",
+                "value": "5xl"
+            },
+            {
+                "name": "Max",
+                "value": "max"
             }
         ],
         "name": "ModalHeight",
@@ -908,6 +920,26 @@
             {
                 "name": "Xl3",
                 "value": "3xl"
+            },
+            {
+                "name": "Xl4",
+                "value": "4xl"
+            },
+            {
+                "name": "Xl5",
+                "value": "5xl"
+            },
+            {
+                "name": "Xl6",
+                "value": "6xl"
+            },
+            {
+                "name": "Xl7",
+                "value": "7xl"
+            },
+            {
+                "name": "Max",
+                "value": "max"
             }
         ],
         "name": "ModalWidth",

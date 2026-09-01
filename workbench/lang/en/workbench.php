@@ -631,6 +631,12 @@ return [
                     'title' => 'Start sheet',
                     'trigger' => 'Open start sheet',
                 ],
+                'max' => [
+                    'body' => 'A modal at maximum width and height, filling the viewport with a small inset.',
+                    'description' => 'Width and height set to max.',
+                    'title' => 'Max modal',
+                    'trigger' => 'Open max modal',
+                ],
                 'title' => 'Modals & sheets',
             ],
             'notifications' => [

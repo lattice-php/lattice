@@ -37,6 +37,10 @@ class PatternInput extends Field
 
     public string $separator = '';
 
+    public bool $multiline = false;
+
+    public ?int $rows = null;
+
     /**
      * @param  array<int, PatternToken>  $tokens
      */
@@ -72,6 +76,27 @@ class PatternInput extends Field
     }
 
     /**
+     * Allows line breaks: Enter splits the pattern into a new line, stored as
+     * `\n` inside text segments. Single-line fields reject `\n` instead.
+     */
+    public function multiline(bool $multiline = true): static
+    {
+        $this->multiline = $multiline;
+
+        return $this;
+    }
+
+    /**
+     * Minimum visible height of a multiline editor, in text rows.
+     */
+    public function rows(int $rows): static
+    {
+        $this->rows = $rows;
+
+        return $this;
+    }
+
+    /**
      * @return array<int, mixed>
      */
     #[\Override]
@@ -79,7 +104,7 @@ class PatternInput extends Field
     {
         return [
             ...parent::defaultRules(),
-            new PatternSegments($this->patternTokens, $this->requiredTokenNames),
+            new PatternSegments($this->patternTokens, $this->requiredTokenNames, $this->multiline),
         ];
     }
 
