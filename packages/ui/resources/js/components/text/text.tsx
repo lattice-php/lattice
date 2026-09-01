@@ -3,9 +3,10 @@ import { CopyableText } from "../../primitives/copyable-text";
 import { coerceColor, colorValue, namedColor } from "../../lib/color";
 import { cn } from "../../lib/utils";
 import type { Color } from "../../types";
+import type { Align, Size } from "../../generated";
 
-export type TextAlign = "center" | "left";
-export type TextSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+export type TextAlign = Extract<Align, "center" | "left">;
+export type TextSize = Size;
 
 export type TextProps = Omit<ComponentProps<"p">, "children" | "color"> & {
   align?: TextAlign;

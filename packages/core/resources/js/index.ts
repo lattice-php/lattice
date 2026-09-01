@@ -44,7 +44,7 @@ export {
   useComponentRegistry,
   useExtensionRegistry,
 } from "./registry-context";
-export { Renderer, RenderNode } from "./renderer";
+export { Renderer, RenderNode, type VisibilityBreakpoint } from "./renderer";
 export {
   leafTestIdentity,
   nodeIdentity,

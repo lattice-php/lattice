@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 import type { ReactNode } from "react";
 import type { Node, RendererComponent } from "@lattice-php/core";
 import type { WizardStep } from "../../generated";
+import type { Align } from "@lattice-php/ui";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { useT } from "@lattice-php/ui/i18n";
 import { Icon } from "@lattice-php/ui/icons";
@@ -15,7 +16,7 @@ import {
   stepValidationPaths,
 } from "../../lib/wizard-steps";
 
-const RAIL_ALIGNMENTS: Record<string, string> = {
+const RAIL_ALIGNMENTS: Record<Align, string> = {
   center: "justify-center",
   left: "justify-start",
   start: "justify-start",
