@@ -5,6 +5,7 @@ namespace Lattice\Http;
 
 use Lattice\Core\Attributes\TypeScript;
 use Lattice\Core\Breadcrumb;
+use Lattice\Core\Enums\PageWidth;
 use Lattice\Realtime\Listen;
 use Lattice\Ui\Components\Component;
 
@@ -24,7 +25,7 @@ final readonly class PagePayload
     public function __construct(
         public ?string $title,
         public ?PageLayoutPayload $layout,
-        public string $width,
+        public PageWidth $width,
         public array $breadcrumbs,
         public array $schema,
         public array $listeners,

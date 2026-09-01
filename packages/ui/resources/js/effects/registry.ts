@@ -3,8 +3,6 @@ import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { useExtensionRegistry } from "@lattice-php/core/registry-context";
 import { setLocale } from "../i18n/locale";
 
-export type { EffectOf, EffectProps, EffectPropsOf };
-
 export type EffectHandler<TType extends string = string> = (effect: EffectOf<TType>) => void;
 
 export type EffectHandlerRegistry = Record<string, EffectHandler>;

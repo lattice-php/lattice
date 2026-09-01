@@ -2,11 +2,12 @@ import { Fragment, lazy, Suspense } from "react";
 import type { ComponentProps } from "react";
 import type { Extension } from "@codemirror/state";
 import { cn } from "../../lib/utils";
+import type { CodeBlockLanguage } from "../../generated";
 import { CopyButton } from "../../primitives/copyable-text";
 
 const CodeBlockView = lazy(() => import("./code-block-view"));
 
-export type CodeBlockLanguage = "text" | "json" | "javascript" | "shell" | "php";
+export type { CodeBlockLanguage } from "../../generated";
 export type CodeBlockLanguageLoader = () => Promise<Extension>;
 
 export interface CodeBlockProps extends Omit<ComponentProps<"div">, "children"> {

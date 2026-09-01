@@ -7,10 +7,10 @@ use Lattice\Table\Columns\Concerns\IsFilterable;
 use Lattice\Table\Columns\Concerns\IsSortable;
 use Lattice\Table\Contracts\Filterable;
 use Lattice\Table\Contracts\Sortable;
-use Lattice\Table\Enums\ColumnAlign;
 use Lattice\Table\Enums\FilterType;
 use Lattice\Ui\Concerns\HasCopyable;
 use Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Ui\Enums\ContentAlign;
 
 abstract class NumericColumn extends Column implements Filterable, Sortable
 {
@@ -18,7 +18,7 @@ abstract class NumericColumn extends Column implements Filterable, Sortable
     use IsFilterable;
     use IsSortable;
 
-    public ColumnAlign $align = ColumnAlign::End;
+    public ContentAlign $align = ContentAlign::End;
 
     public ColumnWidth $width = ColumnWidth::Sm;
 

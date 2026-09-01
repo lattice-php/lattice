@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Lattice\ApiReference\ApiReference;
-use Lattice\Ui\Enums\Breakpoint;
+use Lattice\Core\Enums\Breakpoint;
 
 it('serializes the api-reference node', function (): void {
     $node = ApiReference::make()->url('/openapi.json')->jsonSerialize();

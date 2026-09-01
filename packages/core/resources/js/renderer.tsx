@@ -1,5 +1,6 @@
 import { memo, Suspense } from "react";
 import type { ReactNode } from "react";
+import type { Breakpoint } from "./generated";
 import type { Node } from "./types";
 import { nodeKey } from "./nodes";
 import { useCollapsed } from "./collapsed-context";
@@ -7,7 +8,7 @@ import { useComponentRegistry } from "./registry-context";
 
 const warnedMissingTypes = new Set<string>();
 
-export type VisibilityBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+export type VisibilityBreakpoint = Exclude<Breakpoint, "default">;
 
 const HIDDEN_FROM_CLASS: Record<VisibilityBreakpoint, string> = {
   sm: "sm:hidden",

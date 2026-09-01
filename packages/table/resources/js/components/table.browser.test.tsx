@@ -6,7 +6,7 @@ import { fakeNode } from "@lattice-php/core/test-support";
 import { col, tableNode } from "../test-support";
 import { TableComponent } from "./table";
 
-function wideColumns(pinnedIndexes: Partial<Record<number, "left" | "right">> = {}) {
+function wideColumns(pinnedIndexes: Partial<Record<number, "start" | "end">> = {}) {
   return Array.from({ length: 8 }, (_, index) =>
     col({
       key: `col${index}`,
@@ -337,9 +337,9 @@ describe("column pinning in a browser", () => {
     window.localStorage.clear();
   });
 
-  it("keeps a pinned-left column's cells fixed while unpinned columns scroll away, with an opaque background", async () => {
+  it("keeps a pinned-start column's cells fixed while unpinned columns scroll away, with an opaque background", async () => {
     const wideNode = node({
-      columns: wideColumns({ 2: "left" }),
+      columns: wideColumns({ 2: "start" }),
       data: [wideRow()],
     });
 
@@ -368,9 +368,9 @@ describe("column pinning in a browser", () => {
     expect(unpinnedCell.getBoundingClientRect().left).toBeLessThan(unpinnedCellLeftBefore);
   });
 
-  it("keeps row actions and a pinned-right column flush to the scroll port's right edge before and after scrolling", async () => {
+  it("keeps row actions and a pinned-end column flush to the scroll port's right edge before and after scrolling", async () => {
     const wideNode = node({
-      columns: wideColumns({ 6: "right" }),
+      columns: wideColumns({ 6: "end" }),
       data: [wideRow({ actions: [{ type: "unregistered-test-action", id: "a1", props: {} }] })],
     });
 
@@ -405,7 +405,7 @@ describe("column pinning in a browser", () => {
 
   it("keeps the selection checkbox column pinned to the scroll port's left edge while scrolling", async () => {
     const wideNode = node({
-      columns: wideColumns({ 3: "left" }),
+      columns: wideColumns({ 3: "start" }),
       data: [wideRow()],
       bulkActions: [
         fakeNode({
@@ -444,7 +444,7 @@ describe("column pinning in a browser", () => {
 
   it("paints the pinned header cell above columns scrolled underneath it", async () => {
     const wideNode = node({
-      columns: wideColumns({ 0: "left" }),
+      columns: wideColumns({ 0: "start" }),
       data: [wideRow()],
     });
 
@@ -470,7 +470,7 @@ describe("column pinning in a browser", () => {
 
   it("keeps table-grid-scroll as the containing block for pinned cells without leaking page overflow", async () => {
     const wideNode = node({
-      columns: wideColumns({ 0: "left", 7: "right" }),
+      columns: wideColumns({ 0: "start", 7: "end" }),
       data: [wideRow()],
     });
 
@@ -493,8 +493,8 @@ describe("column pinning in a browser", () => {
   it("shifts a later pinned-left column's position after resizing an earlier pinned-left column", async () => {
     const wideNode = node({
       columns: [
-        col({ key: "a", label: "A", width: "sm", pinned: "left" }),
-        col({ key: "b", label: "B", width: "sm", pinned: "left" }),
+        col({ key: "a", label: "A", width: "sm", pinned: "start" }),
+        col({ key: "b", label: "B", width: "sm", pinned: "start" }),
         ...Array.from({ length: 6 }, (_, index) =>
           col({ key: `col${index}`, label: `Column ${index}`, width: "md" }),
         ),

@@ -27,7 +27,7 @@ final readonly class AsPage implements DeclaresGate
         public ?string $route = null,
         public ?string $name = null,
         public PageLayout|string|null $layout = null,
-        public PageWidth|string|null $width = null,
+        public ?PageWidth $width = null,
         public array|string|null $middleware = null,
         string|BackedEnum|array $can = [],
     ) {

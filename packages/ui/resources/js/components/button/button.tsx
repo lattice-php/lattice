@@ -5,8 +5,6 @@ import type { Emphasis, Variant } from "../../generated";
 import { Icon } from "../../icons";
 import { cn } from "../../lib/utils";
 
-export type { Emphasis, Variant };
-
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lt-sm text-base font-medium transition-[color,box-shadow] disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-lt-icon-md [&_svg]:shrink-0 outline-none focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 focus-visible:ring-[length:var(--lt-ring-width)] aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger",
   {
@@ -18,7 +16,7 @@ const buttonVariants = cva(
           "border border-lt-input bg-lt-bg shadow-lt-xs hover:bg-lt-accent hover:text-lt-accent-fg disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:border-transparent disabled:shadow-none",
         ghost: "hover:bg-lt-accent hover:text-lt-accent-fg disabled:text-lt-disabled-fg",
         link: "underline-offset-4 hover:underline disabled:text-lt-disabled-fg disabled:no-underline",
-      },
+      } satisfies Record<Emphasis, string>,
       variant: {
         primary: "",
         secondary: "",
@@ -26,7 +24,7 @@ const buttonVariants = cva(
         info: "",
         warning: "",
         danger: "",
-      },
+      } satisfies Record<Variant, string>,
       size: {
         md: "h-lt-control-md px-4 py-2 has-[>svg]:px-3",
         sm: "h-lt-control-sm rounded-lt-sm px-3 has-[>svg]:px-2.5",

@@ -353,29 +353,6 @@ export type HiddenInput = {
   tooltip: string | null;
   value: unknown;
 };
-export type NodeType =
-  | "field.builder"
-  | "field.checkbox"
-  | "field.choice"
-  | "field.color-picker"
-  | "field.date-input"
-  | "field.date-time-input"
-  | "field.file-upload"
-  | "field.hidden-input"
-  | "field.number-input"
-  | "field.otp"
-  | "field.password-input"
-  | "field.pattern-input"
-  | "field.repeater"
-  | "field.rich-editor"
-  | "field.select"
-  | "field.text-input"
-  | "field.textarea"
-  | "field.time-input"
-  | "field.toggle"
-  | "form"
-  | "wizard"
-  | "wizard-step";
 export type NumberInput = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;

@@ -8,8 +8,8 @@ use Lattice\Ui\Enums\Align;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\Height;
 use Lattice\Ui\Enums\Justify;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Side;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Width;
 
 #[AsComponent('stack')]
@@ -25,7 +25,7 @@ class Stack extends ContainerComponent
 
     public ?Height $height = null;
 
-    public ?StackDirection $direction = null;
+    public ?Orientation $direction = null;
 
     public ?Side $float = null;
 
@@ -78,7 +78,7 @@ class Stack extends ContainerComponent
         return $this;
     }
 
-    public function direction(StackDirection $direction): static
+    public function direction(Orientation $direction): static
     {
         $this->direction = $direction;
 

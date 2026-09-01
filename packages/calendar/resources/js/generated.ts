@@ -28,7 +28,6 @@ export type CalendarView = "month" | "week" | "day" | "timeline";
 export type ComponentPropsMap = {
   calendar: Calendar;
 };
-export type NodeType = "calendar";
 export type ResourceGroupData = {
   readonly key: string;
   readonly label: string;

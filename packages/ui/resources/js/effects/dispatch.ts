@@ -3,8 +3,6 @@ import type { ActionResult, Effect } from "./types";
 import { builtinEffectHandlers } from "./registry";
 import type { EffectHandlerRegistry } from "./registry";
 
-export type ActionEffect = Effect;
-
 export type ActionResponse = Partial<ActionResult>;
 
 /**
@@ -13,7 +11,7 @@ export type ActionResponse = Partial<ActionResult>;
  * handlers. An effect with no handler is warned about (dev) and skipped.
  */
 export function dispatchEffects(
-  effects: ActionEffect[],
+  effects: Effect[],
   handlers: EffectHandlerRegistry = builtinEffectHandlers,
 ): void {
   if (typeof window === "undefined") {
@@ -40,7 +38,7 @@ export function dispatchActionError(error: unknown): void {
   window.dispatchEvent(new CustomEvent(LATTICE_EVENT.actionError, { detail: { error } }));
 }
 
-export function getActionEffects(effects: unknown): ActionEffect[] {
+export function getActionEffects(effects: unknown): Effect[] {
   return Array.isArray(effects) ? effects.filter(isActionEffect) : [];
 }
 
@@ -50,7 +48,7 @@ export function getActionEffects(effects: unknown): ActionEffect[] {
  * effects pass through getActionEffects() and reach their handlers. Dispatch warns
  * on (and skips) a type with no registered handler.
  */
-export function isActionEffect(effect: unknown): effect is ActionEffect {
+export function isActionEffect(effect: unknown): effect is Effect {
   return (
     typeof effect === "object" &&
     effect !== null &&

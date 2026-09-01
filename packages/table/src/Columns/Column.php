@@ -8,8 +8,6 @@ use JsonSerializable;
 use Lattice\Core\Attributes\WireEnvelope;
 use Lattice\Table\Contracts\Filterable;
 use Lattice\Table\Contracts\Sortable;
-use Lattice\Table\Enums\ColumnAlign;
-use Lattice\Table\Enums\ColumnPin;
 use Lattice\Table\RelationBinding;
 use Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Ui\Concerns\GatesRendering;
@@ -17,6 +15,8 @@ use Lattice\Ui\Concerns\HasLabel;
 use Lattice\Ui\Concerns\HasOptions;
 use Lattice\Ui\Contracts\Renderable;
 use Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Ui\Enums\ContentAlign;
+use Lattice\Ui\Enums\Side;
 
 /**
  * @phpstan-consistent-constructor
@@ -31,9 +31,9 @@ abstract class Column implements JsonSerializable, Renderable
 
     public ColumnWidth $width = ColumnWidth::Md;
 
-    public ColumnAlign $align = ColumnAlign::Start;
+    public ContentAlign $align = ContentAlign::Start;
 
-    public ?ColumnPin $pinned = null;
+    public ?Side $pinned = null;
 
     /** Generation-source declaration only; the wire value is computed in {@see self::decorateProps()}. */
     public bool $sortable = false;
@@ -108,14 +108,14 @@ abstract class Column implements JsonSerializable, Renderable
         return $this;
     }
 
-    public function align(ColumnAlign $align): static
+    public function align(ContentAlign $align): static
     {
         $this->align = $align;
 
         return $this;
     }
 
-    public function pinned(ColumnPin $pinned = ColumnPin::Left): static
+    public function pinned(Side $pinned = Side::Start): static
     {
         $this->pinned = $pinned;
 

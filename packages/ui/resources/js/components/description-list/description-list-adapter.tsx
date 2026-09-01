@@ -12,7 +12,7 @@ export const DescriptionListAdapter: RendererComponent<"description-list"> = ({
     data-test={nodeIdentity(node)}
     divided={node.props.divided}
     emptyLabel={node.props.emptyLabel}
-    semantic={node.props.semantic === "list" ? "list" : "description-list"}
+    semantic={node.props.semantic}
   >
     {children}
   </DescriptionList>

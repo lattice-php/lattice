@@ -8,6 +8,7 @@ import {
 import { useT } from "@lattice-php/ui/i18n";
 import { getColumnSort } from "@lattice-php/table/lib/query";
 import type { TableColumn, TableQuery } from "@lattice-php/table/types";
+import type { Side } from "@lattice-php/ui";
 
 export function ColumnHeader({
   bottomBordered,
@@ -24,7 +25,7 @@ export function ColumnHeader({
   column: TableColumn;
   pinBoundary?: DataTablePinBoundary;
   pinIndex?: number;
-  pinned?: "left" | "right";
+  pinned?: Side;
   processing: boolean;
   resizeHandleProps?: HTMLAttributes<HTMLDivElement>;
   sort: (column: TableColumn) => void;

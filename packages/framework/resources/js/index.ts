@@ -42,34 +42,14 @@ export { Renderer } from "@lattice-php/core/renderer";
 export { LATTICE_REF_HEADER, withRefHeader } from "@lattice-php/core/component-ref";
 export { withHeaders } from "@lattice-php/core/headers";
 export { LATTICE_EVENT } from "@lattice-php/core/event-names";
-export type { Emphasis } from "@lattice-php/ui/components/button/button";
+export type { Emphasis, Variant } from "@lattice-php/ui";
 export type { ReloadComponentEvent } from "@lattice-php/core/event-names";
-export type {
-  ComponentProps,
-  KnownPageWidth,
-  LayoutPayload,
-  Node,
-  NodeProps,
-  NodeType,
-  PageBreadcrumb,
-  PagePayload,
-  PageWidth,
-  ComponentPropsOf,
-  RendererComponent,
-  RendererComponentModule,
-  RendererComponentProps,
-  Schema,
-  UnknownComponent,
-} from "./types";
+export type * from "./types";
 export { RealtimeListeners } from "./realtime/listeners";
 export type { ChannelVisibility, Listen } from "./types/generated";
 export type { DateFormat, NumberFormat } from "@lattice-php/ui";
-export { columnCell } from "@lattice-php/table/registry";
-export type {
-  ColumnCellArgs,
-  ColumnCellComponent,
-  ColumnRegistry,
-} from "@lattice-php/table/registry";
+export { columnCell } from "@lattice-php/table";
+export type { ColumnCellArgs, ColumnCellComponent, ColumnRegistry } from "@lattice-php/table";
 export type {
   ColumnNode,
   ColumnProps,
@@ -77,16 +57,16 @@ export type {
   FilterNode,
   FilterProps,
   FilterPropsOf,
-} from "@lattice-php/table/types";
+} from "@lattice-php/table";
 export type { Method } from "@inertiajs/core";
-export type { ActionEffect, ActionResponse } from "@lattice-php/ui/effects/dispatch";
+export type { ActionResponse } from "@lattice-php/ui";
 export type {
   EffectHandler,
   EffectHandlerRegistry,
   EffectOf,
   EffectProps,
   EffectPropsOf,
-} from "@lattice-php/ui/effects/registry";
+} from "@lattice-php/ui";
 export type {
   EditorExtensionPayloadOf,
   EditorExtensionProps,

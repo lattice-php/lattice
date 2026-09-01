@@ -57,6 +57,7 @@ export * from "./components/text/text";
 export * from "./components/tooltip/tooltip";
 export * from "./components/topbar/topbar";
 export * from "./effects/dispatch";
+export type * from "./effects/types";
 export * from "./effects/registry";
 export * from "./effects/run-action";
 export * from "./effects/use-effect-dispatcher";

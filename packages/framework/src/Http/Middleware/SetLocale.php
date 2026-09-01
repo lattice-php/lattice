@@ -8,8 +8,8 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
-use Lattice\Http\I18nConfig;
 use Lattice\Ui\I18n\Contracts\HasTimezonePreference;
+use Lattice\Ui\I18n\I18nConfig;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SetLocale

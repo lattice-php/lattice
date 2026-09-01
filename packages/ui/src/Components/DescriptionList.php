@@ -6,6 +6,7 @@ namespace Lattice\Ui\Components;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Ui\Components\Entries\Entry;
+use Lattice\Ui\Enums\DescriptionListSemantic;
 
 /**
  * Label/value rows describing one subject.
@@ -25,7 +26,7 @@ class DescriptionList extends ContainerComponent
 
     public ?string $emptyLabel = null;
 
-    public string $semantic = 'description-list';
+    public DescriptionListSemantic $semantic = DescriptionListSemantic::DescriptionList;
 
     protected mixed $record = null;
 
@@ -109,7 +110,7 @@ class DescriptionList extends ContainerComponent
     {
         foreach ($this->entries() as $entry) {
             if ($entry->hasDisclosure()) {
-                $this->semantic = 'list';
+                $this->semantic = DescriptionListSemantic::List;
 
                 break;
             }

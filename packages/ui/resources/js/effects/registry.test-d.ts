@@ -1,10 +1,10 @@
-import type { EffectOf, EffectProps } from "./registry";
+import type { EffectOf, EffectProps } from "./types";
 
 const _redirect: EffectOf<"redirect"> = { type: "redirect", props: { url: "/next" } };
 // @ts-expect-error url must be a string, not a number
 const _redirectBad: EffectOf<"redirect"> = { type: "redirect", props: { url: 1 } };
 
-declare module "./registry" {
+declare module "./types" {
   interface EffectProps {
     confetti: { color: string };
   }

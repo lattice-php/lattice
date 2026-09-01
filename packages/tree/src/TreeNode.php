@@ -13,8 +13,8 @@ use Lattice\Ui\Components\Icon;
 use Lattice\Ui\Components\Link;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Side;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Width;
 
 final class TreeNode
@@ -238,7 +238,7 @@ final class TreeNode
 
         if ($this->actions !== null) {
             $schema[] = Stack::make()
-                ->direction(StackDirection::Row)
+                ->direction(Orientation::Horizontal)
                 ->width(Width::Auto)
                 ->float(Side::End)
                 ->schema([$this->actions]);

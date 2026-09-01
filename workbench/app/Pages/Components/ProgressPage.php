@@ -9,8 +9,8 @@ use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Progress;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Size;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
@@ -38,7 +38,7 @@ final class ProgressPage extends WorkbenchPage
                         ]),
                     Heading::make(__('workbench.pages.components.progress.circles'), 2),
                     Stack::make('progress-circles')
-                        ->direction(StackDirection::Row)
+                        ->direction(Orientation::Horizontal)
                         ->gap(Gap::Medium)
                         ->schema([
                             Progress::circle(25, 'progress-circle-primary')->showValue(),

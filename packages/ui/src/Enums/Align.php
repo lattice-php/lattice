@@ -9,6 +9,7 @@ use Lattice\Core\Attributes\TypeScript;
 enum Align: string
 {
     case Center = 'center';
+    case End = 'end';
     case Start = 'start';
     case Stretch = 'stretch';
 }

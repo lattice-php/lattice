@@ -5,6 +5,7 @@ use Illuminate\Support\Collection;
 use Lattice\Chat\Components\ChatBox;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Color;
+use Lattice\Core\Enums\Breakpoint;
 use Lattice\Core\Support\Affix;
 use Lattice\Ui\Components\Avatar;
 use Lattice\Ui\Components\Badge;
@@ -25,14 +26,12 @@ use Lattice\Ui\Components\Separator;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\AvatarShape;
-use Lattice\Ui\Enums\Breakpoint;
 use Lattice\Ui\Enums\CodeBlockLanguage;
 use Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\Icon;
 use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Size;
-use Lattice\Ui\Enums\StackDirection;
 
 test('lattice component factories stay open for extension', function (): void {
     $badgeClass = (new class extends Badge {})::class;
@@ -275,7 +274,7 @@ test('private serialization hooks are ignored', function (): void {
 });
 
 test('links and horizontal stacks serialize as separate composable primitives', function (): void {
-    expect(wire(Stack::make('prompt')->direction(StackDirection::Row)->gap(Gap::ExtraSmall)->schema([
+    expect(wire(Stack::make('prompt')->direction(Orientation::Horizontal)->gap(Gap::ExtraSmall)->schema([
         Text::make('Need access?'),
         Link::make('Register')->href('/register'),
     ])))
@@ -283,7 +282,7 @@ test('links and horizontal stacks serialize as separate composable primitives', 
             'type' => 'stack',
             'key' => 'prompt',
             'props' => [
-                'direction' => 'row',
+                'direction' => 'horizontal',
                 'gap' => 'xs',
                 'align' => null,
                 'width' => null,

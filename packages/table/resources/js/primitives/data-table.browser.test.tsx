@@ -20,7 +20,7 @@ import {
 const columns: SizableColumn[] = Array.from({ length: 8 }, (_, index) => ({
   key: `col${index}`,
   width: "md",
-  pin: index === 0 ? "left" : undefined,
+  pin: index === 0 ? "start" : undefined,
 }));
 
 function StaticTable() {
@@ -48,7 +48,7 @@ function StaticTable() {
                 </DataTableHeaderCell>
               ))}
               <DataTableHeaderCell kind="filler" />
-              <DataTableHeaderCell kind="actions" pinned="right" pinBoundary="start">
+              <DataTableHeaderCell kind="actions" pinned="end" pinBoundary="start">
                 Actions
               </DataTableHeaderCell>
             </DataTableHeaderRow>
@@ -67,7 +67,7 @@ function StaticTable() {
                 </DataTableCell>
               ))}
               <DataTableCell kind="filler" />
-              <DataTableCell kind="actions" pinned="right" pinBoundary="start" />
+              <DataTableCell kind="actions" pinned="end" pinBoundary="start" />
             </DataTableRow>
           </DataTableBody>
         </DataTableGrid>

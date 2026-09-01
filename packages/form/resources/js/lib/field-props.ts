@@ -1,5 +1,5 @@
 import type { Node } from "@lattice-php/core";
-import type { ComponentPropsMap } from "../generated";
+import type { ComponentPropsMap, FormFieldNodeType } from "../generated";
 
 /**
  * The props every form-field node shares (the PHP Field base). Nodes flow through
@@ -34,7 +34,10 @@ type FieldProps = Partial<
  * descend into their child schemas as top-level fields; children live under
  * `name.<index>.` paths instead.
  */
-export const ROW_FIELD_TYPES = new Set(["field.builder", "field.repeater"]);
+export const ROW_FIELD_TYPES = new Set<string>([
+  "field.builder",
+  "field.repeater",
+] satisfies FormFieldNodeType[]);
 
 /**
  * A field whose value is a collection of rows: the built-in set plus any

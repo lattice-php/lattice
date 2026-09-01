@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { dispatchEffects } from "./dispatch";
-import type { ActionEffect } from "./dispatch";
+import type { Effect } from "./types";
 import { builtinEffectHandlers, mergeEffectHandlers, useEffectHandlerRegistry } from "./registry";
 
 /**
@@ -9,7 +9,7 @@ import { builtinEffectHandlers, mergeEffectHandlers, useEffectHandlerRegistry } 
  * with no <Provider> in scope (effects are infrastructural) — this is the single
  * place built-ins enter dispatch.
  */
-export function useEffectDispatcher(): (effects: ActionEffect[]) => void {
+export function useEffectDispatcher(): (effects: Effect[]) => void {
   const registered = useEffectHandlerRegistry();
 
   const handlers = useMemo(
@@ -17,5 +17,5 @@ export function useEffectDispatcher(): (effects: ActionEffect[]) => void {
     [registered],
   );
 
-  return useCallback((effects: ActionEffect[]) => dispatchEffects(effects, handlers), [handlers]);
+  return useCallback((effects: Effect[]) => dispatchEffects(effects, handlers), [handlers]);
 }

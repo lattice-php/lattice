@@ -10,7 +10,7 @@ import Info from "@components/Info.astro";
 press <kbd>Esc</kbd>, click the backdrop, or use the close button to dismiss it.
 
 <ComponentExample
-  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+  php={`Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
     Image::make('https://picsum.photos/id/1060/600/400')
         ->alt('Coffee brewing setup')
         ->size(96),

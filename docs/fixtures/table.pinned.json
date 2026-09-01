@@ -18,7 +18,7 @@
                         "link": null,
                         "multiple": null,
                         "options": [],
-                        "pinned": "left",
+                        "pinned": "start",
                         "sortable": false,
                         "toggleable": false,
                         "width": "md"
@@ -85,7 +85,7 @@
                         "hiddenByDefault": false,
                         "label": "Status",
                         "options": [],
-                        "pinned": "right",
+                        "pinned": "end",
                         "sortable": false,
                         "toggleable": false,
                         "width": "sm"

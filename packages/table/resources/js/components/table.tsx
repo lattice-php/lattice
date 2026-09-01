@@ -53,18 +53,19 @@ import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
 import { TableSearch } from "./table-search";
 import { ColumnCell } from "./table-cell";
+import type { Side } from "@lattice-php/ui";
 
 function dataColumnPinBoundary(
-  pin: "left" | "right" | null,
+  pin: Side | null,
   index: number,
-  leftBoundaryColumnIndex: number,
+  startBoundaryColumnIndex: number,
   fillerIndex: number,
 ): DataTablePinBoundary | undefined {
-  if (pin === "left" && index === leftBoundaryColumnIndex) {
+  if (pin === "start" && index === startBoundaryColumnIndex) {
     return "end";
   }
 
-  if (pin === "right" && index === fillerIndex) {
+  if (pin === "end" && index === fillerIndex) {
     return "start";
   }
 
@@ -183,7 +184,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
     [visibleColumns, pinFor],
   );
   const hasPinned = orderedColumns.some((column) => pinFor(column) != null);
-  const fillerIndex = orderedColumns.findIndex((column) => pinFor(column) === "right");
+  const fillerIndex = orderedColumns.findIndex((column) => pinFor(column) === "end");
   const columnsMenuColumns = useMemo(() => {
     if (!pinningEnabled) {
       return toggleableColumns;
@@ -222,12 +223,12 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
   );
   const hasDedicatedFilters = filterDefinitions.length > 0;
   const hasTrailingUtility = hasActions;
-  const leftBoundaryColumnIndex = hasPinned
-    ? orderedColumns.reduce((acc, column, index) => (pinFor(column) === "left" ? index : acc), -1)
+  const startBoundaryColumnIndex = hasPinned
+    ? orderedColumns.reduce((acc, column, index) => (pinFor(column) === "start" ? index : acc), -1)
     : -1;
   const leftBoundaryOwner = !hasPinned
     ? null
-    : leftBoundaryColumnIndex !== -1
+    : startBoundaryColumnIndex !== -1
       ? "column"
       : hasBulkActions
         ? "selection"
@@ -295,7 +296,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
     hasOverrides ||
     pinningEnabled;
 
-  const utilityPin = hasPinned ? { left: "left" as const, right: "right" as const } : null;
+  const utilityPin = hasPinned ? { start: "start" as const, end: "end" as const } : null;
 
   return (
     <DataTable data-test={node.id}>
@@ -394,7 +395,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                 kind="expander"
                 bottomBordered={!hasFilters}
                 pinBoundary={expanderPinBoundary}
-                pinned={utilityPin?.left}
+                pinned={utilityPin?.start}
               />
             )}
             {hasBulkActions && (
@@ -402,7 +403,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                 kind="selection"
                 bottomBordered={!hasFilters}
                 pinBoundary={selectionPinBoundary}
-                pinned={utilityPin?.left}
+                pinned={utilityPin?.start}
               >
                 <Checkbox
                   aria-label={t("table.select-all-rows", "Select all rows")}
@@ -426,7 +427,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                     pinBoundary={dataColumnPinBoundary(
                       pin,
                       index,
-                      leftBoundaryColumnIndex,
+                      startBoundaryColumnIndex,
                       fillerIndex,
                     )}
                     pinIndex={index}
@@ -449,7 +450,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                 kind="actions"
                 bottomBordered={!hasFilters}
                 pinBoundary={actionsPinBoundary}
-                pinned={utilityPin?.right}
+                pinned={utilityPin?.end}
               >
                 <span className="sr-only">
                   {node.props?.actionsLabel ?? t("table.actions", "Actions")}
@@ -463,14 +464,14 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                 <DataTableFilterCell
                   kind="expander"
                   pinBoundary={expanderPinBoundary}
-                  pinned={utilityPin?.left}
+                  pinned={utilityPin?.start}
                 />
               )}
               {hasBulkActions && (
                 <DataTableFilterCell
                   kind="selection"
                   pinBoundary={selectionPinBoundary}
-                  pinned={utilityPin?.left}
+                  pinned={utilityPin?.start}
                 />
               )}
               {orderedColumns.map((column, index) => {
@@ -483,7 +484,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                       pinBoundary={dataColumnPinBoundary(
                         pin,
                         index,
-                        leftBoundaryColumnIndex,
+                        startBoundaryColumnIndex,
                         fillerIndex,
                       )}
                       pinIndex={index}
@@ -514,7 +515,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                 <DataTableFilterCell
                   kind="actions"
                   pinBoundary={actionsPinBoundary}
-                  pinned={utilityPin?.right}
+                  pinned={utilityPin?.end}
                 />
               )}
             </DataTableHeaderRow>
@@ -546,7 +547,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                       <DataTableCell
                         kind="expander"
                         pinBoundary={expanderPinBoundary}
-                        pinned={utilityPin?.left}
+                        pinned={utilityPin?.start}
                       >
                         {detail && (
                           <DataTableRowToggle
@@ -563,7 +564,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                       <DataTableCell
                         kind="selection"
                         pinBoundary={selectionPinBoundary}
-                        pinned={utilityPin?.left}
+                        pinned={utilityPin?.start}
                       >
                         <Checkbox
                           aria-label={t("table.select-row", "Select row {{key}}", { key })}
@@ -585,7 +586,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                             pinBoundary={dataColumnPinBoundary(
                               pin,
                               index,
-                              leftBoundaryColumnIndex,
+                              startBoundaryColumnIndex,
                               fillerIndex,
                             )}
                             pinIndex={index}
@@ -601,7 +602,7 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
                       <DataTableCell
                         kind="actions"
                         pinBoundary={actionsPinBoundary}
-                        pinned={utilityPin?.right}
+                        pinned={utilityPin?.end}
                       >
                         {actions.map((action, actionIndex) => (
                           <RenderNode key={action.key ?? action.id ?? actionIndex} node={action} />

@@ -67,7 +67,7 @@ abstract class Page implements PageContract, Responsable
      * Resolve the page's width at request time. Returning a non-null value
      * takes precedence over the #[AsPage] attribute; null defers to it.
      */
-    public function width(): PageWidth|string|null
+    public function width(): ?PageWidth
     {
         return null;
     }
@@ -153,7 +153,7 @@ abstract class Page implements PageContract, Responsable
         $payload = new PagePayload(
             title: $schema->resolvedTitle() ?? $this->title(),
             layout: $this->resolveLayout($layout, $request),
-            width: $this->serializePageMetadata($width),
+            width: $width,
             breadcrumbs: $breadcrumbs,
             schema: $schema->renderable(),
             listeners: $this->resolveListeners(),

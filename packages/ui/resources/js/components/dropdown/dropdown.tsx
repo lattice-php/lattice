@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import type { ComponentProps, ReactNode } from "react";
 import { CollapsedProvider } from "@lattice-php/core/collapsed-context";
+import type { ContentAlign, Placement } from "../../generated";
 import { cn } from "../../lib/utils";
 import { useNavigation } from "../../navigation";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover/popover";
 
-export type DropdownPlacement = "bottom" | "right" | "top";
-
 export type DropdownProps = Omit<ComponentProps<"button">, "children" | "type"> & {
-  align?: "start" | "end";
+  align?: Exclude<ContentAlign, "center">;
   children: ReactNode;
   contentClassName?: string;
-  placement?: DropdownPlacement;
+  placement?: Placement;
   trigger: ReactNode;
 };
 

@@ -1,5 +1,5 @@
 import { Checkbox } from "@lattice-php/form/components/checkbox/checkbox";
-import type { ColumnPinSide } from "@lattice-php/table/hooks/use-column-pinning";
+import type { Side } from "@lattice-php/ui";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { useT } from "@lattice-php/ui/i18n";
 import {
@@ -27,9 +27,9 @@ export function ColumnVisibilityMenu({
   hasPinOverrides?: boolean;
   isVisible: (column: TableColumn) => boolean;
   onReset: () => void;
-  onSetPin?: (key: string, side: ColumnPinSide | null) => void;
+  onSetPin?: (key: string, side: Side | null) => void;
   onToggle: (key: string, visible: boolean) => void;
-  pinFor?: (column: TableColumn) => ColumnPinSide | null;
+  pinFor?: (column: TableColumn) => Side | null;
   pinningEnabled?: boolean;
   processing: boolean;
   visibleColumnCount: number;
@@ -78,19 +78,19 @@ export function ColumnVisibilityMenu({
                   <div className="flex items-center gap-0.5">
                     <IconButton
                       icon="arrow-left-to-line"
-                      label={pin === "left" ? unpinLabel : pinLeftLabel}
-                      active={pin === "left"}
+                      label={pin === "start" ? unpinLabel : pinLeftLabel}
+                      active={pin === "start"}
                       data-test={`table-column-pin-left-${column.key}`}
                       size="xs"
-                      onClick={() => onSetPin?.(column.key, pin === "left" ? null : "left")}
+                      onClick={() => onSetPin?.(column.key, pin === "start" ? null : "start")}
                     />
                     <IconButton
                       icon="arrow-right-to-line"
-                      label={pin === "right" ? unpinLabel : pinRightLabel}
-                      active={pin === "right"}
+                      label={pin === "end" ? unpinLabel : pinRightLabel}
+                      active={pin === "end"}
                       data-test={`table-column-pin-right-${column.key}`}
                       size="xs"
-                      onClick={() => onSetPin?.(column.key, pin === "right" ? null : "right")}
+                      onClick={() => onSetPin?.(column.key, pin === "end" ? null : "end")}
                     />
                   </div>
                 )}

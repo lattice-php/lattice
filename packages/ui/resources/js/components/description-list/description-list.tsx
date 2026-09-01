@@ -1,8 +1,9 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { DescriptionListProvider } from "./context";
 import { cn } from "../../lib/utils";
+import type { DescriptionListSemantic } from "../../generated";
 
-export type DescriptionListSemantic = "description-list" | "list";
+export type { DescriptionListSemantic } from "../../generated";
 
 export type DescriptionListProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   bleed?: boolean;

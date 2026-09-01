@@ -11,24 +11,25 @@ import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { Input } from "@lattice-php/form/primitives/input";
-import type { ColumnAlign, ColumnPin, SortDirection } from "../generated";
+import type { ContentAlign, Side } from "@lattice-php/ui";
+import type { SortDirection } from "../generated";
 
-export type DataTablePinBoundary = "start" | "end";
+export type DataTablePinBoundary = Side;
 export type DataTableTrack = "column" | "expander" | "selection" | "actions" | "filler";
 
-const alignText: Record<ColumnAlign, string> = {
+const alignText: Record<ContentAlign, string> = {
   start: "text-start",
   center: "text-center",
   end: "text-end",
 };
 
-const alignJustify: Record<ColumnAlign, string> = {
+const alignJustify: Record<ContentAlign, string> = {
   start: "justify-start",
   center: "justify-center",
   end: "justify-end",
 };
 
-const alignJustifyItems: Record<ColumnAlign, string> = {
+const alignJustifyItems: Record<ContentAlign, string> = {
   start: "justify-items-start",
   center: "justify-items-center",
   end: "justify-items-end",
@@ -77,7 +78,7 @@ export function pinBoundaryClassName(
 type PinProps = {
   pinBoundary?: DataTablePinBoundary;
   pinIndex?: number;
-  pinned?: ColumnPin;
+  pinned?: Side;
 };
 
 function pinOffsetStyle(
@@ -91,7 +92,7 @@ function pinOffsetStyle(
   const track = kind === "column" ? pinIndex : kind;
   const offset = `var(--lt-pin-offset-${track})`;
 
-  return pinned === "left" ? { insetInlineStart: offset } : { insetInlineEnd: offset };
+  return pinned === "start" ? { insetInlineStart: offset } : { insetInlineEnd: offset };
 }
 
 function pinClassName(kind: DataTableTrack, { pinBoundary, pinned }: PinProps): string | undefined {
@@ -349,7 +350,7 @@ function ariaSort(
 
 export type DataTableHeaderCellProps = ComponentProps<"div"> &
   PinProps & {
-    align?: ColumnAlign;
+    align?: ContentAlign;
     bottomBordered?: boolean;
     kind?: DataTableTrack;
     sortDirection?: SortDirection | null;
@@ -410,7 +411,7 @@ function SortIndicator({ direction }: { direction: SortDirection | null | undefi
 }
 
 export type DataTableSortButtonProps = ComponentProps<"button"> & {
-  align?: ColumnAlign;
+  align?: ContentAlign;
   direction?: SortDirection | null;
 };
 
@@ -438,7 +439,7 @@ export function DataTableSortButton({
 }
 
 export type DataTableHeaderLabelProps = ComponentProps<"span"> & {
-  align?: ColumnAlign;
+  align?: ContentAlign;
 };
 
 export function DataTableHeaderLabel({
@@ -542,7 +543,7 @@ const bodyCellClassName: Record<DataTableTrack, string> = {
 
 export type DataTableCellProps = ComponentProps<"div"> &
   PinProps & {
-    align?: ColumnAlign;
+    align?: ContentAlign;
     kind?: DataTableTrack;
     label?: ReactNode;
   };

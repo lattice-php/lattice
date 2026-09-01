@@ -1,8 +1,7 @@
 import { useState } from "react";
 import type { ComponentProps, CSSProperties, MouseEvent, ReactNode } from "react";
+import type { FloatingPlacement } from "../../generated";
 import { cn } from "../../lib/utils";
-
-export type FloatingPanelPlacement = "bottom-end" | "bottom-start" | "top-end" | "top-start";
 
 export type FloatingPanelTriggerProps = Omit<
   ComponentProps<"button">,
@@ -17,7 +16,7 @@ export type FloatingPanelProps = Omit<ComponentProps<"div">, "children"> & {
   offset?: number;
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
-  placement?: FloatingPanelPlacement;
+  placement?: FloatingPlacement;
   trigger?: ReactNode;
   triggerProps?: FloatingPanelTriggerProps;
 };
@@ -110,7 +109,7 @@ export function FloatingPanel({
   );
 }
 
-function placementStyle(placement: FloatingPanelPlacement, offset: number): CSSProperties {
+function placementStyle(placement: FloatingPlacement, offset: number): CSSProperties {
   if (placement === "top-start") {
     return { left: offset, top: offset };
   }

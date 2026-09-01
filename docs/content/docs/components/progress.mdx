@@ -14,7 +14,7 @@ completed import with `Progress::bar(340)->max(340)` fills exactly once.
   php={`Stack::make()->gap(Gap::Small)->schema([
     Progress::bar(65)->showValue(),
     Progress::bar(80)->color(Color::success())->size(Size::Lg),
-    Stack::make()->direction(StackDirection::Row)->gap(Gap::Medium)->schema([
+    Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Medium)->schema([
         Progress::circle(65)->showValue(),
         Progress::circle(35)->max(50)->color(Color::warning())->size(Size::Xl)->showValue(),
     ]),

@@ -5,6 +5,7 @@ import { DEFAULT_COLUMN_WIDTH } from "@lattice-php/ui/lib/column-sizing";
 import type { ColumnWidth } from "@lattice-php/ui/types";
 import { isEmptyMember } from "./filter-values";
 import type { TableColumn, TableSort, TableQuery } from "@lattice-php/table/types";
+import type { Op, Side } from "@lattice-php/ui";
 
 export function getColumnSort(query: TableQuery, column: TableColumn): TableSort | undefined {
   return query.sorts.find((currentSort) => currentSort.key === column.key);
@@ -209,7 +210,7 @@ function serializeSorts(query: TableQuery): string {
     .join(",");
 }
 
-const operatorLabels: Record<string, string> = {
+const operatorLabels: Record<Op, string> = {
   contains: "contains",
   starts_with: "starts with",
   ends_with: "ends with",
@@ -227,10 +228,14 @@ const operatorLabels: Record<string, string> = {
   filled: "is not empty",
 };
 
-export const VALUELESS_FILTER_OPERATORS = new Set<string>(["empty", "filled"]);
+export const VALUELESS_FILTER_OPERATORS = new Set<string>(["empty", "filled"] satisfies Op[]);
 
 export function operatorLabel(operator: string): string {
-  return translate("lattice", `table.operators.${operator}`, operatorLabels[operator] ?? operator);
+  return translate(
+    "lattice",
+    `table.operators.${operator}`,
+    operatorLabels[operator as Op] ?? operator,
+  );
 }
 
 export function getSortDirectionLabel(direction: string): string {
@@ -266,32 +271,29 @@ export function getVisiblePages(currentPage: number, lastPage: number): number[]
   return Array.from({ length: 5 }, (_, index) => start + index);
 }
 
-export function orderPinnedColumns<T>(
-  columns: T[],
-  pinOf: (column: T) => "left" | "right" | null,
-): T[] {
-  const left: T[] = [];
+export function orderPinnedColumns<T>(columns: T[], pinOf: (column: T) => Side | null): T[] {
+  const start: T[] = [];
   const middle: T[] = [];
-  const right: T[] = [];
+  const end: T[] = [];
 
   for (const column of columns) {
     const pin = pinOf(column);
 
-    if (pin === "left") {
-      left.push(column);
-    } else if (pin === "right") {
-      right.push(column);
+    if (pin === "start") {
+      start.push(column);
+    } else if (pin === "end") {
+      end.push(column);
     } else {
       middle.push(column);
     }
   }
 
-  return [...left, ...middle, ...right];
+  return [...start, ...middle, ...end];
 }
 
 export function getTableSizingColumns(
   columns: TableColumn[],
-  pinOf?: (column: TableColumn) => "left" | "right" | null,
+  pinOf?: (column: TableColumn) => Side | null,
 ) {
   return columns.map((column) => ({
     key: column.key,

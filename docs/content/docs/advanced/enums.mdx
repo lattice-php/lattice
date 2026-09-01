@@ -29,13 +29,10 @@ layout primitives.
     "ModalWidth",
     "ModalHeight",
     "Orientation",
-    "StackDirection",
     "Placement",
     "FloatingPlacement",
-    "PopoverSide",
-    "PopoverAlign",
+    "ContentAlign",
     "Side",
-    "TabsAlignment",
   ]}
 />
 
@@ -90,15 +87,7 @@ SVG. The [Icons](/core/icons/) page covers where they come from and how to add y
 [tables](/tables/overview/).
 
 <EnumTable
-  enums={[
-    "ColumnType",
-    "ColumnAlign",
-    "ColumnPin",
-    "FilterType",
-    "FilterControl",
-    "PaginationType",
-    "SortDirection",
-  ]}
+  enums={["ColumnType", "FilterType", "FilterControl", "PaginationType", "SortDirection"]}
 />
 
 ## Forms
@@ -110,10 +99,10 @@ fields, plus the field-type vocabulary.
 
 ## Description lists
 
-`Lattice\Ui\Enums` — the entry-type vocabulary of the
+`Lattice\Ui\Enums` — the entry-type and rendering-semantics vocabulary of the
 [description list](/components/description-list/).
 
-<EnumTable enums={["EntryType"]} />
+<EnumTable enums={["EntryType", "DescriptionListSemantic"]} />
 
 ## Formatting
 

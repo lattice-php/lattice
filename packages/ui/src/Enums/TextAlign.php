@@ -8,6 +8,6 @@ use Lattice\Core\Attributes\TypeScript;
 #[TypeScript]
 enum TextAlign: string
 {
-    case Left = 'left';
+    case Start = 'start';
     case Center = 'center';
 }

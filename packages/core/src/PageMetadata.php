@@ -27,7 +27,7 @@ final readonly class PageMetadata
         public ?string $route,
         public string $name,
         public PageLayout|string $layout,
-        public PageWidth|string $width,
+        public PageWidth $width,
         public ?array $middleware,
         public array $can,
     ) {}
@@ -50,7 +50,7 @@ final readonly class PageMetadata
             route: $own?->route,
             name: self::resolveName($class, $own),
             layout: self::inherited($class, fn (AsPage $a): PageLayout|string|null => $a->layout) ?? PageLayout::None,
-            width: self::inherited($class, fn (AsPage $a): PageWidth|string|null => $a->width) ?? PageWidth::Full,
+            width: self::inherited($class, fn (AsPage $a): ?PageWidth => $a->width) ?? PageWidth::Full,
             middleware: self::inheritedMiddleware($class),
             can: $own?->can() ?? [],
         );
@@ -96,7 +96,7 @@ final readonly class PageMetadata
             route: $descriptor['route'],
             name: $descriptor['name'],
             layout: $descriptor['layout'],
-            width: $descriptor['width'],
+            width: PageWidth::from($descriptor['width']),
             middleware: $descriptor['middleware'],
             can: $descriptor['can'] ?? [],
         );

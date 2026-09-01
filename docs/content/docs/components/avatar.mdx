@@ -10,7 +10,7 @@ import Info from "@components/Info.astro";
 available it falls back to the person's initials, and with no name at all it shows a neutral user icon.
 
 <ComponentExample
-  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+  php={`Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
     Avatar::make('https://i.pravatar.cc/96?img=13')->name('Ada Lovelace'),
     Avatar::make()->name('Grace Hopper'),
     Avatar::make()->name('Katherine Johnson')->size(Size::Lg),

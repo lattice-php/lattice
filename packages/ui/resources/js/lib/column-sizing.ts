@@ -1,9 +1,9 @@
-import type { ColumnWidth } from "../types";
+import type { ColumnWidth, Side } from "../types";
 
 export type SizableColumn = {
   key: string;
   label?: string | null;
-  pin?: "left" | "right";
+  pin?: Side;
   width: ColumnWidth;
 };
 
@@ -79,7 +79,7 @@ function buildPinnedGridTemplate({
   const tracks = columns.map(
     (column) => `${clampWidthPx(column, overrides[column.key] ?? defaultColumnWidthPx(column))}px`,
   );
-  const fillerIndex = columns.findIndex((column) => column.pin === "right");
+  const fillerIndex = columns.findIndex((column) => column.pin === "end");
 
   tracks.splice(fillerIndex === -1 ? tracks.length : fillerIndex, 0, "minmax(0, 1fr)");
 
@@ -115,7 +115,7 @@ export function buildPinnedOffsets({
 
   let leftPx = 0;
   columns.forEach((column, index) => {
-    if (column.pin !== "left") {
+    if (column.pin !== "start") {
       return;
     }
 
@@ -127,7 +127,7 @@ export function buildPinnedOffsets({
   for (let index = columns.length - 1; index >= 0; index -= 1) {
     const column = columns[index];
 
-    if (column.pin !== "right") {
+    if (column.pin !== "end") {
       continue;
     }
 

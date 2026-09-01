@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { IconRenderer } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import type { Affix } from "@lattice-php/core";
+import type { Side } from "@lattice-php/ui";
 
 function AffixSegment({
   affix,
@@ -9,7 +10,7 @@ function AffixSegment({
   squared = false,
 }: {
   affix: Affix;
-  side: "start" | "end";
+  side: Side;
   squared?: boolean;
 }) {
   return (

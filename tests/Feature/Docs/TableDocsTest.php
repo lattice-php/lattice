@@ -12,12 +12,12 @@ use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\StackColumn;
 use Lattice\Table\Columns\TextColumn;
 use Lattice\Table\Components\Table;
-use Lattice\Table\Enums\ColumnPin;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableResult;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Icon;
 use Lattice\Ui\Enums\NumberFormatUnit;
+use Lattice\Ui\Enums\Side;
 use Lattice\Ui\Enums\Size;
 
 describe('docs fixtures', function (): void {
@@ -110,7 +110,7 @@ describe('docs fixtures', function (): void {
                     NumberColumn::make('price')->label('Price'),
                     BadgeColumn::make('status')->label('Status')
                         ->colors(['active' => 'green', 'archived' => 'gray'])
-                        ->pinned(ColumnPin::Right),
+                        ->pinned(Side::End),
                 ])
                 ->result(
                     TableResult::fromItems(collect([

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Lattice\Ui\Enums;
@@ -6,9 +7,8 @@ namespace Lattice\Ui\Enums;
 use Lattice\Core\Attributes\TypeScript;
 
 #[TypeScript]
-enum PopoverAlign: string
+enum DescriptionListSemantic: string
 {
-    case Start = 'start';
-    case Center = 'center';
-    case End = 'end';
+    case DescriptionList = 'description-list';
+    case List = 'list';
 }

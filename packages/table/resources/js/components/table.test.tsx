@@ -838,7 +838,7 @@ describe("column pinning", () => {
       props: {
         columns: [
           col({ key: "a", label: "A" }),
-          col({ key: "b", label: "B", pinned: "left" }),
+          col({ key: "b", label: "B", pinned: "start" }),
           col({ key: "c", label: "C" }),
         ],
         data: [
@@ -860,10 +860,10 @@ describe("column pinning", () => {
     const headers = screen.getAllByRole("columnheader");
 
     expect(headers.map((header) => header.textContent)).toEqual(["B", "A", "C", "Actions"]);
-    expect(headers[0]).toHaveAttribute("data-pinned", "left");
+    expect(headers[0]).toHaveAttribute("data-pinned", "start");
     expect(headers[1]).not.toHaveAttribute("data-pinned");
     expect(headers[2]).not.toHaveAttribute("data-pinned");
-    expect(headers[3]).toHaveAttribute("data-pinned", "right");
+    expect(headers[3]).toHaveAttribute("data-pinned", "end");
 
     const rows = screen.getAllByRole("row");
     const bodyRow = rows[rows.length - 1]!;
@@ -872,10 +872,10 @@ describe("column pinning", () => {
     expect(
       cells.map((cell) => cell.querySelector('[data-slot="table-cell-content"]')?.textContent),
     ).toEqual(["B1", "A1", "C1", undefined]);
-    expect(cells[0]).toHaveAttribute("data-pinned", "left");
+    expect(cells[0]).toHaveAttribute("data-pinned", "start");
     expect(cells[1]).not.toHaveAttribute("data-pinned");
     expect(cells[2]).not.toHaveAttribute("data-pinned");
-    expect(cells[3]).toHaveAttribute("data-pinned", "right");
+    expect(cells[3]).toHaveAttribute("data-pinned", "end");
   });
 
   it("pins and unpins a column through the columns menu, persisting the override", () => {
@@ -906,7 +906,7 @@ describe("column pinning", () => {
     ]);
     expect(
       JSON.parse(window.localStorage.getItem("lattice:table-pins:workbench.pinned-menu") ?? ""),
-    ).toEqual({ overrides: { b: "right" } });
+    ).toEqual({ overrides: { b: "end" } });
     expect(screen.getByTestId("table-column-pin-right-b")).toHaveAttribute("aria-pressed", "true");
 
     fireEvent.click(screen.getByTestId("table-column-pin-right-b"));
@@ -925,7 +925,7 @@ describe("column pinning", () => {
       props: {
         columns: [
           col({ key: "a", label: "A" }),
-          col({ key: "b", label: "B", pinned: "left" }),
+          col({ key: "b", label: "B", pinned: "start" }),
           col({ key: "c", label: "C" }),
         ],
         data: [],
@@ -989,9 +989,9 @@ describe("column pinning", () => {
       props: {
         columns: [
           col({ key: "a", label: "A" }),
-          col({ key: "b", label: "B", pinned: "left" }),
+          col({ key: "b", label: "B", pinned: "start" }),
           col({ key: "c", label: "C" }),
-          col({ key: "d", label: "D", pinned: "right" }),
+          col({ key: "d", label: "D", pinned: "end" }),
         ],
         data: [
           {
@@ -1046,7 +1046,7 @@ describe("column pinning", () => {
             },
           }),
         ],
-        columns: [col({ key: "a", label: "A" }), col({ key: "b", label: "B", pinned: "right" })],
+        columns: [col({ key: "a", label: "A" }), col({ key: "b", label: "B", pinned: "end" })],
         data: [{ id: 1, a: "A1", b: "B1" }],
         query: tableQuery(),
       },
@@ -1058,14 +1058,14 @@ describe("column pinning", () => {
     const headers = screen.getAllByRole("columnheader");
     const selectionHeader = headers[0]!;
 
-    expect(selectionHeader).toHaveAttribute("data-pinned", "left");
+    expect(selectionHeader).toHaveAttribute("data-pinned", "start");
     expect(selectionHeader).toHaveAttribute("data-pin-boundary", "end");
 
     const rows = screen.getAllByRole("row");
     const bodyRow = rows[rows.length - 1]!;
     const selectionCell = within(bodyRow).getAllByRole("cell")[0]!;
 
-    expect(selectionCell).toHaveAttribute("data-pinned", "left");
+    expect(selectionCell).toHaveAttribute("data-pinned", "start");
     expect(selectionCell).toHaveAttribute("data-pin-boundary", "end");
   });
 });

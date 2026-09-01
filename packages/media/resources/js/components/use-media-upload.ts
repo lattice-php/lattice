@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ActionEffect } from "@lattice-php/lattice";
+import type { Effect } from "@lattice-php/ui";
 import { runAction } from "@lattice-php/action/lib/run-action";
 import { apiFetch, xsrfToken } from "@lattice-php/core/api";
 import { withHeaders } from "@lattice-php/core/headers";
@@ -47,10 +47,10 @@ type Settled = {
     errors?: Record<string, string[]>;
     data?: { media?: UploadedMedia[] };
   };
-  reload?: ActionEffect;
+  reload?: Effect;
 };
 
-type Outcome = { ok: boolean; reload?: ActionEffect; media?: UploadedMedia[] };
+type Outcome = { ok: boolean; reload?: Effect; media?: UploadedMedia[] };
 
 /** Laravel reports a rejected file under `files.<index>`; `message` covers request-level failures. */
 function reasonFor({ body }: Settled, index: number): string | undefined {
@@ -98,7 +98,7 @@ export function useMediaUpload({ endpoint, ref, signed, onUploaded }: UploadTarg
    */
   async function send(request: () => Promise<Response>): Promise<Settled> {
     let body: Settled["body"] = {};
-    let reload: ActionEffect | undefined;
+    let reload: Effect | undefined;
 
     const ok = await runAction(
       async () => {

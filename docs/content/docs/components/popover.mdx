@@ -30,17 +30,17 @@ the panel; its content is a regular component schema.
 
 ## Positioning
 
-`->side()` and `->align()` place the panel relative to the trigger, taking the `PopoverSide`
-(`Top`, `Right`, `Bottom`, `Left`) and `PopoverAlign` (`Start`, `Center`, `End`) enums. The default
+`->side()` and `->align()` place the panel relative to the trigger, taking the `Placement`
+(`Top`, `Right`, `Bottom`, `Left`) and `ContentAlign` (`Start`, `Center`, `End`) enums. The default
 is below the trigger, aligned to its start edge.
 
 ```php
-use Lattice\Ui\Enums\PopoverAlign;
-use Lattice\Ui\Enums\PopoverSide;
+use Lattice\Ui\Enums\ContentAlign;
+use Lattice\Ui\Enums\Placement;
 
 Popover::make('details')
-    ->side(PopoverSide::Right)
-    ->align(PopoverAlign::Center)
+    ->side(Placement::Right)
+    ->align(ContentAlign::Center)
     ->trigger([Badge::make('3 members')])
     ->schema([/* … */]);
 ```

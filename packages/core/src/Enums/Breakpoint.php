@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Ui\Enums;
+namespace Lattice\Core\Enums;
 
 use InvalidArgumentException;
 use Lattice\Core\Attributes\TypeScript;
@@ -14,7 +14,7 @@ enum Breakpoint: string
     case Md = 'md';
     case Lg = 'lg';
     case Xl = 'xl';
-    case Xxl = '2xl';
+    case Xl2 = '2xl';
 
     public static function validateKey(int|string $key): void
     {

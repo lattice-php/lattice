@@ -2,13 +2,23 @@ import { createRegistry } from "@lattice-php/core/registry";
 import { navigationPlugin } from "./inertia-navigation";
 import type {
   ActionNodeType,
+  ApiReferenceNodeType,
+  BoardNodeType,
+  CalendarNodeType,
+  ChatNodeType,
   FormNodeType,
   FragmentNodeType,
   LayoutNodeType,
+  MapNodeType,
+  MediumNodeType,
   NodeType,
   NotificationNodeType,
+  PdfNodeType,
   RemoteNodeType,
+  SearchNodeType,
+  SignatureExampleNodeType,
   TableNodeType,
+  TreeNodeType,
   UiNodeType,
 } from "@lattice-php/lattice/types/generated";
 import { actionComponents } from "@lattice-php/action/plugin";
@@ -28,23 +38,16 @@ import { uiComponents } from "@lattice-php/ui";
 // for), so their node types are legitimately part of it and are acknowledged
 // here rather than belonging to a registered plugin's union.
 type OptInNodeType =
-  | "api-reference"
-  | "board"
-  | "calendar"
-  | "chat.box"
-  | "chat.part.text"
-  | "chat.part.tool-call"
-  | "map"
-  | "media.library"
-  | "pdf"
-  | "search.box"
-  | "search.categories"
-  | "search.input"
-  | "search.preview"
-  | "search.recent"
-  | "search.results"
-  | "signature"
-  | "tree";
+  | ApiReferenceNodeType
+  | BoardNodeType
+  | CalendarNodeType
+  | ChatNodeType
+  | MapNodeType
+  | MediumNodeType
+  | PdfNodeType
+  | SearchNodeType
+  | SignatureExampleNodeType
+  | TreeNodeType;
 
 // Compile-time totality: every generated NodeType must belong to a registered
 // plugin's union, or be an acknowledged opt-in package above. A new PHP

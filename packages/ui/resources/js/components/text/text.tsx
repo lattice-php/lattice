@@ -17,7 +17,7 @@ export type TextProps = Omit<ComponentProps<"p">, "children" | "color"> & {
 
 const textAlignments: Record<TextAlign, string> = {
   center: "text-center",
-  left: "text-left",
+  start: "text-start",
 };
 
 const textSizes: Record<Size, string> = {
@@ -32,7 +32,7 @@ const textSizes: Record<Size, string> = {
 };
 
 export function Text({
-  align = "left",
+  align = "start",
   children,
   className,
   color,

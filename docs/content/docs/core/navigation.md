@@ -119,7 +119,7 @@ $user = $request->user();
 Dropdown::make('user-menu')
     ->placement(Placement::Top)
     ->trigger([
-        Stack::make('user-menu-trigger')->direction('row')->schema([
+        Stack::make('user-menu-trigger')->direction(Orientation::Horizontal)->schema([
             RawBlock::make('avatar')->blade('components.avatar', [
                 'name' => $user->name,
                 'src' => $user->avatar,

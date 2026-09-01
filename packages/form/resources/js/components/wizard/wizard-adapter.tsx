@@ -18,6 +18,7 @@ import {
 
 const RAIL_ALIGNMENTS: Record<Align, string> = {
   center: "justify-center",
+  end: "justify-end",
   start: "justify-start",
   stretch: "justify-stretch",
 };
