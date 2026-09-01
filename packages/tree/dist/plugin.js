@@ -144,11 +144,11 @@ function P(e) {
 }
 function F(e) {
 	switch (e) {
-		case "reorder-above": return "border-t-lt-primary";
-		case "reorder-below": return "border-b-lt-primary";
+		case "reorder-above": return "relative before:absolute before:inset-x-0 before:-top-px before:h-0.5 before:bg-lt-primary";
+		case "reorder-below": return "relative after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-lt-primary";
 		case "make-child":
-		case "reparent": return "ring-1 ring-lt-primary";
-		case "instruction-blocked": return "ring-1 ring-lt-danger/50";
+		case "reparent": return "bg-lt-primary/10";
+		case "instruction-blocked": return "bg-lt-danger/10";
 		default: return null;
 	}
 }
@@ -960,7 +960,7 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		role: "treeitem",
 		tabIndex: ae ? 0 : -1,
 		children: [/* @__PURE__ */ u("div", {
-			className: (0, y.cn)("flex items-center gap-2 rounded-lt-sm border-y border-transparent px-2 py-1.5 text-sm text-lt-fg", ie && "bg-lt-muted font-medium", q && "pointer-events-none opacity-50", g && !q && "cursor-grab", W && "opacity-50", F(ne)),
+			className: (0, y.cn)("flex items-center gap-2 rounded-lt-sm px-2 py-1.5 text-sm text-lt-fg", ie && "bg-lt-muted font-medium", q && "pointer-events-none opacity-50", g && !q && "cursor-grab", W && "opacity-50", F(ne)),
 			"data-drop-instruction": ne ?? void 0,
 			ref: H,
 			children: [Y ? /* @__PURE__ */ l("button", {

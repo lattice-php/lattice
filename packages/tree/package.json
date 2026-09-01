@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/tree",
-  "version": "0.67.0",
+  "version": "0.68.0",
   "private": true,
   "description": "Dev workspace for the tree component package; ships to consumers via Composer, not npm.",
   "type": "module",
@@ -9,10 +9,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lattice-php/action": "0.67.0",
-    "@lattice-php/core": "0.67.0",
-    "@lattice-php/form": "0.67.0",
-    "@lattice-php/lattice": "0.67.0",
-    "@lattice-php/ui": "0.67.0"
+    "@lattice-php/action": "0.68.0",
+    "@lattice-php/core": "0.68.0",
+    "@lattice-php/form": "0.68.0",
+    "@lattice-php/lattice": "0.68.0",
+    "@lattice-php/ui": "0.68.0"
   }
 }
