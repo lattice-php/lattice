@@ -1,14 +1,16 @@
 import type { ComponentProps } from "react";
+import type { Align, Gap, Height, Justify, Side, StackDirection, Width } from "../../generated";
+import { justifyClasses } from "../../lib/justify";
 import { useStickyOffsetPublisher } from "../../lib/use-sticky-offset";
 import { cn } from "../../lib/utils";
 
-export type StackAlign = "center" | "left" | "start" | "stretch";
-export type StackDirection = "column" | "row";
-export type StackGap = "none" | "xs" | "sm" | "md" | "lg" | "xl";
-export type StackHeight = "full" | "screen";
-export type StackJustify = "start" | "center" | "end" | "between" | "around" | "evenly";
-export type StackSide = "start" | "end";
-export type StackWidth = "full" | "auto" | "sm" | "md" | "lg" | "xl" | "fill";
+export type StackAlign = Align;
+export type { StackDirection } from "../../generated";
+export type StackGap = Gap;
+export type StackHeight = Height;
+export type StackJustify = Justify;
+export type StackSide = Side;
+export type StackWidth = Width;
 
 export type StackProps = Omit<ComponentProps<"div">, "align"> & {
   align?: StackAlign;
@@ -50,15 +52,6 @@ const stackWidths: Record<StackWidth, string> = {
   lg: "mx-auto w-full max-w-4xl",
   xl: "mx-auto w-full max-w-6xl",
   fill: "min-w-0 flex-1",
-};
-
-const justifyClasses: Record<StackJustify, string> = {
-  start: "justify-start",
-  center: "justify-center",
-  end: "justify-end",
-  between: "justify-between",
-  around: "justify-around",
-  evenly: "justify-evenly",
 };
 
 const stackHeights: Record<StackHeight, string> = {

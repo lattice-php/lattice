@@ -9,6 +9,7 @@ import { RenderNode } from "@lattice-php/core/renderer";
 import type { Node, RendererComponent } from "@lattice-php/core";
 import { useT } from "@lattice-php/ui/i18n";
 import type { Emphasis, Justify, Variant } from "@lattice-php/ui";
+import { justifyClasses } from "@lattice-php/ui/lib/justify";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormSubmitButton } from "../base/submit-button";
 import { FormProvider } from "../../hooks/context";
@@ -18,15 +19,6 @@ import { ResolvedNodesProvider } from "../../hooks/resolved-nodes";
 import { useFormResolver } from "../../hooks/use-form-resolver";
 import { useFetchForm } from "../../hooks/use-fetch-form";
 import { FormValuesProvider, useResetFormValues } from "../../hooks/values";
-
-const JUSTIFY_CLASS: Record<Justify, string> = {
-  start: "justify-start",
-  center: "justify-center",
-  end: "justify-end",
-  between: "justify-between",
-  around: "justify-around",
-  evenly: "justify-evenly",
-};
 
 type SubmitButtonNode = Node & {
   props: {
@@ -93,7 +85,7 @@ function FormBody({
           {children}
 
           {shouldRenderSubmitButton && (
-            <div className={`flex gap-3 ${JUSTIFY_CLASS[submitJustify ?? "end"]}`}>
+            <div className={`flex gap-3 ${justifyClasses[submitJustify ?? "end"]}`}>
               {submitButtons?.length ? (
                 submitButtons.map((button, index) =>
                   button.props.buttonType === "submit" ? (

@@ -12,7 +12,7 @@ import {
 import { Badge } from "@lattice-php/ui/components/badge/badge";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { Combobox } from "@lattice-php/form/primitives/combobox";
-import { CodeBlock } from "@lattice-php/ui";
+import { CodeBlock, type Breakpoint } from "@lattice-php/ui";
 import { CopyButton } from "@lattice-php/ui/primitives/copyable-text";
 import { InfoTooltip } from "@lattice-php/ui/primitives/info-tooltip";
 import { Input } from "@lattice-php/form/primitives/input";
@@ -78,7 +78,7 @@ type SecuritySchemeDefinition = {
   flows?: Record<string, OAuthFlowDefinition>;
 };
 
-export type TwoColumnBreakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
+export type TwoColumnBreakpoint = Breakpoint;
 
 const TWO_COLUMN_LAYOUTS: Record<TwoColumnBreakpoint, { grid: string; reference: string }> = {
   default: {
