@@ -1,10 +1,10 @@
-import type { RowAction as WireRowAction } from "../../generated";
+import type { RowAction as WireRowAction, RowActionType } from "../../generated";
 import type { RowAction } from "./row-actions";
 
 type RowActionTranslate = (key: string, fallback: string) => string;
 
 /** Translation key + fallback and icon for each built-in; the server sends null labels. */
-const BUILT_IN: Record<"duplicate" | "remove", { key: string; fallback: string; icon: string }> = {
+const BUILT_IN: Record<RowActionType, { key: string; fallback: string; icon: string }> = {
   duplicate: { key: "table.row-actions.duplicate", fallback: "Duplicate", icon: "copy" },
   remove: { key: "table.row-actions.remove", fallback: "Remove", icon: "trash-2" },
 };

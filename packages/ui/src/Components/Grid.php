@@ -6,7 +6,7 @@ namespace Lattice\Ui\Components;
 use InvalidArgumentException;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\WireMap;
-use Lattice\Ui\Enums\Breakpoint;
+use Lattice\Core\Enums\Breakpoint;
 
 #[AsComponent('grid')]
 class Grid extends ContainerComponent

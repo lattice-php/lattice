@@ -20,7 +20,6 @@ export type ComponentPropsMap = {
   "chat.part.text": TextPart;
   "chat.part.tool-call": ToolCallPart;
 };
-export type NodeType = "chat.box" | "chat.part.text" | "chat.part.tool-call";
 export type TextPart = {
   text: string;
 };

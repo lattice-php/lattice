@@ -10,7 +10,7 @@ import Warning from "@components/Warning.astro";
 content is trusted HTML, so links are supported.
 
 <ComponentExample
-  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+  php={`Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
     Badge::make('Plan: Pro'),
     Tooltip::make()->content('Includes unlimited seats and priority support.'),
 ]);`}

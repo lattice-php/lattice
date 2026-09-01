@@ -1,14 +1,20 @@
-import type { ComponentPropsMap } from "./generated";
+import type {
+  ComponentPropsMap,
+  SearchCategory,
+  SearchPagination,
+  SearchResult,
+} from "./generated";
 
 declare module "@lattice-php/core" {
   interface ComponentProps extends ComponentPropsMap {}
 }
 
 export type {
-  NodeType as SearchNodeType,
+  SearchNodeType,
   RecordSelectionResponse,
   RecordSelectionState,
   SearchBox,
+  SearchBox as SearchBoxWireProps,
   SearchCategory,
   SearchMode,
   SearchPagination,
@@ -31,17 +37,17 @@ export type UseSearchOptions = {
 export type UseSearchReturn = {
   query: string;
   setQuery: (value: string) => void;
-  categories: import("./generated").SearchCategory[];
+  categories: SearchCategory[];
   activeCategory: string | null;
   setCategory: (name: string) => void;
-  results: import("./generated").SearchResult[];
-  recent: import("./generated").SearchResult[];
-  pagination: import("./generated").SearchPagination | null;
+  results: SearchResult[];
+  recent: SearchResult[];
+  pagination: SearchPagination | null;
   status: SearchStatus;
   error: string | null;
   focusedKey: string | null;
   setFocusedKey: (key: string | null) => void;
   loadMore: () => void;
-  openResult: (result: import("./generated").SearchResult) => void;
+  openResult: (result: SearchResult) => void;
   refreshRecent: () => void;
 };

@@ -9,9 +9,9 @@ use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Tab;
 use Lattice\Ui\Components\Tabs;
 use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Align;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\Orientation;
-use Lattice\Ui\Enums\TabsAlignment;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
@@ -41,7 +41,7 @@ final class TabsPage extends WorkbenchPage
                     Heading::make(__('workbench.pages.tabs.horizontal-centered')),
                     Tabs::make('centered-tabs')
                         ->queryKey('c')
-                        ->alignment(TabsAlignment::Center)
+                        ->alignment(Align::Center)
                         ->defaultValue('overview')
                         ->schema([
                             Tab::make('overview', __('workbench.pages.tabs.overview'))->schema([Text::make(__('workbench.pages.tabs.overview-panel'))]),
@@ -62,7 +62,7 @@ final class TabsPage extends WorkbenchPage
                     Tabs::make('vertical-end-tabs')
                         ->queryKey('ve')
                         ->orientation(Orientation::Vertical)
-                        ->alignment(TabsAlignment::End)
+                        ->alignment(Align::End)
                         ->defaultValue('account')
                         ->schema([
                             Tab::make('account', __('workbench.pages.tabs.account'))->schema([Text::make(__('workbench.pages.tabs.account-panel'))]),

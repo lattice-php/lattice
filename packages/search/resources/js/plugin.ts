@@ -1,5 +1,5 @@
 import { lazyComponent, type ComponentRegistryFor, type Plugin } from "@lattice-php/core/registry";
-import type { NodeType as SearchNodeType } from "./generated";
+import type { SearchNodeType } from "./generated";
 
 export default {
   name: "lattice/search",

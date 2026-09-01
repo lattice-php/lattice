@@ -32,11 +32,11 @@ function textColumn(
 describe("orderPinnedColumns", () => {
   it("moves pinned columns to their edges while keeping relative order stable", () => {
     const columns = ["a", "left1", "b", "right1", "c", "left2", "right2"];
-    const pinned: Record<string, "left" | "right" | null> = {
-      left1: "left",
-      left2: "left",
-      right1: "right",
-      right2: "right",
+    const pinned: Record<string, "start" | "end" | null> = {
+      left1: "start",
+      left2: "start",
+      right1: "end",
+      right2: "end",
     };
 
     expect(orderPinnedColumns(columns, (column) => pinned[column] ?? null)).toEqual([
@@ -69,15 +69,15 @@ describe("getTableSizingColumns", () => {
 
   it("derives pin per column from the given accessor", () => {
     const columns = [
-      textColumn("name", { pinned: "left" }),
+      textColumn("name", { pinned: "start" }),
       textColumn("email"),
-      textColumn("total", { pinned: "right" }),
+      textColumn("total", { pinned: "end" }),
     ];
 
     expect(getTableSizingColumns(columns, (column) => column.props.pinned)).toEqual([
-      { key: "name", label: null, pin: "left", width: "md" },
+      { key: "name", label: null, pin: "start", width: "md" },
       { key: "email", label: null, pin: undefined, width: "md" },
-      { key: "total", label: null, pin: "right", width: "md" },
+      { key: "total", label: null, pin: "end", width: "md" },
     ]);
   });
 });

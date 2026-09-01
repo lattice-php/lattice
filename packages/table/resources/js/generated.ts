@@ -1,42 +1,47 @@
 import type { Color, Node, Op, Option } from "@lattice-php/core";
 import type { ColumnNode, FilterNode } from "@lattice-php/table/types";
-import type { ColumnWidth, DateTimeStyle, NumberFormatUnit } from "@lattice-php/ui";
+import type {
+  ColumnWidth,
+  ContentAlign,
+  DateTimeStyle,
+  NumberFormatUnit,
+  Side,
+} from "@lattice-php/ui";
 
 export type BadgeColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   colors: Record<string | number, Color> | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
 };
 export type BooleanColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
 };
 export type Column = {
-  align: ColumnAlign;
+  align: ContentAlign;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
 };
-export type ColumnAlign = "start" | "center" | "end";
 export type ColumnFilter = {
   readonly clauseOptions: ColumnFilterOption[];
   readonly control: FilterControl | null;
@@ -65,7 +70,6 @@ export type ColumnNodeType =
   | "column.number"
   | "column.stack"
   | "column.text";
-export type ColumnPin = "left" | "right";
 export type ColumnPropsMap = {
   "column.badge": BadgeColumn;
   "column.boolean": BooleanColumn;
@@ -113,7 +117,7 @@ export type FilterPropsMap = {
 };
 export type FilterType = "text" | "number" | "date" | "boolean";
 export type IconColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   colors: Record<string | number, Color> | null;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
@@ -121,19 +125,19 @@ export type IconColumn = {
   icons: Record<string | number, string> | null;
   label: string | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
 };
 export type ImageColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   circular: boolean;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   previewable: boolean;
   size: number | null;
   sortable: boolean;
@@ -141,7 +145,7 @@ export type ImageColumn = {
   width: ColumnWidth;
 };
 export type MoneyColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   copyable: boolean;
   currency: string | null;
   currencyField: string | null;
@@ -151,14 +155,13 @@ export type MoneyColumn = {
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
 };
-export type NodeType = "table";
 export type NumberColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   compact: boolean;
   copyable: boolean;
   filter: ColumnFilter | null;
@@ -167,7 +170,7 @@ export type NumberColumn = {
   maximumFractionDigits: number | null;
   minimumFractionDigits: number | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   unit: NumberFormatUnit | null;
@@ -183,12 +186,12 @@ export type SelectFilter = {
 };
 export type SortDirection = "asc" | "desc";
 export type StackColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   filter: ColumnFilter | null;
   hiddenByDefault: boolean;
   label: string | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;
@@ -255,7 +258,7 @@ export type TernaryFilter = {
   trueLabel: string;
 };
 export type TextColumn = {
-  align: ColumnAlign;
+  align: ContentAlign;
   badge: {
     colorKey: string;
   } | null;
@@ -273,7 +276,7 @@ export type TextColumn = {
   } | null;
   multiple: string | null;
   options: Option[];
-  pinned: ColumnPin | null;
+  pinned: Side | null;
   sortable: boolean;
   toggleable: boolean;
   width: ColumnWidth;

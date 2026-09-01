@@ -4,8 +4,8 @@ declare(strict_types=1);
 use Lattice\Ui\Components\Link;
 use Lattice\Ui\Components\Popover;
 use Lattice\Ui\Components\Text;
-use Lattice\Ui\Enums\PopoverAlign;
-use Lattice\Ui\Enums\PopoverSide;
+use Lattice\Ui\Enums\ContentAlign;
+use Lattice\Ui\Enums\Placement;
 
 it('serializes its trigger, content, and default positioning', function (): void {
     $node = wire(
@@ -25,7 +25,7 @@ it('serializes its trigger, content, and default positioning', function (): void
 });
 
 it('serializes explicit side and align', function (): void {
-    $node = wire(Popover::make()->side(PopoverSide::Top)->align(PopoverAlign::End));
+    $node = wire(Popover::make()->side(Placement::Top)->align(ContentAlign::End));
 
     expect($node['props'])->toMatchArray([
         'side' => 'top',

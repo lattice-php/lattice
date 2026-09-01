@@ -32,13 +32,13 @@ describe("column sizing", () => {
     ).toBe("3rem 200px minmax(16rem, 2fr)");
   });
 
-  it("switches every track to clamped px and inserts a filler before the first right-pinned column", () => {
+  it("switches every track to clamped px and inserts a filler before the first end-pinned column", () => {
     expect(
       buildColumnGridTemplate({
         columns: [
-          { key: "name", pin: "left", width: "md" },
+          { key: "name", pin: "start", width: "md" },
           { key: "description", width: "xl" },
-          { key: "total", pin: "right", width: "xs" },
+          { key: "total", pin: "end", width: "xs" },
         ],
         leadingTracks: ["3rem"],
         trailingTracks: ["3rem"],
@@ -50,7 +50,7 @@ describe("column sizing", () => {
     expect(
       buildColumnGridTemplate({
         columns: [
-          { key: "name", pin: "left", width: "md" },
+          { key: "name", pin: "start", width: "md" },
           { key: "description", width: "xl" },
         ],
         overrides: { name: 50, description: 5000 },
@@ -58,11 +58,11 @@ describe("column sizing", () => {
     ).toBe("128px 1024px minmax(0, 1fr)");
   });
 
-  it("appends the filler after the last column when nothing is pinned right", () => {
+  it("appends the filler after the last column when nothing is pinned to the end", () => {
     expect(
       buildColumnGridTemplate({
         columns: [
-          { key: "name", pin: "left", width: "md" },
+          { key: "name", pin: "start", width: "md" },
           { key: "description", width: "xl" },
         ],
         trailingTracks: ["10rem"],
@@ -80,12 +80,12 @@ describe("column sizing", () => {
       ).toEqual({});
     });
 
-    it("offsets left-pinned columns from the leading tracks and preceding pinned widths", () => {
+    it("offsets start-pinned columns from the leading tracks and preceding pinned widths", () => {
       expect(
         buildPinnedOffsets({
           columns: [
-            { key: "name", pin: "left", width: "md" },
-            { key: "email", pin: "left", width: "xl" },
+            { key: "name", pin: "start", width: "md" },
+            { key: "email", pin: "start", width: "xl" },
             { key: "notes", width: "lg" },
           ],
           leadingTracks: ["2.5rem", "3rem"],
@@ -96,13 +96,13 @@ describe("column sizing", () => {
       });
     });
 
-    it("offsets right-pinned columns from the trailing tracks and following pinned widths", () => {
+    it("offsets end-pinned columns from the trailing tracks and following pinned widths", () => {
       expect(
         buildPinnedOffsets({
           columns: [
             { key: "name", width: "md" },
-            { key: "total", pin: "right", width: "xs" },
-            { key: "actions", pin: "right", width: "sm" },
+            { key: "total", pin: "end", width: "xs" },
+            { key: "actions", pin: "end", width: "sm" },
           ],
           trailingTracks: ["10rem"],
         }),
@@ -116,8 +116,8 @@ describe("column sizing", () => {
       expect(
         buildPinnedOffsets({
           columns: [
-            { key: "name", pin: "left", width: "md" },
-            { key: "email", pin: "left", width: "xl" },
+            { key: "name", pin: "start", width: "md" },
+            { key: "email", pin: "start", width: "xl" },
           ],
           overrides: { name: 50 },
         }),
@@ -130,7 +130,7 @@ describe("column sizing", () => {
     it("emits utility offsets only for tracks that are present", () => {
       expect(
         buildPinnedOffsets({
-          columns: [{ key: "name", pin: "left", width: "md" }],
+          columns: [{ key: "name", pin: "start", width: "md" }],
           hasActions: true,
           hasExpander: true,
           hasSelection: true,
@@ -148,7 +148,7 @@ describe("column sizing", () => {
     it("offsets the selection utility from 0px when no expander precedes it", () => {
       expect(
         buildPinnedOffsets({
-          columns: [{ key: "name", pin: "left", width: "md" }],
+          columns: [{ key: "name", pin: "start", width: "md" }],
           hasSelection: true,
           leadingTracks: ["3rem"],
         }),

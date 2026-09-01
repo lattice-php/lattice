@@ -60,4 +60,3 @@ export type MediaTypeFilter = {
   label: string;
 };
 export type MediumNodeType = "media.library";
-export type NodeType = "field.media-picker" | "media.library";

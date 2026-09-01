@@ -11,8 +11,8 @@ use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Enums\Emphasis;
 use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Size;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Variant;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
@@ -33,7 +33,7 @@ final class ButtonsPage extends WorkbenchPage
                 ->schema([
                     Heading::make(__('workbench.pages.home.button-variants')),
                     Stack::make('button-variants')
-                        ->direction(StackDirection::Row)
+                        ->direction(Orientation::Horizontal)
                         ->gap(Gap::Small)
                         ->schema([
                             Button::make(__('workbench.pages.home.buttons.primary'), 'button-primary'),
@@ -47,7 +47,7 @@ final class ButtonsPage extends WorkbenchPage
                         ]),
                     Heading::make(__('workbench.pages.components.buttons.badges'), 2),
                     Stack::make('badge-examples')
-                        ->direction(StackDirection::Row)
+                        ->direction(Orientation::Horizontal)
                         ->gap(Gap::Small)
                         ->schema([
                             Badge::make(__('workbench.pages.components.buttons.badge-active'))->color('green'),
@@ -55,7 +55,7 @@ final class ButtonsPage extends WorkbenchPage
                         ]),
                     Heading::make(__('workbench.pages.components.buttons.avatars'), 2),
                     Stack::make('avatar-examples')
-                        ->direction(StackDirection::Row)
+                        ->direction(Orientation::Horizontal)
                         ->gap(Gap::Small)
                         ->schema([
                             Avatar::make()->name('Ada Lovelace'),

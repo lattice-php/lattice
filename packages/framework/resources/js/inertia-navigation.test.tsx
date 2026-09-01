@@ -1,7 +1,7 @@
 import { router } from "@inertiajs/react";
 import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { stubMatchMedia } from "@lattice-php/core/test-support";
-import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
+import type { Effect } from "@lattice-php/ui";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { useEmbeddedModal, useModal } from "@lattice-php/ui/components/modal/modal-host";
 import { useNavigation } from "@lattice-php/ui/navigation";
@@ -138,7 +138,7 @@ describe("useCloseModalsOnNavigate", () => {
 
 describe("navigationPlugin", () => {
   it("dispatches redirect effects through the router under the Provider", () => {
-    function Probe({ effects }: { effects: ActionEffect[] }) {
+    function Probe({ effects }: { effects: Effect[] }) {
       const dispatch = useEffectDispatcher();
       dispatch(effects);
 

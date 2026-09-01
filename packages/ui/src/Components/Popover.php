@@ -5,17 +5,17 @@ namespace Lattice\Ui\Components;
 
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Ui\Concerns\HasLabel;
-use Lattice\Ui\Enums\PopoverAlign;
-use Lattice\Ui\Enums\PopoverSide;
+use Lattice\Ui\Enums\ContentAlign;
+use Lattice\Ui\Enums\Placement;
 
 #[AsComponent('popover')]
 class Popover extends ContainerComponent
 {
     use HasLabel;
 
-    public PopoverSide $side = PopoverSide::Bottom;
+    public Placement $side = Placement::Bottom;
 
-    public PopoverAlign $align = PopoverAlign::Start;
+    public ContentAlign $align = ContentAlign::Start;
 
     /**
      * @var array<int, Component>
@@ -27,14 +27,14 @@ class Popover extends ContainerComponent
         return new static($key);
     }
 
-    public function side(PopoverSide $side): static
+    public function side(Placement $side): static
     {
         $this->side = $side;
 
         return $this;
     }
 
-    public function align(PopoverAlign $align): static
+    public function align(ContentAlign $align): static
     {
         $this->align = $align;
 

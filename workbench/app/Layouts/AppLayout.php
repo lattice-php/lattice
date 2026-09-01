@@ -30,9 +30,9 @@ use Lattice\Ui\Enums\Emphasis;
 use Lattice\Ui\Enums\FloatingPlacement;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\Icon;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Placement;
 use Lattice\Ui\Enums\Side;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Width;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Actions\LogoutAction;
@@ -91,7 +91,7 @@ class AppLayout extends LayoutDefinition
     {
         return $schema->schema([
             Stack::make('app-shell')
-                ->direction(StackDirection::Row)
+                ->direction(Orientation::Horizontal)
                 ->gap(Gap::None)
                 ->schema([
                     $this->sidebar(),
@@ -118,7 +118,7 @@ class AppLayout extends LayoutDefinition
     {
         return Sidebar::make('app-sidebar')->collapsible()->items([
             Stack::make('sidebar-brand')
-                ->direction(StackDirection::Row)
+                ->direction(Orientation::Horizontal)
                 ->align(Align::Center)
                 ->gap(Gap::Small)
                 ->schema([
@@ -200,7 +200,7 @@ class AppLayout extends LayoutDefinition
             Breadcrumbs::make(),
             SearchBox::make('global-search'),
             Stack::make('topbar-end')
-                ->direction(StackDirection::Row)
+                ->direction(Orientation::Horizontal)
                 ->align(Align::Center)
                 ->gap(Gap::Small)
                 ->width(Width::Auto)
@@ -231,7 +231,7 @@ class AppLayout extends LayoutDefinition
             ->placement(Placement::Bottom)
             ->trigger([
                 Stack::make('user-menu-trigger')
-                    ->direction(StackDirection::Row)
+                    ->direction(Orientation::Horizontal)
                     ->align(Align::Center)
                     ->gap(Gap::Small)
                     ->width(Width::Auto)

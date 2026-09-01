@@ -5,19 +5,33 @@ declare module "@lattice-php/core" {
   interface ComponentProps extends ComponentPropsMap {}
 }
 
-export type { Affix, Color, ColorKind, ColorName } from "@lattice-php/core";
+export type {
+  Affix,
+  Breadcrumb,
+  Breakpoint,
+  Color,
+  ColorKind,
+  ColorName,
+  Op,
+  Option,
+} from "@lattice-php/core";
 export type {
   Align,
   AvatarShape,
-  Breakpoint,
   Callout,
+  Callout as CalloutWireProps,
   ColumnWidth,
   ComponentPropsMap,
+  ContentAlign,
   DateFormat,
   DateTimeStyle,
+  DescriptionListSemantic,
+  Emphasis,
+  FloatingPlacement,
   Gap,
   Height,
   HttpMethod,
+  I18nConfig,
   Justify,
   ModalHeight,
   ModalWidth,
@@ -29,21 +43,13 @@ export type {
   RetractCallout,
   Side,
   Size,
-  StackDirection,
-  TabsAlignment,
   TextAlign,
   Toast,
+  Toast as ToastWireProps,
   Translatable,
   UiNodeType,
+  Variant,
   Width,
 } from "./generated";
 
 export type UiNode = NodeUnionOf<UiNodeType>;
-
-export type I18nConfig = {
-  readonly enabled: boolean;
-  readonly locales: string[];
-  readonly preloadLocales: string[];
-  readonly saveMissing: boolean;
-  readonly timezone: string | null;
-};

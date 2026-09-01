@@ -53,4 +53,3 @@ export type Confirmation = {
   readonly description: string | null;
   readonly title: string | null;
 };
-export type NodeType = "action" | "action.bulk" | "action.group";

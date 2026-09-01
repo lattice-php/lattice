@@ -1,9 +1,5 @@
-import {
-  type ActionEffect,
-  type ActionResponse,
-  dispatchActionError,
-  getActionEffects,
-} from "./dispatch";
+import type { Effect } from "./types";
+import { type ActionResponse, dispatchActionError, getActionEffects } from "./dispatch";
 
 /**
  * Runs an action request and dispatches the effects from its response body,
@@ -14,7 +10,7 @@ import {
  */
 export async function runAction(
   request: () => Promise<Response>,
-  dispatch: (effects: ActionEffect[]) => void,
+  dispatch: (effects: Effect[]) => void,
 ): Promise<boolean> {
   try {
     const response = await request();

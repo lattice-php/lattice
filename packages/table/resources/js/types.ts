@@ -12,20 +12,26 @@ import type {
   Filter,
   FilterPropsMap,
 } from "./generated";
-import type {
+import type { Table, TableNodeType } from "./generated";
+export type {
+  Column,
+  Column as ColumnWireProps,
   ColumnFilter,
   ColumnNodeType,
+  Filter,
+  Filter as FilterWireProps,
   FilterClause,
   FilterIndicator,
   FilterNodeType,
-  Table,
+  SortDirection,
+  Table as TableWireProps,
   TableNodeType,
   TablePagination,
   TableQuery,
   TableResult,
   TableSort,
 } from "./generated";
-export type { ColumnAlign, ColumnPin, SortDirection } from "./generated";
+export type { ContentAlign, Side } from "@lattice-php/ui";
 
 declare module "@lattice-php/core" {
   interface ComponentProps extends ComponentPropsMap {}
@@ -60,18 +66,6 @@ export type FilterNode<TType extends string = string> = {
   key: string;
   props: FilterPropsOf<TType>;
   schema?: Schema;
-};
-
-export type {
-  ColumnFilter,
-  ColumnNodeType,
-  FilterClause,
-  FilterIndicator,
-  FilterNodeType,
-  TablePagination,
-  TableQuery,
-  TableResult,
-  TableSort,
 };
 
 export type ActionNode = NodeUnionOf<"action" | "action.bulk" | "action.group">;

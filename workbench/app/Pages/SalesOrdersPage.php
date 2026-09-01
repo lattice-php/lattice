@@ -10,7 +10,7 @@ use Lattice\Ui\Components\Heading;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Enums\Align;
 use Lattice\Ui\Enums\Gap;
-use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Tables\SalesOrdersTable;
 
@@ -29,7 +29,7 @@ class SalesOrdersPage extends WorkbenchPage
                 ->gap(Gap::Large)
                 ->schema([
                     Stack::make('sales-orders-header')
-                        ->direction(StackDirection::Row)
+                        ->direction(Orientation::Horizontal)
                         ->align(Align::Center)
                         ->schema([
                             Heading::make(__('workbench.commerce.sales-orders.pages.index.heading')),

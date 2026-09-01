@@ -17,7 +17,7 @@ use Lattice\Ui\Components\Text;
 use Lattice\Ui\Components\Tooltip;
 use Lattice\Ui\Enums\Emphasis;
 use Lattice\Ui\Enums\Gap;
-use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Pages\WorkbenchPage;
 
@@ -57,7 +57,7 @@ final class ContainersPage extends WorkbenchPage
                         ->trigger([Text::make(__('workbench.pages.components.containers.collapsible-trigger'))])
                         ->content([Text::make(__('workbench.pages.components.containers.collapsible-body'))]),
                     Stack::make('containers-tooltip')
-                        ->direction(StackDirection::Row)
+                        ->direction(Orientation::Horizontal)
                         ->gap(Gap::Small)
                         ->schema([
                             Badge::make(__('workbench.pages.components.containers.tooltip-badge')),

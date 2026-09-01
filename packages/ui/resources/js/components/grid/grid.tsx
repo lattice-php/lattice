@@ -1,8 +1,8 @@
 import type { ComponentProps, CSSProperties } from "react";
+import type { Breakpoint } from "../../types";
 import { cn } from "../../lib/utils";
 
-export type GridBreakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
-export type GridBreakpointMap = Partial<Record<GridBreakpoint, number | string>>;
+export type GridBreakpointMap = Partial<Record<Breakpoint, number | string>>;
 
 export type GridProps = ComponentProps<"div"> & {
   columns?: GridBreakpointMap;

@@ -3,6 +3,7 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import { useFormContext } from "../../hooks/context";
 import { useFieldScope } from "../../hooks/field-scope";
 import { SelectControl, useSelectDomName } from "../select/select-control";
+import type { Side } from "@lattice-php/ui";
 
 /**
  * Resolve a host field's affix select child (shipped in the node's schema)
@@ -35,7 +36,7 @@ export function AffixSelect({
   last = true,
 }: {
   node: Node<"field.select">;
-  side: "start" | "end";
+  side: Side;
   last?: boolean;
 }) {
   const { errors } = useFormContext();

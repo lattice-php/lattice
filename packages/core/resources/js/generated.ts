@@ -6,6 +6,7 @@ export type Breadcrumb = {
   readonly href: string;
   readonly title: string;
 };
+export type Breakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type BrowserToken = {
   readonly accessToken: string;
   readonly audience: string;

@@ -40,13 +40,13 @@ TextColumn::make('created_at')->label('Registered');
 
 ## Alignment
 
-`->align(ColumnAlign::Start|Center|End)` sets the cell alignment. Text columns default to `Start`;
+`->align(ContentAlign::Start|Center|End)` sets the cell alignment. Text columns default to `Start`;
 [number](/tables/columns/number/) and [money](/tables/columns/money/) columns default to `End`.
 
 ```php
-use Lattice\Table\Enums\ColumnAlign;
+use Lattice\Ui\Enums\ContentAlign;
 
-TextColumn::make('code')->align(ColumnAlign::Center);
+TextColumn::make('code')->align(ContentAlign::Center);
 ```
 
 ## Width
@@ -89,13 +89,13 @@ TextColumn::make('updated_at')->label('Updated')
 
 `->pinned()` keeps a column fixed at the left edge of the table while the rest of the columns scroll
 underneath it — useful for an identifying column like a SKU or name in a wide table. Pass
-`ColumnPin::Right` to pin a column to the right edge instead.
+`Side::End` to pin a column to the end edge instead.
 
 ```php
-use Lattice\Table\Enums\ColumnPin;
+use Lattice\Ui\Enums\Side;
 
 TextColumn::make('sku')->label('SKU')->pinned();                        // pinned left
-BadgeColumn::make('status')->label('Status')->pinned(ColumnPin::Right); // pinned right
+BadgeColumn::make('status')->label('Status')->pinned(Side::End); // pinned to the end edge
 ```
 
 <ComponentExample
@@ -104,7 +104,7 @@ TextColumn::make('name')->label('Name');
 NumberColumn::make('price')->label('Price');
 BadgeColumn::make('status')->label('Status')
     ->colors(['active' => 'green', 'archived' => 'gray'])
-    ->pinned(ColumnPin::Right);`}
+    ->pinned(Side::End);`}
   fixture="table.pinned"
 />
 

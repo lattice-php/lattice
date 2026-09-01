@@ -1,8 +1,9 @@
-import type { Breadcrumb, Node, RemoteAccess } from "@lattice-php/core";
+import type { Breadcrumb, Node, PageWidth, RemoteAccess } from "@lattice-php/core";
 import type { Size, Translatable, Variant } from "@lattice-php/ui";
 import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
+export type ApiReferenceNodeType = "api-reference";
 export type BoardNodeType = "board";
 export type CalendarNodeType = "calendar";
 export type ChannelVisibility = "public" | "private" | "presence";
@@ -91,13 +92,6 @@ export type Fragment = {
 export type FragmentNodeType = "fragment";
 export type FragmentResponse = {
   readonly schema: Node[];
-};
-export type I18nConfig = {
-  readonly enabled: boolean;
-  readonly locales: string[];
-  readonly preloadLocales: string[];
-  readonly saveMissing: boolean;
-  readonly timezone: string | null;
 };
 export type LayoutNodeType = "outlet";
 export type Listen = {
@@ -232,7 +226,7 @@ export type PagePayload = {
   readonly listeners: Listen[];
   readonly schema: Node[];
   readonly title: string | null;
-  readonly width: string;
+  readonly width: PageWidth;
 };
 export type PdfNodeType = "pdf";
 export type RemoteNodeType = "remote.data-list";
@@ -245,6 +239,7 @@ export type SearchNodeType =
   | "search.results";
 export type SignatureExampleNodeType = "signature";
 export type TableNodeType = "table";
+export type TreeNodeType = "tree";
 export type UiNodeType =
   | "accordion"
   | "avatar"

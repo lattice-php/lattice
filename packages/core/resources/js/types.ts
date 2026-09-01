@@ -1,13 +1,16 @@
 import type { ComponentType as ReactComponentType, ReactNode } from "react";
+import type { Breakpoint } from "./generated";
 
 export type NodeProps = Record<string, unknown>;
 
 export type CommonNodeProps = {
   /** Extra classes the server merged onto this node; adapters merge it onto their root element. */
   class?: string | null;
-  columnSpan?: Record<string, number | string> | null;
+  columnSpan?: Partial<Record<Breakpoint, number | string>> | null;
   dataBindings?: Record<string, string> | null;
+  hiddenFrom?: Breakpoint | null;
   hideWhenCollapsed?: boolean | null;
+  visibleFrom?: Breakpoint | null;
 };
 
 export interface ComponentProps {}

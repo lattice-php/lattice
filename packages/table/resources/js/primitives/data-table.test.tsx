@@ -51,24 +51,24 @@ describe("DataTable primitives", () => {
         <DataTableGrid columns="3rem 160px minmax(0, 1fr) 10rem" pinned>
           <DataTableHeader>
             <DataTableHeaderRow>
-              <DataTableHeaderCell kind="selection" pinned="left" />
-              <DataTableHeaderCell pinned="left" pinIndex={0} pinBoundary="end">
+              <DataTableHeaderCell kind="selection" pinned="start" />
+              <DataTableHeaderCell pinned="start" pinIndex={0} pinBoundary="end">
                 Name
               </DataTableHeaderCell>
               <DataTableHeaderCell kind="filler" />
-              <DataTableHeaderCell kind="actions" pinned="right" pinBoundary="start">
+              <DataTableHeaderCell kind="actions" pinned="end" pinBoundary="start">
                 Actions
               </DataTableHeaderCell>
             </DataTableHeaderRow>
           </DataTableHeader>
           <DataTableBody>
             <DataTableRow>
-              <DataTableCell kind="selection" pinned="left" />
-              <DataTableCell pinned="left" pinIndex={0} pinBoundary="end" label="Name">
+              <DataTableCell kind="selection" pinned="start" />
+              <DataTableCell pinned="start" pinIndex={0} pinBoundary="end" label="Name">
                 Lamp
               </DataTableCell>
               <DataTableCell kind="filler" />
-              <DataTableCell kind="actions" pinned="right" pinBoundary="start" />
+              <DataTableCell kind="actions" pinned="end" pinBoundary="start" />
             </DataTableRow>
           </DataTableBody>
         </DataTableGrid>
@@ -83,11 +83,11 @@ describe("DataTable primitives", () => {
       "3rem 160px minmax(0, 1fr) 10rem",
     );
     expect(headers).toHaveLength(3);
-    expect(headers[0]).toHaveAttribute("data-pinned", "left");
+    expect(headers[0]).toHaveAttribute("data-pinned", "start");
     expect(headers[0]).toHaveStyle({ insetInlineStart: "var(--lt-pin-offset-selection)" });
     expect(headers[1]).toHaveAttribute("data-pin-boundary", "end");
     expect(headers[1]).toHaveStyle({ insetInlineStart: "var(--lt-pin-offset-0)" });
-    expect(headers[2]).toHaveAttribute("data-pinned", "right");
+    expect(headers[2]).toHaveAttribute("data-pinned", "end");
     expect(headers[2]).toHaveStyle({ insetInlineEnd: "var(--lt-pin-offset-actions)" });
     expect(cells).toHaveLength(3);
     expect(cells[1]).toHaveAttribute("data-pin-boundary", "end");

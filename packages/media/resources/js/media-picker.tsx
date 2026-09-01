@@ -15,23 +15,15 @@ import {
 import { LibraryView, type MediaRow } from "./components/library-view";
 import { UploadList } from "./components/upload-list";
 import { useMediaUpload, type UploadedMedia } from "./components/use-media-upload";
+import type { MediaPicker } from "./generated";
 
-type Picked = {
-  id: number;
-  name: string;
-  url: string | null;
-  preview_url: string | null;
-  mime_type: string;
-  values: Record<string, unknown>;
-};
+type Picked = NonNullable<MediaPicker["selected"]>[number];
 
 const MediaPickerComponent: RendererComponent<"field.media-picker"> = ({ node }) => {
   const { t } = useT("media");
   const props = node.props;
   const host = useModal();
-  const [picked, setPicked] = useState<Picked[]>(
-    (props.selected ?? []).map((entry) => ({ ...entry, values: entry.values ?? {} })),
-  );
+  const [picked, setPicked] = useState<Picked[]>(props.selected ?? []);
   const pickedRef = useRef(picked);
   pickedRef.current = picked;
   const libraryNode = node.schema?.find((child) => child.type === "media.library") as

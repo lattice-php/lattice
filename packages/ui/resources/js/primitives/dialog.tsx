@@ -31,7 +31,7 @@ const dialogContentVariants = cva(
         "6xl": "max-w-6xl",
         "7xl": "max-w-7xl",
         max: "max-w-[calc(100vw-2rem)]",
-      },
+      } satisfies Record<ModalWidth, string>,
       height: {
         sm: "",
         md: "",
@@ -42,7 +42,7 @@ const dialogContentVariants = cva(
         "4xl": "",
         "5xl": "",
         max: "",
-      },
+      } satisfies Record<ModalHeight, string>,
     },
     compoundVariants: [
       { placement: "center", height: "sm", class: "max-h-[min(480px,calc(100vh-2rem))]" },

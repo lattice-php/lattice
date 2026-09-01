@@ -142,7 +142,7 @@ final class WireModelBuilder
             'x-lattice' => [
                 'protocolVersion' => self::PROTOCOL_VERSION,
                 'families' => $this->familiesCatalog($manifest, $names, $context),
-                'domains' => $this->domainsCatalog($manifest),
+                'domains' => $this->domainsCatalog($manifest, aggregate: true),
             ],
             '$defs' => $defs,
         ];
@@ -352,7 +352,7 @@ final class WireModelBuilder
             '$id' => $source->schemaId(),
             '$defs' => $defs,
             'x-lattice' => [
-                'domains' => $this->domainsCatalog($catalogManifest),
+                'domains' => $this->domainsCatalog($catalogManifest, aggregate: $isFramework),
                 'families' => $this->familiesCatalog($originManifest, $names, $context),
             ],
         ];
@@ -904,7 +904,7 @@ final class WireModelBuilder
     /**
      * @return array<string, list<string>>
      */
-    private function domainsCatalog(WireTypeManifest $manifest): array
+    private function domainsCatalog(WireTypeManifest $manifest, bool $aggregate = false): array
     {
         $fieldTypes = [];
         $componentTypes = [];
@@ -965,7 +965,7 @@ final class WireModelBuilder
             $domains[Str::singular($domain).'NodeType'] = $types;
         }
 
-        if ($componentTypes !== []) {
+        if ($aggregate && $componentTypes !== []) {
             sort($componentTypes);
             $domains['NodeType'] = $componentTypes;
         }

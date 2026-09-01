@@ -13,8 +13,8 @@ use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\ModalHeight;
 use Lattice\Ui\Enums\ModalWidth;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Side;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\PageSchema;
 use Workbench\App\Actions\SubmitFeedbackAction;
 use Workbench\App\Pages\WorkbenchPage;
@@ -36,7 +36,7 @@ final class ModalsPage extends WorkbenchPage
                     Heading::make($this->title()),
                     Text::make(__('workbench.pages.components.modals.intro')),
                     Stack::make('modal-triggers')
-                        ->direction(StackDirection::Row)
+                        ->direction(Orientation::Horizontal)
                         ->gap(Gap::Small)
                         ->schema([
                             Button::make(__('workbench.pages.components.modals.dialog.trigger'), 'open-centered')

@@ -78,7 +78,7 @@ test('page metadata round-trips through an array descriptor', function (): void 
     expect($rebuilt->class)->toBe(FixtureEditPage::class)
         ->and($rebuilt->route)->toBe('/products/{product}/edit')
         ->and($rebuilt->layout)->toBe('app')
-        ->and($rebuilt->width)->toBe('full');
+        ->and($rebuilt->width)->toBe(PageWidth::Full);
 });
 
 test('a declared ability round-trips through the descriptor', function (): void {

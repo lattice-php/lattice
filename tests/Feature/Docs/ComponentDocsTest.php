@@ -30,7 +30,6 @@ use Lattice\Ui\Enums\Emphasis;
 use Lattice\Ui\Enums\Gap;
 use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Size;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Variant;
 
 describe('docs fixtures', function (): void {
@@ -77,7 +76,7 @@ describe('docs fixtures', function (): void {
             Stack::make()->gap(Gap::Small)->schema([
                 Progress::bar(65)->showValue(),
                 Progress::bar(80)->color(Color::success())->size(Size::Lg),
-                Stack::make()->direction(StackDirection::Row)->gap(Gap::Medium)->schema([
+                Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Medium)->schema([
                     Progress::circle(65)->showValue(),
                     Progress::circle(35)->max(50)->color(Color::warning())->size(Size::Xl)->showValue(),
                 ]),
@@ -87,7 +86,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the tooltip example fixture', function (): void {
         assertFixtureMatches('components.tooltip', Wire::toWire([
-            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
+            Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
                 Badge::make('Plan: Pro'),
                 Tooltip::make()->content('Includes unlimited seats and priority support.'),
             ]),
@@ -109,7 +108,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the button variants example fixture', function (): void {
         assertFixtureMatches('components.buttons', Wire::toWire([
-            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
+            Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
                 Button::make('Primary'),
                 Button::make('Secondary')->variant(Variant::Secondary),
                 Button::make('Success')->variant(Variant::Success),
@@ -124,7 +123,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the stack example fixture', function (): void {
         assertFixtureMatches('components.stack', Wire::toWire([
-            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
+            Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
                 Button::make('Save'),
                 Button::make('Cancel')->emphasis(Emphasis::Ghost),
             ]),
@@ -162,7 +161,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the avatar example fixture', function (): void {
         assertFixtureMatches('components.avatar', Wire::toWire([
-            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
+            Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
                 Avatar::make('https://i.pravatar.cc/96?img=13')->name('Ada Lovelace'),
                 Avatar::make()->name('Grace Hopper'),
                 Avatar::make()->name('Katherine Johnson')->size(Size::Lg),
@@ -173,7 +172,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the image example fixture', function (): void {
         assertFixtureMatches('components.image', Wire::toWire([
-            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
+            Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
                 Image::make('https://picsum.photos/id/1060/600/400')
                     ->alt('Coffee brewing setup')
                     ->size(96),
@@ -203,7 +202,7 @@ describe('docs fixtures', function (): void {
 
     it('matches the vertical separator example fixture', function (): void {
         assertFixtureMatches('components.separator-vertical', Wire::toWire([
-            Stack::make()->direction(StackDirection::Row)->gap(Gap::Small)->schema([
+            Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
                 Text::make('Draft'),
                 Separator::make()->orientation(Orientation::Vertical),
                 Text::make('Published'),

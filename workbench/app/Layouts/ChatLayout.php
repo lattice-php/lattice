@@ -8,7 +8,7 @@ use Lattice\Core\Attributes\AsLayout;
 use Lattice\Layouts\Components\Outlet;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Enums\Gap;
-use Lattice\Ui\Enums\StackDirection;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Width;
 use Lattice\Ui\PageSchema;
 
@@ -20,7 +20,7 @@ final class ChatLayout extends AppLayout
     {
         return $schema->schema([
             Stack::make('app-shell')
-                ->direction(StackDirection::Row)
+                ->direction(Orientation::Horizontal)
                 ->gap(Gap::None)
                 ->schema([
                     $this->sidebar(),

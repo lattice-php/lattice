@@ -3,10 +3,11 @@ import { RenderNode } from "@lattice-php/core/renderer";
 import { IconRenderer } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { resolveText } from "@lattice-php/ui/i18n/translatable";
+import type { Variant } from "@lattice-php/ui";
 import { cn } from "@lattice-php/ui/lib/utils";
 import type { NotificationItem } from "../types";
 
-const variantIconClass: Record<NonNullable<NotificationItem["variant"]>, string> = {
+const variantIconClass: Record<Variant, string> = {
   primary: "text-lt-primary",
   secondary: "text-lt-muted-fg",
   success: "text-lt-success",

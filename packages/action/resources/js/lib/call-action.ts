@@ -1,6 +1,6 @@
 import { apiFetch } from "@lattice-php/core/api";
 import type { Node } from "@lattice-php/core/types";
-import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
+import type { Effect } from "@lattice-php/ui";
 import { runAction } from "./run-action";
 
 export type CallActionResult = {
@@ -33,7 +33,7 @@ function actionData(body: unknown): Record<string, unknown> {
 export async function callAction(
   action: Node<"action" | "action.bulk">,
   payload: Record<string, unknown>,
-  dispatch: (effects: ActionEffect[]) => void,
+  dispatch: (effects: Effect[]) => void,
 ): Promise<CallActionResult> {
   const endpoint = action.props.endpoint;
   const result: CallActionResult = { data: {}, ok: true, status: 0 };

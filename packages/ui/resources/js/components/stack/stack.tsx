@@ -1,12 +1,12 @@
 import type { ComponentProps } from "react";
-import type { Align, Gap, Height, Justify, Side, StackDirection, Width } from "../../generated";
+import type { Align, Gap, Height, Justify, Orientation, Side, Width } from "../../generated";
 import { justifyClasses } from "../../lib/justify";
 import { useStickyOffsetPublisher } from "../../lib/use-sticky-offset";
 import { cn } from "../../lib/utils";
 
 export type StackProps = Omit<ComponentProps<"div">, "align"> & {
   align?: Align;
-  direction?: StackDirection;
+  direction?: Orientation;
   float?: Side;
   gap?: Gap;
   height?: Height;
@@ -17,13 +17,15 @@ export type StackProps = Omit<ComponentProps<"div">, "align"> & {
 
 const gridAlignments: Record<Align, string> = {
   center: "justify-items-center text-center",
-  start: "justify-items-start text-left",
+  end: "justify-items-end text-end",
+  start: "justify-items-start text-start",
   stretch: "justify-items-stretch",
 };
 
 const flexAlignments: Record<Align, string> = {
   center: "items-center text-center",
-  start: "items-center text-left",
+  end: "items-end text-end",
+  start: "items-start text-start",
   stretch: "items-stretch justify-stretch",
 };
 
@@ -67,7 +69,7 @@ const stickyClasses =
 export function Stack({
   align = "stretch",
   className,
-  direction = "column",
+  direction = "vertical",
   float,
   gap = "md",
   height,
@@ -76,7 +78,7 @@ export function Stack({
   width = "full",
   ...props
 }: StackProps) {
-  const isFlex = direction === "row" || justify !== undefined;
+  const isFlex = direction === "horizontal" || justify !== undefined;
   const ref = useStickyOffsetPublisher(sticky);
 
   return (
@@ -85,7 +87,9 @@ export function Stack({
       data-sticky={sticky || undefined}
       ref={ref}
       className={cn(
-        isFlex ? cn("flex", direction === "row" ? "flex-wrap" : "flex-col") : "grid content-start",
+        isFlex
+          ? cn("flex", direction === "horizontal" ? "flex-wrap" : "flex-col")
+          : "grid content-start",
         isFlex ? flexAlignments[align] : gridAlignments[align],
         stackGaps[gap],
         stackWidths[width],

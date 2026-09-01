@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { jsonResponse } from "@lattice-php/core/test-support";
-import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
+import type { Effect } from "@lattice-php/ui";
 import { dispatchActionError } from "@lattice-php/ui/effects/dispatch";
 import { runAction } from "./run-action";
 
@@ -15,9 +15,9 @@ beforeEach(() => {
 
 describe("runAction", () => {
   it("dispatches effects and reports success on a 2xx response", async () => {
-    const effect = { type: "toast" } as ActionEffect;
+    const effect = { type: "toast" } as Effect;
     const request = (): Promise<Response> => Promise.resolve(jsonResponse({ effects: [effect] }));
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
 
     await expect(runAction(request, dispatch)).resolves.toBe(true);
 
@@ -26,10 +26,10 @@ describe("runAction", () => {
   });
 
   it("dispatches effects but reports failure on a non-2xx response", async () => {
-    const effect = { type: "toast" } as ActionEffect;
+    const effect = { type: "toast" } as Effect;
     const request = (): Promise<Response> =>
       Promise.resolve(jsonResponse({ effects: [effect] }, { status: 422 }));
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
 
     await expect(runAction(request, dispatch)).resolves.toBe(false);
 
@@ -40,7 +40,7 @@ describe("runAction", () => {
   it("routes a thrown/network error through the action error event", async () => {
     const error = new Error("network down");
     const request = (): Promise<Response> => Promise.reject(error);
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
 
     await expect(runAction(request, dispatch)).resolves.toBe(false);
 

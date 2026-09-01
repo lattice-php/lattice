@@ -1,9 +1,7 @@
 import { appendTableFilters } from "@lattice-php/table";
+import type { Board } from "./generated";
 
-export type BoardQueryState = {
-  q: string;
-  tf: Record<string, unknown>;
-};
+export type BoardQueryState = Board["query"];
 
 export function emptyBoardQuery(): BoardQueryState {
   return { q: "", tf: {} };

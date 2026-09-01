@@ -25,7 +25,7 @@ full-width **horizontal** line — drop it between stacked items to group them:
 A vertical separator fills the height of its row — use it between inline items:
 
 <ComponentExample
-  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+  php={`Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
     Text::make('Draft'),
     Separator::make()->orientation(Orientation::Vertical),
     Text::make('Published'),

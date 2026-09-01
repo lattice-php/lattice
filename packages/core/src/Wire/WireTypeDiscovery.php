@@ -129,6 +129,10 @@ final readonly class WireTypeDiscovery
         $parts = explode('\\', $class);
         $index = array_search('Components', $parts, true);
 
-        return $index !== false && $index > 0 ? $parts[$index - 1] : '';
+        if ($index !== false && $index > 0) {
+            return $parts[$index - 1];
+        }
+
+        return count($parts) >= 3 ? $parts[1] : '';
     }
 }

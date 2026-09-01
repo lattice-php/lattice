@@ -1,6 +1,7 @@
 import { vi } from "vitest";
 import type { Node } from "@lattice-php/core/types";
-import type { ColumnFilter, ColumnPin } from "./generated";
+import type { Side } from "@lattice-php/ui";
+import type { ColumnFilter } from "./generated";
 import type { TableColumn, TableNode, TablePagination, TableQuery, TableResult } from "./types";
 
 export function col(partial: {
@@ -10,7 +11,7 @@ export function col(partial: {
   width?: TableColumn["props"]["width"];
   sortable?: boolean;
   filter?: ColumnFilter | null;
-  pinned?: ColumnPin | null;
+  pinned?: Side | null;
   schema?: Node[];
   props?: Record<string, unknown>;
 }): TableColumn {

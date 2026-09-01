@@ -1,4 +1,4 @@
-import type { EffectOf, EffectPropsOf } from "../effects/registry";
+import type { EffectOf, EffectPropsOf } from "../effects/types";
 import type { EffectPropsMap } from "../effects/types";
 
 export function effect<K extends keyof EffectPropsMap & string>(

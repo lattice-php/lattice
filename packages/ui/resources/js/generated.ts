@@ -5,7 +5,7 @@ export type Accordion = {
   defaultOpen: string | null;
   gap: Gap | null;
 };
-export type Align = "center" | "start" | "stretch";
+export type Align = "center" | "end" | "start" | "stretch";
 export type Avatar = {
   name: string | null;
   shape: AvatarShape;
@@ -35,7 +35,6 @@ export type BooleanEntry = {
 export type Breadcrumbs = {
   items: Breadcrumb[];
 };
-export type Breakpoint = "default" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type Button = {
   action: Node | null;
   buttonType: ButtonType;
@@ -157,6 +156,7 @@ export type ComponentPropsMap = {
   tooltip: Tooltip;
   topbar: Topbar;
 };
+export type ContentAlign = "start" | "center" | "end";
 export type DateEntry = {
   description: string | null;
   format: DateFormat;
@@ -176,8 +176,9 @@ export type DescriptionList = {
   bleed: boolean;
   divided: boolean;
   emptyLabel: string | null;
-  semantic: string;
+  semantic: DescriptionListSemantic;
 };
+export type DescriptionListSemantic = "description-list" | "list";
 export type Download = {
   readonly url: string;
 };
@@ -219,6 +220,13 @@ export type Heading = {
 };
 export type Height = "full" | "screen";
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
+export type I18nConfig = {
+  readonly enabled: boolean;
+  readonly locales: string[];
+  readonly preloadLocales: string[];
+  readonly saveMissing: boolean;
+  readonly timezone: string | null;
+};
 export type Icon = {
   color: Color | null;
   name: string;
@@ -282,47 +290,6 @@ export type ModalWidth =
   | "6xl"
   | "7xl"
   | "max";
-export type NodeType =
-  | "accordion"
-  | "avatar"
-  | "badge"
-  | "breadcrumbs"
-  | "button"
-  | "callouts"
-  | "card"
-  | "chart"
-  | "code-block"
-  | "collapsible"
-  | "description-list"
-  | "dropdown"
-  | "entry.badge"
-  | "entry.boolean"
-  | "entry.component"
-  | "entry.date"
-  | "entry.text"
-  | "floating-panel"
-  | "grid"
-  | "heading"
-  | "icon"
-  | "image"
-  | "link"
-  | "menu"
-  | "menu-item"
-  | "modal"
-  | "popover"
-  | "progress"
-  | "raw-block"
-  | "section"
-  | "segmented-control"
-  | "separator"
-  | "sidebar"
-  | "sidebar.footer"
-  | "stack"
-  | "tab"
-  | "tabs"
-  | "text"
-  | "tooltip"
-  | "topbar";
 export type NumberFormat = {
   currency: string | null;
   kind: string;
@@ -351,15 +318,13 @@ export type OpenModal = {
   readonly node: Node<"modal">;
 };
 export type Orientation = "horizontal" | "vertical";
-export type Placement = "top" | "bottom" | "right";
+export type Placement = "top" | "right" | "bottom" | "left";
 export type Popover = {
-  align: PopoverAlign;
+  align: ContentAlign;
   label: string | null;
-  side: PopoverSide;
+  side: Placement;
   trigger: Node[];
 };
-export type PopoverAlign = "start" | "center" | "end";
-export type PopoverSide = "top" | "right" | "bottom" | "left";
 export type Progress = {
   color: Color | null;
   max: number;
@@ -416,7 +381,7 @@ export type SidebarFooter = Record<string, never>;
 export type Size = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 export type Stack = {
   align: Align | null;
-  direction: StackDirection | null;
+  direction: Orientation | null;
   float: Side | null;
   gap: Gap | null;
   height: Height | null;
@@ -424,7 +389,6 @@ export type Stack = {
   sticky: boolean;
   width: Width | null;
 };
-export type StackDirection = "row" | "column";
 export type Tab = {
   confirm: {
     redirectUrl: string;
@@ -436,13 +400,12 @@ export type Tab = {
 };
 export type Tabs = {
   activeValue: string;
-  alignment: TabsAlignment;
+  alignment: Align;
   defaultValue: string | null;
   orientation: Orientation;
   queryKey: string;
   sticky: boolean;
 };
-export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type Text = {
   align: TextAlign | null;
   color: Color | null;
@@ -450,7 +413,7 @@ export type Text = {
   size: Size;
   text: string;
 };
-export type TextAlign = "left" | "center";
+export type TextAlign = "start" | "center";
 export type TextEntry = {
   copyable: boolean;
   description: string | null;

@@ -7,13 +7,13 @@ use InvalidArgumentException;
 use JsonSerializable;
 use Lattice\Core\Attributes\WireEnvelope;
 use Lattice\Core\Contracts\CanBeHidden;
+use Lattice\Core\Enums\Breakpoint;
 use Lattice\Core\Support\Wire;
 use Lattice\Ui\Components\Concerns\HasDataBindings;
 use Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Ui\Concerns\GatesRendering;
 use Lattice\Ui\Contracts\Renderable;
 use Lattice\Ui\Contracts\SchemaEntry;
-use Lattice\Ui\Enums\Breakpoint;
 
 /**
  * @phpstan-consistent-constructor

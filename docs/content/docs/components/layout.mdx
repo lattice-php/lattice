@@ -31,10 +31,10 @@ not.
 ## Stack
 
 `Stack::make()` lays children out in one direction with a consistent gap. It defaults to a vertical
-column; pass `->direction('row')` to lay them out horizontally.
+column; pass `->direction(Orientation::Horizontal)` to lay them out horizontally.
 
 <ComponentExample
-  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+  php={`Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
     Button::make('Save'),
     Button::make('Cancel')->emphasis(Emphasis::Ghost),
 ]);`}

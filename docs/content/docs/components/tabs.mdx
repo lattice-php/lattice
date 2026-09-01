@@ -34,7 +34,7 @@ open.
 - `->orientation(Orientation::Vertical)` moves the strip to the side of the panels. Vertical tabs
   render as a fixed-width rail on the page background — no pill panel — with the active item marked
   by a primary accent bar and a subtle background.
-- `->alignment(TabsAlignment::…)` controls how the strip sits. Horizontal tabs default to `Stretch`
+- `->alignment(Align::…)` controls how the strip sits. Horizontal tabs default to `Stretch`
   (tabs share the full width); `Start`, `Center`, and `End` shrink the strip to its content and pin it
   left, center, or right. Vertical tabs only read `End` — it moves the strip to the right of the
   panels; every other value keeps it on the left.
@@ -42,7 +42,7 @@ open.
   whatever sticky chrome the page publishes above it — a sticky `Topbar`, a sticky `Stack` header —
   so it never slides underneath. Horizontal strips ignore the option.
 
-See the [enums reference](/advanced/enums/) for the full `Orientation` and `TabsAlignment` cases.
+See the [enums reference](/advanced/enums/) for the full `Orientation` and `Align` cases.
 
 ## Responsive behavior
 

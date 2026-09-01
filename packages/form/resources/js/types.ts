@@ -7,6 +7,7 @@ declare module "@lattice-php/core" {
 
 export type {
   Checkbox,
+  Checkbox as CheckboxWireProps,
   Choice,
   DateInput,
   DateTimeInput,
@@ -16,6 +17,7 @@ export type {
   HiddenInput,
   NumberInput,
   PasswordInput,
+  PasswordInput as PasswordInputWireProps,
   PatternInput,
   PatternTokenData,
   RichEditor,
@@ -23,6 +25,7 @@ export type {
   Select,
   SignedUpload,
   Textarea,
+  Textarea as TextareaWireProps,
   TextInput,
   TimeInput,
 } from "./generated";

@@ -30,7 +30,7 @@ final class AppLayout extends LayoutDefinition
     public function schema(PageSchema $schema, Request $request): PageSchema
     {
         return $schema->schema([
-            Stack::make('app-shell')->direction('row')->schema([
+            Stack::make('app-shell')->direction(Orientation::Horizontal)->schema([
                 Sidebar::make('app-sidebar')->collapsible()->items([
                     Menu::make('sidebar')->items([
                         MenuItem::fromPage(HomePage::class)->icon('house'),

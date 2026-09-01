@@ -186,7 +186,7 @@ use Lattice\Ui\Components\Topbar;
 use Lattice\Notifications\Components\Notifications;
 
 Topbar::make('app-topbar')->sticky()->items([
-    Stack::make()->direction('row')->float(Side::End)->schema([
+    Stack::make()->direction(Orientation::Horizontal)->float(Side::End)->schema([
         Notifications::make(),
     ]),
 ]);

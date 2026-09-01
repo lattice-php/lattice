@@ -7,8 +7,8 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Date;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\SerializationHook;
+use Lattice\Ui\Enums\Align;
 use Lattice\Ui\Enums\Orientation;
-use Lattice\Ui\Enums\TabsAlignment;
 
 #[AsComponent('tabs')]
 class Tabs extends ContainerComponent
@@ -19,7 +19,7 @@ class Tabs extends ContainerComponent
 
     public Orientation $orientation = Orientation::Horizontal;
 
-    public TabsAlignment $alignment = TabsAlignment::Stretch;
+    public Align $alignment = Align::Stretch;
 
     public bool $sticky = false;
 
@@ -51,7 +51,7 @@ class Tabs extends ContainerComponent
         return $this;
     }
 
-    public function alignment(TabsAlignment $alignment): static
+    public function alignment(Align $alignment): static
     {
         $this->alignment = $alignment;
 

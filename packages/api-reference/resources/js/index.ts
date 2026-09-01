@@ -1,4 +1,5 @@
 export { ApiReference, type ApiReferenceProps } from "./with-sprite";
+export type { ApiReference as ApiReferenceWireProps } from "./generated";
 export type {
   AccessTokenRequest,
   ResolveAccessToken,

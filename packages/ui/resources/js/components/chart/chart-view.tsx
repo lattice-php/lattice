@@ -25,13 +25,15 @@ import { coerceColor, colorValue } from "../../lib/color";
 import { useFormatContext } from "../../format/format-context";
 import { numericValue } from "../../format/numeric";
 import { formatValue } from "../../format/value";
+import type { ChartSeriesType } from "../../generated";
 import type { ChartViewProps } from "./chart";
 
 type ChartProps = ChartViewProps;
 type ChartSeries = ChartProps["series"][number];
 type ChartDatum = ChartProps["data"][number];
-type CartesianSeries = ChartSeries & { type: "area" | "bar" | "line" };
-type SpecialSeries = ChartSeries & { type: "distribution" | "gauge" | "pie" };
+type CartesianSeriesType = Extract<ChartSeriesType, "area" | "bar" | "line">;
+type CartesianSeries = ChartSeries & { type: CartesianSeriesType };
+type SpecialSeries = ChartSeries & { type: Exclude<ChartSeriesType, CartesianSeriesType> };
 type ChartMargin = { bottom: number; left: number; right: number; top: number };
 type CartesianChartComponent = ComponentType<{
   children: ReactNode;

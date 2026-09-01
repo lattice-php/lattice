@@ -31,6 +31,36 @@
         "name": "ChatRole",
         "namespace": "Lattice\\Chat\\Enums"
     },
+    "Lattice\\Core\\Enums\\Breakpoint": {
+        "cases": [
+            {
+                "name": "Default",
+                "value": "default"
+            },
+            {
+                "name": "Sm",
+                "value": "sm"
+            },
+            {
+                "name": "Md",
+                "value": "md"
+            },
+            {
+                "name": "Lg",
+                "value": "lg"
+            },
+            {
+                "name": "Xl",
+                "value": "xl"
+            },
+            {
+                "name": "Xl2",
+                "value": "2xl"
+            }
+        ],
+        "name": "Breakpoint",
+        "namespace": "Lattice\\Core\\Enums"
+    },
     "Lattice\\Core\\Enums\\ColorKind": {
         "cases": [
             {
@@ -349,38 +379,6 @@
         "name": "ChannelVisibility",
         "namespace": "Lattice\\Realtime\\Enums"
     },
-    "Lattice\\Table\\Enums\\ColumnAlign": {
-        "cases": [
-            {
-                "name": "Start",
-                "value": "start"
-            },
-            {
-                "name": "Center",
-                "value": "center"
-            },
-            {
-                "name": "End",
-                "value": "end"
-            }
-        ],
-        "name": "ColumnAlign",
-        "namespace": "Lattice\\Table\\Enums"
-    },
-    "Lattice\\Table\\Enums\\ColumnPin": {
-        "cases": [
-            {
-                "name": "Left",
-                "value": "left"
-            },
-            {
-                "name": "Right",
-                "value": "right"
-            }
-        ],
-        "name": "ColumnPin",
-        "namespace": "Lattice\\Table\\Enums"
-    },
     "Lattice\\Table\\Enums\\ColumnType": {
         "cases": [
             {
@@ -506,6 +504,10 @@
                 "value": "center"
             },
             {
+                "name": "End",
+                "value": "end"
+            },
+            {
                 "name": "Start",
                 "value": "start"
             },
@@ -529,36 +531,6 @@
             }
         ],
         "name": "AvatarShape",
-        "namespace": "Lattice\\Ui\\Enums"
-    },
-    "Lattice\\Ui\\Enums\\Breakpoint": {
-        "cases": [
-            {
-                "name": "Default",
-                "value": "default"
-            },
-            {
-                "name": "Sm",
-                "value": "sm"
-            },
-            {
-                "name": "Md",
-                "value": "md"
-            },
-            {
-                "name": "Lg",
-                "value": "lg"
-            },
-            {
-                "name": "Xl",
-                "value": "xl"
-            },
-            {
-                "name": "Xxl",
-                "value": "2xl"
-            }
-        ],
-        "name": "Breakpoint",
         "namespace": "Lattice\\Ui\\Enums"
     },
     "Lattice\\Ui\\Enums\\ButtonType": {
@@ -661,6 +633,24 @@
         "name": "ColumnWidth",
         "namespace": "Lattice\\Ui\\Enums"
     },
+    "Lattice\\Ui\\Enums\\ContentAlign": {
+        "cases": [
+            {
+                "name": "Start",
+                "value": "start"
+            },
+            {
+                "name": "Center",
+                "value": "center"
+            },
+            {
+                "name": "End",
+                "value": "end"
+            }
+        ],
+        "name": "ContentAlign",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
     "Lattice\\Ui\\Enums\\DateTimeStyle": {
         "cases": [
             {
@@ -681,6 +671,20 @@
             }
         ],
         "name": "DateTimeStyle",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
+    "Lattice\\Ui\\Enums\\DescriptionListSemantic": {
+        "cases": [
+            {
+                "name": "DescriptionList",
+                "value": "description-list"
+            },
+            {
+                "name": "List",
+                "value": "list"
+            }
+        ],
+        "name": "DescriptionListSemantic",
         "namespace": "Lattice\\Ui\\Enums"
     },
     "Lattice\\Ui\\Enums\\Emphasis": {
@@ -1032,42 +1036,6 @@
                 "value": "top"
             },
             {
-                "name": "Bottom",
-                "value": "bottom"
-            },
-            {
-                "name": "Right",
-                "value": "right"
-            }
-        ],
-        "name": "Placement",
-        "namespace": "Lattice\\Ui\\Enums"
-    },
-    "Lattice\\Ui\\Enums\\PopoverAlign": {
-        "cases": [
-            {
-                "name": "Start",
-                "value": "start"
-            },
-            {
-                "name": "Center",
-                "value": "center"
-            },
-            {
-                "name": "End",
-                "value": "end"
-            }
-        ],
-        "name": "PopoverAlign",
-        "namespace": "Lattice\\Ui\\Enums"
-    },
-    "Lattice\\Ui\\Enums\\PopoverSide": {
-        "cases": [
-            {
-                "name": "Top",
-                "value": "top"
-            },
-            {
                 "name": "Right",
                 "value": "right"
             },
@@ -1080,7 +1048,7 @@
                 "value": "left"
             }
         ],
-        "name": "PopoverSide",
+        "name": "Placement",
         "namespace": "Lattice\\Ui\\Enums"
     },
     "Lattice\\Ui\\Enums\\ProgressShape": {
@@ -1149,47 +1117,11 @@
         "name": "Size",
         "namespace": "Lattice\\Ui\\Enums"
     },
-    "Lattice\\Ui\\Enums\\StackDirection": {
-        "cases": [
-            {
-                "name": "Row",
-                "value": "row"
-            },
-            {
-                "name": "Column",
-                "value": "column"
-            }
-        ],
-        "name": "StackDirection",
-        "namespace": "Lattice\\Ui\\Enums"
-    },
-    "Lattice\\Ui\\Enums\\TabsAlignment": {
+    "Lattice\\Ui\\Enums\\TextAlign": {
         "cases": [
             {
                 "name": "Start",
                 "value": "start"
-            },
-            {
-                "name": "Center",
-                "value": "center"
-            },
-            {
-                "name": "End",
-                "value": "end"
-            },
-            {
-                "name": "Stretch",
-                "value": "stretch"
-            }
-        ],
-        "name": "TabsAlignment",
-        "namespace": "Lattice\\Ui\\Enums"
-    },
-    "Lattice\\Ui\\Enums\\TextAlign": {
-        "cases": [
-            {
-                "name": "Left",
-                "value": "left"
             },
             {
                 "name": "Center",

@@ -1,5 +1,4 @@
-import type { RemoteAccess } from "@lattice-php/core";
-import type { Breakpoint } from "@lattice-php/ui";
+import type { Breakpoint, RemoteAccess } from "@lattice-php/core";
 
 export type ApiReference = {
   defaultOperation: string | null;
@@ -15,7 +14,7 @@ export type ApiReference = {
   twoColumnBreakpoint: Breakpoint;
   url: string | null;
 };
+export type ApiReferenceNodeType = "api-reference";
 export type ComponentPropsMap = {
   "api-reference": ApiReference;
 };
-export type NodeType = "api-reference";

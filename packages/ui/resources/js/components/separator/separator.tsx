@@ -1,11 +1,10 @@
 import type { ComponentProps } from "react";
+import type { Orientation } from "../../generated";
 import { cn } from "../../lib/utils";
-
-export type SeparatorOrientation = "horizontal" | "vertical";
 
 export type SeparatorProps = Omit<ComponentProps<"div">, "aria-orientation" | "role"> & {
   bleed?: boolean;
-  orientation?: SeparatorOrientation;
+  orientation?: Orientation;
 };
 
 export function Separator({

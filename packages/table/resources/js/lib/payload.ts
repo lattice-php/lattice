@@ -100,7 +100,12 @@ export function getQuery(value: unknown): TableQuery {
   };
 }
 
-const PAGINATION_MODES = new Set(["none", "simple", "table", "infinite"]);
+const PAGINATION_MODES = new Set<string>([
+  "none",
+  "simple",
+  "table",
+  "infinite",
+] satisfies PaginationType[]);
 
 function getPaginationMode(value: unknown): PaginationType | null {
   return typeof value === "string" && PAGINATION_MODES.has(value)

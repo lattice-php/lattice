@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Lattice\Http;
+namespace Lattice\Ui\I18n;
 
 use Lattice\Core\Attributes\TypeScript;
 

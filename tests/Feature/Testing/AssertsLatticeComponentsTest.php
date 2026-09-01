@@ -23,8 +23,8 @@ use Lattice\Ui\Components\Menu;
 use Lattice\Ui\Components\MenuItem;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Topbar;
+use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Side;
-use Lattice\Ui\Enums\StackDirection;
 use Lattice\Ui\Enums\Variant;
 use PHPUnit\Framework\AssertionFailedError;
 
@@ -176,7 +176,7 @@ it('asserts against a rendered Inertia page', function (): void {
 
 it('addresses layout components by key and asserts their props', function (): void {
     $topbar = Topbar::make('app-topbar')->sticky()->items([
-        Stack::make('end')->direction(StackDirection::Row)->float(Side::End)->schema([
+        Stack::make('end')->direction(Orientation::Horizontal)->float(Side::End)->schema([
             Menu::make('nav')->items([
                 MenuItem::make('Settings', 'settings')->icon('settings')->href('/settings'),
             ]),

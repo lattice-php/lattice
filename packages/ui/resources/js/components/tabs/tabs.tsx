@@ -14,7 +14,7 @@ import { cn } from "../../lib/utils";
 import { useMediaQuery } from "../../lib/use-media-query";
 import { NativeSelect } from "../../primitives/native-select";
 import { pillClassName } from "../../lib/pill";
-import type { Orientation, TabsAlignment } from "../../generated";
+import type { Align, Orientation } from "../../generated";
 
 export type TabsItem = {
   label: ReactNode;
@@ -23,7 +23,7 @@ export type TabsItem = {
 };
 
 export type TabsProps = Omit<ComponentProps<"div">, "children" | "defaultValue" | "onChange"> & {
-  alignment?: TabsAlignment;
+  alignment?: Align;
   children?: ReactNode;
   defaultValue?: string;
   items?: readonly TabsItem[];

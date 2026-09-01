@@ -10,10 +10,10 @@ use Lattice\Table\Columns\Column;
 use Lattice\Table\Columns\MoneyColumn;
 use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\TextColumn;
-use Lattice\Table\Enums\ColumnPin;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Link;
 use Lattice\Ui\Enums\ColumnWidth;
+use Lattice\Ui\Enums\Side;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesPrice;
 use Workbench\App\Tables\Columns\StatusBadgeColumn;
@@ -35,7 +35,7 @@ class PinnedColumnsTable extends BaseProductsDemoTable
             TextColumn::make('tags')->label(__('workbench.tables.columns.tags'))->width(ColumnWidth::Xl)->multiple('name')->badge('color')->toggleable(),
             TextColumn::make('created_at')->label(__('workbench.tables.columns.created-at'))->width(ColumnWidth::Xl)->sortable()->dateTime()->toggleable(),
             TextColumn::make('updated_at')->label(__('workbench.tables.columns.updated-at'))->width(ColumnWidth::Xl)->sortable()->dateTime()->toggleable(true),
-            StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->pinned(ColumnPin::Right)->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
+            StatusBadgeColumn::make('status')->label(__('workbench.tables.columns.status'))->pinned(Side::End)->colorMap(['draft' => 'gray', 'active' => 'green', 'archived' => 'red']),
         ];
     }
 

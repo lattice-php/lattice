@@ -6,10 +6,10 @@ namespace Lattice\ApiReference;
 
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Contracts\ResolvesRemoteSourceEndpoints;
+use Lattice\Core\Enums\Breakpoint;
 use Lattice\Core\Remote\RemoteAccess;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Concerns\SealsReferences;
-use Lattice\Ui\Enums\Breakpoint;
 use LogicException;
 
 #[AsComponent('api-reference')]

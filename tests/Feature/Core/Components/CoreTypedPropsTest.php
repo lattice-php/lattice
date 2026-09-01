@@ -18,14 +18,12 @@ use Lattice\Ui\Enums\ModalWidth;
 use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Side;
 use Lattice\Ui\Enums\Size;
-use Lattice\Ui\Enums\StackDirection;
-use Lattice\Ui\Enums\TabsAlignment;
 use Lattice\Ui\Enums\TextAlign;
 use Lattice\Ui\Enums\Width;
 
 it('stack serializes enums direction and key wire-identically', function (): void {
     expect(wire(Stack::make('layout')
-        ->direction(StackDirection::Row)
+        ->direction(Orientation::Horizontal)
         ->gap(Gap::Large)
         ->align(Align::Center)
         ->width(Width::Small)
@@ -37,7 +35,7 @@ it('stack serializes enums direction and key wire-identically', function (): voi
                 'gap' => 'lg',
                 'align' => 'center',
                 'width' => 'sm',
-                'direction' => 'row',
+                'direction' => 'horizontal',
                 'justify' => null,
                 'height' => null,
                 'float' => null,
@@ -198,7 +196,7 @@ it('tabs serialize a vertical orientation', function (): void {
 it('tabs serialize a stretched alignment by default and honour an override', function (): void {
     expect(wire(Tabs::make('settings-tabs'))['props']['alignment'])->toBe('stretch');
 
-    expect(wire(Tabs::make('settings-tabs')->alignment(TabsAlignment::Center))['props']['alignment'])
+    expect(wire(Tabs::make('settings-tabs')->alignment(Align::Center))['props']['alignment'])
         ->toBe('center');
 });
 

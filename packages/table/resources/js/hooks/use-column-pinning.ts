@@ -1,12 +1,11 @@
 import { useCallback, useMemo } from "react";
+import type { Side } from "@lattice-php/ui";
 import { usePersistentState } from "@lattice-php/ui/lib/use-persistent-state";
-
-export type ColumnPinSide = "left" | "right";
 
 export type PinnableColumn = {
   key: string;
   props: {
-    pinned?: ColumnPinSide | null;
+    pinned?: Side | null;
   };
 };
 
@@ -23,7 +22,7 @@ export function useColumnPinning<TColumn extends PinnableColumn>({
     [columns],
   );
 
-  const [overrides, setOverrides] = usePersistentState<Record<string, ColumnPinSide | false>>(
+  const [overrides, setOverrides] = usePersistentState<Record<string, Side | false>>(
     storageKey ?? "",
     {},
     {
@@ -34,12 +33,12 @@ export function useColumnPinning<TColumn extends PinnableColumn>({
   );
 
   const serverPinFor = useCallback(
-    (column: PinnableColumn): ColumnPinSide | null => column.props.pinned ?? null,
+    (column: PinnableColumn): Side | null => column.props.pinned ?? null,
     [],
   );
 
   const pinFor = useCallback(
-    (column: TColumn): ColumnPinSide | null => {
+    (column: TColumn): Side | null => {
       const override = overrides[column.key];
 
       if (override === undefined) {
@@ -52,7 +51,7 @@ export function useColumnPinning<TColumn extends PinnableColumn>({
   );
 
   const setColumnPin = useCallback(
-    (key: string, side: ColumnPinSide | null) => {
+    (key: string, side: Side | null) => {
       setOverrides((current) => {
         const column = columnsByKey.get(key);
         const serverPin = column ? serverPinFor(column) : null;
@@ -84,16 +83,16 @@ export function useColumnPinning<TColumn extends PinnableColumn>({
   };
 }
 
-function isValidPinValue(value: unknown): value is ColumnPinSide | false {
-  return value === "left" || value === "right" || value === false;
+function isValidPinValue(value: unknown): value is Side | false {
+  return value === "start" || value === "end" || value === false;
 }
 
 function pickKnownPins(
   source: Record<string, unknown>,
   columnKeys: string[],
-): Record<string, ColumnPinSide | false> {
+): Record<string, Side | false> {
   const known = new Set(columnKeys);
-  const result: Record<string, ColumnPinSide | false> = {};
+  const result: Record<string, Side | false> = {};
 
   for (const [key, value] of Object.entries(source)) {
     if (known.has(key) && isValidPinValue(value)) {
@@ -104,7 +103,7 @@ function pickKnownPins(
   return result;
 }
 
-function parseStoredPins(raw: string, columnKeys: string[]): Record<string, ColumnPinSide | false> {
+function parseStoredPins(raw: string, columnKeys: string[]): Record<string, Side | false> {
   const stored = JSON.parse(raw) as { overrides?: unknown };
   const overrides = stored?.overrides;
 
@@ -116,7 +115,7 @@ function parseStoredPins(raw: string, columnKeys: string[]): Record<string, Colu
 }
 
 function serializePins(
-  overrides: Record<string, ColumnPinSide | false>,
+  overrides: Record<string, Side | false>,
   columnKeys: string[],
 ): string | null {
   const stored = pickKnownPins(overrides, columnKeys);

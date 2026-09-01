@@ -14,7 +14,7 @@ import Info from "@components/Info.astro";
 Solid is the default emphasis and reads as primary until you set a variant.
 
 <ComponentExample
-  php={`Stack::make()->direction('row')->gap(Gap::Small)->schema([
+  php={`Stack::make()->direction(Orientation::Horizontal)->gap(Gap::Small)->schema([
     Button::make('Primary'),
     Button::make('Secondary')->variant(Variant::Secondary),
     Button::make('Success')->variant(Variant::Success),

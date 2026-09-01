@@ -2,7 +2,7 @@
     {
         "props": {
             "align": null,
-            "direction": "row",
+            "direction": "horizontal",
             "float": null,
             "gap": "sm",
             "height": null,

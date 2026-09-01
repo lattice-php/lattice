@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import type { Node } from "@lattice-php/core/types";
-import type { ActionEffect } from "@lattice-php/ui/effects/dispatch";
+import type { Effect } from "@lattice-php/ui";
 import { dispatchActionError } from "@lattice-php/ui/effects/dispatch";
 import { callAction } from "./call-action";
 
@@ -20,9 +20,9 @@ beforeEach(() => {
 
 describe("callAction", () => {
   it("posts the payload as json and resolves ok with the result data", async () => {
-    const effect = { type: "toast" } as ActionEffect;
+    const effect = { type: "toast" } as Effect;
     apiFetch.mockResolvedValue(jsonResponse({ data: { id: 7 }, effects: [effect] }));
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
     const node: Node<"action"> | Node<"action.bulk"> = fakeNode({
       props: { endpoint: "/lattice/actions/rename", method: "patch", ref: "sealed-reference" },
       type: "action",
@@ -59,11 +59,11 @@ describe("callAction", () => {
   });
 
   it("dispatches effects and surfaces the data when the action is rejected", async () => {
-    const effect = { type: "toast" } as ActionEffect;
+    const effect = { type: "toast" } as Effect;
     apiFetch.mockResolvedValue(
       jsonResponse({ data: { reason: "locked" }, effects: [effect] }, { status: 422 }),
     );
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
     const node = fakeNode({ props: { endpoint: "/lattice/actions/move" }, type: "action" });
 
     await expect(callAction(node, {}, dispatch)).resolves.toEqual({
@@ -77,7 +77,7 @@ describe("callAction", () => {
   });
 
   it("resolves ok without a request when the node has no endpoint", async () => {
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
     const node = fakeNode({ props: { endpoint: null }, type: "action.bulk" });
 
     await expect(callAction(node, {}, dispatch)).resolves.toEqual({
@@ -93,7 +93,7 @@ describe("callAction", () => {
   it("routes a thrown/network error through the action error event", async () => {
     const error = new Error("network down");
     apiFetch.mockRejectedValue(error);
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
     const node = fakeNode({ props: { endpoint: "/lattice/actions/move" }, type: "action" });
 
     await expect(callAction(node, {}, dispatch)).resolves.toEqual({
@@ -108,7 +108,7 @@ describe("callAction", () => {
 
   it("defaults the data to an empty object when the body is not json", async () => {
     apiFetch.mockResolvedValue(new Response("<html></html>", { status: 200 }));
-    const dispatch = vi.fn<(effects: ActionEffect[]) => void>();
+    const dispatch = vi.fn<(effects: Effect[]) => void>();
     const node = fakeNode({ props: { endpoint: "/lattice/actions/move" }, type: "action" });
 
     await expect(callAction(node, {}, dispatch)).resolves.toEqual({
