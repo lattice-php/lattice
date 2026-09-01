@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "@lattice-php/core/api";
 import { Button } from "@lattice-php/ui/components/button/button";
 import {
@@ -14,22 +14,15 @@ import type { Node } from "@lattice-php/core/types";
 import type { ModalWidth } from "@lattice-php/ui/types";
 import {
   collectFields,
-  FORM_DEBOUNCE_MS,
   FormProvider,
   FormValuesProvider,
-  errorKeyBelongsTo,
-  firstErrors,
   PrefillProvider,
   ResolvedNodesProvider,
   useFormResolver,
-  useFormValues,
 } from "./embed";
-import type { FieldErrors } from "./embed";
-import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
+import { useFetchForm } from "./hooks/use-fetch-form";
 import { useT } from "@lattice-php/ui/i18n";
-import { dispatchActionError, getActionEffects } from "@lattice-php/ui/effects/dispatch";
 import type { ActionResponse } from "@lattice-php/ui/effects/dispatch";
-import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 
 type ActionFormProps = {
   cancelLabel: string;
@@ -123,135 +116,23 @@ function ActionFormBody({
   formNode: Node;
   precognitive: boolean;
 }) {
-  const values = useFormValues();
-  const valuesRef = useRef(values);
-  valuesRef.current = values;
-  const extraDataRef = useRef(extraData);
-  extraDataRef.current = extraData;
   const { nodes: resolvedNodes, markUserEdit } = useFormResolver(
     endpoint,
     componentRef,
     formNode.schema,
   );
 
-  const dispatch = useEffectDispatcher();
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [processing, setProcessing] = useState(false);
-  const [validating, setValidating] = useState(false);
-
-  const request = useCallback(
-    (extraHeaders?: Record<string, string>): Promise<Response> =>
-      apiFetch(endpoint, {
-        body: JSON.stringify({ ...valuesRef.current, ...extraDataRef.current }),
-        method,
-        ref: componentRef,
-        headers: extraHeaders,
-        throwOnError: false,
-      }),
-    [componentRef, endpoint, method],
-  );
-
-  const clearErrors = useCallback((field: string) => {
-    setErrors((current) =>
-      current[field] === undefined ? current : { ...current, [field]: undefined },
-    );
-  }, []);
-
-  const runValidation = useDebouncedCallback((field: string) => {
-    void request({ Precognition: "true", "Precognition-Validate-Only": field })
-      .then(async (response) => {
-        if (response.status === 422) {
-          const body = (await response.json()) as { errors?: Record<string, string[]> };
-          setErrors((current) => ({ ...current, ...firstErrors(body.errors) }));
-
-          return;
-        }
-
-        clearErrors(field);
-      })
-      .catch(() => {});
-  }, FORM_DEBOUNCE_MS);
-
-  const validate = useCallback(
-    (field: string) => {
-      if (precognitive) {
-        runValidation(field);
-      }
-    },
-    [precognitive, runValidation],
-  );
-
-  const touch = useCallback(() => {}, []);
-
-  const validateFields = useCallback(
-    (fields: string[], options?: { onSuccess?: () => void; onValidationError?: () => void }) => {
-      setValidating(true);
-
-      void request({ Precognition: "true", "Precognition-Validate-Only": fields.join(",") })
-        .then(async (response) => {
-          if (response.status === 422) {
-            const body = (await response.json()) as { errors?: Record<string, string[]> };
-            setErrors((current) => ({ ...current, ...firstErrors(body.errors) }));
-            options?.onValidationError?.();
-
-            return;
-          }
-
-          if (!response.ok) {
-            options?.onValidationError?.();
-
-            return;
-          }
-
-          const cleared = fields.filter((field) => !field.includes("*"));
-          setErrors((current) =>
-            Object.fromEntries(
-              Object.entries(current).filter(
-                ([key]) => !cleared.some((name) => errorKeyBelongsTo(key, name)),
-              ),
-            ),
-          );
-          options?.onSuccess?.();
-        })
-        .catch(() => options?.onValidationError?.())
-        .finally(() => setValidating(false));
-    },
-    [request],
-  );
-
-  const submit = useCallback(() => {
-    setProcessing(true);
-    onBefore?.();
-
-    void request()
-      .then(async (response) => {
-        const body = (await response.json().catch(() => ({}))) as ActionResponse & {
-          errors?: Record<string, string[]>;
-        };
-
-        dispatch(getActionEffects(body.effects));
-
-        if (response.status === 422 && body.errors) {
-          setErrors(firstErrors(body.errors));
-          onError?.();
-
-          return;
-        }
-
-        if (!response.ok) {
-          onError?.();
-
-          return;
-        }
-
-        onSuccess(body);
-      })
-      .catch((error: unknown) => {
-        dispatchActionError(error);
-        onError?.();
-      })
-      .finally(() => setProcessing(false));
-  }, [dispatch, onBefore, onError, onSuccess, request]);
+  const { clearErrors, errors, processing, submit, touch, validate, validateFields, validating } =
+    useFetchForm({
+      componentRef,
+      endpoint,
+      extraData,
+      method,
+      onBefore,
+      onError,
+      onSuccess,
+      precognitive,
+    });
 
   const context = useMemo(
     () => ({

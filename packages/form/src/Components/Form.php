@@ -42,6 +42,8 @@ class Form extends ContainerComponent implements FormRootComponent, InteractiveC
 
     public ?int $validationTimeout = null;
 
+    public bool $async = false;
+
     public bool $submitButton = true;
 
     public ?Justify $submitJustify = null;
@@ -157,6 +159,20 @@ class Form extends ContainerComponent implements FormRootComponent, InteractiveC
         return $this;
     }
 
+    /**
+     * Submit over fetch and apply the response's effects in place — no Inertia
+     * visit, no page re-render, no scroll movement. The handler's LatticeResponse
+     * arrives as an effects JSON body; an explicit redirect becomes a redirect
+     * effect. Validation runs the same 422/Precognition path modal action forms
+     * use, so `errorBag()` has no meaning here.
+     */
+    public function async(bool $async = true): static
+    {
+        $this->async = $async;
+
+        return $this;
+    }
+
     public function precognitive(int $debounceMs = self::DEFAULT_VALIDATION_DEBOUNCE_MS): static
     {
         $this->precognitive = true;
@@ -246,6 +262,22 @@ class Form extends ContainerComponent implements FormRootComponent, InteractiveC
 
         if ($hasRootWizard) {
             $this->submitButton = false;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[SerializationHook(priority: 185)]
+    protected function guardAsyncUploads(array $data): array
+    {
+        if ($this->async && $this->fields()->contains(fn (Field $field): bool => $field instanceof FileUpload)) {
+            throw new LogicException(
+                'An async form cannot contain file uploads: the fetch submit sends JSON, not multipart form data.',
+            );
         }
 
         return $data;

@@ -272,6 +272,7 @@ export type FileUpload = {
 };
 export type Form = {
   action: string | null;
+  async: boolean;
   errorBag: string | null;
   method: HttpMethod | null;
   precognitive: boolean;

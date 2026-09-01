@@ -16,6 +16,7 @@ import { collectFields } from "../../lib/collect-fields";
 import { PrefillProvider } from "../../hooks/prefill-context";
 import { ResolvedNodesProvider } from "../../hooks/resolved-nodes";
 import { useFormResolver } from "../../hooks/use-form-resolver";
+import { useFetchForm } from "../../hooks/use-fetch-form";
 import { FormValuesProvider, useResetFormValues } from "../../hooks/values";
 
 const JUSTIFY_CLASS: Record<Justify, string> = {
@@ -139,12 +140,120 @@ export const FormAdapter: RendererComponent<"form"> = ({ children, node }) => {
     [node.schema, node.props.state],
   );
 
+  const Shell = node.props.async ? AsyncFormShell : FormShell;
+
   return (
     <FormValuesProvider initial={initialValues}>
-      <FormShell node={node}>{children}</FormShell>
+      <Shell node={node}>{children}</Shell>
     </FormValuesProvider>
   );
 };
+
+/**
+ * The fetch-based shell for `Form::async()`: submits as JSON and applies the
+ * response's effects in place — no Inertia visit, no page re-render. Error
+ * bags don't exist here; 422 bodies map straight onto field errors, and ref
+ * renewal on 403 lives inside apiFetch.
+ */
+function AsyncFormShell({ children, node }: { children: React.ReactNode; node: Node<"form"> }) {
+  const { t } = useT("lattice");
+  const props = node.props;
+  const action = props.action ?? "#";
+  const componentRef = props.ref ?? "";
+  const method = props.method ?? "post";
+  const precognitive = props.precognitive;
+  const resetOnError = props.resetOnError ?? false;
+  const resetOnSuccess = props.resetOnSuccess ?? [];
+  const fieldLabels = useMemo(() => collectFields(node.schema).labels, [node.schema]);
+  const submitButtons = (props.submitButtons as SubmitButtonNode[] | null) ?? undefined;
+  const submitLabel = props.submitLabel ?? t("form.submit", "Submit");
+
+  const resetValues = useResetFormValues();
+  const resetConfigured = (configured: string[] | boolean | null | undefined): void => {
+    const fields = configuredResetFields(configured);
+
+    if (fields !== false) {
+      resetValues(fields);
+    }
+  };
+
+  const { clearErrors, errors, processing, submit, touch, validate, validateFields, validating } =
+    useFetchForm({
+      componentRef,
+      endpoint: action,
+      method,
+      onError: () => resetConfigured(resetOnError),
+      onSuccess: () => resetConfigured(resetOnSuccess),
+      precognitive,
+      validationDebounceMs: props.validationTimeout ?? undefined,
+    });
+
+  const context = useMemo(
+    () => ({
+      action,
+      clearErrors,
+      componentId: node.id,
+      componentRef,
+      errors,
+      fieldLabels,
+      precognitive,
+      processing,
+      touch,
+      validate,
+      validateFields,
+      validating,
+    }),
+    [
+      action,
+      clearErrors,
+      componentRef,
+      errors,
+      fieldLabels,
+      node.id,
+      precognitive,
+      processing,
+      touch,
+      validate,
+      validateFields,
+      validating,
+    ],
+  );
+
+  return (
+    <form
+      data-slot="form"
+      data-test={node.id}
+      className="flex w-full flex-col gap-6"
+      onSubmit={(event) => {
+        event.preventDefault();
+        submit();
+      }}
+    >
+      <FormProvider value={context}>
+        <FormResetListener componentId={node.id} reset={() => {}} />
+
+        {props.status && (
+          <div className="text-center text-sm font-medium text-lt-success">{props.status}</div>
+        )}
+
+        <FormBody
+          action={action}
+          componentRef={componentRef}
+          nodes={node.schema}
+          shouldRenderSubmitButton={props.submitButton}
+          submitButtons={submitButtons}
+          submitEmphasis={props.submitEmphasis ?? undefined}
+          submitJustify={props.submitJustify ?? undefined}
+          submitLabel={submitLabel}
+          submitVariant={props.submitVariant ?? undefined}
+          summaryLabel={props.validationSummaryLabel}
+        >
+          {children}
+        </FormBody>
+      </FormProvider>
+    </form>
+  );
+}
 
 function FormShell({ children, node }: { children: React.ReactNode; node: Node<"form"> }) {
   const { t } = useT("lattice");
@@ -198,6 +307,7 @@ function FormShell({ children, node }: { children: React.ReactNode; node: Node<"
       data-test={node.id}
       errorBag={errorBag}
       method={method}
+      options={{ preserveScroll: true }}
       resetOnError={resetOnError}
       resetOnSuccess={resetOnSuccess}
       validationTimeout={precognitive ? validationTimeout : undefined}
