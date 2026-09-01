@@ -11,11 +11,14 @@ use Lattice\Core\Support\Wire;
 use Lattice\Table\Attributes\AsColumn;
 use Lattice\Table\Enums\ColumnType;
 use Lattice\Ui\Concerns\HasIcon;
+use Lattice\Ui\Enums\ColumnWidth;
 
 #[AsColumn(ColumnType::Icon)]
 final class IconColumn extends Column
 {
     use HasIcon;
+
+    public ColumnWidth $width = ColumnWidth::Xs;
 
     /**
      * @var array<array-key, string>|null

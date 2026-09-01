@@ -49,7 +49,7 @@
                         "pinned": null,
                         "sortable": true,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "xs"
                     },
                     "type": "column.boolean"
                 },
@@ -64,7 +64,7 @@
                         "pinned": null,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "xs"
                     },
                     "type": "column.boolean"
                 }

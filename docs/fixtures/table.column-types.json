@@ -19,7 +19,7 @@
                         "size": 32,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "xs"
                     },
                     "type": "column.image"
                 },
@@ -71,7 +71,7 @@
                         "pinned": null,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.badge"
                 },
@@ -103,7 +103,7 @@
                         "pinned": null,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "xs"
                     },
                     "type": "column.icon"
                 }

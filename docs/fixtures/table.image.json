@@ -19,7 +19,7 @@
                         "size": 32,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "xs"
                     },
                     "type": "column.image"
                 },

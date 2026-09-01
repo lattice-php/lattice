@@ -10,6 +10,7 @@ use Lattice\Table\Contracts\Sortable;
 use Lattice\Table\Enums\ColumnAlign;
 use Lattice\Table\Enums\FilterType;
 use Lattice\Ui\Concerns\HasCopyable;
+use Lattice\Ui\Enums\ColumnWidth;
 
 abstract class NumericColumn extends Column implements Filterable, Sortable
 {
@@ -18,6 +19,8 @@ abstract class NumericColumn extends Column implements Filterable, Sortable
     use IsSortable;
 
     public ColumnAlign $align = ColumnAlign::End;
+
+    public ColumnWidth $width = ColumnWidth::Sm;
 
     public ?int $minimumFractionDigits = null;
 

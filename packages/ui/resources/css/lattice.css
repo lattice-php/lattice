@@ -99,8 +99,8 @@
   --lt-input-font-size-mobile: 1rem;
 
   /* Table cell padding — table density lever */
-  --lt-table-cell-x: calc(var(--spacing) * 4);
-  --lt-table-cell-y: calc(var(--spacing) * 4);
+  --lt-table-cell-x: calc(var(--spacing) * 3);
+  --lt-table-cell-y: calc(var(--spacing) * 3);
 
   --lt-font-weight-normal: 400;
   --lt-font-weight-medium: 500;

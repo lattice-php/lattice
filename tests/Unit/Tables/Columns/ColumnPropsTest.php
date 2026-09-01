@@ -62,7 +62,7 @@ it('reflects only the common concerns for columns that expose no public properti
     expect($props)->toHaveCount(9)
         ->and($props)->toMatchArray([
             'label' => 'Active',
-            'width' => 'md',
+            'width' => 'xs',
             'align' => 'start',
             'sortable' => false,
             'toggleable' => false,

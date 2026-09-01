@@ -61,7 +61,7 @@
                         "sortable": false,
                         "toggleable": true,
                         "unit": null,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.number"
                 },

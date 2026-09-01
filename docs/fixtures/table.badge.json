@@ -70,7 +70,7 @@
                         "pinned": null,
                         "sortable": false,
                         "toggleable": false,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.badge"
                 }

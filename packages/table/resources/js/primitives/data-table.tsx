@@ -327,10 +327,11 @@ export function DataTableHeaderRow({ className, ...props }: DataTableHeaderRowPr
 }
 
 const headerCellClassName: Record<DataTableTrack, string> = {
-  column: "relative min-w-0 px-4 py-3 pr-5 align-middle font-semibold text-lt-fg",
-  expander: "px-2 py-3",
-  selection: "flex items-center px-4 py-3",
-  actions: "flex items-center justify-end gap-2 px-4 py-2 align-middle font-semibold text-lt-fg",
+  column: "relative min-w-0 px-lt-cell-x py-lt-cell-y pr-5 align-middle font-semibold text-lt-fg",
+  expander: "px-2 py-lt-cell-y",
+  selection: "flex items-center px-lt-cell-x py-lt-cell-y",
+  actions:
+    "flex items-center justify-end gap-2 px-lt-cell-x py-2 align-middle font-semibold text-lt-fg",
   filler: "",
 };
 
@@ -453,8 +454,8 @@ export function DataTableHeaderLabel({
 const filterCellClassName: Record<DataTableTrack, string> = {
   column: "min-w-0 border-t border-b border-lt-border px-2 py-2",
   expander: "border-t border-b border-lt-border px-2 py-2",
-  selection: "border-t border-b border-lt-border px-4 py-2",
-  actions: "border-t border-b border-lt-border px-4 py-2",
+  selection: "border-t border-b border-lt-border px-lt-cell-x py-2",
+  actions: "border-t border-b border-lt-border px-lt-cell-x py-2",
   filler: "border-t border-b border-lt-border",
 };
 

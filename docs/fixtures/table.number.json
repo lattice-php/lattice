@@ -41,7 +41,7 @@
                         "sortable": true,
                         "toggleable": false,
                         "unit": null,
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.number"
                 },
@@ -61,7 +61,7 @@
                         "sortable": false,
                         "toggleable": false,
                         "unit": "percent",
-                        "width": "md"
+                        "width": "sm"
                     },
                     "type": "column.number"
                 }
