@@ -98,6 +98,21 @@ Repeater::make('items', 'Line items')
     ->resizableColumns(showIndicator: true);
 ```
 
+## Grid layout
+
+`->grid()` lays whole rows out side by side in a grid instead of stacking them — for rows that are
+columns of the final output, like the boxes of a document footer. Pass the column count (defaults
+to 2); rows wrap into the next line once a grid row is full:
+
+```php
+Repeater::make('footer_boxes', 'Footer boxes')
+    ->schema([
+        Textarea::make('content', 'Content'),
+    ])
+    ->grid(2)
+    ->maxItems(4);
+```
+
 ## Row actions
 
 Every row carries an action menu. By default it holds just **Remove** (hidden while the row is at

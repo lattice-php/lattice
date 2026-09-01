@@ -9,6 +9,7 @@
             "dependsOnKeys": null,
             "disabled": false,
             "editablePrefill": false,
+            "gridColumns": null,
             "helperText": null,
             "itemLabel": null,
             "itemLabels": null,

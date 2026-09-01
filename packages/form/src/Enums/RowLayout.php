@@ -11,4 +11,5 @@ enum RowLayout: string
 {
     case Stack = 'stack';
     case Table = 'table';
+    case Grid = 'grid';
 }

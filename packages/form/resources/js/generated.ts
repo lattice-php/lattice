@@ -18,6 +18,7 @@ export type Builder = {
   dependsOnKeys: string[] | null;
   disabled: boolean;
   editablePrefill: boolean;
+  gridColumns: number | null;
   helperText: string | null;
   label: string | null;
   labelAction: Node | null;
@@ -491,6 +492,7 @@ export type Repeater = {
   dependsOnKeys: string[] | null;
   disabled: boolean;
   editablePrefill: boolean;
+  gridColumns: number | null;
   helperText: string | null;
   itemLabel: string | null;
   itemLabels: (string | null)[] | null;
@@ -546,7 +548,7 @@ export type RowAction = {
   type: RowActionType;
 };
 export type RowActionType = "duplicate" | "remove";
-export type RowLayout = "stack" | "table";
+export type RowLayout = "stack" | "table" | "grid";
 export type RowTemplateData = {
   readonly label: string;
   readonly schema: Node[];

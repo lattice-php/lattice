@@ -19,6 +19,15 @@ it('opts into the table layout via table()', function (): void {
         ->and($builder['props']['layout'])->toBe('table');
 });
 
+it('opts into the grid layout with a column count via grid()', function (): void {
+    $default = wire(Repeater::make('items')->grid()->schema([TextInput::make('a')]));
+    $three = wire(Repeater::make('items')->grid(3)->schema([TextInput::make('a')]));
+
+    expect($default['props']['layout'])->toBe('grid')
+        ->and($default['props']['gridColumns'])->toBe(2)
+        ->and($three['props']['gridColumns'])->toBe(3);
+});
+
 it('serializes table layout column width hints on row fields', function (): void {
     $wire = wire(Repeater::make('items')->table()->schema([
         TextInput::make('qty')->columnWidth(ColumnWidth::Xs),

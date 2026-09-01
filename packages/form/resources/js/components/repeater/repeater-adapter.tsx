@@ -28,6 +28,7 @@ export const RepeaterAdapter: RendererComponent<"field.repeater"> = ({ node }) =
   const atMax = props.maxItems != null && rows.length >= props.maxItems;
   const atMin = props.minItems != null && rows.length <= props.minItems;
   const isTable = props.layout === "table";
+  const isGrid = props.layout === "grid";
   const itemLabels = props.itemLabels;
   const rowHeading = (index: number) => {
     const label = itemLabels?.[index];
@@ -82,29 +83,41 @@ export const RepeaterAdapter: RendererComponent<"field.repeater"> = ({ node }) =
               resizeIndicator={props.resizeIndicator === true}
             />
           ) : (
-            rows.map((row, index) => {
-              const key = String(row[ROW_ID_KEY] ?? index);
-              return (
-                <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
-                  <RowItem
-                    base={path}
-                    index={index}
-                    row={row}
-                    template={template}
-                    heading={rowHeading(index)}
-                    reorderable={props.reorderable ?? false}
-                    isFirst={index === 0}
-                    isLast={index === rows.length - 1}
-                    removable={!atMin}
-                    rowActions={props.rowActions}
-                    onField={onField}
-                    onRemove={onRemove}
-                    onMove={onMove}
-                    onDuplicate={onDuplicate}
-                  />
-                </div>
-              );
-            })
+            <div
+              className={isGrid ? "grid gap-3" : "flex flex-col gap-3"}
+              data-test={isGrid ? `repeater-${name}-grid` : undefined}
+              style={
+                isGrid
+                  ? {
+                      gridTemplateColumns: `repeat(${props.gridColumns ?? 2}, minmax(0, 1fr))`,
+                    }
+                  : undefined
+              }
+            >
+              {rows.map((row, index) => {
+                const key = String(row[ROW_ID_KEY] ?? index);
+                return (
+                  <div key={key} ref={(el) => registerRow(key, el)} data-flip-key={key}>
+                    <RowItem
+                      base={path}
+                      index={index}
+                      row={row}
+                      template={template}
+                      heading={rowHeading(index)}
+                      reorderable={props.reorderable ?? false}
+                      isFirst={index === 0}
+                      isLast={index === rows.length - 1}
+                      removable={!atMin}
+                      rowActions={props.rowActions}
+                      onField={onField}
+                      onRemove={onRemove}
+                      onMove={onMove}
+                      onDuplicate={onDuplicate}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           )}
 
           {!atMax && (
