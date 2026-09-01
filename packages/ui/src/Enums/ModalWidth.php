@@ -14,4 +14,9 @@ enum ModalWidth: string
     case Xl = 'xl';
     case Xl2 = '2xl';
     case Xl3 = '3xl';
+    case Xl4 = '4xl';
+    case Xl5 = '5xl';
+    case Xl6 = '6xl';
+    case Xl7 = '7xl';
+    case Max = 'max';
 }

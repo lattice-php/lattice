@@ -21,6 +21,7 @@ final readonly class PatternSegments implements ValidationRule
     public function __construct(
         private array $tokens,
         private array $requiredTokens,
+        private bool $multiline = false,
     ) {}
 
     /**
@@ -67,6 +68,8 @@ final readonly class PatternSegments implements ValidationRule
             if ($segment['type'] === 'text') {
                 if (! is_string($segment['value'] ?? null)) {
                     $fail("The {$attribute}.{$index}.value field must be a string.");
+                } elseif (! $this->multiline && str_contains($segment['value'], "\n")) {
+                    $fail("The {$attribute}.{$index}.value field must not contain line breaks.");
                 }
 
                 continue;

@@ -1,8 +1,9 @@
 import type { ComponentProps } from "react";
+import type { AvatarShape, Size } from "../../generated";
 import { cn } from "../../lib/utils";
 
-export type AvatarShape = "circle" | "rounded";
-export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+export type { AvatarShape } from "../../generated";
+export type AvatarSize = Size;
 
 export type AvatarProps = Omit<ComponentProps<"span">, "children"> & {
   name?: string | null;

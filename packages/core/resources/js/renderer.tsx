@@ -7,7 +7,9 @@ import { useComponentRegistry } from "./registry-context";
 
 const warnedMissingTypes = new Set<string>();
 
-const HIDDEN_FROM_CLASS: Record<string, string> = {
+export type VisibilityBreakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+
+const HIDDEN_FROM_CLASS: Record<VisibilityBreakpoint, string> = {
   sm: "sm:hidden",
   md: "md:hidden",
   lg: "lg:hidden",
@@ -15,7 +17,7 @@ const HIDDEN_FROM_CLASS: Record<string, string> = {
   "2xl": "2xl:hidden",
 };
 
-const VISIBLE_FROM_CLASS: Record<string, string> = {
+const VISIBLE_FROM_CLASS: Record<VisibilityBreakpoint, string> = {
   sm: "sm:contents",
   md: "md:contents",
   lg: "lg:contents",
@@ -23,14 +25,27 @@ const VISIBLE_FROM_CLASS: Record<string, string> = {
   "2xl": "2xl:contents",
 };
 
+function breakpointClass(
+  map: Record<VisibilityBreakpoint, string>,
+  value: string | undefined,
+): string | undefined {
+  return value !== undefined && value in map ? map[value as VisibilityBreakpoint] : undefined;
+}
+
 /**
  * A `display: contents` wrapper stays transparent to the parent layout, so the
  * responsive visibility classes can toggle any node without disturbing flex or
  * grid parents.
  */
 function responsiveVisibilityClass(props: Node["props"]): string | null {
-  const hiddenFrom = HIDDEN_FROM_CLASS[(props as { hiddenFrom?: string })?.hiddenFrom ?? ""];
-  const visibleFrom = VISIBLE_FROM_CLASS[(props as { visibleFrom?: string })?.visibleFrom ?? ""];
+  const hiddenFrom = breakpointClass(
+    HIDDEN_FROM_CLASS,
+    (props as { hiddenFrom?: string })?.hiddenFrom,
+  );
+  const visibleFrom = breakpointClass(
+    VISIBLE_FROM_CLASS,
+    (props as { visibleFrom?: string })?.visibleFrom,
+  );
 
   if (visibleFrom && hiddenFrom) {
     return `hidden ${visibleFrom} ${hiddenFrom}`;

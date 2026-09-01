@@ -10,11 +10,13 @@
             "helperText": null,
             "label": "Number pattern",
             "labelAction": null,
+            "multiline": false,
             "name": "pattern",
             "prefillRefreshOn": null,
             "prefillResetOn": null,
             "readOnly": false,
             "required": false,
+            "rows": null,
             "separator": "",
             "tokens": [
                 {

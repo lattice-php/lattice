@@ -44,6 +44,21 @@ it('accepts the same pattern encoded as the client\'s JSON wire string', functio
     expect($errors)->toBe([]);
 });
 
+it('rejects line breaks in a single-line pattern and accepts them on a multiline one', function (): void {
+    $payload = [
+        'pattern' => [
+            ['type' => 'text', 'value' => "line one\nline two"],
+            ['type' => 'token', 'token' => 'NUMBER', 'config' => ['padding' => '4']],
+        ],
+    ];
+
+    $singleLine = validationErrors(testFormDefinition(fn (): array => [patternField()]), $payload);
+    $multiline = validationErrors(testFormDefinition(fn (): array => [patternField()->multiline()]), $payload);
+
+    expect($singleLine)->toHaveKey('pattern')
+        ->and($multiline)->toBe([]);
+});
+
 it('rejects an unknown token name', function (): void {
     $errors = validationErrors(testFormDefinition(fn (): array => [patternField()]), [
         'pattern' => [['type' => 'token', 'token' => 'MADE_UP']],

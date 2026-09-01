@@ -14,9 +14,10 @@ import { cn } from "../../lib/utils";
 import { useMediaQuery } from "../../lib/use-media-query";
 import { NativeSelect } from "../../primitives/native-select";
 import { pillClassName } from "../../lib/pill";
+import type { Orientation, TabsAlignment } from "../../generated";
 
-export type TabsAlignment = "start" | "center" | "end" | "stretch";
-export type TabsOrientation = "horizontal" | "vertical";
+export type { TabsAlignment } from "../../generated";
+export type TabsOrientation = Orientation;
 
 export type TabsItem = {
   label: ReactNode;

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Document } from "@tiptap/extension-document";
 import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
-import { type Editor, EditorContent, type JSONContent, useEditor } from "@tiptap/react";
+import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import type { RendererComponent } from "@lattice-php/core";
 import type { PatternTokenData } from "../../types";
 import { FormFieldFrame } from "../base/field";
@@ -22,54 +22,7 @@ import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { PatternTokenNode } from "./node";
-
-type TextSegment = { type: "text"; value: string };
-type TokenSegment = { type: "token"; token: string; config: Record<string, unknown> };
-type PatternSegment = TextSegment | TokenSegment;
-
-function segmentsToDoc(segments: PatternSegment[]): JSONContent {
-  return {
-    type: "doc",
-    content: [
-      {
-        type: "paragraph",
-        content: segments.flatMap((segment): JSONContent[] => {
-          if (segment.type === "text") {
-            return segment.value === "" ? [] : [{ type: "text", text: segment.value }];
-          }
-
-          return [
-            { type: "patternToken", attrs: { token: segment.token, config: segment.config } },
-          ];
-        }),
-      },
-    ],
-  };
-}
-
-function docToSegments(doc: JSONContent): PatternSegment[] {
-  const content = doc.content?.[0]?.content ?? [];
-
-  return content.flatMap((node): PatternSegment[] => {
-    if (node.type === "text") {
-      return node.text ? [{ type: "text", value: node.text }] : [];
-    }
-
-    if (node.type === "patternToken") {
-      const attrs = node.attrs ?? {};
-
-      return [
-        {
-          type: "token",
-          token: attrs.token as string,
-          config: (attrs.config ?? {}) as Record<string, unknown>,
-        },
-      ];
-    }
-
-    return [];
-  });
-}
+import { decodeSegments, docToSegments, segmentsToDoc } from "./segments";
 
 function usedTokenNames(editor: Editor): Set<string> {
   const names = new Set<string>();
@@ -152,33 +105,34 @@ const PatternInputField: RendererComponent<"field.pattern-input"> = ({ node }) =
   const name = node.props.name;
   const scope = useFieldScope();
   const globalValue = useFormValue(name);
-  const storedValue = (scope ? scope.getValue(name) : globalValue) as
-    | PatternSegment[]
-    | null
-    | undefined;
+  const storedValue = scope ? scope.getValue(name) : globalValue;
   const domName = scope ? scope.scopedName(name) : name;
   const errorKey = scope ? scope.errorKey(name) : name;
   const locked = readOnly || disabled;
-  const segments = useMemo(() => storedValue ?? [], [storedValue]);
+  const segments = useMemo(() => decodeSegments(storedValue), [storedValue]);
 
   const extensions = useMemo(
     () => [Document, Paragraph, Text, PatternTokenNode.configure({ tokens: node.props.tokens })],
     [node.props.tokens],
   );
 
+  const multiline = node.props.multiline;
   const editor = useEditor({
     extensions,
-    content: segmentsToDoc(segments),
+    content: segmentsToDoc(segments, multiline),
     editable: !locked,
     immediatelyRender: false,
     editorProps: {
       attributes: {
         class: "px-3 py-2 outline-none",
+        ...(multiline ? { style: `min-height: ${1.5 * (node.props.rows ?? 3)}rem` } : {}),
       },
-      handleKeyDown: (_view, event) => event.key === "Enter",
+      handleKeyDown: (_view, event) => (multiline ? false : event.key === "Enter"),
     },
     onUpdate: ({ editor: instance }) => {
-      change(name, docToSegments(instance.getJSON()));
+      // Committed as a JSON string: TrimStrings would strip leading/trailing
+      // whitespace (and multiline `\n` boundaries) from array leaf values.
+      change(name, JSON.stringify(docToSegments(instance.getJSON())));
     },
     onBlur: () => {
       blur(name);

@@ -11,12 +11,13 @@ import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { Input } from "@lattice-php/form/primitives/input";
+import type { ColumnAlign, ColumnPin, SortDirection } from "../generated";
 
-export type DataTableAlign = "start" | "center" | "end";
-export type DataTablePinSide = "left" | "right";
+export type DataTableAlign = ColumnAlign;
+export type DataTablePinSide = ColumnPin;
 export type DataTablePinBoundary = "start" | "end";
 export type DataTableTrack = "column" | "expander" | "selection" | "actions" | "filler";
-export type DataTableSortDirection = "asc" | "desc";
+export type DataTableSortDirection = SortDirection;
 
 const alignText: Record<DataTableAlign, string> = {
   start: "text-start",
