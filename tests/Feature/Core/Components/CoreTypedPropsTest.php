@@ -127,6 +127,14 @@ it('modal serializes a custom height', function (): void {
     expect($payload['props'])->toMatchArray(['height' => '2xl']);
 });
 
+it('modal serializes the max width and height', function (): void {
+    $payload = wire(Modal::make('template.editor')
+        ->width(ModalWidth::Max)
+        ->height(ModalHeight::Max));
+
+    expect($payload['props'])->toMatchArray(['width' => 'max', 'height' => 'max']);
+});
+
 it('modal slide-out defaults to the end side', function (): void {
     expect(wire(Modal::make('order.preview')->slideOut())['props'])
         ->toMatchArray(['side' => 'end', 'width' => 'lg']);

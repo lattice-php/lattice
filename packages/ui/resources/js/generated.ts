@@ -269,8 +269,19 @@ export type Modal = {
   title: string | null;
   width: ModalWidth;
 };
-export type ModalHeight = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
-export type ModalWidth = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+export type ModalHeight = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "max";
+export type ModalWidth =
+  | "sm"
+  | "md"
+  | "lg"
+  | "xl"
+  | "2xl"
+  | "3xl"
+  | "4xl"
+  | "5xl"
+  | "6xl"
+  | "7xl"
+  | "max";
 export type NodeType =
   | "accordion"
   | "avatar"
