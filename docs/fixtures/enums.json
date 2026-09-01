@@ -502,10 +502,6 @@
                 "value": "center"
             },
             {
-                "name": "Left",
-                "value": "left"
-            },
-            {
                 "name": "Start",
                 "value": "start"
             },
@@ -1183,6 +1179,20 @@
             }
         ],
         "name": "TabsAlignment",
+        "namespace": "Lattice\\Ui\\Enums"
+    },
+    "Lattice\\Ui\\Enums\\TextAlign": {
+        "cases": [
+            {
+                "name": "Left",
+                "value": "left"
+            },
+            {
+                "name": "Center",
+                "value": "center"
+            }
+        ],
+        "name": "TextAlign",
         "namespace": "Lattice\\Ui\\Enums"
     },
     "Lattice\\Ui\\Enums\\Variant": {

@@ -3,9 +3,7 @@ import { useLocale } from "../../i18n";
 import { coerceColor, colorValue, namedColor } from "../../lib/color";
 import { cn } from "../../lib/utils";
 import type { Color } from "../../types";
-
-export type ProgressShape = "bar" | "circle";
-export type ProgressSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+import type { ProgressShape, Size } from "../../generated";
 
 export type ProgressProps = Omit<ComponentProps<"div">, "children" | "color"> & {
   color?: Color | string | null;
@@ -13,11 +11,11 @@ export type ProgressProps = Omit<ComponentProps<"div">, "children" | "color"> & 
   max?: number;
   shape?: ProgressShape;
   showValue?: boolean;
-  size?: ProgressSize;
+  size?: Size;
   value: number;
 };
 
-const barHeights: Record<ProgressSize, string> = {
+const barHeights: Record<Size, string> = {
   xs: "h-1",
   sm: "h-1.5",
   md: "h-2.5",
@@ -28,7 +26,7 @@ const barHeights: Record<ProgressSize, string> = {
   "4xl": "h-8",
 };
 
-const circleDiameters: Record<ProgressSize, number> = {
+const circleDiameters: Record<Size, number> = {
   xs: 24,
   sm: 32,
   md: 40,
@@ -39,7 +37,7 @@ const circleDiameters: Record<ProgressSize, number> = {
   "4xl": 128,
 };
 
-const circleReadouts: Record<ProgressSize, string> = {
+const circleReadouts: Record<Size, string> = {
   xs: "text-[0.5rem]",
   sm: "text-[0.625rem]",
   md: "text-xs",

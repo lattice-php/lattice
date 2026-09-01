@@ -2,17 +2,14 @@ import type { ComponentProps } from "react";
 import type { AvatarShape, Size } from "../../generated";
 import { cn } from "../../lib/utils";
 
-export type { AvatarShape } from "../../generated";
-export type AvatarSize = Size;
-
 export type AvatarProps = Omit<ComponentProps<"span">, "children"> & {
   name?: string | null;
   shape?: AvatarShape;
-  size?: AvatarSize;
+  size?: Size;
   src?: string | null;
 };
 
-const sizeClasses: Record<AvatarSize, string> = {
+const sizeClasses: Record<Size, string> = {
   xs: "size-6 text-[0.5rem]",
   sm: "size-8 text-xs",
   md: "size-10 text-sm",

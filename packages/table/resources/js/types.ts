@@ -25,6 +25,7 @@ import type {
   TableResult,
   TableSort,
 } from "./generated";
+export type { ColumnAlign, ColumnPin, SortDirection } from "./generated";
 
 declare module "@lattice-php/core" {
   interface ComponentProps extends ComponentPropsMap {}

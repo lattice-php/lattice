@@ -5,7 +5,7 @@ export type Accordion = {
   defaultOpen: string | null;
   gap: Gap | null;
 };
-export type Align = "center" | "left" | "start" | "stretch";
+export type Align = "center" | "start" | "stretch";
 export type Avatar = {
   name: string | null;
   shape: AvatarShape;
@@ -444,12 +444,13 @@ export type Tabs = {
 };
 export type TabsAlignment = "start" | "center" | "end" | "stretch";
 export type Text = {
-  align: Align | null;
+  align: TextAlign | null;
   color: Color | null;
   copyable: boolean;
   size: Size;
   text: string;
 };
+export type TextAlign = "left" | "center";
 export type TextEntry = {
   copyable: boolean;
   description: string | null;

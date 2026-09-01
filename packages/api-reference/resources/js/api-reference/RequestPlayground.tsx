@@ -78,9 +78,7 @@ type SecuritySchemeDefinition = {
   flows?: Record<string, OAuthFlowDefinition>;
 };
 
-export type TwoColumnBreakpoint = Breakpoint;
-
-const TWO_COLUMN_LAYOUTS: Record<TwoColumnBreakpoint, { grid: string; reference: string }> = {
+const TWO_COLUMN_LAYOUTS: Record<Breakpoint, { grid: string; reference: string }> = {
   default: {
     grid: "grid-cols-[minmax(0,1fr)_minmax(22rem,32rem)]",
     reference: "sticky top-0 border-l border-t-0",
@@ -779,7 +777,7 @@ type RequestPlaygroundProps = {
   resolveAccessToken?: ResolveAccessToken | null;
   components: unknown;
   expandDepth?: number;
-  twoColumnBreakpoint?: TwoColumnBreakpoint;
+  twoColumnBreakpoint?: Breakpoint;
   hideHeaderIdentity?: boolean;
 };
 

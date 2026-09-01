@@ -6,9 +6,8 @@ namespace Lattice\Ui\Enums;
 use Lattice\Core\Attributes\TypeScript;
 
 #[TypeScript]
-enum Align: string
+enum TextAlign: string
 {
+    case Left = 'left';
     case Center = 'center';
-    case Start = 'start';
-    case Stretch = 'stretch';
 }

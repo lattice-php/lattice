@@ -16,9 +16,6 @@ import { NativeSelect } from "../../primitives/native-select";
 import { pillClassName } from "../../lib/pill";
 import type { Orientation, TabsAlignment } from "../../generated";
 
-export type { TabsAlignment } from "../../generated";
-export type TabsOrientation = Orientation;
-
 export type TabsItem = {
   label: ReactNode;
   selectLabel?: string;
@@ -31,7 +28,7 @@ export type TabsProps = Omit<ComponentProps<"div">, "children" | "defaultValue" 
   defaultValue?: string;
   items?: readonly TabsItem[];
   onValueChange?: (value: string) => void;
-  orientation?: TabsOrientation;
+  orientation?: Orientation;
   sticky?: boolean;
   value?: string;
 };
