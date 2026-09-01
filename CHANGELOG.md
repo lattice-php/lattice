@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.68.0](https://github.com/lattice-php/lattice/compare/0.67.0...0.68.0) (2026-09-01)
+
+
+### Features
+
+* **dnd:** drop gap in board columns, straight tree drop indicators ([#554](https://github.com/lattice-php/lattice/issues/554)) ([2abe66b](https://github.com/lattice-php/lattice/commit/2abe66b2cf10af5beb8a168dce0e8ae4a74d9cea))
+* **form:** async submit mode for inline forms + preserveScroll ([#555](https://github.com/lattice-php/lattice/issues/555)) ([c8b0f39](https://github.com/lattice-php/lattice/commit/c8b0f397ac09ad326dde1275170f51129da63472))
+* **table:** content-appropriate column width defaults, tighter cell padding ([#557](https://github.com/lattice-php/lattice/issues/557)) ([2c026fb](https://github.com/lattice-php/lattice/commit/2c026fbe68be85b5e058b48d77047e9b41cd1ad8))
+
 ## [0.67.0](https://github.com/lattice-php/lattice/compare/0.66.0...0.67.0) (2026-08-30)
 
 
