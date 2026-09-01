@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.69.0](https://github.com/lattice-php/lattice/compare/0.68.0...0.69.0) (2026-09-01)
+
+
+### Features
+
+* larger modal sizes and multiline pattern input ([#559](https://github.com/lattice-php/lattice/issues/559)) ([a7b05d7](https://github.com/lattice-php/lattice/commit/a7b05d7c51d140777d468d34ca29c3d3109dddf4))
+
+
+### Bug Fixes
+
+* **testing:** submit non-async forms as inertia requests in the test helper ([#558](https://github.com/lattice-php/lattice/issues/558)) ([be60cd5](https://github.com/lattice-php/lattice/commit/be60cd53775b9c4ac76b71a2384323d0a0077154))
+
+
+### Refactoring
+
+* **js:** type enum class maps against generated wire unions ([#560](https://github.com/lattice-php/lattice/issues/560)) ([019259e](https://github.com/lattice-php/lattice/commit/019259e79391df6862f53d4d19078cc1c7b38697))
+
 ## [0.68.0](https://github.com/lattice-php/lattice/compare/0.67.0...0.68.0) (2026-09-01)
 
 
