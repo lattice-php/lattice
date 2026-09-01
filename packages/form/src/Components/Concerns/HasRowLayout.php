@@ -10,6 +10,8 @@ trait HasRowLayout
 {
     public RowLayout $layout = RowLayout::Stack;
 
+    public ?int $gridColumns = null;
+
     public bool $resizableColumns = false;
 
     public bool $resizeIndicator = false;
@@ -17,6 +19,18 @@ trait HasRowLayout
     public function table(): static
     {
         $this->layout = RowLayout::Table;
+
+        return $this;
+    }
+
+    /**
+     * Lays the rows out side by side in a grid of the given column count
+     * instead of stacking them.
+     */
+    public function grid(int $columns = 2): static
+    {
+        $this->layout = RowLayout::Grid;
+        $this->gridColumns = max(1, $columns);
 
         return $this;
     }

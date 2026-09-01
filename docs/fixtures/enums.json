@@ -322,6 +322,10 @@
             {
                 "name": "Table",
                 "value": "table"
+            },
+            {
+                "name": "Grid",
+                "value": "grid"
             }
         ],
         "name": "RowLayout",

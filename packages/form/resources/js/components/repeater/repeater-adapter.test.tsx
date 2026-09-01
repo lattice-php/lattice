@@ -83,6 +83,31 @@ it("renders declared row actions in a kebab and duplicates a row", () => {
   expect(screen.getAllByTestId("child")).toHaveLength(2);
 });
 
+it("lays rows out in a grid when the layout is grid", () => {
+  wrap(
+    <RepeaterAdapter
+      node={fakeNode({
+        id: "r",
+        type: "field.repeater",
+        props: {
+          name: "items",
+          defaultItems: 2,
+          layout: "grid",
+          gridColumns: 3,
+          label: "Boxes",
+        },
+        schema: [{ id: "c", type: "field.text-input", props: { name: "name", label: "Name" } }],
+      })}
+    >
+      {null}
+    </RepeaterAdapter>,
+  );
+
+  const grid = screen.getByTestId("repeater-items-grid");
+  expect(grid).toHaveClass("grid");
+  expect(grid).toHaveStyle({ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" });
+});
+
 it("shows the array-level error for the repeater field", () => {
   wrap(<RepeaterAdapter node={repeaterNode}>{null}</RepeaterAdapter>, {
     errors: { items: "Must have at least 1 item" },
