@@ -6,7 +6,6 @@ export type ComponentPropsMap = {
     "search.recent": SearchRecent;
     "search.results": SearchResults;
 };
-export type NodeType = "search.box" | "search.categories" | "search.input" | "search.preview" | "search.recent" | "search.results";
 export type RecordSelectionResponse = {
     readonly data: SearchResult;
     readonly state: RecordSelectionState;

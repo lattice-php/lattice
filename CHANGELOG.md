@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.70.0](https://github.com/lattice-php/lattice/compare/0.69.0...0.70.0) (2026-09-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* wire values change for Stack direction (row/column → horizontal/vertical) and Column pinned (left/right → start/end; stored pin overrides reset gracefully). PHP: TabsAlignment, PopoverAlign, PopoverSide, ColumnAlign, ColumnPin and StackDirection are removed (use Align, ContentAlign, Placement, Side, Orientation), TextAlign::Left is now Start, Breakpoint moved to Lattice\Core\Enums and lost Xxl (use Xl2), I18nConfig moved to Lattice\Ui\I18n, AsPage/Page::width() no longer accept strings. TS: the removed PHP enums' types and the hand-written aliases (StackDirection, TabsAlignment, DropdownPlacement, SeparatorOrientation, GridBreakpoint, FloatingPanelPlacement, ColumnPinSide, KnownPageWidth, LayoutPayload, PageBreadcrumb, ActionEffect, per-package NodeType) are gone.
+* the JS packages no longer export per-component type aliases (StackGap, StackAlign, StackJustify, StackWidth, StackHeight, StackSide, AvatarSize, AvatarShape via avatar, TextSize, TextAlign via text, TabsOrientation, TabsAlignment via tabs, ProgressSize, ProgressShape via progress, DataTableAlign, DataTablePinSide, DataTableSortDirection, TwoColumnBreakpoint). Import the generated names from the package barrels instead: Gap, Align, Justify, Width, Height, Side, Size, Orientation, TabsAlignment, AvatarShape, ProgressShape, TextAlign from @lattice-php/ui; ColumnAlign, ColumnPin, SortDirection from @lattice-php/table. PHP:
+
+### Features
+
+* **form:** grid layout for repeater rows ([#564](https://github.com/lattice-php/lattice/issues/564)) ([34b31df](https://github.com/lattice-php/lattice/commit/34b31df303c7ddf53d67fe2a1c867944b9924a13))
+
+
+### Refactoring
+
+* consolidate enum vocabularies, align barrels and generated types ([#565](https://github.com/lattice-php/lattice/issues/565)) ([5b95751](https://github.com/lattice-php/lattice/commit/5b957511d6b27a0a199f41ec7a71096f8e898c2d))
+* dedicated TextAlign enum, align exported type names with generated enums ([#562](https://github.com/lattice-php/lattice/issues/562)) ([0c6062a](https://github.com/lattice-php/lattice/commit/0c6062aaf2821f158b3a6f999d9ed92227ecc936))
+
 ## [0.69.0](https://github.com/lattice-php/lattice/compare/0.68.0...0.69.0) (2026-09-01)
 
 

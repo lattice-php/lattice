@@ -1,7 +1,6 @@
 export type ComponentPropsMap = {
     pdf: PdfViewer;
 };
-export type NodeType = "pdf";
 export type PdfNodeType = "pdf";
 export type PdfViewer = {
     cmapUrl: string | null;
