@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.70.2](https://github.com/lattice-php/lattice/compare/0.70.1...0.70.2) (2026-09-02)
+
+
+### Bug Fixes
+
+* **ui:** let centered dialogs grow with their content ([#570](https://github.com/lattice-php/lattice/issues/570)) ([4366802](https://github.com/lattice-php/lattice/commit/43668026fb2e4bc6c9264f69e14fb54cd4a9ff39))
+
 ## [0.70.1](https://github.com/lattice-php/lattice/compare/0.70.0...0.70.1) (2026-09-02)
 
 
