@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Image\Image;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Media\Jobs\GenerateMediaConversions;
@@ -247,4 +248,15 @@ test('overlapping jobs for the same media are released, retried and never deadlo
     expect($middleware)->toHaveCount(1);
     expect($middleware[0]->key)->toBe((string) $media->getKey());
     expect($job->tries)->toBeGreaterThan(1);
+});
+
+test('a queued job whose media was deleted before commit is dropped instead of failing', function (): void {
+    $media = fakeImageMedia();
+
+    DB::transaction(function () use ($media): void {
+        GenerateMediaConversions::dispatch($media);
+        $media->delete();
+    });
+
+    expect(Media::query()->whereKey($media->getKey())->exists())->toBeFalse();
 });

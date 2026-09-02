@@ -24,6 +24,14 @@ final class GenerateMediaConversions implements ShouldQueue
     /** The overlap middleware releases the job, and a release costs an attempt. */
     public int $tries = 3;
 
+    /**
+     * The job runs after commit, and by then a `syncMedia()` in the same
+     * transaction may already have replaced the media it was queued for.
+     * A conversion for a deleted row has nothing to do; failing it would
+     * only fill the failed-jobs table.
+     */
+    public bool $deleteWhenMissingModels = true;
+
     public function __construct(
         public Media $media,
         public ?Model $attachable = null,
