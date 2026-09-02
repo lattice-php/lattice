@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.70.1](https://github.com/lattice-php/lattice/compare/0.70.0...0.70.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* **media:** drop conversion jobs whose media was deleted before commit ([#567](https://github.com/lattice-php/lattice/issues/567)) ([c71d05b](https://github.com/lattice-php/lattice/commit/c71d05b97eb5a49fd4b77daa3ca188fbe8cf4558))
+
 ## [0.70.0](https://github.com/lattice-php/lattice/compare/0.69.0...0.70.0) (2026-09-01)
 
 
