@@ -17,6 +17,8 @@
       "@lattice-php/chat": ["./chat/resources/js/index.ts"],
       "@lattice-php/chat/*": ["./chat/resources/js/*"],
       "@lattice-php/core": ["./core/resources/js/index.ts"],
+      "@lattice-php/blocks": ["./blocks/resources/js/index.ts"],
+      "@lattice-php/blocks/*": ["./blocks/resources/js/*"],
       "@lattice-php/core/*": ["./core/resources/js/*"],
       "@lattice-php/form": ["./form/resources/js/index.ts"],
       "@lattice-php/form/*": ["./form/resources/js/*"],

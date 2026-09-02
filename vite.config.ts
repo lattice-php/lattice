@@ -84,6 +84,11 @@ export default defineConfig({
         import.meta.dirname,
         "packages/api-reference/resources/js",
       ),
+      "@lattice-php/blocks/css": path.resolve(
+        import.meta.dirname,
+        "packages/blocks/resources/css/blocks.css",
+      ),
+      "@lattice-php/blocks": path.resolve(import.meta.dirname, "packages/blocks/resources/js"),
       "@lattice-php/board/css": path.resolve(
         import.meta.dirname,
         "packages/board/resources/css/board.css",

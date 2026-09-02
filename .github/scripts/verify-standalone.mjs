@@ -3,6 +3,12 @@ import { existsSync, readFileSync } from "node:fs";
 const artifacts = [
   { package: "packages/framework", manifest: "dist-standalone/manifest.json" },
   {
+    package: "packages/blocks",
+    manifest: "dist/manifest.json",
+    module: "dist/plugin.js",
+    types: "dist/types/index.d.ts",
+  },
+  {
     package: "packages/calendar",
     manifest: "dist/manifest.json",
     module: "dist/plugin.js",

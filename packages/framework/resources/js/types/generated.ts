@@ -4,6 +4,12 @@ import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type ActionNodeType = "action" | "action.bulk" | "action.group";
 export type ApiReferenceNodeType = "api-reference";
+export type BlockNodeType =
+  | "blocks.editor"
+  | "blocks.frame"
+  | "blocks.slot"
+  | "blocks.unknown"
+  | "blocks.view";
 export type BoardNodeType = "board";
 export type CalendarNodeType = "calendar";
 export type ChannelVisibility = "public" | "private" | "presence";
@@ -110,6 +116,11 @@ export type NodeType =
   | "api-reference"
   | "avatar"
   | "badge"
+  | "blocks.editor"
+  | "blocks.frame"
+  | "blocks.slot"
+  | "blocks.unknown"
+  | "blocks.view"
   | "board"
   | "breadcrumbs"
   | "button"
