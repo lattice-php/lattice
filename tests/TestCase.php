@@ -8,6 +8,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\ParallelTesting;
 use Inertia\ServiceProvider as InertiaServiceProvider;
+use Lattice\Blocks\BlocksServiceProvider;
+use Lattice\Blocks\Components\BlockEditor;
 use Lattice\Board\BoardServiceProvider;
 use Lattice\Board\Components\Board;
 use Lattice\Calendar\CalendarServiceProvider;
@@ -78,6 +80,15 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * @param  \Closure(): BlockEditor  $build
+     * @return array<string, mixed>
+     */
+    public function sealBlockEditor(\Closure $build): array
+    {
+        return $this->sealLatticeComponent($build);
+    }
+
+    /**
      * @param  \Closure(): Board  $build
      * @return array<string, mixed>
      */
@@ -101,6 +112,7 @@ abstract class TestCase extends BaseTestCase
         return [
             InertiaServiceProvider::class,
             LatticeServiceProvider::class,
+            BlocksServiceProvider::class,
             BoardServiceProvider::class,
             CalendarServiceProvider::class,
             ChatServiceProvider::class,

@@ -11,6 +11,7 @@ use Workbench\App\Factories\GroupFactory;
 use Workbench\App\Factories\TaskFactory;
 use Workbench\App\Models\Category;
 use Workbench\App\Models\Group;
+use Workbench\App\Models\Page;
 use Workbench\App\Models\Product;
 use Workbench\App\Models\SalesOrder;
 use Workbench\App\Models\Tag;
@@ -20,6 +21,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(ProjectPlanAssignmentSeeder::class);
+
+        Page::factory()->sample()->create(['title' => 'Landing', 'slug' => 'landing']);
 
         $electronics = Category::factory()->create(['name' => 'Electronics']);
         $laptops = Category::factory()->childOf($electronics)->create(['name' => 'Laptops']);

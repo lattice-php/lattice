@@ -30,6 +30,7 @@ enum Icon: string
     case Clock = 'clock';
     case Code = 'code';
     case CodeXml = 'code-xml';
+    case Columns2 = 'columns-2';
     case Columns3 = 'columns-3';
     case Copy = 'copy';
     case CornerDownRight = 'corner-down-right';
@@ -46,9 +47,12 @@ enum Icon: string
     case Heading5 = 'heading-5';
     case Heading6 = 'heading-6';
     case Highlighter = 'highlighter';
+    case Image = 'image';
+    case Images = 'images';
     case Info = 'info';
     case Italic = 'italic';
     case LayoutDashboard = 'layout-dashboard';
+    case LayoutTemplate = 'layout-template';
     case Link = 'link';
     case List = 'list';
     case ListOrdered = 'list-ordered';
@@ -56,20 +60,25 @@ enum Icon: string
     case Loader2 = 'loader-2';
     case Minus = 'minus';
     case MoreHorizontal = 'more-horizontal';
+    case MoveVertical = 'move-vertical';
     case PanelLeft = 'panel-left';
     case Pencil = 'pencil';
     case PencilLine = 'pencil-line';
+    case Pilcrow = 'pilcrow';
     case Plus = 'plus';
     case Quote = 'quote';
+    case Redo2 = 'redo-2';
     case RotateCcw = 'rotate-ccw';
     case Rows3 = 'rows-3';
     case Search = 'search';
     case Send = 'send';
     case Settings = 'settings';
     case Smile = 'smile';
+    case Square = 'square';
     case Strikethrough = 'strikethrough';
     case Table = 'table';
     case Trash2 = 'trash-2';
     case Underline = 'underline';
+    case Undo2 = 'undo-2';
     case X = 'x';
 }

@@ -1,0 +1,65 @@
+<?php
+declare(strict_types=1);
+
+namespace Lattice\Blocks\Builtin;
+
+use Lattice\Blocks\Attributes\AsBlock;
+use Lattice\Blocks\BlockData;
+use Lattice\Blocks\BlockDefinition;
+use Lattice\Blocks\BlockSlots;
+use Lattice\Blocks\Enums\BlockCategory;
+use Lattice\Form\Components\TextInput;
+use Lattice\Media\Forms\Components\MediaPicker;
+use Lattice\Media\Models\Media;
+use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\Image;
+use Lattice\Ui\Components\RawBlock;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Icon;
+use Lattice\Ui\Enums\Size;
+
+#[AsBlock('lattice.image', label: 'Image', icon: Icon::Image, category: BlockCategory::Media, description: 'A single image with an optional caption.', keywords: ['photo', 'picture', 'media'])]
+final class ImageBlock extends BlockDefinition
+{
+    public function fields(): array
+    {
+        return [
+            MediaPicker::make('image', __('blocks::blocks.fields.image'))->category('image'),
+            TextInput::make('alt', __('blocks::blocks.fields.alt')),
+            TextInput::make('caption', __('blocks::blocks.fields.caption')),
+        ];
+    }
+
+    public function render(BlockData $data, BlockSlots $slots): Component
+    {
+        $media = self::media($data->get('image'));
+        $caption = $data->string('caption')->toString();
+
+        $image = $media?->url() === null
+            ? RawBlock::make()->html(self::placeholder(__('blocks::blocks.placeholders.image')))
+            : Image::make($media->url())->alt($data->string('alt')->toString() ?: null)->previewable(false);
+
+        if ($caption === '') {
+            return $image;
+        }
+
+        return Stack::make()->gap(Gap::Small)->schema([
+            $image,
+            Text::make($caption)->size(Size::Sm),
+        ]);
+    }
+
+    public static function media(mixed $value): ?Media
+    {
+        $id = is_array($value) ? ($value['id'] ?? null) : $value;
+
+        return is_numeric($id) ? Media::query()->find((int) $id) : null;
+    }
+
+    public static function placeholder(string $label): string
+    {
+        return '<div class="flex h-40 items-center justify-center rounded-lt border border-dashed border-lt-border bg-lt-muted text-sm text-lt-muted-fg">'.e($label).'</div>';
+    }
+}

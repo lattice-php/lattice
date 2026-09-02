@@ -69,6 +69,7 @@ use Workbench\App\Pages\Fields\TextInputPage;
 use Workbench\App\Pages\Fields\TreePage;
 use Workbench\App\Pages\GroupsPage;
 use Workbench\App\Pages\HomePage;
+use Workbench\App\Pages\PagesPage;
 use Workbench\App\Pages\Platform\PackageComponentPage;
 use Workbench\App\Pages\Platform\RealtimePage;
 use Workbench\App\Pages\Platform\RemoteSchemaPage;
@@ -174,6 +175,7 @@ class AppLayout extends LayoutDefinition
                     MenuItem::fromPage(ModalsPage::class)->key('modals')->label(__('workbench.navigation.modals')),
                     MenuItem::fromPage(NotificationsPage::class)->key('notifications')->label(__('workbench.navigation.notifications')),
                     MenuItem::fromPage(ChatPage::class)->key('chat')->label(__('workbench.navigation.chat')),
+                    MenuItem::fromPage(PagesPage::class)->key('pages')->label(__('workbench.navigation.pages')),
                 ]),
                 MenuItem::make(__('workbench.navigation.platform'), 'platform')->prefix(Affix::icon('plug'))->children([
                     MenuItem::fromPage(RealtimePage::class)->key('realtime')->label(__('workbench.navigation.realtime')),

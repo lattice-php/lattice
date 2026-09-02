@@ -13,6 +13,7 @@ providers:
   - Lattice\LatticeServiceProvider
   - Lattice\Chat\ChatServiceProvider
   - Lattice\Media\MediaServiceProvider
+  - Lattice\Blocks\BlocksServiceProvider
   - Lattice\Board\BoardServiceProvider
   - Lattice\Tree\TreeServiceProvider
   - Inertia\ServiceProvider

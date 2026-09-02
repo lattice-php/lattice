@@ -152,6 +152,7 @@ class WorkbenchServiceProvider extends ServiceProvider
             'lattice.trees.middleware' => ['web'],
             'lattice.calendars.middleware' => ['web'],
             'lattice.boards.middleware' => ['web'],
+            'lattice.blocks.middleware' => ['web'],
         ]);
     }
 
