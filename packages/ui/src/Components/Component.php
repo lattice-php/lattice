@@ -9,6 +9,7 @@ use Lattice\Core\Attributes\WireEnvelope;
 use Lattice\Core\Contracts\CanBeHidden;
 use Lattice\Core\Enums\Breakpoint;
 use Lattice\Core\Support\Wire;
+use Lattice\Ui\Components\Concerns\Bindable;
 use Lattice\Ui\Components\Concerns\HasDataBindings;
 use Lattice\Ui\Components\Concerns\SerializesWireNode;
 use Lattice\Ui\Concerns\GatesRendering;
@@ -21,6 +22,7 @@ use Lattice\Ui\Contracts\SchemaEntry;
 #[WireEnvelope('Node')]
 abstract class Component implements CanBeHidden, JsonSerializable, Renderable, SchemaEntry
 {
+    use Bindable;
     use GatesRendering;
     use HasDataBindings;
     use SerializesWireNode;
@@ -165,7 +167,7 @@ abstract class Component implements CanBeHidden, JsonSerializable, Renderable, S
      */
     protected function decorateProps(array $props): array
     {
-        $props = $this->decorateDataBindings($props);
+        $props = $this->decorateBinding($this->decorateDataBindings($props));
 
         if ($this->hideWhenCollapsed) {
             $props['hideWhenCollapsed'] = true;
