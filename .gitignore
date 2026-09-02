@@ -18,6 +18,7 @@ node_modules
 /tests/Browser/FailureScreenshots
 /dist
 /packages/*/dist
+!/packages/blocks/dist
 !/packages/board/dist
 !/packages/calendar/dist
 !/packages/chat/dist

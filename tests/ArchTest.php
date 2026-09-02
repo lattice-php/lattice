@@ -7,6 +7,10 @@ use Lattice\Actions\ActionRegistry;
 use Lattice\Actions\BulkActionDefinition;
 use Lattice\Actions\BulkActionRegistry;
 use Lattice\Actions\FormActionDefinition;
+use Lattice\Blocks\BlockDefinition;
+use Lattice\Blocks\BlockEditorDefinition;
+use Lattice\Blocks\BlockEditorRegistry;
+use Lattice\Blocks\BlockRegistry;
 use Lattice\Core\Definition;
 use Lattice\Core\DefinitionRegistry;
 use Lattice\Core\Facades\Lattice as LatticeFacade;
@@ -161,6 +165,8 @@ arch('contracts are interfaces')
 arch('domain registries extend the base definition registry')
     ->expect([
         ActionRegistry::class,
+        BlockEditorRegistry::class,
+        BlockRegistry::class,
         BulkActionRegistry::class,
         FormRegistry::class,
         FragmentRegistry::class,
@@ -173,6 +179,8 @@ it('derives every definition from the base definition', function (string $defini
     expect(is_subclass_of($definition, Definition::class))->toBeTrue();
 })->with([
     ActionDefinition::class,
+    BlockDefinition::class,
+    BlockEditorDefinition::class,
     BulkActionDefinition::class,
     FormActionDefinition::class,
     FormDefinition::class,

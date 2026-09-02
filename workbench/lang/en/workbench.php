@@ -2,6 +2,29 @@
 declare(strict_types=1);
 
 return [
+    'blocks' => [
+        'pages' => [
+            'title' => 'Pages',
+            'description' => 'Block-based pages built with the lattice-php/blocks editor.',
+            'columns' => ['title' => 'Title', 'slug' => 'Slug', 'revision' => 'Revision'],
+            'actions' => ['edit' => 'Edit', 'view' => 'View'],
+        ],
+        'hero' => [
+            'title' => 'Title',
+            'intro' => 'Intro',
+            'button-label' => 'Button label',
+            'button-target' => 'Button target',
+            'image' => 'Image',
+            'placeholder' => 'Your headline',
+        ],
+        'cta' => [
+            'title' => 'Title',
+            'text' => 'Text',
+            'button-label' => 'Button label',
+            'placeholder' => 'Ready to start?',
+            'button-placeholder' => 'Get started',
+        ],
+    ],
     'calendar' => [
         'day-planned' => 'Planning :date.',
         'event-shown' => 'Event :event opened.',
@@ -409,6 +432,7 @@ return [
         'label' => 'Language',
     ],
     'navigation' => [
+        'pages' => 'Pages',
         'app' => 'App',
         'business-partners' => 'Business partners',
         'buttons' => 'Buttons & badges',

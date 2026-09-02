@@ -7,7 +7,7 @@ export type { CallActionResult } from "@lattice-php/action";
 export { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";
 export { ActionsDropdown } from "@lattice-php/action/components/actions-dropdown";
 export { apiFetch, apiJson, setRefRefreshEndpoint, xsrfToken } from "@lattice-php/core/api";
-export { useExtensionRegistry } from "@lattice-php/core/registry-context";
+export { RegistryProvider, useExtensionRegistry } from "@lattice-php/core/registry-context";
 export { RenderNode } from "@lattice-php/core/renderer";
 export { coerceColor, colorValue, toneProps } from "@lattice-php/ui/lib/color";
 export { nodeIdentity } from "@lattice-php/core/test-id";
@@ -15,6 +15,14 @@ export { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 export { SimpleField } from "@lattice-php/form/components/base/simple-field";
 export { RICH_EDITOR_EXTENSION, ToolbarIconButton } from "@lattice-php/form/rich-editor";
 export * from "@lattice-php/form/toolkit";
+export {
+  collectFields,
+  FieldCommitOverrideProvider,
+  FormProvider,
+  FormValuesProvider,
+  PrefillProvider,
+  ResolvedNodesProvider,
+} from "@lattice-php/form/embed";
 export { useTable } from "@lattice-php/table/hooks/use-table";
 export { useTableSelection } from "@lattice-php/table/hooks/use-table-selection";
 export { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
@@ -63,10 +71,17 @@ export { Checkbox, Combobox, Input, Label, Textarea } from "@lattice-php/form";
 export * from "@lattice-php/ui/i18n";
 export {
   announce,
+  attachClosestEdge,
   attachTreeItemInstruction,
+  autoScrollForElements,
   cancelDragStartFromInteractive,
   combine,
   draggable,
   dropTargetForElements,
+  extractClosestEdge,
   extractTreeItemInstruction,
+  getReorderDestinationIndex,
+  monitorForElements,
+  preserveOffsetOnSource,
+  setCustomNativeDragPreview,
 } from "./dnd";

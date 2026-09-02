@@ -3,6 +3,7 @@ import { navigationPlugin } from "./inertia-navigation";
 import type {
   ActionNodeType,
   ApiReferenceNodeType,
+  BlockNodeType,
   BoardNodeType,
   CalendarNodeType,
   ChatNodeType,
@@ -39,6 +40,7 @@ import { uiComponents } from "@lattice-php/ui";
 // here rather than belonging to a registered plugin's union.
 type OptInNodeType =
   | ApiReferenceNodeType
+  | BlockNodeType
   | BoardNodeType
   | CalendarNodeType
   | ChatNodeType

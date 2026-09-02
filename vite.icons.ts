@@ -47,6 +47,16 @@ export const latticeIcons = [
   "plus",
   "rotate-ccw",
   "search",
+  // Block editor
+  "columns-2",
+  "image",
+  "images",
+  "layout-template",
+  "move-vertical",
+  "pilcrow",
+  "redo-2",
+  "square",
+  "undo-2",
   // Rich-editor toolbar
   "align-center",
   "align-justify",

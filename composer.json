@@ -28,6 +28,7 @@
         "laravel/pint": "^1.16",
         "laravel/reverb": "^1.10",
         "lattice-php/api-reference": "@dev",
+        "lattice-php/blocks": "@dev",
         "lattice-php/board": "@dev",
         "lattice-php/calendar": "@dev",
         "lattice-php/chat": "@dev",
