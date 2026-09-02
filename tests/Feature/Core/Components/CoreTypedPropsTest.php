@@ -85,7 +85,7 @@ it('modal serializes id title description and children', function (): void {
                 'closeLabel' => 'Close',
                 'side' => null,
                 'width' => 'lg',
-                'height' => 'lg',
+                'height' => null,
             ],
             'schema' => [
                 ['type' => 'text', 'props' => ['text' => 'Body', 'align' => null, 'size' => 'md', 'color' => null, 'copyable' => false]],
@@ -104,7 +104,7 @@ it('modal without optional props includes them as null', function (): void {
                 'closeLabel' => 'Close',
                 'side' => null,
                 'width' => 'lg',
-                'height' => 'lg',
+                'height' => null,
             ],
         ]);
 });

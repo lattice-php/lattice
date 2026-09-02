@@ -272,7 +272,7 @@ export type MenuItem = {
 export type Modal = {
   closeLabel: string;
   description: string | null;
-  height: ModalHeight;
+  height: ModalHeight | null;
   side: Side | null;
   title: string | null;
   width: ModalWidth;

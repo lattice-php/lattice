@@ -31,6 +31,28 @@ describe("ModalAdapter", () => {
     expect(screen.queryByText("Welcome")).not.toBeInTheDocument();
   });
 
+  it("grows with its content inside a scrolling overlay by default", () => {
+    renderModal(fakeNode({ type: "modal", id: "welcome", props: { title: "Welcome" } }));
+
+    const overlay = document.querySelector('[data-slot="dialog-overlay"]');
+    const content = document.querySelector('[data-slot="dialog-content"]');
+    expect(overlay).toHaveClass("overflow-y-auto");
+    expect(overlay).toContainElement(content as HTMLElement);
+    expect(content).not.toHaveClass("fixed");
+    expect(content).not.toHaveClass("overflow-y-auto");
+    expect(content?.className).not.toMatch(/max-h-/);
+  });
+
+  it("caps and scrolls the dialog itself when a height is given", () => {
+    renderModal(
+      fakeNode({ type: "modal", id: "welcome", props: { title: "Welcome", height: "lg" } }),
+    );
+
+    const content = document.querySelector('[data-slot="dialog-content"]');
+    expect(content).toHaveClass("max-h-[min(680px,calc(100vh-2rem))]");
+    expect(content).toHaveClass("overflow-y-auto");
+  });
+
   it("fills the viewport at width and height max", () => {
     renderModal(
       fakeNode({

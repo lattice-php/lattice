@@ -100,10 +100,12 @@ closes every modal currently open, not just the topmost one.
 - `->width(ModalWidth::…)` sets the dialog width — the max width of a centered dialog and the panel
   width of a sheet. Defaults to `ModalWidth::Lg` (32rem). The scale runs `Sm` (24rem) through `Xl7`
   (80rem), plus `ModalWidth::Max`, which stretches to the viewport minus a 1rem inset.
-- `->height(ModalHeight::…)` caps a centered dialog's height (`Sm` ≈ 480px through `Xl5` ≈ 1280px,
-  defaults to `ModalHeight::Lg`); content beyond the cap scrolls. `ModalHeight::Max` pins the dialog
-  to the viewport height minus a 1rem inset — combined with `ModalWidth::Max` the dialog fills the
-  screen. Sheets are always full height, so `->height()` has no effect on them.
+- A centered dialog grows with its content: the backdrop is the scroll container, so a long form
+  scrolls the page behind the dialog instead of a scrollbar inside it. `->height(ModalHeight::…)`
+  caps the dialog instead (`Sm` ≈ 480px through `Xl5` ≈ 1280px) and scrolls content beyond the cap
+  inside the dialog. `ModalHeight::Max` pins the dialog to the viewport height minus a 1rem inset —
+  combined with `ModalWidth::Max` the dialog fills the screen. Sheets are always full height, so
+  `->height()` has no effect on them.
 
 ## Slide-out sheets
 
