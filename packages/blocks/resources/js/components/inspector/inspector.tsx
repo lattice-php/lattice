@@ -5,7 +5,7 @@ import { cn } from "@lattice-php/ui/lib/utils";
 import { findBlock } from "../../document/tree";
 import { useBlockType, useEditorState } from "../editor/editor-context";
 import { AdvancedPanel } from "./advanced-panel";
-import { ContentPanel } from "./content-panel";
+import { ContentPanel, useUnboundSchema } from "./content-panel";
 import { StructurePanel } from "./structure-panel";
 import { StylePanel } from "./style-panel";
 
@@ -22,7 +22,7 @@ export function Inspector() {
   );
   const type = useBlockType(entry?.node.type ?? "");
   const [tab, setTab] = useState<Tab>("style");
-  const hasContentFields = (type?.schema.length ?? 0) > 0;
+  const hasContentFields = useUnboundSchema(entry?.node.id ?? "", type).length > 0;
   const activeTab: Tab = entry
     ? tab === "content" && !hasContentFields
       ? "style"

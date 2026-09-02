@@ -7,6 +7,7 @@ export type ApiReferenceNodeType = "api-reference";
 export type BlockNodeType =
   | "blocks.editor"
   | "blocks.frame"
+  | "blocks.rich-text"
   | "blocks.slot"
   | "blocks.unknown"
   | "blocks.view";
@@ -118,6 +119,7 @@ export type NodeType =
   | "badge"
   | "blocks.editor"
   | "blocks.frame"
+  | "blocks.rich-text"
   | "blocks.slot"
   | "blocks.unknown"
   | "blocks.view"

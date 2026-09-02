@@ -10,6 +10,7 @@ import type { ReactNode } from "react";
 import type { EditorEndpoint } from "../../endpoint";
 import type { EditorState, EditorStore } from "../../document/store";
 import type { BlockTypeData } from "../../types";
+import type { InlineFocus } from "./focus-registry";
 
 export type EditorContextValue = {
   store: EditorStore;
@@ -20,6 +21,8 @@ export type EditorContextValue = {
   /** Keep the block element in the DOM map so selection changes can focus it. */
   registerBlock: (id: string, element: HTMLElement | null) => void;
   focusBlock: (id: string) => void;
+  /** The inline editors currently mounted, for focus hand-offs between blocks. */
+  inline: InlineFocus;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);

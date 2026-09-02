@@ -1,4 +1,4 @@
-import type { RefObject } from "react";
+import type { ReactNode, RefObject } from "react";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
@@ -12,11 +12,13 @@ export function BlockToolbar({
   label,
   icon,
   handleRef,
+  inlineToolbar = null,
 }: {
   id: string;
   label: string;
   icon: string | null;
   handleRef: RefObject<HTMLButtonElement | null>;
+  inlineToolbar?: ReactNode;
 }) {
   const { t } = useT("blocks");
   const { store, types, focusBlock } = useEditor();
@@ -72,6 +74,14 @@ export function BlockToolbar({
         {icon && <Icon name={icon} className="size-lt-icon-sm" />}
         {label}
       </span>
+      {inlineToolbar && (
+        <>
+          <span className="mx-1 h-4 w-px bg-lt-border" aria-hidden="true" />
+          <span className="flex items-center gap-0.5" data-test={`inline-toolbar-${id}`}>
+            {inlineToolbar}
+          </span>
+        </>
+      )}
       <span className="mx-1 h-4 w-px bg-lt-border" aria-hidden="true" />
       <IconButton
         icon="copy"

@@ -4,6 +4,8 @@ import type { Breakpoint } from "./generated";
 export type NodeProps = Record<string, unknown>;
 
 export type CommonNodeProps = {
+  /** The data field this node displays; editors that own the data swap it for an inline control. */
+  binding?: string | null;
   /** Extra classes the server merged onto this node; adapters merge it onto their root element. */
   class?: string | null;
   columnSpan?: Partial<Record<Breakpoint, number | string>> | null;

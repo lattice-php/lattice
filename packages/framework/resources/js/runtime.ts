@@ -14,6 +14,29 @@ export { nodeIdentity } from "@lattice-php/core/test-id";
 export { requestSignedUpload, xhrTransfer } from "@lattice-php/core/upload";
 export { SimpleField } from "@lattice-php/form/components/base/simple-field";
 export { RICH_EDITOR_EXTENSION, ToolbarIconButton } from "@lattice-php/form/rich-editor";
+export {
+  assembleBlockCommands,
+  assembleStarterKitOptions,
+  assembleTiptapExtensions,
+  assembleToolbar,
+  resolveRichEditorExtensions,
+} from "@lattice-php/form/rich-editor/registry";
+export { builtinRichEditorExtensions } from "@lattice-php/form/rich-editor/builtins";
+export { BlockMenuController } from "@lattice-php/form/rich-editor/block-menu/block-menu-controller";
+export {
+  createSlashMenuExtension,
+  SLASH_MENU_PLUGIN_KEY,
+} from "@lattice-php/form/rich-editor/block-menu/slash-extension";
+export { filterBlockCommands } from "@lattice-php/form/rich-editor/block-menu/filter";
+export { Heading } from "@lattice-php/ui/components/heading/heading";
+export { Text } from "@lattice-php/ui/components/text/text";
+export { Image } from "@lattice-php/ui/components/image/image";
+export {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@lattice-php/ui/components/popover/popover";
 export * from "@lattice-php/form/toolkit";
 export {
   collectFields,

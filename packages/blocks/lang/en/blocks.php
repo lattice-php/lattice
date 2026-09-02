@@ -30,11 +30,13 @@ return [
         'column' => 'Column :index',
     ],
     'placeholders' => [
-        'paragraph' => 'Start writing…',
+        'paragraph' => 'Write something or type / for blocks',
         'heading' => 'Heading',
-        'list' => 'Add list items in the inspector.',
+        'list' => 'Add list items…',
         'quote' => 'Quote',
         'image' => 'Choose an image',
+        'cite' => 'Source',
+        'caption' => 'Add a caption…',
         'gallery' => 'Choose images',
     ],
     'errors' => [
@@ -75,6 +77,11 @@ return [
         'block-moved' => ':label moved',
         'block-added' => ':label added',
         'drop-not-allowed' => ':label is not allowed here',
+        'replace-image' => 'Replace image',
+        'choose-image' => 'Choose image',
+        'edit-field' => 'Edit :label',
+        'inline-blocks' => 'Blocks',
+        'formatting' => 'Text formatting',
         'inspector' => [
             'title' => 'Block',
             'none' => 'Select a block to edit its settings.',

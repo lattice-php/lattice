@@ -54,7 +54,7 @@ function stubEditorEndpoint(
   return calls;
 }
 
-function renderEditor(doc: BlockDocument, rendered = renderedFor(doc)) {
+function renderEditor(doc: BlockDocument, rendered = renderedFor(doc), types = testTypes) {
   const node = fakeNode({
     id: "pages",
     props: {
@@ -65,7 +65,7 @@ function renderEditor(doc: BlockDocument, rendered = renderedFor(doc)) {
       rendered,
       revision: 1,
       title: "Landing",
-      types: testTypes,
+      types,
     },
     type: "blocks.editor",
   });
@@ -257,14 +257,14 @@ describe("block editor (jsdom)", () => {
 
     it("surfaces publish validation errors on the block's content fields", async () => {
       stubEditorEndpoint(() =>
-        jsonResponse({ errors: { p: { text: ["Text is required"] } } }, { status: 422 }),
+        jsonResponse({ errors: { n: { text: ["Text is required"] } } }, { status: 422 }),
       );
-      renderEditor(baseDocument());
+      renderEditor(document(block("n", "lattice.note", { text: "" })));
 
       fireEvent.click(screen.getByTestId("blocks-publish"));
       await waitFor(() => expect(screen.getByTestId("blocks-publish")).toBeEnabled());
 
-      selectBlock("p");
+      selectBlock("n");
       fireEvent.click(screen.getByTestId("blocks-inspector-tab-content"));
 
       expect(await screen.findByText("Text is required")).toBeInTheDocument();
@@ -543,17 +543,17 @@ describe("block editor (jsdom)", () => {
       expect(saveState()).toBe("dirty");
     });
 
-    it("keeps the style tab when a selected block has no content fields", () => {
+    it("keeps the style tab when a selected block has no unbound fields", () => {
       stubEditorEndpoint();
       renderEditor(baseDocument());
-      selectBlock("p");
+      selectBlock("h");
       fireEvent.click(screen.getByTestId("blocks-inspector-tab-content"));
       expect(screen.getByTestId("blocks-inspector-tab-content")).toHaveAttribute(
         "aria-selected",
         "true",
       );
 
-      selectBlock("h");
+      selectBlock("p");
 
       expect(screen.queryByTestId("blocks-inspector-tab-content")).toBeNull();
       expect(screen.getByTestId("blocks-inspector-tab-style")).toHaveAttribute(
@@ -604,16 +604,27 @@ describe("block editor (jsdom)", () => {
       expect(calls.filter((call) => call.op === "render")).toHaveLength(1);
     });
 
-    it("shows the empty state and hides it once a block exists", async () => {
+    it("opens an empty page with one paragraph ready for typing", async () => {
       stubEditorEndpoint();
       renderEditor(document());
 
+      expect(screen.queryByTestId("blocks-empty")).toBeNull();
+      await waitFor(() =>
+        expect(blockTypesIn("blocks-canvas-root")).toEqual(["lattice.paragraph"]),
+      );
+    });
+
+    it("shows the empty state without a paragraph type and hides it once a block exists", async () => {
+      stubEditorEndpoint();
+      const types = testTypes.filter((type) => type.type !== "lattice.paragraph");
+      renderEditor(document(), renderedFor(document()), types);
+
       expect(screen.getByTestId("blocks-empty")).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId("library-lattice.paragraph"));
+      fireEvent.click(screen.getByTestId("library-lattice.heading"));
 
       expect(screen.queryByTestId("blocks-empty")).toBeNull();
-      expect(await screen.findByText("Rendered lattice.paragraph")).toBeInTheDocument();
+      expect(await screen.findByText("Rendered lattice.heading")).toBeInTheDocument();
       expect(rootBlockIds()).toHaveLength(1);
     });
 

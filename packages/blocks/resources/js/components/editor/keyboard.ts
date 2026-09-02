@@ -11,6 +11,18 @@ import {
 } from "../../document/store";
 import { visibleOrder } from "../../document/tree";
 
+/** Inputs that own their own undo stack; inline editors on the canvas defer undo to the document. */
+function inNativeUndoTarget(event: KeyboardEvent): boolean {
+  const target = event.target as HTMLElement | null;
+
+  return (
+    target !== null &&
+    (["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName) ||
+      target.closest("[data-blocks-inspector]") !== null ||
+      (target.isContentEditable && target.closest(".lt-blocks-canvas") === null))
+  );
+}
+
 function inEditableTarget(event: KeyboardEvent): boolean {
   const target = event.target as HTMLElement | null;
 
@@ -34,14 +46,14 @@ export function handleEditorKeyDown(
   const meta = event.metaKey || event.ctrlKey;
   const key = event.key.toLowerCase();
 
-  if (meta && key === "z" && !inEditableTarget(event)) {
+  if (meta && key === "z" && !inNativeUndoTarget(event)) {
     event.preventDefault();
     store.setState(event.shiftKey ? redo : undo);
 
     return;
   }
 
-  if (meta && key === "y" && !inEditableTarget(event)) {
+  if (meta && key === "y" && !inNativeUndoTarget(event)) {
     event.preventDefault();
     store.setState(redo);
 

@@ -1,6 +1,14 @@
 import { fakeNode } from "@lattice-php/core/test-support";
 import { describe, expect, it } from "vitest";
-import { block, columnsType, document, frameFor, testTypes } from "../test-support";
+import {
+  block,
+  columnsType,
+  document,
+  frameFor,
+  headingFrame,
+  testTypes,
+  textOnlySectionType,
+} from "../test-support";
 import {
   createEditorStore,
   duplicate,
@@ -11,9 +19,12 @@ import {
   move,
   redo,
   remove,
+  replaceBlock,
+  seedDocument,
   select,
   setRendered,
   undo,
+  updateBoundText,
   updateData,
   updateStyle,
 } from "./store";
@@ -134,5 +145,79 @@ describe("editor store", () => {
     const conflicted = markConflict(edited, 9);
     expect(updateData(conflicted, "h", "text", "again").saveState).toBe("conflict");
     expect(conflicted.revision).toBe(9);
+  });
+});
+
+describe("inline editing transitions", () => {
+  it("seeds an empty document with a paragraph so typing can start", () => {
+    const seeded = seedDocument(document(), testTypes);
+
+    expect(seeded.blocks).toHaveLength(1);
+    expect(seeded.blocks[0]?.type).toBe("lattice.paragraph");
+    expect(seedDocument(document(block("h", "lattice.heading")), testTypes).blocks).toHaveLength(1);
+    expect(seedDocument(document(), [columnsType]).blocks).toHaveLength(0);
+  });
+
+  it("patches a bound text into the render without marking the block stale", () => {
+    const store = makeStore();
+    const rendered = headingFrame(block("h", "lattice.heading", { text: "Hi" }));
+    const withRender = setRendered(store.getState(), "h", rendered);
+
+    const state = updateBoundText(withRender, "h", "text", "Hello");
+
+    expect(findBlock(state.document, "h")?.node.data.text).toBe("Hello");
+    const heading = state.rendered.h?.schema?.[0]?.props as { text: string };
+
+    expect(heading.text).toBe("Hello");
+    expect(state.staleIds).not.toContain("h");
+    expect(state.saveState).toBe("dirty");
+  });
+
+  it("replaces a block with another type in the same position and marks it for rendering", () => {
+    const store = makeStore();
+    const { state, id } = replaceBlock(store.getState(), "h", "lattice.paragraph");
+
+    expect(id).not.toBeNull();
+    expect(state.document.blocks.map((entry) => entry.type)).toEqual([
+      "lattice.paragraph",
+      columnsType.type,
+    ]);
+    expect(state.selectedId).toBe(id);
+    expect(state.staleIds).toContain(id);
+    expect(findBlock(state.document, "h")).toBeNull();
+  });
+
+  it("refuses to replace a block with a type the slot forbids", () => {
+    const doc = document(
+      block(
+        "s",
+        textOnlySectionType.type,
+        {},
+        {
+          content: [block("p", "lattice.paragraph")],
+        },
+      ),
+    );
+    const store = createEditorStore({ document: doc, rendered: {}, revision: 1, types: testTypes });
+
+    const { state, id } = replaceBlock(store.getState(), "p", "lattice.heading");
+
+    expect(id).toBeNull();
+    expect(state).toBe(store.getState());
+  });
+
+  it("inserts a block with data on top of its type defaults", () => {
+    const store = makeStore();
+    const { state, id } = insert(
+      store.getState(),
+      "lattice.paragraph",
+      { index: 0, parentId: null, slot: null },
+      { content: { content: [], type: "doc" } },
+    );
+
+    expect(findBlock(state.document, id as string)?.node.data.content).toEqual({
+      content: [],
+      type: "doc",
+    });
   });
 });

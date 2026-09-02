@@ -46,9 +46,44 @@ export function blockType(type: string, extra: Partial<BlockTypeData> = {}): Blo
 
 export const paragraphType = blockType("lattice.paragraph", {
   label: "Paragraph",
+  schema: [
+    fakeNode({
+      props: {
+        extensions: [],
+        label: "Content",
+        name: "content",
+        placeholder: "Write something or type / for blocks",
+      },
+      type: "field.rich-editor",
+    }),
+  ],
+});
+export const headingType = blockType("lattice.heading", {
+  label: "Heading",
+  schema: [
+    fakeNode({
+      props: { label: "Text", name: "text", placeholder: "Heading" },
+      type: "field.text-input",
+    }),
+    fakeNode({
+      props: { label: "Level", name: "level", options: [{ label: "H2", value: "2" }] },
+      type: "field.select",
+    }),
+  ],
+});
+/** A block edited only through the inspector: nothing in its render is bound. */
+export const noteType = blockType("lattice.note", {
+  label: "Note",
   schema: [fakeNode({ props: { label: "Text", name: "text" }, type: "field.text-input" })],
 });
-export const headingType = blockType("lattice.heading", { label: "Heading" });
+export const ctaType = blockType("lattice.cta", {
+  category: "layout",
+  label: "Call to action",
+  schema: [
+    fakeNode({ props: { label: "Label", name: "label" }, type: "field.text-input" }),
+    fakeNode({ props: { label: "Open in new tab", name: "external" }, type: "field.toggle" }),
+  ],
+});
 export const columnsType = blockType("lattice.columns", {
   category: "layout",
   label: "Columns",
@@ -63,9 +98,15 @@ export const textOnlySectionType = blockType("lattice.text-section", {
 export const testTypes: BlockTypeData[] = [
   paragraphType,
   headingType,
+  noteType,
+  ctaType,
   columnsType,
   textOnlySectionType,
 ];
+
+export function richDoc(text: string): Record<string, unknown> {
+  return { content: [{ content: [{ text, type: "text" }], type: "paragraph" }], type: "doc" };
+}
 
 export function block(
   id: string,
@@ -113,6 +154,68 @@ export function textFrame(node: BlockNode, text: string): Node {
   return frameFor(node, [fakeNode({ props: { text }, type: "test.text" })]);
 }
 
+/** The heading block's render: a real heading whose text is bound to the `text` field. */
+export function headingFrame(node: BlockNode): Node {
+  return frameFor(node, [
+    fakeNode({
+      props: { binding: "text", level: 2, text: String(node.data.text ?? "") },
+      type: "heading",
+    }),
+  ]);
+}
+
+/** The paragraph block's render: rich text bound to the `content` field. */
+export function richFrame(node: BlockNode): Node {
+  return frameFor(node, [
+    fakeNode({
+      props: {
+        binding: "content",
+        document: node.data.content ?? null,
+        html: "",
+        placeholder: "Write something or type / for blocks",
+      },
+      type: "blocks.rich-text",
+    }),
+  ]);
+}
+
+/** The call-to-action render: a button bound to `label` and a marker bound to the `external` toggle. */
+export function ctaFrame(node: BlockNode): Node {
+  return frameFor(node, [
+    fakeNode({
+      props: { binding: "label", emphasis: "solid", label: String(node.data.label ?? "") },
+      type: "button",
+    }),
+    fakeNode({
+      props: { binding: "external", text: node.data.external ? "opens in new tab" : "same tab" },
+      type: "text",
+    }),
+  ]);
+}
+
+/** What the server would render for a block of the fixture types. */
+export function renderedFrame(
+  node: BlockNode,
+  textOf: (node: BlockNode) => string = (node) => String(node.data.text ?? node.type),
+): Node {
+  const slotNames = Object.keys(node.slots);
+
+  if (slotNames.length > 0 || node.type === columnsType.type) {
+    return frameFor(node, [], slotNames.length > 0 ? slotNames : ["col_1", "col_2"]);
+  }
+
+  switch (node.type) {
+    case headingType.type:
+      return headingFrame(node);
+    case paragraphType.type:
+      return richFrame(node);
+    case ctaType.type:
+      return ctaFrame(node);
+    default:
+      return textFrame(node, textOf(node));
+  }
+}
+
 export function renderedFor(
   doc: BlockDocument,
   textOf: (node: BlockNode) => string = (node) => String(node.data.text ?? node.type),
@@ -121,11 +224,7 @@ export function renderedFor(
 
   const visit = (nodes: readonly BlockNode[]) => {
     for (const node of nodes) {
-      const slotNames = Object.keys(node.slots);
-      rendered[node.id] =
-        slotNames.length > 0 || node.type === columnsType.type
-          ? frameFor(node, [], slotNames.length > 0 ? slotNames : ["col_1", "col_2"])
-          : textFrame(node, textOf(node));
+      rendered[node.id] = renderedFrame(node, textOf);
       Object.values(node.slots).forEach(visit);
     }
   };

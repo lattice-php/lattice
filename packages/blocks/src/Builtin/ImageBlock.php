@@ -8,10 +8,10 @@ use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
 use Lattice\Blocks\BlockSlots;
 use Lattice\Blocks\Enums\BlockCategory;
+use Lattice\Core\Enums\ColorName;
 use Lattice\Form\Components\TextInput;
 use Lattice\Media\Forms\Components\MediaPicker;
 use Lattice\Media\Models\Media;
-use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Image;
 use Lattice\Ui\Components\RawBlock;
 use Lattice\Ui\Components\Stack;
@@ -28,26 +28,22 @@ final class ImageBlock extends BlockDefinition
         return [
             MediaPicker::make('image', __('blocks::blocks.fields.image'))->category('image'),
             TextInput::make('alt', __('blocks::blocks.fields.alt')),
-            TextInput::make('caption', __('blocks::blocks.fields.caption')),
+            TextInput::make('caption', __('blocks::blocks.fields.caption'))->placeholder(__('blocks::blocks.placeholders.caption')),
         ];
     }
 
-    public function render(BlockData $data, BlockSlots $slots): Component
+    public function render(BlockData $data, BlockSlots $slots): Stack
     {
         $media = self::media($data->get('image'));
         $caption = $data->string('caption')->toString();
 
         $image = $media?->url() === null
-            ? RawBlock::make()->html(self::placeholder(__('blocks::blocks.placeholders.image')))
-            : Image::make($media->url())->alt($data->string('alt')->toString() ?: null)->previewable(false);
-
-        if ($caption === '') {
-            return $image;
-        }
+            ? RawBlock::make()->html(self::placeholder(__('blocks::blocks.placeholders.image')))->bind('image')
+            : Image::make($media->url())->alt($data->string('alt')->toString() ?: null)->previewable(false)->bind('image');
 
         return Stack::make()->gap(Gap::Small)->schema([
             $image,
-            Text::make($caption)->size(Size::Sm),
+            Text::make($caption)->size(Size::Sm)->color(ColorName::Muted)->bind('caption'),
         ]);
     }
 

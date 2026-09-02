@@ -23,6 +23,7 @@ export type SlashMenuHandle = {
 export function createSlashMenuExtension(options: {
   commands: () => BlockCommandEntry[];
   handle: RefObject<SlashMenuHandle | null>;
+  char?: string;
 }) {
   return Extension.create({
     name: "latticeSlashMenu",
@@ -32,7 +33,7 @@ export function createSlashMenuExtension(options: {
         Suggestion<BlockCommandEntry, BlockCommandEntry>({
           editor: this.editor,
           pluginKey: SLASH_MENU_PLUGIN_KEY,
-          char: "/",
+          char: options.char ?? "/",
           allow: ({ editor }) => !editor.isActive("codeBlock"),
           items: () => options.commands(),
           command: ({ editor, range, props }) => {

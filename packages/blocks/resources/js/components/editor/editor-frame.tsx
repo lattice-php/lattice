@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import type { RendererComponent } from "@lattice-php/core";
 import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
@@ -22,6 +23,7 @@ import {
 import { select } from "../../document/store";
 import { findBlock } from "../../document/tree";
 import { Frame } from "../view/frame";
+import { BlockProvider } from "./block-context";
 import { BlockToolbar } from "./block-toolbar";
 import { useBlockType, useEditor, useEditorState } from "./editor-context";
 
@@ -48,6 +50,7 @@ const EditorFrameAdapter: RendererComponent<"blocks.frame"> = ({ node, children 
   const [hovered, setHovered] = useState(false);
   const [dropEdge, setDropEdge] = useState<Edge | null>(null);
   const [blocked, setBlocked] = useState(false);
+  const [inlineToolbar, setInlineToolbar] = useState<ReactNode>(null);
   const entry = useMemo(() => findBlock(document, id), [document, id]);
   const exists = entry !== null;
   const currentStyle = entry?.node.style ?? style;
@@ -152,7 +155,7 @@ const EditorFrameAdapter: RendererComponent<"blocks.frame"> = ({ node, children 
         store.setState((state) => select(state, id));
       }}
       onFocus={(event) => {
-        if (event.target === event.currentTarget) {
+        if ((event.target as HTMLElement).closest("[data-block-id]") === event.currentTarget) {
           store.setState((state) => select(state, id));
         }
       }}
@@ -160,14 +163,24 @@ const EditorFrameAdapter: RendererComponent<"blocks.frame"> = ({ node, children 
       onMouseLeave={() => setHovered(false)}
     >
       {selected && (
-        <BlockToolbar id={id} label={label} icon={type?.icon ?? null} handleRef={handle} />
+        <BlockToolbar
+          id={id}
+          label={label}
+          icon={type?.icon ?? null}
+          handleRef={handle}
+          inlineToolbar={inlineToolbar}
+        />
       )}
       {!selected && hovered && (
         <span className="pointer-events-none absolute -top-2.5 left-2 z-10 rounded-lt-xs bg-lt-fg px-1.5 text-[10px] font-medium text-lt-bg">
           {label}
         </span>
       )}
-      <Frame style={currentStyle}>{children}</Frame>
+      <Frame style={currentStyle}>
+        <BlockProvider id={id} type={blockType} setInlineToolbar={setInlineToolbar}>
+          {children}
+        </BlockProvider>
+      </Frame>
     </div>
   );
 };

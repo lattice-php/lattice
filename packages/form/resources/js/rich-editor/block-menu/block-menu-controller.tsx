@@ -24,15 +24,27 @@ const PLUS_BUTTON_POSITION: React.ComponentProps<typeof FloatingMenu>["options"]
   flip: false,
 };
 
+export type BlockMenuTranslate = (key: string, fallback: string) => string;
+
 export function BlockMenuController({
   editor,
   handleRef,
+  translate,
+  plusButton = true,
 }: {
   editor: Editor;
   handleRef: React.RefObject<SlashMenuHandle | null>;
+  /** Resolves an item's label; defaults to the form editor's `form.editor.*` keys. */
+  translate?: BlockMenuTranslate;
+  /** Hide the floating add-block button when the host provides its own insertion affordance. */
+  plusButton?: boolean;
 }) {
   const { t } = useT("lattice");
   const menuId = useId();
+  const translateItem = useMemo<BlockMenuTranslate>(
+    () => translate ?? ((key, fallback) => t(`form.editor.${key}`, fallback)),
+    [t, translate],
+  );
   const [session, setSession] = useState<Session | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   // The suggestion plugin mounts this element into document.body and owns its
@@ -47,13 +59,8 @@ export function BlockMenuController({
   const unmountRef = useRef<(() => void) | null>(null);
 
   const filtered = useMemo(
-    () =>
-      session
-        ? filterBlockCommands(session.items, session.query, editor, (key, fallback) =>
-            t(`form.editor.${key}`, fallback),
-          )
-        : [],
-    [session, editor, t],
+    () => (session ? filterBlockCommands(session.items, session.query, editor, translateItem) : []),
+    [session, editor, translateItem],
   );
 
   const filteredRef = useRef(filtered);
@@ -162,18 +169,21 @@ export function BlockMenuController({
             items={filtered}
             onHighlight={setActiveIndex}
             onSelect={(item) => session.command(item)}
+            translate={translateItem}
           />
         ),
         container,
       )}
-      <FloatingMenu editor={editor} options={PLUS_BUTTON_POSITION}>
-        <ToolbarIconButton
-          icon="plus"
-          label={t("form.editor.add-block", "Add block")}
-          onClick={() => editor.chain().focus().insertContent("/").run()}
-          testId="editor-add-block"
-        />
-      </FloatingMenu>
+      {plusButton && (
+        <FloatingMenu editor={editor} options={PLUS_BUTTON_POSITION}>
+          <ToolbarIconButton
+            icon="plus"
+            label={t("form.editor.add-block", "Add block")}
+            onClick={() => editor.chain().focus().insertContent("/").run()}
+            testId="editor-add-block"
+          />
+        </FloatingMenu>
+      )}
     </>
   );
 }

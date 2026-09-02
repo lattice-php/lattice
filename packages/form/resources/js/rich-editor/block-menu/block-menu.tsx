@@ -15,15 +15,18 @@ export function BlockMenu({
   items,
   onHighlight,
   onSelect,
+  translate,
 }: {
   activeIndex: number;
   id: string;
   items: BlockCommandEntry[];
   onHighlight: (index: number) => void;
   onSelect: (item: BlockCommandEntry) => void;
+  translate?: (key: string, fallback: string) => string;
 }) {
   const { t } = useT("lattice");
   const listRef = useRef<HTMLDivElement>(null);
+  const label = translate ?? ((key: string, fallback: string) => t(`form.editor.${key}`, fallback));
 
   useEffect(() => {
     listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
@@ -63,7 +66,7 @@ export function BlockMenu({
               type="button"
             >
               <Icon className="shrink-0 text-lt-muted-fg" name={item.icon} />
-              {t(`form.editor.${item.key}`, item.label)}
+              {label(item.key, item.label)}
             </button>
           </Fragment>
         ))

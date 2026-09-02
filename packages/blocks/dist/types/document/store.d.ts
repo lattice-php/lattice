@@ -30,10 +30,26 @@ export declare function createEditorStore(initial: {
   revision: number;
 }): EditorStore;
 export declare function select(state: EditorState, id: string | null): EditorState;
+export declare const PARAGRAPH_TYPE = "lattice.paragraph";
+/** A page without blocks opens with one paragraph so writing can start at once. */
+export declare function seedDocument(
+  document: BlockDocument,
+  types: readonly BlockTypeData[],
+): BlockDocument;
 export declare function insert(
   state: EditorState,
   typeKey: string,
   target: BlockTarget,
+  data?: Record<string, unknown>,
+): {
+  state: EditorState;
+  id: string | null;
+};
+/** Swap a block for a fresh one of another type in the same position. */
+export declare function replaceBlock(
+  state: EditorState,
+  id: string,
+  typeKey: string,
 ): {
   state: EditorState;
   id: string | null;
@@ -46,6 +62,22 @@ export declare function updateData(
   id: string,
   field: string,
   value: unknown,
+): EditorState;
+/**
+ * An inline text edit: the data changes and the rendered node is patched in
+ * place, so no server round trip is needed.
+ */
+export declare function updateBoundText(
+  state: EditorState,
+  id: string,
+  field: string,
+  value: string,
+): EditorState;
+export declare function updateBoundDocument(
+  state: EditorState,
+  id: string,
+  field: string,
+  document: Record<string, unknown> | null,
 ): EditorState;
 export declare function replaceData(
   state: EditorState,
