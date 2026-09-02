@@ -24,7 +24,7 @@ class Modal extends ContainerComponent
 
     public ModalWidth $width = ModalWidth::Lg;
 
-    public ModalHeight $height = ModalHeight::Lg;
+    public ?ModalHeight $height = null;
 
     public function __construct(?string $key = null)
     {
@@ -76,6 +76,10 @@ class Modal extends ContainerComponent
         return $this;
     }
 
+    /**
+     * Cap a centered dialog's height and scroll inside it; without a cap the
+     * dialog grows with its content and the page scrolls behind it.
+     */
     public function height(ModalHeight $height): static
     {
         $this->height = $height;

@@ -40,7 +40,7 @@ export const ModalAdapter: RendererComponent<"modal"> = ({ children, node }) => 
         onCloseAutoFocus={context.onExited}
         placement={node.props.side ?? "center"}
         width={node.props.width}
-        height={node.props.height}
+        height={node.props.height ?? undefined}
       >
         <DialogHeader closeLabel={closeLabel} description={description} title={title} />
         <div className="mt-6 space-y-6">{children}</div>

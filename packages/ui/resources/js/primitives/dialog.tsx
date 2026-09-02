@@ -8,60 +8,96 @@ import type { ModalHeight, ModalWidth, Side } from "../types";
 
 export type DialogPlacement = "center" | Side;
 
-const dialogContentVariants = cva(
-  "fixed z-lt-modal w-full overflow-y-auto bg-lt-bg p-6 shadow-lt-lg",
-  {
-    variants: {
-      placement: {
-        center:
-          "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lt border border-lt-border data-[state=open]:animate-lt-dialog-in data-[state=closed]:animate-lt-dialog-out",
-        start:
-          "inset-y-0 start-0 border-e border-lt-border data-[state=open]:animate-lt-sheet-in-start data-[state=closed]:animate-lt-sheet-out-start",
-        end: "inset-y-0 end-0 border-s border-lt-border data-[state=open]:animate-lt-sheet-in-end data-[state=closed]:animate-lt-sheet-out-end",
-      },
-      width: {
-        sm: "max-w-sm",
-        md: "max-w-md",
-        lg: "max-w-lg",
-        xl: "max-w-xl",
-        "2xl": "max-w-2xl",
-        "3xl": "max-w-3xl",
-        "4xl": "max-w-4xl",
-        "5xl": "max-w-5xl",
-        "6xl": "max-w-6xl",
-        "7xl": "max-w-7xl",
-        max: "max-w-[calc(100vw-2rem)]",
-      } satisfies Record<ModalWidth, string>,
-      height: {
-        sm: "",
-        md: "",
-        lg: "",
-        xl: "",
-        "2xl": "",
-        "3xl": "",
-        "4xl": "",
-        "5xl": "",
-        max: "",
-      } satisfies Record<ModalHeight, string>,
+const overlayClassName =
+  "fixed inset-0 z-lt-overlay bg-lt-overlay data-[state=open]:animate-lt-fade-in data-[state=closed]:animate-lt-fade-out";
+
+/* A centered dialog grows with its content: it sits inside the overlay, which
+   is the scroll container, so a long form scrolls the page behind the backdrop
+   instead of a scrollbar inside the panel. An explicit height caps the panel
+   and scrolls inside it again. Sheets stay pinned to the viewport edge. */
+const dialogContentVariants = cva("z-lt-modal w-full bg-lt-bg p-6 shadow-lt-lg", {
+  variants: {
+    placement: {
+      center:
+        "relative rounded-lt border border-lt-border data-[state=open]:animate-lt-dialog-in data-[state=closed]:animate-lt-dialog-out",
+      start:
+        "fixed inset-y-0 start-0 overflow-y-auto border-e border-lt-border data-[state=open]:animate-lt-sheet-in-start data-[state=closed]:animate-lt-sheet-out-start",
+      end: "fixed inset-y-0 end-0 overflow-y-auto border-s border-lt-border data-[state=open]:animate-lt-sheet-in-end data-[state=closed]:animate-lt-sheet-out-end",
     },
-    compoundVariants: [
-      { placement: "center", height: "sm", class: "max-h-[min(480px,calc(100vh-2rem))]" },
-      { placement: "center", height: "md", class: "max-h-[min(600px,calc(100vh-2rem))]" },
-      { placement: "center", height: "lg", class: "max-h-[min(680px,calc(100vh-2rem))]" },
-      { placement: "center", height: "xl", class: "max-h-[min(820px,calc(100vh-2rem))]" },
-      { placement: "center", height: "2xl", class: "max-h-[min(920px,calc(100vh-2rem))]" },
-      { placement: "center", height: "3xl", class: "max-h-[min(1040px,calc(100vh-2rem))]" },
-      { placement: "center", height: "4xl", class: "max-h-[min(1160px,calc(100vh-2rem))]" },
-      { placement: "center", height: "5xl", class: "max-h-[min(1280px,calc(100vh-2rem))]" },
-      {
-        placement: "center",
-        height: "max",
-        class: "h-[calc(100vh-2rem)] max-h-[calc(100vh-2rem)]",
-      },
-    ],
-    defaultVariants: { placement: "center", width: "lg", height: "lg" },
+    width: {
+      sm: "max-w-sm",
+      md: "max-w-md",
+      lg: "max-w-lg",
+      xl: "max-w-xl",
+      "2xl": "max-w-2xl",
+      "3xl": "max-w-3xl",
+      "4xl": "max-w-4xl",
+      "5xl": "max-w-5xl",
+      "6xl": "max-w-6xl",
+      "7xl": "max-w-7xl",
+      max: "max-w-[calc(100vw-2rem)]",
+    } satisfies Record<ModalWidth, string>,
+    height: {
+      sm: "",
+      md: "",
+      lg: "",
+      xl: "",
+      "2xl": "",
+      "3xl": "",
+      "4xl": "",
+      "5xl": "",
+      max: "",
+    } satisfies Record<ModalHeight, string>,
   },
-);
+  compoundVariants: [
+    {
+      placement: "center",
+      height: "sm",
+      class: "max-h-[min(480px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "md",
+      class: "max-h-[min(600px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "lg",
+      class: "max-h-[min(680px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "xl",
+      class: "max-h-[min(820px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "2xl",
+      class: "max-h-[min(920px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "3xl",
+      class: "max-h-[min(1040px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "4xl",
+      class: "max-h-[min(1160px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "5xl",
+      class: "max-h-[min(1280px,calc(100vh-2rem))] overflow-y-auto",
+    },
+    {
+      placement: "center",
+      height: "max",
+      class: "h-[calc(100vh-2rem)] max-h-[calc(100vh-2rem)] overflow-y-auto",
+    },
+  ],
+  defaultVariants: { placement: "center", width: "lg" },
+});
 
 function Dialog(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
@@ -103,26 +139,40 @@ function DialogContent({
   className,
   placement = "center",
   width = "lg",
-  height = "lg",
+  height,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   placement?: DialogPlacement;
   width?: ModalWidth;
   height?: ModalHeight;
 }) {
+  const content = (
+    <DialogPrimitive.Content
+      className={cn(dialogContentVariants({ placement, width, height }), className)}
+      data-slot="dialog-content"
+      {...props}
+    >
+      {children}
+    </DialogPrimitive.Content>
+  );
+
+  if (placement !== "center") {
+    return (
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className={overlayClassName} data-slot="dialog-overlay" />
+        {content}
+      </DialogPrimitive.Portal>
+    );
+  }
+
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay
-        className="fixed inset-0 z-lt-overlay bg-lt-overlay data-[state=open]:animate-lt-fade-in data-[state=closed]:animate-lt-fade-out"
+        className={cn(overlayClassName, "overflow-y-auto")}
         data-slot="dialog-overlay"
-      />
-      <DialogPrimitive.Content
-        className={cn(dialogContentVariants({ placement, width, height }), className)}
-        data-slot="dialog-content"
-        {...props}
       >
-        {children}
-      </DialogPrimitive.Content>
+        <div className="grid min-h-full place-items-center p-4">{content}</div>
+      </DialogPrimitive.Overlay>
     </DialogPrimitive.Portal>
   );
 }
