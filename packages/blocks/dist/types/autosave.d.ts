@@ -1,0 +1,13 @@
+import { EditorEndpoint } from "./endpoint";
+import { EditorStore } from "./document/store";
+export declare const AUTOSAVE_DELAY_MS = 5000;
+/**
+ * Saves the draft a few seconds after the last change and immediately when the
+ * page hides, so closing the tab does not lose work. A 409 stops further saves
+ * until the user reloads; the store surfaces it as a conflict.
+ */
+export declare function useAutosave(
+  store: EditorStore,
+  endpoint: EditorEndpoint | null,
+  delayMs?: number,
+): void;
