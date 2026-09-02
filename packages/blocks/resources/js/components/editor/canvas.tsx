@@ -19,7 +19,7 @@ import { insert, move, select } from "../../document/store";
 import { BlockList } from "./block-list";
 import { Breadcrumbs } from "./breadcrumbs";
 import { useEditor, useEditorState } from "./editor-context";
-import { useEditorRegistry } from "./editor-registry";
+import { BaseRegistryProvider, useEditorRegistry } from "./editor-registry";
 import { InsertMenu } from "./insert-menu";
 
 export function Canvas() {
@@ -27,7 +27,7 @@ export function Canvas() {
   const { store, types, requestRender, focusBlock } = useEditor();
   const blocks = useEditorState((state) => state.document.blocks);
   const ids = useMemo(() => blocks.map((block) => block.id), [blocks]);
-  const registry = useEditorRegistry();
+  const { registry, base } = useEditorRegistry();
   const scroller = useRef<HTMLDivElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const [dropActive, setDropActive] = useState(false);
@@ -124,9 +124,11 @@ export function Canvas() {
             }
           }}
         >
-          <RegistryProvider registry={registry}>
-            <BlockList ids={ids} />
-          </RegistryProvider>
+          <BaseRegistryProvider registry={base}>
+            <RegistryProvider registry={registry}>
+              <BlockList ids={ids} />
+            </RegistryProvider>
+          </BaseRegistryProvider>
           {ids.length === 0 && (
             <p className="py-10 text-center text-sm text-lt-muted-fg" data-test="blocks-empty">
               {t("blocks.editor.empty", "This page has no blocks yet. Pick one from the library.")}

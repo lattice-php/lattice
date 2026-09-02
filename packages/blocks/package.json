@@ -13,6 +13,10 @@
     "@lattice-php/core": "0.70.2",
     "@lattice-php/form": "0.70.2",
     "@lattice-php/lattice": "0.70.2",
-    "@lattice-php/ui": "0.70.2"
+    "@lattice-php/ui": "0.70.2",
+    "@tiptap/core": "^3.30.0",
+    "@tiptap/extensions": "^3.30.0",
+    "@tiptap/react": "^3.30.0",
+    "@tiptap/starter-kit": "^3.30.0"
   }
 }

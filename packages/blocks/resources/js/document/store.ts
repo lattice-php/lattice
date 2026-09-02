@@ -16,6 +16,7 @@ import {
   undo as undoHistory,
   type History,
 } from "./history";
+import { patchDocument, patchText } from "./bindings";
 import { canPlace, typeOf } from "./rules";
 import {
   changedDataBlocks,
@@ -121,10 +122,27 @@ export function select(state: EditorState, id: string | null): EditorState {
   return state.selectedId === id ? state : { ...state, selectedId: id };
 }
 
+export const PARAGRAPH_TYPE = "lattice.paragraph";
+
+/** A page without blocks opens with one paragraph so writing can start at once. */
+export function seedDocument(
+  document: BlockDocument,
+  types: readonly BlockTypeData[],
+): BlockDocument {
+  const paragraph = typeOf(types, PARAGRAPH_TYPE);
+
+  if (document.blocks.length > 0 || !paragraph) {
+    return document;
+  }
+
+  return { ...document, blocks: [createBlock(paragraph)] };
+}
+
 export function insert(
   state: EditorState,
   typeKey: string,
   target: BlockTarget,
+  data: Record<string, unknown> = {},
 ): { state: EditorState; id: string | null } {
   const type = typeOf(state.types, typeKey);
 
@@ -141,8 +159,50 @@ export function insert(
     return { id: null, state };
   }
 
-  const block = createBlock(type);
+  const created = createBlock(type);
+  const block = { ...created, data: { ...created.data, ...data } };
   const document = insertBlock(state.document, block, target);
+
+  return {
+    id: block.id,
+    state: { ...commit(state, document, null, [block.id]), selectedId: block.id },
+  };
+}
+
+/** Swap a block for a fresh one of another type in the same position. */
+export function replaceBlock(
+  state: EditorState,
+  id: string,
+  typeKey: string,
+): { state: EditorState; id: string | null } {
+  const entry = findBlock(state.document, id);
+
+  if (!entry) {
+    return { id: null, state };
+  }
+
+  const removed = removeBlock(state.document, id);
+  const type = typeOf(state.types, typeKey);
+
+  if (
+    !type ||
+    !canPlace({
+      blockType: typeKey,
+      document: removed,
+      parentId: entry.parentId,
+      slot: entry.slot,
+      types: state.types,
+    })
+  ) {
+    return { id: null, state };
+  }
+
+  const block = createBlock(type);
+  const document = insertBlock(removed, block, {
+    index: entry.index,
+    parentId: entry.parentId,
+    slot: entry.slot,
+  });
 
   return {
     id: block.id,
@@ -216,6 +276,38 @@ export function updateData(
   }));
 
   return commit(state, document, `data:${id}:${field}`);
+}
+
+/**
+ * An inline text edit: the data changes and the rendered node is patched in
+ * place, so no server round trip is needed.
+ */
+export function updateBoundText(
+  state: EditorState,
+  id: string,
+  field: string,
+  value: string,
+): EditorState {
+  const next = updateData(state, id, field, value);
+  const rendered = next.rendered[id];
+
+  return rendered
+    ? { ...next, rendered: { ...next.rendered, [id]: patchText(rendered, field, value) } }
+    : next;
+}
+
+export function updateBoundDocument(
+  state: EditorState,
+  id: string,
+  field: string,
+  document: Record<string, unknown> | null,
+): EditorState {
+  const next = updateData(state, id, field, document);
+  const rendered = next.rendered[id];
+
+  return rendered
+    ? { ...next, rendered: { ...next.rendered, [id]: patchDocument(rendered, field, document) } }
+    : next;
 }
 
 export function replaceData(

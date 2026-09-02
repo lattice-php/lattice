@@ -11,6 +11,7 @@ import {
   block,
   columnsType,
   document,
+  noteType,
   renderedFor,
   TestText,
   testTypes,
@@ -74,7 +75,7 @@ const baseDocument = () =>
       "c",
       columnsType.type,
       {},
-      { col_1: [block("p", "lattice.paragraph", { text: "Inside" })], col_2: [] },
+      { col_1: [block("p", noteType.type, { text: "Inside" })], col_2: [] },
     ),
     block("s", textOnlySectionType.type, {}, { content: [] }),
   );
@@ -160,7 +161,7 @@ describe("block editor", () => {
 
     await userEvent.click(byTest("block-p"));
     await userEvent.click(byTest("blocks-inspector-tab-content"));
-    const input = page.getByRole("textbox", { name: "Text" });
+    const input = page.getByRole("textbox", { exact: true, name: "Text" });
     await userEvent.clear(input);
     await userEvent.type(input, "Fresh");
 

@@ -16,6 +16,8 @@ return [
             'button-target' => 'Button target',
             'image' => 'Image',
             'placeholder' => 'Your headline',
+            'intro-placeholder' => 'Introduce the page in a sentence or two…',
+            'button-placeholder' => 'Get started',
         ],
         'cta' => [
             'title' => 'Title',

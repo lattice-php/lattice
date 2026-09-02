@@ -30,11 +30,13 @@ return [
         'column' => 'Spalte :index',
     ],
     'placeholders' => [
-        'paragraph' => 'Schreib etwas…',
+        'paragraph' => 'Schreib etwas oder tippe / für Blöcke',
         'heading' => 'Überschrift',
-        'list' => 'Listeneinträge im Inspector eintragen.',
+        'list' => 'Listeneinträge eintragen…',
         'quote' => 'Zitat',
         'image' => 'Bild wählen',
+        'cite' => 'Quelle',
+        'caption' => 'Bildunterschrift…',
         'gallery' => 'Bilder wählen',
     ],
     'errors' => [
@@ -75,6 +77,11 @@ return [
         'block-moved' => ':label verschoben',
         'block-added' => ':label hinzugefügt',
         'drop-not-allowed' => ':label ist hier nicht erlaubt',
+        'replace-image' => 'Bild ersetzen',
+        'choose-image' => 'Bild wählen',
+        'edit-field' => ':label bearbeiten',
+        'inline-blocks' => 'Blöcke',
+        'formatting' => 'Textformatierung',
         'inspector' => [
             'title' => 'Block',
             'none' => 'Wähle einen Block, um seine Einstellungen zu bearbeiten.',

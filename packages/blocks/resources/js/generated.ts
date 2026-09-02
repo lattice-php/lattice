@@ -33,6 +33,7 @@ export type BlockNode = {
 export type BlockNodeType =
   | "blocks.editor"
   | "blocks.frame"
+  | "blocks.rich-text"
   | "blocks.slot"
   | "blocks.unknown"
   | "blocks.view";
@@ -73,9 +74,15 @@ export type BlockWidth = "content" | "wide" | "full";
 export type ComponentPropsMap = {
   "blocks.editor": BlockEditor;
   "blocks.frame": BlockFrame;
+  "blocks.rich-text": RichText;
   "blocks.slot": SlotOutlet;
   "blocks.unknown": UnknownBlock;
   "blocks.view": BlockView;
+};
+export type RichText = {
+  document: Record<string, unknown> | null;
+  html: string;
+  placeholder: string | null;
 };
 export type SlotData = {
   readonly allows: string[] | null;

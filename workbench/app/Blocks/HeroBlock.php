@@ -8,11 +8,11 @@ use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
 use Lattice\Blocks\BlockSlots;
 use Lattice\Blocks\Builtin\ImageBlock;
+use Lattice\Blocks\Components\RichText;
 use Lattice\Blocks\Enums\BlockCategory;
 use Lattice\Form\Components\RichEditor;
 use Lattice\Form\Components\Select;
 use Lattice\Form\Components\TextInput;
-use Lattice\Form\RichContent;
 use Lattice\Media\Forms\Components\MediaPicker;
 use Lattice\Ui\Components\Button;
 use Lattice\Ui\Components\Heading;
@@ -28,9 +28,9 @@ final class HeroBlock extends BlockDefinition
     public function fields(): array
     {
         return [
-            TextInput::make('title', __('workbench.blocks.hero.title'))->required()->rules(['max:90']),
-            RichEditor::make('intro', __('workbench.blocks.hero.intro')),
-            TextInput::make('button_label', __('workbench.blocks.hero.button-label')),
+            TextInput::make('title', __('workbench.blocks.hero.title'))->required()->rules(['max:90'])->placeholder(__('workbench.blocks.hero.placeholder')),
+            RichEditor::make('intro', __('workbench.blocks.hero.intro'))->placeholder(__('workbench.blocks.hero.intro-placeholder')),
+            TextInput::make('button_label', __('workbench.blocks.hero.button-label'))->placeholder(__('workbench.blocks.hero.button-placeholder')),
             Select::make('button_target', __('workbench.blocks.hero.button-target'))->options([
                 '/demo' => 'Demo',
                 '/products' => 'Products',
@@ -47,11 +47,15 @@ final class HeroBlock extends BlockDefinition
         $label = $data->string('button_label')->toString();
         $media = ImageBlock::media($data->get('image'));
 
-        return Stack::make()->gap(Gap::Medium)->schema(array_values(array_filter([
-            Heading::make($title === '' ? __('workbench.blocks.hero.placeholder') : $title, 1),
-            $intro === null ? null : RawBlock::make()->html('<div class="lt-blocks-prose text-lg text-lt-muted-fg">'.RichContent::make($intro)->toHtml().'</div>'),
-            $label === '' ? null : Button::make($label)->href($data->string('button_target')->toString() ?: '#'),
-            $media?->url() === null ? null : Image::make($media->url())->previewable(false),
-        ])));
+        return Stack::make()->gap(Gap::Medium)->schema([
+            Heading::make($title === '' ? __('workbench.blocks.hero.placeholder') : $title, 1)->bind('title'),
+            RichText::make($intro, __('workbench.blocks.hero.intro-placeholder'))->class('text-lg text-lt-muted-fg')->bind('intro'),
+            Button::make($label === '' ? __('workbench.blocks.hero.button-placeholder') : $label)
+                ->href($data->string('button_target')->toString() ?: '#')
+                ->bind('button_label'),
+            $media?->url() === null
+                ? RawBlock::make()->html(ImageBlock::placeholder(__('blocks::blocks.placeholders.image')))->bind('image')
+                : Image::make($media->url())->previewable(false)->bind('image'),
+        ]);
     }
 }

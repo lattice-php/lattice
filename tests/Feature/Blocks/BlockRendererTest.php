@@ -71,3 +71,25 @@ it('renders a half-filled draft without validating it', function (): void {
 
     expect($frame['schema'][0]['props']['text'])->toBe('Heading');
 });
+
+it('marks the inline-editable spots of the built-in blocks with their field bindings', function (): void {
+    $rendered = app(BlockRenderer::class)->renderShallowAll(sampleBlockDocument());
+
+    $heading = Wire::toArray($rendered['b_heading']);
+    $paragraph = Wire::toArray($rendered['b_left']);
+
+    expect($heading['schema'][0]['type'])->toBe('heading')
+        ->and($heading['schema'][0]['props']['binding'])->toBe('text')
+        ->and($paragraph['schema'][0]['type'])->toBe('blocks.rich-text')
+        ->and($paragraph['schema'][0]['props']['binding'])->toBe('content')
+        ->and($paragraph['schema'][0]['props']['document']['type'])->toBe('doc')
+        ->and($paragraph['schema'][0]['props']['html'])->toContain('Left');
+});
+
+it('renders an empty paragraph as its placeholder while keeping the binding', function (): void {
+    $frame = Wire::toArray(app(BlockRenderer::class)->renderShallow(BlockNode::make('lattice.paragraph')));
+
+    expect($frame['schema'][0]['props']['document'] ?? null)->toBeNull()
+        ->and($frame['schema'][0]['props']['html'])->toContain('Write something')
+        ->and($frame['schema'][0]['props']['binding'])->toBe('content');
+});

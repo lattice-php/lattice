@@ -16,6 +16,8 @@ return [
             'button-target' => 'Button-Ziel',
             'image' => 'Bild',
             'placeholder' => 'Deine Überschrift',
+            'intro-placeholder' => 'Stell die Seite in ein, zwei Sätzen vor…',
+            'button-placeholder' => 'Loslegen',
         ],
         'cta' => [
             'title' => 'Titel',

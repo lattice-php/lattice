@@ -6,8 +6,19 @@
   pointer-events: none;
 }
 
-.lt-blocks-canvas .lt-blocks-ui :is(a, button, input, select, textarea) {
+.lt-blocks-canvas .lt-blocks-ui :is(a, button, input, select, textarea, [contenteditable]),
+.lt-blocks-canvas .lt-blocks-ui:is(button, a, [contenteditable]) {
   pointer-events: auto;
+}
+
+.lt-blocks-canvas .lt-blocks-rich a {
+  pointer-events: none;
+}
+
+.lt-blocks-inline:empty::before {
+  content: attr(data-placeholder);
+  color: var(--lt-muted-fg);
+  pointer-events: none;
 }
 
 .lt-blocks-prose :is(p, ul, ol, blockquote, pre, h1, h2, h3, h4) + :is(p, ul, ol, blockquote, pre, h1, h2, h3, h4) {

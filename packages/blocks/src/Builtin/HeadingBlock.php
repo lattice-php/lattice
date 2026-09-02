@@ -19,7 +19,8 @@ final class HeadingBlock extends BlockDefinition
     public function fields(): array
     {
         return [
-            TextInput::make('text', __('blocks::blocks.fields.text'))->required()->rules(['max:200']),
+            TextInput::make('text', __('blocks::blocks.fields.text'))->required()->rules(['max:200'])
+                ->placeholder(__('blocks::blocks.placeholders.heading')),
             Select::make('level', __('blocks::blocks.fields.level'))
                 ->options(['1' => 'H1', '2' => 'H2', '3' => 'H3', '4' => 'H4'])
                 ->value('2'),
@@ -31,6 +32,6 @@ final class HeadingBlock extends BlockDefinition
         $text = $data->string('text')->toString();
         $level = max(1, min(6, (int) ($data->get('level') ?: 2)));
 
-        return Heading::make($text === '' ? __('blocks::blocks.placeholders.heading') : $text, $level);
+        return Heading::make($text === '' ? __('blocks::blocks.placeholders.heading') : $text, $level)->bind('text');
     }
 }
