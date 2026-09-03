@@ -182,6 +182,9 @@ describe("LibraryView", () => {
     window.localStorage.clear();
     vi.clearAllMocks();
     vi.unstubAllGlobals();
+    // A table reload can still be in flight when a test ends; without a stub in
+    // place it would reach the real fetch and reject on the relative url.
+    stubFetch(jsonResponse({ data: [], query: {} }));
   });
 
   it("deselects a single-select pick when the same card is clicked twice", () => {
