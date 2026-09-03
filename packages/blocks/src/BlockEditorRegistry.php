@@ -32,6 +32,8 @@ final class BlockEditorRegistry extends DefinitionRegistry
                     ->revision($definition->revision())
                     ->types($this->typesFor($definition))
                     ->patterns($this->patternsFor($definition))
+                    ->seedType($this->seedTypeFor($definition))
+                    ->styleClasses($this->container->make(StyleClassMap::class)->classes())
                     ->rendered($renderer->renderShallowAll($document))
                     ->previewUrl($definition->previewUrl())
                     ->title($definition->title());
@@ -72,6 +74,22 @@ final class BlockEditorRegistry extends DefinitionRegistry
         }
 
         return $patterns;
+    }
+
+    /**
+     * The key of the block an empty page opens with, when the editor offers it.
+     */
+    public function seedTypeFor(BlockEditorDefinition $definition): ?string
+    {
+        $seed = $definition->seedBlock();
+
+        if ($seed === null) {
+            return null;
+        }
+
+        $key = $this->container->make(BlockRegistry::class)->keyOf($seed);
+
+        return in_array($key, $this->allowedTypes($definition), true) ? $key : null;
     }
 
     /**

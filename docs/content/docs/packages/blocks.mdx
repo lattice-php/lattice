@@ -144,8 +144,8 @@ to the last remaining one instead of disappearing.
 
 ### Style and supports
 
-Every block carries a generic `BlockStyle` — width, spacing, background, alignment, visibility per
-breakpoint and an anchor id — that the inspector edits and the renderer applies around the block.
+Every block carries a generic `BlockStyle` — width, spacing, background, alignment, hide on mobile
+or desktop, and an anchor id — that the inspector edits and the renderer applies around the block.
 The block render never sees it. A block opts out of controls that make no sense for it:
 
 ```php
@@ -176,6 +176,8 @@ use Lattice\Blocks\Exceptions\StaleRevision;
 #[AsBlockEditor('app.pages')]
 final class PagesEditor extends BlockEditorDefinition
 {
+    private ?Page $page = null;
+
     public function blocks(): array
     {
         return [HeroBlock::class, ...Builtin::all()];
@@ -218,10 +220,13 @@ final class PagesEditor extends BlockEditorDefinition
 
     private function page(): Page
     {
-        return Page::findOrFail($this->contextInt('page'));
+        return $this->page ??= Page::findOrFail($this->contextInt('page'));
     }
 }
 ```
+
+An empty page opens with one paragraph so writing can start at once. Override `seedBlock()` to
+open with another block, or return `null` for an empty canvas.
 
 Store the document with the `AsBlockDocument` cast:
 
@@ -330,8 +335,8 @@ An empty string renders nothing for that block; `null` means the block has no HT
 renderer then calls the fallback configured under `lattice.blocks.html_fallback` — a callable or an
 invokable class receiving the `BlockNode` — or throws `MissingHtmlRenderer`.
 
-Each block's HTML is wrapped in a frame whose classes come from `BlockStyle::classes()`. The
-defaults mirror the editor's Tailwind classes; override any entry for your theme:
+Each block's HTML is wrapped in a frame whose classes come from `StyleClassMap`, the same map the
+editor canvas and the in-app view use. Override any entry for your theme and all three follow:
 
 ```php
 // config/lattice.php

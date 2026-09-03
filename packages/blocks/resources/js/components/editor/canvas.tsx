@@ -15,7 +15,7 @@ import {
   resolveDropTarget,
   slotDropTargetData,
 } from "../../dnd/block-dnd";
-import { insert, move, select } from "../../document/store";
+import { move, select } from "../../document/store";
 import type { CanvasWidth } from "../../types";
 import { BlockList } from "./block-list";
 import { Breadcrumbs } from "./breadcrumbs";
@@ -31,7 +31,7 @@ const canvasWidthClasses: Record<CanvasWidth, string> = {
 
 export function Canvas() {
   const { t } = useT("blocks");
-  const { store, types, requestRender, focusBlock } = useEditor();
+  const { store, types, insertBlock, focusBlock } = useEditor();
   const blocks = useEditorState((state) => state.document.blocks);
   const canvasWidth = useEditorState((state) => state.canvasWidth);
   const ids = useMemo(() => blocks.map((block) => block.id), [blocks]);
@@ -94,22 +94,11 @@ export function Canvas() {
             return;
           }
 
-          let created: string | null = null;
-          store.setState((current) => {
-            const result = insert(current, dragSource.blockType, target);
-            created = result.id;
-
-            return result.state;
-          });
-
-          if (created) {
-            requestRender(created);
-            announce(t("blocks.editor.block-added", "{{label}} added", { label: typeLabel }));
-          }
+          insertBlock(dragSource.blockType, target, { focus: "none" });
         },
       }),
     );
-  }, [focusBlock, requestRender, store, t, types]);
+  }, [focusBlock, insertBlock, store, t, types]);
 
   return (
     <div

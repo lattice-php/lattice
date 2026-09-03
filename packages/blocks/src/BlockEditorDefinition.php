@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks;
 
+use Lattice\Blocks\Builtin\ParagraphBlock;
 use Lattice\Blocks\Exceptions\StaleRevision;
 use Lattice\Core\Definition;
 
@@ -49,6 +50,17 @@ abstract class BlockEditorDefinition extends Definition
     public function patterns(): array
     {
         return [];
+    }
+
+    /**
+     * The block an empty page opens with, so writing can start at once; null
+     * opens an empty canvas.
+     *
+     * @return class-string<BlockDefinition>|null
+     */
+    public function seedBlock(): ?string
+    {
+        return ParagraphBlock::class;
     }
 
     public function previewUrl(): ?string

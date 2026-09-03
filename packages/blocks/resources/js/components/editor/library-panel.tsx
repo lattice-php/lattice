@@ -2,14 +2,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
+import { cn } from "@lattice-php/ui/lib/utils";
 import { Input } from "@lattice-php/form/primitives/input";
-import { announce, draggable } from "@lattice-php/lattice/dnd";
+import { draggable } from "@lattice-php/lattice/dnd";
 import { libraryDragData } from "../../dnd/block-dnd";
-import { insert, insertPattern, insertTargetFor } from "../../document/store";
+import { insertTargetFor } from "../../document/store";
 import type { BlockPatternData, BlockTypeData } from "../../types";
 import { useEditor, useEditorState } from "./editor-context";
 
-const categoryOrder = ["text", "media", "layout", "embed"];
+const categoryOrder = ["text", "media", "layout"];
 
 type LibraryTab = "blocks" | "patterns";
 
@@ -114,8 +115,7 @@ export function LibraryPanel() {
 }
 
 function LibraryItem({ type }: { type: BlockTypeData }) {
-  const { t } = useT("blocks");
-  const { store, requestRender, focusBlock } = useEditor();
+  const { store, insertBlock } = useEditor();
   const element = useRef<HTMLButtonElement>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -134,22 +134,7 @@ function LibraryItem({ type }: { type: BlockTypeData }) {
     });
   }, [type.type]);
 
-  const add = () => {
-    let created: string | null = null;
-
-    store.setState((current) => {
-      const result = insert(current, type.type, insertTargetFor(current, [type.type]));
-      created = result.id;
-
-      return result.state;
-    });
-
-    if (created) {
-      requestRender(created);
-      announce(t("blocks.editor.block-added", "{{label}} added", { label: type.label }));
-      queueMicrotask(() => focusBlock(created as string));
-    }
-  };
+  const add = () => insertBlock(type.type, insertTargetFor(store.getState(), [type.type]));
 
   return (
     <button
@@ -157,7 +142,10 @@ function LibraryItem({ type }: { type: BlockTypeData }) {
       type="button"
       title={type.description ?? type.label}
       data-test={`library-${type.type}`}
-      className={`flex h-16 w-full cursor-grab flex-col items-center justify-center gap-1 rounded-lt border border-lt-border bg-lt-surface px-1 text-[11px] text-lt-fg transition-colors hover:border-lt-primary hover:text-lt-primary focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50 outline-none ${dragging ? "opacity-50" : ""}`}
+      className={cn(
+        "flex h-16 w-full cursor-grab flex-col items-center justify-center gap-1 rounded-lt border border-lt-border bg-lt-surface px-1 text-[11px] text-lt-fg transition-colors hover:border-lt-primary hover:text-lt-primary focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50 outline-none",
+        dragging && "opacity-50",
+      )}
       onClick={add}
     >
       {type.icon && <Icon name={type.icon} className="size-lt-icon-md" />}
@@ -167,29 +155,10 @@ function LibraryItem({ type }: { type: BlockTypeData }) {
 }
 
 function PatternItem({ pattern }: { pattern: BlockPatternData }) {
-  const { t } = useT("blocks");
-  const { store, requestRender, focusBlock } = useEditor();
+  const { store, insertPattern } = useEditor();
   const rootTypes = useMemo(() => pattern.blocks.map((block) => block.type), [pattern.blocks]);
 
-  const add = () => {
-    let created: string[] = [];
-
-    store.setState((current) => {
-      const result = insertPattern(current, pattern.key, insertTargetFor(current, rootTypes));
-      created = result.ids;
-
-      return result.state;
-    });
-
-    if (created.length === 0) {
-      return;
-    }
-
-    created.forEach(requestRender);
-    announce(t("blocks.editor.pattern-added", "{{label}} added", { label: pattern.label }));
-    const first = created[0] as string;
-    queueMicrotask(() => focusBlock(first));
-  };
+  const add = () => insertPattern(pattern.key, insertTargetFor(store.getState(), rootTypes));
 
   return (
     <button

@@ -55,17 +55,6 @@ abstract class BlockDefinition extends Definition
         return BlockSupports::all();
     }
 
-    /**
-     * Upgrade stored data written by an older version of this block.
-     *
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    public function migrate(array $data, int $from): array
-    {
-        return $data;
-    }
-
     public function label(): string
     {
         $label = $this->attribute()->label;

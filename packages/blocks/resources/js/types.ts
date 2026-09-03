@@ -9,7 +9,6 @@ export type {
   BlockCategory,
   BlockDocument,
   BlockEditor as BlockEditorWireProps,
-  BlockFrame as BlockFrameWireProps,
   BlockNode,
   BlockNodeType,
   BlockPatternData,
@@ -17,9 +16,9 @@ export type {
   BlockSupports,
   BlockTypeData,
   BlockWidth,
+  FrameClasses,
   SlotData,
-  SlotOutlet as SlotOutletWireProps,
-  UnknownBlock as UnknownBlockWireProps,
+  StyleClasses,
 } from "./generated";
 
 /** Where a block goes: a slot of a parent block, or the document root when `parentId` is null. */

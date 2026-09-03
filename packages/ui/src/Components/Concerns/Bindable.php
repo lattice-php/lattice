@@ -19,11 +19,6 @@ trait Bindable
         return $this;
     }
 
-    public function boundField(): ?string
-    {
-        return $this->binding;
-    }
-
     /**
      * @param  array<string, mixed>  $props
      * @return array<string, mixed>

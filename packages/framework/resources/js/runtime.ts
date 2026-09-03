@@ -92,7 +92,6 @@ export {
   usePersistentState,
 } from "@lattice-php/ui";
 export { Checkbox, Combobox, Input, Label, Textarea } from "@lattice-php/form";
-export { LATTICE_EVENT } from "@lattice-php/core/event-names";
 export * from "@lattice-php/ui/i18n";
 export {
   announce,

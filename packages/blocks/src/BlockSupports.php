@@ -46,11 +46,6 @@ final readonly class BlockSupports
         return new self(...$values);
     }
 
-    public function only(string ...$features): self
-    {
-        return self::none()->with(...$features);
-    }
-
     public function with(string ...$features): self
     {
         $values = get_object_vars($this);

@@ -35,9 +35,3 @@ export function textDocument(text: string): RichDocument | null {
 export function documentContent(document: RichDocument | null | undefined): RichNode[] {
   return isEmptyDocument(document) ? [] : ((document as RichNode).content ?? []);
 }
-
-export function splitText(text: string, offset: number): { before: string; after: string } {
-  const at = Math.max(0, Math.min(offset, text.length));
-
-  return { after: text.slice(at), before: text.slice(0, at) };
-}

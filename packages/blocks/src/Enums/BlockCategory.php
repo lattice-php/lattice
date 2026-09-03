@@ -11,5 +11,4 @@ enum BlockCategory: string
     case Text = 'text';
     case Media = 'media';
     case Layout = 'layout';
-    case Embed = 'embed';
 }

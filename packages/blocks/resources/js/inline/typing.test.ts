@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { documentContent, isEmptyDocument, splitText, textDocument } from "./typing";
+import { documentContent, isEmptyDocument, textDocument } from "./typing";
 
 describe("typing helpers", () => {
   it("treats a missing document, no nodes, or one empty paragraph as empty", () => {
@@ -23,11 +23,5 @@ describe("typing helpers", () => {
   it("exposes the top-level nodes for merging and none for an empty document", () => {
     expect(documentContent(textDocument("Hi"))).toHaveLength(1);
     expect(documentContent(null)).toEqual([]);
-  });
-
-  it("splits text at a clamped caret offset", () => {
-    expect(splitText("Hello", 2)).toEqual({ after: "llo", before: "He" });
-    expect(splitText("Hello", 99)).toEqual({ after: "", before: "Hello" });
-    expect(splitText("Hello", -1)).toEqual({ after: "Hello", before: "" });
   });
 });

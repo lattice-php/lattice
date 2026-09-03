@@ -2,7 +2,7 @@ import type { Node } from "@lattice-php/core";
 import type { Gap, TextAlign } from "@lattice-php/ui";
 
 export type BlockBackground = "none" | "muted" | "inverted" | "primary";
-export type BlockCategory = "text" | "media" | "layout" | "embed";
+export type BlockCategory = "text" | "media" | "layout";
 export type BlockDocument = {
   readonly blocks: BlockNode[];
   readonly version: number;
@@ -15,12 +15,15 @@ export type BlockEditor = {
   ref: string | null;
   rendered: Record<string, Node>;
   revision: number;
+  seedType: string | null;
+  styleClasses: StyleClasses;
   title: string | null;
   types: BlockTypeData[];
 };
 export type BlockFrame = {
   blockId: string;
   blockType: string;
+  classes: FrameClasses;
   style: BlockStyle;
   supports: BlockSupports;
 };
@@ -87,6 +90,10 @@ export type ComponentPropsMap = {
   "blocks.unknown": UnknownBlock;
   "blocks.view": BlockView;
 };
+export type FrameClasses = {
+  readonly inner: string;
+  readonly outer: string;
+};
 export type RichText = {
   document: Record<string, unknown> | null;
   html: string;
@@ -106,6 +113,18 @@ export type SlotOutlet = {
   max: number | null;
   min: number | null;
   name: string;
+};
+export type StyleClasses = {
+  readonly align: Record<string, string>;
+  readonly background: Record<string, string>;
+  readonly backgroundPadding: string;
+  readonly hideOnDesktop: string;
+  readonly hideOnMobile: string;
+  readonly marginBottom: Record<string, string>;
+  readonly marginTop: Record<string, string>;
+  readonly paddingBottom: Record<string, string>;
+  readonly paddingTop: Record<string, string>;
+  readonly width: Record<string, string>;
 };
 export type UnknownBlock = {
   blockType: string;

@@ -43,7 +43,7 @@ export async function renderBlock(
     errors?: Record<string, string[]> | unknown[];
   };
 
-  return { errors: normalizeErrors(body.errors), node: body.node };
+  return { errors: asRecord<Record<string, string[]>>(body.errors), node: body.node };
 }
 
 export async function saveDraft(
@@ -73,7 +73,7 @@ async function readSave(response: Response): Promise<SaveResult> {
   if (response.status === 422) {
     const body = (await response.json()) as { errors?: unknown };
 
-    return { errors: normalizeBlockErrors(body.errors), status: "invalid" };
+    return { errors: asRecord<BlockErrors>(body.errors), status: "invalid" };
   }
 
   if (!response.ok) {
@@ -82,17 +82,10 @@ async function readSave(response: Response): Promise<SaveResult> {
 
   const body = (await response.json()) as { revision: number; errors?: unknown };
 
-  return { errors: normalizeBlockErrors(body.errors), revision: body.revision, status: "saved" };
+  return { errors: asRecord<BlockErrors>(body.errors), revision: body.revision, status: "saved" };
 }
 
-function normalizeErrors(errors: unknown): Record<string, string[]> {
-  return errors && typeof errors === "object" && !Array.isArray(errors)
-    ? (errors as Record<string, string[]>)
-    : {};
-}
-
-function normalizeBlockErrors(errors: unknown): BlockErrors {
-  return errors && typeof errors === "object" && !Array.isArray(errors)
-    ? (errors as BlockErrors)
-    : {};
+/** Error maps arrive as objects, or as `[]` when PHP serializes an empty array. */
+function asRecord<T extends object>(value: unknown): T {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as T) : ({} as T);
 }

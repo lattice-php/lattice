@@ -6,7 +6,7 @@ export type History<T> = {
   lastAt: number;
 };
 
-export const COALESCE_WINDOW_MS = 800;
+const COALESCE_WINDOW_MS = 800;
 
 export function createHistory<T>(present: T): History<T> {
   return { future: [], lastAt: 0, lastKey: null, past: [], present };
