@@ -9,6 +9,7 @@ export type BlockDocument = {
 export type BlockEditor = {
   document: BlockDocument;
   endpoint: string | null;
+  patterns: BlockPatternData[];
   previewUrl: string | null;
   ref: string | null;
   rendered: Record<string, Node>;
@@ -36,6 +37,13 @@ export type BlockNodeType =
   | "blocks.slot"
   | "blocks.unknown"
   | "blocks.view";
+export type BlockPatternData = {
+  readonly blocks: BlockNode[];
+  readonly description: string | null;
+  readonly icon: string | null;
+  readonly key: string;
+  readonly label: string;
+};
 export type BlockStyle = {
   readonly align: TextAlign | null;
   readonly anchor: string | null;
