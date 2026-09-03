@@ -19,13 +19,18 @@ export const CheckboxAdapter: RendererComponent<"field.checkbox"> = ({ node }) =
     <div>
       <div className="flex items-center space-x-3">
         <Checkbox
+          aria-readonly={field.readOnly && !field.disabled ? true : undefined}
           autoFocus={node.props.autoFocus ?? undefined}
           checked={checked}
           data-test={field.testId}
-          disabled={field.readOnly || field.disabled}
+          disabled={field.disabled}
           id={field.name}
           name={field.name}
           onCheckedChange={(next) => {
+            if (field.readOnly) {
+              return;
+            }
+
             field.commit(next === true);
           }}
           tabIndex={node.props.tabIndex ?? undefined}

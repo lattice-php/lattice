@@ -123,11 +123,14 @@ export function MultiSelect({
             <Icon name="chevrons-up-down" className="size-lt-icon-md shrink-0 text-lt-muted-fg" />
           </>
         }
-        triggerClassName={cn(
-          triggerClassName ?? cn(controlSurface(), "flex items-center justify-between gap-2"),
-          "text-left",
-          locked && "cursor-not-allowed opacity-60",
-        )}
+        triggerClassName={
+          triggerClassName
+            ? cn(
+                triggerClassName,
+                "text-left aria-readonly:cursor-default disabled:cursor-not-allowed disabled:opacity-60",
+              )
+            : cn(controlSurface(), "flex items-center justify-between gap-2 text-left")
+        }
         triggerProps={triggerProps}
       />
     </div>

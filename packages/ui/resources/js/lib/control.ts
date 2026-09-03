@@ -15,6 +15,7 @@ export const controlSurface = cva(
     "placeholder:text-lt-muted-fg",
     FOCUS_RING,
     "aria-invalid:border-lt-danger aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40",
+    "aria-readonly:cursor-default aria-readonly:bg-lt-muted",
     "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-lt-disabled disabled:text-lt-disabled-fg",
   ],
   {

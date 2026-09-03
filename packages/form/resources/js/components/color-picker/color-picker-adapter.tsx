@@ -23,9 +23,11 @@ export const ColorPickerAdapter: RendererComponent<"field.color-picker"> = ({ no
             <PopoverTrigger asChild>
               <button
                 {...controlProps}
+                aria-readonly={readOnly && !disabled ? true : undefined}
                 className={cn(controlSurface(), "flex items-center gap-2 text-left")}
                 data-test={`color-picker-${name}`}
-                disabled={disabled || readOnly}
+                disabled={disabled}
+                onClick={readOnly ? (event) => event.preventDefault() : undefined}
                 type="button"
               >
                 {hex ? (

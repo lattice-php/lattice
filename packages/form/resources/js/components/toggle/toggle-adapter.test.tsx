@@ -47,14 +47,28 @@ describe("ToggleAdapter", () => {
     );
   });
 
-  it.each([
-    { state: "read-only", props: { readOnly: true, value: true }, checked: "true" },
-    { state: "disabled", props: { disabled: true, value: false }, checked: "false" },
-  ])("does not toggle while $state", ({ props, checked }) => {
+  it("does not toggle while read-only but stays focusable", () => {
     renderField(
       fakeNode({
         type: "field.toggle",
-        props: { label: "Locked", name: "locked", ...props },
+        props: { label: "Locked", name: "locked", readOnly: true, value: true },
+      }),
+    );
+
+    const toggle = screen.getByRole("switch", { name: "Locked" });
+
+    fireEvent.click(toggle);
+
+    expect(toggle).not.toBeDisabled();
+    expect(toggle).toHaveAttribute("aria-readonly", "true");
+    expect(toggle).toHaveAttribute("aria-checked", "true");
+  });
+
+  it("does not toggle while disabled", () => {
+    renderField(
+      fakeNode({
+        type: "field.toggle",
+        props: { label: "Locked", name: "locked", disabled: true, value: false },
       }),
     );
 
@@ -63,7 +77,7 @@ describe("ToggleAdapter", () => {
     fireEvent.click(toggle);
 
     expect(toggle).toBeDisabled();
-    expect(toggle).toHaveAttribute("aria-checked", checked);
+    expect(toggle).toHaveAttribute("aria-checked", "false");
   });
 
   it("uses the field name as its accessible label when no label is set", () => {
