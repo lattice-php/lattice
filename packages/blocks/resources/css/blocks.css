@@ -1,4 +1,5 @@
 @source "../js";
+@source "../views";
 
 /* Rendered block content stays inert inside the editor canvas so a click
    selects the block instead of following a link; editor chrome opts back in. */

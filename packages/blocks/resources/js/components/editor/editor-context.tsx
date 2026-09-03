@@ -23,6 +23,8 @@ export type EditorContextValue = {
   focusBlock: (id: string) => void;
   /** The inline editors currently mounted, for focus hand-offs between blocks. */
   inline: InlineFocus;
+  /** Save the draft right away instead of waiting for the autosave delay. */
+  saveNow: () => Promise<void>;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);

@@ -6,6 +6,7 @@ import {
   document,
   frameFor,
   headingFrame,
+  testPatterns,
   testTypes,
   textOnlySectionType,
 } from "../test-support";
@@ -14,9 +15,13 @@ import {
   duplicate,
   historyFlags,
   insert,
+  insertPattern,
+  insertTargetFor,
   markConflict,
   markSaved,
   move,
+  overwriteConflict,
+  setCanvasWidth,
   redo,
   remove,
   replaceBlock,
@@ -41,10 +46,114 @@ function makeStore() {
     ),
   );
 
-  return createEditorStore({ document: doc, rendered: {}, revision: 3, types: testTypes });
+  return createEditorStore({
+    document: doc,
+    patterns: testPatterns,
+    rendered: {},
+    revision: 3,
+    types: testTypes,
+  });
 }
 
 describe("editor store", () => {
+  it("inserts a pattern with fresh ids at the target and marks every new block stale", () => {
+    const store = makeStore();
+    const { state, ids } = insertPattern(store.getState(), "intro", {
+      index: 1,
+      parentId: null,
+      slot: null,
+    });
+
+    expect(ids).toHaveLength(2);
+    expect(ids).not.toContain("tpl_h");
+    expect(state.document.blocks.map((node) => node.id)).toEqual(["h", ...ids, "c"]);
+    expect(state.document.blocks[1]?.data).toEqual({ text: "Pattern heading" });
+    expect(state.staleIds).toEqual(ids);
+    expect(state.selectedId).toBe(ids[0]);
+    expect(state.saveState).toBe("dirty");
+
+    const again = insertPattern(state, "intro", { index: 0, parentId: null, slot: null });
+    expect(again.ids).not.toEqual(ids);
+  });
+
+  it("refuses a pattern whose root blocks the target slot does not accept", () => {
+    const store = makeStore();
+    const withSection = insert(store.getState(), textOnlySectionType.type, {
+      index: 2,
+      parentId: null,
+      slot: null,
+    });
+    const sectionId = withSection.id as string;
+
+    const refused = insertPattern(withSection.state, "intro", {
+      index: 0,
+      parentId: sectionId,
+      slot: "content",
+    });
+    const unknown = insertPattern(withSection.state, "missing", {
+      index: 0,
+      parentId: null,
+      slot: null,
+    });
+
+    expect(refused.ids).toEqual([]);
+    expect(refused.state).toBe(withSection.state);
+    expect(unknown.state).toBe(withSection.state);
+  });
+
+  it("places a library insertion after the selection only when every type fits there", () => {
+    const store = makeStore();
+    const selectedParagraph = select(store.getState(), "p");
+
+    expect(insertTargetFor(selectedParagraph, ["lattice.heading"])).toEqual({
+      index: 1,
+      parentId: "c",
+      slot: "col_1",
+    });
+
+    const withSection = insert(store.getState(), textOnlySectionType.type, {
+      index: 2,
+      parentId: null,
+      slot: null,
+    });
+    const inSection = insert(withSection.state, "lattice.paragraph", {
+      index: 0,
+      parentId: withSection.id as string,
+      slot: "content",
+    });
+
+    expect(insertTargetFor(inSection.state, ["lattice.paragraph"])).toEqual({
+      index: 1,
+      parentId: withSection.id,
+      slot: "content",
+    });
+    expect(insertTargetFor(inSection.state, ["lattice.paragraph", "lattice.heading"])).toEqual({
+      index: 3,
+      parentId: null,
+      slot: null,
+    });
+    expect(insertTargetFor(select(store.getState(), null), ["lattice.heading"])).toEqual({
+      index: 2,
+      parentId: null,
+      slot: null,
+    });
+  });
+
+  it("switches the canvas width and resumes saving after an overwrite decision", () => {
+    const store = makeStore();
+
+    expect(store.getState().canvasWidth).toBe("desktop");
+    const narrow = setCanvasWidth(store.getState(), "mobile");
+    expect(narrow.canvasWidth).toBe("mobile");
+    expect(setCanvasWidth(narrow, "mobile")).toBe(narrow);
+
+    const conflicted = markConflict(store.getState(), 9);
+    const resumed = overwriteConflict(conflicted);
+    expect(resumed.saveState).toBe("dirty");
+    expect(resumed.revision).toBe(9);
+    expect(overwriteConflict(store.getState())).toBe(store.getState());
+  });
+
   it("inserts a block from its type defaults, selects it, and marks it stale for rendering", () => {
     const store = makeStore();
     const { state, id } = insert(store.getState(), "lattice.paragraph", {

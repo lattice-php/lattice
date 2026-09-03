@@ -55,6 +55,7 @@ class PagesTable extends EloquentTableDefinition
         return [
             Link::make(__('workbench.blocks.pages.actions.edit'), 'page-edit')->href('/pages/'.$row['id'].'/edit'),
             Link::make(__('workbench.blocks.pages.actions.view'), 'page-view')->href('/pages/'.$row['id']),
+            Link::make(__('workbench.blocks.pages.actions.public'), 'page-public')->href('/p/'.$row['slug']),
         ];
     }
 }

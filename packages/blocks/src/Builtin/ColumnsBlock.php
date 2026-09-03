@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\HtmlString;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -44,6 +46,16 @@ final class ColumnsBlock extends BlockDefinition
             static fn (int $index): Component => $slots->render("col_{$index}"),
             range(1, $count),
         ));
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View
+    {
+        $count = $this->count($data->all());
+
+        return view('blocks::blocks.columns', [
+            'count' => $count,
+            'columns' => array_map(static fn (int $index): HtmlString => $slots->html("col_{$index}"), range(1, $count)),
+        ]);
     }
 
     /**

@@ -100,7 +100,10 @@ function inMemoryOptionSource(array $people): OptionSource
         /**
          * @param  array<int|string, string>  $people
          */
-        public function __construct(private array $people) {}
+        public function __construct(
+            /** @var array<int|string, string> */
+            private array $people,
+        ) {}
 
         public function search(string $query): array
         {

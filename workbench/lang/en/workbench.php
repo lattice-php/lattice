@@ -7,7 +7,11 @@ return [
             'title' => 'Pages',
             'description' => 'Block-based pages built with the lattice-php/blocks editor.',
             'columns' => ['title' => 'Title', 'slug' => 'Slug', 'revision' => 'Revision'],
-            'actions' => ['edit' => 'Edit', 'view' => 'View'],
+            'actions' => ['edit' => 'Edit', 'view' => 'View', 'public' => 'Public page'],
+        ],
+        'patterns' => [
+            'hero-cta' => ['label' => 'Hero with call to action', 'description' => 'A headline, intro and closing prompt.'],
+            'text-image' => ['label' => 'Text and image', 'description' => 'Two columns: running text beside an image.'],
         ],
         'hero' => [
             'title' => 'Title',

@@ -3,7 +3,14 @@ import { createRegistry, eagerComponent } from "@lattice-php/core";
 import type { RendererComponent } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
 import blocksPlugin from "./plugin";
-import type { BlockDocument, BlockNode, BlockStyle, BlockTypeData, SlotData } from "./types";
+import type {
+  BlockDocument,
+  BlockNode,
+  BlockStyle,
+  BlockTypeData,
+  SlotData,
+  BlockPatternData,
+} from "./types";
 import { emptyStyle } from "./document/tree";
 
 export const TestText: RendererComponent = ({ node }) => (
@@ -102,6 +109,26 @@ export const testTypes: BlockTypeData[] = [
   ctaType,
   columnsType,
   textOnlySectionType,
+];
+
+export const testPatterns: BlockPatternData[] = [
+  {
+    blocks: [
+      block("tpl_h", "lattice.heading", { text: "Pattern heading" }),
+      block("tpl_p", "lattice.paragraph", { content: richDoc("Pattern text") }),
+    ],
+    description: "A heading followed by a paragraph.",
+    icon: null,
+    key: "intro",
+    label: "Intro",
+  },
+  {
+    blocks: [block("tpl_n", "lattice.note", { text: "Note" })],
+    description: null,
+    icon: null,
+    key: "note-only",
+    label: "Note only",
+  },
 ];
 
 export function richDoc(text: string): Record<string, unknown> {

@@ -86,10 +86,36 @@ it('marks the inline-editable spots of the built-in blocks with their field bind
         ->and($paragraph['schema'][0]['props']['html'])->toContain('Left');
 });
 
-it('renders an empty paragraph as its placeholder while keeping the binding', function (): void {
+it('renders an empty paragraph without markup but with its placeholder and binding for the editor', function (): void {
     $frame = Wire::toArray(app(BlockRenderer::class)->renderShallow(BlockNode::make('lattice.paragraph')));
 
     expect($frame['schema'][0]['props']['document'] ?? null)->toBeNull()
-        ->and($frame['schema'][0]['props']['html'])->toContain('Write something')
+        ->and($frame['schema'][0]['props']['html'] ?? '')->toBe('')
+        ->and($frame['schema'][0]['props']['placeholder'])->toContain('Write something')
         ->and($frame['schema'][0]['props']['binding'])->toBe('content');
+});
+
+it('keeps empty caption and source spots in the editor render but prunes them from the view', function (): void {
+    $image = BlockNode::make('lattice.image', ['caption' => ''], id: 'b_image');
+    $quote = BlockNode::make('lattice.quote', ['quote' => 'Less is more.', 'cite' => ''], id: 'b_quote');
+    $renderer = app(BlockRenderer::class);
+
+    $editorImage = Wire::toArray($renderer->renderShallow($image));
+    $editorQuote = Wire::toArray($renderer->renderShallow($quote));
+    $viewImage = Wire::toArray($renderer->renderDeep($image));
+    $viewQuote = Wire::toArray($renderer->renderDeep($quote));
+
+    expect(array_column($editorImage['schema'][0]['schema'], 'type'))->toBe(['raw-block', 'text'])
+        ->and(array_column($editorQuote['schema'][0]['schema'], 'type'))->toBe(['text', 'text'])
+        ->and($viewImage['schema'][0]['schema'] ?? [])->toBe([])
+        ->and(array_column($viewQuote['schema'][0]['schema'], 'type'))->toBe(['text'])
+        ->and($viewQuote['schema'][0]['schema'][0]['props']['text'])->toBe('Less is more.');
+});
+
+it('shows heading and quote placeholders only while editing', function (): void {
+    $heading = BlockNode::make('lattice.heading', ['text' => '']);
+    $renderer = app(BlockRenderer::class);
+
+    expect(Wire::toArray($renderer->renderShallow($heading))['schema'][0]['props']['text'])->toBe('Heading')
+        ->and(Wire::toArray($renderer->renderDeep($heading))['schema'][0]['props']['text'])->toBe('');
 });

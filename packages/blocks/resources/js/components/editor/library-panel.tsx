@@ -1,20 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 import { Input } from "@lattice-php/form/primitives/input";
 import { announce, draggable } from "@lattice-php/lattice/dnd";
 import { libraryDragData } from "../../dnd/block-dnd";
-import { canPlace } from "../../document/rules";
-import { insert } from "../../document/store";
-import { findBlock } from "../../document/tree";
-import type { BlockTarget, BlockTypeData } from "../../types";
+import { insert, insertPattern, insertTargetFor } from "../../document/store";
+import type { BlockPatternData, BlockTypeData } from "../../types";
 import { useEditor, useEditorState } from "./editor-context";
 
 const categoryOrder = ["text", "media", "layout", "embed"];
 
+type LibraryTab = "blocks" | "patterns";
+
 export function LibraryPanel() {
   const { t } = useT("blocks");
   const { types } = useEditor();
+  const patterns = useEditorState((state) => state.patterns);
+  const [tab, setTab] = useState<LibraryTab>("blocks");
   const [query, setQuery] = useState("");
 
   const groups = useMemo(() => {
@@ -37,6 +40,9 @@ export function LibraryPanel() {
     );
   }, [query, types]);
 
+  const showTabs = patterns.length > 0;
+  const activeTab: LibraryTab = showTabs ? tab : "blocks";
+
   return (
     <aside
       className="flex w-64 shrink-0 flex-col border-r border-lt-border bg-lt-surface"
@@ -44,39 +50,65 @@ export function LibraryPanel() {
       aria-label={t("blocks.editor.library", "Blocks")}
     >
       <div className="border-b border-lt-border px-3 py-2 text-sm font-semibold">
-        {t("blocks.editor.library", "Blocks")}
-      </div>
-      <div className="px-3 py-2">
-        <Input
-          type="search"
-          value={query}
-          placeholder={t("blocks.editor.search", "Search blocks")}
-          aria-label={t("blocks.editor.search", "Search blocks")}
-          data-test="blocks-library-search"
-          onChange={(event) => setQuery(event.target.value)}
-        />
-      </div>
-      <div className="flex-1 overflow-y-auto px-3 pb-3">
-        {groups.length === 0 && (
-          <p className="py-4 text-sm text-lt-muted-fg">
-            {t("blocks.editor.no-results", "No blocks match.")}
-          </p>
+        {showTabs ? (
+          <SegmentedControl
+            aria-label={t("blocks.editor.library", "Blocks")}
+            data-test="blocks-library-tabs"
+            className="w-full"
+            options={[
+              { label: t("blocks.editor.library", "Blocks"), value: "blocks" },
+              { label: t("blocks.editor.patterns", "Patterns"), value: "patterns" },
+            ]}
+            value={activeTab}
+            onValueChange={(value) => setTab(value as LibraryTab)}
+          />
+        ) : (
+          t("blocks.editor.library", "Blocks")
         )}
-        {groups.map(([category, items]) => (
-          <section key={category} className="mb-3">
-            <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-lt-muted-fg">
-              {t(`blocks.editor.categories.${category}`, category)}
-            </h3>
-            <ul className="grid grid-cols-3 gap-1.5">
-              {items.map((type) => (
-                <li key={type.type}>
-                  <LibraryItem type={type} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
       </div>
+      {activeTab === "blocks" ? (
+        <>
+          <div className="px-3 py-2">
+            <Input
+              type="search"
+              value={query}
+              placeholder={t("blocks.editor.search", "Search blocks")}
+              aria-label={t("blocks.editor.search", "Search blocks")}
+              data-test="blocks-library-search"
+              onChange={(event) => setQuery(event.target.value)}
+            />
+          </div>
+          <div className="flex-1 overflow-y-auto px-3 pb-3">
+            {groups.length === 0 && (
+              <p className="py-4 text-sm text-lt-muted-fg">
+                {t("blocks.editor.no-results", "No blocks match.")}
+              </p>
+            )}
+            {groups.map(([category, items]) => (
+              <section key={category} className="mb-3">
+                <h3 className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-lt-muted-fg">
+                  {t(`blocks.editor.categories.${category}`, category)}
+                </h3>
+                <ul className="grid grid-cols-3 gap-1.5">
+                  {items.map((type) => (
+                    <li key={type.type}>
+                      <LibraryItem type={type} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        </>
+      ) : (
+        <ul className="flex flex-1 flex-col gap-2 overflow-y-auto p-3" data-test="blocks-patterns">
+          {patterns.map((pattern) => (
+            <li key={pattern.key}>
+              <PatternItem pattern={pattern} />
+            </li>
+          ))}
+        </ul>
+      )}
     </aside>
   );
 }
@@ -84,7 +116,6 @@ export function LibraryPanel() {
 function LibraryItem({ type }: { type: BlockTypeData }) {
   const { t } = useT("blocks");
   const { store, requestRender, focusBlock } = useEditor();
-  const selectedId = useEditorState((state) => state.selectedId);
   const element = useRef<HTMLButtonElement>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -104,26 +135,10 @@ function LibraryItem({ type }: { type: BlockTypeData }) {
   }, [type.type]);
 
   const add = () => {
-    const state = store.getState();
-    const selected = selectedId ? findBlock(state.document, selectedId) : null;
-    const afterSelected: BlockTarget | null = selected
-      ? { index: selected.index + 1, parentId: selected.parentId, slot: selected.slot }
-      : null;
-    const target: BlockTarget =
-      afterSelected &&
-      canPlace({
-        blockType: type.type,
-        document: state.document,
-        parentId: afterSelected.parentId,
-        slot: afterSelected.slot,
-        types: state.types,
-      })
-        ? afterSelected
-        : { index: state.document.blocks.length, parentId: null, slot: null };
     let created: string | null = null;
 
     store.setState((current) => {
-      const result = insert(current, type.type, target);
+      const result = insert(current, type.type, insertTargetFor(current, [type.type]));
       created = result.id;
 
       return result.state;
@@ -147,6 +162,51 @@ function LibraryItem({ type }: { type: BlockTypeData }) {
     >
       {type.icon && <Icon name={type.icon} className="size-lt-icon-md" />}
       <span className="truncate">{type.label}</span>
+    </button>
+  );
+}
+
+function PatternItem({ pattern }: { pattern: BlockPatternData }) {
+  const { t } = useT("blocks");
+  const { store, requestRender, focusBlock } = useEditor();
+  const rootTypes = useMemo(() => pattern.blocks.map((block) => block.type), [pattern.blocks]);
+
+  const add = () => {
+    let created: string[] = [];
+
+    store.setState((current) => {
+      const result = insertPattern(current, pattern.key, insertTargetFor(current, rootTypes));
+      created = result.ids;
+
+      return result.state;
+    });
+
+    if (created.length === 0) {
+      return;
+    }
+
+    created.forEach(requestRender);
+    announce(t("blocks.editor.pattern-added", "{{label}} added", { label: pattern.label }));
+    const first = created[0] as string;
+    queueMicrotask(() => focusBlock(first));
+  };
+
+  return (
+    <button
+      type="button"
+      data-test={`pattern-${pattern.key}`}
+      className="flex w-full items-start gap-3 rounded-lt border border-lt-border bg-lt-surface px-3 py-2 text-start text-sm text-lt-fg transition-colors hover:border-lt-primary focus-visible:ring-[length:var(--lt-ring-width)] focus-visible:ring-lt-ring/50 outline-none"
+      onClick={add}
+    >
+      {pattern.icon && (
+        <Icon name={pattern.icon} className="mt-0.5 size-lt-icon-md shrink-0 text-lt-muted-fg" />
+      )}
+      <span className="flex min-w-0 flex-col gap-0.5">
+        <span className="font-medium">{pattern.label}</span>
+        {pattern.description && (
+          <span className="text-xs text-lt-muted-fg">{pattern.description}</span>
+        )}
+      </span>
     </button>
   );
 }

@@ -6,6 +6,7 @@ namespace Lattice\Blocks\Components;
 use Lattice\Blocks\BlockDocument;
 use Lattice\Blocks\BlockEditorDefinition;
 use Lattice\Blocks\BlockEditorRegistry;
+use Lattice\Blocks\BlockPatternData;
 use Lattice\Blocks\BlockTypeData;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\WireMap;
@@ -26,6 +27,9 @@ class BlockEditor extends Component implements InteractiveComponent
 
     /** @var list<BlockTypeData> */
     public array $types = [];
+
+    /** @var list<BlockPatternData> */
+    public array $patterns = [];
 
     /**
      * The shallow render of every stored block, keyed by block id.
@@ -88,6 +92,16 @@ class BlockEditor extends Component implements InteractiveComponent
     public function types(array $types): static
     {
         $this->types = $types;
+
+        return $this;
+    }
+
+    /**
+     * @param  list<BlockPatternData>  $patterns
+     */
+    public function patterns(array $patterns): static
+    {
+        $this->patterns = $patterns;
 
         return $this;
     }

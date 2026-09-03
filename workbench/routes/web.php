@@ -13,12 +13,15 @@ use Workbench\App\Http\Controllers\ConversationHistoryController;
 use Workbench\App\Http\Controllers\FakeRemoteChatHistoryController;
 use Workbench\App\Http\Controllers\FakeRemoteChatStreamController;
 use Workbench\App\Http\Controllers\FakeRemoteTodosController;
+use Workbench\App\Http\Controllers\PublicPageController;
 use Workbench\App\Http\Controllers\SessionController;
 use Workbench\App\Pages\HomePage;
 use Workbench\App\Pages\Platform\PackageComponentPage;
 
 Route::post('/login', [SessionController::class, 'store'])->name('login.store');
 Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
+
+Route::middleware('web')->get('/p/{page:slug}', PublicPageController::class)->name('pages.public');
 
 Route::middleware('web')->get('/standalone-demo', function () {
     Inertia::setRootView('standalone');

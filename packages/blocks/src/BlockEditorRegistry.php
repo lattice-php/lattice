@@ -31,6 +31,7 @@ final class BlockEditorRegistry extends DefinitionRegistry
                     ->document($document)
                     ->revision($definition->revision())
                     ->types($this->typesFor($definition))
+                    ->patterns($this->patternsFor($definition))
                     ->rendered($renderer->renderShallowAll($document))
                     ->previewUrl($definition->previewUrl())
                     ->title($definition->title());
@@ -48,6 +49,29 @@ final class BlockEditorRegistry extends DefinitionRegistry
         $classes = $definition->blocks();
 
         return $classes === [] ? $blocks->keys() : array_map($blocks->keyOf(...), $classes);
+    }
+
+    /**
+     * The editor's patterns, keeping only those whose root blocks the editor
+     * offers, so a pattern never inserts a block the library would refuse.
+     *
+     * @return list<BlockPatternData>
+     */
+    public function patternsFor(BlockEditorDefinition $definition): array
+    {
+        $allowed = $this->allowedTypes($definition);
+        $patterns = [];
+
+        foreach ($definition->patterns() as $pattern) {
+            $data = $pattern->data();
+            $types = array_map(static fn (BlockNode $node): string => $node->type, $data->blocks);
+
+            if (array_diff($types, $allowed) === []) {
+                $patterns[] = $data;
+            }
+        }
+
+        return $patterns;
     }
 
     /**

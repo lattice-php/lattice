@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -30,8 +31,20 @@ final class HeadingBlock extends BlockDefinition
     public function render(BlockData $data, BlockSlots $slots): Heading
     {
         $text = $data->string('text')->toString();
-        $level = max(1, min(6, (int) ($data->get('level') ?: 2)));
+        $label = $text === '' && $data->editing() ? __('blocks::blocks.placeholders.heading') : $text;
 
-        return Heading::make($text === '' ? __('blocks::blocks.placeholders.heading') : $text, $level)->bind('text');
+        return Heading::make($label, $this->level($data))->bind('text');
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View|string
+    {
+        $text = $data->string('text')->toString();
+
+        return $text === '' ? '' : view('blocks::blocks.heading', ['text' => $text, 'level' => $this->level($data)]);
+    }
+
+    private function level(BlockData $data): int
+    {
+        return max(1, min(6, (int) ($data->get('level') ?: 2)));
     }
 }

@@ -1,4 +1,7 @@
+import { useState } from "react";
+import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Button } from "@lattice-php/ui/components/button/button";
+import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
@@ -9,12 +12,22 @@ import {
   markError,
   markPublished,
   markPublishing,
+  overwriteConflict,
   redo,
+  setCanvasWidth,
   setErrors,
   undo,
   type SaveState,
 } from "../../document/store";
+import type { CanvasWidth } from "../../types";
+import { ConflictDialog } from "./conflict-dialog";
 import { useEditor, useEditorState } from "./editor-context";
+
+const canvasWidths: CanvasWidth[] = ["desktop", "tablet", "mobile"];
+
+function toast(message: string, variant: "success" | "danger"): void {
+  window.dispatchEvent(new CustomEvent(LATTICE_EVENT.toast, { detail: { message, variant } }));
+}
 
 export function EditorTopbar({
   title,
@@ -24,12 +37,14 @@ export function EditorTopbar({
   previewUrl: string | null;
 }) {
   const { t } = useT("blocks");
-  const { store, endpoint } = useEditor();
+  const { store, endpoint, saveNow } = useEditor();
   const canUndo = useEditorState((state) => state.history.past.length > 0);
   const canRedo = useEditorState((state) => state.history.future.length > 0);
   const saveState = useEditorState((state) => state.saveState);
   const publishing = useEditorState((state) => state.publishing);
   const publishedAt = useEditorState((state) => state.publishedAt);
+  const canvasWidth = useEditorState((state) => state.canvasWidth);
+  const [overwriting, setOverwriting] = useState(false);
 
   const publish = async () => {
     if (!endpoint) {
@@ -54,9 +69,38 @@ export function EditorTopbar({
             return markPublishing(markError(state), false);
         }
       });
+
+      if (result.status === "saved") {
+        toast(t("blocks.editor.publish-succeeded", "The page is published."), "success");
+      } else if (result.status === "invalid") {
+        toast(
+          t(
+            "blocks.editor.publish-failed",
+            "Publishing failed. Fix the highlighted blocks and try again.",
+          ),
+          "danger",
+        );
+      }
     } catch {
       store.setState((state) => markPublishing(markError(state), false));
     }
+  };
+
+  const overwrite = async () => {
+    setOverwriting(true);
+    store.setState(overwriteConflict);
+
+    try {
+      await saveNow();
+    } finally {
+      setOverwriting(false);
+    }
+  };
+
+  const widthLabels: Record<CanvasWidth, string> = {
+    desktop: t("blocks.editor.width-desktop", "Desktop"),
+    mobile: t("blocks.editor.width-mobile", "Mobile"),
+    tablet: t("blocks.editor.width-tablet", "Tablet"),
   };
 
   return (
@@ -84,6 +128,16 @@ export function EditorTopbar({
         {title && <span className="truncate font-semibold text-lt-fg">{title}</span>}
         <SaveStatus state={saveState} publishedAt={publishedAt} />
       </div>
+      <SegmentedControl
+        aria-label={t("blocks.editor.canvas-width", "Canvas width")}
+        data-test="blocks-canvas-width"
+        className="hidden md:inline-flex"
+        options={canvasWidths.map((width) => ({ label: widthLabels[width], value: width }))}
+        value={canvasWidth}
+        onValueChange={(value) =>
+          store.setState((state) => setCanvasWidth(state, value as CanvasWidth))
+        }
+      />
       {previewUrl && (
         <Button emphasis="outline" variant="secondary" size="sm" asChild>
           <a href={previewUrl} target="_blank" rel="noreferrer" data-test="blocks-preview">
@@ -102,6 +156,12 @@ export function EditorTopbar({
           ? t("blocks.editor.publishing", "Publishing…")
           : t("blocks.editor.publish", "Publish")}
       </Button>
+      <ConflictDialog
+        open={saveState === "conflict"}
+        overwriting={overwriting}
+        onReload={() => window.location.reload()}
+        onOverwrite={() => void overwrite()}
+      />
     </header>
   );
 }
@@ -131,11 +191,6 @@ function SaveStatus({ state, publishedAt }: { state: SaveState; publishedAt: num
       role="status"
     >
       {labels[state]}
-      {state === "conflict" && (
-        <button type="button" className="ml-2 underline" onClick={() => window.location.reload()}>
-          {t("blocks.editor.reload", "Reload")}
-        </button>
-      )}
     </span>
   );
 }

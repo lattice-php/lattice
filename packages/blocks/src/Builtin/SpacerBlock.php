@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -16,7 +17,7 @@ use Lattice\Ui\Enums\Icon;
 #[AsBlock('lattice.spacer', label: 'Spacer', icon: Icon::MoveVertical, category: BlockCategory::Layout, description: 'Vertical white space.', keywords: ['gap', 'space', 'margin'])]
 final class SpacerBlock extends BlockDefinition
 {
-    private const array HEIGHTS = ['sm' => 'h-4', 'md' => 'h-8', 'lg' => 'h-16', 'xl' => 'h-32'];
+    public const array HEIGHTS = ['sm' => 'h-4', 'md' => 'h-8', 'lg' => 'h-16', 'xl' => 'h-32'];
 
     public function fields(): array
     {
@@ -34,9 +35,23 @@ final class SpacerBlock extends BlockDefinition
 
     public function render(BlockData $data, BlockSlots $slots): RawBlock
     {
-        $size = $data->string('size')->toString();
-        $height = self::HEIGHTS[$size] ?? self::HEIGHTS['md'];
+        return RawBlock::make()->html('<div class="'.$this->height($data).'" aria-hidden="true"></div>');
+    }
 
-        return RawBlock::make()->html('<div class="'.$height.'" aria-hidden="true"></div>');
+    public function html(BlockData $data, BlockSlots $slots): View
+    {
+        return view('blocks::blocks.spacer', ['size' => $this->size($data)]);
+    }
+
+    private function size(BlockData $data): string
+    {
+        $size = $data->string('size')->toString();
+
+        return array_key_exists($size, self::HEIGHTS) ? $size : 'md';
+    }
+
+    private function height(BlockData $data): string
+    {
+        return self::HEIGHTS[$this->size($data)];
     }
 }

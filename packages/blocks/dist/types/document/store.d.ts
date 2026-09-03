@@ -1,5 +1,13 @@
 import { Node } from "@lattice-php/core";
-import { BlockDocument, BlockErrors, BlockStyle, BlockTarget, BlockTypeData } from "../types";
+import {
+  BlockDocument,
+  BlockErrors,
+  BlockPatternData,
+  BlockStyle,
+  BlockTarget,
+  BlockTypeData,
+  CanvasWidth,
+} from "../types";
 import { History } from "./history";
 export type SaveState = "idle" | "dirty" | "saving" | "saved" | "conflict" | "error";
 export type EditorState = {
@@ -7,6 +15,8 @@ export type EditorState = {
   history: History<BlockDocument>;
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
+  patterns: readonly BlockPatternData[];
+  canvasWidth: CanvasWidth;
   selectedId: string | null;
   revision: number;
   saveState: SaveState;
@@ -27,9 +37,31 @@ export declare function createEditorStore(initial: {
   document: BlockDocument;
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
+  patterns?: readonly BlockPatternData[];
   revision: number;
 }): EditorStore;
 export declare function select(state: EditorState, id: string | null): EditorState;
+export declare function setCanvasWidth(state: EditorState, canvasWidth: CanvasWidth): EditorState;
+/**
+ * Where a library insertion lands: right after the selected block when every
+ * inserted type is allowed there, otherwise at the end of the document root.
+ */
+export declare function insertTargetFor(
+  state: EditorState,
+  blockTypes: readonly string[],
+): BlockTarget;
+/**
+ * Insert a pattern's blocks, each with fresh ids, one after another at the
+ * target. Every root block must fit the target slot or nothing is inserted.
+ */
+export declare function insertPattern(
+  state: EditorState,
+  key: string,
+  target: BlockTarget,
+): {
+  state: EditorState;
+  ids: string[];
+};
 export declare const PARAGRAPH_TYPE = "lattice.paragraph";
 /** A page without blocks opens with one paragraph so writing can start at once. */
 export declare function seedDocument(
@@ -110,6 +142,8 @@ export declare function markSaved(
   savedDocument: BlockDocument,
 ): EditorState;
 export declare function markConflict(state: EditorState, revision: number): EditorState;
+/** Keep the local document and save it over the newer server revision. */
+export declare function overwriteConflict(state: EditorState): EditorState;
 export declare function markError(state: EditorState): EditorState;
 export declare function markPublishing(state: EditorState, publishing: boolean): EditorState;
 export declare function markPublished(state: EditorState, revision: number): EditorState;

@@ -26,6 +26,10 @@ final class BlocksServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Lattice::translations('blocks', __DIR__.'/../lang');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'blocks');
+        $this->publishes([
+            __DIR__.'/../resources/views' => $this->app->resourcePath('views/vendor/blocks'),
+        ], 'lattice-blocks-views');
 
         // Core's routes file has no contribution seam, so the package registers
         // its endpoint itself, mirroring core's group conventions

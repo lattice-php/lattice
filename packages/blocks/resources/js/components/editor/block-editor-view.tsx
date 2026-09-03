@@ -13,9 +13,25 @@ import { LibraryPanel } from "./library-panel";
 import { useRenderQueue } from "./use-render-queue";
 
 export default function BlockEditorView({ node }: { node: Node<"blocks.editor"> }) {
-  const { document, rendered, types, revision, endpoint: url, ref, previewUrl, title } = node.props;
+  const {
+    document,
+    rendered,
+    types,
+    patterns,
+    revision,
+    endpoint: url,
+    ref,
+    previewUrl,
+    title,
+  } = node.props;
   const [store] = useState(() =>
-    createEditorStore({ document: seedDocument(document, types), rendered, revision, types }),
+    createEditorStore({
+      document: seedDocument(document, types),
+      patterns,
+      rendered,
+      revision,
+      types,
+    }),
   );
   const endpoint = useMemo<EditorEndpoint | null>(
     () => (url && ref ? { ref, url } : null),
@@ -25,11 +41,11 @@ export default function BlockEditorView({ node }: { node: Node<"blocks.editor"> 
   const inline = useInlineFocus();
   const requestRender = useRenderQueue(store, endpoint);
 
-  useAutosave(store, endpoint);
+  const { saveNow } = useAutosave(store, endpoint);
 
   const context = useMemo<EditorContextValue>(
-    () => ({ endpoint, focusBlock, inline, registerBlock, requestRender, store, types }),
-    [endpoint, focusBlock, inline, registerBlock, requestRender, store, types],
+    () => ({ endpoint, focusBlock, inline, registerBlock, requestRender, saveNow, store, types }),
+    [endpoint, focusBlock, inline, registerBlock, requestRender, saveNow, store, types],
   );
 
   return (

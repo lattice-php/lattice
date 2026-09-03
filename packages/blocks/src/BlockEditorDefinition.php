@@ -41,6 +41,16 @@ abstract class BlockEditorDefinition extends Definition
      */
     abstract public function publish(BlockDocument $document, int $revision): int;
 
+    /**
+     * Ready-made block groups the library offers for insertion.
+     *
+     * @return list<BlockPattern>
+     */
+    public function patterns(): array
+    {
+        return [];
+    }
+
     public function previewUrl(): ?string
     {
         return null;

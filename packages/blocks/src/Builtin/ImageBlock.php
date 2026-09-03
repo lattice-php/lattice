@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -36,14 +37,29 @@ final class ImageBlock extends BlockDefinition
     {
         $media = self::media($data->get('image'));
         $caption = $data->string('caption')->toString();
+        $editing = $data->editing();
 
-        $image = $media?->url() === null
-            ? RawBlock::make()->html(self::placeholder(__('blocks::blocks.placeholders.image')))->bind('image')
-            : Image::make($media->url())->alt($data->string('alt')->toString() ?: null)->previewable(false)->bind('image');
+        $image = match (true) {
+            $media?->url() !== null => Image::make($media->url())->alt($data->string('alt')->toString() ?: null)->previewable(false)->bind('image'),
+            $editing => RawBlock::make()->html(self::placeholder(__('blocks::blocks.placeholders.image')))->bind('image'),
+            default => null,
+        };
 
-        return Stack::make()->gap(Gap::Small)->schema([
+        return Stack::make()->gap(Gap::Small)->schema(array_values(array_filter([
             $image,
-            Text::make($caption)->size(Size::Sm)->color(ColorName::Muted)->bind('caption'),
+            $caption === '' && ! $editing ? null : Text::make($caption)->size(Size::Sm)->color(ColorName::Muted)->bind('caption'),
+        ])));
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View|string
+    {
+        $media = self::media($data->get('image'));
+        $src = $media?->url();
+
+        return $src === null ? '' : view('blocks::blocks.image', [
+            'src' => $src,
+            'alt' => $data->string('alt')->toString(),
+            'caption' => $data->string('caption')->toString(),
         ]);
     }
 

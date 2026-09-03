@@ -88,7 +88,7 @@ final class BlockRegistry extends DefinitionRegistry
      *
      * @param  array<string, mixed>  $data
      */
-    public function castData(BlockDefinition $definition, array $data): BlockData
+    public function castData(BlockDefinition $definition, array $data, bool $editing = false): BlockData
     {
         $form = FormData::make($data);
         $cast = $data;
@@ -101,7 +101,7 @@ final class BlockRegistry extends DefinitionRegistry
             $cast[$instance->path] = $instance->field->castValue($instance->field->normalizeInput($cast[$instance->path]));
         }
 
-        return BlockData::of($cast);
+        return BlockData::of($cast, $editing);
     }
 
     /**

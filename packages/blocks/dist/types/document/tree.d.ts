@@ -37,6 +37,7 @@ export declare function moveBlock(
   id: string,
   target: BlockTarget,
 ): BlockDocument;
+export declare function cloneWithFreshIds(node: BlockNode): BlockNode;
 export declare function duplicateBlock(
   document: BlockDocument,
   id: string,

@@ -3,9 +3,11 @@ import type {
   BlockDocument,
   BlockErrors,
   BlockNode,
+  BlockPatternData,
   BlockStyle,
   BlockTarget,
   BlockTypeData,
+  CanvasWidth,
 } from "../types";
 import {
   canRedo,
@@ -20,6 +22,7 @@ import { patchDocument, patchText } from "./bindings";
 import { canPlace, typeOf } from "./rules";
 import {
   changedDataBlocks,
+  cloneWithFreshIds,
   createBlock,
   duplicateBlock,
   findBlock,
@@ -37,6 +40,8 @@ export type EditorState = {
   history: History<BlockDocument>;
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
+  patterns: readonly BlockPatternData[];
+  canvasWidth: CanvasWidth;
   selectedId: string | null;
   revision: number;
   saveState: SaveState;
@@ -59,12 +64,15 @@ export function createEditorStore(initial: {
   document: BlockDocument;
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
+  patterns?: readonly BlockPatternData[];
   revision: number;
 }): EditorStore {
   let state: EditorState = {
+    canvasWidth: "desktop",
     document: initial.document,
     errors: {},
     history: createHistory(initial.document),
+    patterns: initial.patterns ?? [],
     publishedAt: null,
     publishing: false,
     rendered: initial.rendered,
@@ -120,6 +128,82 @@ function commit(
 
 export function select(state: EditorState, id: string | null): EditorState {
   return state.selectedId === id ? state : { ...state, selectedId: id };
+}
+
+export function setCanvasWidth(state: EditorState, canvasWidth: CanvasWidth): EditorState {
+  return state.canvasWidth === canvasWidth ? state : { ...state, canvasWidth };
+}
+
+/**
+ * Where a library insertion lands: right after the selected block when every
+ * inserted type is allowed there, otherwise at the end of the document root.
+ */
+export function insertTargetFor(state: EditorState, blockTypes: readonly string[]): BlockTarget {
+  const selected = state.selectedId ? findBlock(state.document, state.selectedId) : null;
+  const root: BlockTarget = { index: state.document.blocks.length, parentId: null, slot: null };
+
+  if (!selected) {
+    return root;
+  }
+
+  const afterSelected: BlockTarget = {
+    index: selected.index + 1,
+    parentId: selected.parentId,
+    slot: selected.slot,
+  };
+  const allowed = blockTypes.every((blockType) =>
+    canPlace({
+      blockType,
+      document: state.document,
+      parentId: afterSelected.parentId,
+      slot: afterSelected.slot,
+      types: state.types,
+    }),
+  );
+
+  return allowed ? afterSelected : root;
+}
+
+/**
+ * Insert a pattern's blocks, each with fresh ids, one after another at the
+ * target. Every root block must fit the target slot or nothing is inserted.
+ */
+export function insertPattern(
+  state: EditorState,
+  key: string,
+  target: BlockTarget,
+): { state: EditorState; ids: string[] } {
+  const pattern = state.patterns.find((candidate) => candidate.key === key);
+
+  if (!pattern || pattern.blocks.length === 0) {
+    return { ids: [], state };
+  }
+
+  const blocks = pattern.blocks.map(cloneWithFreshIds);
+  let document = state.document;
+
+  for (const [offset, block] of blocks.entries()) {
+    const allowed = canPlace({
+      blockType: block.type,
+      document,
+      parentId: target.parentId,
+      slot: target.slot,
+      types: state.types,
+    });
+
+    if (!allowed) {
+      return { ids: [], state };
+    }
+
+    document = insertBlock(document, block, { ...target, index: target.index + offset });
+  }
+
+  const ids = blocks.flatMap(descendantIds);
+
+  return {
+    ids,
+    state: { ...commit(state, document, null, ids), selectedId: blocks[0]?.id ?? null },
+  };
 }
 
 export const PARAGRAPH_TYPE = "lattice.paragraph";
@@ -435,6 +519,11 @@ export function markSaved(
 
 export function markConflict(state: EditorState, revision: number): EditorState {
   return { ...state, revision, saveState: "conflict" };
+}
+
+/** Keep the local document and save it over the newer server revision. */
+export function overwriteConflict(state: EditorState): EditorState {
+  return state.saveState === "conflict" ? { ...state, saveState: "dirty" } : state;
 }
 
 export function markError(state: EditorState): EditorState {

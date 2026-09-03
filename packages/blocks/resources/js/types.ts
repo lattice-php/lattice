@@ -12,6 +12,7 @@ export type {
   BlockFrame as BlockFrameWireProps,
   BlockNode,
   BlockNodeType,
+  BlockPatternData,
   BlockStyle,
   BlockSupports,
   BlockTypeData,
@@ -29,3 +30,6 @@ export type BlockTarget = {
 };
 
 export type BlockErrors = Record<string, Record<string, string[]>>;
+
+/** How wide the editor canvas pretends the viewport is. */
+export type CanvasWidth = "desktop" | "tablet" | "mobile";

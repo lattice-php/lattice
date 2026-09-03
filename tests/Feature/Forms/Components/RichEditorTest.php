@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Lattice\Core\Support\Wire;
 use Lattice\Form\Components\RichEditor;
 use Lattice\Form\RichEditor\Extensions\Bold;
+use Lattice\Form\RichEditor\Extensions\BulletList;
 use Lattice\Form\RichEditor\Extensions\Details;
 use Lattice\Form\RichEditor\Extensions\Heading;
 use Lattice\Form\RichEditor\Extensions\Italic;
@@ -159,4 +160,20 @@ describe('docs fixtures', function (): void {
             ]),
         ]));
     });
+});
+
+it('resolves class-string extensions so their content survives casting', function (): void {
+    $field = RichEditor::make('body')->extensions([BulletList::class, Bold::class]);
+    $document = [
+        'type' => 'doc',
+        'content' => [[
+            'type' => 'bulletList',
+            'content' => [['type' => 'listItem', 'content' => [['type' => 'paragraph', 'content' => [
+                ['type' => 'text', 'text' => 'Kept', 'marks' => [['type' => 'bold']]],
+            ]]]]],
+        ]],
+    ];
+
+    expect(editorExtensionTypes($field))->toBe(['bullet-list', 'bold'])
+        ->and($field->castValue($document)['content'][0]['type'])->toBe('bulletList');
 });

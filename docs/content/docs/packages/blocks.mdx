@@ -1,0 +1,378 @@
+---
+title: Blocks
+description: Block-based page builder with a drag-and-drop editor, inline editing through bind(), slots, patterns, autosave and publishing, plus rendering in-app or as plain HTML.
+---
+
+import BundleReport from "@components/BundleReport.astro";
+import Info from "@components/Info.astro";
+import Warning from "@components/Warning.astro";
+
+The blocks package turns a page into a tree of blocks that editors arrange, nest and write in
+place. A block is a PHP class: the fields its data validates against, optional slots for child
+blocks, and a render built from Lattice components. The editor renders every block with the same
+React components a Lattice page uses, so what an editor sees is what the page shows. Text, rich
+text, images and button labels are edited directly in the block; layout and style live in an
+inspector. The stored document renders back into a Lattice page through `BlockView`, or into plain
+HTML for a public route through `BlockHtmlRenderer`.
+
+## Installation
+
+```bash
+composer require lattice-php/blocks
+```
+
+The package ships its React editor as source and the `lattice()` Vite plugin compiles it into your
+bundle (see [Component packages](/extending/component-packages/)). Blocks and editors are picked
+up by discovery and TypeScript generation like every other Lattice definition.
+[No-build apps](/introduction/no-build/) use the precompiled module: run `php artisan
+lattice:assets` after installation.
+
+:::note
+`lattice-php/blocks` depends on `lattice-php/form` for fields and rich text and on
+`lattice-php/media` for the image and gallery blocks.
+:::
+
+## Writing a block
+
+Annotate a `BlockDefinition` with `#[AsBlock]`. The attribute carries what the library shows —
+label, icon, category, description, search keywords — so the class stays a declaration of fields
+and render.
+
+```php
+use Lattice\Blocks\Attributes\AsBlock;
+use Lattice\Blocks\BlockData;
+use Lattice\Blocks\BlockDefinition;
+use Lattice\Blocks\BlockSlots;
+use Lattice\Blocks\Components\RichText;
+use Lattice\Blocks\Enums\BlockCategory;
+use Lattice\Form\Components\RichEditor;
+use Lattice\Form\Components\Select;
+use Lattice\Form\Components\TextInput;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Heading;
+use Lattice\Ui\Components\Stack;
+use Lattice\Ui\Enums\Gap;
+use Lattice\Ui\Enums\Icon;
+
+#[AsBlock('app.hero', label: 'Hero', icon: Icon::LayoutTemplate, category: BlockCategory::Layout)]
+final class HeroBlock extends BlockDefinition
+{
+    public function fields(): array
+    {
+        return [
+            TextInput::make('title')->required()->rules(['max:90']),
+            RichEditor::make('intro'),
+            TextInput::make('button_label'),
+            Select::make('button_target')->options(['/demo' => 'Demo', '/pricing' => 'Pricing']),
+        ];
+    }
+
+    public function render(BlockData $data, BlockSlots $slots): Stack
+    {
+        return Stack::make()->gap(Gap::Medium)->schema([
+            Heading::make($data->string('title')->toString(), 1)->bind('title'),
+            RichText::make($data->document('intro'), 'Write an intro…')->bind('intro'),
+            Button::make($data->string('button_label')->toString())
+                ->href($data->string('button_target')->toString() ?: '#')
+                ->bind('button_label'),
+        ]);
+    }
+}
+```
+
+`fields()` are ordinary form fields: their rules validate the block's data, their casts shape what
+`render()` receives as `BlockData` (a `FormData` with the usual typed readers plus `document()` for
+rich text). Every field is edited somewhere in the editor — where depends on `bind()`.
+
+### Inline editing with `bind()`
+
+`->bind('field')` on any component marks the spot in the render where that field's value appears.
+The editor swaps the bound node for an inline control while everything else keeps rendering
+through the regular registry:
+
+| Field type                        | In the editor                                           |
+| --------------------------------- | ------------------------------------------------------- |
+| `TextInput`, `Textarea`           | Editable text in the component's own typography         |
+| `RichEditor` via `RichText`       | A Tiptap editor with the block toolbar and the `/` menu |
+| `MediaPicker` on an `Image`       | Click to pick or replace the image                      |
+| `Select`, `Toggle`, `NumberInput` | A popover at the element                                |
+| Fields without `bind()`           | The inspector's **Content** tab                         |
+
+Bound text edits update the canvas locally; unbound fields re-render the block through the
+editor's signed endpoint. Outside the editor `binding` has no effect.
+
+<Info>
+  Bind a field to at most one node and only to the node's primary content — the heading's text, the
+  button's label, the image's source. A field bound to a decorative copy would let two controls
+  write the same value.
+</Info>
+
+`BlockData::editing()` tells a render whether it targets the canvas. Use it to keep an empty spot
+visible while editing and drop it from the read-only output:
+
+```php
+$caption === '' && ! $data->editing()
+    ? null
+    : Text::make($caption)->bind('caption'),
+```
+
+### Slots
+
+Layout blocks declare slots for child blocks. A slot can restrict the block types it accepts and
+bound how many it holds; the editor enforces both while dragging and inserting, and publishing
+validates them again.
+
+```php
+use Lattice\Blocks\Slot;
+
+public function slots(?array $data = null): array
+{
+    return [
+        Slot::make('content')->label('Content')->allows([ParagraphBlock::class, ImageBlock::class])->max(6),
+    ];
+}
+
+public function render(BlockData $data, BlockSlots $slots): Stack
+{
+    return Stack::make()->schema([$slots->render('content')]);
+}
+```
+
+`slots()` receives the block's data, so a block can derive its slots from a field — the built-in
+columns block does this with its `count`. When the count shrinks, children of a removed slot move
+to the last remaining one instead of disappearing.
+
+### Style and supports
+
+Every block carries a generic `BlockStyle` — width, spacing, background, alignment, visibility per
+breakpoint and an anchor id — that the inspector edits and the renderer applies around the block.
+The block render never sees it. A block opts out of controls that make no sense for it:
+
+```php
+public function supports(): BlockSupports
+{
+    return BlockSupports::all()->without('background', 'align');
+}
+```
+
+## Built-in blocks
+
+Paragraph, heading, list, quote, image, gallery, separator, spacer, section (one slot) and
+columns (two to four slots). `Builtin::all()` lists them for an editor definition; register your
+own blocks alongside them.
+
+## Defining an editor
+
+An editor owns one document: which blocks it offers, where the draft lives, how a draft becomes
+the published state. Persistence stays in your application — the definition is the seam.
+
+```php
+use Lattice\Blocks\Attributes\AsBlockEditor;
+use Lattice\Blocks\BlockDocument;
+use Lattice\Blocks\BlockEditorDefinition;
+use Lattice\Blocks\Builtin\Builtin;
+use Lattice\Blocks\Exceptions\StaleRevision;
+
+#[AsBlockEditor('app.pages')]
+final class PagesEditor extends BlockEditorDefinition
+{
+    public function blocks(): array
+    {
+        return [HeroBlock::class, ...Builtin::all()];
+    }
+
+    public function load(): BlockDocument
+    {
+        return $this->page()->draft ?? BlockDocument::empty();
+    }
+
+    public function revision(): int
+    {
+        return $this->page()->revision;
+    }
+
+    public function saveDraft(BlockDocument $document, int $revision): int
+    {
+        $page = $this->page();
+
+        if ($page->revision !== $revision) {
+            throw new StaleRevision($page->revision, $revision);
+        }
+
+        $page->forceFill(['draft' => $document, 'revision' => $revision + 1])->save();
+
+        return $page->revision;
+    }
+
+    public function publish(BlockDocument $document, int $revision): int
+    {
+        $this->page()->forceFill(['published' => $document])->save();
+
+        return $revision;
+    }
+
+    public function previewUrl(): ?string
+    {
+        return route('pages.public', $this->page()->slug);
+    }
+
+    private function page(): Page
+    {
+        return Page::findOrFail($this->contextInt('page'));
+    }
+}
+```
+
+Store the document with the `AsBlockDocument` cast:
+
+```php
+protected function casts(): array
+{
+    return ['draft' => AsBlockDocument::class, 'published' => AsBlockDocument::class];
+}
+```
+
+Render the editor on a page. It fills the viewport, so a layout without chrome fits best:
+
+```php
+#[AsPage(route: '/pages/{page}/edit', layout: PageLayout::None, width: PageWidth::Full)]
+final class PageEditorPage extends Page
+{
+    public function render(PageSchema $schema, \App\Models\Page $page): PageSchema
+    {
+        return $schema->schema([
+            BlockEditor::use(PagesEditor::class, ['page' => $page->getKey()]),
+        ]);
+    }
+}
+```
+
+The context you pass is sealed into the component's reference and re-applied on every endpoint
+call, exactly like a table or board.
+
+### Saving and publishing
+
+The editor autosaves the draft a few seconds after the last change and when the tab hides. Every
+save carries the revision it started from; when `saveDraft()` throws `StaleRevision`, the editor
+offers to reload the newer draft or overwrite it. **Publish** validates every block strictly —
+field rules, slot rules, unknown types — and only then calls `publish()`.
+
+<Warning title="Drafts are lenient, publishing is strict">
+  A draft may hold a block whose definition is temporarily gone or a field that fails validation;
+  the editor shows the errors and keeps the data. Publishing refuses until they are fixed.
+</Warning>
+
+### Patterns
+
+Patterns are ready-made block groups the library inserts in one go. Each insertion mints fresh
+block ids, so the same pattern can appear more than once.
+
+```php
+use Lattice\Blocks\BlockNode;
+use Lattice\Blocks\BlockPattern;
+
+public function patterns(): array
+{
+    return [
+        BlockPattern::make('hero-cta')
+            ->label('Hero with call to action')
+            ->description('A headline, intro and closing prompt.')
+            ->icon(Icon::LayoutTemplate)
+            ->blocks([
+                BlockNode::make('app.hero', ['title' => 'Your headline']),
+                BlockNode::make('app.cta', ['title' => 'Ready?', 'button_label' => 'Start']),
+            ]),
+    ];
+}
+```
+
+A pattern whose root blocks the editor does not offer is left out of the library.
+
+## Rendering a document
+
+### In a Lattice page
+
+`BlockView::document()` renders the stored tree with the same components the editor used, wrapped
+in frames that apply each block's style:
+
+```php
+BlockView::document($page->published ?? BlockDocument::empty());
+```
+
+### As HTML
+
+For output outside a Lattice page — a public marketing route, an email — implement `html()` on
+each block and render the document through `BlockHtmlRenderer`. Children arrive as markup through
+`$slots->html()`; the built-ins ship Blade views under the `blocks::` namespace
+(`php artisan vendor:publish --tag=lattice-blocks-views` to override them).
+
+```php
+public function html(BlockData $data, BlockSlots $slots): View|string
+{
+    $title = $data->string('title')->toString();
+
+    return $title === '' ? '' : view('blocks.hero', [
+        'title' => $title,
+        'intro' => RichText::toHtml($data->document('intro')),
+    ]);
+}
+```
+
+```php
+Route::get('/p/{page:slug}', function (Page $page, BlockHtmlRenderer $renderer) {
+    abort_unless($page->published, 404);
+
+    return view('public.page', ['content' => $renderer->render($page->published)]);
+});
+```
+
+An empty string renders nothing for that block; `null` means the block has no HTML form. The
+renderer then calls the fallback configured under `lattice.blocks.html_fallback` — a callable or an
+invokable class receiving the `BlockNode` — or throws `MissingHtmlRenderer`.
+
+Each block's HTML is wrapped in a frame whose classes come from `BlockStyle::classes()`. The
+defaults mirror the editor's Tailwind classes; override any entry for your theme:
+
+```php
+// config/lattice.php
+'blocks' => [
+    'style_classes' => [
+        'width' => ['content' => 'container-narrow', 'wide' => 'container-wide'],
+        'background' => ['muted' => 'bg-stone-100'],
+    ],
+],
+```
+
+<Info>
+  The HTML output makes no WYSIWYG promise. The editor canvas renders Lattice components; the public
+  route renders your Blade views with your stylesheet.
+</Info>
+
+## Configuration
+
+```php
+// config/lattice.php
+'blocks' => [
+    'endpoint' => 'lattice/block-editors/{editor}',
+    'middleware' => ['web', 'auth'],
+    'html_fallback' => null,
+    'style_classes' => [],
+],
+```
+
+The editor endpoint verifies the sealed reference before resolving the definition with the same
+context, and `authorize()` on the definition gates both the initial render and every save.
+
+## Translations
+
+The editor's strings ship with inline English defaults; the `blocks` namespace serves the bundled
+`en`/`de` translations through [laravel-i18next](https://github.com/bambamboole/laravel-i18next)
+(see [Internationalization](/core/i18n/)).
+
+## Bundle size
+
+The breakdown measures the package's built plugin — React and the
+[framework runtime](/advanced/bundle-size/) are external. Tiptap is bundled here for the inline
+rich-text editor.
+
+<BundleReport target="blocks" />

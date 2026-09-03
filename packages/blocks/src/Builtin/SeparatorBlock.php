@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -28,5 +29,10 @@ final class SeparatorBlock extends BlockDefinition
     public function render(BlockData $data, BlockSlots $slots): Separator
     {
         return Separator::make();
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View
+    {
+        return view('blocks::blocks.separator');
     }
 }

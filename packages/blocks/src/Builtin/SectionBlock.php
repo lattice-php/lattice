@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -40,5 +41,13 @@ final class SectionBlock extends BlockDefinition
             $title === '' ? null : Heading::make($title, 2),
             $slots->render('content'),
         ])));
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View
+    {
+        return view('blocks::blocks.section', [
+            'title' => $data->string('title')->toString(),
+            'content' => $slots->html('content'),
+        ]);
     }
 }

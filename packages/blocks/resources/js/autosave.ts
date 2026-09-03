@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { saveDraft, type EditorEndpoint } from "./endpoint";
 import { markConflict, markError, markSaved, markSaving, type EditorStore } from "./document/store";
 
@@ -7,25 +7,23 @@ export const AUTOSAVE_DELAY_MS = 5_000;
 /**
  * Saves the draft a few seconds after the last change and immediately when the
  * page hides, so closing the tab does not lose work. A 409 stops further saves
- * until the user reloads; the store surfaces it as a conflict.
+ * until the user resolves the conflict; the store surfaces it as a conflict.
+ * The returned `saveNow` runs the same save on demand, for example to
+ * overwrite a newer server revision on purpose.
  */
 export function useAutosave(
   store: EditorStore,
   endpoint: EditorEndpoint | null,
   delayMs = AUTOSAVE_DELAY_MS,
-): void {
+): { saveNow: () => Promise<void> } {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inFlight = useRef(false);
 
-  useEffect(() => {
-    if (!endpoint) {
-      return;
-    }
-
-    const flush = async (keepalive = false) => {
+  const saveNow = useCallback(
+    async (keepalive = false) => {
       const state = store.getState();
 
-      if (state.saveState !== "dirty" || inFlight.current) {
+      if (!endpoint || state.saveState !== "dirty" || inFlight.current) {
         return;
       }
 
@@ -53,7 +51,14 @@ export function useAutosave(
       } finally {
         inFlight.current = false;
       }
-    };
+    },
+    [endpoint, store],
+  );
+
+  useEffect(() => {
+    if (!endpoint) {
+      return;
+    }
 
     const schedule = () => {
       if (timer.current !== null) {
@@ -62,21 +67,19 @@ export function useAutosave(
 
       timer.current = setTimeout(() => {
         timer.current = null;
-        void flush();
+        void saveNow();
       }, delayMs);
     };
 
     const unsubscribe = store.subscribe(() => {
-      const { saveState } = store.getState();
-
-      if (saveState === "dirty") {
+      if (store.getState().saveState === "dirty") {
         schedule();
       }
     });
 
     const onHide = () => {
       if (document.visibilityState === "hidden") {
-        void flush(true);
+        void saveNow(true);
       }
     };
 
@@ -92,5 +95,7 @@ export function useAutosave(
         clearTimeout(timer.current);
       }
     };
-  }, [delayMs, endpoint, store]);
+  }, [delayMs, endpoint, saveNow, store]);
+
+  return { saveNow: useCallback(() => saveNow(), [saveNow]) };
 }

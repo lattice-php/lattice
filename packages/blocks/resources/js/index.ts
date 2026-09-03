@@ -9,10 +9,12 @@ export type {
   BlockErrors,
   BlockNode,
   BlockNodeType,
+  BlockPatternData,
   BlockStyle,
   BlockSupports,
   BlockTarget,
   BlockTypeData,
   BlockWidth,
+  CanvasWidth,
   SlotData,
 } from "./types";
