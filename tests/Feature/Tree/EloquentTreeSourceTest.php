@@ -112,6 +112,21 @@ it('applies the scope to lazy level queries and the has-children probe', functio
         ->and(iterator_to_array($source->children((string) $electronics->getKey())))->toBe([]);
 });
 
+it('survives a scope that selects extra columns, such as a relation count', function (): void {
+    $electronics = Category::factory()->create(['name' => 'Electronics']);
+    Category::factory()->childOf($electronics)->create(['name' => 'Laptops']);
+
+    $source = EloquentTreeSource::make(Category::class)
+        ->lazy()
+        ->scope(fn ($query) => $query->withCount('children'))
+        ->map(fn (Category $category, TreeNode $node): TreeNode => $node->badge((string) $category->children_count));
+
+    $roots = iterator_to_array($source->roots());
+
+    expect(array_map(fn (TreeNode $node): array => [$node->label, $node->badge, $node->hasChildren], $roots))
+        ->toBe([['Electronics', '1', true]]);
+});
+
 it('orders eager roots and siblings by a custom column with deterministic tie breakers', function (): void {
     $secondAlpha = Category::factory()->create(['name' => 'Alpha', 'sort_order' => 2]);
     $first = Category::factory()->create(['name' => 'Zulu', 'sort_order' => 1]);

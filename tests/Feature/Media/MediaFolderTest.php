@@ -14,6 +14,8 @@ use Lattice\Media\Tables\MediaTable;
 use Lattice\Media\Trees\MediaFolderTree;
 use Lattice\Tree\Tree;
 
+use function Pest\Laravel\getJson;
+
 beforeEach(function (): void {
     bootstrapMediaTest(
         tables: [MediaTable::class],
@@ -199,4 +201,17 @@ test('the folder tree serializes the hierarchy with file counts and per-node act
 
     $badges = array_column(array_column($root['schema'], 'props'), 'label');
     expect($badges)->toContain('1');
+});
+
+test('the tree endpoint serves the folder level a reload asks for', function (): void {
+    $invoices = MediaFolder::factory()->create(['name' => 'Invoices']);
+    MediaFolder::factory()->create(['name' => '2026', 'parent_id' => $invoices->getKey()]);
+
+    $tree = $this->sealTree(fn (): Tree => Tree::use(MediaFolderTree::class));
+
+    $response = getJson($tree['props']['endpoint'], ['X-Lattice-Ref' => $tree['props']['ref']]);
+
+    $response->assertOk();
+
+    expect(array_column($response->json('nodes'), 'label'))->toBe(['Invoices']);
 });

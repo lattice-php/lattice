@@ -117,6 +117,22 @@ it('narrows the grid to the folder picked in the rail', function (): void {
         ->assertNoSmoke();
 });
 
+it('creates a folder from the rail and lists it in the tree', function (): void {
+    $page = $this->visitAsWorkbenchUser('/media')
+        ->assertPresent('@media-folders')
+        ->click('@media-folder-create')
+        ->fill('@name', 'Contracts')
+        ->click('@action-form-submit');
+
+    assertSeeEventually($page, 'Contracts');
+
+    retryUntil(function (): void {
+        expect(MediaFolder::query()->pluck('name')->all())->toBe(['Contracts']);
+    });
+
+    $page->assertNoSmoke();
+});
+
 it('bulk deletes the selected media', function (): void {
     Media::factory()->create(['name' => 'doomed.jpg']);
 
