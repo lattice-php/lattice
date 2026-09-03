@@ -22,6 +22,9 @@
         <include>
             <directory>packages</directory>
         </include>
+        <exclude>
+            <directory suffix=".blade.php">packages</directory>
+        </exclude>
     </source>
     <php>
         <env name="QUEUE_CONNECTION" value="sync"/>
