@@ -1,8 +1,15 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Schema } from "@lattice-php/core/types";
-import { fakeNode, jsonResponse, stubFetch, stubMatchMedia } from "@lattice-php/core/test-support";
-import { renderWithModal } from "@lattice-php/ui/test/modal";
+import { createRegistry, eagerComponent } from "@lattice-php/core";
+import {
+  fakeNode,
+  jsonResponse,
+  renderWithRegistry,
+  stubFetch,
+  stubMatchMedia,
+} from "@lattice-php/core/test-support";
+import { renderWithModal, withModal } from "@lattice-php/ui/test/modal";
 import { libraryRow } from "../test-support";
 import { LibraryView } from "./library-view";
 import type { UploadItem } from "./use-media-upload";
@@ -173,6 +180,49 @@ describe("LibraryView", () => {
 
     expect(screen.queryByTestId("media-inspector")).not.toBeInTheDocument();
     expect(screen.queryByTestId("media-detail")).not.toBeInTheDocument();
+  });
+
+  it("previews a pdf through the viewer node the library composed", () => {
+    const pdf = fakeNode({
+      id: "media-pdf",
+      key: "media-pdf",
+      type: "pdf",
+      props: { url: "", filename: null, height: "480px", maxHeight: "20rem" },
+    });
+    const node = libraryNode({
+      picker: false,
+      rows: [libraryRow(7, { mime_type: "application/pdf", name: "manual.pdf", url: "/files/7" })],
+    });
+    node.schema = [...(node.schema ?? []), pdf];
+    const registry = createRegistry({
+      components: {
+        pdf: eagerComponent(({ node: viewer }) => (
+          <output>
+            viewing {String(viewer.props?.url)} as {String(viewer.props?.filename)}
+          </output>
+        )),
+      },
+      name: "test/media-pdf",
+    });
+
+    renderWithRegistry(withModal(<LibraryView node={node} />), registry);
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    expect(screen.getByRole("status")).toHaveTextContent("viewing /files/7 as manual.pdf");
+  });
+
+  it("falls back to the type icon when no viewer node was composed", () => {
+    const node = libraryNode({
+      picker: false,
+      rows: [libraryRow(7, { mime_type: "application/pdf", name: "manual.pdf", url: "/files/7" })],
+    });
+
+    renderWithModal(<LibraryView node={node} />);
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    expect(screen.getByTestId("media-detail-preview")).toHaveTextContent("pdf");
   });
 
   it("summarizes a multi-selection instead of one file's details", () => {

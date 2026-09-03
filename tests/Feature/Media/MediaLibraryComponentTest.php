@@ -41,6 +41,25 @@ test('the media library composes its table and action nodes', function (): void 
     expect($keys)->toContain('media-upload', 'media-update', 'media-delete');
 });
 
+test('the library composes a document viewer template for the inspector', function (): void {
+    $node = wire(MediaLibrary::make());
+
+    $viewer = collect((array) $node['schema'])->firstWhere('key', 'media-pdf');
+
+    expect($viewer)->not->toBeNull()
+        ->and($viewer['type'])->toBe('pdf')
+        ->and($viewer['props']['url'])->toBe('')
+        ->and($viewer['props']['workerUrl'])->not->toBe('')
+        ->and($viewer['props']['searchable'])->toBeFalse();
+
+    $pickerKeys = array_map(
+        fn (array $child): ?string => $child['key'] ?? null,
+        (array) wire(MediaLibrary::make()->picker())['schema'],
+    );
+
+    expect($pickerKeys)->not->toContain('media-pdf');
+});
+
 test('pick mode composes only the table and the upload action', function (): void {
     $node = wire(MediaLibrary::make()->picker());
 

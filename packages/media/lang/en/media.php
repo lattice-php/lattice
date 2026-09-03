@@ -17,6 +17,7 @@ return [
         'close' => 'Close details',
         'download' => 'Download',
         'empty' => 'Select a file to see its details.',
+        'full-view' => 'Open full view',
         'save' => 'Save',
         'url' => 'URL',
     ],

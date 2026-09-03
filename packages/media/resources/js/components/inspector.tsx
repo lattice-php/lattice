@@ -2,20 +2,22 @@ import { useState } from "react";
 import { ActionConfirmOverlay } from "@lattice-php/action/components/action-confirm-overlay";
 import { runAction } from "@lattice-php/action/lib/run-action";
 import { apiFetch } from "@lattice-php/core/api";
+import { Renderer } from "@lattice-php/core/renderer";
 import type { Node } from "@lattice-php/core/types";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { formatDateValue } from "@lattice-php/ui/format/temporal";
 import { useFormatContext } from "@lattice-php/ui/format/format-context";
 import { Icon } from "@lattice-php/ui/icons";
-import { useT } from "@lattice-php/ui/i18n";
+import { translate, useT } from "@lattice-php/ui/i18n";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { CopyButton } from "@lattice-php/ui/primitives/copyable-text";
+import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/primitives/dialog";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/components/modal/modal-host";
 import { Input } from "@lattice-php/form/primitives/input";
 import { Label } from "@lattice-php/form/primitives/label";
 import { formatSize } from "./file-type";
-import { MediaPreview } from "./media-preview";
+import { documentNode, isViewableDocument, MediaPreview } from "./media-preview";
 import type { MediaRow } from "./media-row";
 
 /**
@@ -28,12 +30,14 @@ export function Inspector({
   remove,
   row,
   update,
+  viewer,
 }: {
   onClose: () => void;
   onDeleted: () => void;
   remove: Node<"action">;
   row: MediaRow;
   update: Node<"action">;
+  viewer?: Node;
 }) {
   const { t } = useT("media");
   const { locale, timezone } = useFormatContext();
@@ -42,7 +46,9 @@ export function Inspector({
   const [name, setName] = useState(row.name);
   const [alt, setAlt] = useState(row.alt ?? "");
   const [processing, setProcessing] = useState(false);
+  const [fullView, setFullView] = useState(false);
   const deleteLabel = t("media.actions.delete.label", "Delete");
+  const documentViewer = isViewableDocument(row, viewer) ? viewer : undefined;
 
   async function save(): Promise<void> {
     setProcessing(true);
@@ -103,7 +109,44 @@ export function Inspector({
         />
       </div>
 
-      <MediaPreview row={row} />
+      <MediaPreview row={row} viewer={documentViewer} />
+
+      {documentViewer && (
+        <>
+          <Button
+            data-test="media-detail-full-view"
+            emphasis="outline"
+            onClick={() => setFullView(true)}
+            size="sm"
+            type="button"
+          >
+            {t("media.detail.full-view", "Open full view")}
+          </Button>
+          <Dialog open={fullView} onOpenChange={setFullView}>
+            <DialogContent
+              aria-describedby={undefined}
+              data-test="media-document-dialog"
+              height="max"
+              width="5xl"
+            >
+              <DialogHeader
+                closeLabel={translate("lattice", "common.close", "Close")}
+                title={row.name}
+              />
+              <Renderer
+                nodes={[
+                  documentNode(documentViewer, row, {
+                    height: "70vh",
+                    maxHeight: null,
+                    searchable: true,
+                    sidebar: true,
+                  }),
+                ]}
+              />
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
 
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
         <dt className="text-lt-muted-fg">{t("media.columns.type", "Type")}</dt>

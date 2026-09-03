@@ -1,3 +1,5 @@
+import { Renderer } from "@lattice-php/core/renderer";
+import type { Node, NodeProps } from "@lattice-php/core/types";
 import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { PreviewableImage } from "@lattice-php/ui/primitives/image-preview";
@@ -6,6 +8,23 @@ import type { MediaRow } from "./media-row";
 
 function isImage(row: MediaRow): boolean {
   return row.mime_type.startsWith("image/");
+}
+
+export function isViewableDocument(row: MediaRow, viewer: Node | undefined): boolean {
+  return row.mime_type === "application/pdf" && row.url !== null && viewer !== undefined;
+}
+
+/**
+ * The library serializes one document-viewer template; every preview is that
+ * node with the selected file's url patched in. Ids stay distinct so the
+ * compact preview and the full view never collide.
+ */
+export function documentNode(viewer: Node, row: MediaRow, props: NodeProps = {}): Node {
+  return {
+    ...viewer,
+    id: `${viewer.id ?? "media-document"}-${row.id}-${String(props.height ?? "inline")}`,
+    props: { ...viewer.props, url: row.url ?? "", filename: row.name, ...props },
+  };
 }
 
 /** The square face of a card or list row: the derivative, or the type icon. */
@@ -49,7 +68,11 @@ export function MediaThumb({
  * derivative: one src feeds both this image and the lightbox it opens, and
  * zooming into a cover-cropped thumbnail shows less than the panel already did.
  */
-export function MediaPreview({ row }: { row: MediaRow }) {
+export function MediaPreview({ row, viewer }: { row: MediaRow; viewer?: Node }) {
+  if (isViewableDocument(row, viewer) && viewer) {
+    return <Renderer nodes={[documentNode(viewer, row)]} />;
+  }
+
   if (isImage(row) && row.url !== null) {
     return (
       <PreviewableImage

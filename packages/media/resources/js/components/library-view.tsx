@@ -49,6 +49,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   const uploadAction = actionNode(node, "media-upload");
   const updateAction = actionNode(node, "media-update");
   const removeAction = actionNode(node, "media-delete");
+  const documentViewer = node.schema?.find((child) => child.key === "media-pdf");
   const { uploads, addFiles, retry, dismiss } = useMediaUpload({
     endpoint: uploadAction?.props.endpoint ?? "",
     ref: uploadAction?.props.ref ?? "",
@@ -171,6 +172,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
         remove={removeAction}
         row={activeRow}
         update={updateAction}
+        viewer={documentViewer}
       />
     ) : selectedRows.length > 1 ? (
       <SelectionSummary rows={selectedRows} />

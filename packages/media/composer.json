@@ -20,6 +20,9 @@
         "lattice-php/table": "self.version",
         "lattice-php/ui": "self.version"
     },
+    "suggest": {
+        "lattice-php/pdf": "Preview PDF files inside the media inspector."
+    },
     "autoload": {
         "psr-4": {
             "Lattice\\Media\\": "src/",

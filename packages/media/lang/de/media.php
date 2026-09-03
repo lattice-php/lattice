@@ -17,6 +17,7 @@ return [
         'close' => 'Details schließen',
         'download' => 'Herunterladen',
         'empty' => 'Wähle eine Datei, um ihre Details zu sehen.',
+        'full-view' => 'Vollansicht öffnen',
         'save' => 'Speichern',
         'url' => 'URL',
     ],

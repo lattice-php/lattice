@@ -9,6 +9,12 @@ const PdfViewerComponent: RendererComponent<"pdf"> = ({ node }) => {
   const engines = usePdfEngineRegistry();
   const Engine = engines.engine;
 
+  // A template node ships without a document: the embedder clones it with the
+  // url of whatever it wants shown, and until then there is nothing to load.
+  if (node.props.url === "") {
+    return null;
+  }
+
   if (!Engine) {
     return (
       <div

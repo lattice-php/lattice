@@ -9,6 +9,7 @@ use Lattice\Media\Actions\DeleteMediaAction;
 use Lattice\Media\Actions\UpdateMediaAction;
 use Lattice\Media\Actions\UploadMediaAction;
 use Lattice\Media\Tables\MediaTable;
+use Lattice\Pdf\Components\PdfViewer;
 use Lattice\Table\Components\Table;
 use Lattice\Ui\Components\ContainerComponent;
 use Stringable;
@@ -161,6 +162,17 @@ final class MediaLibrary extends ContainerComponent
             if (! $this->picker && ! $this->uploadOnly) {
                 $children[] = Action::use(UpdateMediaAction::class)->key('media-update');
                 $children[] = Action::use(DeleteMediaAction::class)->key('media-delete');
+
+                // A document viewer only when one is installed: the inspector
+                // clones this template with the selected file's url, and
+                // without lattice-php/pdf it falls back to the type icon.
+                if (class_exists(PdfViewer::class)) {
+                    $children[] = PdfViewer::make('media-pdf')
+                        ->template()
+                        ->searchable(false)
+                        ->sidebar(false)
+                        ->maxHeight('20rem');
+                }
             }
 
             $this->schema($children);
