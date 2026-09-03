@@ -14,8 +14,25 @@ return [
         'uploaded' => ':count Datei(en) hochgeladen',
     ],
     'detail' => [
+        'close' => 'Details schließen',
         'download' => 'Herunterladen',
+        'empty' => 'Wähle eine Datei, um ihre Details zu sehen.',
         'save' => 'Speichern',
+        'url' => 'URL',
+    ],
+    'sort' => [
+        'label' => 'Sortieren nach',
+        'name-asc' => 'Name A–Z',
+        'name-desc' => 'Name Z–A',
+        'newest' => 'Neueste zuerst',
+        'oldest' => 'Älteste zuerst',
+        'size-asc' => 'Kleinste zuerst',
+        'size-desc' => 'Größte zuerst',
+    ],
+    'view' => [
+        'label' => 'Ansicht',
+        'grid' => 'Kacheln',
+        'list' => 'Liste',
     ],
     'picker' => [
         'confirm' => ':count Element(e) auswählen',

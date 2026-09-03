@@ -22,6 +22,8 @@ final class MediaLibrary extends ContainerComponent
 
     public bool $signed = false;
 
+    public bool $inspector = true;
+
     protected ?string $disk = null;
 
     protected ?string $category = null;
@@ -40,6 +42,17 @@ final class MediaLibrary extends ContainerComponent
         $library->accept = app(UploadMediaAction::class)->field()->accept;
 
         return $library;
+    }
+
+    /**
+     * The detail panel beside the grid. Off leaves the library a plain browser:
+     * a card click selects, nothing opens.
+     */
+    public function inspector(bool $inspector = true): static
+    {
+        $this->inspector = $inspector;
+
+        return $this;
     }
 
     public function picker(bool $picker = true): static

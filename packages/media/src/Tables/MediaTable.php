@@ -39,11 +39,11 @@ final class MediaTable extends EloquentTableDefinition
         return [
             ImageColumn::make('preview_url')->label(__('media::media.columns.preview'))->size(44),
             TextColumn::make('url')->label(__('media::media.columns.original'))->toggleable(hiddenByDefault: true),
-            TextColumn::make('name')->label(__('media::media.columns.name'))->searchable(),
+            TextColumn::make('name')->label(__('media::media.columns.name'))->searchable()->sortable(),
             TextColumn::make('mime_type')->label(__('media::media.columns.type')),
-            NumberColumn::make('size')->label(__('media::media.columns.size')),
+            NumberColumn::make('size')->label(__('media::media.columns.size'))->sortable(),
             TextColumn::make('alt')->label(__('media::media.columns.alt')),
-            TextColumn::make('created_at')->label(__('media::media.columns.uploaded-at'))->dateTime(),
+            TextColumn::make('created_at')->label(__('media::media.columns.uploaded-at'))->dateTime()->sortable(),
             NumberColumn::make('attachments_count')->label(__('media::media.columns.usage')),
         ];
     }

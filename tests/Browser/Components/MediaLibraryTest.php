@@ -52,7 +52,7 @@ it('uploads a file through the dropzone input', function (): void {
     $page->assertNoSmoke();
 });
 
-it('edits alt text and deletes a file from the detail slideout', function (): void {
+it('edits alt text and deletes a file from the inspector', function (): void {
     $media = Media::factory()->create(['name' => 'detail.jpg']);
 
     $page = $this->visitAsWorkbenchUser('/media')->assertSee('detail.jpg');
@@ -67,8 +67,7 @@ it('edits alt text and deletes a file from the detail slideout', function (): vo
         expect($fresh->alt)->toBe('Alt text here');
     });
 
-    $page->click('@media-card')
-        ->click('@media-detail-delete')
+    $page->click('@media-detail-delete')
         ->click('@confirm-accept');
 
     retryUntil(function () use ($media): void {
@@ -76,6 +75,22 @@ it('edits alt text and deletes a file from the detail slideout', function (): vo
     });
 
     $page->assertNoSmoke();
+});
+
+it('turns the inspector into a slideout on a narrow viewport', function (): void {
+    Media::factory()->create(['name' => 'narrow.jpg']);
+
+    $page = $this->visitAsWorkbenchUser('/media')
+        ->assertSee('narrow.jpg')
+        ->assertPresent('@media-inspector')
+        ->assertMissing('[role="dialog"]');
+
+    $page->resize(390, 844)
+        ->click('@media-card')
+        ->assertPresent('[role="dialog"] [data-test="media-detail"]');
+
+    $page->resize(1280, 800)
+        ->assertNoSmoke();
 });
 
 it('bulk deletes the selected media', function (): void {

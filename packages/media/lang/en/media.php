@@ -14,8 +14,25 @@ return [
         'uploaded' => ':count file(s) uploaded',
     ],
     'detail' => [
+        'close' => 'Close details',
         'download' => 'Download',
+        'empty' => 'Select a file to see its details.',
         'save' => 'Save',
+        'url' => 'URL',
+    ],
+    'sort' => [
+        'label' => 'Sort by',
+        'name-asc' => 'Name A–Z',
+        'name-desc' => 'Name Z–A',
+        'newest' => 'Newest first',
+        'oldest' => 'Oldest first',
+        'size-asc' => 'Smallest first',
+        'size-desc' => 'Largest first',
+    ],
+    'view' => [
+        'label' => 'View',
+        'grid' => 'Grid',
+        'list' => 'List',
     ],
     'picker' => [
         'confirm' => 'Select :count item(s)',

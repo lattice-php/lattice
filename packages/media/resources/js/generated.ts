@@ -21,6 +21,7 @@ export type FormFieldNodeType = "field.media-picker";
 export type FormNodeType = "field.media-picker";
 export type MediaLibrary = {
   accept: string | null;
+  inspector: boolean;
   picker: boolean;
   signed: boolean;
 };

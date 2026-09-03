@@ -31,6 +31,7 @@
             "plugin": "resources/js/plugin.ts",
             "standalone": "dist/plugin.js",
             "css": "resources/css/media.css",
+            "icons": "resources/icons",
             "discover": ["src"]
         },
         "laravel": {
