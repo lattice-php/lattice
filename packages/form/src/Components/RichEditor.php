@@ -267,6 +267,10 @@ class RichEditor extends Field
 
     private function resolveExtension(string $type): EditorExtension|string
     {
+        if (is_subclass_of($type, EditorExtension::class)) {
+            return $type::make();
+        }
+
         $class = app(EditorExtensionRegistry::class)->classFor($type);
 
         return $class !== null ? $class::make() : $type;
