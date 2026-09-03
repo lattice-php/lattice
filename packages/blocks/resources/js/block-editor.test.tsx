@@ -11,6 +11,7 @@ import {
   columnsType,
   document,
   renderedFor,
+  testPatterns,
   TestText,
   testTypes,
   textFrame,
@@ -54,11 +55,17 @@ function stubEditorEndpoint(
   return calls;
 }
 
-function renderEditor(doc: BlockDocument, rendered = renderedFor(doc), types = testTypes) {
+function renderEditor(
+  doc: BlockDocument,
+  rendered = renderedFor(doc),
+  types = testTypes,
+  patterns = testPatterns,
+) {
   const node = fakeNode({
     id: "pages",
     props: {
       document: doc,
+      patterns,
       endpoint: "/lattice/block-editors/pages",
       previewUrl: "/preview",
       ref: "sealed",
@@ -251,8 +258,72 @@ describe("block editor (jsdom)", () => {
 
       await waitFor(() => expect(saveState()).toBe("conflict"));
       expect(screen.getByTestId("blocks-save-state")).toHaveTextContent("Changed elsewhere");
-      expect(screen.getByRole("button", { name: "Reload" })).toBeInTheDocument();
+      expect(screen.getByTestId("blocks-conflict-dialog")).toBeInTheDocument();
       expect(screen.getByTestId("blocks-publish")).toBeDisabled();
+    });
+
+    it("reloads the page from the conflict dialog", async () => {
+      stubEditorEndpoint(() => jsonResponse({ message: "stale", revision: 9 }, { status: 409 }));
+      const reload = vi.fn();
+      vi.stubGlobal("location", { ...window.location, reload });
+      renderEditor(baseDocument());
+
+      fireEvent.click(screen.getByTestId("blocks-publish"));
+      await waitFor(() => expect(saveState()).toBe("conflict"));
+
+      fireEvent.click(screen.getByTestId("blocks-conflict-reload"));
+
+      expect(reload).toHaveBeenCalledTimes(1);
+    });
+
+    it("overwrites the newer revision from the conflict dialog and resumes saving", async () => {
+      const calls = stubEditorEndpoint((op) =>
+        op === "publish"
+          ? jsonResponse({ message: "stale", revision: 9 }, { status: 409 })
+          : jsonResponse({ errors: {}, revision: 10 }),
+      );
+      renderEditor(baseDocument());
+
+      fireEvent.click(screen.getByTestId("blocks-publish"));
+      await waitFor(() => expect(saveState()).toBe("conflict"));
+
+      fireEvent.click(screen.getByTestId("blocks-conflict-overwrite"));
+
+      await waitFor(() => expect(saveState()).toBe("saved"));
+      const draft = calls.find((call) => call.op === "draft");
+      expect(draft?.body.revision).toBe(9);
+      expect(screen.queryByTestId("blocks-conflict-dialog")).toBeNull();
+      expect(screen.getByTestId("blocks-publish")).toBeEnabled();
+    });
+
+    it("announces a successful publish as a toast", async () => {
+      stubEditorEndpoint(() => jsonResponse({ revision: 4 }));
+      const toasts: unknown[] = [];
+      const listener = (event: Event) => toasts.push((event as CustomEvent).detail);
+      window.addEventListener("lattice:toast", listener);
+      renderEditor(baseDocument());
+
+      fireEvent.click(screen.getByTestId("blocks-publish"));
+
+      await waitFor(() => expect(saveState()).toBe("saved"));
+      expect(toasts).toEqual([{ message: "The page is published.", variant: "success" }]);
+      window.removeEventListener("lattice:toast", listener);
+    });
+
+    it("switches the canvas width preview from the topbar", () => {
+      stubEditorEndpoint();
+      renderEditor(baseDocument());
+
+      expect(screen.getByTestId("blocks-canvas")).toHaveAttribute("data-canvas-width", "desktop");
+
+      fireEvent.click(
+        within(screen.getByTestId("blocks-canvas-width")).getByRole("radio", { name: "Mobile" }),
+      );
+
+      expect(screen.getByTestId("blocks-canvas")).toHaveAttribute("data-canvas-width", "mobile");
+      expect(
+        within(screen.getByTestId("blocks-canvas-width")).getByRole("radio", { name: "Mobile" }),
+      ).toHaveAttribute("aria-checked", "true");
     });
 
     it("surfaces publish validation errors on the block's content fields", async () => {
@@ -367,6 +438,38 @@ describe("block editor (jsdom)", () => {
   });
 
   describe("library", () => {
+    it("inserts a pattern's blocks with fresh ids after the selected block", async () => {
+      stubEditorEndpoint();
+      renderEditor(baseDocument());
+      selectBlock("h");
+
+      fireEvent.click(
+        within(screen.getByTestId("blocks-library-tabs")).getByRole("radio", { name: "Patterns" }),
+      );
+      fireEvent.click(screen.getByTestId("pattern-intro"));
+
+      expect(await screen.findByText("Rendered Pattern heading")).toBeInTheDocument();
+      expect(await screen.findByText("Rendered lattice.paragraph")).toBeInTheDocument();
+
+      const ids = rootBlockIds();
+      expect(ids).toHaveLength(5);
+      expect(ids[0]).toBe("h");
+      expect(ids).not.toContain("tpl_h");
+      expect(blockTypesIn("blocks-canvas-root").slice(1, 3)).toEqual([
+        "lattice.heading",
+        "lattice.paragraph",
+      ]);
+      expect(saveState()).toBe("dirty");
+    });
+
+    it("hides the pattern tabs when the editor offers no patterns", () => {
+      stubEditorEndpoint();
+      renderEditor(baseDocument(), renderedFor(baseDocument()), testTypes, []);
+
+      expect(screen.queryByTestId("blocks-library-tabs")).toBeNull();
+      expect(screen.getByTestId("library-lattice.paragraph")).toBeInTheDocument();
+    });
+
     it("filters block types by the search query and reports when nothing matches", () => {
       stubEditorEndpoint();
       renderEditor(baseDocument());

@@ -16,16 +16,24 @@ import {
   slotDropTargetData,
 } from "../../dnd/block-dnd";
 import { insert, move, select } from "../../document/store";
+import type { CanvasWidth } from "../../types";
 import { BlockList } from "./block-list";
 import { Breadcrumbs } from "./breadcrumbs";
 import { useEditor, useEditorState } from "./editor-context";
 import { BaseRegistryProvider, useEditorRegistry } from "./editor-registry";
 import { InsertMenu } from "./insert-menu";
 
+const canvasWidthClasses: Record<CanvasWidth, string> = {
+  desktop: "max-w-5xl",
+  mobile: "max-w-sm",
+  tablet: "max-w-3xl",
+};
+
 export function Canvas() {
   const { t } = useT("blocks");
   const { store, types, requestRender, focusBlock } = useEditor();
   const blocks = useEditorState((state) => state.document.blocks);
+  const canvasWidth = useEditorState((state) => state.canvasWidth);
   const ids = useMemo(() => blocks.map((block) => block.id), [blocks]);
   const { registry, base } = useEditorRegistry();
   const scroller = useRef<HTMLDivElement>(null);
@@ -108,8 +116,14 @@ export function Canvas() {
       ref={scroller}
       className="lt-blocks-canvas relative min-w-0 flex-1 overflow-y-auto bg-lt-bg"
       data-test="blocks-canvas"
+      data-canvas-width={canvasWidth}
     >
-      <div className="mx-auto flex min-h-full w-full max-w-5xl flex-col px-6 py-8">
+      <div
+        className={cn(
+          "mx-auto flex min-h-full w-full flex-col px-6 py-8 transition-[max-width]",
+          canvasWidthClasses[canvasWidth],
+        )}
+      >
         <div
           ref={root}
           data-test="blocks-canvas-root"

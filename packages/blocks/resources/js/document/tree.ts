@@ -194,7 +194,7 @@ export function moveBlock(document: BlockDocument, id: string, target: BlockTarg
   return insertBlock(removeBlock(document, id), entry.node, { ...target, index });
 }
 
-function cloneWithFreshIds(node: BlockNode): BlockNode {
+export function cloneWithFreshIds(node: BlockNode): BlockNode {
   const slots: Record<string, BlockNode[]> = {};
 
   for (const [name, children] of Object.entries(node.slots)) {
