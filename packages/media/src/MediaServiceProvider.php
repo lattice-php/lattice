@@ -9,6 +9,8 @@ use Lattice\Form\RichEditor\EditorExtensionRegistry;
 use Lattice\Media\Console\Commands\GenerateConversionsCommand;
 use Lattice\Media\Forms\RichEditor\MediaImage;
 use Lattice\Media\Models\Media;
+use Lattice\Media\Models\MediaFolder;
+use Lattice\Media\Policies\MediaFolderPolicy;
 use Lattice\Media\Policies\MediaPolicy;
 
 final class MediaServiceProvider extends ServiceProvider
@@ -28,6 +30,7 @@ final class MediaServiceProvider extends ServiceProvider
         }
 
         Gate::policy(Media::class, MediaPolicy::class);
+        Gate::policy(MediaFolder::class, MediaFolderPolicy::class);
 
         // Registered directly on the loader (not loadTranslationsFrom): the
         // i18next JSON route resolves only the translation loader, never the

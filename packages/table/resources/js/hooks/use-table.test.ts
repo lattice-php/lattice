@@ -64,6 +64,26 @@ describe("useTable URL sync", () => {
     await waitFor(() => expect(window.location.search).toBe("?sort=name"));
   });
 
+  it("replaces the whole sort set through setSorts, direction included", async () => {
+    const columns = [col({ key: "name", label: "Name", sortable: true })];
+    tableFetch({ query: tableQuery({ sorts: [{ direction: "desc", key: "size" }] }) });
+
+    const node = tableNode({
+      columns,
+      defaultPerPage: 25,
+      query: tableQuery({ sorts: [{ direction: "asc", key: "name" }] }),
+      queryKey: null,
+      syncQuery: true,
+    });
+    const { result } = renderHook(() => useTable(node));
+
+    await act(async () => {
+      result.current.setSorts([{ direction: "desc", key: "size" }]);
+    });
+
+    await waitFor(() => expect(window.location.search).toBe("?sort=-size"));
+  });
+
   it("writes a page change onto the url, omitting the implicit first page", async () => {
     tableFetch({ query: tableQuery({ page: 2 }) });
 

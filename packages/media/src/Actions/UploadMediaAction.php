@@ -15,6 +15,7 @@ use Lattice\Actions\FormActionDefinition;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Form\Components\FileUpload;
 use Lattice\Form\Components\Form;
+use Lattice\Form\Components\HiddenInput;
 use Lattice\Form\FormData;
 use Lattice\Media\Jobs\GenerateMediaConversions;
 use Lattice\Media\Models\Media;
@@ -37,9 +38,17 @@ final class UploadMediaAction extends FormActionDefinition
         return Gate::allows('create', Media::modelClass());
     }
 
+    /**
+     * The folder rides along as a plain field, not in the sealed context:
+     * folders are user-visible navigation, and the client uploads into
+     * whichever one is open. Validation keeps it an existing folder.
+     */
     public function formSchema(Form $form, Request $request): Form
     {
-        return $form->schema([$this->field()]);
+        return $form->schema([
+            $this->field(),
+            HiddenInput::make('folder_id')->rules(['nullable', 'integer', 'exists:media_folders,id']),
+        ]);
     }
 
     /**
@@ -79,7 +88,7 @@ final class UploadMediaAction extends FormActionDefinition
                 'preview_url' => $item->previewUrl(),
                 'mime_type' => $item->mime_type,
             ],
-            $this->storeUploads($data->get('files', [])),
+            $this->storeUploads($data->get('files', []), $data->filled('folder_id') ? (int) $data->get('folder_id') : null),
         );
 
         return ActionResult::success(['media' => $media])
@@ -117,7 +126,7 @@ final class UploadMediaAction extends FormActionDefinition
     /**
      * @return list<Media>
      */
-    private function storeUploads(mixed $value): array
+    private function storeUploads(mixed $value, ?int $folderId = null): array
     {
         $values = is_array($value) ? $value : [$value];
         $field = $this->field();
@@ -139,6 +148,7 @@ final class UploadMediaAction extends FormActionDefinition
                 'name' => $file->getClientOriginalName(),
                 'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
                 'category' => $this->contextStringOrNull('category'),
+                'folder_id' => $folderId,
                 'size' => $file->getSize(),
                 'uploaded_by' => auth()->id(),
             ]);
@@ -156,6 +166,7 @@ final class UploadMediaAction extends FormActionDefinition
                     'name' => $upload['name'],
                     'mime_type' => $upload['mime_type'] ?? 'application/octet-stream',
                     'category' => $this->contextStringOrNull('category'),
+                    'folder_id' => $folderId,
                     'size' => $upload['size'] ?? 0,
                     'uploaded_by' => auth()->id(),
                 ]);

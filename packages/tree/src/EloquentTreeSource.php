@@ -194,15 +194,26 @@ final class EloquentTreeSource implements TreeSource
             $query->where("{$table}.{$this->parentKey}", $parentId);
         }
 
+        // The probe keeps the scope's filters but not its columns: a scope that
+        // adds a select (a `withCount` subquery, say) qualifies it with the base
+        // table name, which no longer resolves once the probe reads from the
+        // alias — SQLite rejects the whole statement with "no such table".
         $probe = $this->query()
             ->from("{$table} as {$alias}")
-            ->selectRaw('1')
             ->whereColumn("{$alias}.{$this->parentKey}", $model->getQualifiedKeyName())
-            ->limit(1);
+            ->limit(1)
+            ->select([])
+            ->selectRaw('1');
 
-        $rows = $this->fetch($this->ordered($query
-            ->select("{$table}.*")
-            ->addSelect(['lattice_tree_has_children' => $probe])));
+        // A scope may already have chosen columns (`withCount` selects the base
+        // columns plus its subquery); only an untouched select list needs them.
+        if ($query->getQuery()->columns === null) {
+            $query->select("{$table}.*");
+        }
+
+        $rows = $this->fetch($this->ordered(
+            $query->addSelect(['lattice_tree_has_children' => $probe]),
+        ));
 
         return array_values($rows->map(
             fn (Model $row): TreeNode => $this->node(

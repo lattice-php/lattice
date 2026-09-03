@@ -56,6 +56,24 @@ it("hands the node to the registered engine extension", async () => {
   ).toBeInTheDocument();
 });
 
+it("mounts the engine only for nodes that carry a document", async () => {
+  const StubEngine = ({ node }: PdfEngineProps) => (
+    <output>engine received {node.props.url}</output>
+  );
+  const registry = createRegistry({
+    components: { pdf: eagerComponent(PdfViewerComponent) },
+    extensions: { "pdf.engine": { engine: StubEngine } },
+    name: "test/pdf-template",
+  });
+  const template = pdfNode();
+  template.id = "template";
+  template.props.url = "";
+
+  renderWithRegistry(<Renderer nodes={[template, pdfNode()]} />, registry);
+
+  expect(await screen.findAllByRole("status")).toHaveLength(1);
+});
+
 it("registers the same wire surface from both plugin entries", () => {
   for (const entry of [plugin, composerPlugin]) {
     expect(entry.name).toBe("lattice/pdf");

@@ -14,8 +14,58 @@ return [
         'uploaded' => ':count Datei(en) hochgeladen',
     ],
     'detail' => [
+        'close' => 'Details schließen',
         'download' => 'Herunterladen',
+        'empty' => 'Wähle eine Datei, um ihre Details zu sehen.',
+        'full-view' => 'Vollansicht öffnen',
         'save' => 'Speichern',
+        'url' => 'URL',
+    ],
+    'sort' => [
+        'label' => 'Sortieren nach',
+        'name-asc' => 'Name A–Z',
+        'name-desc' => 'Name Z–A',
+        'newest' => 'Neueste zuerst',
+        'oldest' => 'Älteste zuerst',
+        'size-asc' => 'Kleinste zuerst',
+        'size-desc' => 'Größte zuerst',
+    ],
+    'view' => [
+        'label' => 'Ansicht',
+        'grid' => 'Kacheln',
+        'list' => 'Liste',
+    ],
+    'folders' => [
+        'label' => 'Ordner',
+        'name' => 'Ordnername',
+        'none' => 'Kein Ordner',
+        'parent' => 'Übergeordneter Ordner',
+        'unassigned' => 'Ohne Ordner',
+        'all' => 'Alle Dateien',
+        'create' => [
+            'label' => 'Neuer Ordner',
+            'child-label' => 'Neuer Unterordner',
+            'toast' => 'Ordner erstellt',
+        ],
+        'rename' => [
+            'label' => 'Umbenennen',
+            'toast' => 'Ordner umbenannt',
+        ],
+        'delete' => [
+            'label' => 'Ordner löschen',
+            'confirm-title' => 'Diesen Ordner löschen?',
+            'confirm-description' => 'Unterordner und Dateien wandern in den übergeordneten Ordner — es wird nichts gelöscht.',
+            'toast' => 'Ordner gelöscht',
+        ],
+        'move' => [
+            'label' => 'Ordner verschieben',
+            'rejected' => 'Der Ordner kann dorthin nicht verschoben werden.',
+        ],
+        'move-media' => [
+            'label' => 'In Ordner verschieben',
+            'target' => 'Zielordner',
+            'toast' => ':count Datei(en) verschoben',
+        ],
     ],
     'picker' => [
         'confirm' => ':count Element(e) auswählen',

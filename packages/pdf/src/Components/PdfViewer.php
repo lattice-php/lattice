@@ -42,6 +42,8 @@ final class PdfViewer extends Component
 
     private Closure|string|null $urlSource = null;
 
+    private bool $template = false;
+
     private ?string $workerUrlOverride = null;
 
     public static function make(?string $key = null): static
@@ -83,6 +85,19 @@ final class PdfViewer extends Component
 
             return $url;
         };
+
+        return $this;
+    }
+
+    /**
+     * Serializes the viewer without a document. The embedding client supplies
+     * `url` (and `filename`) per instance — a media library rendering the
+     * viewer for whichever file is selected, say — so this node carries the
+     * worker and config urls and nothing else.
+     */
+    public function template(bool $template = true): static
+    {
+        $this->template = $template;
 
         return $this;
     }
@@ -179,19 +194,22 @@ final class PdfViewer extends Component
     #[SerializationHook(priority: 190)]
     protected function preparePdf(array $data): array
     {
-        if ($this->urlSource === null) {
+        if ($this->urlSource === null && ! $this->template) {
             throw new InvalidArgumentException('PdfViewer requires a document url.');
         }
 
-        $url = $this->urlSource instanceof Closure
-            ? Evaluate::resolve($this->urlSource, Evaluate::context())
-            : $this->urlSource;
+        if ($this->urlSource !== null) {
+            $url = $this->urlSource instanceof Closure
+                ? Evaluate::resolve($this->urlSource, Evaluate::context())
+                : $this->urlSource;
 
-        if (! is_string($url) || trim($url) === '') {
-            throw new InvalidArgumentException('PdfViewer url must resolve to a non-empty string.');
+            if (! is_string($url) || trim($url) === '') {
+                throw new InvalidArgumentException('PdfViewer url must resolve to a non-empty string.');
+            }
+
+            $this->url = $url;
         }
 
-        $this->url = $url;
         $this->workerUrl = $this->resolveWorkerUrl();
         $this->cmapUrl ??= $this->configuredUrl('pdf.cmap_url');
         $this->standardFontDataUrl ??= $this->configuredUrl('pdf.standard_font_data_url');

@@ -1,8 +1,16 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Schema } from "@lattice-php/core/types";
-import { fakeNode } from "@lattice-php/core/test-support";
-import { renderWithModal } from "@lattice-php/ui/test/modal";
+import { LATTICE_EVENT, nodeIdentity } from "@lattice-php/core";
+import type { Node, Schema } from "@lattice-php/core/types";
+import { createRegistry, eagerComponent } from "@lattice-php/core";
+import {
+  fakeNode,
+  jsonResponse,
+  renderWithRegistry,
+  stubFetch,
+  stubMatchMedia,
+} from "@lattice-php/core/test-support";
+import { renderWithModal, withModal } from "@lattice-php/ui/test/modal";
 import { libraryRow } from "../test-support";
 import { LibraryView } from "./library-view";
 import type { UploadItem } from "./use-media-upload";
@@ -13,9 +21,16 @@ const upload = vi.hoisted(() => ({
   addFiles: vi.fn(),
   retry: vi.fn(),
   dismiss: vi.fn(),
+  target: {} as { folder?: string },
 }));
 
-vi.mock("./use-media-upload", () => ({ useMediaUpload: () => upload }));
+vi.mock("./use-media-upload", () => ({
+  useMediaUpload: (target: { folder?: string }) => {
+    upload.target = target;
+
+    return upload;
+  },
+}));
 
 function uploadItem(overrides: Partial<UploadItem> = {}): UploadItem {
   return {
@@ -28,21 +43,134 @@ function uploadItem(overrides: Partial<UploadItem> = {}): UploadItem {
   };
 }
 
-function libraryNode() {
+function column(key: string, sortable = true) {
+  return { type: "column.text", key, props: { key, label: key, sortable } };
+}
+
+/** Stands in for the tree package: one button per folder, announcing itself the way the real tree does. */
+function treeStub({ node }: { node: Node }) {
+  const folders = (node.props?.nodes ?? []) as { id: string; label: string }[];
+
+  return (
+    <ul>
+      {folders.map((folder) => (
+        <li key={folder.id}>
+          <button
+            data-test={`folder-${folder.id}`}
+            onClick={() =>
+              window.dispatchEvent(
+                new CustomEvent(LATTICE_EVENT.treeActivate, {
+                  detail: { component: nodeIdentity(node), nodeId: folder.id },
+                }),
+              )
+            }
+            type="button"
+          >
+            {folder.label}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type FolderTreeNode = {
+  acceptsChildren: boolean;
+  children: FolderTreeNode[];
+  class: null;
+  disabled: boolean;
+  hasChildren: boolean;
+  href: null;
+  id: string;
+  label: string;
+  schema: [];
+};
+
+function folderNode(id: string, label: string, children: FolderTreeNode[] = []): FolderTreeNode {
+  return {
+    id,
+    label,
+    children,
+    schema: [],
+    href: null,
+    class: null,
+    disabled: false,
+    hasChildren: children.length > 0,
+    acceptsChildren: true,
+  };
+}
+
+function folderTreeNode() {
+  return fakeNode({
+    id: "media.folders",
+    type: "tree",
+    props: {
+      nodes: [folderNode("4", "Invoices", [folderNode("7", "2026")])],
+      defaultExpanded: [],
+      rememberState: false,
+    },
+  });
+}
+
+function withFolders(node: ReturnType<typeof libraryNode>) {
+  node.schema = [...(node.schema ?? []), folderTreeNode()];
+
+  return node;
+}
+
+function folderRegistry() {
+  return createRegistry({
+    components: { tree: eagerComponent(treeStub) },
+    name: "test/media-tree",
+  });
+}
+
+function libraryNode({
+  picker = true,
+  rows = [libraryRow(1), libraryRow(2)],
+  actions = true,
+  inspector = true,
+  upload = false,
+}: {
+  actions?: boolean;
+  inspector?: boolean;
+  picker?: boolean;
+  rows?: ReturnType<typeof libraryRow>[];
+  upload?: boolean;
+} = {}) {
   return fakeNode({
     type: "media.library",
-    props: { picker: true, accept: null, signed: false },
+    props: { picker, accept: null, signed: false, inspector },
     schema: [
       {
         type: "table",
         props: {
-          columns: [],
-          data: [libraryRow(1), libraryRow(2)],
+          columns: [column("name"), column("size"), column("mime_type", false)],
+          data: rows,
           endpoint: "/lattice/tables/media",
+          bulkActions: [
+            {
+              type: "action.bulk",
+              id: "media.move-selected",
+              props: { endpoint: "/move", label: "Move to folder", ref: "ref-1", lazyForm: true },
+            },
+            {
+              type: "action.bulk",
+              id: "media.delete-selected",
+              props: { endpoint: "/delete-selected", label: "Delete selected", ref: "ref-1" },
+            },
+          ],
         },
       },
-      { type: "action", key: "media-update", props: { endpoint: "/update", ref: "ref-1" } },
-      { type: "action", key: "media-delete", props: { endpoint: "/delete", ref: "ref-1" } },
+      ...(actions
+        ? [
+            { type: "action", key: "media-update", props: { endpoint: "/update", ref: "ref-1" } },
+            { type: "action", key: "media-delete", props: { endpoint: "/delete", ref: "ref-1" } },
+          ]
+        : []),
+      ...(upload
+        ? [{ type: "action", key: "media-upload", props: { endpoint: "/upload", ref: "ref-1" } }]
+        : []),
     ] as Schema,
   });
 }
@@ -50,8 +178,13 @@ function libraryNode() {
 describe("LibraryView", () => {
   beforeEach(() => {
     upload.uploads = [];
+    // The view preference is persisted, so it would leak into the next test.
+    window.localStorage.clear();
     vi.clearAllMocks();
     vi.unstubAllGlobals();
+    // A table reload can still be in flight when a test ends; without a stub in
+    // place it would reach the real fetch and reject on the relative url.
+    stubFetch(jsonResponse({ data: [], query: {} }));
   });
 
   it("deselects a single-select pick when the same card is clicked twice", () => {
@@ -100,6 +233,234 @@ describe("LibraryView", () => {
     expect(screen.getByTestId("media-pick-counter")).toHaveTextContent("1/1");
   });
 
+  it("has no inspector in pick mode: a card click only selects", () => {
+    renderWithModal(
+      <LibraryView node={libraryNode()} pick={{ multiple: true, onConfirm: vi.fn() }} />,
+    );
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    expect(screen.queryByTestId("media-inspector")).not.toBeInTheDocument();
+    expect(screen.getByTestId("media-pick-confirm")).toBeEnabled();
+  });
+
+  it("opens the clicked file in the inspector and saves the edited alt text", async () => {
+    const fetch = stubFetch(jsonResponse({ success: true }));
+
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    expect(screen.getByTestId("media-inspector-empty")).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId("media-card")[1]);
+
+    expect(screen.getByTestId("media-detail-name")).toHaveValue("file-2.jpg");
+
+    fireEvent.change(screen.getByTestId("media-detail-alt"), { target: { value: "A logo" } });
+    fireEvent.click(screen.getByTestId("media-detail-save"));
+
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith("/update", expect.anything()));
+
+    expect(JSON.parse(String(fetch.mock.calls[0][1]?.body))).toEqual({
+      media_id: 2,
+      name: "file-2.jpg",
+      alt: "A logo",
+    });
+  });
+
+  it("closes the inspector again", () => {
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+    expect(screen.getByTestId("media-detail")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("media-detail-close"));
+
+    expect(screen.queryByTestId("media-detail")).not.toBeInTheDocument();
+    expect(screen.getByTestId("media-inspector-empty")).toBeInTheDocument();
+  });
+
+  it("leaves a card click inert when the library was composed without an inspector", () => {
+    renderWithModal(<LibraryView node={libraryNode({ picker: false, inspector: false })} />);
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    expect(screen.queryByTestId("media-inspector")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("media-detail")).not.toBeInTheDocument();
+  });
+
+  it("previews a pdf through the viewer node the library composed", () => {
+    const pdf = fakeNode({
+      id: "media-pdf",
+      key: "media-pdf",
+      type: "pdf",
+      props: { url: "", filename: null, height: "480px", maxHeight: "20rem" },
+    });
+    const node = libraryNode({
+      picker: false,
+      rows: [libraryRow(7, { mime_type: "application/pdf", name: "manual.pdf", url: "/files/7" })],
+    });
+    node.schema = [...(node.schema ?? []), pdf];
+    const registry = createRegistry({
+      components: {
+        pdf: eagerComponent(({ node: viewer }) => (
+          <output>
+            viewing {String(viewer.props?.url)} as {String(viewer.props?.filename)}
+          </output>
+        )),
+      },
+      name: "test/media-pdf",
+    });
+
+    renderWithRegistry(withModal(<LibraryView node={node} />), registry);
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    expect(screen.getByRole("status")).toHaveTextContent("viewing /files/7 as manual.pdf");
+  });
+
+  it("falls back to the type icon when no viewer node was composed", () => {
+    const node = libraryNode({
+      picker: false,
+      rows: [libraryRow(7, { mime_type: "application/pdf", name: "manual.pdf", url: "/files/7" })],
+    });
+
+    renderWithModal(<LibraryView node={node} />);
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    expect(screen.getByTestId("media-detail-preview")).toHaveTextContent("pdf");
+  });
+
+  it("offers every bulk action once a selection exists", async () => {
+    const fetch = stubFetch(jsonResponse({ success: true }));
+
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    expect(screen.queryByTestId("media-bulk-delete-selected")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId("media-card-select")[0]);
+
+    expect(screen.getByTestId("media-bulk-move-selected")).toHaveTextContent("Move to folder");
+
+    fireEvent.click(screen.getByTestId("media-bulk-delete-selected"));
+
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith("/delete-selected", expect.anything()));
+
+    expect(JSON.parse(String(fetch.mock.calls[0][1]?.body))).toEqual({ selected: ["1"] });
+  });
+
+  it("summarizes a multi-selection instead of one file's details", () => {
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    const [first, second] = screen.getAllByTestId("media-card-select");
+
+    fireEvent.click(first);
+    fireEvent.click(second);
+
+    expect(screen.getByTestId("media-selection-summary")).toHaveTextContent("2 selected");
+    expect(screen.queryByTestId("media-detail")).not.toBeInTheDocument();
+  });
+
+  it("extends the selection to the shift-clicked row", () => {
+    const rows = [libraryRow(1), libraryRow(2), libraryRow(3), libraryRow(4)];
+
+    renderWithModal(<LibraryView node={libraryNode({ picker: false, rows })} />);
+
+    const checkboxes = screen.getAllByTestId("media-card-select");
+
+    fireEvent.click(checkboxes[0]);
+    fireEvent.click(checkboxes[2], { shiftKey: true });
+
+    expect(screen.getByTestId("media-selection-summary")).toHaveTextContent("3 selected");
+  });
+
+  it("switches from the grid to the compact list", () => {
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    expect(screen.getByTestId("media-grid")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("radio", { name: "List" }));
+
+    expect(screen.getByTestId("media-list")).toBeInTheDocument();
+    expect(screen.queryByTestId("media-grid")).not.toBeInTheDocument();
+  });
+
+  it("requests the chosen sort order and offers only sortable columns", async () => {
+    const fetch = stubFetch(jsonResponse({ data: [], query: {} }));
+
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    const sort = screen.getByTestId("media-sort");
+
+    expect(sort).not.toHaveTextContent("mime_type");
+
+    fireEvent.change(sort, { target: { value: "size:desc" } });
+
+    await waitFor(() =>
+      expect(String(fetch.mock.calls[0][0])).toContain(`${encodeURIComponent("sort")}=-size`),
+    );
+  });
+
+  it("filters the grid by the folder activated in the rail, and back to everything", async () => {
+    const fetch = stubFetch(jsonResponse({ data: [], query: {} }));
+
+    renderWithRegistry(
+      withModal(<LibraryView node={withFolders(libraryNode({ picker: false }))} />),
+      folderRegistry(),
+    );
+
+    fireEvent.click(screen.getByTestId("folder-4"));
+
+    await waitFor(() =>
+      expect(String(fetch.mock.calls[0][0])).toContain(`tf%5Bfolder%5D%5Bvalue%5D=4`),
+    );
+
+    fireEvent.click(screen.getByTestId("media-folder-unassigned"));
+
+    await waitFor(() =>
+      expect(String(fetch.mock.calls[1][0])).toContain(`tf%5Bfolder%5D%5Bvalue%5D=unassigned`),
+    );
+
+    fireEvent.click(screen.getByTestId("media-folder-all"));
+
+    await waitFor(() => expect(String(fetch.mock.calls[2][0])).not.toContain("tf%5Bfolder%5D"));
+  });
+
+  it("uploads into the folder the rail has open", () => {
+    renderWithRegistry(
+      withModal(<LibraryView node={withFolders(libraryNode({ picker: false, upload: true }))} />),
+      folderRegistry(),
+    );
+
+    fireEvent.click(screen.getByTestId("folder-4"));
+    fireEvent.change(screen.getByTestId("media-upload-input"), {
+      target: { files: [new File(["bytes"], "alpha.jpg")] },
+    });
+
+    expect(upload.target.folder).toBe("4");
+  });
+
+  it("offers the composed folders in the inspector and saves the chosen one", async () => {
+    const fetch = stubFetch(jsonResponse({ success: true }));
+
+    renderWithRegistry(
+      withModal(<LibraryView node={withFolders(libraryNode({ picker: false }))} />),
+      folderRegistry(),
+    );
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    const select = screen.getByTestId("media-detail-folder");
+    expect(select).toHaveTextContent("— 2026");
+
+    fireEvent.change(select, { target: { value: "7" } });
+    fireEvent.click(screen.getByTestId("media-detail-save"));
+
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith("/update", expect.anything()));
+
+    expect(JSON.parse(String(fetch.mock.calls[0][1]?.body)).folder_id).toBe(7);
+  });
+
   it("shows the rejection reason and offers retry and dismiss on a failed upload", () => {
     const failed = uploadItem({ status: "error", reason: "The file is too large." });
     upload.uploads = [failed];
@@ -128,8 +489,8 @@ describe("LibraryView", () => {
     expect(screen.getByText("40%")).toBeInTheDocument();
   });
 
-  it("ignores a drop while the detail slideout is open, but always cancels the browser's native drop", () => {
-    renderWithModal(<LibraryView node={libraryNode()} />);
+  it("keeps accepting drops while the inline inspector is open, and always cancels the browser's native drop", () => {
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
 
     const dropped = { dataTransfer: { files: [new File(["bytes"], "alpha.jpg")] } };
     const wrapper = screen.getByTestId("media-library");
@@ -145,34 +506,26 @@ describe("LibraryView", () => {
     fireEvent.click(screen.getAllByTestId("media-card")[0]);
     expect(screen.getByTestId("media-detail")).toBeInTheDocument();
 
+    fireEvent.drop(wrapper, dropped);
+
+    expect(upload.addFiles).toHaveBeenCalledTimes(2);
+  });
+
+  it("ignores a drop behind the slideout that replaces the inspector on a narrow viewport", () => {
+    stubMatchMedia(false);
+
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    const dropped = { dataTransfer: { files: [new File(["bytes"], "alpha.jpg")] } };
+    const wrapper = screen.getByTestId("media-library");
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+    expect(screen.getByTestId("media-detail")).toBeInTheDocument();
+
     expect(fireEvent.dragOver(wrapper)).toBe(false);
     expect(fireEvent.drop(wrapper, dropped)).toBe(false);
 
-    expect(upload.addFiles).toHaveBeenCalledTimes(1);
-  });
-
-  it("keeps accepting drops after a card click when there is no update/remove action to render a panel for", () => {
-    const node = fakeNode({
-      type: "media.library",
-      props: { picker: true, accept: null, signed: false },
-      schema: [
-        {
-          type: "table",
-          props: { columns: [], data: [libraryRow(1)], endpoint: "/lattice/tables/media" },
-        },
-      ] as Schema,
-    });
-
-    renderWithModal(<LibraryView node={node} />);
-
-    fireEvent.click(screen.getAllByTestId("media-card")[0]);
-    expect(screen.queryByTestId("media-detail")).not.toBeInTheDocument();
-
-    const wrapper = screen.getByTestId("media-library");
-
-    fireEvent.drop(wrapper, { dataTransfer: { files: [new File(["bytes"], "alpha.jpg")] } });
-
-    expect(upload.addFiles).toHaveBeenCalledTimes(1);
+    expect(upload.addFiles).not.toHaveBeenCalled();
   });
 
   it("dims the grid while the table reloads", async () => {

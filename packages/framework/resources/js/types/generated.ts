@@ -37,6 +37,7 @@ export type DataList = {
 };
 export type FilterNodeType =
   | "filter.date-range"
+  | "filter.media-folder"
   | "filter.media-type"
   | "filter.select"
   | "filter.ternary"

@@ -5,11 +5,16 @@ namespace Lattice\Media\Components;
 
 use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsComponent;
+use Lattice\Media\Actions\CreateMediaFolderAction;
 use Lattice\Media\Actions\DeleteMediaAction;
+use Lattice\Media\Actions\MoveMediaFolderAction;
 use Lattice\Media\Actions\UpdateMediaAction;
 use Lattice\Media\Actions\UploadMediaAction;
 use Lattice\Media\Tables\MediaTable;
+use Lattice\Media\Trees\MediaFolderTree;
+use Lattice\Pdf\Components\PdfViewer;
 use Lattice\Table\Components\Table;
+use Lattice\Tree\Tree;
 use Lattice\Ui\Components\ContainerComponent;
 use Stringable;
 
@@ -21,6 +26,10 @@ final class MediaLibrary extends ContainerComponent
     public ?string $accept = null;
 
     public bool $signed = false;
+
+    public bool $inspector = true;
+
+    public bool $folders = false;
 
     protected ?string $disk = null;
 
@@ -40,6 +49,28 @@ final class MediaLibrary extends ContainerComponent
         $library->accept = app(UploadMediaAction::class)->field()->accept;
 
         return $library;
+    }
+
+    /**
+     * The detail panel beside the grid. Off leaves the library a plain browser:
+     * a card click selects, nothing opens.
+     */
+    public function inspector(bool $inspector = true): static
+    {
+        $this->inspector = $inspector;
+
+        return $this;
+    }
+
+    /**
+     * The folder rail beside the grid. Off by default: an existing library has
+     * no folders yet, and an empty rail is noise rather than navigation.
+     */
+    public function folders(bool $folders = true): static
+    {
+        $this->folders = $folders;
+
+        return $this->schema([]);
     }
 
     public function picker(bool $picker = true): static
@@ -145,9 +176,27 @@ final class MediaLibrary extends ContainerComponent
                     $upload,
                 ];
 
+            if ($this->folders && ! $this->uploadOnly) {
+                $children[] = Tree::use(MediaFolderTree::class)
+                    ->moveAction(MoveMediaFolderAction::class)
+                    ->rememberState();
+                $children[] = Action::use(CreateMediaFolderAction::class)->key('media-folder-create');
+            }
+
             if (! $this->picker && ! $this->uploadOnly) {
                 $children[] = Action::use(UpdateMediaAction::class)->key('media-update');
                 $children[] = Action::use(DeleteMediaAction::class)->key('media-delete');
+
+                // A document viewer only when one is installed: the inspector
+                // clones this template with the selected file's url, and
+                // without lattice-php/pdf it falls back to the type icon.
+                if (class_exists(PdfViewer::class)) {
+                    $children[] = PdfViewer::make('media-pdf')
+                        ->template()
+                        ->searchable(false)
+                        ->sidebar(false)
+                        ->maxHeight('20rem');
+                }
             }
 
             $this->schema($children);

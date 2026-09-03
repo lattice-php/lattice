@@ -14,8 +14,58 @@ return [
         'uploaded' => ':count file(s) uploaded',
     ],
     'detail' => [
+        'close' => 'Close details',
         'download' => 'Download',
+        'empty' => 'Select a file to see its details.',
+        'full-view' => 'Open full view',
         'save' => 'Save',
+        'url' => 'URL',
+    ],
+    'sort' => [
+        'label' => 'Sort by',
+        'name-asc' => 'Name A–Z',
+        'name-desc' => 'Name Z–A',
+        'newest' => 'Newest first',
+        'oldest' => 'Oldest first',
+        'size-asc' => 'Smallest first',
+        'size-desc' => 'Largest first',
+    ],
+    'view' => [
+        'label' => 'View',
+        'grid' => 'Grid',
+        'list' => 'List',
+    ],
+    'folders' => [
+        'label' => 'Folder',
+        'name' => 'Folder name',
+        'none' => 'No folder',
+        'parent' => 'Parent folder',
+        'unassigned' => 'Without folder',
+        'all' => 'All files',
+        'create' => [
+            'label' => 'New folder',
+            'child-label' => 'New subfolder',
+            'toast' => 'Folder created',
+        ],
+        'rename' => [
+            'label' => 'Rename',
+            'toast' => 'Folder renamed',
+        ],
+        'delete' => [
+            'label' => 'Delete folder',
+            'confirm-title' => 'Delete this folder?',
+            'confirm-description' => 'Its subfolders and files move to the parent folder — nothing is deleted.',
+            'toast' => 'Folder deleted',
+        ],
+        'move' => [
+            'label' => 'Move folder',
+            'rejected' => 'The folder cannot be moved there.',
+        ],
+        'move-media' => [
+            'label' => 'Move to folder',
+            'target' => 'Target folder',
+            'toast' => ':count file(s) moved',
+        ],
     ],
     'picker' => [
         'confirm' => 'Select :count item(s)',

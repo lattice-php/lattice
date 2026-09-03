@@ -11,7 +11,7 @@ export {
   withRefHeader,
 } from "./component-ref";
 export { LATTICE_EVENT } from "./event-names";
-export type { ReloadComponentEvent } from "./event-names";
+export type { ReloadComponentEvent, TreeActivateEvent } from "./event-names";
 export * from "./headers";
 export {
   dataBindings,

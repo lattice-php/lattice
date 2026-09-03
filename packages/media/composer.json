@@ -18,7 +18,11 @@
         "lattice-php/core": "self.version",
         "lattice-php/form": "self.version",
         "lattice-php/table": "self.version",
+        "lattice-php/tree": "self.version",
         "lattice-php/ui": "self.version"
+    },
+    "suggest": {
+        "lattice-php/pdf": "Preview PDF files inside the media inspector."
     },
     "autoload": {
         "psr-4": {
@@ -31,6 +35,7 @@
             "plugin": "resources/js/plugin.ts",
             "standalone": "dist/plugin.js",
             "css": "resources/css/media.css",
+            "icons": "resources/icons",
             "discover": ["src"]
         },
         "laravel": {

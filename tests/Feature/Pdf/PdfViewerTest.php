@@ -55,6 +55,14 @@ it('resolves a closure url at serialization time', function (): void {
     expect($node['props']['url'])->toBe('https://files.example.test/from-closure.pdf');
 });
 
+it('serializes a template without a document but with everything needed to load one', function (): void {
+    $node = wire(PdfViewer::make('template')->template()->sidebar(false));
+
+    expect($node['props']['url'])->toBe('')
+        ->and($node['props']['sidebar'])->toBeFalse()
+        ->and($node['props']['workerUrl'])->toContain('lattice/pdf/worker.js');
+});
+
 it('requires a document url', function (): void {
     wire(PdfViewer::make());
 })->throws(InvalidArgumentException::class, 'PdfViewer requires a document url.');

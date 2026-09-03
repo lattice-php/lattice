@@ -28,6 +28,8 @@
                 "key": "gallery-library",
                 "props": {
                     "accept": null,
+                    "folders": false,
+                    "inspector": true,
                     "picker": true,
                     "signed": false
                 },

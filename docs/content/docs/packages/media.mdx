@@ -8,7 +8,7 @@ import ComponentExample from "@components/ComponentExample.astro";
 import Info from "@components/Info.astro";
 
 The media package is a first-party media library — an uploadable, searchable file library with a
-React grid, a detail slideout for renaming and alt text, bulk delete, and a form field that
+React grid, an inspector for renaming and alt text, folders, bulk actions, and a form field that
 attaches media to any model through a polymorphic pivot.
 
 ## Installation
@@ -76,6 +76,57 @@ $product->firstMediaUrl('gallery');
 ```
 
 Validate submitted ids with `Lattice\Media\Rules\AttachableMedia`.
+
+## Browsing: views and the inspector
+
+The library renders a toolbar (search, type filter, sort order, grid or list) above the files and
+an inspector beside them. Clicking a file makes it the active one; the inspector shows its
+preview, metadata, name, alt text, folder, download and delete. Below the `lg` breakpoint the same
+panel arrives as a slideout instead of a column, and selecting several files replaces the details
+with a summary of the selection while the bulk bar offers the actions.
+
+```php
+MediaLibrary::make()->inspector(false);
+```
+
+<Info>
+  `inspector(false)` leaves the library a plain browser: a card click selects, nothing opens. The
+  picker never shows the inspector — inside the choose dialog a click is pure selection.
+</Info>
+
+## PDFs and other documents
+
+Every accepted file type is listed with a type icon and an extension badge. When
+[lattice-php/pdf](/packages/pdf/) is installed, the library composes a viewer template and the
+inspector renders the selected PDF in it — compact beside the grid, with search and the page
+sidebar behind **Open full view**. Nothing to configure: install the package and PDFs preview.
+
+```bash
+composer require lattice-php/pdf
+```
+
+## Folders
+
+Folders are user-managed navigation over the same pool of files. They are metadata only — renaming
+or moving a folder never touches a stored file — and one global tree serves every library.
+
+```php
+MediaLibrary::make()->folders();
+```
+
+The rail shows **All files** and **Without folder** above the folder tree (from
+[lattice-php/tree](/packages/tree/), so lazy loading, keyboard navigation and drag-and-drop
+re-parenting come with it). Each folder node carries its own actions — new subfolder, rename,
+delete — and the file count as a badge. Uploads land in the folder that is open, the inspector
+files a single file, and **Move to folder** moves a whole selection.
+
+<Info>
+  Deleting a folder deletes nothing else: its subfolders and files move up to the parent folder.
+</Info>
+
+Folders and [categories](#categories) answer different questions: a category is a developer-owned
+pool sealed into the component reference, a folder is navigation the user creates and rearranges
+inside whatever pool they are looking at.
 
 ## Categories
 

@@ -85,6 +85,17 @@ export function useTable(node: TableNode) {
     });
   }
 
+  /**
+   * Replaces the whole sort set. Grid-style consumers have no column headers
+   * to cycle through `sort()`, so they name key and direction outright.
+   */
+  function setSorts(sorts: TableSort[]): void {
+    const nextQuery = { ...query, page: 1, sorts };
+
+    setQuery(nextQuery);
+    void load(nextQuery);
+  }
+
   function clearSort(sort: TableSort): void {
     void load({
       ...query,
@@ -297,6 +308,7 @@ export function useTable(node: TableNode) {
     hasLoaded,
     infiniteLoaderRef,
     sort,
+    setSorts,
     clearSort,
     goToPage,
     setPerPage,

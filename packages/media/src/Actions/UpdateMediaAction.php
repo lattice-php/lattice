@@ -10,6 +10,7 @@ use Lattice\Actions\Components\Action;
 use Lattice\Actions\FormActionDefinition;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Form\Components\Form;
+use Lattice\Form\Components\HiddenInput;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Media\Models\Media;
@@ -41,6 +42,7 @@ final class UpdateMediaAction extends FormActionDefinition
         return $form->schema([
             TextInput::make('name', __('media::media.columns.name'))->rules(['required', 'string', 'max:255']),
             TextInput::make('alt', __('media::media.columns.alt'))->rules(['nullable', 'string', 'max:255']),
+            HiddenInput::make('folder_id')->rules(['nullable', 'integer', 'exists:media_folders,id']),
         ]);
     }
 
@@ -48,7 +50,10 @@ final class UpdateMediaAction extends FormActionDefinition
     {
         $media = $this->media($request);
 
-        $media->update(['name' => $data['name']]);
+        $media->update([
+            'name' => $data['name'],
+            ...($data->has('folder_id') ? ['folder_id' => $data->filled('folder_id') ? (int) $data->get('folder_id') : null] : []),
+        ]);
         $media->mergeMeta(['alt' => $data['alt'] ?? null]);
 
         return ActionResult::success(['id' => $media->getKey()])
