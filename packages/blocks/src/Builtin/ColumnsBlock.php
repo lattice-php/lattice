@@ -21,6 +21,8 @@ final class ColumnsBlock extends BlockDefinition
 {
     public const int MAX = 4;
 
+    public const array COLUMN_CLASSES = [2 => 'md:grid-cols-2', 3 => 'md:grid-cols-3', 4 => 'md:grid-cols-4'];
+
     public function fields(): array
     {
         return [
@@ -53,7 +55,7 @@ final class ColumnsBlock extends BlockDefinition
         $count = $this->count($data->all());
 
         return view('blocks::blocks.columns', [
-            'count' => $count,
+            'columnsClass' => self::COLUMN_CLASSES[$count],
             'columns' => array_map(static fn (int $index): HtmlString => $slots->html("col_{$index}"), range(1, $count)),
         ]);
     }

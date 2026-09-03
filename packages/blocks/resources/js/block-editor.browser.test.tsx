@@ -13,6 +13,7 @@ import {
   document,
   noteType,
   renderedFor,
+  testStyleClasses,
   TestText,
   testTypes,
   textFrame,
@@ -59,6 +60,8 @@ function renderEditor(doc: BlockDocument) {
       ref: "sealed",
       rendered: renderedFor(doc),
       revision: 1,
+      seedType: "lattice.paragraph",
+      styleClasses: testStyleClasses,
       title: "Landing",
       types: testTypes,
     },
@@ -140,50 +143,17 @@ describe("block editor", () => {
     await expect.element(byTest("blocks-save-state")).toHaveAttribute("data-save-state", "dirty");
   });
 
-  it("moves the selected block out of its column with Alt+ArrowUp and undoes it", async () => {
-    stubEditorEndpoint();
-    renderEditor(baseDocument());
-
-    await userEvent.click(byTest("block-p"));
-    await expect.element(byTest("block-p")).toHaveAttribute("data-selected", "true");
-
-    await userEvent.keyboard("{Alt>}{ArrowUp}{/Alt}");
-    await expect.poll(() => rootBlockIds()).toEqual(["h", "p", "c", "s"]);
-
-    await userEvent.keyboard("{Meta>}z{/Meta}");
-    await expect.poll(() => rootBlockIds()).toEqual(["h", "c", "s"]);
-    await expect.poll(() => blockIdsIn("slot-c-col_1")).toEqual(["p"]);
-  });
-
-  it("re-renders a block after editing a content field in the inspector", async () => {
-    const calls = stubEditorEndpoint();
-    renderEditor(baseDocument());
-
-    await userEvent.click(byTest("block-p"));
-    await userEvent.click(byTest("blocks-inspector-tab-content"));
-    const input = page.getByRole("textbox", { exact: true, name: "Text" });
-    await userEvent.clear(input);
-    await userEvent.type(input, "Fresh");
-
-    await expect.element(page.getByText("Rendered Fresh")).toBeInTheDocument();
-    expect(calls.filter((call) => call.op === "render")).toHaveLength(1);
-  });
-
   it("changes a block's width from the style panel without a server round trip", async () => {
     const calls = stubEditorEndpoint();
     renderEditor(baseDocument());
 
     await userEvent.click(byTest("block-h"));
-    await userEvent.click(byTest("blocks-style-width").getByText("Wide"));
+    await expect.element(byTest("block-h")).toHaveAttribute("data-block-width", "full");
 
+    await userEvent.click(byTest("blocks-style-width").getByText("Content"));
+
+    await expect.element(byTest("block-h")).toHaveAttribute("data-block-width", "content");
     await expect.element(byTest("block-h").getByText("Hello")).toBeInTheDocument();
-    await expect
-      .poll(
-        () =>
-          globalThis.document.querySelector('[data-test="block-h"] .lt-blocks-frame > div')
-            ?.className,
-      )
-      .toContain("max-w-6xl");
     expect(calls.filter((call) => call.op === "render")).toHaveLength(0);
   });
 });

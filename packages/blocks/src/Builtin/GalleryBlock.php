@@ -22,6 +22,8 @@ use Lattice\Ui\Enums\Icon;
 #[AsBlock('lattice.gallery', label: 'Gallery', icon: Icon::Images, category: BlockCategory::Media, description: 'A grid of images.', keywords: ['photos', 'grid', 'media'])]
 final class GalleryBlock extends BlockDefinition
 {
+    public const array COLUMN_CLASSES = [2 => 'grid-cols-2', 3 => 'grid-cols-2 md:grid-cols-3', 4 => 'grid-cols-2 md:grid-cols-4'];
+
     public function fields(): array
     {
         return [
@@ -52,7 +54,7 @@ final class GalleryBlock extends BlockDefinition
 
         return $images === [] ? '' : view('blocks::blocks.gallery', [
             'images' => $images,
-            'columns' => $this->columns($data),
+            'columnsClass' => self::COLUMN_CLASSES[$this->columns($data)],
         ]);
     }
 

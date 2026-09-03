@@ -16,6 +16,7 @@ import {
   renderedFor,
   renderedFrame,
   richDoc,
+  testStyleClasses,
   testTypes,
 } from "./test-support";
 import type { BlockDocument, BlockNode } from "./types";
@@ -55,6 +56,8 @@ function renderEditor(doc: BlockDocument) {
       ref: "sealed",
       rendered: renderedFor(doc),
       revision: 1,
+      seedType: "lattice.paragraph",
+      styleClasses: testStyleClasses,
       title: "Landing",
       types: testTypes,
     },

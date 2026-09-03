@@ -12,6 +12,7 @@ import {
   document,
   renderedFor,
   testPatterns,
+  testStyleClasses,
   TestText,
   testTypes,
   textFrame,
@@ -71,6 +72,8 @@ function renderEditor(
       ref: "sealed",
       rendered,
       revision: 1,
+      seedType: "lattice.paragraph",
+      styleClasses: testStyleClasses,
       title: "Landing",
       types,
     },
@@ -182,6 +185,26 @@ describe("block editor (jsdom)", () => {
       expect(ids[0]).toBe("h");
       expect(screen.getByTestId(`block-${ids[1]}`)).toHaveAttribute("data-selected", "true");
       expect(within(screen.getByTestId(`block-${ids[1]}`)).getByText("Hello")).toBeInTheDocument();
+    });
+
+    it("gives a duplicated columns block its own slots instead of sharing the original's", async () => {
+      stubEditorEndpoint();
+      renderEditor(baseDocument());
+      selectBlock("c");
+
+      fireEvent.click(screen.getByTestId("block-duplicate-c"));
+
+      const copyId = rootBlockIds()[2] as string;
+      expect(copyId).not.toBe("c");
+      await waitFor(() => expect(blockIdsIn(`slot-${copyId}-col_1`)).toHaveLength(1));
+      expect(blockIdsIn(`slot-${copyId}-col_1`)).not.toEqual(["p"]);
+
+      fireEvent.click(screen.getByTestId(`insert-${copyId}-col_2`));
+      fireEvent.click(screen.getByTestId(`insert-${copyId}-col_2-lattice.paragraph`));
+
+      await waitFor(() => expect(blockIdsIn(`slot-${copyId}-col_2`)).toHaveLength(1));
+      expect(blockIdsIn("slot-c-col_2")).toEqual([]);
+      expect(blockIdsIn("slot-c-col_1")).toEqual(["p"]);
     });
 
     it("removes the block and clears the inspector", () => {
@@ -553,6 +576,19 @@ describe("block editor (jsdom)", () => {
       expect(blockTypesIn("blocks-canvas-root")[3]).toBe("lattice.columns");
     });
 
+    it("focuses the block an insert menu adds", async () => {
+      stubEditorEndpoint();
+      renderEditor(baseDocument());
+
+      fireEvent.click(screen.getByTestId("insert-root-root"));
+      fireEvent.click(screen.getByTestId("insert-root-root-lattice.heading"));
+
+      expect(await screen.findByText("Rendered lattice.heading")).toBeInTheDocument();
+      const added = rootBlockIds()[3] as string;
+      expect(globalThis.document.activeElement).toBe(screen.getByTestId(`block-${added}`));
+      expect(screen.getByTestId(`block-${added}`)).toHaveAttribute("data-selected", "true");
+    });
+
     it("offers only the slot's allowed types and closes on an outside click", async () => {
       stubEditorEndpoint();
       renderEditor(baseDocument());
@@ -613,9 +649,11 @@ describe("block editor (jsdom)", () => {
       stubEditorEndpoint();
       renderEditor(baseDocument());
       selectBlock("h");
+      const frame = () => screen.getByTestId("block-h").querySelector(".lt-blocks-frame");
 
       fireEvent.change(screen.getByTestId("blocks-style-paddingTop"), { target: { value: "lg" } });
       expect(screen.getByTestId("blocks-style-paddingTop")).toHaveValue("lg");
+      expect(frame()).toHaveClass("pt-12");
 
       fireEvent.change(screen.getByTestId("blocks-style-paddingTop"), { target: { value: "" } });
       expect(screen.getByTestId("blocks-style-paddingTop")).toHaveValue("");

@@ -8,7 +8,7 @@ export type BlockEntry = {
   depth: number;
 };
 
-export function emptyStyle(): BlockStyle {
+function emptyStyle(): BlockStyle {
   return {
     align: null,
     anchor: null,
@@ -59,8 +59,23 @@ export function flattenDocument(document: BlockDocument): BlockEntry[] {
   return entries;
 }
 
+// Documents are immutable and replaced by reference, so one index per
+// document serves every frame, slot and bound node between edits.
+const indexes = new WeakMap<BlockDocument, Map<string, BlockEntry>>();
+
+function indexOf(document: BlockDocument): Map<string, BlockEntry> {
+  let index = indexes.get(document);
+
+  if (!index) {
+    index = new Map(flattenDocument(document).map((entry) => [entry.node.id, entry]));
+    indexes.set(document, index);
+  }
+
+  return index;
+}
+
 export function findBlock(document: BlockDocument, id: string): BlockEntry | null {
-  return flattenDocument(document).find((entry) => entry.node.id === id) ?? null;
+  return indexOf(document).get(id) ?? null;
 }
 
 export function childrenOf(
@@ -77,7 +92,7 @@ export function childrenOf(
   return parent && slot !== null ? (parent.node.slots[slot] ?? []) : [];
 }
 
-export function isDescendant(document: BlockDocument, ancestorId: string, id: string): boolean {
+function isDescendant(document: BlockDocument, ancestorId: string, id: string): boolean {
   const ancestor = findBlock(document, ancestorId);
 
   if (!ancestor) {

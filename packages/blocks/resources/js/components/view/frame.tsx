@@ -1,22 +1,19 @@
 import type { ReactNode } from "react";
 import { cn } from "@lattice-php/ui/lib/utils";
-import type { BlockStyle } from "../../types";
-import { frameInnerClasses, frameOuterClasses } from "../../lib/style-classes";
+import type { FrameClasses } from "../../types";
 
 export type FrameProps = {
-  style: BlockStyle;
+  classes: FrameClasses;
+  anchor?: string | null;
   children: ReactNode;
   className?: string;
 };
 
-/** Applies a block's generic style around its rendered content. */
-export function Frame({ style, children, className }: FrameProps) {
+/** Applies a block's resolved style classes around its rendered content. */
+export function Frame({ classes, anchor, children, className }: FrameProps) {
   return (
-    <div
-      className={cn("lt-blocks-frame", frameOuterClasses(style), className)}
-      id={style.anchor ?? undefined}
-    >
-      <div className={frameInnerClasses(style)}>{children}</div>
+    <div className={cn("lt-blocks-frame", classes.outer, className)} id={anchor ?? undefined}>
+      <div className={classes.inner}>{children}</div>
     </div>
   );
 }

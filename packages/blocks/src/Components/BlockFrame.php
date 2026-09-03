@@ -5,13 +5,14 @@ namespace Lattice\Blocks\Components;
 
 use Lattice\Blocks\BlockStyle;
 use Lattice\Blocks\BlockSupports;
+use Lattice\Blocks\FrameClasses;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Ui\Components\ContainerComponent;
 
 /**
- * Wraps one rendered block: carries its identity and generic style so the
- * client applies width, spacing, background, and visibility without the block
- * render knowing about any of it.
+ * Wraps one rendered block: carries its identity, generic style and the
+ * classes that style resolves to, so the view applies width, spacing,
+ * background and visibility without the block render knowing about any of it.
  */
 #[AsComponent('blocks.frame')]
 class BlockFrame extends ContainerComponent
@@ -24,12 +25,15 @@ class BlockFrame extends ContainerComponent
 
     public BlockSupports $supports;
 
+    public FrameClasses $classes;
+
     public function __construct(?string $key = null)
     {
         parent::__construct($key);
 
         $this->style = BlockStyle::empty();
         $this->supports = BlockSupports::all();
+        $this->classes = FrameClasses::none();
     }
 
     public static function make(?string $key = null): static
@@ -55,6 +59,13 @@ class BlockFrame extends ContainerComponent
     public function supports(BlockSupports $supports): static
     {
         $this->supports = $supports;
+
+        return $this;
+    }
+
+    public function classes(FrameClasses $classes): static
+    {
+        $this->classes = $classes;
 
         return $this;
     }

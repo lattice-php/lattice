@@ -82,9 +82,7 @@ export function StylePanel({
         </Section>
       )}
       {supports.spacing && (
-        <Section
-          title={t("blocks.editor.inspector.padding-top", "Padding top").replace(/ top$/i, "")}
-        >
+        <Section title={t("blocks.editor.inspector.spacing", "Spacing")}>
           {spacing("paddingTop", t("blocks.editor.inspector.padding-top", "Padding top"))}
           {spacing("paddingBottom", t("blocks.editor.inspector.padding-bottom", "Padding bottom"))}
           {spacing("marginTop", t("blocks.editor.inspector.margin-top", "Margin top"))}

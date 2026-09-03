@@ -40,7 +40,7 @@ final class SpacerBlock extends BlockDefinition
 
     public function html(BlockData $data, BlockSlots $slots): View
     {
-        return view('blocks::blocks.spacer', ['size' => $this->size($data)]);
+        return view('blocks::blocks.spacer', ['height' => $this->height($data)]);
     }
 
     private function size(BlockData $data): string

@@ -10,8 +10,6 @@ import type {
   CanvasWidth,
 } from "../types";
 import {
-  canRedo,
-  canUndo,
   createHistory,
   push,
   redo as redoHistory,
@@ -41,6 +39,8 @@ export type EditorState = {
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
   patterns: readonly BlockPatternData[];
+  /** The block type an empty page opens with and Enter splits into; null when the editor offers none. */
+  seedType: string | null;
   canvasWidth: CanvasWidth;
   selectedId: string | null;
   revision: number;
@@ -65,6 +65,7 @@ export function createEditorStore(initial: {
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
   patterns?: readonly BlockPatternData[];
+  seedType?: string | null;
   revision: number;
 }): EditorStore {
   let state: EditorState = {
@@ -78,6 +79,7 @@ export function createEditorStore(initial: {
     rendered: initial.rendered,
     revision: initial.revision,
     saveState: "idle",
+    seedType: initial.seedType ?? null,
     selectedId: null,
     staleIds: [],
     travelCount: 0,
@@ -206,20 +208,19 @@ export function insertPattern(
   };
 }
 
-export const PARAGRAPH_TYPE = "lattice.paragraph";
-
-/** A page without blocks opens with one paragraph so writing can start at once. */
+/** A page without blocks opens with one seed block so writing can start at once. */
 export function seedDocument(
   document: BlockDocument,
   types: readonly BlockTypeData[],
+  seedType: string | null,
 ): BlockDocument {
-  const paragraph = typeOf(types, PARAGRAPH_TYPE);
+  const seed = seedType === null ? null : typeOf(types, seedType);
 
-  if (document.blocks.length > 0 || !paragraph) {
+  if (document.blocks.length > 0 || !seed) {
     return document;
   }
 
-  return { ...document, blocks: [createBlock(paragraph)] };
+  return { ...document, blocks: [createBlock(seed)] };
 }
 
 export function insert(
@@ -332,7 +333,7 @@ export function duplicate(state: EditorState, id: string): EditorState {
   const source = state.rendered[id];
 
   if (copy && source) {
-    rendered[result.id] = retargetRendered(source, result.id);
+    rendered[result.id] = retargetRendered(source, id, result.id);
   }
 
   const staleIds = copy ? descendantIds(copy.node).filter((childId) => childId !== result.id) : [];
@@ -344,8 +345,20 @@ function descendantIds(node: BlockNode): string[] {
   return [node.id, ...Object.values(node.slots).flat().flatMap(descendantIds)];
 }
 
-function retargetRendered(node: Node, blockId: string): Node {
-  return { ...node, props: { ...node.props, blockId } };
+/**
+ * Point a copied render at the copy: the frame and every slot outlet carry the
+ * block id, and the slots read their children from the document by it.
+ */
+function retargetRendered(node: Node, from: string, to: string): Node {
+  const owned = node.type === "blocks.frame" || node.type === "blocks.slot";
+  const key =
+    typeof node.key === "string" && node.key.startsWith(from)
+      ? to + node.key.slice(from.length)
+      : node.key;
+  const schema = node.schema?.map((child) => retargetRendered(child, from, to));
+  const next = owned ? { ...node, key, props: { ...node.props, blockId: to } } : node;
+
+  return schema ? { ...next, schema } : next;
 }
 
 export function updateData(
@@ -394,18 +407,6 @@ export function updateBoundDocument(
     : next;
 }
 
-export function replaceData(
-  state: EditorState,
-  id: string,
-  data: Record<string, unknown>,
-): EditorState {
-  return commit(
-    state,
-    updateBlock(state.document, id, (node) => ({ ...node, data })),
-    `data:${id}`,
-  );
-}
-
 export function updateStyle(
   state: EditorState,
   id: string,
@@ -445,7 +446,7 @@ export function setRendered(
   return document === state.document ? next : commit(next, document, `slots:${id}`);
 }
 
-export function slotNamesIn(node: Node): string[] {
+function slotNamesIn(node: Node): string[] {
   const names: string[] = [];
 
   const visit = (candidate: Node) => {
@@ -495,10 +496,6 @@ function travel(state: EditorState, history: History<BlockDocument>): EditorStat
   };
 }
 
-export function historyFlags(state: EditorState): { canUndo: boolean; canRedo: boolean } {
-  return { canRedo: canRedo(state.history), canUndo: canUndo(state.history) };
-}
-
 export function markSaving(state: EditorState): EditorState {
   return { ...state, saveState: "saving" };
 }
@@ -534,8 +531,18 @@ export function markPublishing(state: EditorState, publishing: boolean): EditorS
   return { ...state, publishing };
 }
 
-export function markPublished(state: EditorState, revision: number): EditorState {
-  return { ...state, publishedAt: Date.now(), publishing: false, revision, saveState: "saved" };
+export function markPublished(
+  state: EditorState,
+  revision: number,
+  published: BlockDocument,
+): EditorState {
+  return {
+    ...state,
+    publishedAt: Date.now(),
+    publishing: false,
+    revision,
+    saveState: state.document === published ? "saved" : "dirty",
+  };
 }
 
 export function setErrors(state: EditorState, errors: BlockErrors): EditorState {

@@ -6,7 +6,6 @@ import {
   findBlock,
   flattenDocument,
   insertBlock,
-  isDescendant,
   moveBlock,
   pathTo,
   reconcileSlots,
@@ -88,10 +87,19 @@ describe("moveBlock", () => {
     expect(toRoot.blocks.map((node) => node.id)).toEqual(["p3", "h", "c"]);
   });
 
-  it("refuses to move a block into its own descendant", () => {
+  it("refuses to move a block into its own descendant or into itself", () => {
     expect(moveBlock(doc, "c", { index: 0, parentId: "p1", slot: "x" })).toBe(doc);
-    expect(isDescendant(doc, "c", "p3")).toBe(true);
-    expect(isDescendant(doc, "p3", "c")).toBe(false);
+    expect(moveBlock(doc, "c", { index: 0, parentId: "p3", slot: "x" })).toBe(doc);
+    expect(moveBlock(doc, "c", { index: 0, parentId: "c", slot: "col_1" })).toBe(doc);
+  });
+
+  it("answers repeated lookups on one document from the same index", () => {
+    const first = findBlock(doc, "p3");
+
+    expect(findBlock(doc, "p3")).toBe(first);
+    expect(
+      findBlock(moveBlock(doc, "p3", { index: 0, parentId: null, slot: null }), "p3"),
+    ).not.toBe(first);
   });
 });
 

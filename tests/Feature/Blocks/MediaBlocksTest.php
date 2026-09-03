@@ -45,7 +45,7 @@ it('renders a gallery as an image grid and drops the block from the view while i
         ->and(array_column($grid['schema'], 'type'))->toBe(['image', 'image'])
         ->and($grid['schema'][1]['props']['src'])->toContain('two.jpg')
         ->and(Wire::toArray($renderer->renderShallow($empty))['schema'][0]['type'])->toBe('raw-block')
-        ->and(Wire::toArray($renderer->renderDeep($empty))['schema'][0]['type'])->toBe('stack')
+        ->and($renderer->renderDeep($empty))->toBeNull()
         ->and(substr_count($html, '<img '))->toBe(2)
         ->and($html)->toContain('md:grid-cols-4')
         ->and(substr_count($html, 'data-block-type="lattice.gallery"'))->toBe(1);
