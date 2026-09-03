@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Blocks;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -40,7 +41,10 @@ final class CtaBlock extends BlockDefinition
 
     public function render(BlockData $data, BlockSlots $slots): Stack
     {
+        $title = $data->string('title')->toString();
         $text = $data->string('text')->toString();
+        $label = $data->string('button_label')->toString();
+        $editing = $data->editing();
 
         return Stack::make()
             ->direction(Orientation::Horizontal)
@@ -50,10 +54,21 @@ final class CtaBlock extends BlockDefinition
             ->class('rounded-lt bg-lt-fg px-6 py-5 text-lt-bg')
             ->schema([
                 Stack::make()->gap(Gap::ExtraSmall)->schema(array_filter([
-                    Heading::make($data->string('title')->toString() ?: __('workbench.blocks.cta.placeholder'), 3),
+                    Heading::make($title === '' && $editing ? __('workbench.blocks.cta.placeholder') : $title, 3),
                     $text === '' ? null : Text::make($text)->size(Size::Sm),
                 ])),
-                Button::make($data->string('button_label')->toString() ?: __('workbench.blocks.cta.button-placeholder')),
+                Button::make($label === '' && $editing ? __('workbench.blocks.cta.button-placeholder') : $label),
             ]);
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View|string
+    {
+        $title = $data->string('title')->toString();
+
+        return $title === '' ? '' : view('workbench::blocks.cta', [
+            'title' => $title,
+            'text' => $data->string('text')->toString(),
+            'buttonLabel' => $data->string('button_label')->toString(),
+        ]);
     }
 }

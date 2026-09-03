@@ -132,6 +132,7 @@ class WorkbenchServiceProvider extends ServiceProvider
         }
 
         $this->loadMigrationsFrom(package_path('workbench/database/migrations'));
+        $this->loadViewsFrom(package_path('workbench/resources/views'), 'workbench');
 
         Lattice::theme(Theme::make()->primary(Swatch::Indigo));
 

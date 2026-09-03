@@ -11,7 +11,8 @@ use Lattice\Ui\Components\Component;
 /**
  * A rich-text document rendered as sanitized HTML. Carrying the document
  * alongside the HTML lets the block editor swap the node for an inline editor
- * while every other renderer shows the server-rendered markup.
+ * (which shows the placeholder) while every other renderer shows the
+ * server-rendered markup and nothing for an empty document.
  */
 #[AsComponent('blocks.rich-text')]
 class RichText extends Component
@@ -32,10 +33,24 @@ class RichText extends Component
         $component = new static($key);
         $component->document = $document;
         $component->placeholder = $placeholder;
-        $component->html = $document === null
-            ? ($placeholder === null ? '' : '<p class="text-lt-muted-fg">'.e($placeholder).'</p>')
-            : '<div class="lt-blocks-prose">'.RichContent::make($document)->toHtml().'</div>';
+        $component->html = self::toHtml($document);
 
         return $component;
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $document
+     */
+    public static function isBlank(?array $document): bool
+    {
+        return $document === null || trim(RichContent::make($document)->toText()) === '';
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $document
+     */
+    public static function toHtml(?array $document): string
+    {
+        return $document === null ? '' : '<div class="lt-blocks-prose">'.RichContent::make($document)->toHtml().'</div>';
     }
 }

@@ -7,7 +7,11 @@ return [
             'title' => 'Seiten',
             'description' => 'Blockbasierte Seiten aus dem lattice-php/blocks-Editor.',
             'columns' => ['title' => 'Titel', 'slug' => 'Slug', 'revision' => 'Revision'],
-            'actions' => ['edit' => 'Bearbeiten', 'view' => 'Ansehen'],
+            'actions' => ['edit' => 'Bearbeiten', 'view' => 'Ansehen', 'public' => 'Öffentliche Seite'],
+        ],
+        'patterns' => [
+            'hero-cta' => ['label' => 'Hero mit Call-to-Action', 'description' => 'Überschrift, Einleitung und abschließender Aufruf.'],
+            'text-image' => ['label' => 'Text und Bild', 'description' => 'Zwei Spalten: Fließtext neben einem Bild.'],
         ],
         'hero' => [
             'title' => 'Titel',

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Workbench\App\Blocks;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -43,19 +44,36 @@ final class HeroBlock extends BlockDefinition
     public function render(BlockData $data, BlockSlots $slots): Stack
     {
         $title = $data->string('title')->toString();
-        $intro = $data->document('intro');
         $label = $data->string('button_label')->toString();
         $media = ImageBlock::media($data->get('image'));
+        $editing = $data->editing();
 
-        return Stack::make()->gap(Gap::Medium)->schema([
-            Heading::make($title === '' ? __('workbench.blocks.hero.placeholder') : $title, 1)->bind('title'),
-            RichText::make($intro, __('workbench.blocks.hero.intro-placeholder'))->class('text-lg text-lt-muted-fg')->bind('intro'),
-            Button::make($label === '' ? __('workbench.blocks.hero.button-placeholder') : $label)
-                ->href($data->string('button_target')->toString() ?: '#')
-                ->bind('button_label'),
-            $media?->url() === null
-                ? RawBlock::make()->html(ImageBlock::placeholder(__('blocks::blocks.placeholders.image')))->bind('image')
-                : Image::make($media->url())->previewable(false)->bind('image'),
+        $image = match (true) {
+            $media?->url() !== null => Image::make($media->url())->previewable(false)->bind('image'),
+            $editing => RawBlock::make()->html(ImageBlock::placeholder(__('blocks::blocks.placeholders.image')))->bind('image'),
+            default => null,
+        };
+
+        return Stack::make()->gap(Gap::Medium)->schema(array_values(array_filter([
+            Heading::make($title === '' && $editing ? __('workbench.blocks.hero.placeholder') : $title, 1)->bind('title'),
+            RichText::make($data->document('intro'), __('workbench.blocks.hero.intro-placeholder'))->class('text-lg text-lt-muted-fg')->bind('intro'),
+            $label === '' && ! $editing
+                ? null
+                : Button::make($label === '' ? __('workbench.blocks.hero.button-placeholder') : $label)
+                    ->href($data->string('button_target')->toString() ?: '#')
+                    ->bind('button_label'),
+            $image,
+        ])));
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View
+    {
+        return view('workbench::blocks.hero', [
+            'title' => $data->string('title')->toString(),
+            'intro' => RichText::toHtml($data->document('intro')),
+            'buttonLabel' => $data->string('button_label')->toString(),
+            'buttonTarget' => $data->string('button_target')->toString() ?: '#',
+            'imageSrc' => ImageBlock::media($data->get('image'))?->url(),
         ]);
     }
 }

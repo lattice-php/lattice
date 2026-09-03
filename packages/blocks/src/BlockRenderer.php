@@ -24,12 +24,12 @@ final readonly class BlockRenderer
 
     public function renderDeep(BlockNode $node): BlockFrame
     {
-        return $this->frame($node, fn (BlockDefinition $definition, array $slots): array => $this->renderChildren($node, $slots));
+        return $this->frame($node, fn (BlockDefinition $definition, array $slots): array => $this->renderChildren($node, $slots), editing: false);
     }
 
     public function renderShallow(BlockNode $node): BlockFrame
     {
-        return $this->frame($node, static fn (): array => []);
+        return $this->frame($node, static fn (): array => [], editing: true);
     }
 
     /**
@@ -49,7 +49,7 @@ final readonly class BlockRenderer
     /**
      * @param  callable(BlockDefinition, array<string, SlotData>): array<string, list<Component>>  $children
      */
-    private function frame(BlockNode $node, callable $children): BlockFrame
+    private function frame(BlockNode $node, callable $children, bool $editing): BlockFrame
     {
         $frame = BlockFrame::make($node->id)->block($node->id, $node->type)->style($node->style);
         $definition = $this->blocks->find($node->type);
@@ -59,7 +59,7 @@ final readonly class BlockRenderer
         }
 
         $slots = $this->blocks->slotsFor($definition, $node->data);
-        $data = $this->blocks->castData($definition, $node->data);
+        $data = $this->blocks->castData($definition, $node->data, $editing);
 
         return $frame
             ->supports($definition->supports())

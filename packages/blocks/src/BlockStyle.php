@@ -74,6 +74,18 @@ final readonly class BlockStyle
     }
 
     /**
+     * The classes a plain HTML output puts on the block's outer and inner
+     * element, mapped through {@see StyleClassMap} so a theme can override
+     * every value from `config('lattice.blocks.style_classes')`.
+     *
+     * @return array{outer: string, inner: string}
+     */
+    public function classes(): array
+    {
+        return app(StyleClassMap::class)->classesFor($this);
+    }
+
+    /**
      * @template TEnum of \BackedEnum
      *
      * @param  class-string<TEnum>  $enum

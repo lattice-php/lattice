@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -35,9 +36,19 @@ final class QuoteBlock extends BlockDefinition
         $quote = $data->string('quote')->toString();
         $cite = $data->string('cite')->toString();
 
-        return Stack::make()->gap(Gap::Small)->class('border-l-4 border-lt-border pl-4')->schema([
-            Text::make($quote === '' ? __('blocks::blocks.placeholders.quote') : $quote)->size(Size::Lg)->class('italic')->bind('quote'),
-            Text::make($cite)->size(Size::Sm)->color(ColorName::Muted)->bind('cite'),
+        return Stack::make()->gap(Gap::Small)->class('border-l-4 border-lt-border pl-4')->schema(array_filter([
+            Text::make($quote === '' && $data->editing() ? __('blocks::blocks.placeholders.quote') : $quote)->size(Size::Lg)->class('italic')->bind('quote'),
+            $cite === '' && ! $data->editing() ? null : Text::make($cite)->size(Size::Sm)->color(ColorName::Muted)->bind('cite'),
+        ]));
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View|string
+    {
+        $quote = $data->string('quote')->toString();
+
+        return $quote === '' ? '' : view('blocks::blocks.quote', [
+            'quote' => $quote,
+            'cite' => $data->string('cite')->toString(),
         ]);
     }
 }

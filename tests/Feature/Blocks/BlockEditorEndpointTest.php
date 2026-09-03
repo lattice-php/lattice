@@ -18,7 +18,8 @@ it('serializes the editor with its document, shallow renders, and offered block 
         ->and($editor['props']['ref'])->toBeString()
         ->and($editor['props']['revision'])->toBe(1)
         ->and($editor['props']['title'])->toBe('Landing')
-        ->and($editor['props']['previewUrl'])->toStartWith('/pages/')
+        ->and($editor['props']['previewUrl'])->toBe('/p/landing')
+        ->and(array_column($editor['props']['patterns'], 'key'))->toBe(['hero-cta', 'text-image'])
         ->and(array_keys($editor['props']['rendered']))->toBe(['b_heading', 'b_columns', 'b_left', 'b_right'])
         ->and(array_column($editor['props']['types'], 'type'))->toContain('workbench.hero', 'lattice.columns')
         ->and($editor['props']['document']['blocks'][1]['slots']['col_1'][0]['id'])->toBe('b_left');

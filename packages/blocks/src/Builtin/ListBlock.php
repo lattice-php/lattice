@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks\Builtin;
 
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\BlockData;
 use Lattice\Blocks\BlockDefinition;
@@ -33,6 +34,15 @@ final class ListBlock extends BlockDefinition
     public function render(BlockData $data, BlockSlots $slots): RichText
     {
         return RichText::make($data->document('content'), __('blocks::blocks.placeholders.list'))->bind('content');
+    }
+
+    public function html(BlockData $data, BlockSlots $slots): View|string
+    {
+        $document = $data->document('content');
+
+        return RichText::isBlank($document)
+            ? ''
+            : view('blocks::blocks.list', ['html' => RichText::toHtml($document)]);
     }
 
     /**

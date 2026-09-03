@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Lattice\Blocks;
 
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Contracts\View\View;
 use Lattice\Blocks\Attributes\AsBlock;
 use Lattice\Blocks\Enums\BlockCategory;
 use Lattice\Core\Definition;
@@ -24,6 +26,17 @@ abstract class BlockDefinition extends Definition
     abstract public function fields(): array;
 
     abstract public function render(BlockData $data, BlockSlots $slots): Component;
+
+    /**
+     * The block's markup for a plain HTML output such as a public page. Null
+     * means the block has no HTML form; {@see BlockHtmlRenderer} then falls
+     * back to the configured handler or throws. An empty string renders
+     * nothing for this block.
+     */
+    public function html(BlockData $data, BlockSlots $slots): View|Htmlable|string|null
+    {
+        return null;
+    }
 
     /**
      * The slots this block offers for the given data; null asks for every
