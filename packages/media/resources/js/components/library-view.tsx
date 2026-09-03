@@ -1,5 +1,8 @@
 import { useRef, useState } from "react";
 import { useAction } from "@lattice-php/action/hooks/use-action";
+import { LATTICE_EVENT, nodeIdentity, prefixedNodeTestId } from "@lattice-php/core";
+import type { TreeActivateEvent } from "@lattice-php/core";
+import { useWindowEvent } from "@lattice-php/core/hooks/use-window-event";
 import type { Node } from "@lattice-php/core/types";
 import { translate, useT } from "@lattice-php/ui/i18n";
 import { useDebouncedCallback } from "@lattice-php/ui/lib/use-debounced-callback";
@@ -12,6 +15,8 @@ import { useTableSelection } from "@lattice-php/table/hooks/use-table-selection"
 import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import type { TableNode } from "@lattice-php/table/types";
 import { Button } from "@lattice-php/ui/components/button/button";
+import { FolderRail } from "./folder-rail";
+import { folderOptions, UNASSIGNED_FOLDER } from "./folders";
 import { Inspector, SelectionSummary } from "./inspector";
 import { LibraryToolbar, sortsFor, type SortChoice } from "./library-toolbar";
 import { MediaGrid } from "./media-grid";
@@ -45,13 +50,17 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   const table = useTable(tableNode);
   const rows = table.rows as MediaRow[];
   const selection = useTableSelection(rows.map((row) => String(row.id)));
-  const [deleteAction] = getBulkActionNodes(tableNode.props?.bulkActions);
+  const bulkActions = getBulkActionNodes(tableNode.props?.bulkActions);
   const uploadAction = actionNode(node, "media-upload");
   const updateAction = actionNode(node, "media-update");
   const removeAction = actionNode(node, "media-delete");
   const documentViewer = node.schema?.find((child) => child.key === "media-pdf");
+  const folderTree = node.schema?.find((child) => child.type === "tree");
+  const createFolderAction = actionNode(node, "media-folder-create");
+  const [activeFolder, setActiveFolder] = useState("");
   const { uploads, addFiles, retry, dismiss } = useMediaUpload({
     endpoint: uploadAction?.props.endpoint ?? "",
+    folder: activeFolder === UNASSIGNED_FOLDER ? "" : activeFolder,
     ref: uploadAction?.props.ref ?? "",
     signed: props.signed,
   });
@@ -80,6 +89,22 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   const sortableKeys = table.columns
     .filter((column) => column.props.sortable === true)
     .map((column) => column.key);
+
+  function selectFolder(folder: string): void {
+    setActiveFolder(folder);
+    setActiveId(null);
+    table.setTableFilter("folder", folder === "" ? null : { value: folder });
+  }
+
+  useWindowEvent(LATTICE_EVENT.treeActivate, (event) => {
+    const detail = (event as TreeActivateEvent).detail;
+
+    if (folderTree === undefined || detail.component !== nodeIdentity(folderTree)) {
+      return;
+    }
+
+    selectFolder(detail.nodeId);
+  });
 
   function applySort(choice: SortChoice): void {
     setSort(choice);
@@ -169,6 +194,7 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
         key={activeRow.id}
         onClose={() => setActiveId(null)}
         onDeleted={() => setActiveId(null)}
+        folders={folderOptions(folderTree)}
         remove={removeAction}
         row={activeRow}
         update={updateAction}
@@ -235,6 +261,14 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
       <UploadList dismiss={dismiss} retry={retry} uploads={uploads} />
 
       <div className="flex items-start gap-4">
+        {folderTree && (
+          <FolderRail
+            activeFolder={activeFolder}
+            create={createFolderAction}
+            onSelect={selectFolder}
+            tree={folderTree}
+          />
+        )}
         <div className="min-w-0 flex-1">
           {rows.length === 0 && table.hasLoaded ? (
             <p className="py-12 text-center text-sm text-lt-muted-fg" data-test="media-empty">
@@ -306,10 +340,10 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
           </Button>
         </div>
       ) : (
-        deleteAction &&
+        bulkActions.length > 0 &&
         selection.active && (
-          <BulkDeleteBar
-            action={deleteAction}
+          <BulkActionBar
+            actions={bulkActions}
             onDone={selection.clear}
             selectedKeys={selection.selectedKeys}
           />
@@ -319,7 +353,37 @@ export function LibraryView({ node, pick }: { node: Node; pick?: PickMode }) {
   );
 }
 
-function BulkDeleteBar({
+function BulkActionBar({
+  actions,
+  selectedKeys,
+  onDone,
+}: {
+  actions: Node<"action" | "action.bulk">[];
+  selectedKeys: string[];
+  onDone: () => void;
+}) {
+  const { t } = useT("media");
+
+  return (
+    <div className="sticky bottom-0 z-lt-sticky flex items-center justify-between gap-3 rounded-lt-sm border border-lt-border bg-lt-surface px-4 py-3 text-sm shadow-lt-md">
+      <span>
+        {t("media.library.selected", "{{count}} selected", { count: selectedKeys.length })}
+      </span>
+      <span className="flex items-center gap-2">
+        {actions.map((action) => (
+          <BulkActionButton
+            action={action}
+            key={nodeIdentity(action)}
+            onDone={onDone}
+            selectedKeys={selectedKeys}
+          />
+        ))}
+      </span>
+    </div>
+  );
+}
+
+function BulkActionButton({
   action,
   selectedKeys,
   onDone,
@@ -328,27 +392,21 @@ function BulkDeleteBar({
   selectedKeys: string[];
   onDone: () => void;
 }) {
-  const { t } = useT("media");
   const { processing, requestSubmit } = useAction(action, {
     extraData: () => ({ selected: selectedKeys }),
     onSuccess: onDone,
   });
 
   return (
-    <div className="sticky bottom-0 z-lt-sticky flex items-center justify-between gap-3 rounded-lt-sm border border-lt-border bg-lt-surface px-4 py-3 text-sm shadow-lt-md">
-      <span>
-        {t("media.library.selected", "{{count}} selected", { count: selectedKeys.length })}
-      </span>
-      <Button
-        data-test="media-bulk-delete"
-        disabled={processing}
-        emphasis={action.props.emphasis ?? "solid"}
-        onClick={requestSubmit}
-        type="button"
-        variant={action.props.variant ?? "danger"}
-      >
-        {action.props.label}
-      </Button>
-    </div>
+    <Button
+      data-test={prefixedNodeTestId("media-bulk", action)}
+      disabled={processing}
+      emphasis={action.props.emphasis ?? "solid"}
+      onClick={requestSubmit}
+      type="button"
+      variant={action.props.variant ?? "secondary"}
+    >
+      {action.props.label}
+    </Button>
   );
 }

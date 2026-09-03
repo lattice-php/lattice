@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Gate;
 use Lattice\Actions\Components\Action;
 use Lattice\Actions\Components\BulkAction;
 use Lattice\Media\Actions\DeleteSelectedMediaAction;
+use Lattice\Media\Actions\MoveSelectedMediaAction;
 use Lattice\Media\Models\Media;
+use Lattice\Media\Tables\Filters\MediaFolderFilter;
 use Lattice\Media\Tables\Filters\MediaTypeFilter;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Columns\Column;
@@ -39,6 +41,7 @@ final class MediaTable extends EloquentTableDefinition
         return [
             ImageColumn::make('preview_url')->label(__('media::media.columns.preview'))->size(44),
             TextColumn::make('url')->label(__('media::media.columns.original'))->toggleable(hiddenByDefault: true),
+            TextColumn::make('folder_id')->label(__('media::media.folders.label'))->toggleable(hiddenByDefault: true),
             TextColumn::make('name')->label(__('media::media.columns.name'))->searchable()->sortable(),
             TextColumn::make('mime_type')->label(__('media::media.columns.type')),
             NumberColumn::make('size')->label(__('media::media.columns.size'))->sortable(),
@@ -56,6 +59,7 @@ final class MediaTable extends EloquentTableDefinition
     {
         return [
             MediaTypeFilter::make('type')->label(__('media::media.filters.type.label')),
+            MediaFolderFilter::make('folder')->label(__('media::media.folders.label')),
         ];
     }
 
@@ -107,6 +111,9 @@ final class MediaTable extends EloquentTableDefinition
     #[\Override]
     public function bulkActions(): array
     {
-        return [BulkAction::use(DeleteSelectedMediaAction::class)];
+        return [
+            BulkAction::use(MoveSelectedMediaAction::class),
+            BulkAction::use(DeleteSelectedMediaAction::class),
+        ];
     }
 }

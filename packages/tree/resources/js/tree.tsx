@@ -507,6 +507,7 @@ const TreeComponent: RendererComponent<"tree"> = ({ node }) => {
     defaultExpanded: node.props.defaultExpanded,
     endpoint: node.props.endpoint ?? null,
     componentRef: node.props.ref ?? null,
+    identity,
     lazy: node.props.lazy === true,
     maxDepth: node.props.maxDepth ?? null,
     moveAction: node.props.moveAction ?? null,

@@ -7,6 +7,7 @@ export type MediaRow = {
   mime_type: string;
   size: number;
   alt: string | null;
+  folder_id: number | null;
   created_at: string;
   attachments_count: number;
 };

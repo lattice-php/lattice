@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Storage;
 use Lattice\Media\Models\Media;
+use Lattice\Media\Models\MediaFolder;
 
 it('renders the media grid and narrows it through the search box', function (): void {
     Media::factory()->create(['name' => 'alpha.jpg']);
@@ -93,13 +94,36 @@ it('turns the inspector into a slideout on a narrow viewport', function (): void
         ->assertNoSmoke();
 });
 
+it('narrows the grid to the folder picked in the rail', function (): void {
+    $folder = MediaFolder::factory()->create(['name' => 'Invoices']);
+    Media::factory()->create(['name' => 'filed.jpg', 'folder_id' => $folder->getKey()]);
+    Media::factory()->create(['name' => 'loose.jpg']);
+
+    $page = $this->visitAsWorkbenchUser('/media')
+        ->assertPresent('@media-folders')
+        ->assertSee('filed.jpg')
+        ->assertSee('loose.jpg');
+
+    $page->click('@tree-node-'.$folder->getKey());
+
+    assertDontSeeEventually($page, 'loose.jpg');
+    $page->assertSee('filed.jpg');
+
+    $page->click('@media-folder-unassigned');
+
+    assertDontSeeEventually($page, 'filed.jpg');
+
+    $page->assertSee('loose.jpg')
+        ->assertNoSmoke();
+});
+
 it('bulk deletes the selected media', function (): void {
     Media::factory()->create(['name' => 'doomed.jpg']);
 
     $page = $this->visitAsWorkbenchUser('/media')->assertSee('doomed.jpg');
 
     $page->click('@media-card-select')
-        ->click('@media-bulk-delete');
+        ->click('@media-bulk-delete-selected');
 
     assertDontSeeEventually($page, 'doomed.jpg');
 

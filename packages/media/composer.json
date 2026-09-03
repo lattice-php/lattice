@@ -18,6 +18,7 @@
         "lattice-php/core": "self.version",
         "lattice-php/form": "self.version",
         "lattice-php/table": "self.version",
+        "lattice-php/tree": "self.version",
         "lattice-php/ui": "self.version"
     },
     "suggest": {

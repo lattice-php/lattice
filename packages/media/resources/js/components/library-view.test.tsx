@@ -1,6 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Schema } from "@lattice-php/core/types";
+import { LATTICE_EVENT, nodeIdentity } from "@lattice-php/core";
+import type { Node, Schema } from "@lattice-php/core/types";
 import { createRegistry, eagerComponent } from "@lattice-php/core";
 import {
   fakeNode,
@@ -20,9 +21,16 @@ const upload = vi.hoisted(() => ({
   addFiles: vi.fn(),
   retry: vi.fn(),
   dismiss: vi.fn(),
+  target: {} as { folder?: string },
 }));
 
-vi.mock("./use-media-upload", () => ({ useMediaUpload: () => upload }));
+vi.mock("./use-media-upload", () => ({
+  useMediaUpload: (target: { folder?: string }) => {
+    upload.target = target;
+
+    return upload;
+  },
+}));
 
 function uploadItem(overrides: Partial<UploadItem> = {}): UploadItem {
   return {
@@ -39,16 +47,96 @@ function column(key: string, sortable = true) {
   return { type: "column.text", key, props: { key, label: key, sortable } };
 }
 
+/** Stands in for the tree package: one button per folder, announcing itself the way the real tree does. */
+function treeStub({ node }: { node: Node }) {
+  const folders = (node.props?.nodes ?? []) as { id: string; label: string }[];
+
+  return (
+    <ul>
+      {folders.map((folder) => (
+        <li key={folder.id}>
+          <button
+            data-test={`folder-${folder.id}`}
+            onClick={() =>
+              window.dispatchEvent(
+                new CustomEvent(LATTICE_EVENT.treeActivate, {
+                  detail: { component: nodeIdentity(node), nodeId: folder.id },
+                }),
+              )
+            }
+            type="button"
+          >
+            {folder.label}
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type FolderTreeNode = {
+  acceptsChildren: boolean;
+  children: FolderTreeNode[];
+  class: null;
+  disabled: boolean;
+  hasChildren: boolean;
+  href: null;
+  id: string;
+  label: string;
+  schema: [];
+};
+
+function folderNode(id: string, label: string, children: FolderTreeNode[] = []): FolderTreeNode {
+  return {
+    id,
+    label,
+    children,
+    schema: [],
+    href: null,
+    class: null,
+    disabled: false,
+    hasChildren: children.length > 0,
+    acceptsChildren: true,
+  };
+}
+
+function folderTreeNode() {
+  return fakeNode({
+    id: "media.folders",
+    type: "tree",
+    props: {
+      nodes: [folderNode("4", "Invoices", [folderNode("7", "2026")])],
+      defaultExpanded: [],
+      rememberState: false,
+    },
+  });
+}
+
+function withFolders(node: ReturnType<typeof libraryNode>) {
+  node.schema = [...(node.schema ?? []), folderTreeNode()];
+
+  return node;
+}
+
+function folderRegistry() {
+  return createRegistry({
+    components: { tree: eagerComponent(treeStub) },
+    name: "test/media-tree",
+  });
+}
+
 function libraryNode({
   picker = true,
   rows = [libraryRow(1), libraryRow(2)],
   actions = true,
   inspector = true,
+  upload = false,
 }: {
   actions?: boolean;
   inspector?: boolean;
   picker?: boolean;
   rows?: ReturnType<typeof libraryRow>[];
+  upload?: boolean;
 } = {}) {
   return fakeNode({
     type: "media.library",
@@ -60,6 +148,18 @@ function libraryNode({
           columns: [column("name"), column("size"), column("mime_type", false)],
           data: rows,
           endpoint: "/lattice/tables/media",
+          bulkActions: [
+            {
+              type: "action.bulk",
+              id: "media.move-selected",
+              props: { endpoint: "/move", label: "Move to folder", ref: "ref-1", lazyForm: true },
+            },
+            {
+              type: "action.bulk",
+              id: "media.delete-selected",
+              props: { endpoint: "/delete-selected", label: "Delete selected", ref: "ref-1" },
+            },
+          ],
         },
       },
       ...(actions
@@ -67,6 +167,9 @@ function libraryNode({
             { type: "action", key: "media-update", props: { endpoint: "/update", ref: "ref-1" } },
             { type: "action", key: "media-delete", props: { endpoint: "/delete", ref: "ref-1" } },
           ]
+        : []),
+      ...(upload
+        ? [{ type: "action", key: "media-upload", props: { endpoint: "/upload", ref: "ref-1" } }]
         : []),
     ] as Schema,
   });
@@ -225,6 +328,24 @@ describe("LibraryView", () => {
     expect(screen.getByTestId("media-detail-preview")).toHaveTextContent("pdf");
   });
 
+  it("offers every bulk action once a selection exists", async () => {
+    const fetch = stubFetch(jsonResponse({ success: true }));
+
+    renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
+
+    expect(screen.queryByTestId("media-bulk-delete-selected")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId("media-card-select")[0]);
+
+    expect(screen.getByTestId("media-bulk-move-selected")).toHaveTextContent("Move to folder");
+
+    fireEvent.click(screen.getByTestId("media-bulk-delete-selected"));
+
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith("/delete-selected", expect.anything()));
+
+    expect(JSON.parse(String(fetch.mock.calls[0][1]?.body))).toEqual({ selected: ["1"] });
+  });
+
   it("summarizes a multi-selection instead of one file's details", () => {
     renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
 
@@ -275,6 +396,66 @@ describe("LibraryView", () => {
     await waitFor(() =>
       expect(String(fetch.mock.calls[0][0])).toContain(`${encodeURIComponent("sort")}=-size`),
     );
+  });
+
+  it("filters the grid by the folder activated in the rail, and back to everything", async () => {
+    const fetch = stubFetch(jsonResponse({ data: [], query: {} }));
+
+    renderWithRegistry(
+      withModal(<LibraryView node={withFolders(libraryNode({ picker: false }))} />),
+      folderRegistry(),
+    );
+
+    fireEvent.click(screen.getByTestId("folder-4"));
+
+    await waitFor(() =>
+      expect(String(fetch.mock.calls[0][0])).toContain(`tf%5Bfolder%5D%5Bvalue%5D=4`),
+    );
+
+    fireEvent.click(screen.getByTestId("media-folder-unassigned"));
+
+    await waitFor(() =>
+      expect(String(fetch.mock.calls[1][0])).toContain(`tf%5Bfolder%5D%5Bvalue%5D=unassigned`),
+    );
+
+    fireEvent.click(screen.getByTestId("media-folder-all"));
+
+    await waitFor(() => expect(String(fetch.mock.calls[2][0])).not.toContain("tf%5Bfolder%5D"));
+  });
+
+  it("uploads into the folder the rail has open", () => {
+    renderWithRegistry(
+      withModal(<LibraryView node={withFolders(libraryNode({ picker: false, upload: true }))} />),
+      folderRegistry(),
+    );
+
+    fireEvent.click(screen.getByTestId("folder-4"));
+    fireEvent.change(screen.getByTestId("media-upload-input"), {
+      target: { files: [new File(["bytes"], "alpha.jpg")] },
+    });
+
+    expect(upload.target.folder).toBe("4");
+  });
+
+  it("offers the composed folders in the inspector and saves the chosen one", async () => {
+    const fetch = stubFetch(jsonResponse({ success: true }));
+
+    renderWithRegistry(
+      withModal(<LibraryView node={withFolders(libraryNode({ picker: false }))} />),
+      folderRegistry(),
+    );
+
+    fireEvent.click(screen.getAllByTestId("media-card")[0]);
+
+    const select = screen.getByTestId("media-detail-folder");
+    expect(select).toHaveTextContent("— 2026");
+
+    fireEvent.change(select, { target: { value: "7" } });
+    fireEvent.click(screen.getByTestId("media-detail-save"));
+
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith("/update", expect.anything()));
+
+    expect(JSON.parse(String(fetch.mock.calls[0][1]?.body)).folder_id).toBe(7);
   });
 
   it("shows the rejection reason and offers retry and dismiss on a failed upload", () => {

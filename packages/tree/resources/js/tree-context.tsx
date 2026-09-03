@@ -10,7 +10,7 @@ import {
 } from "react";
 import type { RefObject } from "react";
 import { runAction } from "@lattice-php/action";
-import { apiFetch, apiJson } from "@lattice-php/core";
+import { apiFetch, apiJson, LATTICE_EVENT } from "@lattice-php/core";
 import { usePersistentState } from "@lattice-php/ui/lib/use-persistent-state";
 import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import type { Tree, TreeNodeData } from "./types";
@@ -329,6 +329,7 @@ export function useTreeState({
   defaultExpanded,
   endpoint,
   componentRef,
+  identity,
   lazy,
   maxDepth,
   nodes,
@@ -343,6 +344,7 @@ export function useTreeState({
   defaultExpanded: string[];
   endpoint: string | null;
   componentRef: string | null;
+  identity: string | undefined;
   lazy: boolean;
   maxDepth: number | null;
   nodes: TreeNodeData[];
@@ -427,6 +429,15 @@ export function useTreeState({
       const selection = ++selectionRef.current;
       store.setState({ activeId: id });
 
+      // Embedders that render a tree inside their own component (the media
+      // library's folder rail) react to the selection through this event —
+      // they never reach into the tree's own state.
+      window.dispatchEvent(
+        new CustomEvent(LATTICE_EVENT.treeActivate, {
+          detail: { component: identity, nodeId: id },
+        }),
+      );
+
       if (!selectAction) {
         return;
       }
@@ -437,7 +448,7 @@ export function useTreeState({
         }
       });
     },
-    [dispatch, selectAction, store],
+    [dispatch, identity, selectAction, store],
   );
 
   const focus = useCallback((id: string) => {

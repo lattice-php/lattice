@@ -27,6 +27,8 @@ export type UploadedMedia = {
 
 export type UploadTarget = {
   endpoint: string;
+  /** The folder every file of this batch is filed into; empty uploads to no folder. */
+  folder?: string;
   ref: string;
   signed: boolean;
   /** Called once per settled batch with the display descriptors of every stored upload. */
@@ -64,7 +66,13 @@ function reasonFor({ body }: Settled, index: number): string | undefined {
  * batch has settled, brings the new rows into the grid — so `uploads` only
  * ever holds in-flight and failed files.
  */
-export function useMediaUpload({ endpoint, ref, signed, onUploaded }: UploadTarget): MediaUpload {
+export function useMediaUpload({
+  endpoint,
+  folder = "",
+  ref,
+  signed,
+  onUploaded,
+}: UploadTarget): MediaUpload {
   const dispatch = useEffectDispatcher();
   const { t } = useT("media");
   const [uploads, setUploads] = useState<UploadItem[]>([]);
@@ -124,6 +132,10 @@ export function useMediaUpload({ endpoint, ref, signed, onUploaded }: UploadTarg
   async function uploadMultipart(item: UploadItem): Promise<Outcome> {
     const body = new FormData();
     body.append("files[]", item.file);
+
+    if (folder !== "") {
+      body.append("folder_id", folder);
+    }
 
     const settled = await send(() =>
       xhrTransfer({
@@ -190,7 +202,7 @@ export function useMediaUpload({ endpoint, ref, signed, onUploaded }: UploadTarg
       apiFetch(endpoint, {
         method: "POST",
         ref,
-        body: JSON.stringify({ files: uploaded }),
+        body: JSON.stringify({ files: uploaded, ...(folder === "" ? {} : { folder_id: folder }) }),
         throwOnError: false,
       }),
     );

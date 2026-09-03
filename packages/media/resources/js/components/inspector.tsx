@@ -14,9 +14,11 @@ import { CopyButton } from "@lattice-php/ui/primitives/copyable-text";
 import { Dialog, DialogContent, DialogHeader } from "@lattice-php/ui/primitives/dialog";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { MODAL_MISSING_ERROR, useOptionalModal } from "@lattice-php/ui/components/modal/modal-host";
+import { NativeSelect } from "@lattice-php/ui/primitives/native-select";
 import { Input } from "@lattice-php/form/primitives/input";
 import { Label } from "@lattice-php/form/primitives/label";
 import { formatSize } from "./file-type";
+import type { FolderOption } from "./folders";
 import { documentNode, isViewableDocument, MediaPreview } from "./media-preview";
 import type { MediaRow } from "./media-row";
 
@@ -25,6 +27,7 @@ import type { MediaRow } from "./media-row";
  * Both requests carry `media_id`, so one runner covers them.
  */
 export function Inspector({
+  folders,
   onClose,
   onDeleted,
   remove,
@@ -32,6 +35,7 @@ export function Inspector({
   update,
   viewer,
 }: {
+  folders: FolderOption[];
   onClose: () => void;
   onDeleted: () => void;
   remove: Node<"action">;
@@ -45,6 +49,7 @@ export function Inspector({
   const host = useOptionalModal();
   const [name, setName] = useState(row.name);
   const [alt, setAlt] = useState(row.alt ?? "");
+  const [folder, setFolder] = useState(row.folder_id === null ? "" : String(row.folder_id));
   const [processing, setProcessing] = useState(false);
   const [fullView, setFullView] = useState(false);
   const deleteLabel = t("media.actions.delete.label", "Delete");
@@ -58,7 +63,12 @@ export function Inspector({
         apiFetch(update.props.endpoint ?? "", {
           method: update.props.method ?? "post",
           ref: update.props.ref ?? "",
-          body: JSON.stringify({ media_id: row.id, name, alt: alt === "" ? null : alt }),
+          body: JSON.stringify({
+            media_id: row.id,
+            name,
+            alt: alt === "" ? null : alt,
+            ...(folders.length > 0 ? { folder_id: folder === "" ? null : Number(folder) } : {}),
+          }),
           throwOnError: false,
         }),
       dispatch,
@@ -184,6 +194,24 @@ export function Inspector({
           value={alt}
         />
       </Label>
+
+      {folders.length > 0 && (
+        <Label className="grid gap-1.5">
+          {t("media.folders.label", "Folder")}
+          <NativeSelect
+            data-test="media-detail-folder"
+            onChange={(event) => setFolder(event.target.value)}
+            value={folder}
+          >
+            <option value="">{t("media.folders.none", "No folder")}</option>
+            {folders.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.label}
+              </option>
+            ))}
+          </NativeSelect>
+        </Label>
+      )}
 
       <div className="flex flex-wrap items-center gap-2">
         <Button

@@ -5,12 +5,16 @@ namespace Lattice\Media\Components;
 
 use Lattice\Actions\Components\Action;
 use Lattice\Core\Attributes\AsComponent;
+use Lattice\Media\Actions\CreateMediaFolderAction;
 use Lattice\Media\Actions\DeleteMediaAction;
+use Lattice\Media\Actions\MoveMediaFolderAction;
 use Lattice\Media\Actions\UpdateMediaAction;
 use Lattice\Media\Actions\UploadMediaAction;
 use Lattice\Media\Tables\MediaTable;
+use Lattice\Media\Trees\MediaFolderTree;
 use Lattice\Pdf\Components\PdfViewer;
 use Lattice\Table\Components\Table;
+use Lattice\Tree\Tree;
 use Lattice\Ui\Components\ContainerComponent;
 use Stringable;
 
@@ -24,6 +28,8 @@ final class MediaLibrary extends ContainerComponent
     public bool $signed = false;
 
     public bool $inspector = true;
+
+    public bool $folders = false;
 
     protected ?string $disk = null;
 
@@ -54,6 +60,17 @@ final class MediaLibrary extends ContainerComponent
         $this->inspector = $inspector;
 
         return $this;
+    }
+
+    /**
+     * The folder rail beside the grid. Off by default: an existing library has
+     * no folders yet, and an empty rail is noise rather than navigation.
+     */
+    public function folders(bool $folders = true): static
+    {
+        $this->folders = $folders;
+
+        return $this->schema([]);
     }
 
     public function picker(bool $picker = true): static
@@ -158,6 +175,13 @@ final class MediaLibrary extends ContainerComponent
                     Table::use(MediaTable::class, $this->category === null ? [] : ['category' => $this->category]),
                     $upload,
                 ];
+
+            if ($this->folders && ! $this->uploadOnly) {
+                $children[] = Tree::use(MediaFolderTree::class)
+                    ->moveAction(MoveMediaFolderAction::class)
+                    ->rememberState();
+                $children[] = Action::use(CreateMediaFolderAction::class)->key('media-folder-create');
+            }
 
             if (! $this->picker && ! $this->uploadOnly) {
                 $children[] = Action::use(UpdateMediaAction::class)->key('media-update');

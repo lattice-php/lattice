@@ -19,6 +19,7 @@ use Throwable;
  * @property string $name
  * @property string $mime_type
  * @property string|null $category
+ * @property int|null $folder_id
  * @property int $size
  * @property array{width?: int, height?: int, alt?: string, conversions?: array<string, array{path: string, width: int, height: int, size?: int}>}|null $meta
  * @property-read int|null $width

@@ -1,5 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { LATTICE_EVENT } from "@lattice-php/core";
+import type { TreeActivateEvent } from "@lattice-php/core";
 import { fakeNode, jsonResponse, stubFetch } from "@lattice-php/core/test-support";
 import { inlineInputNodes, renderTree, sampleNodes as nodes, treeNode } from "./test-support";
 import type { TreeNodeData } from "./types";
@@ -55,6 +57,21 @@ describe("Tree component", () => {
 
     expect(screen.getByTestId("tree-node-1")).toHaveAttribute("aria-selected", "false");
     expect(screen.getByTestId("tree-node-3")).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("announces the activated node to embedders through a window event", () => {
+    const activated = vi.fn();
+    window.addEventListener(LATTICE_EVENT.treeActivate, activated);
+    renderTree({ activeId: null, nodes });
+
+    fireEvent.click(screen.getByTestId("tree-node-1"));
+
+    window.removeEventListener(LATTICE_EVENT.treeActivate, activated);
+
+    expect((activated.mock.calls[0][0] as TreeActivateEvent).detail).toEqual({
+      component: "t1",
+      nodeId: "1",
+    });
   });
 
   it("selects a node from its row without selecting from the expander, link, or action", () => {

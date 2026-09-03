@@ -4,7 +4,9 @@ declare(strict_types=1);
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Lattice\Media\Actions\CreateMediaFolderAction;
 use Lattice\Media\Actions\DeleteMediaAction;
+use Lattice\Media\Actions\MoveMediaFolderAction;
 use Lattice\Media\Actions\UpdateMediaAction;
 use Lattice\Media\Actions\UploadMediaAction;
 use Lattice\Media\Components\MediaLibrary;
@@ -14,7 +16,13 @@ use Lattice\Media\Tables\MediaTable;
 beforeEach(function (): void {
     bootstrapMediaTest(
         tables: [MediaTable::class],
-        actions: [UploadMediaAction::class, UpdateMediaAction::class, DeleteMediaAction::class],
+        actions: [
+            UploadMediaAction::class,
+            UpdateMediaAction::class,
+            DeleteMediaAction::class,
+            CreateMediaFolderAction::class,
+            MoveMediaFolderAction::class,
+        ],
     );
 });
 
@@ -58,6 +66,23 @@ test('the library composes a document viewer template for the inspector', functi
     );
 
     expect($pickerKeys)->not->toContain('media-pdf');
+});
+
+test('the folder rail is composed only when it is asked for', function (): void {
+    $plain = wire(MediaLibrary::make());
+
+    expect(array_column((array) $plain['schema'], 'type'))->not->toContain('tree');
+
+    $withFolders = wire(MediaLibrary::make()->folders());
+    $tree = collect((array) $withFolders['schema'])->firstWhere('type', 'tree');
+
+    expect($withFolders['props']['folders'])->toBeTrue()
+        ->and($tree)->not->toBeNull()
+        ->and($tree['id'])->toBe('media.folders')
+        ->and($tree['props']['moveAction'])->not->toBeNull();
+
+    $keys = array_map(fn (array $child): ?string => $child['key'] ?? null, (array) $withFolders['schema']);
+    expect($keys)->toContain('media-folder-create');
 });
 
 test('pick mode composes only the table and the upload action', function (): void {
