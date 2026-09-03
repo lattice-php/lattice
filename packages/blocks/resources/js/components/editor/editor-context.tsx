@@ -9,13 +9,16 @@ import {
 import type { ReactNode } from "react";
 import type { EditorEndpoint } from "../../endpoint";
 import type { EditorState, EditorStore } from "../../document/store";
-import type { BlockTypeData } from "../../types";
+import type { BlockTypeData, StyleClasses } from "../../types";
 import type { InlineFocus } from "./focus-registry";
+import type { InsertActions } from "./use-insert";
 
-export type EditorContextValue = {
+export type EditorContextValue = InsertActions & {
   store: EditorStore;
   endpoint: EditorEndpoint | null;
   types: readonly BlockTypeData[];
+  /** The style vocabulary's classes, so a style edit applies on the canvas without a server render. */
+  styleClasses: StyleClasses;
   /** Fetch a fresh render for a block; repeated calls within the debounce window collapse. */
   requestRender: (id: string) => void;
   /** Keep the block element in the DOM map so selection changes can focus it. */
@@ -64,19 +67,37 @@ export function useBlockType(type: string): BlockTypeData | null {
   return useMemo(() => types.find((candidate) => candidate.type === type) ?? null, [type, types]);
 }
 
+/**
+ * The block elements on the canvas by id. A block inserted a moment ago has no
+ * element until its render arrives, so focusing it waits for the registration.
+ */
 export function useBlockElements() {
   const elements = useRef(new Map<string, HTMLElement>());
+  const pendingFocus = useRef<string | null>(null);
 
   const registerBlock = useCallback((id: string, element: HTMLElement | null) => {
-    if (element) {
-      elements.current.set(id, element);
-    } else {
+    if (!element) {
       elements.current.delete(id);
+
+      return;
+    }
+
+    elements.current.set(id, element);
+
+    if (pendingFocus.current === id) {
+      pendingFocus.current = null;
+      element.focus({ preventScroll: false });
     }
   }, []);
 
   const focusBlock = useCallback((id: string) => {
-    elements.current.get(id)?.focus({ preventScroll: false });
+    const element = elements.current.get(id);
+
+    if (element) {
+      element.focus({ preventScroll: false });
+    } else {
+      pendingFocus.current = id;
+    }
   }, []);
 
   return { focusBlock, registerBlock };

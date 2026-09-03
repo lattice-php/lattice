@@ -10,6 +10,7 @@ import { EditorTopbar } from "./editor-topbar";
 import { useInlineFocus } from "./focus-registry";
 import { handleEditorKeyDown } from "./keyboard";
 import { LibraryPanel } from "./library-panel";
+import { useInsertActions } from "./use-insert";
 import { useRenderQueue } from "./use-render-queue";
 
 export default function BlockEditorView({ node }: { node: Node<"blocks.editor"> }) {
@@ -23,13 +24,16 @@ export default function BlockEditorView({ node }: { node: Node<"blocks.editor"> 
     ref,
     previewUrl,
     title,
+    seedType,
+    styleClasses,
   } = node.props;
   const [store] = useState(() =>
     createEditorStore({
-      document: seedDocument(document, types),
+      document: seedDocument(document, types, seedType),
       patterns,
       rendered,
       revision,
+      seedType,
       types,
     }),
   );
@@ -40,12 +44,43 @@ export default function BlockEditorView({ node }: { node: Node<"blocks.editor"> 
   const { registerBlock, focusBlock } = useBlockElements();
   const inline = useInlineFocus();
   const requestRender = useRenderQueue(store, endpoint);
+  const { insertBlock, insertPattern } = useInsertActions({
+    focusBlock,
+    inline,
+    requestRender,
+    store,
+    types,
+  });
 
   const { saveNow } = useAutosave(store, endpoint);
 
   const context = useMemo<EditorContextValue>(
-    () => ({ endpoint, focusBlock, inline, registerBlock, requestRender, saveNow, store, types }),
-    [endpoint, focusBlock, inline, registerBlock, requestRender, saveNow, store, types],
+    () => ({
+      endpoint,
+      focusBlock,
+      inline,
+      insertBlock,
+      insertPattern,
+      registerBlock,
+      requestRender,
+      saveNow,
+      store,
+      styleClasses,
+      types,
+    }),
+    [
+      endpoint,
+      focusBlock,
+      inline,
+      insertBlock,
+      insertPattern,
+      registerBlock,
+      requestRender,
+      saveNow,
+      store,
+      styleClasses,
+      types,
+    ],
   );
 
   return (

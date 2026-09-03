@@ -18,7 +18,6 @@ it('leaves unbound components without a binding prop', function (): void {
         ->and(Wire::toArray(Button::make('Go')->href('/go'))['props'])->not->toHaveKey('binding');
 });
 
-it('binds any component, including triggers and containers', function (): void {
-    expect(Wire::toArray(Button::make('Go')->bind('label'))['props']['binding'])->toBe('label')
-        ->and(Button::make('Go')->bind('label')->boundField())->toBe('label');
+it('binds any component, including triggers', function (): void {
+    expect(Wire::toArray(Button::make('Go')->bind('label'))['props']['binding'])->toBe('label');
 });

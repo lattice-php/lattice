@@ -1,10 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Icon } from "@lattice-php/ui/icons";
-import { useT } from "@lattice-php/ui/i18n";
 import { cn } from "@lattice-php/ui/lib/utils";
-import { announce } from "@lattice-php/lattice/dnd";
 import { allowedTypesFor } from "../../document/rules";
-import { insert } from "../../document/store";
 import type { BlockTarget } from "../../types";
 import { useEditor, useEditorState } from "./editor-context";
 
@@ -17,8 +14,7 @@ export function InsertMenu({
   label: string;
   compact?: boolean;
 }) {
-  const { t } = useT("blocks");
-  const { store, types, requestRender, focusBlock } = useEditor();
+  const { types, insertBlock } = useEditor();
   const document = useEditorState((state) => state.document);
   const [open, setOpen] = useState(false);
   const menuId = useId();
@@ -44,21 +40,7 @@ export function InsertMenu({
 
   const add = (typeKey: string) => {
     setOpen(false);
-    let created: string | null = null;
-
-    store.setState((state) => {
-      const result = insert(state, typeKey, target);
-      created = result.id;
-
-      return result.state;
-    });
-
-    if (created) {
-      requestRender(created);
-      const typeLabel = types.find((type) => type.type === typeKey)?.label ?? typeKey;
-      announce(t("blocks.editor.block-added", "{{label}} added", { label: typeLabel }));
-      queueMicrotask(() => focusBlock(created as string));
-    }
+    insertBlock(typeKey, target);
   };
 
   if (allowed.length === 0) {

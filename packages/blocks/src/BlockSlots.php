@@ -45,14 +45,6 @@ final readonly class BlockSlots
         return new HtmlString(implode('', $this->html[$name] ?? []));
     }
 
-    /**
-     * @return list<string>
-     */
-    public function names(): array
-    {
-        return array_keys($this->slots);
-    }
-
     private function slot(string $name): SlotData
     {
         return $this->slots[$name] ?? throw new InvalidArgumentException(

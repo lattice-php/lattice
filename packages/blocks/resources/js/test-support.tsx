@@ -6,12 +6,12 @@ import blocksPlugin from "./plugin";
 import type {
   BlockDocument,
   BlockNode,
+  BlockPatternData,
   BlockStyle,
   BlockTypeData,
   SlotData,
-  BlockPatternData,
+  StyleClasses,
 } from "./types";
-import { emptyStyle } from "./document/tree";
 
 export const TestText: RendererComponent = ({ node }) => (
   <p data-test="test-text">{String(node.props?.text ?? "")}</p>
@@ -23,6 +23,40 @@ export const testRegistry = createRegistry(blocksPlugin, {
   components: { "test.text": eagerComponent(TestText) },
   name: "test/blocks",
 });
+
+/** The default style vocabulary, as the server ships it on the editor wire. */
+export const testStyleClasses: StyleClasses = {
+  align: { center: "text-center", start: "text-start" },
+  background: {
+    inverted: "bg-lt-fg text-lt-bg",
+    muted: "bg-lt-muted text-lt-fg",
+    none: "",
+    primary: "bg-lt-primary",
+  },
+  backgroundPadding: "px-6",
+  hideOnDesktop: "md:hidden",
+  hideOnMobile: "max-md:hidden",
+  marginBottom: { lg: "mb-12", md: "mb-8", none: "mb-0", sm: "mb-4", xl: "mb-20", xs: "mb-2" },
+  marginTop: { lg: "mt-12", md: "mt-8", none: "mt-0", sm: "mt-4", xl: "mt-20", xs: "mt-2" },
+  paddingBottom: { lg: "pb-12", md: "pb-8", none: "pb-0", sm: "pb-4", xl: "pb-20", xs: "pb-2" },
+  paddingTop: { lg: "pt-12", md: "pt-8", none: "pt-0", sm: "pt-4", xl: "pt-20", xs: "pt-2" },
+  width: { content: "mx-auto w-full max-w-3xl", full: "w-full", wide: "mx-auto w-full max-w-6xl" },
+};
+
+function emptyStyle(): BlockStyle {
+  return {
+    align: null,
+    anchor: null,
+    background: null,
+    hideOnDesktop: false,
+    hideOnMobile: false,
+    marginBottom: null,
+    marginTop: null,
+    paddingBottom: null,
+    paddingTop: null,
+    width: null,
+  };
+}
 
 export function slot(name: string, extra: Partial<SlotData> = {}): SlotData {
   return { allows: null, label: name, max: null, min: null, name, ...extra };
@@ -153,6 +187,7 @@ export function document(...blocks: BlockNode[]): BlockDocument {
 export function frameFor(node: BlockNode, content: Node[] = [], slotNames: string[] = []): Node {
   const slots: Node[] = slotNames.map((name) =>
     fakeNode({
+      key: `${node.id}-${name}`,
       props: { allows: null, blockId: node.id, label: name, max: null, min: null, name },
       type: "blocks.slot",
     }),
@@ -162,6 +197,7 @@ export function frameFor(node: BlockNode, content: Node[] = [], slotNames: strin
     props: {
       blockId: node.id,
       blockType: node.type,
+      classes: { inner: "w-full", outer: "" },
       style: node.style,
       supports: {
         align: true,

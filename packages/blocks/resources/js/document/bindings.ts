@@ -10,7 +10,12 @@ export type BoundField = {
   node: Node;
 };
 
-const TEXT_FIELD_TYPES = new Set(["field.text-input", "field.textarea"]);
+const KIND_BY_FIELD_TYPE: Record<string, BindingKind> = {
+  "field.media-picker": "media",
+  "field.rich-editor": "rich",
+  "field.text-input": "text",
+  "field.textarea": "text",
+};
 
 function fieldName(node: Node): string | null {
   const name = (node.props as { name?: unknown }).name;
@@ -22,7 +27,7 @@ function fieldName(node: Node): string | null {
  * Locate a field in a block type's inspector schema. Fields may sit inside
  * layout containers (grids, stacks), so the search descends into `schema`.
  */
-export function findFieldNode(schema: readonly Node[], name: string): Node | null {
+function findFieldNode(schema: readonly Node[], name: string): Node | null {
   for (const node of schema) {
     if (node.type.startsWith("field.") && fieldName(node) === name) {
       return node;
@@ -48,13 +53,7 @@ export function boundFieldFor(schema: readonly Node[], name: string): BoundField
   const placeholder = (node.props as { placeholder?: unknown }).placeholder;
 
   return {
-    kind: TEXT_FIELD_TYPES.has(node.type)
-      ? "text"
-      : node.type === "field.rich-editor"
-        ? "rich"
-        : node.type === "field.media-picker"
-          ? "media"
-          : "field",
+    kind: KIND_BY_FIELD_TYPE[node.type] ?? "field",
     multiline: node.type === "field.textarea",
     name,
     node,

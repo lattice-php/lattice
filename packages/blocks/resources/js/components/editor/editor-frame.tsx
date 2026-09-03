@@ -22,6 +22,7 @@ import {
 } from "../../dnd/block-dnd";
 import { select } from "../../document/store";
 import { findBlock } from "../../document/tree";
+import { frameClasses } from "../../lib/frame-classes";
 import { Frame } from "../view/frame";
 import { BlockProvider } from "./block-context";
 import { BlockToolbar } from "./block-toolbar";
@@ -38,7 +39,7 @@ const dropEdgeClass: Record<Edge, string> = {
 const EditorFrameAdapter: RendererComponent<"blocks.frame"> = ({ node, children }) => {
   const { blockId: id, blockType, style } = node.props;
   const { t } = useT("blocks");
-  const { store, types, registerBlock } = useEditor();
+  const { store, types, registerBlock, styleClasses } = useEditor();
   const selected = useEditorState((state) => state.selectedId === id);
   const hasErrors = useEditorState((state) => state.errors[id] !== undefined);
   const document = useEditorState((state) => state.document);
@@ -54,6 +55,10 @@ const EditorFrameAdapter: RendererComponent<"blocks.frame"> = ({ node, children 
   const entry = useMemo(() => findBlock(document, id), [document, id]);
   const exists = entry !== null;
   const currentStyle = entry?.node.style ?? style;
+  const classes = useMemo(
+    () => frameClasses(styleClasses, currentStyle),
+    [currentStyle, styleClasses],
+  );
 
   useEffect(() => {
     const current = element.current;
@@ -138,13 +143,14 @@ const EditorFrameAdapter: RendererComponent<"blocks.frame"> = ({ node, children 
       data-test={`block-${id}`}
       data-block-id={id}
       data-block-type={blockType}
+      data-block-width={currentStyle.width ?? "full"}
       data-selected={selected || undefined}
       data-drop-edge={dropEdge ?? undefined}
       data-drop-blocked={blocked || undefined}
       className={cn(
         "relative rounded-lt outline-none transition-shadow",
         selected && "ring-2 ring-lt-primary ring-offset-2 ring-offset-lt-surface",
-        !selected && hovered && "ring-1 ring-lt-border-2",
+        !selected && hovered && "ring-1 ring-lt-border",
         hasErrors && !selected && "ring-1 ring-lt-danger",
         dragging && "opacity-40",
         blocked && "cursor-not-allowed ring-1 ring-lt-danger",
@@ -176,7 +182,7 @@ const EditorFrameAdapter: RendererComponent<"blocks.frame"> = ({ node, children 
           {label}
         </span>
       )}
-      <Frame style={currentStyle}>
+      <Frame classes={classes} anchor={currentStyle.anchor}>
         <BlockProvider id={id} type={blockType} setInlineToolbar={setInlineToolbar}>
           {children}
         </BlockProvider>

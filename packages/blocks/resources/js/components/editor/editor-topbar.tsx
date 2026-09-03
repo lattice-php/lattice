@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { LATTICE_EVENT } from "@lattice-php/core/event-names";
 import { Button } from "@lattice-php/ui/components/button/button";
 import { SegmentedControl } from "@lattice-php/ui/components/segmented-control/segmented-control";
+import { useEffectDispatcher } from "@lattice-php/ui/effects/use-effect-dispatcher";
 import { IconButton } from "@lattice-php/ui/primitives/icon-button";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
@@ -25,10 +25,6 @@ import { useEditor, useEditorState } from "./editor-context";
 
 const canvasWidths: CanvasWidth[] = ["desktop", "tablet", "mobile"];
 
-function toast(message: string, variant: "success" | "danger"): void {
-  window.dispatchEvent(new CustomEvent(LATTICE_EVENT.toast, { detail: { message, variant } }));
-}
-
 export function EditorTopbar({
   title,
   previewUrl,
@@ -45,6 +41,9 @@ export function EditorTopbar({
   const publishedAt = useEditorState((state) => state.publishedAt);
   const canvasWidth = useEditorState((state) => state.canvasWidth);
   const [overwriting, setOverwriting] = useState(false);
+  const dispatch = useEffectDispatcher();
+  const toast = (message: string, variant: "success" | "danger") =>
+    dispatch([{ props: { message, variant }, type: "toast" }]);
 
   const publish = async () => {
     if (!endpoint) {
@@ -60,7 +59,7 @@ export function EditorTopbar({
       store.setState((state) => {
         switch (result.status) {
           case "saved":
-            return markPublished(state, result.revision);
+            return markPublished(state, result.revision, document);
           case "conflict":
             return markPublishing(markConflict(state, result.revision), false);
           case "invalid":

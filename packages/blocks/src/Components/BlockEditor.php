@@ -8,6 +8,7 @@ use Lattice\Blocks\BlockEditorDefinition;
 use Lattice\Blocks\BlockEditorRegistry;
 use Lattice\Blocks\BlockPatternData;
 use Lattice\Blocks\BlockTypeData;
+use Lattice\Blocks\StyleClasses;
 use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\WireMap;
 use Lattice\Core\Contracts\InteractiveComponent;
@@ -43,11 +44,17 @@ class BlockEditor extends Component implements InteractiveComponent
 
     public ?string $title = null;
 
+    /** The block type an empty page opens with, so typing can start at once. */
+    public ?string $seedType = null;
+
+    public StyleClasses $styleClasses;
+
     public function __construct(?string $key = null)
     {
         parent::__construct($key);
 
         $this->document = BlockDocument::empty();
+        $this->styleClasses = StyleClasses::defaults();
     }
 
     public static function make(?string $key = null): static
@@ -126,6 +133,20 @@ class BlockEditor extends Component implements InteractiveComponent
     public function title(?string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function seedType(?string $seedType): static
+    {
+        $this->seedType = $seedType;
+
+        return $this;
+    }
+
+    public function styleClasses(StyleClasses $styleClasses): static
+    {
+        $this->styleClasses = $styleClasses;
 
         return $this;
     }

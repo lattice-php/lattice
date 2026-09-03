@@ -24,11 +24,6 @@ final class BlockRegistry extends DefinitionRegistry
         return $this->keyFor($definition);
     }
 
-    public function has(string $key): bool
-    {
-        return array_key_exists($key, $this->definitions());
-    }
-
     public function find(string $key): ?BlockDefinition
     {
         try {

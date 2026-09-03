@@ -8,8 +8,8 @@ import { canPlace } from "../document/rules";
 import { findBlock } from "../document/tree";
 import type { BlockDocument, BlockTarget, BlockTypeData } from "../types";
 
-export const BLOCK_DRAG_TYPE = "lattice-blocks/block";
-export const LIBRARY_DRAG_TYPE = "lattice-blocks/library";
+const BLOCK_DRAG_TYPE = "lattice-blocks/block";
+const LIBRARY_DRAG_TYPE = "lattice-blocks/library";
 
 export type DragSource =
   | { kind: "block"; id: string; blockType: string }

@@ -1,7 +1,5 @@
 import { useMemo } from "react";
 import {
-  insert,
-  PARAGRAPH_TYPE,
   remove,
   replaceBlock,
   select,
@@ -29,34 +27,22 @@ export type TypingHandlers = {
  * block, expressed as document transitions plus focus hand-offs.
  */
 export function useTypingHandlers(blockId: string, field: string): TypingHandlers {
-  const { store, inline, focusBlock } = useEditor();
+  const { store, inline, focusBlock, insertBlock } = useEditor();
 
   return useMemo<TypingHandlers>(() => {
     const insertParagraphAfter = (data: Record<string, unknown>): string | null => {
-      const entry = findBlock(store.getState().document, blockId);
+      const { document, seedType } = store.getState();
+      const entry = findBlock(document, blockId);
 
-      if (!entry) {
+      if (!entry || seedType === null) {
         return null;
       }
 
-      let created: string | null = null;
-      store.setState((state) => {
-        const result = insert(
-          state,
-          PARAGRAPH_TYPE,
-          { index: entry.index + 1, parentId: entry.parentId, slot: entry.slot },
-          data,
-        );
-        created = result.id;
-
-        return result.state;
-      });
-
-      if (created) {
-        inline.requestFocus(created, "start");
-      }
-
-      return created;
+      return insertBlock(
+        seedType,
+        { index: entry.index + 1, parentId: entry.parentId, slot: entry.slot },
+        { data, focus: "inline" },
+      );
     };
 
     const neighbour = (direction: "up" | "down"): string | null => {
@@ -93,15 +79,19 @@ export function useTypingHandlers(blockId: string, field: string): TypingHandler
           return;
         }
 
+        if (!replaceWhenEmpty) {
+          insertBlock(
+            typeKey,
+            { index: entry.index + 1, parentId: entry.parentId, slot: entry.slot },
+            { focus: "inline" },
+          );
+
+          return;
+        }
+
         let created: string | null = null;
         store.setState((state) => {
-          const result = replaceWhenEmpty
-            ? replaceBlock(state, blockId, typeKey)
-            : insert(state, typeKey, {
-                index: entry.index + 1,
-                parentId: entry.parentId,
-                slot: entry.slot,
-              });
+          const result = replaceBlock(state, blockId, typeKey);
           created = result.id;
 
           return result.state;
@@ -162,5 +152,5 @@ export function useTypingHandlers(blockId: string, field: string): TypingHandler
         return insertParagraphAfter({ content: textDocument(after) }) !== null;
       },
     };
-  }, [blockId, field, focusBlock, inline, store]);
+  }, [blockId, field, focusBlock, inline, insertBlock, store]);
 }

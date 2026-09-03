@@ -19,6 +19,8 @@ use Workbench\App\Models\Page;
 #[AsBlockEditor('workbench.pages')]
 final class PagesEditor extends BlockEditorDefinition
 {
+    private ?Page $page = null;
+
     public function blocks(): array
     {
         return [HeroBlock::class, CtaBlock::class, ...Builtin::all()];
@@ -105,7 +107,7 @@ final class PagesEditor extends BlockEditorDefinition
 
     private function page(): Page
     {
-        return Page::query()->findOrFail($this->contextInt('page'));
+        return $this->page ??= Page::query()->findOrFail($this->contextInt('page'));
     }
 
     /**

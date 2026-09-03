@@ -10,7 +10,7 @@ export function FieldRow({
   htmlFor?: string;
 }) {
   return (
-    <div className="grid grid-cols-[6.5rem_1fr] items-center gap-2 text-xs text-lt-fg-2">
+    <div className="grid grid-cols-[6.5rem_1fr] items-center gap-2 text-xs">
       <label htmlFor={htmlFor} className="text-lt-muted-fg">
         {label}
       </label>

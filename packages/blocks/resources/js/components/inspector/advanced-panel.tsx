@@ -23,7 +23,7 @@ export function AdvancedPanel({
     <div data-test="blocks-advanced-panel">
       {supports.anchor && (
         <Section title={t("blocks.editor.inspector.anchor", "HTML anchor")}>
-          <FieldRow label="#" htmlFor={inputId}>
+          <FieldRow label={t("blocks.editor.inspector.anchor-id", "ID")} htmlFor={inputId}>
             <Input
               id={inputId}
               density="compact"
@@ -43,7 +43,7 @@ export function AdvancedPanel({
           </p>
         </Section>
       )}
-      <Section title="ID">
+      <Section title={t("blocks.editor.inspector.block-id", "Block ID")}>
         <code className="text-xs text-lt-muted-fg">{id}</code>
       </Section>
     </div>

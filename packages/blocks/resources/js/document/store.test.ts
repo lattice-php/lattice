@@ -13,11 +13,11 @@ import {
 import {
   createEditorStore,
   duplicate,
-  historyFlags,
   insert,
   insertPattern,
   insertTargetFor,
   markConflict,
+  markPublished,
   markSaved,
   move,
   overwriteConflict,
@@ -34,6 +34,7 @@ import {
   updateStyle,
 } from "./store";
 import { findBlock } from "./tree";
+import type { BlockNode } from "../types";
 
 function makeStore() {
   const doc = document(
@@ -51,6 +52,7 @@ function makeStore() {
     patterns: testPatterns,
     rendered: {},
     revision: 3,
+    seedType: "lattice.paragraph",
     types: testTypes,
   });
 }
@@ -202,7 +204,8 @@ describe("editor store", () => {
     state = updateData(state, "h", "text", "Hello");
     state = updateStyle(state, "h", { width: "wide" });
 
-    expect(historyFlags(state)).toEqual({ canRedo: false, canUndo: true });
+    expect(state.history.past).toHaveLength(2);
+    expect(state.history.future).toHaveLength(0);
 
     state = undo(state);
     expect(findBlock(state.document, "h")?.node.style.width).toBeNull();
@@ -231,6 +234,21 @@ describe("editor store", () => {
     expect(state.document.blocks.map((node) => node.id)).toEqual(["h", copyId, "c"]);
   });
 
+  it("points the copied slot outlets at the copy so its columns show their own children", () => {
+    const store = makeStore();
+    const columns = findBlock(store.getState().document, "c")?.node as BlockNode;
+    const rendered = frameFor(columns, [], ["col_1", "col_2"]);
+    const state = duplicate({ ...store.getState(), rendered: { c: rendered } }, "c");
+    const copyId = state.selectedId as string;
+    const copy = findBlock(state.document, copyId)?.node as BlockNode;
+    const slots = state.rendered[copyId]?.schema ?? [];
+
+    expect(slots.map((slot) => slot.props?.blockId)).toEqual([copyId, copyId]);
+    expect(slots.map((slot) => slot.key)).toEqual([`${copyId}-col_1`, `${copyId}-col_2`]);
+    expect(copy.slots.col_1?.[0]?.id).not.toBe("p");
+    expect(state.staleIds).toEqual([copy.slots.col_1?.[0]?.id]);
+  });
+
   it("reconciles slot children when a render drops a slot", () => {
     const store = makeStore();
     const columns = findBlock(store.getState().document, "c")?.node;
@@ -255,16 +273,35 @@ describe("editor store", () => {
     expect(updateData(conflicted, "h", "text", "again").saveState).toBe("conflict");
     expect(conflicted.revision).toBe(9);
   });
+
+  it("keeps edits made while publishing unsaved once the publish lands", () => {
+    const store = makeStore();
+    const sent = updateData(store.getState(), "h", "text", "Yo");
+    const typedMeanwhile = updateData(sent, "h", "text", "Yo!");
+
+    expect(markPublished(sent, 5, sent.document)).toMatchObject({
+      publishing: false,
+      revision: 5,
+      saveState: "saved",
+    });
+    expect(markPublished(typedMeanwhile, 5, sent.document).saveState).toBe("dirty");
+  });
 });
 
 describe("inline editing transitions", () => {
-  it("seeds an empty document with a paragraph so typing can start", () => {
-    const seeded = seedDocument(document(), testTypes);
+  it("seeds an empty document with the editor's seed block so typing can start", () => {
+    const seeded = seedDocument(document(), testTypes, "lattice.paragraph");
 
     expect(seeded.blocks).toHaveLength(1);
     expect(seeded.blocks[0]?.type).toBe("lattice.paragraph");
-    expect(seedDocument(document(block("h", "lattice.heading")), testTypes).blocks).toHaveLength(1);
-    expect(seedDocument(document(), [columnsType]).blocks).toHaveLength(0);
+    expect(seedDocument(document(), testTypes, "lattice.heading").blocks[0]?.type).toBe(
+      "lattice.heading",
+    );
+    expect(
+      seedDocument(document(block("h", "lattice.heading")), testTypes, "lattice.paragraph").blocks,
+    ).toHaveLength(1);
+    expect(seedDocument(document(), [columnsType], "lattice.paragraph").blocks).toHaveLength(0);
+    expect(seedDocument(document(), testTypes, null).blocks).toHaveLength(0);
   });
 
   it("patches a bound text into the render without marking the block stale", () => {
@@ -307,7 +344,13 @@ describe("inline editing transitions", () => {
         },
       ),
     );
-    const store = createEditorStore({ document: doc, rendered: {}, revision: 1, types: testTypes });
+    const store = createEditorStore({
+      document: doc,
+      rendered: {},
+      revision: 1,
+      seedType: "lattice.paragraph",
+      types: testTypes,
+    });
 
     const { state, id } = replaceBlock(store.getState(), "p", "lattice.heading");
 

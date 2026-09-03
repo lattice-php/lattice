@@ -5,7 +5,6 @@ export type History<T> = {
   lastKey: string | null;
   lastAt: number;
 };
-export declare const COALESCE_WINDOW_MS = 800;
 export declare function createHistory<T>(present: T): History<T>;
 /**
  * Record a new present. Consecutive edits sharing a `coalesceKey` within the

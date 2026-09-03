@@ -71,22 +71,6 @@ final readonly class BlockNode
     }
 
     /**
-     * @param  array<string, mixed>  $data
-     */
-    public function withData(array $data): self
-    {
-        return new self($this->id, $this->type, $data, $this->style, $this->slots);
-    }
-
-    /**
-     * @param  array<string, list<BlockNode>>  $slots
-     */
-    public function withSlots(array $slots): self
-    {
-        return new self($this->id, $this->type, $this->data, $this->style, $slots);
-    }
-
-    /**
      * Depth-first: this node, then every descendant.
      *
      * @return Generator<int, BlockNode>

@@ -24,7 +24,7 @@ final class ListBlock extends BlockDefinition
     public function fields(): array
     {
         return [
-            RichEditor::make('content', __('blocks::blocks.fields.items.label'))
+            RichEditor::make('content', __('blocks::blocks.fields.items'))
                 ->extensions([BulletList::class, OrderedList::class, Bold::class, Italic::class, Link::class])
                 ->placeholder(__('blocks::blocks.placeholders.list'))
                 ->value(self::emptyList()),

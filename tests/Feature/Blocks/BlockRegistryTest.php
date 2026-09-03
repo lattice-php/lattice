@@ -14,8 +14,7 @@ it('discovers built-in and workbench blocks by their attribute key', function ()
 
     expect($registry->resolve('lattice.heading'))->toBeInstanceOf(HeadingBlock::class)
         ->and($registry->resolve('workbench.hero'))->toBeInstanceOf(HeroBlock::class)
-        ->and($registry->keyOf(ColumnsBlock::class))->toBe('lattice.columns')
-        ->and($registry->has('nope'))->toBeFalse();
+        ->and($registry->keyOf(ColumnsBlock::class))->toBe('lattice.columns');
 });
 
 it('throws UnknownComponent for an unknown block key', function (): void {

@@ -16,6 +16,8 @@ export type EditorState = {
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
   patterns: readonly BlockPatternData[];
+  /** The block type an empty page opens with and Enter splits into; null when the editor offers none. */
+  seedType: string | null;
   canvasWidth: CanvasWidth;
   selectedId: string | null;
   revision: number;
@@ -38,6 +40,7 @@ export declare function createEditorStore(initial: {
   rendered: Record<string, Node>;
   types: readonly BlockTypeData[];
   patterns?: readonly BlockPatternData[];
+  seedType?: string | null;
   revision: number;
 }): EditorStore;
 export declare function select(state: EditorState, id: string | null): EditorState;
@@ -62,11 +65,11 @@ export declare function insertPattern(
   state: EditorState;
   ids: string[];
 };
-export declare const PARAGRAPH_TYPE = "lattice.paragraph";
-/** A page without blocks opens with one paragraph so writing can start at once. */
+/** A page without blocks opens with one seed block so writing can start at once. */
 export declare function seedDocument(
   document: BlockDocument,
   types: readonly BlockTypeData[],
+  seedType: string | null,
 ): BlockDocument;
 export declare function insert(
   state: EditorState,
@@ -111,11 +114,6 @@ export declare function updateBoundDocument(
   field: string,
   document: Record<string, unknown> | null,
 ): EditorState;
-export declare function replaceData(
-  state: EditorState,
-  id: string,
-  data: Record<string, unknown>,
-): EditorState;
 export declare function updateStyle(
   state: EditorState,
   id: string,
@@ -127,13 +125,8 @@ export declare function setRendered(
   node: Node,
   errors?: Record<string, string[]>,
 ): EditorState;
-export declare function slotNamesIn(node: Node): string[];
 export declare function undo(state: EditorState): EditorState;
 export declare function redo(state: EditorState): EditorState;
-export declare function historyFlags(state: EditorState): {
-  canUndo: boolean;
-  canRedo: boolean;
-};
 export declare function markSaving(state: EditorState): EditorState;
 export declare function markSaved(
   state: EditorState,
@@ -146,5 +139,9 @@ export declare function markConflict(state: EditorState, revision: number): Edit
 export declare function overwriteConflict(state: EditorState): EditorState;
 export declare function markError(state: EditorState): EditorState;
 export declare function markPublishing(state: EditorState, publishing: boolean): EditorState;
-export declare function markPublished(state: EditorState, revision: number): EditorState;
+export declare function markPublished(
+  state: EditorState,
+  revision: number,
+  published: BlockDocument,
+): EditorState;
 export declare function setErrors(state: EditorState, errors: BlockErrors): EditorState;

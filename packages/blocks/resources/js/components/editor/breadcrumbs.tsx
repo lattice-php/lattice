@@ -1,10 +1,12 @@
 import { useMemo } from "react";
 import { Icon } from "@lattice-php/ui/icons";
+import { useT } from "@lattice-php/ui/i18n";
 import { select } from "../../document/store";
 import { pathTo } from "../../document/tree";
 import { useEditor, useEditorState } from "./editor-context";
 
 export function Breadcrumbs() {
+  const { t } = useT("blocks");
   const { store, types, focusBlock } = useEditor();
   const document = useEditorState((state) => state.document);
   const selectedId = useEditorState((state) => state.selectedId);
@@ -19,7 +21,7 @@ export function Breadcrumbs() {
 
   return (
     <nav
-      aria-label="Block path"
+      aria-label={t("blocks.editor.block-path", "Block path")}
       data-test="blocks-breadcrumbs"
       className="sticky bottom-0 flex items-center gap-1 border-t border-lt-border bg-lt-surface px-4 py-1.5 text-xs text-lt-muted-fg"
     >

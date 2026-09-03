@@ -84,7 +84,7 @@ it('nests slot children in layout blocks and skips blocks that render nothing', 
         ->and(substr_count($html, 'data-block-type="lattice.paragraph"'))->toBe(1);
 });
 
-it('maps the block style onto frame classes and lets the configured map override them', function (): void {
+it('lets the configured style map override single frame classes and keeps the rest', function (): void {
     $node = new BlockNode('b_p', 'lattice.paragraph', ['content' => richParagraph('Styled')], new BlockStyle(
         width: BlockWidth::Wide,
         paddingTop: Gap::Large,
@@ -94,10 +94,7 @@ it('maps the block style onto frame classes and lets the configured map override
         hideOnMobile: true,
     ));
 
-    expect($node->style->classes())->toBe([
-        'outer' => 'mb-4 pt-12 bg-lt-muted text-lt-fg px-6 max-md:hidden text-center',
-        'inner' => 'mx-auto w-full max-w-6xl',
-    ]);
+    $default = renderHtml(new BlockDocument([$node]));
 
     config()->set('lattice.blocks.style_classes', [
         'background' => ['muted' => 'theme-muted'],
@@ -105,9 +102,12 @@ it('maps the block style onto frame classes and lets the configured map override
         'width' => ['wide' => 'container-wide'],
     ]);
 
-    expect(renderHtml(new BlockDocument([$node])))
-        ->toContain('class="lt-blocks-frame mb-4 pt-12 theme-muted max-md:hidden text-center"')
-        ->toContain('class="container-wide"');
+    $themed = renderHtml(new BlockDocument([$node]));
+
+    expect($default)->toContain('bg-lt-muted')->toContain('px-6')->toContain('max-w-6xl')
+        ->and($themed)->toContain('theme-muted')->toContain('class="container-wide"')
+        ->not->toContain('bg-lt-muted')->not->toContain('px-6')->not->toContain('max-w-6xl')
+        ->and($themed)->toContain('mb-4')->toContain('pt-12')->toContain('max-md:hidden')->toContain('text-center');
 });
 
 it('throws for a block without html() unless a fallback is configured', function (): void {

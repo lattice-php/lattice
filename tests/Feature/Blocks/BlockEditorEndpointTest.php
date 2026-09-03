@@ -22,6 +22,8 @@ it('serializes the editor with its document, shallow renders, and offered block 
         ->and(array_column($editor['props']['patterns'], 'key'))->toBe(['hero-cta', 'text-image'])
         ->and(array_keys($editor['props']['rendered']))->toBe(['b_heading', 'b_columns', 'b_left', 'b_right'])
         ->and(array_column($editor['props']['types'], 'type'))->toContain('workbench.hero', 'lattice.columns')
+        ->and($editor['props']['seedType'])->toBe('lattice.paragraph')
+        ->and($editor['props']['styleClasses']['width']['wide'])->toContain('max-w-6xl')
         ->and($editor['props']['document']['blocks'][1]['slots']['col_1'][0]['id'])->toBe('b_left');
 });
 

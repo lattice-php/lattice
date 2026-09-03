@@ -24,6 +24,7 @@ final readonly class BlockHtmlRenderer
         private Factory $views,
         private Repository $config,
         private Container $container,
+        private StyleClassMap $styles,
     ) {}
 
     public function render(BlockDocument $document): HtmlString
@@ -64,7 +65,7 @@ final readonly class BlockHtmlRenderer
     {
         return $this->views->make('blocks::frame', [
             'node' => $node,
-            'classes' => $node->style->classes(),
+            'classes' => $this->styles->classesFor($node->style),
             'content' => new HtmlString($content),
         ])->render();
     }
