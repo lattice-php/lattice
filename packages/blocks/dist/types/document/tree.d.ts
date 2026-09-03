@@ -1,4 +1,4 @@
-import { BlockDocument, BlockNode, BlockStyle, BlockTarget, BlockTypeData } from "../types";
+import { BlockDocument, BlockNode, BlockTarget, BlockTypeData } from "../types";
 export type BlockEntry = {
   node: BlockNode;
   parentId: string | null;
@@ -6,7 +6,6 @@ export type BlockEntry = {
   index: number;
   depth: number;
 };
-export declare function emptyStyle(): BlockStyle;
 export declare function newBlockId(): string;
 export declare function createBlock(type: BlockTypeData, id?: string): BlockNode;
 export declare function flattenDocument(document: BlockDocument): BlockEntry[];
@@ -16,11 +15,6 @@ export declare function childrenOf(
   parentId: string | null,
   slot: string | null,
 ): readonly BlockNode[];
-export declare function isDescendant(
-  document: BlockDocument,
-  ancestorId: string,
-  id: string,
-): boolean;
 export declare function updateBlock(
   document: BlockDocument,
   id: string,

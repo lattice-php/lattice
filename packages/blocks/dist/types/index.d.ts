@@ -16,5 +16,7 @@ export type {
   BlockTypeData,
   BlockWidth,
   CanvasWidth,
+  FrameClasses,
   SlotData,
+  StyleClasses,
 } from "./types";

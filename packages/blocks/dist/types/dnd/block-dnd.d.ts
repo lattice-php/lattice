@@ -1,7 +1,5 @@
 import { Edge, Input } from "@lattice-php/lattice/dnd";
 import { BlockDocument, BlockTarget, BlockTypeData } from "../types";
-export declare const BLOCK_DRAG_TYPE = "lattice-blocks/block";
-export declare const LIBRARY_DRAG_TYPE = "lattice-blocks/library";
 export type DragSource =
   | {
       kind: "block";

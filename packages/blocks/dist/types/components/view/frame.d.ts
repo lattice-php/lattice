@@ -1,13 +1,15 @@
 import { ReactNode } from "react";
-import { BlockStyle } from "../../types";
+import { FrameClasses } from "../../types";
 export type FrameProps = {
-  style: BlockStyle;
+  classes: FrameClasses;
+  anchor?: string | null;
   children: ReactNode;
   className?: string;
 };
-/** Applies a block's generic style around its rendered content. */
+/** Applies a block's resolved style classes around its rendered content. */
 export declare function Frame({
-  style,
+  classes,
+  anchor,
   children,
   className,
 }: FrameProps): import("react").JSX.Element;
