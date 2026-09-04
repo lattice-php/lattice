@@ -59,6 +59,9 @@ final class FieldValidator
             } elseif (Arr::has($input, $path)) {
                 // nestedRules() below builds dot-path rule keys that need $input already decoded.
                 Arr::set($input, $path, $field->normalizeInput(Arr::get($input, $path)));
+            } elseif ($field->fillsAbsentInput()) {
+                // A DOM form submission of an unchecked checkbox posts no key at all.
+                Arr::set($input, $path, $field->absentInput());
             }
 
             if (! $visible) {
@@ -66,6 +69,10 @@ final class FieldValidator
             }
 
             $fieldRules = $field->resolvedRulesWithRequired($instance->scope, $request);
+
+            if ($fieldRules === [] && ! $serverValue) {
+                $fieldRules = ['sometimes', 'nullable'];
+            }
 
             if ($fieldRules !== []) {
                 $rules[$path] = $fieldRules;

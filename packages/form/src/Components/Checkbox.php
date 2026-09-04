@@ -13,4 +13,31 @@ class Checkbox extends Field
 {
     use HasAutoFocus;
     use HasTabIndex;
+
+    /**
+     * @return array<int, mixed>
+     */
+    #[\Override]
+    protected function defaultRules(): array
+    {
+        return ['boolean'];
+    }
+
+    #[\Override]
+    public function castValue(mixed $value): mixed
+    {
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    #[\Override]
+    public function fillsAbsentInput(): bool
+    {
+        return true;
+    }
+
+    #[\Override]
+    public function absentInput(): mixed
+    {
+        return false;
+    }
 }

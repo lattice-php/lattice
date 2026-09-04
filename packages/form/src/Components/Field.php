@@ -206,6 +206,26 @@ abstract class Field extends Component
     }
 
     /**
+     * Whether an absent key in the raw input should be treated as the value
+     * from {@see absentInput()} rather than left missing. A DOM form
+     * submission of an unchecked checkbox posts no key at all, so Checkbox
+     * and Toggle opt in to fill that gap with `false` before validation.
+     */
+    public function fillsAbsentInput(): bool
+    {
+        return false;
+    }
+
+    /**
+     * The value to assume when the raw input has no key for this field and
+     * {@see fillsAbsentInput()} is true.
+     */
+    public function absentInput(): mixed
+    {
+        return null;
+    }
+
+    /**
      * @internal
      *
      * @return array<int, mixed>
