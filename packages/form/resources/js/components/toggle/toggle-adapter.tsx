@@ -21,12 +21,17 @@ export const ToggleAdapter: RendererComponent<"field.toggle"> = ({ node }) => {
             <Toggle
               {...controlProps}
               aria-label={props.label ?? props.name}
+              aria-readonly={readOnly && !disabled ? true : undefined}
               autoFocus={props.autoFocus ?? false}
               checked={checked}
               data-test={testId}
-              disabled={locked}
+              disabled={disabled}
               name={name}
-              onCheckedChange={(next) => commit(next)}
+              onCheckedChange={(next) => {
+                if (!readOnly) {
+                  commit(next);
+                }
+              }}
               tabIndex={props.tabIndex ?? undefined}
             />
           </>

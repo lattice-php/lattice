@@ -165,7 +165,8 @@ const PatternInputField: RendererComponent<"field.pattern-input"> = ({ node }) =
             {...controlProps}
             className={cn(
               "overflow-hidden rounded-lt-sm border border-lt-input bg-transparent shadow-lt-xs focus-within:border-lt-ring focus-within:ring-[length:var(--lt-ring-width)] focus-within:ring-lt-ring/50",
-              locked && "opacity-60",
+              disabled && "opacity-60",
+              readOnly && !disabled && "cursor-default bg-lt-muted",
             )}
             role="group"
           >

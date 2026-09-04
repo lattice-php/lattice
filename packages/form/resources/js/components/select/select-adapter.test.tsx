@@ -148,6 +148,25 @@ describe("SelectAdapter options", () => {
     expect(screen.getByTestId("select-color")).toHaveTextContent("Blue");
   });
 
+  it("stays focusable but does not open while read-only", () => {
+    renderStaticSelect({
+      options: [
+        { label: "Red", value: "red" },
+        { label: "Blue", value: "blue" },
+      ],
+      readOnly: true,
+      value: "red",
+    });
+
+    const trigger = screen.getByTestId("select-color");
+
+    fireEvent.click(trigger);
+
+    expect(trigger).not.toBeDisabled();
+    expect(trigger).toHaveAttribute("aria-readonly", "true");
+    expect(screen.queryByTestId("select-color-option-blue")).not.toBeInTheDocument();
+  });
+
   it("omits the search box when not searchable", () => {
     renderStaticSelect({
       options: [

@@ -223,9 +223,10 @@ export function SelectControl({
         triggerProps={{
           ...controlProps,
           "aria-haspopup": "listbox",
+          "aria-readonly": readOnly && !disabled ? true : undefined,
           autoFocus: props.autoFocus ?? undefined,
           "data-test": `select-${name}`,
-          disabled: locked,
+          disabled,
           tabIndex: props.tabIndex ?? undefined,
         }}
       />

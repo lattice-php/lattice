@@ -14,6 +14,7 @@ function Input({
     <input
       type={type}
       data-slot="input"
+      aria-readonly={props.readOnly && !props.disabled ? true : undefined}
       className={cn(
         controlSurface({ density }),
         "file:text-lt-fg selection:bg-lt-primary selection:text-lt-primary-fg file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",

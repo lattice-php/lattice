@@ -7,8 +7,9 @@ function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
     <textarea
       data-slot="textarea"
+      aria-readonly={props.readOnly && !props.disabled ? true : undefined}
       className={cn(
-        "border-lt-input placeholder:text-lt-muted-fg flex field-sizing-content min-h-16 w-full rounded-lt-sm border bg-transparent px-3 py-2 text-base shadow-lt-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-lt-disabled disabled:text-lt-disabled-fg",
+        "border-lt-input placeholder:text-lt-muted-fg flex field-sizing-content min-h-16 w-full rounded-lt-sm border bg-transparent px-3 py-2 text-base shadow-lt-xs transition-[color,box-shadow] outline-none aria-readonly:cursor-default aria-readonly:bg-lt-muted disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-lt-disabled disabled:text-lt-disabled-fg",
         FOCUS_RING,
         "aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger",
         className,
