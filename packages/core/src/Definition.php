@@ -5,6 +5,7 @@ namespace Lattice\Core;
 
 use Illuminate\Http\Request;
 use Lattice\Core\Contracts\Authorizable;
+use Lattice\Core\Services\ContextResolutions;
 
 abstract class Definition implements Authorizable
 {
@@ -81,5 +82,41 @@ abstract class Definition implements Authorizable
         $value = $this->context($key);
 
         return is_numeric($value) ? (int) $value : null;
+    }
+
+    /**
+     * Presence check distinct from "not found": a key that's set but whose
+     * resolver yields nothing still passes this test.
+     */
+    protected function hasContext(string $key): bool
+    {
+        $value = $this->context($key);
+
+        return $value !== null && $value !== '';
+    }
+
+    /**
+     * The context value resolved through its registered {@see ContextResolutions}
+     * resolver, memoized per request. Aborts with a 404 when the key is
+     * absent or the resolver yields nothing — inside a render-time
+     * authorize() use {@see contextModelOrNull()} instead, or a missing key
+     * takes the whole page down rather than hiding the component. Throws
+     * when no resolver is registered for the key; register one with
+     * `Lattice::context()`.
+     */
+    protected function contextModel(string $key): object
+    {
+        $resolved = $this->contextModelOrNull($key);
+
+        if ($resolved === null) {
+            abort(404);
+        }
+
+        return $resolved;
+    }
+
+    protected function contextModelOrNull(string $key): ?object
+    {
+        return app(ContextResolutions::class)->resolve($key, $this->context($key), $this->context);
     }
 }

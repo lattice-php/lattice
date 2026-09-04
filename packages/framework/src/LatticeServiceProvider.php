@@ -28,6 +28,7 @@ use Lattice\Console\Commands\UpdateCommand;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\AsLayout;
 use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Core\Contracts\BuildsModelContextResolvers;
 use Lattice\Core\Contracts\ResolvesRemoteSourceEndpoints;
 use Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Core\Discovery\DiscoveryKinds;
@@ -45,6 +46,7 @@ use Lattice\Layouts\LayoutDefinition;
 use Lattice\Layouts\LayoutRegistry;
 use Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Support\EloquentContextResolvers;
 use Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
@@ -89,6 +91,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(WireSourceCatalog::class, static fn (): WireSourceCatalog => WireSourceCatalog::fromApplication());
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
+        $this->app->bind(BuildsModelContextResolvers::class, EloquentContextResolvers::class);
 
         if ($this->app->runningInConsole()) {
             $this->commands(MakeDefinitionCommand::all());
