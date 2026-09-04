@@ -1,23 +1,13 @@
-import { readFileSync } from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
-
-const hostExternals = ["react", "react-dom", "react/jsx-runtime", "@lattice-php/lattice/runtime"];
+import { expectStandaloneArtifact } from "@lattice-php/core/standalone-test-support";
 
 it("dist/plugin.js bundles the map engine and only imports host externals", () => {
-  const artifact = readFileSync(path.resolve(import.meta.dirname, "../../dist/plugin.js"), "utf8");
-  const specifiers = [...artifact.matchAll(/^import\b[^"'\n]*(["'])([^"'\n]+)\1/gm)].map(
-    (match) => match[2],
+  const artifact = expectStandaloneArtifact(
+    path.resolve(import.meta.dirname, "../../dist/plugin.js"),
   );
 
-  expect(specifiers.length).toBeGreaterThan(0);
   expect(artifact).not.toContain('from"leaflet"');
-  expect(artifact).not.toContain("import(");
-  expect(artifact).not.toContain("process.env");
-
-  for (const specifier of specifiers) {
-    expect(hostExternals).toContain(specifier);
-  }
 });
 
 it(

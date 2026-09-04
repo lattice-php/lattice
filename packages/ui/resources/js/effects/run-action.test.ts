@@ -1,17 +1,13 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { jsonResponse } from "@lattice-php/core/test-support";
-import type { Effect } from "@lattice-php/ui";
-import { dispatchActionError } from "@lattice-php/ui/effects/dispatch";
+import { dispatchActionError } from "./dispatch";
 import { runAction } from "./run-action";
+import type { Effect } from "./types";
 
-vi.mock("@lattice-php/ui/effects/dispatch", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@lattice-php/ui/effects/dispatch")>()),
+vi.mock("./dispatch", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./dispatch")>()),
   dispatchActionError: vi.fn(),
 }));
-
-beforeEach(() => {
-  vi.clearAllMocks();
-});
 
 describe("runAction", () => {
   it("dispatches effects and reports success on a 2xx response", async () => {

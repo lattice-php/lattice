@@ -1,60 +1,35 @@
 import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core";
-import { fakeNode, jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
+import { jsonResponse, renderWithRegistry } from "@lattice-php/core/test-support";
 import { formComponents } from "@lattice-php/form";
 import { uiComponents } from "@lattice-php/ui";
 import BlockEditorView from "./components/editor/block-editor-view";
 import blocksPlugin from "./plugin";
 import {
   block,
+  blockEditorNode,
+  blockIdsIn,
   columnsType,
   document,
   renderedFor,
+  renderedTextFrame,
+  rootBlockIds,
+  stubEditorFetch,
   testPatterns,
-  testStyleClasses,
   TestText,
   testTypes,
-  textFrame,
   textOnlySectionType,
 } from "./test-support";
-import type { BlockDocument, BlockNode } from "./types";
+import type { BlockDocument } from "./types";
 
 const registry = createRegistry(uiComponents, formComponents, blocksPlugin, {
   components: { "test.text": eagerComponent(TestText) },
   name: "test/blocks-jsdom",
 });
 
-type EndpointCall = { op: string; body: Record<string, unknown> };
-
-function stubEditorEndpoint(
-  respond: (op: string, body: Record<string, unknown>) => Response = () =>
-    jsonResponse({ errors: {}, revision: 2 }),
-) {
-  const calls: EndpointCall[] = [];
-
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async (_url: RequestInfo | URL, init?: RequestInit) => {
-      const body = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
-      const op = init?.method === "PATCH" ? "draft" : String(body._op);
-      calls.push({ body, op });
-
-      if (op === "render") {
-        const node = body.block as BlockNode;
-
-        return jsonResponse({
-          errors: {},
-          node: textFrame(node, `Rendered ${String(node.data.text ?? node.type)}`),
-        });
-      }
-
-      return respond(op, body);
-    }),
-  );
-
-  return calls;
-}
+const stubEditorEndpoint = (respond?: (op: string, body: Record<string, unknown>) => Response) =>
+  stubEditorFetch({ render: renderedTextFrame, respond });
 
 function renderEditor(
   doc: BlockDocument,
@@ -62,25 +37,12 @@ function renderEditor(
   types = testTypes,
   patterns = testPatterns,
 ) {
-  const node = fakeNode({
-    id: "pages",
-    props: {
-      document: doc,
-      patterns,
-      endpoint: "/lattice/block-editors/pages",
-      previewUrl: "/preview",
-      ref: "sealed",
-      rendered,
-      revision: 1,
-      seedType: "lattice.paragraph",
-      styleClasses: testStyleClasses,
-      title: "Landing",
-      types,
-    },
-    type: "blocks.editor",
-  });
-
-  return renderWithRegistry(<BlockEditorView node={node} />, registry);
+  return renderWithRegistry(
+    <BlockEditorView
+      node={blockEditorNode(doc, { patterns, previewUrl: "/preview", rendered, types })}
+    />,
+    registry,
+  );
 }
 
 const baseDocument = () =>
@@ -94,20 +56,6 @@ const baseDocument = () =>
     ),
     block("s", textOnlySectionType.type, {}, { content: [] }),
   );
-
-function rootBlockIds(): string[] {
-  return Array.from(
-    globalThis.document.querySelectorAll('[data-test="blocks-canvas-root"] > [data-block-id]'),
-    (element) => element.getAttribute("data-block-id") ?? "",
-  );
-}
-
-function blockIdsIn(container: string): string[] {
-  return Array.from(
-    globalThis.document.querySelectorAll(`[data-test="${container}"] [data-block-id]`),
-    (element) => element.getAttribute("data-block-id") ?? "",
-  );
-}
 
 function blockTypesIn(container: string): string[] {
   return Array.from(

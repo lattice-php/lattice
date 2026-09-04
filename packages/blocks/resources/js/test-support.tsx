@@ -1,7 +1,8 @@
 import type { Node } from "@lattice-php/core";
 import { createRegistry, eagerComponent } from "@lattice-php/core";
 import type { RendererComponent } from "@lattice-php/core";
-import { fakeNode } from "@lattice-php/core/test-support";
+import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
+import { vi } from "vitest";
 import blocksPlugin from "./plugin";
 import type {
   BlockDocument,
@@ -295,4 +296,82 @@ export function renderedFor(
   visit(doc.blocks);
 
   return rendered;
+}
+
+export type EditorEndpointCall = { op: string; body: Record<string, unknown> };
+
+export function renderedTextFrame(node: BlockNode): Node {
+  return textFrame(node, `Rendered ${String(node.data.text ?? node.type)}`);
+}
+
+/**
+ * Stub the editor endpoint, recording every call. Render ops answer with a
+ * frame so the canvas can mount the block; everything else falls to `respond`.
+ */
+export function stubEditorFetch({
+  render = renderedFrame,
+  respond = () => jsonResponse({ errors: {}, revision: 2 }),
+}: {
+  render?: (node: BlockNode) => Node;
+  respond?: (op: string, body: Record<string, unknown>) => Response;
+} = {}): EditorEndpointCall[] {
+  const calls: EditorEndpointCall[] = [];
+
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_url: RequestInfo | URL, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
+      const op = init?.method === "PATCH" ? "draft" : String(body._op);
+      calls.push({ body, op });
+
+      if (op === "render") {
+        return jsonResponse({ errors: {}, node: render(body.block as BlockNode) });
+      }
+
+      return respond(op, body);
+    }),
+  );
+
+  return calls;
+}
+
+export function blockEditorNode(doc: BlockDocument, props: Record<string, unknown> = {}) {
+  return fakeNode({
+    id: "pages",
+    props: {
+      document: doc,
+      endpoint: "/lattice/block-editors/pages",
+      previewUrl: null,
+      ref: "sealed",
+      rendered: renderedFor(doc),
+      revision: 1,
+      seedType: "lattice.paragraph",
+      styleClasses: testStyleClasses,
+      title: "Landing",
+      types: testTypes,
+      ...props,
+    },
+    type: "blocks.editor",
+  });
+}
+
+export function rootBlocks(): { id: string; type: string }[] {
+  return Array.from(
+    globalThis.document.querySelectorAll('[data-test="blocks-canvas-root"] > [data-block-id]'),
+    (element) => ({
+      id: element.getAttribute("data-block-id") ?? "",
+      type: element.getAttribute("data-block-type") ?? "",
+    }),
+  );
+}
+
+export function rootBlockIds(): string[] {
+  return rootBlocks().map((entry) => entry.id);
+}
+
+export function blockIdsIn(container: string): string[] {
+  return Array.from(
+    globalThis.document.querySelectorAll(`[data-test="${container}"] [data-block-id]`),
+    (element) => element.getAttribute("data-block-id") ?? "",
+  );
 }
