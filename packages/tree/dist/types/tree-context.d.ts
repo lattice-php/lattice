@@ -44,12 +44,13 @@ export type TreeContextValue = {
 };
 export declare const TreeContext: import('react').Context<TreeContextValue>;
 export declare function useTreeContext(): TreeContextValue;
-export declare function useTreeState({ activeId: controlledActiveId, activePath, defaultExpanded, endpoint, componentRef, lazy, maxDepth, nodes, moveAction, rememberState, revision, selectAction, storageKey, }: {
+export declare function useTreeState({ activeId: controlledActiveId, activePath, defaultExpanded, endpoint, componentRef, identity, lazy, maxDepth, nodes, moveAction, rememberState, revision, selectAction, storageKey, }: {
     activeId: string | null;
     activePath: string[] | null;
     defaultExpanded: string[];
     endpoint: string | null;
     componentRef: string | null;
+    identity: string | undefined;
     lazy: boolean;
     maxDepth: number | null;
     nodes: TreeNodeData[];

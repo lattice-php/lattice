@@ -17236,7 +17236,7 @@ var wo, To = h((() => {
 })), Eo = /* @__PURE__ */ g({ default: () => Do }), Do, Oo = h((() => {
 	x(), To(), Do = ({ node: t }) => {
 		let { t: n } = (0, y.useT)("pdf"), r = Co().engine;
-		return r ? /* @__PURE__ */ l("div", {
+		return t.props.url === "" ? null : r ? /* @__PURE__ */ l("div", {
 			className: "lt-pdf",
 			"data-test": (0, y.nodeIdentity)(t),
 			style: t.props.maxHeight === null ? { height: t.props.height } : { maxHeight: t.props.maxHeight },

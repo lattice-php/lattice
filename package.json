@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/monorepo",
-  "version": "0.70.2",
+  "version": "0.71.0",
   "private": true,
   "description": "Development monorepo for the Lattice packages.",
   "license": "MIT",

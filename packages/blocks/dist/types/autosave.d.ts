@@ -1,5 +1,5 @@
-import { EditorEndpoint } from "./endpoint";
-import { EditorStore } from "./document/store";
+import { EditorEndpoint } from './endpoint';
+import { EditorStore } from './document/store';
 export declare const AUTOSAVE_DELAY_MS = 5000;
 /**
  * Saves the draft a few seconds after the last change and immediately when the
@@ -8,10 +8,6 @@ export declare const AUTOSAVE_DELAY_MS = 5000;
  * The returned `saveNow` runs the same save on demand, for example to
  * overwrite a newer server revision on purpose.
  */
-export declare function useAutosave(
-  store: EditorStore,
-  endpoint: EditorEndpoint | null,
-  delayMs?: number,
-): {
-  saveNow: () => Promise<void>;
+export declare function useAutosave(store: EditorStore, endpoint: EditorEndpoint | null, delayMs?: number): {
+    saveNow: () => Promise<void>;
 };

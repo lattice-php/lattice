@@ -1,9 +1,9 @@
 export type History<T> = {
-  past: T[];
-  present: T;
-  future: T[];
-  lastKey: string | null;
-  lastAt: number;
+    past: T[];
+    present: T;
+    future: T[];
+    lastKey: string | null;
+    lastAt: number;
 };
 export declare function createHistory<T>(present: T): History<T>;
 /**
@@ -11,15 +11,11 @@ export declare function createHistory<T>(present: T): History<T>;
  * window replace the present instead of stacking, so typing into one field
  * undoes as a whole rather than keystroke by keystroke.
  */
-export declare function push<T>(
-  history: History<T>,
-  present: T,
-  options?: {
+export declare function push<T>(history: History<T>, present: T, options?: {
     coalesceKey?: string | null;
     now?: number;
     limit?: number;
-  },
-): History<T>;
+}): History<T>;
 export declare function undo<T>(history: History<T>): History<T>;
 export declare function redo<T>(history: History<T>): History<T>;
 export declare function canUndo<T>(history: History<T>): boolean;

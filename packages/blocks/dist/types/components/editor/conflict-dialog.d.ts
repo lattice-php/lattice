@@ -4,14 +4,9 @@
  * Dismissing is not an option: the editor cannot keep autosaving until the
  * user picks one.
  */
-export declare function ConflictDialog({
-  open,
-  overwriting,
-  onReload,
-  onOverwrite,
-}: {
-  open: boolean;
-  overwriting: boolean;
-  onReload: () => void;
-  onOverwrite: () => void;
+export declare function ConflictDialog({ open, overwriting, onReload, onOverwrite, }: {
+    open: boolean;
+    overwriting: boolean;
+    onReload: () => void;
+    onOverwrite: () => void;
 }): import("react").JSX.Element;

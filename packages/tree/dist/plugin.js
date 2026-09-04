@@ -96,29 +96,29 @@ var A, j = h((() => {
 }));
 //#endregion
 //#region resources/js/tree-item-drop.ts
-function M(e, t) {
+function ee(e, t) {
 	return {
 		label: t.label,
 		sourceId: t.id,
 		type: e
 	};
 }
-function N(e, t) {
+function M(e, t) {
 	return t.type !== e || typeof t.sourceId != "string" ? null : {
 		id: t.sourceId,
 		label: typeof t.label == "string" ? t.label : t.sourceId
 	};
 }
-function P(e) {
+function N(e) {
 	let { dragType: t, onInstruction: n } = e;
 	return (0, y.dropTargetForElements)({
 		element: e.element,
 		canDrop: ({ source: n }) => {
-			let r = N(t, n.data);
+			let r = M(t, n.data);
 			return r !== null && e.canDrop(r);
 		},
 		getData: ({ element: n, input: r, source: i }) => {
-			let a = N(t, i.data);
+			let a = M(t, i.data);
 			return (0, y.attachTreeItemInstruction)({ type: t }, {
 				block: a ? e.blockedInstructions(a) : [],
 				currentLevel: e.currentLevel,
@@ -137,12 +137,12 @@ function P(e) {
 		},
 		onDrop: ({ self: r, source: i }) => {
 			e.onLeave?.(), n(null);
-			let a = N(t, i.data), o = (0, y.extractTreeItemInstruction)(r.data);
+			let a = M(t, i.data), o = (0, y.extractTreeItemInstruction)(r.data);
 			!a || !o || o.type === "instruction-blocked" || e.onDrop(a, o);
 		}
 	});
 }
-function F(e) {
+function P(e) {
 	switch (e) {
 		case "reorder-above": return "relative before:absolute before:inset-x-0 before:-top-px before:h-0.5 before:bg-lt-primary";
 		case "reorder-below": return "relative after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-lt-primary";
@@ -152,16 +152,16 @@ function F(e) {
 		default: return null;
 	}
 }
-var I = h((() => {
+var F = h((() => {
 	x();
-})), L = /* @__PURE__ */ g({ default: () => H });
-function R() {
-	let e = n(V);
+})), I = /* @__PURE__ */ g({ default: () => V });
+function L() {
+	let e = n(B);
 	if (!e) throw Error("Tree field rows must render inside their tree field.");
 	return e;
 }
-function z({ node: e, name: t, depth: n, parentRowId: r }) {
-	let i = e.props, a = R(), { t: o } = (0, y.useT)("tree"), { path: s, rows: d, onField: f, onRemove: p, onMove: m, append: h, insert: g } = (0, y.useRowCollection)(t, 0), _ = n === 1 && i.maxItems !== null && d.length >= i.maxItems, v = n === 1 && i.minItems !== null && d.length <= i.minItems, b = i.templates.map((e) => ({
+function R({ node: e, name: t, depth: n, parentRowId: r }) {
+	let i = e.props, a = L(), { t: o } = (0, y.useT)("tree"), { path: s, rows: d, onField: f, onRemove: p, onMove: m, append: h, insert: g } = (0, y.useRowCollection)(t, 0), _ = n === 1 && i.maxItems !== null && d.length >= i.maxItems, v = n === 1 && i.minItems !== null && d.length <= i.minItems, b = i.templates.map((e) => ({
 		type: e.type,
 		label: e.label
 	}));
@@ -176,7 +176,7 @@ function z({ node: e, name: t, depth: n, parentRowId: r }) {
 			rows: d,
 			rowKey: "type"
 		}),
-		d.map((t, i) => /* @__PURE__ */ l(ee, {
+		d.map((t, i) => /* @__PURE__ */ l(te, {
 			node: e,
 			row: t,
 			index: i,
@@ -199,7 +199,7 @@ function z({ node: e, name: t, depth: n, parentRowId: r }) {
 		})
 	] });
 }
-function B({ label: e, testId: t, danger: n = !1, onClick: r, children: i }) {
+function z({ label: e, testId: t, danger: n = !1, onClick: r, children: i }) {
 	return /* @__PURE__ */ l("button", {
 		type: "button",
 		"aria-label": e,
@@ -209,41 +209,41 @@ function B({ label: e, testId: t, danger: n = !1, onClick: r, children: i }) {
 		children: i
 	});
 }
-function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, siblingCount: d, removable: f, insertable: p, options: m, onField: h, onRemove: g, onMove: _, onInsert: v }) {
-	let b = R(), { t: x } = (0, y.useT)("tree"), C = a(null), w = a(null), [T, E] = o(!1), [D, O] = o(null), k = typeof t[y.ROW_ID_KEY] == "string" ? t[y.ROW_ID_KEY] : null, A = e.props.templates.find((e) => e.type === t.type), j = A?.label ?? `Unknown block: ${String(t.type)}`, N = b.acceptsChildren(t) && (b.maxDepth === null || i < b.maxDepth), I = S(t).length, L = !b.locked && k !== null;
+function te({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, siblingCount: d, removable: f, insertable: p, options: m, onField: h, onRemove: g, onMove: _, onInsert: v }) {
+	let b = L(), { t: x } = (0, y.useT)("tree"), C = a(null), w = a(null), [T, E] = o(!1), [D, O] = o(null), k = typeof t[y.ROW_ID_KEY] == "string" ? t[y.ROW_ID_KEY] : null, A = e.props.templates.find((e) => e.type === t.type), j = A?.label ?? `Unknown block: ${String(t.type)}`, M = b.acceptsChildren(t) && (b.maxDepth === null || i < b.maxDepth), F = S(t).length, I = !b.locked && k !== null;
 	return r(() => {
 		let e = C.current, t = w.current;
-		if (!(!e || !L || k === null)) return (0, y.combine)(...t ? [(0, y.draggable)({
+		if (!(!e || !I || k === null)) return (0, y.combine)(...t ? [(0, y.draggable)({
 			element: e,
 			dragHandle: t,
-			getInitialData: () => M(b.dragType, {
+			getInitialData: () => ee(b.dragType, {
 				id: k,
 				label: j
 			}),
 			onDragStart: () => E(!0),
 			onDrop: () => E(!1)
-		})] : [], P({
+		})] : [], N({
 			element: e,
 			dragType: b.dragType,
 			currentLevel: i - 1,
-			mode: N && I > 0 ? "expanded" : n === d - 1 ? "last-in-group" : "standard",
+			mode: M && F > 0 ? "expanded" : n === d - 1 ? "last-in-group" : "standard",
 			canDrop: (e) => e.id !== k,
 			blockedInstructions: (e) => {
 				let t = ["reparent"];
-				return (!N || !b.canPlace(e.id, k)) && t.push("make-child"), b.canPlace(e.id, c) || t.push("reorder-above", "reorder-below"), t;
+				return (!M || !b.canPlace(e.id, k)) && t.push("make-child"), b.canPlace(e.id, c) || t.push("reorder-above", "reorder-below"), t;
 			},
 			onInstruction: O,
 			onDrop: (e, t) => {
-				t.type === "reorder-above" ? b.move(e.id, c, n, e.label) : t.type === "reorder-below" ? b.move(e.id, c, n + 1, e.label) : t.type === "make-child" && b.move(e.id, k, I, e.label);
+				t.type === "reorder-above" ? b.move(e.id, c, n, e.label) : t.type === "reorder-below" ? b.move(e.id, c, n + 1, e.label) : t.type === "make-child" && b.move(e.id, k, F, e.label);
 			}
 		}));
 	}, [
 		b,
-		I,
+		F,
 		i,
-		L,
+		I,
 		j,
-		N,
+		M,
 		n,
 		c,
 		k,
@@ -252,7 +252,7 @@ function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, sibl
 		ref: C,
 		"data-test": `tree-field-${s}-row-${n}`,
 		"data-drop-instruction": D ?? void 0,
-		className: (0, y.cn)("rounded-lt border border-lt-border bg-lt-surface p-4", T && "opacity-50", F(D)),
+		className: (0, y.cn)("rounded-lt border border-lt-border bg-lt-surface p-4", T && "opacity-50", P(D)),
 		children: [/* @__PURE__ */ u("div", {
 			className: "mb-2 flex items-center justify-between",
 			children: [/* @__PURE__ */ u("div", {
@@ -271,7 +271,7 @@ function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, sibl
 			}), !b.locked && /* @__PURE__ */ u("div", {
 				className: "flex items-center gap-1",
 				children: [
-					N && /* @__PURE__ */ l(y.AddRowMenu, {
+					M && /* @__PURE__ */ l(y.AddRowMenu, {
 						addLabel: x("tree.add_child", "Add sub-item"),
 						icon: "corner-down-right",
 						testId: `tree-field-${s}-add-child-${n}`,
@@ -285,19 +285,19 @@ function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, sibl
 						options: m,
 						onSelect: (e) => v(n + 1, { type: e })
 					}),
-					e.props.reorderable && n > 0 && /* @__PURE__ */ l(B, {
+					e.props.reorderable && n > 0 && /* @__PURE__ */ l(z, {
 						label: x("tree.move_up", "Move up"),
 						testId: `tree-field-${s}-up-${n}`,
 						onClick: () => _(n, -1),
 						children: /* @__PURE__ */ l(y.Icon, { name: "arrow-up" })
 					}),
-					e.props.reorderable && n < d - 1 && /* @__PURE__ */ l(B, {
+					e.props.reorderable && n < d - 1 && /* @__PURE__ */ l(z, {
 						label: x("tree.move_down", "Move down"),
 						testId: `tree-field-${s}-down-${n}`,
 						onClick: () => _(n, 1),
 						children: /* @__PURE__ */ l(y.Icon, { name: "arrow-down" })
 					}),
-					f && /* @__PURE__ */ l(B, {
+					f && /* @__PURE__ */ l(z, {
 						label: x("tree.remove", "Remove"),
 						testId: `tree-field-${s}-remove-${n}`,
 						danger: !0,
@@ -314,9 +314,9 @@ function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, sibl
 			children: [/* @__PURE__ */ l("div", {
 				className: "flex flex-col gap-4",
 				children: (A?.schema ?? []).map((e, t) => /* @__PURE__ */ l(y.RenderNode, { node: e }, t))
-			}), N && /* @__PURE__ */ l("div", {
+			}), M && /* @__PURE__ */ l("div", {
 				className: "mt-3 flex flex-col gap-3 border-l-2 border-lt-border pl-4",
-				children: /* @__PURE__ */ l(z, {
+				children: /* @__PURE__ */ l(R, {
 					node: e,
 					name: "children",
 					depth: i + 1,
@@ -326,8 +326,8 @@ function ee({ node: e, row: t, index: n, depth: i, path: s, parentRowId: c, sibl
 		})]
 	});
 }
-var V, H, U = h((() => {
-	x(), j(), I(), V = e(null), H = ({ node: e }) => {
+var B, V, H = h((() => {
+	x(), j(), F(), B = e(null), V = ({ node: e }) => {
 		let t = e.props, { errors: n } = (0, y.useFormContext)(), { hidden: r, required: o, readOnly: s, disabled: c } = (0, y.useDependentField)(e), u = (0, y.useFieldScope)(), d = u ? u.errorKey(t.name) : t.name, f = (0, y.useSetFormValue)(), p = (0, y.useFormValue)(d), { t: m } = (0, y.useT)("tree"), h = a([]);
 		h.current = Array.isArray(p) ? p : [];
 		let g = s || c, _ = i(() => {
@@ -364,9 +364,9 @@ var V, H, U = h((() => {
 				...n,
 				className: "flex flex-col gap-3",
 				role: "group",
-				children: /* @__PURE__ */ l(V.Provider, {
+				children: /* @__PURE__ */ l(B.Provider, {
 					value: _,
-					children: /* @__PURE__ */ l(z, {
+					children: /* @__PURE__ */ l(R, {
 						node: e,
 						name: t.name,
 						depth: 1,
@@ -379,21 +379,21 @@ var V, H, U = h((() => {
 }));
 //#endregion
 //#region resources/js/tree-context.tsx
-function W(e, t, n) {
+function U(e, t, n) {
 	e.children.set(t, n.map((e) => e.id)), e.loaded.add(t);
 	for (let r of n) e.nodes.set(r.id, {
 		...r,
 		children: []
-	}), e.parents.set(r.id, t === "" ? null : t), r.children.length > 0 && W(e, r.id, r.children);
+	}), e.parents.set(r.id, t === "" ? null : t), r.children.length > 0 && U(e, r.id, r.children);
 }
-function te(e, t) {
+function W(e, t) {
 	let n = {
 		children: /* @__PURE__ */ new Map(),
 		loaded: /* @__PURE__ */ new Set(),
 		nodes: /* @__PURE__ */ new Map(),
 		parents: /* @__PURE__ */ new Map()
 	};
-	return W(n, "", e), t || n.loaded.delete(""), n;
+	return U(n, "", e), t || n.loaded.delete(""), n;
 }
 function ne(e, t, n) {
 	let r = {
@@ -402,7 +402,7 @@ function ne(e, t, n) {
 		nodes: new Map(e.nodes),
 		parents: new Map(e.parents)
 	};
-	return W(r, t, n), r;
+	return U(r, t, n), r;
 }
 function re(e, t) {
 	let n = 1, r = e.parents.get(t);
@@ -476,59 +476,63 @@ async function Y(e, t, n) {
 		throwOnError: !1
 	}), n);
 }
-function se({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, componentRef: u, lazy: d, maxDepth: f, nodes: p, moveAction: m, rememberState: h, revision: g, selectAction: _, storageKey: v }) {
-	let [b, x] = (0, y.usePersistentState)(v, () => new Set(c), {
-		enabled: h,
+function se({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, componentRef: u, identity: d, lazy: f, maxDepth: p, nodes: m, moveAction: h, rememberState: g, revision: _, selectAction: v, storageKey: b }) {
+	let [x, S] = (0, y.usePersistentState)(b, () => new Set(c), {
+		enabled: g,
 		parse: q,
 		serialize: (e) => JSON.stringify([...e])
-	}), [S, C] = o(() => p[0]?.id ?? null), [w, T] = o(/* @__PURE__ */ new Set()), [E] = o(() => ae({
+	}), [C, w] = o(() => m[0]?.id ?? null), [T, E] = o(/* @__PURE__ */ new Set()), [D] = o(() => ae({
 		activeId: e,
-		graph: te(p, !(d && p.length === 0)),
+		graph: W(m, !(f && m.length === 0)),
 		moving: !1
-	})), { activeId: D, graph: O, moving: k } = s(E.subscribe, E.getState), A = a(/* @__PURE__ */ new Map()), j = a({
+	})), { activeId: O, graph: k, moving: A } = s(D.subscribe, D.getState), j = a(/* @__PURE__ */ new Map()), ee = a({
 		text: "",
 		timestamp: 0
 	}), M = a(/* @__PURE__ */ new Map()), N = a(0), P = a(null), F = a(0), I = a({
-		nodes: p,
-		revision: g
-	}), L = (0, y.useEffectDispatcher)(), R = l !== null && l !== "", z = m !== null;
+		nodes: m,
+		revision: _
+	}), L = (0, y.useEffectDispatcher)(), R = l !== null && l !== "", z = h !== null;
 	r(() => {
-		F.current += 1, E.setState({ activeId: e });
-	}, [e, E]), r(() => {
-		(I.current.nodes !== p || I.current.revision !== g) && (I.current = {
-			nodes: p,
-			revision: g
-		}, N.current += 1, M.current.clear(), E.setState({ graph: te(p, !(d && p.length === 0)) }), T(/* @__PURE__ */ new Set()));
+		F.current += 1, D.setState({ activeId: e });
+	}, [e, D]), r(() => {
+		(I.current.nodes !== m || I.current.revision !== _) && (I.current = {
+			nodes: m,
+			revision: _
+		}, N.current += 1, M.current.clear(), D.setState({ graph: W(m, !(f && m.length === 0)) }), E(/* @__PURE__ */ new Set()));
 	}, [
-		d,
-		p,
-		g,
-		E
+		f,
+		m,
+		_,
+		D
 	]);
-	let B = t((e) => {
-		x((t) => {
+	let te = t((e) => {
+		S((t) => {
 			let n = new Set(t);
 			return n.has(e) ? n.delete(e) : n.add(e), n;
 		});
-	}, [x]), ee = t((e) => x((t) => new Set(t).add(e)), [x]), V = t((e) => {
-		let t = E.getState().activeId, n = ++F.current;
-		E.setState({ activeId: e }), _ && Y(_, { nodeId: e }, L).then((e) => {
-			!e && F.current === n && E.setState({ activeId: t });
+	}, [S]), B = t((e) => S((t) => new Set(t).add(e)), [S]), V = t((e) => {
+		let t = D.getState().activeId, n = ++F.current;
+		D.setState({ activeId: e }), window.dispatchEvent(new CustomEvent(y.LATTICE_EVENT.treeActivate, { detail: {
+			component: d,
+			nodeId: e
+		} })), v && Y(v, { nodeId: e }, L).then((e) => {
+			!e && F.current === n && D.setState({ activeId: t });
 		});
 	}, [
 		L,
-		_,
-		E
+		d,
+		v,
+		D
 	]), H = t((e) => {
-		C(e);
-		let t = [...A.current.values()].find((t) => t.id === e);
+		w(e);
+		let t = [...j.current.values()].find((t) => t.id === e);
 		t?.ref.current ? (P.current = null, t.ref.current.focus()) : P.current = e;
 	}, []), U = t((e) => {
-		A.current.set(e.path, e), P.current === e.id && (P.current = null, e.ref.current?.focus());
-	}, []), W = t((e) => {
-		A.current.delete(e);
-	}, []), oe = t((e, t) => {
-		let n = J(A.current);
+		j.current.set(e.path, e), P.current === e.id && (P.current = null, e.ref.current?.focus());
+	}, []), oe = t((e) => {
+		j.current.delete(e);
+	}, []), se = t((e, t) => {
+		let n = J(j.current);
 		if (n.length === 0) return;
 		let r = n.findIndex((t) => t.id === e), i = r === -1 ? void 0 : n[r], a;
 		switch (t) {
@@ -550,11 +554,11 @@ function se({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compo
 			case "firstChild": a = i ? n.find((e) => e.parentPath === i.path) : void 0;
 		}
 		a && H(a.id);
-	}, [H]), se = t((e, t) => {
-		let n = J(A.current);
+	}, [H]), X = t((e, t) => {
+		let n = J(j.current);
 		if (n.length === 0) return;
-		let r = Date.now(), i = j.current, a = r - i.timestamp > ce ? t : i.text + t;
-		j.current = {
+		let r = Date.now(), i = ee.current, a = r - i.timestamp > ce ? t : i.text + t;
+		ee.current = {
 			text: a,
 			timestamp: r
 		};
@@ -566,21 +570,21 @@ function se({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compo
 				return;
 			}
 		}
-	}, [H]), X = t((e) => {
-		if (!R || E.getState().graph.loaded.has(e)) return Promise.resolve();
+	}, [H]), Z = t((e) => {
+		if (!R || D.getState().graph.loaded.has(e)) return Promise.resolve();
 		let t = M.current.get(e);
 		if (t) return t;
 		let n = N.current;
-		T((t) => new Set(t).add(e));
+		E((t) => new Set(t).add(e));
 		let r = (0, y.apiJson)(`${l}?parent=${encodeURIComponent(e)}`, { ref: u ?? "" }).then(({ nodes: t }) => {
-			n === N.current && E.setState({ graph: ne(E.getState().graph, e, t) });
+			n === N.current && D.setState({ graph: ne(D.getState().graph, e, t) });
 		}).catch(() => {
-			n === N.current && x((t) => {
+			n === N.current && S((t) => {
 				let n = new Set(t);
 				return n.delete(e), n;
 			});
 		}).finally(() => {
-			n === N.current && (M.current.delete(e), T((t) => {
+			n === N.current && (M.current.delete(e), E((t) => {
 				let n = new Set(t);
 				return n.delete(e), n;
 			}));
@@ -590,63 +594,63 @@ function se({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compo
 		R,
 		u,
 		l,
-		x,
-		E
-	]), Z = t((e) => O.children.get(e)?.map((e) => O.nodes.get(e)), [O]), le = t((e) => E.getState().graph.children.get(e ?? "")?.length ?? 0, [E]), ue = t((e) => E.getState().graph.parents.get(e) ?? null, [E]), de = t((e) => {
-		let t = E.getState().graph, n = t.parents.get(e) ?? null;
+		S,
+		D
+	]), le = t((e) => k.children.get(e)?.map((e) => k.nodes.get(e)), [k]), ue = t((e) => D.getState().graph.children.get(e ?? "")?.length ?? 0, [D]), de = t((e) => D.getState().graph.parents.get(e) ?? null, [D]), fe = t((e) => {
+		let t = D.getState().graph, n = t.parents.get(e) ?? null;
 		return t.children.get(n ?? "")?.indexOf(e) ?? -1;
-	}, [E]), fe = t((e, t) => {
-		let n = E.getState().graph, r = n.nodes.get(e), i = n.nodes.get(t);
+	}, [D]), pe = t((e, t) => {
+		let n = D.getState().graph, r = n.nodes.get(e), i = n.nodes.get(t);
 		return !!(r && i && r.disabled !== !0 && i.disabled !== !0 && e !== t && !K(n, e, t));
-	}, [E]), Q = t((e, t) => {
-		let n = E.getState().graph;
-		return t === (n.parents.get(e) ?? null) ? !0 : t !== null && n.nodes.get(t)?.acceptsChildren === !1 ? !1 : f === null || (t === null ? 0 : re(n, t)) + G(n, e) <= f;
-	}, [f, E]), pe = t(async (e) => {
-		if (!m || E.getState().moving || !Q(e.nodeId, e.parentId)) return !1;
-		let t = E.getState().graph, n = ie(t, e);
+	}, [D]), Q = t((e, t) => {
+		let n = D.getState().graph;
+		return t === (n.parents.get(e) ?? null) ? !0 : t !== null && n.nodes.get(t)?.acceptsChildren === !1 ? !1 : p === null || (t === null ? 0 : re(n, t)) + G(n, e) <= p;
+	}, [p, D]), $ = t(async (e) => {
+		if (!h || D.getState().moving || !Q(e.nodeId, e.parentId)) return !1;
+		let t = D.getState().graph, n = ie(t, e);
 		if (!n) return !1;
 		let r = N.current;
-		E.setState({
+		D.setState({
 			graph: n,
 			moving: !0
 		}), H(e.nodeId);
-		let i = await Y(m, e, L);
-		return !i && r === N.current && (E.setState({ graph: t }), H(e.nodeId)), E.setState({ moving: !1 }), i;
+		let i = await Y(h, e, L);
+		return !i && r === N.current && (D.setState({ graph: t }), H(e.nodeId)), D.setState({ moving: !1 }), i;
 	}, [
 		Q,
 		L,
 		H,
-		m,
-		E
+		h,
+		D
 	]), me = t(() => {
 		if (!R) return;
 		N.current += 1;
 		let e = N.current;
-		M.current.clear(), T(/* @__PURE__ */ new Set()), (0, y.apiJson)(`${l}?parent=`, { ref: u ?? "" }).then(({ nodes: t }) => {
-			e === N.current && E.setState({ graph: te(t, !0) });
+		M.current.clear(), E(/* @__PURE__ */ new Set()), (0, y.apiJson)(`${l}?parent=`, { ref: u ?? "" }).then(({ nodes: t }) => {
+			e === N.current && D.setState({ graph: W(t, !0) });
 		}).catch(() => {});
 	}, [
 		R,
 		u,
 		l,
-		E
-	]), he = t((e) => w.has(e), [w]), ge = t((e) => E.getState().graph.loaded.has(e), [E]);
+		D
+	]), he = t((e) => T.has(e), [T]), ge = t((e) => D.getState().graph.loaded.has(e), [D]);
 	r(() => {
-		d && !O.loaded.has("") && X("");
+		f && !k.loaded.has("") && Z("");
 	}, [
-		O.loaded,
-		d,
-		X
+		k.loaded,
+		f,
+		Z
 	]);
-	let $ = O.children.get("")?.[0];
+	let _e = k.children.get("")?.[0];
 	return r(() => {
-		S === null && $ !== void 0 && C($);
-	}, [S, $]), r(() => {
+		C === null && _e !== void 0 && w(_e);
+	}, [C, _e]), r(() => {
 		if (!e || !n) return;
 		let t = !1;
 		return (async () => {
-			x((e) => /* @__PURE__ */ new Set([...e, ...n]));
-			for (let e of n) if (await X(e), t) return;
+			S((e) => /* @__PURE__ */ new Set([...e, ...n]));
+			for (let e of n) if (await Z(e), t) return;
 			H(e);
 		})(), () => {
 			t = !0;
@@ -655,60 +659,60 @@ function se({ activeId: e, activePath: n, defaultExpanded: c, endpoint: l, compo
 		n,
 		e,
 		H,
-		X,
-		x
+		Z,
+		S
 	]), i(() => ({
 		activate: V,
-		activeId: D,
-		canDropOn: fe,
+		activeId: O,
+		canDropOn: pe,
 		canLoad: R,
 		canMove: z,
 		canPlace: Q,
-		childrenCount: le,
-		childrenFor: Z,
-		expand: ee,
-		expanded: b,
+		childrenCount: ue,
+		childrenFor: le,
+		expand: B,
+		expanded: x,
 		focus: H,
-		focusedId: S,
+		focusedId: C,
 		isLoaded: ge,
 		isLoading: he,
-		loadChildren: X,
-		move: pe,
-		moveFocus: oe,
-		moving: k,
-		parentFor: ue,
-		positionFor: de,
+		loadChildren: Z,
+		move: $,
+		moveFocus: se,
+		moving: A,
+		parentFor: de,
+		positionFor: fe,
 		register: U,
 		reload: me,
-		toggle: B,
-		typeAhead: se,
-		unregister: W
+		toggle: te,
+		typeAhead: X,
+		unregister: oe
 	}), [
 		V,
-		D,
-		fe,
+		O,
+		pe,
 		R,
 		z,
 		Q,
+		ue,
 		le,
-		Z,
-		ee,
-		b,
+		B,
+		x,
 		H,
-		S,
+		C,
 		ge,
 		he,
-		X,
-		pe,
-		oe,
-		k,
-		ue,
+		Z,
+		$,
+		se,
+		A,
 		de,
+		fe,
 		U,
 		me,
-		B,
-		se,
-		W
+		te,
+		X,
+		oe
 	]);
 }
 var X, Z, ce, le = h((() => {
@@ -744,13 +748,13 @@ function de(e, t, n) {
 	return !!t?.length || e.hasChildren === !0 && (n || !!e.children?.length);
 }
 function fe(e) {
-	return e instanceof Element && e.closest($) !== null;
+	return e instanceof Element && e.closest(ge) !== null;
 }
-function Q(e) {
-	return String(e).padStart(me, "0");
+function pe(e) {
+	return String(e).padStart($, "0");
 }
-function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, siblingCount: c, siblingIndex: d }) {
-	let { activate: f, activeId: p, canDropOn: m, canLoad: h, canMove: g, canPlace: _, childrenCount: v, childrenFor: b, expand: x, expanded: S, focus: C, focusedId: w, isLoaded: T, isLoading: E, loadChildren: D, move: O, moveFocus: k, moving: A, parentFor: j, positionFor: N, register: I, toggle: L, typeAhead: R, unregister: z } = oe(), { t: B } = (0, y.useT)("tree"), { visit: ee } = (0, y.useNavigation)(), V = a(null), H = a(null), U = a(null), [W, te] = o(!1), [ne, re] = o(null), G = i ? `${i}/${t.id}` : t.id, K = S.has(t.id), ie = p === t.id, ae = w === t.id, q = t.disabled === !0, J = b(t.id), Y = de(t, J, h), se = E(t.id), X = a(null);
+function Q({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, siblingCount: c, siblingIndex: d }) {
+	let { activate: f, activeId: p, canDropOn: m, canLoad: h, canMove: g, canPlace: _, childrenCount: v, childrenFor: b, expand: x, expanded: S, focus: C, focusedId: w, isLoaded: T, isLoading: E, loadChildren: D, move: O, moveFocus: k, moving: A, parentFor: j, positionFor: M, register: F, toggle: I, typeAhead: L, unregister: R } = oe(), { t: z } = (0, y.useT)("tree"), { visit: te } = (0, y.useNavigation)(), B = a(null), V = a(null), H = a(null), [U, W] = o(!1), [ne, re] = o(null), G = i ? `${i}/${t.id}` : t.id, K = S.has(t.id), ie = p === t.id, ae = w === t.id, q = t.disabled === !0, J = b(t.id), Y = de(t, J, h), se = E(t.id), X = a(null);
 	r(() => {
 		K && t.hasChildren === !0 && !J && D(t.id);
 	}, [
@@ -758,21 +762,21 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		t,
 		J,
 		D
-	]), r(() => (I({
+	]), r(() => (F({
 		id: t.id,
 		label: t.label,
 		orderPath: n,
 		parentPath: i,
 		path: G,
-		ref: V
-	}), () => z(G)), [
+		ref: B
+	}), () => R(G)), [
 		t.id,
 		t.label,
 		n,
 		i,
 		G,
-		I,
-		z
+		F,
+		R
 	]), r(() => {
 		let e = X.current;
 		e && e.querySelectorAll("button, a[href], [tabindex]").forEach((e) => {
@@ -780,10 +784,10 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		});
 	}, [t.schema]);
 	function Z() {
-		U.current !== null && (clearTimeout(U.current), U.current = null);
+		H.current !== null && (clearTimeout(H.current), H.current = null);
 	}
 	function ce(e, t, n) {
-		let r = j(t), i = N(t), a = +(j(e) === r && N(e) < i);
+		let r = j(t), i = M(t), a = +(j(e) === r && M(e) < i);
 		return i + +!!n - a;
 	}
 	async function le(e, n) {
@@ -810,22 +814,22 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		}
 		if (!i) return;
 		let a = await O(i);
-		(0, y.announce)(a ? B("tree.moved", "Moved {{label}}", { label: e.label }) : B("tree.move_failed", "Could not move {{label}}", { label: e.label }));
+		(0, y.announce)(a ? z("tree.moved", "Moved {{label}}", { label: e.label }) : z("tree.move_failed", "Could not move {{label}}", { label: e.label }));
 	}
 	r(() => {
-		let n = H.current;
+		let n = V.current;
 		if (!(!n || !g || q)) return (0, y.combine)((0, y.cancelDragStartFromInteractive)(n, fe), (0, y.draggable)({
 			canDrag: () => !A,
 			element: n,
-			getInitialData: () => M(he, {
+			getInitialData: () => ee(me, {
 				id: t.id,
 				label: t.label
 			}),
-			onDragStart: () => te(!0),
-			onDrop: () => te(!1)
-		}), P({
+			onDragStart: () => W(!0),
+			onDrop: () => W(!1)
+		}), N({
 			element: n,
-			dragType: he,
+			dragType: me,
 			currentLevel: e - 1,
 			mode: K ? "expanded" : d === c ? "last-in-group" : "standard",
 			canDrop: (e) => m(e.id, t.id),
@@ -835,9 +839,9 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 			},
 			onInstruction: re,
 			onEnter: () => {
-				Y && !K && (Z(), U.current = setTimeout(() => {
+				Y && !K && (Z(), H.current = setTimeout(() => {
 					x(t.id), t.hasChildren === !0 && D(t.id);
-				}, ge));
+				}, he));
 			},
 			onLeave: Z,
 			onDrop: (e, t) => void le(e, t)
@@ -859,13 +863,13 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		A,
 		t,
 		j,
-		N,
+		M,
 		c,
 		d,
-		B
+		z
 	]), r(() => Z, []);
 	async function ue(e) {
-		let n = j(t.id), r = N(t.id), i = null;
+		let n = j(t.id), r = M(t.id), i = null;
 		if (e === "ArrowUp" && r > 0) i = {
 			nodeId: t.id,
 			parentId: n,
@@ -889,14 +893,14 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 			i = {
 				nodeId: t.id,
 				parentId: e,
-				position: N(n) + 1
+				position: M(n) + 1
 			};
 		}
 		if (!i) return;
 		let a = await O(i);
-		(0, y.announce)(a ? B("tree.moved", "Moved {{label}}", { label: t.label }) : B("tree.move_failed", "Could not move {{label}}", { label: t.label }));
+		(0, y.announce)(a ? z("tree.moved", "Moved {{label}}", { label: t.label }) : z("tree.move_failed", "Could not move {{label}}", { label: t.label }));
 	}
-	function me(e) {
+	function $(e) {
 		if (e.target === e.currentTarget) {
 			if (g && !q && !A && e.ctrlKey && e.shiftKey && [
 				"ArrowUp",
@@ -915,10 +919,10 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 					e.preventDefault(), k(t.id, "prev");
 					return;
 				case "ArrowRight":
-					e.preventDefault(), Y && !K ? L(t.id) : Y && k(t.id, "firstChild");
+					e.preventDefault(), Y && !K ? I(t.id) : Y && k(t.id, "firstChild");
 					return;
 				case "ArrowLeft":
-					e.preventDefault(), Y && K ? L(t.id) : k(t.id, "parent");
+					e.preventDefault(), Y && K ? I(t.id) : k(t.id, "parent");
 					return;
 				case "Home":
 					e.preventDefault(), k(t.id, "first");
@@ -929,17 +933,17 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 				case "Enter":
 				case " ":
 					if (e.preventDefault(), q) return;
-					if (t.href) ee(t.href);
+					if (t.href) te(t.href);
 					else {
 						let e = X.current?.querySelector("button");
-						e ? (e.click(), V.current?.focus()) : f(t.id);
+						e ? (e.click(), B.current?.focus()) : f(t.id);
 					}
 					return;
-				default: e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && R(t.id, e.key);
+				default: e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && L(t.id, e.key);
 			}
 		}
 	}
-	function $(e) {
+	function ge(e) {
 		let n = e.target;
 		q || !(n instanceof Element) || n.closest("[role=\"treeitem\"]") !== e.currentTarget || n.closest("button, a[href], [role=\"button\"]") || fe(n) || (C(t.id), f(t.id));
 	}
@@ -954,19 +958,19 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		"aria-setsize": c,
 		className: (0, y.cn)(t.class) || void 0,
 		"data-test": `tree-node-${t.id}`,
-		onClick: $,
-		onKeyDown: me,
-		ref: V,
+		onClick: ge,
+		onKeyDown: $,
+		ref: B,
 		role: "treeitem",
 		tabIndex: ae ? 0 : -1,
 		children: [/* @__PURE__ */ u("div", {
-			className: (0, y.cn)("flex items-center gap-2 rounded-lt-sm px-2 py-1.5 text-sm text-lt-fg", ie && "bg-lt-muted font-medium", q && "pointer-events-none opacity-50", g && !q && "cursor-grab", W && "opacity-50", F(ne)),
+			className: (0, y.cn)("flex items-center gap-2 rounded-lt-sm px-2 py-1.5 text-sm text-lt-fg", ie && "bg-lt-muted font-medium", q && "pointer-events-none opacity-50", g && !q && "cursor-grab", U && "opacity-50", P(ne)),
 			"data-drop-instruction": ne ?? void 0,
-			ref: H,
+			ref: V,
 			children: [Y ? /* @__PURE__ */ l("button", {
-				"aria-label": K ? B("tree.collapse", "Collapse {{label}}", { label: t.label }) : B("tree.expand", "Expand {{label}}", { label: t.label }),
+				"aria-label": K ? z("tree.collapse", "Collapse {{label}}", { label: t.label }) : z("tree.expand", "Expand {{label}}", { label: t.label }),
 				"data-test": `tree-node-${t.id}-toggle`,
-				onClick: () => L(t.id),
+				onClick: () => I(t.id),
 				tabIndex: -1,
 				type: "button",
 				children: se ? /* @__PURE__ */ l(y.Icon, {
@@ -984,11 +988,11 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		}), Y && K && J && J.length > 0 ? /* @__PURE__ */ l("ul", {
 			className: "pl-6",
 			role: "group",
-			children: J.map((r, i) => /* @__PURE__ */ l(pe, {
+			children: J.map((r, i) => /* @__PURE__ */ l(Q, {
 				depth: e + 1,
 				ancestors: [...s, t.id],
 				node: r,
-				orderPath: `${n}.${Q(i)}`,
+				orderPath: `${n}.${pe(i)}`,
 				parentPath: G,
 				siblingCount: J.length,
 				siblingIndex: i + 1
@@ -996,14 +1000,15 @@ function pe({ depth: e, node: t, orderPath: n, parentPath: i, ancestors: s, sibl
 		}) : null]
 	});
 }
-var me, he, ge, $, _e, ve = h((() => {
-	x(), le(), I(), me = 6, he = "lattice-tree-node", ge = 500, $ = "input, textarea, select, label, [contenteditable]", _e = ({ node: e }) => {
+var $, me, he, ge, _e, ve = h((() => {
+	x(), le(), F(), $ = 6, me = "lattice-tree-node", he = 500, ge = "input, textarea, select, label, [contenteditable]", _e = ({ node: e }) => {
 		let t = (0, y.nodeIdentity)(e), n = se({
 			activeId: e.props.activeId,
 			activePath: e.props.activePath,
 			defaultExpanded: e.props.defaultExpanded,
 			endpoint: e.props.endpoint ?? null,
 			componentRef: e.props.ref ?? null,
+			identity: t,
 			lazy: e.props.lazy === !0,
 			maxDepth: e.props.maxDepth ?? null,
 			moveAction: e.props.moveAction ?? null,
@@ -1021,11 +1026,11 @@ var me, he, ge, $, _e, ve = h((() => {
 			children: /* @__PURE__ */ l("ul", {
 				"data-test": t,
 				role: "tree",
-				children: r.map((e, t) => /* @__PURE__ */ l(pe, {
+				children: r.map((e, t) => /* @__PURE__ */ l(Q, {
 					ancestors: [],
 					depth: 1,
 					node: e,
-					orderPath: Q(t),
+					orderPath: pe(t),
 					parentPath: null,
 					siblingCount: r.length,
 					siblingIndex: t + 1
@@ -1040,7 +1045,7 @@ x();
 var ye = {
 	name: "lattice/tree",
 	components: {
-		"field.tree": (0, y.lazyComponent)(() => Promise.resolve().then(() => (U(), L))),
+		"field.tree": (0, y.lazyComponent)(() => Promise.resolve().then(() => (H(), I))),
 		tree: (0, y.lazyComponent)(() => Promise.resolve().then(() => (ve(), ue)))
 	},
 	i18n: { namespace: "tree" }

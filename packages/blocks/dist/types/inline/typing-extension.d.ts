@@ -1,10 +1,10 @@
-import { Extension } from "@tiptap/core";
-import { RefObject } from "react";
-import { RichDocument } from "./typing";
+import { Extension } from '@tiptap/core';
+import { RefObject } from 'react';
+import { RichDocument } from './typing';
 export type RichTypingHandlers = {
-  split: (before: RichDocument | null, after: RichDocument | null) => boolean;
-  mergeBackward: (content: RichDocument | null) => boolean;
-  arrow: (direction: "up" | "down") => boolean;
+    split: (before: RichDocument | null, after: RichDocument | null) => boolean;
+    mergeBackward: (content: RichDocument | null) => boolean;
+    arrow: (direction: "up" | "down") => boolean;
 };
 /**
  * Block-level keys for an inline rich-text editor: Enter in a top-level
@@ -13,6 +13,4 @@ export type RichTypingHandlers = {
  * line. Runs before the built-in keymaps, which would otherwise consume the
  * keys, and steps aside while the slash menu is open.
  */
-export declare function createTypingExtension(
-  handlers: RefObject<RichTypingHandlers | null>,
-): Extension<any, any>;
+export declare function createTypingExtension(handlers: RefObject<RichTypingHandlers | null>): Extension<any, any>;
