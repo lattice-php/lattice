@@ -64,11 +64,65 @@ final class ContextScope
     }
 
     /**
+     * Like {@see wrap()}, but filters to the registered/whitelisted subset
+     * *before* normalizing rather than after. Use this when the raw context
+     * may legitimately carry an object under a key with no resolver — a
+     * slot's factory arguments, say — that must be dropped silently instead
+     * of throwing.
+     *
+     * @template TReturn
+     *
+     * @param  array<string, mixed>  $context
+     * @param  Closure(): TReturn  $fn
+     * @return TReturn
+     */
+    public function wrapUntrusted(array $context, Closure $fn): mixed
+    {
+        return $this->wrap($this->inheritableSubset($context), $fn);
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function inheritable(): array
     {
         return $this->frames === [] ? [] : end($this->frames);
+    }
+
+    /**
+     * The inherited frame at this instant, to replay later with {@see within()}
+     * once the frame that captured it has already popped — a closure resolved
+     * from a `#[SerializationHook]` (an embedded modal, a declared gate
+     * subject) runs after the whole tree has serialized, not while it is
+     * being built.
+     *
+     * @return array<string, mixed>
+     */
+    public function snapshot(): array
+    {
+        return $this->inheritable();
+    }
+
+    /**
+     * Re-opens a frame captured by {@see snapshot()} for the duration of
+     * `$fn`, so components it builds inherit it exactly as they would have
+     * inherited the original frame.
+     *
+     * @template TReturn
+     *
+     * @param  array<string, mixed>  $frame
+     * @param  Closure(): TReturn  $fn
+     * @return TReturn
+     */
+    public function within(array $frame, Closure $fn): mixed
+    {
+        $this->frames[] = $frame;
+
+        try {
+            return $fn();
+        } finally {
+            array_pop($this->frames);
+        }
     }
 
     /**

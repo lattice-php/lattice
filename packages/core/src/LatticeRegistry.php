@@ -77,6 +77,7 @@ final class LatticeRegistry
             $key,
             $builder->resolver($resolver, $by),
             $keyBy ?? $builder->keyBy($resolver, $by),
+            $resolver,
         );
     }
 

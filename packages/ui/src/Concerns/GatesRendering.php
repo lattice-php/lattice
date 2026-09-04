@@ -73,7 +73,7 @@ trait GatesRendering
             }
 
             $this->on = $on;
-            $this->onFrame = app(ContextScope::class)->inheritable();
+            $this->onFrame = app(ContextScope::class)->snapshot();
         }
 
         $this->resolvedVisibility = null;

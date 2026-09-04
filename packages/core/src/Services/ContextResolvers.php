@@ -12,16 +12,21 @@ use Closure;
  */
 final class ContextResolvers
 {
-    /** @var array<string, array{resolve: Closure, key: ?Closure}> */
+    /** @var array<string, array{resolve: Closure, key: ?Closure, model: ?class-string}> */
     private array $resolvers = [];
 
     /**
      * Registering the same key twice replaces the previous registration —
-     * the last call to `Lattice::context()` for a key wins.
+     * the last call to `Lattice::context()` for a key wins. `$model` is set
+     * only by the Eloquent sugar form of `Lattice::context()`, so {@see
+     * keyForModel()} can seed a page's context frame from a bound route
+     * model without any naming convention on the route parameter.
+     *
+     * @param  ?class-string  $model
      */
-    public function register(string $key, Closure $resolve, ?Closure $keyBy = null): void
+    public function register(string $key, Closure $resolve, ?Closure $keyBy = null, ?string $model = null): void
     {
-        $this->resolvers[$key] = ['resolve' => $resolve, 'key' => $keyBy];
+        $this->resolvers[$key] = ['resolve' => $resolve, 'key' => $keyBy, 'model' => $model];
     }
 
     public function has(string $key): bool
@@ -45,5 +50,22 @@ final class ContextResolvers
     public function keyClosure(string $key): ?Closure
     {
         return $this->resolvers[$key]['key'] ?? null;
+    }
+
+    /**
+     * The first registered key whose recorded Eloquent model class the given
+     * object is an instance of, in registration order. Only keys registered
+     * through the `Lattice::context($key, Model::class)` sugar carry a model
+     * class, so a closure registration never matches.
+     */
+    public function keyForModel(object $model): ?string
+    {
+        foreach ($this->resolvers as $key => $entry) {
+            if ($entry['model'] !== null && $model instanceof $entry['model']) {
+                return $key;
+            }
+        }
+
+        return null;
     }
 }

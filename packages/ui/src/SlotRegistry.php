@@ -5,6 +5,7 @@ namespace Lattice\Ui;
 
 use Closure;
 use Illuminate\Http\Request;
+use Lattice\Core\Services\ContextScope;
 use Lattice\Core\Support\Evaluation\EvaluationContext;
 use Lattice\Core\Support\Evaluation\Evaluator;
 use Lattice\Ui\Components\Component;
@@ -19,7 +20,10 @@ final class SlotRegistry
 
     private int $sequence = 0;
 
-    public function __construct(private readonly Evaluator $evaluator) {}
+    public function __construct(
+        private readonly Evaluator $evaluator,
+        private readonly ContextScope $scope,
+    ) {}
 
     public function extend(string $name, Closure $factory, int $priority = 0): void
     {
@@ -37,14 +41,18 @@ final class SlotRegistry
     {
         $extensions = $this->extensions[$slot->name()] ?? [];
         $context = $this->evaluationContext($slot);
+        $frame = [...$this->scope->inheritable(), ...$slot->evaluationContext()];
 
         usort(
             $extensions,
             static fn (array $left, array $right): int => [$left['priority'], $left['sequence']] <=> [$right['priority'], $right['sequence']],
         );
 
-        return array_map(function (array $extension) use ($context, $slot): Component {
-            $component = $this->evaluator->resolve($extension['factory'], $context);
+        return array_map(function (array $extension) use ($context, $frame, $slot): Component {
+            $component = $this->scope->wrapUntrusted(
+                $frame,
+                fn (): mixed => $this->evaluator->resolve($extension['factory'], $context),
+            );
 
             if (! $component instanceof Component) {
                 throw new UnexpectedValueException(sprintf(
