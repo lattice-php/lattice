@@ -124,7 +124,7 @@ describe("AccordionAdapter", () => {
 
     fireEvent.click(screen.getByTestId("section-toggle-social"));
     await waitFor(() => expect(screen.getByText("Social body")).toBeVisible());
-    expect(screen.queryByText("Ecology body")).not.toBeInTheDocument();
+    expect(screen.getByText("Ecology body")).not.toBeVisible();
     expect(window.localStorage.getItem("lattice:section:eco")).toBeNull();
   });
 });

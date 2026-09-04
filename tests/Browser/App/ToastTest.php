@@ -7,7 +7,7 @@ it('shows a toast after an action and dismisses it', function (): void {
     $page = $this->visitAsWorkbenchUser('/products');
 
     $page->click('@product-actions')
-        ->click('@action-archive')
+        ->click('[data-test="action-workbench.products.archive"]')
         ->click('@confirm-accept');
 
     assertSeeEventually($page, 'Product archived.');
@@ -25,7 +25,7 @@ it('renders a link inside a toast', function (): void {
     $page = $this->visitAsWorkbenchUser('/products');
 
     $page->click('@product-actions')
-        ->click('@action-archive')
+        ->click('[data-test="action-workbench.products.archive"]')
         ->click('@confirm-accept');
 
     assertSeeEventually($page, 'Product archived.');

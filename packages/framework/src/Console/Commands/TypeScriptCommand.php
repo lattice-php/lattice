@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Console\Commands;
 
 use Illuminate\Console\Command;
+use Lattice\Support\TypeScript\EmptyDiscoveryException;
 use Lattice\Support\TypeScript\TypeScriptProfile;
 
 final class TypeScriptCommand extends Command
@@ -14,7 +15,13 @@ final class TypeScriptCommand extends Command
 
     public function handle(TypeScriptProfile $profile): int
     {
-        $this->components->info($profile->run());
+        try {
+            $this->components->info($profile->run());
+        } catch (EmptyDiscoveryException $exception) {
+            $this->components->error($exception->getMessage());
+
+            return self::FAILURE;
+        }
 
         return self::SUCCESS;
     }

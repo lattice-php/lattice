@@ -45,11 +45,11 @@ it('validates and casts nested rows through the shared templates', function (): 
 
     expect($root['type'])->toBe('product')
         ->and($root['name'])->toBe('Bundle')
-        ->and(Str::isUuid($root[RowsField::ROW_ID]))->toBeTrue()
+        ->and($root)->not->toHaveKey(RowsField::ROW_ID)
         ->and($root['children'])->toHaveCount(2)
         ->and($root['children'][0]['type'])->toBe('text')
         ->and($root['children'][0]['content'])->toBe('Included cabling')
-        ->and(Str::isUuid($root['children'][0][RowsField::ROW_ID]))->toBeTrue()
+        ->and($root['children'][0])->not->toHaveKey(RowsField::ROW_ID)
         ->and($root['children'][1]['name'])->toBe('Switch');
 });
 
@@ -117,7 +117,7 @@ it('validates unlimited depth when no max depth is configured', function (): voi
     expect($validated['items'][0]['children'][0]['children'][0]['name'])->toBe('c');
 });
 
-it('preserves submitted row ids at every level', function (): void {
+it('accepts submitted row ids at every level without leaking them into the validated payload', function (): void {
     $rootId = Str::uuid()->toString();
     $childId = Str::uuid()->toString();
     $request = Request::create('/', 'POST', ['items' => [
@@ -128,8 +128,8 @@ it('preserves submitted row ids at every level', function (): void {
 
     $validated = (new FieldValidator)->validate([lineItemsTreeField()], $request);
 
-    expect($validated['items'][0][RowsField::ROW_ID])->toBe($rootId)
-        ->and($validated['items'][0]['children'][0][RowsField::ROW_ID])->toBe($childId);
+    expect($validated['items'][0])->not->toHaveKey(RowsField::ROW_ID)
+        ->and($validated['items'][0]['children'][0])->not->toHaveKey(RowsField::ROW_ID);
 });
 
 it('stamps row ids recursively onto the server-filled wire value', function (): void {

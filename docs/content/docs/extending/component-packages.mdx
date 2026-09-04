@@ -98,7 +98,7 @@ define `process.env.NODE_ENV` away — the file runs in the browser as-is.
 Each `extra.lattice` key is read by one side of the stack:
 
 - **`plugin`** — the `lattice()` Vite plugin scans `vendor/composer/installed.json`, and for every package that declares it, grants Vite filesystem access to the package directory and exposes its plugin under the virtual module `virtual:lattice/plugins`. The package's TSX compiles straight into the consumer's bundle: no separate build step, one shared React instance, full tree-shaking.
-- **`css`** — the plugin aliases it as `@<vendor>/<name>/css` (`lattice-php/signature-example` → `@lattice-php/signature-example/css`); the consumer imports that specifier from their Tailwind entry. See [Styling](#styling).
+- **`css`** — the plugin aliases it as `@<vendor>/<name>/css` (`lattice-php/signature-example` → `@lattice-php/signature-example/css`) and wires it, along with an `@source` for the package's JS, into `virtual:lattice/css` — the consumer's existing `@import '@lattice-php/lattice/css'` picks it up with no per-package import of their own. See [Styling](#styling).
 - **`icons`** — a directory of `.svg` files the plugin merges into the app's icon sprite. See [Icons](#icons).
 - **`standalone`** — `php artisan lattice:assets` copies the precompiled module into `public/vendor/lattice/plugins` and adds its versioned URL to the standalone boot config.
 - **`discover`** — Lattice's PHP discovery merges these roots into `lattice.discover`, so the package's `#[AsComponent]` classes are picked up by `php artisan lattice:typescript` (which types `node.props` for the package's components) and by definition discovery for any forms, tables, or pages the package also ships.
@@ -186,19 +186,22 @@ Declare it as `extra.lattice.css`:
 }
 ```
 
-The consumer adds an `@import` for the aliased specifier to their Tailwind entry, after the Lattice
-css import:
+The consumer needs nothing further: the `lattice()` Vite plugin discovers the package the same way
+it discovers `plugin`, and folds its `@source`/`@import` into `virtual:lattice/css`, which
+`@lattice-php/lattice/css` (and `@lattice-php/ui/css`) end with. A consumer's existing
 
 ```css
 @import "@lattice-php/lattice/css";
-@import "@acme/signature/css";
 ```
 
-The `@source` line makes the consumer's Tailwind build scan the package's components, so arbitrary
-utility classes in the package's TSX work like any first-party component — no vendor path needs
-adding to the consumer's content sources. Bespoke rules built on `--lt-*` tokens can follow the
-`@source` line, as above. See `packages/signature-example/resources/css/signature-example.css` for
-the reference implementation.
+is enough — no per-package `@import`, and no `@source` pointing at the package's `vendor/` path,
+to add by hand. (Aliasing `@acme/signature/css` still works for a consumer who wants to import the
+package's stylesheet on its own, e.g. to control ordering explicitly.)
+
+The `@source` line in the package's own stylesheet still matters for the package's own workbench —
+its own dev server builds the package directly, outside the discovery flow above — and documents
+the scan boundary for readers of the package's source. See
+`packages/signature-example/resources/css/signature-example.css` for the reference implementation.
 
 <Warning>
   Standalone (no-build) consumers do not process `@source`; package css support there is deferred.

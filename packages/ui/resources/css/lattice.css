@@ -1,4 +1,13 @@
 /*
+ * Unlayered so it beats Tailwind's utilities layer regardless of cascade
+ * order — a `hidden` node whose className still carries `flex`/`grid` (e.g.
+ * a collapsed Section keeping its content mounted) must stay hidden.
+ */
+[hidden] {
+  display: none !important;
+}
+
+/*
  * Token defaults live in a cascade layer so any unlayered override wins
  * regardless of stylesheet order — the @latticeTheme style tag and plain
  * `:root { --lt-primary: … }` rules in an app's CSS both take precedence.

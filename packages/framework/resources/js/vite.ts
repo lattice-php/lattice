@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { buildSprite, svgSprite } from "@lattice-php/vite-svg-sprite";
 import type { IconTypesOptions, Sprite, SvgSpriteOptions } from "@lattice-php/vite-svg-sprite";
@@ -38,12 +38,14 @@ type Roots = {
 };
 
 export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
-  const { appRoot } = resolveRoots(options);
+  const { appRoot, root } = resolveRoots(options);
   const packages = discoverComponentPackages(appRoot);
   const plugins: PluginOption[] = [
     corePlugin(options),
     optionalPeersPlugin(),
-    componentPackagesPlugin(packages),
+    componentPackagesPlugin(packages, appRoot, resolveUiCssPath(options, appRoot, root), {
+      requireComposer: true,
+    }),
     typescriptPlugin(options),
   ];
   const iconOptions = resolveIconOptions(options, packages);
@@ -53,6 +55,74 @@ export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
   }
 
   return plugins;
+}
+
+/**
+ * Resolve the real, on-disk `@lattice-php/ui/css` file that
+ * `componentPackagesPlugin` should wrap — source-link mode reads straight
+ * from the sibling `ui` package the same way `latticeConfig`'s own alias
+ * does; package-link mode reads the installed `@lattice-php/ui` package's
+ * own `exports["./css"]` and joins it against that package's directory,
+ * exactly what a plain `import "@lattice-php/ui/css"` would resolve to.
+ * This is computed, not resolved through Node's module resolution: the
+ * wrapper `@import`s this path but isn't read until Tailwind processes the
+ * build, so the target only has to be correct here, not already built —
+ * `require.resolve` would demand the (often not-yet-built) dist file exist
+ * at config time and throw otherwise. Returns `undefined` (skipping the
+ * wrapper) only when `@lattice-php/ui` itself isn't installed — an app that
+ * hasn't run `npm install` yet degrades the same way `discoverComponentPackages`
+ * used to for a missing `vendor/`.
+ */
+function resolveUiCssPath(
+  options: LatticeViteOptions,
+  appRoot: string,
+  root: string,
+): string | undefined {
+  if (options.source) {
+    return path.resolve(root, "../ui/resources/css/lattice.css");
+  }
+
+  const packageDir = resolveInstalledPackageDir(appRoot, "@lattice-php/ui");
+
+  if (!packageDir) {
+    return undefined;
+  }
+
+  try {
+    const packageJson = JSON.parse(readFileSync(path.join(packageDir, "package.json"), "utf8"));
+    const cssExport = packageJson.exports?.["./css"];
+    const cssRelative = typeof cssExport === "string" ? cssExport : cssExport?.default;
+
+    return typeof cssRelative === "string" ? path.resolve(packageDir, cssRelative) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Locate an installed npm package's directory by walking up from `startDir`
+ * through each ancestor's `node_modules/<name>`, the same walk Node's own
+ * module resolution does — stopping at the first one whose `package.json`
+ * actually exists, without requiring anything the package exports to exist.
+ */
+function resolveInstalledPackageDir(startDir: string, name: string): string | undefined {
+  let dir = startDir;
+
+  for (;;) {
+    const candidate = path.join(dir, "node_modules", name);
+
+    if (existsSync(path.join(candidate, "package.json"))) {
+      return candidate;
+    }
+
+    const parent = path.dirname(dir);
+
+    if (parent === dir) {
+      return undefined;
+    }
+
+    dir = parent;
+  }
 }
 
 /** A Composer package that contributes a Lattice component plugin. */
@@ -156,11 +226,12 @@ export function collectRootComponentPackage(
  */
 export function discoverComponentPackages(appRoot: string): LatticeComponentPackage[] {
   const composerDir = path.resolve(appRoot, "vendor/composer");
+  const installedJsonPath = path.join(composerDir, "installed.json");
 
   let installed: LatticeComponentPackage[] = [];
 
   try {
-    const raw = readFileSync(path.join(composerDir, "installed.json"), "utf8");
+    const raw = readFileSync(installedJsonPath, "utf8");
     installed = collectComponentPackages(JSON.parse(raw), composerDir);
   } catch {
     installed = [];
@@ -180,37 +251,160 @@ export function discoverComponentPackages(appRoot: string): LatticeComponentPack
 
 const VIRTUAL_PLUGINS_ID = "virtual:lattice/plugins";
 const RESOLVED_VIRTUAL_PLUGINS_ID = `\0${VIRTUAL_PLUGINS_ID}`;
+const VIRTUAL_CSS_ID = "virtual:lattice/css";
+const RESOLVED_VIRTUAL_CSS_ID = `\0${VIRTUAL_CSS_ID}`;
+const GENERATED_CSS_RELATIVE_PATH = "node_modules/.lattice/component-packages.css";
+const GENERATED_WRAPPER_CSS_RELATIVE_PATH = "node_modules/.lattice/lattice.css";
+
+/**
+ * An `@import` of every discovered package's own stylesheet, followed by a
+ * Tailwind `@source` per package so its component TSX is scanned for
+ * utility classes. `@import` must precede every other rule in a stylesheet —
+ * interleaving `@source`/`@import` per package instead silently drops every
+ * import that comes after the first `@source`.
+ */
+function componentPackagesCss(packages: LatticeComponentPackage[]): string {
+  const imports = packages.flatMap((pkg) =>
+    pkg.css ? [`@import ${JSON.stringify(pkg.css)};`] : [],
+  );
+  const sources = packages.map((pkg) => `@source ${JSON.stringify(path.dirname(pkg.plugin))};`);
+
+  return [...imports, ...sources].join("\n");
+}
 
 /**
  * Exposes the discovered component packages as `virtual:lattice/plugins` — a
  * module whose default export is the array of their plugin objects,
  * ready for `extendRegistry(registry, ...plugins)`. Also grants Vite filesystem
  * access to each package dir so its source compiles from `vendor/` (or a symlink).
+ *
+ * Also wires the stylesheet counterpart: `@lattice-php/lattice/css` and
+ * `@lattice-php/ui/css` normally resolve straight to the published, static
+ * `lattice.css` — which must stay self-contained, since plenty of consumers
+ * (the docs site, the standalone bundle, a package building itself) import it
+ * without this plugin at all. When `uiCssPath` is given (the app actually
+ * uses this plugin), both specifiers are instead aliased to a generated
+ * wrapper — `@import` of the real stylesheet plus every discovered package's
+ * `@source`/`@import` — so a consumer's existing single import picks up every
+ * package with no per-package import of their own. `virtual:lattice/css`
+ * exposes just the package-only half the same way, for anyone composing their
+ * own wrapper. Tailwind's `@import` resolver reads the resolved file straight
+ * off disk — it never calls back into a Vite plugin's `load` — so neither can
+ * serve generated content directly; both are aliased to real files instead,
+ * generated into `node_modules/.lattice/` in `buildStart`, and Vite's own
+ * resolver (which Tailwind delegates to for `@import`) follows the alias to
+ * them like any other file.
  */
-export function componentPackagesPlugin(packages: LatticeComponentPackage[]): Plugin {
+export function componentPackagesPlugin(
+  packages: LatticeComponentPackage[],
+  appRoot?: string,
+  uiCssPath?: string,
+  options: { requireComposer?: boolean } = {},
+): Plugin {
+  const installedJsonPath = appRoot
+    ? path.resolve(appRoot, "vendor/composer/installed.json")
+    : undefined;
+  let generatedCssPath = "";
+  let generatedWrapperCssPath = "";
+
   return {
     name: "lattice:component-packages",
     config(config) {
-      if (packages.length === 0) {
-        return {};
-      }
+      const workspaceRoot = searchForWorkspaceRoot(config?.root ?? process.cwd());
 
-      const workspaceRoot = searchForWorkspaceRoot(config.root ?? process.cwd());
+      generatedCssPath = path.resolve(workspaceRoot, GENERATED_CSS_RELATIVE_PATH);
+
       // Vite's mergeAlias puts plugin-config aliases in front of the user config's,
       // so this specific `/css` alias wins over a user's broader package-dir alias.
-      const alias = Object.fromEntries(
-        packages.flatMap((pkg) => (pkg.css ? [[`@${pkg.name}/css`, pkg.css]] : [])),
-      );
+      // Among plugins, a later plugin's alias wins on a key collision — this
+      // plugin runs after `corePlugin` in `lattice()`, so it wins over
+      // `latticeConfig`'s source-mode `@lattice-php/*/css` aliases too.
+      const alias: Record<string, string> = {
+        [VIRTUAL_CSS_ID]: generatedCssPath,
+        ...(uiCssPath
+          ? (() => {
+              generatedWrapperCssPath = path.resolve(
+                workspaceRoot,
+                GENERATED_WRAPPER_CSS_RELATIVE_PATH,
+              );
+
+              return {
+                "@lattice-php/lattice/css": generatedWrapperCssPath,
+                "@lattice-php/ui/css": generatedWrapperCssPath,
+              };
+            })()
+          : {}),
+        ...Object.fromEntries(
+          packages.flatMap((pkg) => (pkg.css ? [[`@${pkg.name}/css`, pkg.css]] : [])),
+        ),
+      };
 
       return {
-        ...(Object.keys(alias).length > 0 ? { resolve: { alias } } : {}),
+        resolve: { alias },
         server: { fs: { allow: [workspaceRoot, ...packages.map((pkg) => pkg.dir)] } },
       };
     },
+    buildStart() {
+      if (generatedCssPath) {
+        mkdirSync(path.dirname(generatedCssPath), { recursive: true });
+        writeFileSync(generatedCssPath, componentPackagesCss(packages));
+      }
+
+      if (generatedWrapperCssPath && uiCssPath) {
+        mkdirSync(path.dirname(generatedWrapperCssPath), { recursive: true });
+        writeFileSync(
+          generatedWrapperCssPath,
+          [`@import ${JSON.stringify(uiCssPath)};`, componentPackagesCss(packages)].join("\n"),
+        );
+      }
+    },
+    configResolved(config) {
+      // A consumer building for production without its Composer dependencies
+      // would otherwise silently ship no component package at all. Only the
+      // build command is gated: this package's own tests spin up dev/SSR
+      // servers through `lattice()` with no vendor/ on purpose.
+      if (
+        options.requireComposer &&
+        installedJsonPath &&
+        config.command === "build" &&
+        !existsSync(installedJsonPath)
+      ) {
+        throw new Error(
+          `Lattice couldn't find ${installedJsonPath}. Run \`composer install\` before building.`,
+        );
+      }
+    },
+    configureServer(server) {
+      if (!installedJsonPath) {
+        return;
+      }
+
+      // A composer change can add or remove a component package, which this
+      // plugin only discovers at startup — restart so it re-runs discovery
+      // instead of silently continuing to serve the stale set.
+      server.watcher.add(installedJsonPath);
+      server.watcher.on("change", (file) => {
+        if (file === installedJsonPath) {
+          server.restart();
+        }
+      });
+    },
     resolveId(id) {
-      return id === VIRTUAL_PLUGINS_ID ? RESOLVED_VIRTUAL_PLUGINS_ID : null;
+      if (id === VIRTUAL_PLUGINS_ID) {
+        return RESOLVED_VIRTUAL_PLUGINS_ID;
+      }
+
+      if (id === VIRTUAL_CSS_ID) {
+        return RESOLVED_VIRTUAL_CSS_ID;
+      }
+
+      return null;
     },
     load(id) {
+      if (id === RESOLVED_VIRTUAL_CSS_ID) {
+        return componentPackagesCss(packages);
+      }
+
       if (id !== RESOLVED_VIRTUAL_PLUGINS_ID) {
         return null;
       }

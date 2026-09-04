@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Validator;
 use Lattice\Form\Components\Field;
+use Lattice\Form\Components\RowsField;
 
 /**
  * Single-pass validation for a list of form fields: resolves dependencies,
@@ -59,6 +60,9 @@ final class FieldValidator
             } elseif (Arr::has($input, $path)) {
                 // nestedRules() below builds dot-path rule keys that need $input already decoded.
                 Arr::set($input, $path, $field->normalizeInput(Arr::get($input, $path)));
+            } elseif ($field->fillsAbsentInput()) {
+                // A DOM form submission of an unchecked checkbox posts no key at all.
+                Arr::set($input, $path, $field->absentInput());
             }
 
             if (! $visible) {
@@ -66,6 +70,14 @@ final class FieldValidator
             }
 
             $fieldRules = $field->resolvedRulesWithRequired($instance->scope, $request);
+
+            if ($fieldRules === [] && ! $serverValue) {
+                $fieldRules = ['sometimes', 'nullable'];
+            }
+
+            if ($fieldRules !== [] && $instance->rowPath !== null && $instance->rowSiblingNames !== null) {
+                $fieldRules = RowRuleReferences::rewrite($fieldRules, $instance->rowPath, $instance->rowSiblingNames);
+            }
 
             if ($fieldRules !== []) {
                 $rules[$path] = $fieldRules;
@@ -106,11 +118,36 @@ final class FieldValidator
             }
 
             if (Arr::has($validated, $path)) {
-                Arr::set($validated, $path, $field->castValue(Arr::get($validated, $path)));
+                $value = $field->castValue(Arr::get($validated, $path));
+
+                if ($field instanceof RowsField) {
+                    $value = $this->withoutRowIds($value);
+                }
+
+                Arr::set($validated, $path, $value);
             }
         }
 
         return $validated;
+    }
+
+    /**
+     * A rows field's cast value carries the reserved rowId identity key on
+     * every row for the wire/prefill path; handle() never needs it.
+     */
+    private function withoutRowIds(mixed $rows): mixed
+    {
+        if (! is_array($rows)) {
+            return $rows;
+        }
+
+        return array_map(static function (mixed $row): mixed {
+            if (is_array($row)) {
+                unset($row[RowsField::ROW_ID]);
+            }
+
+            return $row;
+        }, $rows);
     }
 
     private function nestedRulePath(string $ruleKey, string $name, string $path): string

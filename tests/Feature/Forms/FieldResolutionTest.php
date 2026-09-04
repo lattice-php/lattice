@@ -30,7 +30,7 @@ it('resolves a value closure during resolution', function (): void {
         ->and(wire($field)['props']['value'])->toEqual(12.0);
 });
 
-it('marks a value set inside a dependsOn closure as resolved', function (): void {
+it('marks a value set inside a dependsOn closure as changed but not server-authoritative', function (): void {
     $field = TextInput::make('total', 'Total')
         ->dependsOn(
             ['qty', 'price'],
@@ -39,8 +39,9 @@ it('marks a value set inside a dependsOn closure as resolved', function (): void
 
     $field->applyResolution(FormData::make(['qty' => '4', 'price' => '5']), Request::create('/'));
 
-    expect($field->hasResolvedValue())->toBeTrue()
-        ->and($field->resolvedValue())->toBe(20.0);
+    expect($field->valueChangedDuringResolution())->toBeTrue()
+        ->and($field->resolvedValue())->toBe(20.0)
+        ->and($field->hasResolvedValue())->toBeFalse();
 });
 
 it('runs dependsOn closures during resolution', function (): void {

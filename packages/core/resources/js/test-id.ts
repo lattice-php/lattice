@@ -10,15 +10,11 @@ export function nodeIdentity(node: IdentifiedNode): string | undefined {
   return testIdentity(node.key) ?? testIdentity(node.id);
 }
 
-export function leafTestIdentity(value: string | null | undefined): string | undefined {
-  return testIdentity(value)?.split(".").at(-1);
-}
-
 export function prefixedTestId(
   prefix: string,
   value: string | null | undefined,
 ): string | undefined {
-  const identity = leafTestIdentity(value);
+  const identity = testIdentity(value);
 
   return identity ? `${prefix}-${identity}` : undefined;
 }

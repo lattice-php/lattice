@@ -131,8 +131,10 @@ export function Section({
         </div>
       ) : null}
 
-      {!isCollapsed && hasContent(children) ? (
-        <div className="flex flex-col gap-6 px-lt-gutter">{children}</div>
+      {hasContent(children) ? (
+        <div className="flex flex-col gap-6 px-lt-gutter" hidden={isCollapsed}>
+          {children}
+        </div>
       ) : null}
     </section>
   );

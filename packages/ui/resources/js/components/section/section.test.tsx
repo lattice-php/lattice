@@ -11,10 +11,18 @@ describe("Section", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Collapse section" }));
-    expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
+    expect(screen.getByText("Hidden body")).not.toBeVisible();
+    expect(screen.getByRole("button", { name: "Expand section" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "Expand section" }));
     expect(screen.getByText("Hidden body")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Collapse section" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
   });
 
   it("reveals the title tooltip", () => {
@@ -44,6 +52,6 @@ describe("Section", () => {
       </Section>,
     );
 
-    expect(screen.queryByText("Hidden body")).not.toBeInTheDocument();
+    expect(screen.getByText("Hidden body")).not.toBeVisible();
   });
 });

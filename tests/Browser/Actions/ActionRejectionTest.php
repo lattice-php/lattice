@@ -7,7 +7,7 @@ it('keeps the confirm dialog open and shows an error toast when an action is rej
     $page = $this->visitAsWorkbenchUser('/products');
 
     $page->click('@product-actions')
-        ->click('@action-fail-demo')
+        ->click('[data-test="action-workbench.products.fail-demo"]')
         ->click('@confirm-accept');
 
     assertSeeEventually($page, 'Could not process the request.');

@@ -19,6 +19,30 @@ function computedDefinition(): FormDefinition
     ]);
 }
 
+function dependsOnValueDefinition(): FormDefinition
+{
+    return testFormDefinition(fn (): array => [
+        TextInput::make('qty', 'Qty'),
+        TextInput::make('note', 'Note')
+            ->dependsOn('qty', fn ($component, FormData $d) => $component->value("qty is {$d->get('qty')}")),
+    ]);
+}
+
+it('ships a value set inside a dependsOn callback in the resolve response', function (): void {
+    $result = dependsOnValueDefinition()->resolveFields(Request::create('/', 'POST', ['qty' => '5']));
+
+    expect($result->values)->toBe(['note' => 'qty is 5']);
+});
+
+it('keeps the user-supplied value on submit when only a dependsOn callback set it', function (): void {
+    $validated = dependsOnValueDefinition()->validate(Request::create('/', 'POST', [
+        'qty' => '5',
+        'note' => 'user typed this',
+    ]));
+
+    expect($validated['note'])->toBe('user typed this');
+});
+
 it('resolves computed field values', function (): void {
     $result = computedDefinition()->resolveFields(Request::create('/', 'POST', ['qty' => '3', 'price' => '4']));
 

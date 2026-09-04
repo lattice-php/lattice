@@ -336,13 +336,15 @@ describe("LibraryView", () => {
 
     renderWithModal(<LibraryView node={libraryNode({ picker: false })} />);
 
-    expect(screen.queryByTestId("media-bulk-delete-selected")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("media-bulk-media.delete-selected")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getAllByTestId("media-card-select")[0]);
 
-    expect(screen.getByTestId("media-bulk-move-selected")).toHaveTextContent("Move to folder");
+    expect(screen.getByTestId("media-bulk-media.move-selected")).toHaveTextContent(
+      "Move to folder",
+    );
 
-    fireEvent.click(screen.getByTestId("media-bulk-delete-selected"));
+    fireEvent.click(screen.getByTestId("media-bulk-media.delete-selected"));
 
     await waitFor(() => expect(fetch).toHaveBeenCalledWith("/delete-selected", expect.anything()));
 

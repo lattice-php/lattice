@@ -86,7 +86,7 @@ it('optimistically removes a card via the context menu delete action', function 
     assertPresentEventually($page, "[data-test=\"board-card-{$writeSpec->id}\"]");
 
     $page->click("[data-test=\"board-card-{$writeSpec->id}-actions\"]")
-        ->click('@action-delete-task')
+        ->click('[data-test="action-workbench.board.delete-task"]')
         ->assertSee('Delete task')
         ->click('@confirm-accept');
 

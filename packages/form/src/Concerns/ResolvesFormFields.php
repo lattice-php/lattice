@@ -85,7 +85,7 @@ trait ResolvesFormFields
             $field->applyResolution($instance->scope, $request);
             $fields[$instance->path] = $field;
 
-            if ($field->hasResolvedValue()) {
+            if ($field->valueChangedDuringResolution()) {
                 $values[$instance->path] = $field->resolvedValue();
             }
         }

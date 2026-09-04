@@ -1,3 +1,5 @@
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { searchForWorkspaceRoot } from "vite";
 import type { Logger, Plugin } from "vite";
@@ -303,15 +305,45 @@ describe("lattice Vite helper", () => {
     ]);
   });
 
-  it("degrades to an empty plugin list when nothing is discoverable", () => {
-    expect(discoverComponentPackages(path.resolve("/tmp/lattice-missing"))).toEqual([]);
+  it("fails a consumer's production build when vendor/composer/installed.json is missing", () => {
+    const appRoot = path.resolve("/tmp/lattice-missing");
+    const plugin = componentPackagesPlugin([], appRoot, undefined, { requireComposer: true });
+    const configResolved = plugin.configResolved as unknown as (config: {
+      command: "build" | "serve";
+    }) => void;
 
+    expect(() => configResolved({ command: "build" })).toThrow(
+      /vendor\/composer\/installed\.json.*composer install/,
+    );
+    expect(() => configResolved({ command: "serve" })).not.toThrow();
+  });
+
+  it("discovers nothing, without throwing, when a checkout has no vendor/", () => {
+    const appRoot = path.resolve("/tmp/lattice-missing");
+    const plugin = componentPackagesPlugin([], appRoot);
+    const configResolved = plugin.configResolved as unknown as (config: {
+      command: "build" | "serve";
+    }) => void;
+
+    expect(discoverComponentPackages(appRoot)).toEqual([]);
+    expect(() => lattice({ appRoot, icons: false })).not.toThrow();
+    expect(() => configResolved({ command: "build" })).not.toThrow();
+  });
+
+  it("still wires an empty virtual:lattice/plugins module and the css alias when nothing is discoverable", () => {
     const plugin = componentPackagesPlugin([]);
     const load = plugin.load as unknown as (id: string) => string | null;
-    const config = plugin.config as unknown as () => unknown;
+    const config = plugin.config as unknown as (c?: { root?: string }) => {
+      resolve?: { alias?: Record<string, string> };
+    };
 
     expect(load("\0virtual:lattice/plugins")).toContain("export default [];");
-    expect(config()).toEqual({});
+    expect(config({ root: "/app" }).resolve?.alias).toEqual({
+      "virtual:lattice/css": path.resolve(
+        searchForWorkspaceRoot("/app"),
+        "node_modules/.lattice/component-packages.css",
+      ),
+    });
   });
 
   it("aliases @vendor/name/css for discovered packages that ship a stylesheet", () => {
@@ -333,8 +365,193 @@ describe("lattice Vite helper", () => {
     };
 
     expect(config({ root: "/app" }).resolve?.alias).toEqual({
+      "virtual:lattice/css": path.resolve(
+        searchForWorkspaceRoot("/app"),
+        "node_modules/.lattice/component-packages.css",
+      ),
       "@acme/signature/css": "/app/vendor/acme/signature/resources/css/signature.css",
     });
+  });
+
+  it("emits every @import before any @source, so an import after the first package's @source isn't silently dropped", () => {
+    const plugin = componentPackagesPlugin([
+      {
+        name: "acme/signature",
+        dir: "/app/vendor/acme/signature",
+        plugin: "/app/vendor/acme/signature/resources/js/plugin.ts",
+        css: "/app/vendor/acme/signature/resources/css/signature.css",
+      },
+      {
+        name: "acme/widget",
+        dir: "/app/vendor/acme/widget",
+        plugin: "/app/vendor/acme/widget/resources/js/plugin.ts",
+      },
+    ]);
+    const resolveId = plugin.resolveId as unknown as (id: string) => string | null;
+    const load = plugin.load as unknown as (id: string) => string | null;
+
+    const resolved = resolveId("virtual:lattice/css");
+
+    expect(resolved).toBe("\0virtual:lattice/css");
+
+    const code = load(resolved as string) ?? "";
+
+    expect(code).toBe(
+      [
+        '@import "/app/vendor/acme/signature/resources/css/signature.css";',
+        '@source "/app/vendor/acme/signature/resources/js";',
+        '@source "/app/vendor/acme/widget/resources/js";',
+      ].join("\n"),
+    );
+  });
+
+  it("generates the aliased css file on disk so Tailwind's own @import resolver can read it", () => {
+    const appRoot = mkdtempSync(path.join(tmpdir(), "lattice-css-"));
+
+    try {
+      const plugin = componentPackagesPlugin([
+        {
+          name: "acme/signature",
+          dir: path.join(appRoot, "vendor/acme/signature"),
+          plugin: path.join(appRoot, "vendor/acme/signature/resources/js/plugin.ts"),
+          css: path.join(appRoot, "vendor/acme/signature/resources/css/signature.css"),
+        },
+      ]);
+      const config = plugin.config as unknown as (c: { root: string }) => {
+        resolve: { alias: Record<string, string> };
+      };
+      const buildStart = plugin.buildStart as unknown as () => void;
+
+      const generatedPath = config({ root: appRoot }).resolve.alias["virtual:lattice/css"];
+      buildStart();
+
+      expect(readFileSync(generatedPath, "utf8")).toContain(
+        `@source "${path.join(appRoot, "vendor/acme/signature/resources/js")}";`,
+      );
+    } finally {
+      rmSync(appRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("does not alias @lattice-php/lattice or ui css when no uiCssPath is given", () => {
+    const plugin = componentPackagesPlugin([], "/app");
+    const config = plugin.config as unknown as (c: { root: string }) => {
+      resolve: { alias: Record<string, string> };
+    };
+
+    const alias = config({ root: "/app" }).resolve.alias;
+
+    expect(alias["@lattice-php/lattice/css"]).toBeUndefined();
+    expect(alias["@lattice-php/ui/css"]).toBeUndefined();
+  });
+
+  it("aliases @lattice-php/lattice/css and ui/css to a generated wrapper around the real stylesheet", () => {
+    const appRoot = mkdtempSync(path.join(tmpdir(), "lattice-css-"));
+    const uiCssPath = path.join(appRoot, "vendor/lattice-php/ui/dist/lattice.css");
+
+    try {
+      const plugin = componentPackagesPlugin(
+        [
+          {
+            name: "acme/signature",
+            dir: path.join(appRoot, "vendor/acme/signature"),
+            plugin: path.join(appRoot, "vendor/acme/signature/resources/js/plugin.ts"),
+            css: path.join(appRoot, "vendor/acme/signature/resources/css/signature.css"),
+          },
+        ],
+        appRoot,
+        uiCssPath,
+      );
+      const config = plugin.config as unknown as (c: { root: string }) => {
+        resolve: { alias: Record<string, string> };
+      };
+      const buildStart = plugin.buildStart as unknown as () => void;
+
+      const alias = config({ root: appRoot }).resolve.alias;
+      const wrapperPath = alias["@lattice-php/lattice/css"];
+
+      expect(wrapperPath).toBe(alias["@lattice-php/ui/css"]);
+
+      buildStart();
+
+      const wrapper = readFileSync(wrapperPath, "utf8");
+
+      expect(wrapper.startsWith(`@import ${JSON.stringify(uiCssPath)};`)).toBe(true);
+      expect(wrapper).toContain(
+        `@source "${path.join(appRoot, "vendor/acme/signature/resources/js")}";`,
+      );
+    } finally {
+      rmSync(appRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("resolves @lattice-php/lattice/css and ui/css to the generated wrapper in both source-link and package-link mode, overriding latticeConfig's own alias", async () => {
+    const { mergeConfig } = await import("vite");
+    const appRoot = process.cwd();
+
+    for (const options of [
+      { appRoot, root: path.resolve(appRoot, "packages/framework"), source: true as const },
+      { appRoot, source: false as const },
+    ]) {
+      const plugins = lattice({ ...options, icons: false }) as Plugin[];
+      const core = plugins.find((plugin) => plugin?.name === "lattice");
+      const componentPackages = plugins.find(
+        (plugin) => plugin?.name === "lattice:component-packages",
+      );
+
+      if (!core || !componentPackages) {
+        throw new Error("expected both the core and component-packages plugins");
+      }
+
+      const coreConfig = (core.config as unknown as (c: { root?: string }) => unknown)({
+        root: appRoot,
+      });
+      const componentPackagesConfig = (
+        componentPackages.config as unknown as (c: { root?: string }) => unknown
+      )({ root: appRoot });
+      const merged = mergeConfig(
+        coreConfig as Record<string, unknown>,
+        componentPackagesConfig as Record<string, unknown>,
+      ) as { resolve: { alias: Record<string, string> } };
+
+      expect(merged.resolve.alias["@lattice-php/lattice/css"]).toBe(
+        path.resolve(appRoot, "node_modules/.lattice/lattice.css"),
+      );
+      expect(merged.resolve.alias["@lattice-php/ui/css"]).toBe(
+        path.resolve(appRoot, "node_modules/.lattice/lattice.css"),
+      );
+    }
+  });
+
+  it("restarts the dev server when vendor/composer/installed.json changes", () => {
+    const appRoot = path.resolve("/tmp/lattice-app");
+    const plugin = componentPackagesPlugin([], appRoot);
+    const configureServer = plugin.configureServer as unknown as (server: {
+      watcher: {
+        add: (path: string) => void;
+        on: (event: string, cb: (file: string) => void) => void;
+      };
+      restart: () => void;
+    }) => void;
+    const restart = vi.fn();
+    const listeners: Record<string, (file: string) => void> = {};
+
+    configureServer({
+      watcher: {
+        add: vi.fn(),
+        on: (event, cb) => {
+          listeners[event] = cb;
+        },
+      },
+      restart,
+    });
+
+    listeners.change?.(path.resolve(appRoot, "vendor/composer/installed.json"));
+    expect(restart).toHaveBeenCalledOnce();
+
+    restart.mockClear();
+    listeners.change?.(path.resolve(appRoot, "vendor/composer/some-other-file.json"));
+    expect(restart).not.toHaveBeenCalled();
   });
 
   it("does not refresh when the typescript option is false", () => {
@@ -342,7 +559,6 @@ describe("lattice Vite helper", () => {
       .spyOn(typescriptRefresh, "refreshTypeScriptTypes")
       .mockImplementation(() => {});
     const configureServer = typescriptPlugin({
-      appRoot: path.resolve("/tmp/lattice-app"),
       typescript: false,
     }).configureServer as unknown as (server: FakeServer) => void;
 
