@@ -12,12 +12,15 @@ use Inertia\Response;
 use Lattice\Core\Authorization;
 use Lattice\Core\Breadcrumb;
 use Lattice\Core\Contracts\PageContract;
+use Lattice\Core\Contracts\ResolvesGateSubject;
 use Lattice\Core\Enums\PageLayout;
 use Lattice\Core\Enums\PageWidth;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\PageMetadata;
 use Lattice\Core\Support\Wire;
+use Lattice\Http\Middleware\AuthorizeGateSubject;
 use Lattice\Realtime\Listen;
+use Lattice\Support\GateSubjects;
 use Lattice\Ui\BreadcrumbTrail;
 use Lattice\Ui\PageSchema;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -26,7 +29,7 @@ use UnexpectedValueException;
 /**
  * @method PageSchema render(mixed ...$parameters)
  */
-abstract class Page implements PageContract, Responsable
+abstract class Page implements PageContract, ResolvesGateSubject, Responsable
 {
     public function title(): ?string
     {
@@ -52,6 +55,20 @@ abstract class Page implements PageContract, Responsable
     public function authorize(Request $request): bool
     {
         return true;
+    }
+
+    /**
+     * The `on` gate subject: the named route parameter as bound by
+     * `SubstituteBindings`, or — for a scalar, unbound value — resolved
+     * through a `Lattice::context()` resolver registered under the same key.
+     * A parameter that is neither yields no subject, so the gate denies.
+     * Shared with {@see AuthorizeGateSubject}, the
+     * `can:{ability},{on}` route middleware, via {@see GateSubjects}, so the
+     * two never resolve the same key differently.
+     */
+    public function gateSubject(string $key): ?object
+    {
+        return GateSubjects::fromRoute(app(Request::class), $key);
     }
 
     /**

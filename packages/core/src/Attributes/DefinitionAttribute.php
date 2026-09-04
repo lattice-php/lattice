@@ -13,11 +13,11 @@ use Lattice\Core\Definition;
  * Action, BulkAction, Table, Fragment, Layout — by the registry `key` its
  * DefinitionRegistry resolves it under.
  *
- * `can` declares subject-less abilities the current user must pass before the
+ * `can` declares the abilities the current user must pass before the
  * definition renders or its endpoint runs. They are checked in addition to
- * {@see Definition::authorize()}, so an override cannot
- * widen what the attribute declared. Abilities needing a subject stay in
- * `authorize()`, where the sealed context is available to resolve one.
+ * {@see Definition::authorize()}, so an override cannot widen what the
+ * attribute declared. `on` names the context key whose resolved value becomes
+ * the gate subject; without it the check stays subject-less, as it always was.
  */
 abstract class DefinitionAttribute implements DeclaresGate
 {
@@ -29,7 +29,7 @@ abstract class DefinitionAttribute implements DeclaresGate
     /**
      * @param  string|BackedEnum|array<int, string|BackedEnum>  $can
      */
-    public function __construct(public readonly string $key, string|BackedEnum|array $can = [])
+    public function __construct(public readonly string $key, string|BackedEnum|array $can = [], private readonly ?string $on = null)
     {
         $this->can = Authorization::abilities($can);
     }
@@ -37,5 +37,10 @@ abstract class DefinitionAttribute implements DeclaresGate
     public function can(): array
     {
         return $this->can;
+    }
+
+    public function on(): ?string
+    {
+        return $this->on;
     }
 }

@@ -6,7 +6,10 @@ namespace Lattice\Ui\Concerns;
 use BackedEnum;
 use Closure;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Lattice\Core\Authorization;
+use Lattice\Core\Services\ContextResolutions;
+use Lattice\Core\Services\ContextScope;
 use Lattice\Core\Support\Evaluation\EvaluationContext;
 use Lattice\Core\Support\Evaluation\Evaluator;
 
@@ -32,16 +35,47 @@ trait GatesRendering
      */
     private array $can = [];
 
+    private ?string $on = null;
+
     /**
-     * The permission half of the gate, spelled the same `can` as the attribute
-     * on a definition or page. Checked in addition to visible()/hidden() and
-     * never widened by them, so the order of the calls does not matter.
+     * @var array<string, mixed>
+     */
+    private array $onFrame = [];
+
+    /**
+     * The permission half of the gate, spelled the same `can`/`on` as the
+     * attribute on a definition or page. Checked in addition to
+     * visible()/hidden() and never widened by them, so the order of the calls
+     * does not matter. `on` names an inherited context key resolved into the
+     * gate subject; a component only ever gates on one subject, so a second
+     * call naming a different key throws.
+     *
+     * The inherited frame is snapshotted here, at call time, rather than read
+     * lazily from shouldRender() — a schema child's visibility resolves from a
+     * `#[SerializationHook]` once the whole tree serializes, which runs after
+     * the definition's `ContextScope` frame that built this component has
+     * already popped (the same reason `Triggerable::modal()` snapshots
+     * `inheritable()` up front rather than reading it inside the closure).
      *
      * @param  string|BackedEnum|array<int, string|BackedEnum>  $can
      */
-    public function can(string|BackedEnum|array $can): static
+    public function can(string|BackedEnum|array $can, ?string $on = null): static
     {
         $this->can = [...$this->can, ...Authorization::abilities($can)];
+
+        if ($on !== null) {
+            if ($this->on !== null && $this->on !== $on) {
+                throw new InvalidArgumentException(sprintf(
+                    'A component can only gate on one subject: [%s] was already declared, cannot also declare [%s].',
+                    $this->on,
+                    $on,
+                ));
+            }
+
+            $this->on = $on;
+            $this->onFrame = app(ContextScope::class)->inheritable();
+        }
+
         $this->resolvedVisibility = null;
 
         return $this;
@@ -78,7 +112,17 @@ trait GatesRendering
             return true;
         }
 
-        return Authorization::allows($this->can, request());
+        $subject = null;
+
+        if ($this->on !== null) {
+            $subject = app(ContextResolutions::class)->resolve($this->on, $this->onFrame[$this->on] ?? null, $this->onFrame);
+
+            if ($subject === null) {
+                return false;
+            }
+        }
+
+        return Authorization::allows($this->can, request(), $subject);
     }
 
     private function passesVisibleCondition(): bool

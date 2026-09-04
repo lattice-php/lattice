@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Lattice\Core\Contracts\Authorizable;
 use Lattice\Core\Contracts\DeclaresGate;
+use Lattice\Core\Contracts\ResolvesGateSubject;
 use Lattice\Core\Support\Wire;
 use Spatie\Attributes\Attributes;
 
@@ -19,12 +20,30 @@ use Spatie\Attributes\Attributes;
  * The two consequences are deliberately different and both live here: an
  * endpoint aborts, while a definition that fails at render time is hidden
  * instead — see DefinitionRegistry::gatedComponent().
+ *
+ * A declared `on` names the context key whose resolved value the gate checks
+ * against, via {@see ResolvesGateSubject}. A key that resolves to nothing
+ * denies outright — a missing subject is never treated as a subject-less
+ * check.
  */
 final class Authorization
 {
     public static function passes(Authorizable $subject, Request $request): bool
     {
-        return self::allows(self::declaredGate($subject), $request)
+        $declared = self::declaredGate($subject);
+        $on = $declared?->on();
+
+        $gateSubject = null;
+
+        if ($on !== null) {
+            $gateSubject = $subject instanceof ResolvesGateSubject ? $subject->gateSubject($on) : null;
+
+            if ($gateSubject === null) {
+                return false;
+            }
+        }
+
+        return self::allows($declared?->can() ?? [], $request, $gateSubject)
             && $subject->authorize($request);
     }
 
@@ -48,16 +67,13 @@ final class Authorization
     /**
      * @param  array<int, string>  $can
      */
-    public static function allows(array $can, Request $request): bool
+    public static function allows(array $can, Request $request, ?object $subject = null): bool
     {
-        return $can === [] || Gate::forUser($request->user())->check($can);
+        return $can === [] || Gate::forUser($request->user())->check($can, $subject === null ? [] : [$subject]);
     }
 
-    /**
-     * @return array<int, string>
-     */
-    private static function declaredGate(Authorizable $subject): array
+    private static function declaredGate(Authorizable $subject): ?DeclaresGate
     {
-        return Attributes::get($subject, DeclaresGate::class)?->can() ?? [];
+        return Attributes::get($subject, DeclaresGate::class);
     }
 }

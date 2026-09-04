@@ -5,9 +5,10 @@ namespace Lattice\Core;
 
 use Illuminate\Http\Request;
 use Lattice\Core\Contracts\Authorizable;
+use Lattice\Core\Contracts\ResolvesGateSubject;
 use Lattice\Core\Services\ContextResolutions;
 
-abstract class Definition implements Authorizable
+abstract class Definition implements Authorizable, ResolvesGateSubject
 {
     /**
      * The instance context, set identically on render (by the registry) and on
@@ -118,5 +119,14 @@ abstract class Definition implements Authorizable
     protected function contextModelOrNull(string $key): ?object
     {
         return app(ContextResolutions::class)->resolve($key, $this->context($key), $this->context);
+    }
+
+    /**
+     * The `on` gate subject, resolved identically to {@see contextModelOrNull()}
+     * — the same memoized context resolution a `can()` closure would use.
+     */
+    public function gateSubject(string $key): ?object
+    {
+        return $this->contextModelOrNull($key);
     }
 }

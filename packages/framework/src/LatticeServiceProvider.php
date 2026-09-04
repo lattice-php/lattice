@@ -40,6 +40,7 @@ use Lattice\Core\Wire\WireSourceCatalog;
 use Lattice\Form\FormServiceProvider;
 use Lattice\Fragments\FragmentDefinition;
 use Lattice\Fragments\FragmentRegistry;
+use Lattice\Http\Middleware\AuthorizeGateSubject;
 use Lattice\Http\Middleware\SetLocale;
 use Lattice\Http\PageRegistry;
 use Lattice\Layouts\LayoutDefinition;
@@ -220,7 +221,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
                 ->middleware(array_values(array_unique([
                     ...config('lattice.pages.middleware', ['web']),
                     ...$page->middleware ?? [],
-                    ...array_map(static fn (string $ability): string => 'can:'.$ability, $page->can),
+                    ...array_map(
+                        static fn (string $ability): string => $page->on === null
+                            ? 'can:'.$ability
+                            : AuthorizeGateSubject::class.':'.$ability.','.$page->on,
+                        $page->can,
+                    ),
                 ])));
         }
 

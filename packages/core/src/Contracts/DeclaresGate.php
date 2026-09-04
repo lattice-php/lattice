@@ -16,4 +16,11 @@ interface DeclaresGate
      * @return array<int, string>
      */
     public function can(): array;
+
+    /**
+     * The context key declared by `on`, resolved into the gate subject
+     * through {@see ResolvesGateSubject}. Null means the check runs
+     * subject-less, as it always did before `on` existed.
+     */
+    public function on(): ?string;
 }

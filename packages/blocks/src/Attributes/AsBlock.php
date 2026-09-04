@@ -29,7 +29,8 @@ final class AsBlock extends DefinitionAttribute
         public readonly ?string $description = null,
         public readonly array $keywords = [],
         string|BackedEnum|array $can = [],
+        ?string $on = null,
     ) {
-        parent::__construct($key, $can);
+        parent::__construct($key, $can, $on);
     }
 }
