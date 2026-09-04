@@ -2,73 +2,34 @@ import { page, userEvent } from "vitest/browser";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry, eagerComponent } from "@lattice-php/core";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
-import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { formComponents } from "@lattice-php/form";
 import { uiComponents } from "@lattice-php/ui";
 import BlockEditorView from "./components/editor/block-editor-view";
 import blocksPlugin from "./plugin";
 import {
   block,
+  blockEditorNode,
+  blockIdsIn,
   columnsType,
   document,
   noteType,
-  renderedFor,
-  testStyleClasses,
+  renderedTextFrame,
+  rootBlockIds,
+  stubEditorFetch,
   TestText,
-  testTypes,
-  textFrame,
   textOnlySectionType,
 } from "./test-support";
-import type { BlockDocument, BlockNode } from "./types";
+import type { BlockDocument } from "./types";
 
 const registry = createRegistry(uiComponents, formComponents, blocksPlugin, {
   components: { "test.text": eagerComponent(TestText) },
   name: "test/blocks-browser",
 });
 
-function stubEditorEndpoint() {
-  const calls: { op: string; body: Record<string, unknown> }[] = [];
-  const fetch = vi.fn(async (_url: RequestInfo | URL, init?: RequestInit) => {
-    const body = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
-    const op = init?.method === "PATCH" ? "draft" : String(body._op);
-    calls.push({ body, op });
-
-    if (op === "render") {
-      const node = body.block as BlockNode;
-
-      return jsonResponse({
-        errors: {},
-        node: textFrame(node, `Rendered ${String(node.data.text ?? node.type)}`),
-      });
-    }
-
-    return jsonResponse({ errors: {}, revision: 2 });
-  });
-
-  vi.stubGlobal("fetch", fetch);
-
-  return calls;
-}
+const stubEditorEndpoint = () => stubEditorFetch({ render: renderedTextFrame });
 
 function renderEditor(doc: BlockDocument) {
-  const node = fakeNode({
-    id: "pages",
-    props: {
-      document: doc,
-      endpoint: "/lattice/block-editors/pages",
-      previewUrl: null,
-      ref: "sealed",
-      rendered: renderedFor(doc),
-      revision: 1,
-      seedType: "lattice.paragraph",
-      styleClasses: testStyleClasses,
-      title: "Landing",
-      types: testTypes,
-    },
-    type: "blocks.editor",
-  });
-
-  return renderWithRegistry(<BlockEditorView node={node} />, registry);
+  return renderWithRegistry(<BlockEditorView node={blockEditorNode(doc)} />, registry);
 }
 
 const baseDocument = () =>
@@ -85,20 +46,6 @@ const baseDocument = () =>
 
 function byTest(id: string) {
   return page.getByTestId(id);
-}
-
-function blockIdsIn(container: string): string[] {
-  return Array.from(
-    globalThis.document.querySelectorAll(`[data-test="${container}"] [data-block-id]`),
-    (element) => element.getAttribute("data-block-id") ?? "",
-  );
-}
-
-function rootBlockIds(): string[] {
-  return Array.from(
-    globalThis.document.querySelectorAll('[data-test="blocks-canvas-root"] > [data-block-id]'),
-    (element) => element.getAttribute("data-block-id") ?? "",
-  );
 }
 
 describe("block editor", () => {

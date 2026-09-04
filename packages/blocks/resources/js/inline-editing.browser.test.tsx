@@ -2,82 +2,33 @@ import { page, userEvent } from "vitest/browser";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createRegistry } from "@lattice-php/core";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
-import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
 import { formComponents } from "@lattice-php/form";
 import { uiComponents } from "@lattice-php/ui";
 import BlockEditorView from "./components/editor/block-editor-view";
 import blocksPlugin from "./plugin";
 import {
   block,
+  blockEditorNode,
   ctaType,
   document,
+  type EditorEndpointCall,
   headingType,
   paragraphType,
-  renderedFor,
-  renderedFrame,
   richDoc,
-  testStyleClasses,
-  testTypes,
+  rootBlocks,
+  stubEditorFetch,
 } from "./test-support";
 import type { BlockDocument, BlockNode } from "./types";
 
 const registry = createRegistry(uiComponents, formComponents, blocksPlugin);
 
-type Call = { op: string; body: Record<string, unknown> };
-
-function stubEndpoint(): Call[] {
-  const calls: Call[] = [];
-
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async (_url: RequestInfo | URL, init?: RequestInit) => {
-      const body = JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>;
-      const op = init?.method === "PATCH" ? "draft" : String(body._op);
-      calls.push({ body, op });
-
-      if (op === "render") {
-        return jsonResponse({ errors: {}, node: renderedFrame(body.block as BlockNode) });
-      }
-
-      return jsonResponse({ errors: {}, revision: 2 });
-    }),
-  );
-
-  return calls;
-}
+const stubEndpoint = () => stubEditorFetch();
 
 function renderEditor(doc: BlockDocument) {
-  const node = fakeNode({
-    id: "pages",
-    props: {
-      document: doc,
-      endpoint: "/lattice/block-editors/pages",
-      previewUrl: null,
-      ref: "sealed",
-      rendered: renderedFor(doc),
-      revision: 1,
-      seedType: "lattice.paragraph",
-      styleClasses: testStyleClasses,
-      title: "Landing",
-      types: testTypes,
-    },
-    type: "blocks.editor",
-  });
-
-  return renderWithRegistry(<BlockEditorView node={node} />, registry);
+  return renderWithRegistry(<BlockEditorView node={blockEditorNode(doc)} />, registry);
 }
 
-function rootBlocks(): { id: string; type: string }[] {
-  return Array.from(
-    globalThis.document.querySelectorAll('[data-test="blocks-canvas-root"] > [data-block-id]'),
-    (element) => ({
-      id: element.getAttribute("data-block-id") ?? "",
-      type: element.getAttribute("data-block-type") ?? "",
-    }),
-  );
-}
-
-function renders(calls: Call[]): BlockNode[] {
+function renders(calls: EditorEndpointCall[]): BlockNode[] {
   return calls.filter((call) => call.op === "render").map((call) => call.body.block as BlockNode);
 }
 
