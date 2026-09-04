@@ -728,52 +728,56 @@ var oe, se, ce = m((() => {
 }));
 //#endregion
 //#region resources/js/components/board/quick-add.tsx
-function le({ columnKey: e, createAction: n, onCreated: r }) {
-	let { t: i } = (0, v.useT)("board"), s = (0, v.useCallAction)(), [u, d] = o(!1), [f, p] = o(""), [m, h] = o(!1), g = a(null), _ = t(() => {
-		d(!1), p("");
-	}, []), y = t(async () => {
-		if (m) return;
-		let t = f.trim();
+function le({ columnKey: e, createAction: r, onCreated: i }) {
+	let { t: s } = (0, v.useT)("board"), u = (0, v.useCallAction)(), [d, f] = o(!1), [p, m] = o(""), [h, g] = o(!1), [_, y] = o(!1), b = a(null);
+	n(() => {
+		!_ || h || (y(!1), b.current?.focus());
+	}, [_, h]);
+	let x = t(() => {
+		f(!1), m("");
+	}, []), S = t(async () => {
+		if (h) return;
+		let t = p.trim();
 		if (t === "") return;
-		h(!0);
-		let i = await s(n, {
+		g(!0);
+		let n = await u(r, {
 			column: e,
 			title: t
 		});
-		h(!1), i.ok && (p(""), r(), requestAnimationFrame(() => g.current?.focus()));
+		g(!1), n.ok && (m(""), i(), y(!0));
 	}, [
 		e,
-		n,
 		r,
-		s,
-		m,
-		f
-	]), b = t((e) => {
-		e.key === "Enter" ? (e.preventDefault(), y()) : e.key === "Escape" && _();
-	}, [_, y]), x = t(() => {
-		m || _();
-	}, [_, m]);
-	return u ? /* @__PURE__ */ c("input", {
+		i,
+		u,
+		h,
+		p
+	]), C = t((e) => {
+		e.key === "Enter" ? (e.preventDefault(), S()) : e.key === "Escape" && x();
+	}, [x, S]), w = t(() => {
+		h || x();
+	}, [x, h]);
+	return d ? /* @__PURE__ */ c("input", {
 		autoFocus: !0,
 		className: "mt-2 w-full rounded-lt-sm border border-lt-border bg-lt-surface px-2 py-1.5 text-sm text-lt-fg outline-none focus-visible:ring-2 focus-visible:ring-lt-primary",
 		"data-test": `board-quick-add-${e}-input`,
-		disabled: m,
-		onBlur: x,
-		onChange: (e) => p(e.target.value),
-		onKeyDown: b,
-		placeholder: i("board.add-card-placeholder", "Enter a title..."),
-		ref: g,
-		value: f
+		disabled: h,
+		onBlur: w,
+		onChange: (e) => m(e.target.value),
+		onKeyDown: C,
+		placeholder: s("board.add-card-placeholder", "Enter a title..."),
+		ref: b,
+		value: p
 	}) : /* @__PURE__ */ l("button", {
 		className: "mt-2 flex items-center gap-1.5 rounded-lt-sm px-2 py-1.5 text-left text-sm text-lt-muted-fg hover:bg-lt-muted hover:text-lt-fg",
 		"data-test": `board-quick-add-${e}`,
-		onClick: () => d(!0),
+		onClick: () => f(!0),
 		type: "button",
 		children: [/* @__PURE__ */ c(v.Icon, {
 			"aria-hidden": "true",
 			className: "size-lt-icon-sm",
 			name: "plus"
-		}), i("board.add-card", "Add card")]
+		}), s("board.add-card", "Add card")]
 	});
 }
 var ue = m((() => {
