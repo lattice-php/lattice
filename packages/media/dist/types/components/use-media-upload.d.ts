@@ -15,6 +15,8 @@ export type UploadedMedia = {
 };
 export type UploadTarget = {
     endpoint: string;
+    /** The folder every file of this batch is filed into; empty uploads to no folder. */
+    folder?: string;
     ref: string;
     signed: boolean;
     /** Called once per settled batch with the display descriptors of every stored upload. */
@@ -33,4 +35,4 @@ export type MediaUpload = {
  * batch has settled, brings the new rows into the grid — so `uploads` only
  * ever holds in-flight and failed files.
  */
-export declare function useMediaUpload({ endpoint, ref, signed, onUploaded }: UploadTarget): MediaUpload;
+export declare function useMediaUpload({ endpoint, folder, ref, signed, onUploaded, }: UploadTarget): MediaUpload;

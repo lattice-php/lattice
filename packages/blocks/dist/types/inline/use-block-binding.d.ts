@@ -1,10 +1,10 @@
-import { Node } from "@lattice-php/core";
-import { BoundField } from "../document/bindings";
-import { BlockContextValue } from "../components/editor/block-context";
+import { Node } from '@lattice-php/core';
+import { BoundField } from '../document/bindings';
+import { BlockContextValue } from '../components/editor/block-context';
 export type BlockBinding = {
-  block: BlockContextValue;
-  field: BoundField;
-  value: unknown;
+    block: BlockContextValue;
+    field: BoundField;
+    value: unknown;
 };
 /**
  * Resolve the field a rendered node is bound to, for nodes inside a block on

@@ -12,14 +12,20 @@ export type EditorMediaImage = {
     conversions: string[];
     library: Node<"media.library"> | null;
 };
-export type FilterNodeType = "filter.media-type";
+export type FilterNodeType = "filter.media-folder" | "filter.media-type";
 export type FilterPropsMap = {
+    "filter.media-folder": MediaFolderFilter;
     "filter.media-type": MediaTypeFilter;
 };
 export type FormFieldNodeType = "field.media-picker";
 export type FormNodeType = "field.media-picker";
+export type MediaFolderFilter = {
+    label: string;
+};
 export type MediaLibrary = {
     accept: string | null;
+    folders: boolean;
+    inspector: boolean;
     picker: boolean;
     signed: boolean;
 };
