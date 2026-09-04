@@ -314,6 +314,12 @@ Lattice uses `data-test` as its standard test-hook attribute.
 The resolver is pointed at `data-test` by the `configure({ testIdAttribute: "data-test" })` call
 in `resources/js/test/setup.ts`, so no test-by-test configuration is needed.
 
+A node's `data-test` is built from its full identity — its explicit `key()` if it has one,
+otherwise its `id()` in full, dots included. An action defined as
+`#[AsAction('workbench.products.archive')]` and rendered without a `key()` produces
+`data-test="action-workbench.products.archive"`, not `action-archive`; give it an explicit
+`key()` for a shorter, stable selector.
+
 ## Helpful failures
 
 Every assertion fails with context. A missing field lists the available fields; an

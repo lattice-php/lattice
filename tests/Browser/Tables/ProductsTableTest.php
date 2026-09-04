@@ -18,7 +18,7 @@ it('archives a product via the row action with confirmation', function (): void 
     $page = $this->visitAsWorkbenchUser('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
-        ->click('@action-archive')
+        ->click('[data-test="action-workbench.products.archive"]')
         ->assertSee('Archive product?')
         ->click('@confirm-accept');
 
@@ -36,7 +36,7 @@ it('cancels the archive confirmation without changing the product', function ():
 
     $this->visitAsWorkbenchUser('/products')
         ->click('@product-actions')
-        ->click('@action-archive')
+        ->click('[data-test="action-workbench.products.archive"]')
         ->assertSee('Archive product?')
         ->click('@confirm-cancel')
         ->assertNoSmoke();
@@ -49,7 +49,7 @@ it('rejects a product through a modal form', function (): void {
 
     $page = $this->visitAsWorkbenchUser('/products')
         ->click('@product-actions')
-        ->click('@action-reject')
+        ->click('[data-test="action-workbench.products.reject"]')
         ->assertSee('Reject product?')
         ->click('@action-form-submit');
 
@@ -74,7 +74,7 @@ it('archives selected products in bulk', function (): void {
 
     $page = $this->visitAsWorkbenchUser('/products')
         ->click('@select-all')
-        ->click('@bulk-action-archive-selected');
+        ->click('[data-test="bulk-action-workbench.products.archive-selected"]');
 
     retryUntil(function (): void {
         expect(Product::query()->where('status', 'archived')->count())->toBe(3);
@@ -93,7 +93,7 @@ it('edits a product in a prefilled modal form', function (): void {
     $page = $this->visitAsWorkbenchUser('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
-        ->click('@action-edit-modal')
+        ->click('[data-test="action-workbench.products.edit-modal"]')
         ->assertSee('Edit product')
         ->assertValue('#name', 'Desk Lamp')
         ->fill('#name', 'Renamed Lamp')
@@ -119,7 +119,7 @@ it('searches products inside the reject modal form', function (): void {
     $this->visitAsWorkbenchUser('/products')
         ->assertSee('Desk Lamp')
         ->click('@product-actions')
-        ->click('@action-reject')
+        ->click('[data-test="action-workbench.products.reject"]')
         ->assertSee('Reject product?')
         ->click('@select-replacement')
         ->fill('@select-replacement-search', 'Walnut')

@@ -45,12 +45,6 @@ export {
   useExtensionRegistry,
 } from "./registry-context";
 export { Renderer, RenderNode, type VisibilityBreakpoint } from "./renderer";
-export {
-  leafTestIdentity,
-  nodeIdentity,
-  prefixedNodeTestId,
-  prefixedTestId,
-  testIdentity,
-} from "./test-id";
+export { nodeIdentity, prefixedNodeTestId, prefixedTestId, testIdentity } from "./test-id";
 export { useWindowEvent } from "./hooks/use-window-event";
 export * from "./upload";

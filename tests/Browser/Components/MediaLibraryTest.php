@@ -139,7 +139,7 @@ it('bulk deletes the selected media', function (): void {
     $page = $this->visitAsWorkbenchUser('/media')->assertSee('doomed.jpg');
 
     $page->click('@media-card-select')
-        ->click('@media-bulk-delete-selected');
+        ->click('[data-test="media-bulk-media.delete-selected"]');
 
     assertDontSeeEventually($page, 'doomed.jpg');
 

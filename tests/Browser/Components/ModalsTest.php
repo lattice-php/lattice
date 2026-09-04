@@ -82,7 +82,7 @@ it('closes a sheet with Escape', function (): void {
 });
 
 it('opens the feedback action form as an end sheet', function (): void {
-    $page = $this->visitAsWorkbenchUser('/components/modals')->click('[data-test="action-submit-feedback"]');
+    $page = $this->visitAsWorkbenchUser('/components/modals')->click('[data-test="action-workbench.modals.submit-feedback"]');
 
     retryUntil(function () use ($page): void {
         $page->assertSee('Message');
