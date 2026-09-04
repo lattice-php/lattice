@@ -86,7 +86,9 @@ describe("tree field drag and drop in a browser", () => {
 
     await expect.poll(() => hiddenValue("items[0][type]")).toBe("text");
     expect(hiddenValue("items[1][type]")).toBe("product");
-    await expect.poll(() => document.body.textContent).toContain("Moved Product");
+    await expect
+      .poll(() => document.body.textContent, { timeout: 3000 })
+      .toContain("Moved Product");
   });
 
   it("nests a row dropped onto the middle of a child-bearing row", async () => {

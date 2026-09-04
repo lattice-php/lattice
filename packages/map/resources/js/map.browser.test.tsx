@@ -149,7 +149,7 @@ it("reports invalid provider configuration without leaving the map pending", asy
     },
   });
 
-  await expect.element(page.getByRole("alert")).toHaveTextContent("The map could not be loaded.");
+  await expect.element(page.getByRole("alert")).toMatchTextContent("The map could not be loaded.");
 });
 
 it("renders a per-marker icon inside a toned pin", async () => {

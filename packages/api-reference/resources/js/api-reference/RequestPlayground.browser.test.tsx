@@ -111,8 +111,8 @@ describe("RequestPlayground", () => {
       .element(screen.getByRole("radio", { name: "cURL" }))
       .toHaveAttribute("aria-checked", "true");
     await expect.element(snippet).toHaveAttribute("data-slot", "code-block");
-    await expect.element(snippet).toHaveTextContent("Bearer <YOUR_TOKEN>");
-    await expect.element(snippet).not.toHaveTextContent(REAL_TOKEN);
+    await expect.element(snippet).toMatchTextContent("Bearer <YOUR_TOKEN>");
+    await expect.element(snippet).not.toMatchTextContent(REAL_TOKEN);
     await expect.element(screen.getByText("Access token supplied by the host page.")).toBeVisible();
 
     await id.fill("a/b");
@@ -122,8 +122,8 @@ describe("RequestPlayground", () => {
 
     await expect
       .element(snippet)
-      .toHaveTextContent('fetch("https://api.example.test/v1/widgets/a%2Fb?status=archived"');
-    await expect.element(snippet).toHaveTextContent('\\"name\\": \\"Lamp\\"');
+      .toMatchTextContent('fetch("https://api.example.test/v1/widgets/a%2Fb?status=archived"');
+    await expect.element(snippet).toMatchTextContent('\\"name\\": \\"Lamp\\"');
 
     const selectedSnippet = snippet.element().querySelector<HTMLElement>(".cm-content")?.innerText;
     expect(selectedSnippet).not.toBeNull();
@@ -148,8 +148,8 @@ describe("RequestPlayground", () => {
     await expect.element(screen.getByText("201 Created")).toBeVisible();
     const responseBody = screen.getByRole("region", { name: "Live response body" });
     await expect.element(responseBody).toHaveAttribute("data-slot", "code-block");
-    await expect.element(responseBody).toHaveTextContent('"ok": true');
-    await expect.element(screen.locator).not.toHaveTextContent(REAL_TOKEN);
+    await expect.element(responseBody).toMatchTextContent('"ok": true');
+    await expect.element(screen.locator).not.toMatchTextContent(REAL_TOKEN);
   });
 
   it("edits JSON object request bodies as schema fields", async () => {
@@ -576,12 +576,12 @@ describe("RequestPlayground", () => {
     await emailOption.click();
     await userEvent.keyboard("{Escape}");
 
-    await expect.element(sortField).toHaveTextContent("-created_at");
-    await expect.element(includeField).toHaveTextContent("roles, rolesCount");
-    await expect.element(fieldsField).toHaveTextContent("id, email");
+    await expect.element(sortField).toMatchTextContent("-created_at");
+    await expect.element(includeField).toMatchTextContent("roles, rolesCount");
+    await expect.element(fieldsField).toMatchTextContent("id, email");
     await expect
       .element(snippet)
-      .toHaveTextContent(
+      .toMatchTextContent(
         "https://api.example.test/users?filter%5Bname%5D=Taylor&sort=-created_at&include=roles%2CrolesCount&fields%5Busers%5D=id%2Cemail",
       );
   });
@@ -766,15 +766,15 @@ describe("RequestPlayground", () => {
 
     await screen.getByLabelText("page", { exact: true }).fill("3");
     await screen.getByLabelText("per_page").fill("25");
-    await expect.element(snippet).toHaveTextContent("/users?page=3&per_page=25");
+    await expect.element(snippet).toMatchTextContent("/users?page=3&per_page=25");
 
     await paginationMode.selectOptions("cursor");
 
     expect(fieldKeys()).toEqual(["header:x-pagination", "query:cursor", "query:per_page"]);
     await expect.element(screen.getByLabelText("page", { exact: true })).not.toBeInTheDocument();
     await screen.getByLabelText("cursor").fill("next-page");
-    await expect.element(snippet).toHaveTextContent("/users?cursor=next-page&per_page=25");
-    await expect.element(snippet).not.toHaveTextContent("page=3");
+    await expect.element(snippet).toMatchTextContent("/users?cursor=next-page&per_page=25");
+    await expect.element(snippet).not.toMatchTextContent("page=3");
   });
 
   it.each(["page", "cursor"])("groups %s pagination without a mode selector", async (name) => {
@@ -929,9 +929,9 @@ describe("RequestPlayground", () => {
     const snippet = screen.getByLabelText("Request snippet", { exact: true });
 
     await expect.element(serverPicker).toHaveValue("https://canary.operation.example");
-    await expect.element(snippet).toHaveTextContent("https://canary.operation.example/widgets");
+    await expect.element(snippet).toMatchTextContent("https://canary.operation.example/widgets");
     await serverPicker.selectOptions("https://sandbox.operation.example");
-    await expect.element(snippet).toHaveTextContent("https://sandbox.operation.example/widgets");
+    await expect.element(snippet).toMatchTextContent("https://sandbox.operation.example/widgets");
     await screen.getByRole("button", { name: "Execute" }).click();
 
     await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
@@ -1016,7 +1016,7 @@ describe("RequestPlayground", () => {
       .toBeVisible();
     await expect
       .element(screen.getByLabelText("Request snippet", { exact: true }))
-      .not.toHaveTextContent("Bearer");
+      .not.toMatchTextContent("Bearer");
   });
 
   it("switches response contracts with a select", async () => {
@@ -1287,7 +1287,7 @@ describe("RequestPlayground remote token access", () => {
       .toBeVisible();
     await expect
       .element(screen.getByLabelText("Request snippet", { exact: true }))
-      .toHaveTextContent("Bearer <YOUR_TOKEN>");
+      .toMatchTextContent("Bearer <YOUR_TOKEN>");
 
     await screen.getByRole("button", { name: "Execute" }).click();
 
@@ -1302,7 +1302,7 @@ describe("RequestPlayground remote token access", () => {
     });
     expect(new Headers(apiCall?.[1]?.headers).get("Authorization")).toBe(`Bearer ${FETCHED_TOKEN}`);
     await expect.element(screen.getByText("200 OK")).toBeVisible();
-    await expect.element(screen.locator).not.toHaveTextContent(FETCHED_TOKEN);
+    await expect.element(screen.locator).not.toMatchTextContent(FETCHED_TOKEN);
   });
 
   it("reuses the cached token for repeated executes", async () => {
@@ -1398,7 +1398,7 @@ describe("RequestPlayground remote token access", () => {
       .toBeVisible();
     await expect
       .element(screen.getByLabelText("Request snippet", { exact: true }))
-      .toHaveTextContent("Bearer <YOUR_TOKEN>");
+      .toMatchTextContent("Bearer <YOUR_TOKEN>");
 
     await execute.click();
     await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
@@ -1414,7 +1414,7 @@ describe("RequestPlayground remote token access", () => {
     await execute.click();
     await expect.poll(() => fetchMock.mock.calls.length).toBe(2);
     expect(resolveAccessToken).toHaveBeenCalledTimes(1);
-    await expect.element(screen.locator).not.toHaveTextContent("callback-token");
+    await expect.element(screen.locator).not.toMatchTextContent("callback-token");
   });
 
   it("does not cache plain-string callback results", async () => {

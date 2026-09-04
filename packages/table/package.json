@@ -46,6 +46,6 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "vitest-browser-react": "^2.2.0"
+    "vitest-browser-react": "^2.3.0"
   }
 }

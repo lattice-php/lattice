@@ -100,7 +100,7 @@ describe("inline editing", () => {
     await userEvent.click(page.getByTestId("inline-h-text"));
     await userEvent.keyboard("{End} world");
 
-    await expect.element(page.getByTestId("inline-h-text")).toHaveTextContent("Hello world");
+    await expect.element(page.getByTestId("inline-h-text")).toMatchTextContent("Hello world");
     await expect
       .element(page.getByTestId("blocks-save-state"))
       .toHaveAttribute("data-save-state", "dirty");
@@ -113,11 +113,11 @@ describe("inline editing", () => {
 
     await userEvent.click(page.getByTestId("inline-h-text"));
     await userEvent.keyboard("{End} there");
-    await expect.element(page.getByTestId("inline-h-text")).toHaveTextContent("Hello there");
+    await expect.element(page.getByTestId("inline-h-text")).toMatchTextContent("Hello there");
 
     await userEvent.keyboard("{Meta>}z{/Meta}");
 
-    await expect.element(page.getByTestId("inline-h-text")).toHaveTextContent("Hello");
+    await expect.element(page.getByTestId("inline-h-text")).toMatchTextContent("Hello");
   });
 
   it("opens a paragraph below a heading on Enter and moves the caret into it", async () => {
@@ -146,8 +146,8 @@ describe("inline editing", () => {
 
     await expect.poll(() => rootBlocks().length).toBe(2);
     const created = rootBlocks()[1]?.id as string;
-    await expect.element(page.getByTestId("inline-p-content")).toHaveTextContent(/^Hello$/);
-    await expect.element(page.getByTestId(`inline-${created}-content`)).toHaveTextContent("world");
+    await expect.element(page.getByTestId("inline-p-content")).toMatchTextContent(/^Hello$/);
+    await expect.element(page.getByTestId(`inline-${created}-content`)).toMatchTextContent("world");
   });
 
   it("merges a paragraph into the previous one on Backspace at its start", async () => {
@@ -164,7 +164,7 @@ describe("inline editing", () => {
     await userEvent.keyboard("{Backspace}");
 
     await expect.poll(() => rootBlocks().map((entry) => entry.id)).toEqual(["a"]);
-    await expect.element(page.getByTestId("inline-a-content")).toHaveTextContent("HelloWorld");
+    await expect.element(page.getByTestId("inline-a-content")).toMatchTextContent("HelloWorld");
     await expect.poll(focusedBlockId).toBe("a");
   });
 
@@ -193,7 +193,7 @@ describe("inline editing", () => {
     await expect.poll(() => renders(calls).at(-1)?.data.external).toBe(true);
     await expect
       .element(page.getByTestId("inline-cta-external"))
-      .toHaveTextContent("opens in new tab");
+      .toMatchTextContent("opens in new tab");
   });
 
   it("keeps only unbound fields in the inspector content tab", async () => {

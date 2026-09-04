@@ -53,6 +53,5 @@ docs/superpowers
 .superpowers
 /sk-*.png
 
-# Vitest browser-mode failure artifacts
-__screenshots__/
-.vitest-attachments/
+# Vitest artifacts (attachments, failure screenshots, blob/html/json reports)
+.vitest/

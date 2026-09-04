@@ -50,7 +50,7 @@ describe("CalendarComponent month view", () => {
       ],
     });
 
-    expect(screen.getByTestId("calendar-event-timed")).toHaveTextContent(/9:30/);
+    expect(screen.getByTestId("calendar-event-timed")).toHaveTextContent("9:30");
   });
 
   it("navigates months, fetching only the range the initial window does not cover", async () => {

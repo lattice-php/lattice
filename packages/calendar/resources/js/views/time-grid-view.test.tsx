@@ -38,7 +38,7 @@ describe("TimeGridView week", () => {
     const block = screen.getByTestId("calendar-event-standup");
 
     expect(column).toContainElement(block);
-    expect(block).toHaveTextContent(/9:30/);
+    expect(block).toHaveTextContent("9:30");
     expect(block).toHaveTextContent("Standup");
   });
 

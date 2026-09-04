@@ -46,7 +46,7 @@ describe("calendar month view in a browser", () => {
     await renderMonth({ events: overflowDayEvents(), eventAction });
 
     const trigger = page.getByTestId("calendar-more-2026-08-10");
-    await expect.element(trigger).toHaveTextContent("+2 more");
+    await expect.element(trigger).toMatchTextContent("+2 more");
 
     await userEvent.click(trigger);
 

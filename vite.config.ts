@@ -156,6 +156,10 @@ export default defineConfig({
             headless: true,
             locators: {
               testIdAttribute: "data-test",
+              // Vitest 5 matches locator text exactly by default; the suites
+              // rely on substring matching (`getByRole("button", { name })`
+              // against a button whose label grows a loading prefix).
+              exact: false,
             },
             viewport: {
               width: 1280,

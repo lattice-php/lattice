@@ -64,7 +64,7 @@ describe("ApiReference", () => {
     expect(listProductsHeader).not.toBeNull();
     await expect
       .element(listProductsHeader as HTMLElement)
-      .toHaveTextContent("https://api.example.test/products");
+      .toMatchTextContent("https://api.example.test/products");
     await expect.element(createProduct).toHaveAttribute("aria-expanded", "false");
     expect(listOrders).toHaveLength(2);
     await expect.element(listOrders[0]).toHaveAttribute("aria-expanded", "false");
@@ -142,7 +142,7 @@ describe("ApiReference", () => {
     await expect.element(screen.getByLabelText("Select server")).not.toBeInTheDocument();
     await expect
       .element(copyUrl.element().parentElement as HTMLElement)
-      .toHaveTextContent("https://api.example.test/products");
+      .toMatchTextContent("https://api.example.test/products");
   });
 
   it("keeps Execute directly below parameters when the response reference is tall", async () => {
