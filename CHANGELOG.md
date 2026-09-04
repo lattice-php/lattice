@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.71.0](https://github.com/lattice-php/lattice/compare/0.70.2...0.71.0) (2026-09-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* **media:** clicking a media card no longer opens a modal dialog. Consumer tests that waited for the slideout must target the inline panel (`@media-inspector` / `@media-detail`) instead.
+
+### Features
+
+* **blocks:** block engine, editor shell, inspector editing, drag and drop, autosave ([#568](https://github.com/lattice-php/lattice/issues/568)) ([da82976](https://github.com/lattice-php/lattice/commit/da8297686627dc41e220efad81c975ae3bd1c8d0))
+* **blocks:** HTML output, patterns, conflict handling and docs ([#574](https://github.com/lattice-php/lattice/issues/574)) ([bf0eace](https://github.com/lattice-php/lattice/commit/bf0eace3587a2d019d9eeb663b5454f0ec6db709))
+* **blocks:** inline editing with bind(), rich text and typing-first ([#572](https://github.com/lattice-php/lattice/issues/572)) ([23d4edd](https://github.com/lattice-php/lattice/commit/23d4edd78a52a7ffc5a704c14520f0014ce9c501))
+* **form:** distinct read-only field treatment via aria-readonly ([#577](https://github.com/lattice-php/lattice/issues/577)) ([85b441b](https://github.com/lattice-php/lattice/commit/85b441b6abcf9a68ce3a3674b1a07c24efb295a0))
+* **media:** inspector, pdf previews and folders ([#576](https://github.com/lattice-php/lattice/issues/576)) ([7a677a6](https://github.com/lattice-php/lattice/commit/7a677a63d150c567966b188b16fef89e93d58094))
+
+
+### Refactoring
+
+* **blocks:** fix slot duplication and publish state, single style map, drop unused scaffolding ([#575](https://github.com/lattice-php/lattice/issues/575)) ([7c1f814](https://github.com/lattice-php/lattice/commit/7c1f8149b99e9e624a50eb2093e2ae9e8f4df847))
+
 ## [0.70.2](https://github.com/lattice-php/lattice/compare/0.70.1...0.70.2) (2026-09-02)
 
 
