@@ -65,7 +65,7 @@ describe("OperationView", () => {
     await expect.element(screen.getByRole("button", { name: "include" })).toBeVisible();
     await expect
       .element(referencePanel.getByLabelText("Request snippet", { exact: true }))
-      .toHaveTextContent("https://api.example.test/products/product-1");
+      .toMatchTextContent("https://api.example.test/products/product-1");
     await expect
       .element(requestPanel.getByLabelText("Request snippet", { exact: true }))
       .not.toBeInTheDocument();
@@ -77,7 +77,7 @@ describe("OperationView", () => {
     await id.fill("product/2");
     await expect
       .element(screen.getByLabelText("Request snippet", { exact: true }))
-      .toHaveTextContent("https://api.example.test/products/product%2F2");
+      .toMatchTextContent("https://api.example.test/products/product%2F2");
 
     await id.fill("");
     await requestPanel.getByRole("button", { name: "Execute" }).click();
@@ -126,7 +126,7 @@ describe("OperationView", () => {
     await screen.getByLabelText("id").fill("changed");
     await expect
       .element(screen.getByLabelText("Request snippet", { exact: true }))
-      .toHaveTextContent("/products/changed");
+      .toMatchTextContent("/products/changed");
 
     await screen.rerender(<OperationView operationId="get-orders-order" spec={spec} />);
 
@@ -134,7 +134,7 @@ describe("OperationView", () => {
     await expect.element(screen.getByLabelText("order")).toHaveValue("order-1");
     await expect
       .element(screen.getByLabelText("Request snippet", { exact: true }))
-      .toHaveTextContent("/orders/order-1");
+      .toMatchTextContent("/orders/order-1");
   });
 
   it("shows a generated example by default for schema-only responses", async () => {

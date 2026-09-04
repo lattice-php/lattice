@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { useCallAction } from "@lattice-php/action";
 import { useT } from "@lattice-php/ui/i18n";
@@ -17,7 +17,21 @@ export function QuickAdd({ columnKey, createAction, onCreated }: QuickAddProps) 
   const [expanded, setExpanded] = useState(false);
   const [title, setTitle] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [refocusPending, setRefocusPending] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Focusing right after the submit resolves is a no-op while React still has
+  // `submitting: true` committed, because the input is `disabled` then. Waiting
+  // for the commit that re-enables it is the only reliable moment — a frame
+  // callback loses the race whenever the scheduler defers that commit.
+  useEffect(() => {
+    if (!refocusPending || submitting) {
+      return;
+    }
+
+    setRefocusPending(false);
+    inputRef.current?.focus();
+  }, [refocusPending, submitting]);
 
   const collapse = useCallback(() => {
     setExpanded(false);
@@ -42,9 +56,7 @@ export function QuickAdd({ columnKey, createAction, onCreated }: QuickAddProps) 
     if (result.ok) {
       setTitle("");
       onCreated();
-      // The input is still `disabled` in this tick — React has not yet
-      // committed `submitting: false` — so focusing now would be a no-op.
-      requestAnimationFrame(() => inputRef.current?.focus());
+      setRefocusPending(true);
     }
   }, [columnKey, createAction, onCreated, runAction, submitting, title]);
 

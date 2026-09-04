@@ -1,4 +1,4 @@
-import { page, userEvent } from "vitest/browser";
+import { type Locator, page, userEvent } from "vitest/browser";
 import { describe, expect, it, vi } from "vitest";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
 import { fakeNode, jsonResponse } from "@lattice-php/core/test-support";
@@ -34,13 +34,22 @@ function treeLabels(): (string | null)[] {
   );
 }
 
-async function dragOnto(sourceId: string, targetId: string, verticalRatio: number): Promise<void> {
-  const target = row(targetId);
+async function dropOn(sourceId: string, target: Locator, verticalRatio: number): Promise<void> {
   const rect = target.element().getBoundingClientRect();
 
   await userEvent.dragAndDrop(row(sourceId), target, {
     targetPosition: { x: Math.round(rect.width / 2), y: Math.round(rect.height * verticalRatio) },
   });
+}
+
+async function dragOnto(sourceId: string, targetId: string, verticalRatio: number): Promise<void> {
+  await dropOn(sourceId, row(targetId), verticalRatio);
+}
+
+// A disabled row's body is `pointer-events-none`, so a real pointer drops on
+// the treeitem around it rather than on the body.
+async function dragOntoDisabled(sourceId: string, targetId: string): Promise<void> {
+  await dropOn(sourceId, page.getByTestId(`tree-node-${targetId}`), 0.5);
 }
 
 describe("tree drag and drop in a browser", () => {
@@ -95,7 +104,7 @@ describe("tree drag and drop in a browser", () => {
     );
 
     await dragOnto("a", "b", 0.5);
-    await dragOnto("a", "disabled", 0.5);
+    await dragOntoDisabled("a", "disabled");
 
     expect(fetchMock).not.toHaveBeenCalled();
     expect(treeLabels()).toEqual(["Alpha", "Beta", "Disabled"]);

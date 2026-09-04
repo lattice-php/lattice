@@ -72,7 +72,7 @@ it("renders the document onto a canvas with a page indicator", async () => {
 
   await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0, WAIT).toBe(true);
   await expect.poll(() => canvasInk(), WAIT).toBeGreaterThan(50);
-  await expect.element(page.getByTestId("pdf-page-indicator")).toHaveTextContent("of 5");
+  await expect.element(page.getByTestId("pdf-page-indicator")).toMatchTextContent("of 5");
   await expect
     .element(page.getByText("The quick brown fox jumps over the lazy dog,"))
     .toBeInTheDocument();
@@ -153,7 +153,7 @@ it("lists embedded attachments and downloads them as a blob", async () => {
     await userEvent.click(page.getByRole("radio", { name: "Attachments" }));
 
     const attachment = page.getByTestId("pdf-attachment");
-    await expect.element(attachment, WAIT).toHaveTextContent("invoice-data.csv");
+    await expect.element(attachment, WAIT).toMatchTextContent("invoice-data.csv");
 
     await userEvent.click(attachment);
 
@@ -184,11 +184,11 @@ it("zooms the rendered page and returns to fit width", async () => {
     .poll(() => Number.parseFloat(renderedCanvas()?.style.width ?? ""), WAIT)
     .toBeGreaterThan(0);
   const initialWidth = Number.parseFloat(renderedCanvas()!.style.width);
-  await expect.element(page.getByTestId("pdf-zoom-level")).toHaveTextContent("100%");
+  await expect.element(page.getByTestId("pdf-zoom-level")).toMatchTextContent("100%");
 
   await userEvent.click(page.getByRole("button", { name: "Zoom in" }));
 
-  await expect.element(page.getByTestId("pdf-zoom-level")).toHaveTextContent("125%");
+  await expect.element(page.getByTestId("pdf-zoom-level")).toMatchTextContent("125%");
   await expect
     .poll(() => Number.parseFloat(renderedCanvas()?.style.width ?? "0"))
     .toBeGreaterThan(initialWidth);
@@ -220,18 +220,18 @@ it("searches across pages, walks matches, and wraps around", async () => {
 
   await userEvent.fill(page.getByLabelText("Search document…"), "quick");
 
-  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toHaveTextContent("1 of 5");
+  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toMatchTextContent("1 of 5");
   await expect.poll(() => CSS.highlights.get("lt-pdf-match")?.size ?? 0, WAIT).toBeGreaterThan(0);
   await expect.poll(() => CSS.highlights.get("lt-pdf-match-current")?.size ?? 0, WAIT).toBe(1);
 
   await userEvent.click(page.getByRole("button", { name: "Next match" }));
-  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toHaveTextContent("2 of 5");
+  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toMatchTextContent("2 of 5");
 
   await userEvent.click(page.getByRole("button", { name: "Previous match" }));
-  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toHaveTextContent("1 of 5");
+  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toMatchTextContent("1 of 5");
 
   await userEvent.click(page.getByRole("button", { name: "Previous match" }));
-  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toHaveTextContent("5 of 5");
+  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toMatchTextContent("5 of 5");
 });
 
 it("keeps the toolbar in place while search navigation scrolls only the page container", async () => {
@@ -240,11 +240,11 @@ it("keeps the toolbar in place while search navigation scrolls only the page con
   await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0, WAIT).toBe(true);
 
   await userEvent.fill(page.getByLabelText("Search document…"), "quick");
-  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toHaveTextContent("1 of 5");
+  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toMatchTextContent("1 of 5");
 
   await userEvent.click(page.getByRole("button", { name: "Next match" }));
   await userEvent.click(page.getByRole("button", { name: "Next match" }));
-  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toHaveTextContent("3 of 5");
+  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toMatchTextContent("3 of 5");
 
   const scroller = document.querySelector(".lt-pdf-scroll")!;
   await expect.poll(() => scroller.scrollTop).toBeGreaterThan(0);
@@ -272,7 +272,7 @@ it("reports no matches for text the document does not contain", async () => {
 
   await userEvent.fill(page.getByLabelText("Search document…"), "zebra");
 
-  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toHaveTextContent("No matches");
+  await expect.element(page.getByTestId("pdf-match-count"), WAIT).toMatchTextContent("No matches");
   await expect.element(page.getByRole("button", { name: "Next match" })).toBeDisabled();
 });
 
@@ -281,7 +281,7 @@ it("shows the error state when the document cannot be loaded", async () => {
 
   await expect
     .element(page.getByRole("alert"), WAIT)
-    .toHaveTextContent("The document could not be loaded.");
+    .toMatchTextContent("The document could not be loaded.");
 });
 
 it("renders through the Composer entry's prebuilt engine", async () => {

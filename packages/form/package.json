@@ -74,6 +74,6 @@
     }
   },
   "devDependencies": {
-    "vitest-browser-react": "^2.2.0"
+    "vitest-browser-react": "^2.3.0"
   }
 }

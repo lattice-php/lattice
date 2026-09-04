@@ -29,7 +29,7 @@ describe("OperationHeader", () => {
     await expect
       .element(screen.getByText("https://api.example.test/users", { exact: true }))
       .toBeVisible();
-    await expect.element(urlCopy).not.toHaveTextContent("Copy");
+    await expect.element(urlCopy).not.toMatchTextContent("Copy");
     await expect
       .element(screen.getByRole("button", { name: "Copy as Markdown" }))
       .not.toBeInTheDocument();

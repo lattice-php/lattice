@@ -56,8 +56,16 @@ function resizeHandle(edge: "start" | "end") {
 async function dragToTeam(): Promise<void> {
   const target = resource("team-website");
   const rect = target.element().getBoundingClientRect();
+  const entryRect = entry().element().getBoundingClientRect();
 
+  // The grab offset is floored to whole days, and the entry's centre sits
+  // exactly on the boundary between its two days — grab its first day instead
+  // so a sub-pixel difference cannot shift the move by a day.
   await userEvent.dragAndDrop(entry(), target, {
+    sourcePosition: {
+      x: Math.round(entryRect.width / 4),
+      y: Math.round(entryRect.height / 2),
+    },
     targetPosition: { x: 84, y: Math.round(rect.height / 2) },
   });
 }
