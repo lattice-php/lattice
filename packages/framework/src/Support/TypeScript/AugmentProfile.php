@@ -18,10 +18,27 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
     public function run(): string
     {
+        $appDirs = $this->appDirs();
+
         $document = new WireModelBuilder()->build(
             $this->catalog->builtinDirs(),
-            $this->catalog->appDirs(),
+            $appDirs,
         );
+
+        $appDefs = array_filter(
+            $document['$defs'],
+            static fn (array $def): bool => ($def['x-lattice']['origin'] ?? null) === 'app'
+                && ($def['x-lattice']['kind'] ?? null) === 'props',
+        );
+
+        if ($appDefs === []) {
+            throw new EmptyDiscoveryException(sprintf(
+                'No app components were discovered for TypeScript generation. Declare `extra.lattice.discover` '
+                .'in composer.json (or set `lattice.discover` in config/lattice.php) to point at your app source. '
+                .'Paths checked: %s',
+                $appDirs === [] ? '(none)' : implode(', ', $appDirs),
+            ));
+        }
 
         $output = (string) config('lattice.typescript.output');
         $module = (string) config('lattice.typescript.module', '@lattice-php/core');
@@ -31,12 +48,29 @@ final readonly class AugmentProfile implements TypeScriptProfile
 
         new OxfmtFormatter()->format([$output]);
 
-        $count = count(array_filter(
-            $document['$defs'],
-            static fn (array $def): bool => ($def['x-lattice']['origin'] ?? null) === 'app'
-                && ($def['x-lattice']['kind'] ?? null) === 'props',
-        ));
+        return sprintf('Generated %d type(s) → %s', count($appDefs), $output);
+    }
 
-        return sprintf('Generated %d type(s) → %s', $count, $output);
+    /**
+     * `WireSourceCatalog::appDirs()` only sees the root package's composer
+     * `extra.lattice.discover`; fall back to `config('lattice.discover')`
+     * (the same paths PHP-side discovery already unions in) so an app that
+     * hasn't declared the composer key yet still generates.
+     *
+     * @return list<string>
+     */
+    private function appDirs(): array
+    {
+        $dirs = $this->catalog->appDirs();
+
+        if ($dirs !== []) {
+            return $dirs;
+        }
+
+        $configured = config('lattice.discover', []);
+
+        return is_array($configured)
+            ? array_values(array_filter($configured, is_string(...)))
+            : [];
     }
 }
