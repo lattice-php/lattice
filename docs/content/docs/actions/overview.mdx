@@ -81,9 +81,14 @@ class ArchiveProductAction extends ActionDefinition
 ```
 
 `contextModel()` reads the sealed context and resolves it into the model through its own
-[route binding](/core/authorization/#reading-trusted-context) — it aborts with a 404 when the key is
-missing or nothing matches. It comes from the opt-in `ResolvesContextModels` trait rather than
+[route binding](/core/context/#reading-it) — it aborts with a 404 when the key is missing or nothing
+matches. That two-argument form comes from the opt-in `ResolvesContextModels` trait rather than
 `context()` itself, which stays untyped on every definition.
+
+When a resolver for the key is [registered](/core/context/#registering-a-resolver) once via
+`Lattice::context('product', Product::class)`, the same call shrinks to a one-argument
+`contextModel('product')` — memoized for the request, and usable directly on `Definition` without the
+trait.
 
 ## Placing an action
 
@@ -98,6 +103,15 @@ Action::use(ArchiveProductAction::class)
 `->context()` carries data from the page to the action; `handle()` reads it back server-side, typically
 through a typed accessor like `contextModel()` (see [Defining an action](#defining-an-action)). The
 context is signed into the action's reference, so it can't be tampered with on the way back.
+
+The value doesn't have to be the scalar id — pass the model directly when you already have it, and
+Lattice normalizes it to the same scalar before the action gates or seals its context:
+
+```php
+Action::use(ArchiveProductAction::class)->context(['product' => $product]);
+```
+
+This only works for a key with a registered resolver; see [Context](/core/context/#passing-models-as-context-values).
 
 Group related actions behind a single trigger with `ActionGroup`:
 
@@ -149,8 +163,7 @@ public function authorize(Request $request): bool
 
 An action's `authorize()` also runs at render time — when it's hidden from the page rather than
 rejected outright, a strict accessor's 404 takes the whole page down with it. See
-[Authorization](/core/authorization/#reading-trusted-context) for the `OrNull` variants to reach for
-there instead.
+[Context](/core/context/#reading-it) for the `OrNull` variants to reach for there instead.
 
 ## Calling an action from a custom component
 

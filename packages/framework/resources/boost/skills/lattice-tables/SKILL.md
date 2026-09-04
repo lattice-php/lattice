@@ -108,7 +108,7 @@ Render with `Table::use(ProductsTable::class)` inside a page's component tree. `
 
 ## Row & bulk actions
 
-A table only *attaches* actions and their context; the action classes themselves are defined separately — see the **`lattice-actions`** skill.
+A table only *attaches* actions and their context; the action classes themselves are defined separately — see the **`lattice-actions`** skill. A key registered with `Lattice::context()` (a resolver bound once via a service provider) cascades automatically from the table into every row/bulk action it builds, so it doesn't need `->context([...])` at all unless the row itself supplies the value (a per-row id, say).
 
 - **Row actions** — return components from `actions(array $row)`: `Action::use(...)->context([...])` scoped to the record, plus plain `Link::make()->href(...)`.
 

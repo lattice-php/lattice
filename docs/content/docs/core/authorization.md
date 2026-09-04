@@ -3,15 +3,16 @@ title: Authorization
 description: Gate a definition, page, or component with can and authorize().
 ---
 
-Lattice gates everything with the same two tools. **`can`** declares subject-less abilities — the
-same word as Laravel's `can:` middleware and `$user->can()`. **`authorize()`** holds the logic that
-needs the request or the record it acts on.
+Lattice gates everything with the same two tools. **`can`** declares an ability — the same word as
+Laravel's `can:` middleware and `$user->can()` — either subject-less or, with `on`, checked against a
+specific record. **`authorize()`** holds the logic that needs the request or something `can`/`on` can't
+express.
 
-|                                                                 | declare an ability     | custom logic                 |
-| --------------------------------------------------------------- | ---------------------- | ---------------------------- |
-| Definition — form, table, action, bulk action, fragment, layout | `#[AsTable(can: 'x')]` | `authorize()`                |
-| Page                                                            | `#[AsPage(can: 'x')]`  | `authorize()`                |
-| Component, column, filter, row action                           | `->can('x')`           | `->visible()` / `->hidden()` |
+|                                                                 | declare an ability              | custom logic                 |
+| --------------------------------------------------------------- | ------------------------------- | ---------------------------- |
+| Definition — form, table, action, bulk action, fragment, layout | `#[AsTable(can: 'x', on: 'y')]` | `authorize()`                |
+| Page                                                            | `#[AsPage(can: 'x', on: 'y')]`  | `authorize()`                |
+| Component, column, filter, row action                           | `->can('x', on: 'y')`           | `->visible()` / `->hidden()` |
 
 ## Declaring `can`
 
@@ -54,6 +55,50 @@ runs the middleware in `config('lattice.<group>.middleware')` — `['web', 'auth
 then the definition's own gate. Putting `can: 'admin.users.manage'` on a page gates who can _load_ the
 page; it does not gate the table on it. Declare the ability on the definition too.
 :::
+
+## Declaring a gate subject with `on`
+
+Add `on` when the ability needs a specific record rather than a subject-less check —
+`Gate::check('update', $product)` rather than `Gate::check('manage-widgets')`. `on` names a
+[context](/core/context/) key; its resolved value becomes the `Gate::check()` subject, so a gate closure
+written for `can('update', $product)` works unchanged.
+
+On a definition or a plain component, `on` names a context key exactly as `contextModel()` would read
+it:
+
+```php
+#[AsAction('app.products.archive', can: 'update', on: 'product')]
+class ArchiveProductAction extends ActionDefinition { /* … */ }
+```
+
+```php
+Heading::make('Internal notes')->can('update', on: 'product');
+```
+
+On a page, `on` names a route parameter instead — a bound model as-is, or an unbound scalar resolved
+through a [registered](/core/context/#registering-a-resolver) `Lattice::context()` resolver of the same
+name:
+
+```php
+#[AsPage(route: '/products/{product}/edit', can: 'update', on: 'product')]
+class ProductEditPage extends Page { /* … */ }
+```
+
+A missing subject — the key absent, or its resolver finding nothing — **denies outright**. It never
+falls back to a subject-less check.
+
+:::caution
+A page's `on` middleware differs from a subject-less `can`. Laravel's own `can:{ability}` middleware
+would hand an unbound route parameter to the gate as a raw scalar, blind to a registered resolver — so
+when `on` is set, Lattice registers its own `AuthorizeGateSubject` middleware in its place. It resolves
+the subject exactly as `toResponse()` and `callAction()` do — through the same
+`GateSubjects::fromRoute()` — so the middleware and the page body can never disagree about who they
+checked.
+:::
+
+`can` and `on` are inherited from a [base page](/core/pages/#shared-base-pages) the same way layout,
+width, and middleware are: a concrete page declaring its own `can` replaces — rather than merges with —
+an inherited ability, and the same holds for `on`.
 
 ## Writing `authorize()`
 
@@ -99,34 +144,13 @@ of its own, so `->can()` is a render gate only; anything that loads data must be
 ## Reading trusted context
 
 A definition often needs the record it acts on. Pass it as [context](/actions/overview/#placing-an-action)
-when placing the component, and read it back with a typed accessor:
-
-```php
-Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
-```
-
-```php
-use Lattice\Actions\ActionDefinition;
-use Lattice\Core\Concerns\ResolvesContextModels;
-
-class ArchiveProductAction extends ActionDefinition
-{
-    use ResolvesContextModels;
-
-    protected function product(): Product
-    {
-        return $this->contextModel('product_id', Product::class);
-    }
-}
-```
-
-`contextModel()` resolves the context value through the model's own `resolveRouteBinding()` — the
-same column a route parameter would bind against — and aborts with a 404 when the key is missing or
-no record matches. It lives on the opt-in `ResolvesContextModels` trait rather than on `Definition`
-itself, because the package does not depend on `illuminate/database`. `Definition::context()` and its
-typed scalar siblings — `contextString()`/`contextStringOrNull()`, `contextInt()`/`contextIntOrNull()`
-— are available on every definition without the trait; the strict variants abort with a 404 on a
-missing or wrongly-typed value instead of coercing it.
+when placing the component, and read it back with a typed accessor — `contextModel()`, backed by a
+resolver [registered](/core/context/#registering-a-resolver) once via `Lattice::context()`, or the
+explicit form on the opt-in `Lattice\Core\Concerns\ResolvesContextModels` trait. `Definition::context()`
+and its typed scalar siblings — `contextString()`/`contextStringOrNull()`,
+`contextInt()`/`contextIntOrNull()` — are available on every definition without the trait. See
+[Context](/core/context/) for registering resolvers, memoization, and how context inherits into a
+definition's children, a page's frame, slots, and closure-built modals.
 
 The context is sealed into the component's signed reference, so the value `authorize()` and `handle()`
 read is the value the server issued — not something a client can change. See
@@ -134,8 +158,8 @@ read is the value the server issued — not something a client can change. See
 
 :::caution
 Inside `authorize()` on a component that renders as part of a page, use the `OrNull` accessors
-(`contextModelOrNull()`, `contextStringOrNull()`, `contextIntOrNull()`) instead of their strict
-counterparts. At the endpoint, a `false` from `authorize()` is a 403 — but at render time an
+(`contextModelOrNull()`, `contextStringOrNull()`, `contextIntOrNull()`) or `hasContext()` instead of
+their strict counterparts. At the endpoint, a `false` from `authorize()` is a 403 — but at render time an
 unauthorized component is simply hidden, and a strict accessor's `abort(404)` would take the whole
 page down with it instead.
 :::
