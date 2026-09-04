@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.72.0](https://github.com/lattice-php/lattice/compare/0.71.0...0.72.0) (2026-09-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* prefixedTestId/prefixedNodeTestId no longer trim a dotted identity to its last segment. A wire node without an explicit key() now gets a data-test built from its full id, e.g. action-workbench.products.archive instead of action-archive. Give a node an explicit key() for a short, stable selector. leafTestIdentity is removed from @lattice-php/core.
+
+### Features
+
+* **core:** context resolvers, gate subjects and context frames ([#582](https://github.com/lattice-php/lattice/issues/582)) ([a41af6e](https://github.com/lattice-php/lattice/commit/a41af6ebf379358fe8d7c5958772749bfb87588b))
+
+
+### Bug Fixes
+
+* close the silent failures found in the consumer audit ([#580](https://github.com/lattice-php/lattice/issues/580)) ([3e11cca](https://github.com/lattice-php/lattice/commit/3e11cca2b8d1cbf12d0db1e51466ee72dca1beb7))
+
 ## [0.71.0](https://github.com/lattice-php/lattice/compare/0.70.2...0.71.0) (2026-09-04)
 
 
