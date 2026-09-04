@@ -22,8 +22,7 @@ export default defineConfig({
       exclude: [
         "resources/js/**/*.test.*",
         "resources/js/**/*.test-d.*",
-        "resources/js/test-support.*",
-        "resources/js/browser-test-support.*",
+        "resources/js/*test-support.*",
       ],
       rollupTypes: true,
       compilerOptions: {
