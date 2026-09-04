@@ -175,6 +175,11 @@ export default defineConfig({
       reportsDirectory: "coverage_vitest",
       include: ["packages/*/resources/js/**/*.{ts,tsx}"],
       reporter: ["text", "lcov"],
+      // Codecov merges the jsdom and browser uploads into the project total and
+      // only reports once all six of the run's uploads land (codecov.yml's
+      // after_n_builds). A red suite writing no report would silence coverage
+      // for the whole commit, not just its own job.
+      reportOnFailure: true,
       exclude: [
         "packages/*/resources/js/**/*.d.ts",
         "packages/*/resources/js/**/*.test.{ts,tsx}",
