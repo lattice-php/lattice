@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Lattice\Core\Services;
 
+use BackedEnum;
 use Illuminate\Http\Request;
 use Lattice\Core\Support\Evaluation\Evaluator;
 use LogicException;
@@ -68,7 +69,7 @@ final class ContextResolutions
 
         $keyClosure = $this->resolvers->keyClosure($key);
 
-        if (!$keyClosure instanceof \Closure) {
+        if (! $keyClosure instanceof \Closure) {
             if (method_exists($model, 'getRouteKey')) {
                 $routeKey = $model->getRouteKey();
 
@@ -100,6 +101,46 @@ final class ContextResolutions
         }
 
         return $result;
+    }
+
+    /**
+     * Turns every object value in a raw context array into its wire-safe
+     * scalar via {@see self::serialize()}, so neither a gate, `withContext()`,
+     * nor a sealed ref ever carries a model. A `BackedEnum` normalizes to its
+     * backing `->value` regardless of whether a resolver is registered for
+     * the key — it was always wire-safe on its own. An object under a key
+     * without a registered resolver throws rather than being silently
+     * JSON-encoded wholesale into a sealed ref.
+     *
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    public function normalize(array $context): array
+    {
+        foreach ($context as $key => $value) {
+            if ($value instanceof BackedEnum) {
+                $context[$key] = $value->value;
+
+                continue;
+            }
+
+            if (! is_object($value)) {
+                continue;
+            }
+
+            $key = (string) $key;
+
+            if (! $this->resolvers->has($key)) {
+                throw new LogicException(sprintf(
+                    'Lattice context values must be scalar unless a resolver is registered for [%s]. Register one with Lattice::context(), or pass the scalar value directly.',
+                    $key,
+                ));
+            }
+
+            $context[$key] = $this->serialize($key, $value);
+        }
+
+        return $context;
     }
 
     private function unregistered(string $key): LogicException

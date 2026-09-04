@@ -13,9 +13,13 @@ use Closure;
  * re-threading; endpoints activate a frame so the response paths that
  * rebuild children (table rows, form schemas, fragments) behave identically.
  *
- * Only keys listed in `lattice.context.inherited_keys` cascade — context can
- * carry routing and policy values (the bulk-action table key, media upload
- * rules) that must never leak into a child's sealed ref.
+ * A key cascades when it is listed in `lattice.context.inherited_keys` or has
+ * a resolver registered via `Lattice::context()` — a registered key always
+ * inherits, config or not. Context can carry routing and policy values (the
+ * bulk-action table key, media upload rules) that must never leak into a
+ * child's sealed ref, so only the whitelisted/registered keys cascade, and
+ * every value normalizes to a scalar (through {@see ContextResolutions}) so
+ * a frame never carries an object.
  */
 final class ContextScope
 {
@@ -24,6 +28,11 @@ final class ContextScope
 
     /** @var list<array<string, mixed>> */
     private array $frames = [];
+
+    public function __construct(
+        private readonly ContextResolvers $resolvers,
+        private readonly ContextResolutions $resolutions,
+    ) {}
 
     /**
      * @template TReturn
@@ -34,7 +43,7 @@ final class ContextScope
      */
     public function wrap(array $context, Closure $fn): mixed
     {
-        $this->frames[] = $this->inheritableSubset($context);
+        $this->frames[] = $this->inheritableSubset($this->resolutions->normalize($context));
 
         try {
             return $fn();
@@ -51,7 +60,7 @@ final class ContextScope
      */
     public function activate(array $context): void
     {
-        $this->frames[] = $this->inheritableSubset($context);
+        $this->frames[] = $this->inheritableSubset($this->resolutions->normalize($context));
     }
 
     /**
@@ -68,9 +77,12 @@ final class ContextScope
      */
     private function inheritableSubset(array $context): array
     {
-        $keys = config('lattice.context.inherited_keys', []);
+        $configured = config('lattice.context.inherited_keys', []);
+        $configured = is_array($configured) ? $configured : [];
 
-        if (! is_array($keys) || $keys === []) {
+        $keys = [...$configured, ...$this->resolvers->keys()];
+
+        if ($keys === []) {
             return [];
         }
 
