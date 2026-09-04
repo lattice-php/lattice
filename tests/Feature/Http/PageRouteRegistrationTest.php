@@ -80,6 +80,18 @@ final class RegGuardedBarePage extends RegBasePage
     }
 }
 
+#[AsPage(can: 'manage-widgets')]
+abstract class RegGuardedBasePage extends RegBasePage {}
+
+#[AsPage(route: '/guarded-inherited', name: 'guarded-inherited.index')]
+final class RegGuardedInheritedPage extends RegGuardedBasePage
+{
+    public function render(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Guarded inherited'));
+    }
+}
+
 #[AsPage(route: '/orders/{order}', name: 'orders.show')]
 final class RegOrdersShowPage extends RegBasePage
 {
@@ -208,6 +220,17 @@ test('a page with empty attribute middleware still registers its declared abilit
     new LatticeServiceProvider(app())->bootPages();
 
     $route = namedRoute('guarded-bare.index');
+
+    expect($route->gatherMiddleware())
+        ->toBe(['web', 'can:manage-widgets']);
+});
+
+test('a child page registers the can middleware for an ability declared only on its abstract parent', function (): void {
+    Lattice::pages([RegGuardedInheritedPage::class]);
+
+    new LatticeServiceProvider(app())->bootPages();
+
+    $route = namedRoute('guarded-inherited.index');
 
     expect($route->gatherMiddleware())
         ->toBe(['web', 'can:manage-widgets']);

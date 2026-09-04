@@ -122,6 +122,34 @@ class ProductEditPage extends Page
 Anything the container can resolve — a `Request`, a service, a bound model — can be type-hinted here
 too.
 
+## Context
+
+Before `render()` runs, a page opens a [context](/core/context/) frame from its own route parameters,
+by convention: a bound model parameter seeds the key whose resolver was registered for its class,
+whatever the parameter itself is named, and a scalar parameter seeds the key sharing its own name when
+that name is registered. `render(Product $product)` above seeds the context key `product` because
+`Lattice::context('product', Product::class)` registered `Product` — not because the parameter happens
+to be named `product`.
+
+Every component the page builds — directly, through a layout, or nested inside a definition — inherits
+that frame, so a table or an action placed on the page can read `contextModel('product')` without it
+being threaded through by hand. Extend or override the frame explicitly with `PageSchema::context()`,
+chained **before** `->schema()` so the components it builds see the extended frame:
+
+```php
+public function render(PageSchema $schema, Product $product): PageSchema
+{
+    return $schema
+        ->context(['product' => $product])
+        ->schema([
+            Table::use(ProductReviewsTable::class),
+        ]);
+}
+```
+
+See [Context](/core/context/#frames) for how the frame reaches slots, layouts, and closure-built modals
+too.
+
 ## The `#[AsPage]` attribute
 
 `#[AsPage]` declares how the page is routed and framed:

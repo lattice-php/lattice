@@ -28,6 +28,7 @@ use Lattice\Console\Commands\UpdateCommand;
 use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\AsLayout;
 use Lattice\Core\Attributes\AsRemoteSource;
+use Lattice\Core\Contracts\BuildsModelContextResolvers;
 use Lattice\Core\Contracts\ResolvesRemoteSourceEndpoints;
 use Lattice\Core\Discovery\ComponentPackages;
 use Lattice\Core\Discovery\DiscoveryKinds;
@@ -39,12 +40,14 @@ use Lattice\Core\Wire\WireSourceCatalog;
 use Lattice\Form\FormServiceProvider;
 use Lattice\Fragments\FragmentDefinition;
 use Lattice\Fragments\FragmentRegistry;
+use Lattice\Http\Middleware\AuthorizeGateSubject;
 use Lattice\Http\Middleware\SetLocale;
 use Lattice\Http\PageRegistry;
 use Lattice\Layouts\LayoutDefinition;
 use Lattice\Layouts\LayoutRegistry;
 use Lattice\Remote\RemoteSourceDefinition;
 use Lattice\Remote\RemoteSourceRegistry;
+use Lattice\Support\EloquentContextResolvers;
 use Lattice\Support\Frontend\StandaloneAssets;
 use Lattice\Support\TypeScript\AugmentProfile;
 use Lattice\Support\TypeScript\TypeScriptProfile;
@@ -89,6 +92,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(WireSourceCatalog::class, static fn (): WireSourceCatalog => WireSourceCatalog::fromApplication());
         $this->app->bind(TypeScriptProfile::class, AugmentProfile::class);
+        $this->app->bind(BuildsModelContextResolvers::class, EloquentContextResolvers::class);
 
         if ($this->app->runningInConsole()) {
             $this->commands(MakeDefinitionCommand::all());
@@ -217,7 +221,12 @@ final class LatticeServiceProvider extends PackageServiceProvider
                 ->middleware(array_values(array_unique([
                     ...config('lattice.pages.middleware', ['web']),
                     ...$page->middleware ?? [],
-                    ...array_map(static fn (string $ability): string => 'can:'.$ability, $page->can),
+                    ...array_map(
+                        static fn (string $ability): string => $page->on === null
+                            ? 'can:'.$ability
+                            : AuthorizeGateSubject::class.':'.$ability.','.$page->on,
+                        $page->can,
+                    ),
                 ])));
         }
 

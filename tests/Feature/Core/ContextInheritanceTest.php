@@ -6,12 +6,14 @@ use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Core\Attributes\AsAction;
+use Lattice\Core\Concerns\ResolvesContextModels;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\Services\ContextScope;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form as FormComponent;
 use Lattice\Form\FormDefinition;
 use Symfony\Component\HttpFoundation\Response;
+use Workbench\App\Models\Product;
 
 use function Pest\Laravel\postJson;
 
@@ -91,6 +93,54 @@ test('the sealed child ref carries inherited keys to the endpoint but never unli
         ->and(ContextInheritanceChildAction::$seen['handle_secret'])->toBeNull();
 });
 
+test('a registered context key inherits even when inherited_keys is empty', function (): void {
+    config()->set('lattice.context.inherited_keys', []);
+    Lattice::context('tenant', fn (string $value): object => (object) ['value' => $value]);
+
+    $form = wire(FormComponent::use(ContextInheritanceParentForm::class, ['tenant' => 'acme']));
+
+    expect(wireNode($form, 'ctx-inherit.child'))->not->toBeNull()
+        ->and(ContextInheritanceChildAction::$seen['definition_tenant'])->toBe('acme');
+});
+
+test('an object context value is normalized to its scalar and resolves back to a model in the child', function (): void {
+    Lattice::context('product', Product::class);
+    Lattice::forms([ContextInheritanceProductParentForm::class]);
+    Lattice::actions([ContextInheritanceProductChildAction::class]);
+
+    $product = Product::factory()->create(['name' => 'Acme Widget']);
+
+    $form = wire(FormComponent::use(ContextInheritanceProductParentForm::class, ['product' => $product]));
+
+    $child = wireNode($form, 'ctx-inherit.product-child');
+    assert($child !== null);
+
+    postJson('/lattice/actions/ctx-inherit.product-child', [], ['X-Lattice-Ref' => $child['props']['ref']])
+        ->assertOk();
+
+    expect(ContextInheritanceProductChildAction::$seenScalar)->toBe($product->getRouteKey())
+        ->and(ContextInheritanceProductChildAction::$seenModelName)->toBe('Acme Widget');
+});
+
+test('an object under a key without a registered resolver throws', function (): void {
+    Lattice::forms([ContextInheritanceProductParentForm::class]);
+    Lattice::actions([ContextInheritanceProductChildAction::class]);
+
+    expect(fn (): FormComponent => FormComponent::use(ContextInheritanceProductParentForm::class, ['product' => new stdClass]))
+        ->toThrow(LogicException::class);
+});
+
+test('an enum context value under an unregistered key seals as its scalar and reads back via context()', function (): void {
+    Lattice::actions([ContextInheritanceEnumAction::class]);
+
+    $action = wire(ActionComponent::use(ContextInheritanceEnumAction::class, ['status' => ContextInheritanceStatus::Active]));
+
+    postJson('/lattice/actions/ctx-inherit.enum-child', [], ['X-Lattice-Ref' => $action['props']['ref']])
+        ->assertOk();
+
+    expect(ContextInheritanceEnumAction::$seenStatus)->toBe('active');
+});
+
 #[AsForm('ctx-inherit.parent-form')]
 final class ContextInheritanceParentForm extends FormDefinition
 {
@@ -153,6 +203,71 @@ final class ContextInheritanceExplicitChildAction extends ActionDefinition
 
     public function handle(Request $request): ActionResult
     {
+        return ActionResult::success();
+    }
+}
+
+#[AsForm('ctx-inherit.product-parent-form')]
+final class ContextInheritanceProductParentForm extends FormDefinition
+{
+    public function definition(FormComponent $form, Request $request): FormComponent
+    {
+        return $form->schema([
+            ActionComponent::use(ContextInheritanceProductChildAction::class),
+        ]);
+    }
+
+    public function handle(Request $request): Response
+    {
+        return new Response('ok');
+    }
+}
+
+#[AsAction('ctx-inherit.product-child')]
+final class ContextInheritanceProductChildAction extends ActionDefinition
+{
+    use ResolvesContextModels;
+
+    public static mixed $seenScalar = null;
+
+    public static ?string $seenModelName = null;
+
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Product child');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        self::$seenScalar = $this->context('product');
+
+        $product = $this->contextModel('product');
+        assert($product instanceof Product);
+        self::$seenModelName = $product->name;
+
+        return ActionResult::success();
+    }
+}
+
+enum ContextInheritanceStatus: string
+{
+    case Active = 'active';
+}
+
+#[AsAction('ctx-inherit.enum-child')]
+final class ContextInheritanceEnumAction extends ActionDefinition
+{
+    public static mixed $seenStatus = null;
+
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Enum child');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        self::$seenStatus = $this->context('status');
+
         return ActionResult::success();
     }
 }

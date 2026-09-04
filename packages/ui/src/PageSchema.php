@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Lattice\Ui;
 
 use Lattice\Core\Breadcrumb;
+use Lattice\Core\Services\ContextScope;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\FiltersRenderableComponents;
 use Lattice\Ui\Concerns\ResolvesSchemaEntries;
@@ -44,6 +45,25 @@ final class PageSchema
     public function component(Component $component): static
     {
         $this->components[] = $component;
+
+        return $this;
+    }
+
+    /**
+     * Extends (or overrides a key of) the active `ContextScope` frame,
+     * activated immediately rather than deferred to `renderable()`. This
+     * matters because a chained `$schema->context([...])->schema([...])`
+     * evaluates left to right: PHP constructs the `schema()` call's array
+     * argument — and so builds every component in it — only after `context()`
+     * has already returned, so those components inherit the extended frame
+     * as long as `context()` runs first in the chain.
+     *
+     * @param  array<string, mixed>  $context
+     */
+    public function context(array $context): static
+    {
+        $scope = app(ContextScope::class);
+        $scope->activate([...$scope->inheritable(), ...$context]);
 
         return $this;
     }

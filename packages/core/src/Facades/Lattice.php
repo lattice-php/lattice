@@ -21,6 +21,7 @@ use Lattice\Core\LatticeRegistry;
  * @method static \Lattice\Remote\RemoteSourceRegistry remoteSourceRegistry()
  * @method static void searchProviders(class-string<\Lattice\Search\Contracts\SearchResultProvider>|array<int, class-string<\Lattice\Search\Contracts\SearchResultProvider>> $providers)
  * @method static \Lattice\Search\SearchProviderRegistry searchProviderRegistry()
+ * @method static void context(string $key, \Closure|class-string $resolver, ?string $by = null, ?\Closure $keyBy = null)
  * @method static void extend(string $name, \Closure $factory, int $priority = 0)
  * @method static void theme(\Lattice\Theme\Theme|\Closure $theme)
  * @method static void translations(string $namespace, string $path)

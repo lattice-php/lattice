@@ -17,8 +17,11 @@ return [
 
     'context' => [
         // Context keys child components inherit from the definition they are
-        // built inside (row actions, modal forms, nested actions). Empty means
-        // no inheritance; explicit context always wins over inherited keys.
+        // built inside (row actions, modal forms, nested actions), on top of
+        // every key with a resolver registered via Lattice::context() (which
+        // always inherits regardless of this list). Use this for keys that
+        // have no resolver but should still cascade; explicit context always
+        // wins over inherited keys.
         'inherited_keys' => [],
     ],
 

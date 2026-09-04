@@ -77,6 +77,7 @@ export default defineConfig({
             { label: "Layouts", link: "/core/layouts/" },
             { label: "Closure evaluation", link: "/core/closure-evaluation/" },
             { label: "Authorization", link: "/core/authorization/" },
+            { label: "Context", link: "/core/context/" },
             { label: "Fragments", link: "/core/fragments/" },
             { label: "Navigation", link: "/core/navigation/" },
             { label: "Icons", link: "/core/icons/" },

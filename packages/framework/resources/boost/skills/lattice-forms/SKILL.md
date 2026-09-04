@@ -156,6 +156,8 @@ Form::use(ProfileForm::class)
     ->context(['user_id' => $user->id]);                      // extra data handle() can read
 ```
 
+Register a key once with `Lattice::context('user', User::class)` and read it back typed with `$this->contextModel('user')` — memoized per request, 404 when the key is absent or nothing resolves; `contextModelOrNull()` in a render-time `authorize()` instead. A registered key cascades automatically into every field/action the form builds without re-passing it, and `->context(['user' => $user])` accepts the model directly — it normalizes to the scalar before the ref seals. Gate the form itself against that same subject with `#[AsForm('id', can: 'update', on: 'user')]`.
+
 The form renders its own submit button in a plain right-aligned row (disabled while submitting or while there are errors, with a spinner) — labelled by `->submitLabel()`, aligned with `->submitJustify(Justify::…)`, and styled with `->submitVariant(ButtonVariant::…)`. Replace the row's contents with `->submitButtons(Button::make('Cancel'), Button::make('Save')->submit())`; only a `->submit()`-marked button's label and variant carry over to the managed button, other props are ignored. To place the button yourself instead, call `->withoutSubmitButton()` (removes the row entirely) and add `Button::make('Save')->submit()` in the schema.
 
 ## Submit lifecycle

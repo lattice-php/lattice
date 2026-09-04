@@ -56,6 +56,8 @@ TextInput::make('total', 'Total')->dependsOn(
 | `ToggleFilter::query()` | A typed Eloquent `Builder`, `$value` (the toggle state). |
 | `TernaryFilter::queries()` / a custom `Filter::apply()` | A typed Eloquent `Builder`. |
 | `Lattice::extend()` slot closures | Named slot context, typed context objects, `$user`, `$slot`/typed `Slot`, typed `Request`. |
+| `Lattice::context()` resolver | `$value` (the raw context scalar), `$key`, `$context` (the definition's full raw context array — read another key), typed `Request`. |
+| `Lattice::context()` `keyBy` (turns the resolved object back into its wire scalar) | `$value` or the resolved object's own type, `$key`, typed `Request`. |
 
 ```php
 Select::make('author_id', 'Author')
@@ -67,6 +69,10 @@ Select::make('author_id', 'Author')
 
 Repeater::make('lines')
     ->itemLabel(fn (FormData $row, FormData $form) => $row->string('name') ?: $form->string('currency'));
+
+Lattice::context('product', function (string $value, Request $request): Product {
+    return Product::where('slug', $value)->firstOrFail();
+});
 ```
 
 ## Server-side timing

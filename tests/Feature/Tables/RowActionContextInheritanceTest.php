@@ -7,6 +7,9 @@ use Lattice\Actions\ActionResult;
 use Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Form\Attributes\AsForm;
+use Lattice\Form\Components\Form as FormComponent;
+use Lattice\Form\FormDefinition;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
 use Lattice\Table\Columns\TextColumn;
@@ -15,6 +18,9 @@ use Lattice\Table\Contracts\TableSource;
 use Lattice\Table\TableDefinition;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Button;
+use Lattice\Ui\Components\Modal;
+use Symfony\Component\HttpFoundation\Response;
 
 use function Pest\Laravel\postJson;
 
@@ -22,9 +28,17 @@ beforeEach(function (): void {
     config()->set('lattice.context.inherited_keys', ['tenant']);
     RowCtxInheritanceAction::$seen = [];
     RowCtxToolbarAction::$seen = [];
+    RowCtxModalForm::$seenTenant = null;
 
-    Lattice::tables([RowCtxInheritanceTable::class]);
+    Lattice::tables([RowCtxInheritanceTable::class, RowCtxModalTable::class]);
     Lattice::actions([RowCtxInheritanceAction::class, RowCtxToolbarAction::class]);
+    Lattice::forms([RowCtxModalForm::class]);
+});
+
+test('a row action modal closure built inside a table frame lets its embedded form inherit the table context', function (): void {
+    wire(Table::use(RowCtxModalTable::class, ['tenant' => 'acme']));
+
+    expect(RowCtxModalForm::$seenTenant)->toBe('acme');
 });
 
 test('row actions inherit the table context on the build path', function (): void {
@@ -139,5 +153,50 @@ final class RowCtxToolbarAction extends ActionDefinition
         self::$seen['handle_table'] = $this->context('table');
 
         return ActionResult::success();
+    }
+}
+
+#[AsTable('ctx-inherit.modal-table')]
+final class RowCtxModalTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [TextColumn::make('name')];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            ['id' => 1, 'name' => 'Taylor'],
+        ]));
+    }
+
+    #[Override]
+    public function actions(array $row): array
+    {
+        return [
+            Button::make('Details')->modal(fn (): Modal => Modal::make('row-modal')->schema([
+                FormComponent::use(RowCtxModalForm::class),
+            ])),
+        ];
+    }
+}
+
+#[AsForm('ctx-inherit.modal-form')]
+final class RowCtxModalForm extends FormDefinition
+{
+    public static ?string $seenTenant = null;
+
+    public function definition(FormComponent $form, Request $request): FormComponent
+    {
+        $tenant = $this->context('tenant');
+        self::$seenTenant = is_string($tenant) ? $tenant : null;
+
+        return $form->schema([]);
+    }
+
+    public function handle(Request $request): Response
+    {
+        return new Response('ok');
     }
 }

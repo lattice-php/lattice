@@ -30,6 +30,7 @@ final readonly class PageMetadata
         public PageWidth $width,
         public ?array $middleware,
         public array $can,
+        public ?string $on,
     ) {}
 
     /** @param  PageContract|class-string<PageContract>  $page */
@@ -52,7 +53,8 @@ final readonly class PageMetadata
             layout: self::inherited($class, fn (AsPage $a): PageLayout|string|null => $a->layout) ?? PageLayout::None,
             width: self::inherited($class, fn (AsPage $a): ?PageWidth => $a->width) ?? PageWidth::Full,
             middleware: self::inheritedMiddleware($class),
-            can: $own?->can() ?? [],
+            can: self::inherited($class, fn (AsPage $a): ?array => $a->can() === [] ? null : $a->can()) ?? [],
+            on: self::inherited($class, fn (AsPage $a): ?string => $a->on()),
         );
     }
 
@@ -68,7 +70,7 @@ final readonly class PageMetadata
     }
 
     /**
-     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can: array<int, string>}
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can: array<int, string>, on: string|null}
      */
     public function toArray(): array
     {
@@ -80,14 +82,16 @@ final readonly class PageMetadata
             'layout' => $this->serialize($this->layout),
             'width' => $this->serialize($this->width),
             'can' => $this->can,
+            'on' => $this->on,
         ];
     }
 
     /**
-     * `can` defaults for descriptors cached by a manifest built before it
-     * existed, so an upgrade works without regenerating the discovery cache.
+     * `can`/`on` default for descriptors cached by a manifest built before
+     * they existed, so an upgrade works without regenerating the discovery
+     * cache.
      *
-     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can?: array<int, string>}  $descriptor
+     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can?: array<int, string>, on?: string|null}  $descriptor
      */
     public static function fromArray(array $descriptor): self
     {
@@ -99,6 +103,7 @@ final readonly class PageMetadata
             width: PageWidth::from($descriptor['width']),
             middleware: $descriptor['middleware'],
             can: $descriptor['can'] ?? [],
+            on: $descriptor['on'] ?? null,
         );
     }
 

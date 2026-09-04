@@ -52,6 +52,33 @@ test('a strict context model aborts when the key is absent', function (): void {
         ->assertNotFound();
 });
 
+test('the one-argument contextModel resolves through the registered resolver', function (): void {
+    Lattice::context('product', Product::class);
+    Lattice::actions([WorkbenchRegistryContextModelAction::class]);
+
+    $product = Product::factory()->create(['name' => 'Registry Product']);
+
+    $this->callAction(WorkbenchRegistryContextModelAction::class, [], ['product' => $product->getKey()])
+        ->assertOk()
+        ->assertJsonPath('data.name', 'Registry Product');
+});
+
+test('the one-argument contextModel aborts when the key is absent', function (): void {
+    Lattice::context('product', Product::class);
+    Lattice::actions([WorkbenchRegistryContextModelAction::class]);
+
+    $this->callAction(WorkbenchRegistryContextModelAction::class, [], [])
+        ->assertNotFound();
+});
+
+test('the one-argument contextModel aborts when the record does not exist', function (): void {
+    Lattice::context('product', Product::class);
+    Lattice::actions([WorkbenchRegistryContextModelAction::class]);
+
+    $this->callAction(WorkbenchRegistryContextModelAction::class, [], ['product' => 999999])
+        ->assertNotFound();
+});
+
 test('an OrNull accessor in a render-time authorize hides the component instead of aborting', function (): void {
     Lattice::actions([ContextGatedAction::class]);
 
@@ -93,5 +120,26 @@ class ContextGatedPage extends Page
     public function render(PageSchema $schema): PageSchema
     {
         return $schema->component(ActionComponent::use(ContextGatedAction::class));
+    }
+}
+
+#[AsAction('workbench.registry-context-model-reader')]
+final class WorkbenchRegistryContextModelAction extends ActionDefinition
+{
+    use ResolvesContextModels;
+
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Registry context model reader');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        $product = $this->contextModel('product');
+        assert($product instanceof Product);
+
+        return ActionResult::success([
+            'name' => $product->name,
+        ]);
     }
 }

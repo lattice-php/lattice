@@ -12,12 +12,17 @@ use Inertia\Response;
 use Lattice\Core\Authorization;
 use Lattice\Core\Breadcrumb;
 use Lattice\Core\Contracts\PageContract;
+use Lattice\Core\Contracts\ResolvesGateSubject;
 use Lattice\Core\Enums\PageLayout;
 use Lattice\Core\Enums\PageWidth;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\PageMetadata;
+use Lattice\Core\Services\ContextResolvers;
+use Lattice\Core\Services\ContextScope;
 use Lattice\Core\Support\Wire;
+use Lattice\Http\Middleware\AuthorizeGateSubject;
 use Lattice\Realtime\Listen;
+use Lattice\Support\GateSubjects;
 use Lattice\Ui\BreadcrumbTrail;
 use Lattice\Ui\PageSchema;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -26,7 +31,7 @@ use UnexpectedValueException;
 /**
  * @method PageSchema render(mixed ...$parameters)
  */
-abstract class Page implements PageContract, Responsable
+abstract class Page implements PageContract, ResolvesGateSubject, Responsable
 {
     public function title(): ?string
     {
@@ -52,6 +57,20 @@ abstract class Page implements PageContract, Responsable
     public function authorize(Request $request): bool
     {
         return true;
+    }
+
+    /**
+     * The `on` gate subject: the named route parameter as bound by
+     * `SubstituteBindings`, or — for a scalar, unbound value — resolved
+     * through a `Lattice::context()` resolver registered under the same key.
+     * A parameter that is neither yields no subject, so the gate denies.
+     * Shared with {@see AuthorizeGateSubject}, the
+     * `can:{ability},{on}` route middleware, via {@see GateSubjects}, so the
+     * two never resolve the same key differently.
+     */
+    public function gateSubject(string $key): ?object
+    {
+        return GateSubjects::fromRoute(app(Request::class), $key);
     }
 
     /**
@@ -89,7 +108,10 @@ abstract class Page implements PageContract, Responsable
             ));
         }
 
-        Authorization::ensure($this, app(Request::class));
+        $request = app(Request::class);
+
+        Authorization::ensure($this, $request);
+        app(ContextScope::class)->activate($this->contextFrame($request));
 
         return $this->pageResponse($method, $this->{$method}(...array_values($parameters)));
     }
@@ -100,6 +122,7 @@ abstract class Page implements PageContract, Responsable
     public function toResponse($request): HttpResponse
     {
         Authorization::ensure($this, $request);
+        app(ContextScope::class)->activate($this->contextFrame($request));
 
         // schema is passed so the container resolves render()'s other
         // dependencies but does not rebuild PageSchema itself; the route's
@@ -110,6 +133,44 @@ abstract class Page implements PageContract, Responsable
         $schema = app()->call($this->render(...), $parameters);
 
         return $this->pageResponse('render', $schema)->toResponse($request);
+    }
+
+    /**
+     * Seeds the page's `ContextScope` frame from the route's bound
+     * parameters, by convention: an object parameter seeds the key a
+     * `Lattice::context($key, Model::class)` resolver registered for its
+     * class ({@see ContextResolvers::keyForModel()}) — so a route parameter
+     * named `current_tenant` and bound to a `Tenant` still seeds `tenant` —
+     * and a scalar parameter seeds the key sharing its own name, when that
+     * name is itself registered. `PageSchema::context()` extends or
+     * overrides this from `render()` for anything the convention misses.
+     * Override this to change the convention for a page (or a whole base
+     * page class).
+     *
+     * @return array<string, mixed>
+     */
+    protected function contextFrame(Request $request): array
+    {
+        $resolvers = app(ContextResolvers::class);
+        $frame = [];
+
+        foreach ($request->route()?->parameters() ?? [] as $name => $value) {
+            if (is_object($value)) {
+                $key = $resolvers->keyForModel($value);
+
+                if ($key !== null) {
+                    $frame[$key] = $value;
+                }
+
+                continue;
+            }
+
+            if (is_scalar($value) && $resolvers->has((string) $name)) {
+                $frame[(string) $name] = $value;
+            }
+        }
+
+        return $frame;
     }
 
     private function pageResponse(string $method, mixed $schema): Response

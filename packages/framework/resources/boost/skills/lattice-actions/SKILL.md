@@ -113,6 +113,8 @@ Action::use(ArchiveProductAction::class)->context(['product_id' => $row['id']]);
 
 `handle()` reads it back with `$this->context('product_id')`. The context is **signed** into the action's reference, so it cannot be tampered with on the way back. Group related triggers behind one button with `ActionGroup::make('row')->actions([...])` (`Lattice\Actions\Components\ActionGroup`).
 
+Register a key once with `Lattice::context('product', Product::class)` (or a closure resolver, `Lattice::context('product', fn (string $value) => Product::findOrFail($value))`) and `contextModel('product')` resolves it into the model — memoized per request (a resolver runs at most once, however many times it's read), aborting with a 404 when the key is absent or nothing matches. A registered key also cascades automatically into every child the action builds (a `->form([...])` field, a nested action) without re-passing it, and it can be placed as the model directly — `->context(['product' => $product])` normalizes it to the scalar before the ref seals.
+
 ## Confirmation and input forms
 
 - `->confirm($title?, $description?, $confirmLabel?, $cancelLabel?)` shows a confirmation dialog before the action runs; `$title` defaults to the action's label when omitted.
@@ -131,6 +133,8 @@ return $action
 ## Authorization
 
 Override `authorize(Request $request): bool` to gate an action; the trusted context is already merged in. A denied action never reaches `handle()`.
+
+For a subject ability (`can('update', $product)` rather than a subject-less one), declare it on the attribute instead: `#[AsAction('app.products.archive', can: 'update', on: 'product')]` checks the ability against the `product` context key's resolved value. A missing subject (the key absent, or its resolver finding nothing) denies outright rather than falling back to a subject-less check.
 
 ## Bulk actions
 

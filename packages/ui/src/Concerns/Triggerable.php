@@ -8,6 +8,7 @@ use Closure;
 use InvalidArgumentException;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Facades\Evaluate;
+use Lattice\Core\Services\ContextScope;
 use Lattice\Core\Support\Evaluation\EvaluationContext;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Modal;
@@ -35,6 +36,9 @@ trait Triggerable
     public ?Modal $modal = null;
 
     protected ?Closure $modalResolver = null;
+
+    /** @var array<string, mixed>|null */
+    protected ?array $modalContextFrame = null;
 
     public function href(string $href): static
     {
@@ -69,6 +73,13 @@ trait Triggerable
         return $this;
     }
 
+    /**
+     * A closure form snapshots the currently inherited `ContextScope` frame
+     * at call time — the row/definition frame it was built inside — and
+     * replays it around the closure in {@see resolveEmbeddedModal()}, which
+     * runs later from a `#[SerializationHook]` once that frame has already
+     * popped.
+     */
     public function modal(Modal|Closure $modal): static
     {
         $this->assertBehaviorAllowed('modal');
@@ -76,9 +87,11 @@ trait Triggerable
         if ($modal instanceof Modal) {
             $this->modal = $modal;
             $this->modalResolver = null;
+            $this->modalContextFrame = null;
         } else {
             $this->modalResolver = $modal;
             $this->modal = null;
+            $this->modalContextFrame = app(ContextScope::class)->snapshot();
         }
 
         return $this;
@@ -110,7 +123,10 @@ trait Triggerable
     protected function resolveEmbeddedModal(array $data): array
     {
         if ($this->modalResolver instanceof Closure) {
-            $resolved = Evaluate::resolve($this->modalResolver, $this->renderContext());
+            $resolved = app(ContextScope::class)->within(
+                $this->modalContextFrame ?? [],
+                fn (): mixed => Evaluate::resolve($this->modalResolver, $this->renderContext()),
+            );
 
             if (! $resolved instanceof Modal) {
                 throw new InvalidArgumentException('The modal() closure must return a Modal instance.');
