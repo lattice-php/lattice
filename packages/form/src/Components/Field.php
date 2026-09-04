@@ -91,6 +91,8 @@ abstract class Field extends Component
 
     protected bool $hasResolvedValue = false;
 
+    protected bool $valueChangedDuringResolution = false;
+
     protected bool $valueWasSet = false;
 
     /**
@@ -382,7 +384,7 @@ abstract class Field extends Component
         $this->valueWasSet = true;
 
         if ($this->resolving) {
-            $this->hasResolvedValue = true;
+            $this->valueChangedDuringResolution = true;
         }
 
         return $this;
@@ -449,6 +451,7 @@ abstract class Field extends Component
 
         if ($this->valueResolver instanceof Closure) {
             $this->value(Evaluate::resolve($this->valueResolver, $context));
+            $this->hasResolvedValue = true;
         }
 
         $this->resolving = false;
@@ -470,11 +473,27 @@ abstract class Field extends Component
     }
 
     /**
+     * Whether the field's value is server-authoritative: set by the
+     * non-editable value(Closure) resolver, never by a dependsOn callback.
+     * FieldValidator uses this to decide whether to overwrite user input.
+     *
      * @internal
      */
     public function hasResolvedValue(): bool
     {
         return $this->hasResolvedValue;
+    }
+
+    /**
+     * Whether this resolution pass changed the field's value at all, via
+     * either the value(Closure) resolver or a dependsOn callback. A live
+     * resolve ships this value to the client regardless of authority.
+     *
+     * @internal
+     */
+    public function valueChangedDuringResolution(): bool
+    {
+        return $this->valueChangedDuringResolution;
     }
 
     /**

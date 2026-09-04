@@ -117,8 +117,14 @@ TextInput::make('total', 'Total')
     ->value(fn (FormData $data) => $data->float('qty') * $data->float('price'));
 ```
 
-When the computation also needs to change other parts of the field, use `->dependsOn()` to name the
-fields to watch and receive the field itself in the closure.
+A computed value is **locked** by default: the closure result overwrites whatever the user typed on
+every resolve and on submit, so the field reads as derived.
+
+`->dependsOn()` reacts to other fields changing, receiving the field itself in the closure. It can
+change anything about the field — its options, props, visibility, or live value via `$field->value(...)`
+— but it never locks the field the way `->value(Closure)` does: a value set from inside a `dependsOn`
+callback ships to the client on the next resolve so the UI stays in sync, but a user who then types
+into the field wins on submit.
 
 ```php
 TextInput::make('total', 'Total')
@@ -128,8 +134,9 @@ TextInput::make('total', 'Total')
     );
 ```
 
-A computed value is **authoritative** by default: the closure result overwrites whatever the user
-typed on every resolve and on submit, so the field reads as derived.
+To make a computed value that reacts to specific fields **and** stays authoritative, use `->value()`
+alone — it already re-evaluates on every resolve, so naming dependencies is only needed for
+`dependsOn`'s other effects (changing options, visibility, or other props).
 
 ## Editable defaults
 
