@@ -45,13 +45,20 @@ final class FormSchemaWalker
     }
 
     /**
+     * @param  array<int, string>|null  $rowSiblingNames
      * @return Generator<int, FormFieldInstance>
      */
-    private function walkField(Field $template, string $path, FormData $scope, FormData $form): Generator
-    {
+    private function walkField(
+        Field $template,
+        string $path,
+        FormData $scope,
+        FormData $form,
+        ?string $rowPath = null,
+        ?array $rowSiblingNames = null,
+    ): Generator {
         $field = clone $template;
 
-        yield new FormFieldInstance($field, $path, $scope, $form);
+        yield new FormFieldInstance($field, $path, $scope, $form, $rowPath, $rowSiblingNames);
 
         if (! $field instanceof ProvidesRowFields) {
             return;
@@ -66,13 +73,18 @@ final class FormSchemaWalker
         foreach ($rows as $index => $row) {
             $row = is_array($row) ? $row : [];
             $rowScope = $field->rowScope($scope, $row);
+            $childRowPath = "{$path}.{$index}";
+            $rowFields = $field->rowFields($row);
+            $siblingNames = array_map(static fn (Field $sibling): string => $sibling->name(), $rowFields);
 
-            foreach ($field->rowFields($row) as $child) {
+            foreach ($rowFields as $child) {
                 yield from $this->walkField(
                     $child,
-                    "{$path}.{$index}.{$child->name()}",
+                    "{$childRowPath}.{$child->name()}",
                     $rowScope,
                     $form,
+                    $childRowPath,
+                    $siblingNames,
                 );
             }
         }

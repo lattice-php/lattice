@@ -157,6 +157,14 @@ Each child field's rules are registered per row — `items.{index}.field` — so
 `minItems`/`maxItems` rules validate the number of rows independently of the per-row rules. See
 [Validation](/forms/validation/) for how field rules are resolved.
 
+A rule that names another field — `after`, `after_or_equal`, `before`, `before_or_equal`, `same`,
+`different`, `gt`, `gte`, `lt`, `lte`, `date_equals`, `required_if`, `required_unless`, `required_with`,
+`required_with_all`, `required_without`, `required_without_all`, `prohibited_if`, `prohibited_unless`,
+`exclude_if`, `exclude_unless`, `in_array`, `accepted_if`, or `declined_if` — resolves that bare
+reference against the **same row** when it matches a sibling field's name, exactly like row-scoped
+conditions. `->rules(['after_or_equal:valid_from'])` on a `valid_to` field compares against that row's
+own `valid_from`, and an error for row 1 lands on `items.1.valid_to`, never on a top-level field.
+
 ## Row-scoped conditions
 
 Conditional rules on a child field resolve against the **other fields in the same row** first, falling

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Lattice\Form\Contracts\ProvidesRowFields;
 use Lattice\Form\FormData;
+use Lattice\Form\RowRuleReferences;
 use LogicException;
 
 /**
@@ -123,8 +124,11 @@ abstract class RowsField extends Field implements ProvidesRowFields
         foreach ($rows as $index => $row) {
             $row = is_array($row) ? $row : [];
             $scope = $this->rowScope($data, $row);
+            $rowPath = "{$this->name}.{$index}";
+            $rowFields = $this->rowFields($row);
+            $siblingNames = array_map(static fn (Field $sibling): string => $sibling->name(), $rowFields);
 
-            foreach ($this->rowFields($row) as $child) {
+            foreach ($rowFields as $child) {
                 if ($child->name() === self::ROW_ID) {
                     throw new LogicException(sprintf(
                         'Row schemas must not declare a [%s] field: the key is reserved for the per-row identity.',
@@ -140,10 +144,12 @@ abstract class RowsField extends Field implements ProvidesRowFields
 
                 // excludeUnvalidatedArrayKeys drops a row's unruled keys once a sibling
                 // (e.g. the type discriminator) has a rule, so give every field a passthrough.
-                $rules["{$this->name}.{$index}.{$child->name()}"] = $childRules !== [] ? $childRules : ['sometimes', 'nullable'];
+                $rules["{$rowPath}.{$child->name()}"] = $childRules !== []
+                    ? RowRuleReferences::rewrite($childRules, $rowPath, $siblingNames)
+                    : ['sometimes', 'nullable'];
             }
 
-            $rules["{$this->name}.{$index}.".self::ROW_ID] = ['sometimes', 'nullable', 'uuid'];
+            $rules["{$rowPath}.".self::ROW_ID] = ['sometimes', 'nullable', 'uuid'];
         }
 
         return $rules;

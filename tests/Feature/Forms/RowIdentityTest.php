@@ -11,27 +11,28 @@ use Lattice\Form\Components\RowTemplate;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FieldValidator;
 
-it('mints a uuid rowId for every validated row', function (): void {
+it('keeps every row in the validated payload without leaking rowId', function (): void {
     $field = Repeater::make('items')->schema([TextInput::make('title')]);
     $request = Request::create('/', 'POST', ['items' => [['title' => 'One'], ['title' => 'Two']]]);
 
     $validated = (new FieldValidator)->validate([$field], $request);
 
     expect($validated['items'])->toHaveCount(2)
+        ->and($validated['items'][0])->not->toHaveKey(RowsField::ROW_ID)
         ->and($validated['items'][0]['title'])->toBe('One')
-        ->and(Str::isUuid($validated['items'][0][RowsField::ROW_ID]))->toBeTrue()
-        ->and(Str::isUuid($validated['items'][1][RowsField::ROW_ID]))->toBeTrue()
-        ->and($validated['items'][0][RowsField::ROW_ID])->not->toBe($validated['items'][1][RowsField::ROW_ID]);
+        ->and($validated['items'][1])->not->toHaveKey(RowsField::ROW_ID)
+        ->and($validated['items'][1]['title'])->toBe('Two');
 });
 
-it('preserves a submitted rowId through validation and casting', function (): void {
+it('accepts a submitted rowId without leaking it into the validated payload', function (): void {
     $rowId = Str::uuid()->toString();
     $field = Repeater::make('items')->schema([TextInput::make('title')]);
     $request = Request::create('/', 'POST', ['items' => [[RowsField::ROW_ID => $rowId, 'title' => 'Kept']]]);
 
     $validated = (new FieldValidator)->validate([$field], $request);
 
-    expect($validated['items'][0][RowsField::ROW_ID])->toBe($rowId);
+    expect($validated['items'][0])->not->toHaveKey(RowsField::ROW_ID)
+        ->and($validated['items'][0]['title'])->toBe('Kept');
 });
 
 it('rejects a rowId that is not a uuid', function (): void {
@@ -41,7 +42,7 @@ it('rejects a rowId that is not a uuid', function (): void {
     (new FieldValidator)->validate([$field], $request);
 })->throws(ValidationException::class);
 
-it('keeps type and rowId together on typed rows', function (): void {
+it('keeps the type discriminator on typed rows without leaking rowId', function (): void {
     $rowId = Str::uuid()->toString();
     $field = Builder::make('items')->templates([
         RowTemplate::make('text')->schema([TextInput::make('title')]),
@@ -54,12 +55,11 @@ it('keeps type and rowId together on typed rows', function (): void {
 
     expect($validated['items'][0])->toEqual([
         'type' => 'text',
-        RowsField::ROW_ID => $rowId,
         'title' => 'Hello',
     ]);
 });
 
-it('stamps rowIds on nested rows recursively', function (): void {
+it('drops rowId from nested rows recursively', function (): void {
     $field = Builder::make('sections')->templates([
         RowTemplate::make('list')->schema([
             Repeater::make('lines')->schema([TextInput::make('label')]),
@@ -72,9 +72,9 @@ it('stamps rowIds on nested rows recursively', function (): void {
     $validated = (new FieldValidator)->validate([$field], $request);
     $lines = $validated['sections'][0]['lines'];
 
-    expect(Str::isUuid($validated['sections'][0][RowsField::ROW_ID]))->toBeTrue()
+    expect($validated['sections'][0])->not->toHaveKey(RowsField::ROW_ID)
         ->and($lines)->toHaveCount(2)
-        ->and(Str::isUuid($lines[0][RowsField::ROW_ID]))->toBeTrue()
+        ->and($lines[0])->not->toHaveKey(RowsField::ROW_ID)
         ->and($lines[0]['label'])->toBe('A');
 });
 
@@ -94,4 +94,18 @@ it('stamps uuids onto server-filled rows on the wire', function (): void {
 
     expect(Str::isUuid($wire['props']['value'][0][RowsField::ROW_ID]))->toBeTrue()
         ->and($wire['props']['value'][0]['title'])->toBe('Stored');
+});
+
+it('drops rowId from the payload handed to handle() while keeping it on the wire', function (): void {
+    $rowId = Str::uuid()->toString();
+    $field = Repeater::make('items')->schema([TextInput::make('title')]);
+    $request = Request::create('/', 'POST', ['items' => [[RowsField::ROW_ID => $rowId, 'title' => 'Kept']]]);
+
+    $validated = (new FieldValidator)->validate([$field], $request);
+
+    expect($validated['items'][0])->not->toHaveKey(RowsField::ROW_ID);
+
+    $wire = wire($field->value([['title' => 'Kept', RowsField::ROW_ID => $rowId]]));
+
+    expect($wire['props']['value'][0][RowsField::ROW_ID])->toBe($rowId);
 });
