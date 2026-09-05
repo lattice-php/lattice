@@ -17,10 +17,11 @@ final class ContextResolvers
 
     /**
      * Registering the same key twice replaces the previous registration —
-     * the last call to `Lattice::context()` for a key wins. `$model` is set
-     * only by the Eloquent sugar form of `Lattice::context()`, so {@see
-     * keyForModel()} can seed a page's context frame from a bound route
-     * model without any naming convention on the route parameter.
+     * the last call to `Lattice::context()` for a key wins. `$model` is the
+     * class the key resolves to — recorded by the Eloquent sugar, inferred
+     * from a closure's declared return type, or passed as `model:` — so
+     * {@see keyForModel()} can seed a page's context frame from a bound
+     * route model without any naming convention on the route parameter.
      *
      * @param  ?class-string  $model
      */
@@ -53,10 +54,10 @@ final class ContextResolvers
     }
 
     /**
-     * The first registered key whose recorded Eloquent model class the given
-     * object is an instance of, in registration order. Only keys registered
-     * through the `Lattice::context($key, Model::class)` sugar carry a model
-     * class, so a closure registration never matches.
+     * The first registered key whose recorded model class the given object
+     * is an instance of, in registration order. A closure registration
+     * without a declared class return type (or an explicit `model:`) carries
+     * no class and never matches.
      */
     public function keyForModel(object $model): ?string
     {

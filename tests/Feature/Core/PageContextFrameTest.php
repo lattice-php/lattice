@@ -46,6 +46,20 @@ test('a route parameter bound to a resolver model seeds the context frame under 
         ->and(FrameChildTable::$seen['model_name'])->toBe('Frame Widget');
 });
 
+test('a closure resolver with a declared return type seeds the context frame from a bound route model', function (): void {
+    Lattice::context('product', fn (string|int $value): Product => Product::query()->findOrFail($value), keyBy: fn (Product $product): int => (int) $product->getKey());
+
+    $product = Product::factory()->create(['name' => 'Closure Widget']);
+
+    Route::get('/frame-closure/{current_product}', [FrameByModelPage::class, 'render'])
+        ->middleware('web')
+        ->name('frame-test.by-closure');
+
+    get('/frame-closure/'.$product->getKey())->assertOk();
+
+    expect(FrameChildTable::$seen['model_name'])->toBe('Closure Widget');
+});
+
 test('a scalar route parameter named for a registered key seeds the context frame', function (): void {
     $product = Product::factory()->create(['name' => 'Scalar Widget']);
 
