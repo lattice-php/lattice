@@ -8,6 +8,7 @@ use Lattice\Form\Components\RowTemplate;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormData;
 use Lattice\Form\FormDefinition;
+use Lattice\Form\Resolution;
 
 function computedDefinition(): FormDefinition
 {
@@ -146,4 +147,53 @@ it('resolves nested repeater prefill values keyed by recursive full path', funct
         'sections.0.lines.0.price' => 15.0,
         'sections.0.lines.1.price' => 18.0,
     ]);
+});
+
+it('omits a prefill path whose resolver abstains, leaving the typed value alone', function (): void {
+    $definition = testFormDefinition(fn (): array => [
+        TextInput::make('product', 'Product'),
+        TextInput::make('price', 'Price')->value(
+            fn (FormData $data): float|Resolution => $data->string('product')->toString() === ''
+                ? Resolution::Keep
+                : 42.0,
+            editable: true,
+            resetOn: ['product'],
+        ),
+    ]);
+
+    expect($definition->resolveFields(Request::create('/', 'POST', ['product' => 'p1', 'price' => '9.99']))->prefill)
+        ->toBe(['price' => 42.0])
+        ->and($definition->resolveFields(Request::create('/', 'POST', ['product' => '', 'price' => '9.99']))->prefill)
+        ->toBe([]);
+});
+
+it('keeps a prefill of null distinct from abstaining', function (): void {
+    $definition = testFormDefinition(fn (): array => [
+        TextInput::make('price', 'Price')->value(fn (): null => null, editable: true),
+    ]);
+
+    expect($definition->resolveFields(Request::create('/', 'POST', ['price' => '9.99']))->prefill)
+        ->toBe(['price' => null]);
+});
+
+it('leaves a computed value non-authoritative when its resolver abstains', function (): void {
+    $definition = testFormDefinition(fn (): array => [
+        TextInput::make('total', 'Total')->value(fn (FormData $data): string|Resolution => $data->string('qty')->toString() === ''
+            ? Resolution::Keep
+            : '100'),
+    ]);
+
+    expect($definition->resolveFields(Request::create('/', 'POST', ['qty' => '2']))->values)
+        ->toBe(['total' => '100'])
+        ->and($definition->resolveFields(Request::create('/', 'POST', ['qty' => '']))->values)
+        ->toBe([]);
+});
+
+it('does not overwrite submitted input with an abstaining computed value', function (): void {
+    $definition = testFormDefinition(fn (): array => [
+        TextInput::make('total', 'Total')->value(fn (): Resolution => Resolution::Keep),
+    ]);
+
+    expect($definition->validate(Request::create('/', 'POST', ['total' => 'typed by hand']))->all())
+        ->toBe(['total' => 'typed by hand']);
 });

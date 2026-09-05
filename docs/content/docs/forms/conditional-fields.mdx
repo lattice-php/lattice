@@ -164,3 +164,23 @@ TextInput::make('price', 'Price')
   Inside a [repeater or builder](/forms/fields/repeater/) row, a bare dependency name is
   row-relative; prefix it with `@` (e.g. `@customer`) to watch a form-level field instead.
 </Info>
+
+### Deciding nothing
+
+Returning `null` is a decision: it clears the field. When a resolver has nothing to suggest —
+no product picked yet, no price on file — return `Resolution::Keep` instead and the field keeps
+whatever is in it, including what the user typed.
+
+```php
+use Lattice\Form\Resolution;
+
+TextInput::make('price', 'Price')
+    ->value(
+        fn (FormData $data) => priceFor($data->get('product')) ?? Resolution::Keep,
+        editable: true,
+        resetOn: ['product'],
+    );
+```
+
+`Resolution::Keep` works the same way in an authoritative `->value()` resolver: the field keeps its
+submitted value and stays non-authoritative for that pass, so validation does not overwrite it.
