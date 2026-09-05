@@ -12,6 +12,7 @@ use Lattice\Media\Models\Media;
 use Lattice\Table\TableDefinition;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\freezeTime;
 
 /**
  * Asserts the write: a fake disk swallows failures into `false`, and a skipped
@@ -36,6 +37,11 @@ function fakeImageMedia(string $name = 'source.jpg', int $width = 320, int $heig
 function bootstrapMediaTest(array $tables = [], array $actions = [], array $bulkActions = [], array $forms = []): void
 {
     Storage::fake('public');
+
+    // Media::url() signs a temporary URL against now(), so a test comparing a
+    // URL a request produced with one the assertion produces gets two
+    // different expirations whenever a second ticks between them.
+    freezeTime();
 
     Lattice::tables($tables);
     Lattice::actions($actions);
