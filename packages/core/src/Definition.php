@@ -33,6 +33,25 @@ abstract class Definition implements Authorizable, ResolvesGateSubject
         return true;
     }
 
+    /**
+     * Called once on the definition's own endpoint, after the gate has passed
+     * and the trusted context is active — and never on a page render, where
+     * the request belongs to the page rather than to any one definition.
+     *
+     * The seam for request-wide setup keyed to the resolved context: a signed
+     * endpoint runs none of the route middleware a page load does, so state a
+     * page establishes up front (a tenant made current, a locale, a
+     * connection) has to be re-established here. Doing it in a context
+     * resolver instead is a trap — a resolver also runs while components are
+     * merely being built, once per distinct value, so the side effect fires
+     * for records the request is not about.
+     *
+     * The work that follows is deferred: a table's builder is executed after
+     * builder() returns, a form's schema serializes after handle(). Set state
+     * that lasts the request rather than state scoped to this call.
+     */
+    public function activated(Request $request): void {}
+
     protected function context(string $key, mixed $default = null): mixed
     {
         return data_get($this->context, $key, $default);
