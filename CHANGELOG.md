@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.72.2](https://github.com/lattice-php/lattice/compare/0.72.1...0.72.2) (2026-09-05)
+
+
+### Bug Fixes
+
+* **form:** accept the value a DOM form posts for a checked box ([#585](https://github.com/lattice-php/lattice/issues/585)) ([ed81b99](https://github.com/lattice-php/lattice/commit/ed81b9923f197ad1d57865553b9798ec12314c66))
+
 ## [0.72.1](https://github.com/lattice-php/lattice/compare/0.72.0...0.72.1) (2026-09-05)
 
 
