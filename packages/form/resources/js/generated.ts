@@ -59,6 +59,29 @@ export type Checkbox = {
   tooltip: string | null;
   value: unknown;
 };
+export type CheckboxGroup = {
+  bulkToggleable: boolean;
+  collapsed: boolean;
+  collapsible: boolean;
+  columnWidth: ColumnWidth;
+  columns: Record<string, number> | null;
+  conditions: FieldConditions | null;
+  dependsOnAny: boolean;
+  dependsOnKeys: string[] | null;
+  disabled: boolean;
+  editablePrefill: boolean;
+  helperText: string | null;
+  label: string | null;
+  labelAction: Node | null;
+  name: string;
+  options: Option[];
+  prefillRefreshOn: string[] | null;
+  prefillResetOn: string[] | null;
+  readOnly: boolean;
+  required: boolean;
+  tooltip: string | null;
+  value: unknown;
+};
 export type Choice = {
   autoFocus: boolean;
   columnWidth: ColumnWidth;
@@ -104,6 +127,7 @@ export type ColorPicker = {
 export type ComponentPropsMap = {
   "field.builder": Builder;
   "field.checkbox": Checkbox;
+  "field.checkbox-group": CheckboxGroup;
   "field.choice": Choice;
   "field.color-picker": ColorPicker;
   "field.date-input": DateInput;
@@ -294,6 +318,7 @@ export type Form = {
 export type FormFieldNodeType =
   | "field.builder"
   | "field.checkbox"
+  | "field.checkbox-group"
   | "field.choice"
   | "field.color-picker"
   | "field.date-input"
@@ -316,6 +341,7 @@ export type FormFieldNodeType =
 export type FormNodeType =
   | "field.builder"
   | "field.checkbox"
+  | "field.checkbox-group"
   | "field.choice"
   | "field.color-picker"
   | "field.date-input"

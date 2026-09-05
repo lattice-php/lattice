@@ -39,6 +39,9 @@ return [
         'block-menu' => 'Block einfügen',
         'block-menu-empty' => 'Keine Ergebnisse',
     ],
+    'checkbox-group' => [
+        'select-all' => 'Alle auswählen',
+    ],
     'file-upload' => [
         'dropzone' => 'Dateien hierher ziehen oder zum Auswählen klicken',
         'remove' => ':name entfernen',

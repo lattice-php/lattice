@@ -1,6 +1,8 @@
 export { ActionForm, useLazyActionForm } from "./action-form";
 export { FormFieldFrame, type FormFieldControlProps } from "./components/base/field";
 export { Checkbox } from "./components/checkbox/checkbox";
+export { CheckboxGroup } from "./components/checkbox-group/checkbox-group";
+export type { CheckboxGroupProps } from "./components/checkbox-group/checkbox-group";
 export { FileUpload } from "./components/file-upload/file-upload";
 export type { FileUploadItem, FileUploadProps } from "./components/file-upload/file-upload";
 export * from "./components/color-picker/color-picker";

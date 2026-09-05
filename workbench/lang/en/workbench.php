@@ -400,6 +400,21 @@ return [
                 'gallery-help-text' => 'Pick images from the media library.',
             ],
         ],
+        'checkbox-group' => [
+            'accounting' => 'Accounting',
+            'digest' => 'Weekly digest',
+            'invoice-manage' => 'Manage invoices',
+            'invoice-view' => 'View invoices',
+            'notifications' => 'Notifications',
+            'notifications-help' => 'Pick the emails this account receives.',
+            'order-manage' => 'Manage orders',
+            'order-view' => 'View orders',
+            'permissions' => 'Permissions',
+            'product' => 'Product updates',
+            'sales' => 'Sales',
+            'security' => 'Security alerts',
+            'security-tooltip' => 'Sent even when every other channel is off.',
+        ],
         'showcase' => [
             'age' => 'Age',
             'birthday' => 'Birthday',
@@ -456,6 +471,7 @@ return [
         'dependent-fields' => 'Dependent & computed',
         'field-boolean' => 'Checkbox & toggle',
         'field-builder' => 'Builder',
+        'field-checkbox-group' => 'Checkbox group',
         'field-choice' => 'Choice',
         'field-color-picker' => 'Color picker',
         'field-date-time' => 'Date & time',
@@ -693,6 +709,10 @@ return [
             'builder' => [
                 'description' => 'Heterogeneous row blocks in stack or table layout.',
                 'title' => 'Builder',
+            ],
+            'checkbox-group' => [
+                'description' => 'Multi-select checkbox list with sections, columns, and a select-all toggle.',
+                'title' => 'Checkbox group',
             ],
             'choice' => [
                 'description' => 'Single-select choice control with static options.',

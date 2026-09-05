@@ -124,6 +124,7 @@ export default defineConfig({
                 { label: "Choice", link: "/forms/fields/choice/" },
                 { label: "Color picker", link: "/forms/fields/color-picker/" },
                 { label: "Checkbox", link: "/forms/fields/checkbox/" },
+                { label: "Checkbox group", link: "/forms/fields/checkbox-group/" },
                 { label: "Toggle", link: "/forms/fields/toggle/" },
                 { label: "Date input", link: "/forms/fields/date-input/" },
                 { label: "Time input", link: "/forms/fields/time-input/" },

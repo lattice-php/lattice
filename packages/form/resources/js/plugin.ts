@@ -3,6 +3,7 @@ import type { FormNodeType } from "./generated";
 import {
   BuilderAdapter,
   CheckboxAdapter,
+  CheckboxGroupAdapter,
   ChoiceAdapter,
   ColorPickerAdapter,
   DateInputAdapter,
@@ -30,6 +31,7 @@ export const formComponents: Plugin = {
     form: eagerComponent(FormAdapter),
     "field.builder": eagerComponent(BuilderAdapter),
     "field.checkbox": eagerComponent(CheckboxAdapter),
+    "field.checkbox-group": eagerComponent(CheckboxGroupAdapter),
     "field.choice": eagerComponent(ChoiceAdapter),
     "field.color-picker": eagerComponent(ColorPickerAdapter),
     "field.date-input": eagerComponent(DateInputAdapter),

@@ -1,5 +1,6 @@
 export { BuilderAdapter } from "./builder/builder-adapter";
 export { CheckboxAdapter } from "./checkbox/checkbox-adapter";
+export { CheckboxGroupAdapter } from "./checkbox-group/checkbox-group-adapter";
 export { ChoiceAdapter } from "./choice/choice-adapter";
 export { ColorPickerAdapter } from "./color-picker/color-picker-adapter";
 export { DateInputAdapter } from "./date-input/date-input-adapter";

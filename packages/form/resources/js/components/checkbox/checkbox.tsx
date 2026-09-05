@@ -9,7 +9,7 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "peer border-lt-input data-[state=checked]:bg-lt-primary data-[state=checked]:text-lt-primary-fg data-[state=checked]:border-lt-primary focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger size-4 shrink-0 rounded-lt-xs border shadow-lt-xs transition-shadow outline-none focus-visible:ring-[length:var(--lt-ring-width)] aria-readonly:cursor-default aria-readonly:data-[state=unchecked]:bg-lt-muted disabled:cursor-not-allowed disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:data-[state=checked]:bg-lt-disabled disabled:data-[state=checked]:text-lt-disabled-fg disabled:data-[state=checked]:border-lt-disabled",
+        "peer border-lt-input data-[state=checked]:bg-lt-primary data-[state=checked]:text-lt-primary-fg data-[state=checked]:border-lt-primary data-[state=indeterminate]:bg-lt-primary data-[state=indeterminate]:text-lt-primary-fg data-[state=indeterminate]:border-lt-primary focus-visible:border-lt-ring focus-visible:ring-lt-ring/50 aria-invalid:ring-lt-danger/20 dark:aria-invalid:ring-lt-danger/40 aria-invalid:border-lt-danger size-4 shrink-0 rounded-lt-xs border shadow-lt-xs transition-shadow outline-none focus-visible:ring-[length:var(--lt-ring-width)] aria-readonly:cursor-default aria-readonly:data-[state=unchecked]:bg-lt-muted disabled:cursor-not-allowed disabled:bg-lt-disabled disabled:text-lt-disabled-fg disabled:data-[state=checked]:bg-lt-disabled disabled:data-[state=checked]:text-lt-disabled-fg disabled:data-[state=checked]:border-lt-disabled",
         className,
       )}
       {...props}
@@ -18,7 +18,10 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
         data-slot="checkbox-indicator"
         className="flex items-center justify-center text-current transition-none"
       >
-        <Icon name="check" className="size-lt-icon-sm" />
+        <Icon
+          name={props.checked === "indeterminate" ? "minus" : "check"}
+          className="size-lt-icon-sm"
+        />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

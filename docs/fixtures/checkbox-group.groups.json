@@ -1,0 +1,63 @@
+[
+    {
+        "props": {
+            "bulkToggleable": true,
+            "collapsed": false,
+            "collapsible": true,
+            "columnWidth": "md",
+            "columns": {
+                "md": 2
+            },
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "label": "Permissions",
+            "labelAction": null,
+            "name": "permissions",
+            "options": [
+                {
+                    "data": null,
+                    "description": "order:view",
+                    "group": "Sales",
+                    "label": "View orders",
+                    "tooltip": null,
+                    "value": "order:view"
+                },
+                {
+                    "data": null,
+                    "description": "order:manage",
+                    "group": "Sales",
+                    "label": "Manage orders",
+                    "tooltip": null,
+                    "value": "order:manage"
+                },
+                {
+                    "data": null,
+                    "description": "invoice:view",
+                    "group": "Accounting",
+                    "label": "View invoices",
+                    "tooltip": null,
+                    "value": "invoice:view"
+                },
+                {
+                    "data": null,
+                    "description": "invoice:manage",
+                    "group": "Accounting",
+                    "label": "Manage invoices",
+                    "tooltip": null,
+                    "value": "invoice:manage"
+                }
+            ],
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.checkbox-group"
+    }
+]

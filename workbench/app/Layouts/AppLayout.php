@@ -53,6 +53,7 @@ use Workbench\App\Pages\Components\TabsPage;
 use Workbench\App\Pages\DependentFieldsPage;
 use Workbench\App\Pages\Fields\BooleanFieldsPage;
 use Workbench\App\Pages\Fields\BuilderPage;
+use Workbench\App\Pages\Fields\CheckboxGroupPage;
 use Workbench\App\Pages\Fields\ChoicePage;
 use Workbench\App\Pages\Fields\ColorPickerPage;
 use Workbench\App\Pages\Fields\DateTimePage;
@@ -139,6 +140,7 @@ class AppLayout extends LayoutDefinition
                         MenuItem::fromPage(PasswordInputPage::class)->key('field-password')->label(__('workbench.navigation.field-password')),
                         MenuItem::fromPage(SelectPage::class)->key('field-select')->label(__('workbench.navigation.field-select')),
                         MenuItem::fromPage(ChoicePage::class)->key('field-choice')->label(__('workbench.navigation.field-choice')),
+                        MenuItem::fromPage(CheckboxGroupPage::class)->key('field-checkbox-group')->label(__('workbench.navigation.field-checkbox-group')),
                         MenuItem::fromPage(ColorPickerPage::class)->key('field-color-picker')->label(__('workbench.navigation.field-color-picker')),
                         MenuItem::fromPage(BooleanFieldsPage::class)->key('field-boolean')->label(__('workbench.navigation.field-boolean')),
                         MenuItem::fromPage(DateTimePage::class)->key('field-date-time')->label(__('workbench.navigation.field-date-time')),
