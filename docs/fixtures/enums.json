@@ -258,6 +258,10 @@
                 "value": "field.checkbox"
             },
             {
+                "name": "CheckboxGroup",
+                "value": "field.checkbox-group"
+            },
+            {
                 "name": "Choice",
                 "value": "field.choice"
             },

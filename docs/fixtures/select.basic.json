@@ -19,22 +19,34 @@
             "options": [
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Germany",
+                    "tooltip": null,
                     "value": "de"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "France",
+                    "tooltip": null,
                     "value": "fr"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Spain",
+                    "tooltip": null,
                     "value": "es"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Italy",
+                    "tooltip": null,
                     "value": "it"
                 }
             ],

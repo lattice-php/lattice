@@ -22,8 +22,8 @@ it('serializes static options without search flags', function (): void {
 
     expect(wire($field)['type'])->toBe('field.select')
         ->and($props['options'])->toBe([
-            ['label' => 'Free', 'value' => 'free', 'data' => null],
-            ['label' => 'Pro', 'value' => 'pro', 'data' => null],
+            ['label' => 'Free', 'value' => 'free', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
+            ['label' => 'Pro', 'value' => 'pro', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
         ])
         ->and($props['searchable'])->toBeFalse()
         ->and($props['multiple'])->toBeFalse()
@@ -87,8 +87,8 @@ it('serializes per-option data', function (): void {
     ]);
 
     expect(wire($field)['props']['options'])->toBe([
-        ['label' => 'Acme GmbH', 'value' => '42', 'data' => ['email' => 'kontakt@acme.de']],
-        ['label' => 'Beta AG', 'value' => '43', 'data' => null],
+        ['label' => 'Acme GmbH', 'value' => '42', 'data' => ['email' => 'kontakt@acme.de'], 'description' => null, 'group' => null, 'tooltip' => null],
+        ['label' => 'Beta AG', 'value' => '43', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
     ]);
 });
 
@@ -149,7 +149,7 @@ it('keeps per-option data when hydrating selected values', function (): void {
     $field->hydrateState('5');
 
     expect(wire($field)['props']['options'])->toBe([
-        ['label' => 'Jane Doe', 'value' => '5', 'data' => ['email' => 'jane@example.com']],
+        ['label' => 'Jane Doe', 'value' => '5', 'data' => ['email' => 'jane@example.com'], 'description' => null, 'group' => null, 'tooltip' => null],
     ]);
 });
 

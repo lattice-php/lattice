@@ -9,4 +9,5 @@ Before planning or editing, find the row whose globs match the file's path and r
 | packages/form/resources/js/** | .ai/rules/form-resources-js.md |
 | packages/*/resources/js/** | .ai/rules/js.md |
 | packages/ui/resources/js/** | .ai/rules/resources-js.md |
+| packages/core/src/Option.php | .ai/rules/src.md |
 | packages/table/resources/js/** | .ai/rules/table-resources-js.md |

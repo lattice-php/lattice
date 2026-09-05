@@ -16,17 +16,26 @@
             "options": [
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Free",
+                    "tooltip": null,
                     "value": "free"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Pro",
+                    "tooltip": null,
                     "value": "pro"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Enterprise",
+                    "tooltip": null,
                     "value": "enterprise"
                 }
             ],

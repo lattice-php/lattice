@@ -19,22 +19,34 @@
             "options": [
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "PHP",
+                    "tooltip": null,
                     "value": "php"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "JavaScript",
+                    "tooltip": null,
                     "value": "js"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Go",
+                    "tooltip": null,
                     "value": "go"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Rust",
+                    "tooltip": null,
                     "value": "rust"
                 }
             ],

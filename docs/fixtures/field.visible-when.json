@@ -16,12 +16,18 @@
             "options": [
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Business",
+                    "tooltip": null,
                     "value": "business"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Individual",
+                    "tooltip": null,
                     "value": "individual"
                 }
             ],

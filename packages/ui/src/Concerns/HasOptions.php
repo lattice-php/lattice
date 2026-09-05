@@ -16,9 +16,15 @@ trait HasOptions
     /**
      * @param  array<string, mixed>|null  $data
      */
-    public static function option(string $label, string $value, ?array $data = null): Option
-    {
-        return new Option($label, $value, $data);
+    public static function option(
+        string $label,
+        string $value,
+        ?array $data = null,
+        ?string $description = null,
+        ?string $group = null,
+        ?string $tooltip = null,
+    ): Option {
+        return new Option($label, $value, $data, $description, $group, $tooltip);
     }
 
     /**

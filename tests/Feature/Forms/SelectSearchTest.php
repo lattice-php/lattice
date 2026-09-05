@@ -203,6 +203,9 @@ it('searches options through the form endpoint with a signed reference', functio
                     'label' => 'Walnut Desk',
                     'value' => (string) $walnutDesk->id,
                     'data' => ['sku' => $walnutDesk->sku, 'status' => $walnutDesk->status],
+                    'description' => null,
+                    'group' => null,
+                    'tooltip' => null,
                 ],
             ],
         ]);

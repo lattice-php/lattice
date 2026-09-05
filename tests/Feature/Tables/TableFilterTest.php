@@ -33,8 +33,8 @@ test('a table serializes its declared filters and starts with no active values',
             'multiple' => false,
             'searchable' => false,
             'options' => [
-                ['label' => 'Draft', 'value' => 'draft', 'data' => null],
-                ['label' => 'Active', 'value' => 'active', 'data' => null],
+                ['label' => 'Draft', 'value' => 'draft', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
+                ['label' => 'Active', 'value' => 'active', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
             ],
             'placeholder' => null,
         ],
@@ -72,7 +72,7 @@ test('a table searches declared searchable targets through the endpoint', functi
 
     $this->loadTable(WorkbenchSearchableFilterTable::class, ['_sub' => 'search', '_target' => $target, '_q' => 'ad'])
         ->assertOk()
-        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1', 'data' => null]]]);
+        ->assertExactJson(['options' => [['label' => 'Ada', 'value' => '1', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null]]]);
 })->with([
     'filter options' => 'filter:author.value',
     'column options' => 'column:owner',
