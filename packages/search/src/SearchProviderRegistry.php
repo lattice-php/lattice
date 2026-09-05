@@ -6,6 +6,8 @@ namespace Lattice\Search;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
+use Lattice\Core\Authorization;
+use Lattice\Core\Contracts\ResolvesGateSubject;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Search\Contracts\SearchResultProvider;
 use Spatie\Attributes\Attributes;
@@ -60,7 +62,7 @@ final class SearchProviderRegistry
     {
         return array_filter(
             $this->all(),
-            fn (SearchResultProvider $provider): bool => $provider->authorize($request),
+            fn (SearchResultProvider $provider): bool => Authorization::passes($provider, $request),
         );
     }
 
@@ -75,6 +77,18 @@ final class SearchProviderRegistry
 
         if (! $attribute instanceof AsSearchProvider) {
             throw new InvalidArgumentException("[{$provider}] is missing the #[AsSearchProvider] attribute.");
+        }
+
+        // A provider has no sealed context to resolve `on` against, so it has
+        // to supply the gate subject itself. Caught here rather than at the
+        // gate, where a missing subject silently denies every request.
+        if ($attribute->on() !== null && ! is_subclass_of($provider, ResolvesGateSubject::class)) {
+            throw new InvalidArgumentException(sprintf(
+                '[%s] declares on: \'%s\' and must implement %s to resolve that gate subject.',
+                $provider,
+                $attribute->on(),
+                ResolvesGateSubject::class,
+            ));
         }
 
         return $attribute->key;
