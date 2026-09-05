@@ -488,6 +488,7 @@ return [
         'progress' => 'Progress',
         'realtime' => 'Realtime',
         'remote-schema' => 'Remote Schema',
+        'row-clicks' => 'Row clicks',
         'sales-orders' => 'Sales orders',
         'table-filters' => 'Filters',
         'tables' => 'Tables',
@@ -825,6 +826,10 @@ return [
             'pinned-columns' => [
                 'description' => 'Pinned columns stay visible while the rest of the table scrolls horizontally.',
                 'title' => 'Pinned columns',
+            ],
+            'row-clicks' => [
+                'description' => 'Clicking anywhere on a row opens the product in a modal.',
+                'title' => 'Row clicks',
             ],
             'text-columns' => [
                 'description' => 'Text columns with badges, dates, and copyable values.',

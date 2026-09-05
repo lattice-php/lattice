@@ -488,6 +488,7 @@ return [
         'progress' => 'Fortschritt',
         'realtime' => 'Echtzeit',
         'remote-schema' => 'Remote-Schema',
+        'row-clicks' => 'Zeilenklicks',
         'sales-orders' => 'Aufträge',
         'table-filters' => 'Filter',
         'tables' => 'Tabellen',
@@ -825,6 +826,10 @@ return [
             'pinned-columns' => [
                 'description' => 'Angeheftete Spalten bleiben sichtbar, während der Rest der Tabelle horizontal scrollt.',
                 'title' => 'Angeheftete Spalten',
+            ],
+            'row-clicks' => [
+                'description' => 'Ein Klick auf die Zeile öffnet das Produkt in einem Modal.',
+                'title' => 'Zeilenklicks',
             ],
             'text-columns' => [
                 'description' => 'Textspalten mit Badges, Daten und kopierbaren Werten.',

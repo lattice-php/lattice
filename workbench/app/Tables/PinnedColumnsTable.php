@@ -10,6 +10,7 @@ use Lattice\Table\Columns\Column;
 use Lattice\Table\Columns\MoneyColumn;
 use Lattice\Table\Columns\NumberColumn;
 use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\RowClick;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Components\Link;
 use Lattice\Ui\Enums\ColumnWidth;
@@ -58,10 +59,13 @@ class PinnedColumnsTable extends BaseProductsDemoTable
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $row
+     */
     #[\Override]
-    public function rowUrl(array $row): ?string
+    public function rowClick(array $row): ?RowClick
     {
-        return '/products/'.$row['id'].'/edit';
+        return RowClick::make()->href('/products/'.$row['id'].'/edit');
     }
 
     /**
