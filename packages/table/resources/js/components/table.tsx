@@ -1,6 +1,5 @@
-import { type MouseEvent, type ReactNode, Fragment, useMemo } from "react";
+import { type ReactNode, Fragment, useMemo } from "react";
 import { useT } from "@lattice-php/ui/i18n";
-import { useNavigation } from "@lattice-php/ui/navigation";
 import { Renderer, RenderNode } from "@lattice-php/core/renderer";
 import { useColumnResizing } from "@lattice-php/ui/lib/use-column-resizing";
 import { useColumnPinning } from "@lattice-php/table/hooks/use-column-pinning";
@@ -32,9 +31,9 @@ import { getBulkActionNodes } from "@lattice-php/table/lib/bulk";
 import {
   getPerPageOptions,
   getRowActions,
+  getRowClick,
   getRowDetail,
   getRowKey,
-  getRowUrl,
 } from "@lattice-php/table/lib/payload";
 import {
   getQueryParams,
@@ -52,6 +51,7 @@ import { FilterBar, FilterMenu } from "./filter-bar";
 import { TablePagination } from "./pagination";
 import { SortBar } from "./sort-bar";
 import { TableSearch } from "./table-search";
+import { RowTrigger } from "./row-trigger";
 import { ColumnCell } from "./table-cell";
 import type { Side } from "@lattice-php/ui";
 
@@ -70,38 +70,6 @@ function dataColumnPinBoundary(
   }
 
   return undefined;
-}
-
-const ROW_LINK_INTERACTIVE_SELECTOR =
-  "a, button, input, label, select, textarea, [role=menuitem], [role=checkbox]";
-
-function isRowLinkInteractiveTarget(target: EventTarget | null): boolean {
-  return target instanceof Element && target.closest(ROW_LINK_INTERACTIVE_SELECTOR) != null;
-}
-
-function handleRowClick(
-  event: MouseEvent<HTMLDivElement>,
-  url: string | null,
-  visit: (url: string) => void,
-): void {
-  if (!url || isRowLinkInteractiveTarget(event.target)) {
-    return;
-  }
-
-  if (event.metaKey || event.ctrlKey) {
-    window.open(url, "_blank");
-    return;
-  }
-
-  visit(url);
-}
-
-function handleRowAuxClick(event: MouseEvent<HTMLDivElement>, url: string | null): void {
-  if (!url || event.button !== 1 || isRowLinkInteractiveTarget(event.target)) {
-    return;
-  }
-
-  window.open(url, "_blank");
 }
 
 export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode }) => {
@@ -142,13 +110,12 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
       rows.map((row, index) => ({
         row,
         actions: getRowActions(row),
+        click: getRowClick(row),
         detail: getRowDetail(row),
         key: getRowKey(row, index),
-        url: getRowUrl(row),
       })),
     [rows],
   );
-  const { visit } = useNavigation();
   const selection = useTableSelection(rowEntries.map((entry) => entry.key));
   const { isExpanded, toggle: toggleRow } = useExpandedRows();
   const hasExpandable = rowEntries.some((entry) => entry.detail != null);
@@ -529,87 +496,98 @@ export const TableComponent = ({ node }: { children?: ReactNode; node: TableNode
               {node.props?.emptyLabel ?? t("table.empty", "No results")}
             </DataTableEmpty>
           ) : (
-            rowEntries.map(({ row, actions, detail, key, url }) => {
+            rowEntries.map(({ row, actions, click, detail, key }) => {
               const expanded = detail != null && isExpanded(key);
               const detailId = `${nodeIdentity(node) ?? "table"}-row-detail-${key}`;
-              const linked = url != null;
 
               return (
                 <Fragment key={key}>
-                  <DataTableRow
-                    clickable={linked}
-                    data-row-link={url ?? undefined}
-                    striped={striped}
-                    onClick={(event) => handleRowClick(event, url, visit)}
-                    onAuxClick={(event) => handleRowAuxClick(event, url)}
-                  >
-                    {hasExpandable && (
-                      <DataTableCell
-                        kind="expander"
-                        pinBoundary={expanderPinBoundary}
-                        pinned={utilityPin?.start}
+                  <RowTrigger click={click}>
+                    {({ clickable, href, processing, onAuxClick, onClick, onKeyDown }) => (
+                      <DataTableRow
+                        aria-busy={processing || undefined}
+                        clickable={clickable}
+                        data-row-link={href ?? undefined}
+                        striped={striped}
+                        tabIndex={clickable ? 0 : undefined}
+                        onAuxClick={onAuxClick}
+                        onClick={onClick}
+                        onKeyDown={onKeyDown}
                       >
-                        {detail && (
-                          <DataTableRowToggle
-                            data-test={`row-expand-${key}`}
-                            expanded={expanded}
-                            aria-controls={detailId}
-                            aria-label={t("table.row-detail.toggle", "Toggle detail")}
-                            onClick={() => toggleRow(key)}
-                          />
-                        )}
-                      </DataTableCell>
-                    )}
-                    {hasBulkActions && (
-                      <DataTableCell
-                        kind="selection"
-                        pinBoundary={selectionPinBoundary}
-                        pinned={utilityPin?.start}
-                      >
-                        <Checkbox
-                          aria-label={t("table.select-row", "Select row {{key}}", { key })}
-                          data-test={`select-row-${key}`}
-                          checked={selection.isSelected(key)}
-                          onCheckedChange={() => selection.toggle(key)}
-                        />
-                      </DataTableCell>
-                    )}
-                    {orderedColumns.map((column, index) => {
-                      const pin = hasPinned ? pinFor(column) : null;
-
-                      return (
-                        <Fragment key={column.key}>
-                          {hasPinned && index === fillerIndex && <DataTableCell kind="filler" />}
+                        {hasExpandable && (
                           <DataTableCell
-                            align={column.props.align}
-                            label={column.props.label}
-                            pinBoundary={dataColumnPinBoundary(
-                              pin,
-                              index,
-                              startBoundaryColumnIndex,
-                              fillerIndex,
-                            )}
-                            pinIndex={index}
-                            pinned={pin ?? undefined}
+                            kind="expander"
+                            pinBoundary={expanderPinBoundary}
+                            pinned={utilityPin?.start}
                           >
-                            <ColumnCell column={column} row={row} />
+                            {detail && (
+                              <DataTableRowToggle
+                                data-test={`row-expand-${key}`}
+                                expanded={expanded}
+                                aria-controls={detailId}
+                                aria-label={t("table.row-detail.toggle", "Toggle detail")}
+                                onClick={() => toggleRow(key)}
+                              />
+                            )}
                           </DataTableCell>
-                        </Fragment>
-                      );
-                    })}
-                    {hasPinned && fillerIndex === -1 && <DataTableCell kind="filler" />}
-                    {hasTrailingUtility && (
-                      <DataTableCell
-                        kind="actions"
-                        pinBoundary={actionsPinBoundary}
-                        pinned={utilityPin?.end}
-                      >
-                        {actions.map((action, actionIndex) => (
-                          <RenderNode key={action.key ?? action.id ?? actionIndex} node={action} />
-                        ))}
-                      </DataTableCell>
+                        )}
+                        {hasBulkActions && (
+                          <DataTableCell
+                            kind="selection"
+                            pinBoundary={selectionPinBoundary}
+                            pinned={utilityPin?.start}
+                          >
+                            <Checkbox
+                              aria-label={t("table.select-row", "Select row {{key}}", { key })}
+                              data-test={`select-row-${key}`}
+                              checked={selection.isSelected(key)}
+                              onCheckedChange={() => selection.toggle(key)}
+                            />
+                          </DataTableCell>
+                        )}
+                        {orderedColumns.map((column, index) => {
+                          const pin = hasPinned ? pinFor(column) : null;
+
+                          return (
+                            <Fragment key={column.key}>
+                              {hasPinned && index === fillerIndex && (
+                                <DataTableCell kind="filler" />
+                              )}
+                              <DataTableCell
+                                align={column.props.align}
+                                label={column.props.label}
+                                pinBoundary={dataColumnPinBoundary(
+                                  pin,
+                                  index,
+                                  startBoundaryColumnIndex,
+                                  fillerIndex,
+                                )}
+                                pinIndex={index}
+                                pinned={pin ?? undefined}
+                              >
+                                <ColumnCell column={column} row={row} />
+                              </DataTableCell>
+                            </Fragment>
+                          );
+                        })}
+                        {hasPinned && fillerIndex === -1 && <DataTableCell kind="filler" />}
+                        {hasTrailingUtility && (
+                          <DataTableCell
+                            kind="actions"
+                            pinBoundary={actionsPinBoundary}
+                            pinned={utilityPin?.end}
+                          >
+                            {actions.map((action, actionIndex) => (
+                              <RenderNode
+                                key={action.key ?? action.id ?? actionIndex}
+                                node={action}
+                              />
+                            ))}
+                          </DataTableCell>
+                        )}
+                      </DataTableRow>
                     )}
-                  </DataTableRow>
+                  </RowTrigger>
                   {expanded && detail && (
                     <DataTableRowDetail id={detailId}>
                       <Renderer nodes={[detail]} />

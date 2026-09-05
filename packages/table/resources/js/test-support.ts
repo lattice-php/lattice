@@ -1,7 +1,7 @@
 import { vi } from "vitest";
 import type { Node } from "@lattice-php/core/types";
 import type { Side } from "@lattice-php/ui";
-import type { ColumnFilter } from "./generated";
+import type { ColumnFilter, RowClick } from "./generated";
 import type { TableColumn, TableNode, TablePagination, TableQuery, TableResult } from "./types";
 
 export function col(partial: {
@@ -134,6 +134,21 @@ export function requestOptions(headers: Record<string, string> = {}) {
       Accept: "application/json",
       "Accept-Language": "en",
       ...headers,
+    },
+  };
+}
+
+export function rowClick(props: Partial<RowClick> = {}): Node<"table.row-click"> {
+  return {
+    type: "table.row-click",
+    props: {
+      action: null,
+      effects: [],
+      href: null,
+      label: null,
+      method: null,
+      modal: null,
+      ...props,
     },
   };
 }

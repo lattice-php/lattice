@@ -9,6 +9,7 @@ use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
 use Lattice\Table\Columns\StackColumn;
 use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\RowClick;
 use Lattice\Table\Components\Table;
 use Lattice\Table\Contracts\TableSource;
 use Lattice\Table\Enums\PaginationType;
@@ -407,7 +408,7 @@ test('registered table responses expose only declared columns row identity and g
 
     expect($row)->toBeArray();
 
-    expect(array_keys($row))->toBe(['id', 'name', 'sku', 'status', 'actions', 'rowUrl'])
+    expect(array_keys($row))->toBe(['id', 'name', 'sku', 'status', 'actions', 'rowClick'])
         ->and($row['id'])->toBe($product->getKey())
         ->and($row['name'])->toBe('Projected Product')
         ->and($row['sku'])->toBe('PROJECT-001')
@@ -415,15 +416,16 @@ test('registered table responses expose only declared columns row identity and g
         ->and($row['actions'][0]['type'])->toBe('link')
         ->and($row['actions'][0]['key'])->toBe('edit-product')
         ->and($row['actions'][0]['props']['href'])->toBe("/products/{$product->getKey()}/edit")
-        ->and($row['rowUrl'])->toBe("/products/{$product->getKey()}");
+        ->and($row['rowClick']['type'])->toBe('table.row-click')
+        ->and($row['rowClick']['props']['href'])->toBe("/products/{$product->getKey()}");
 });
 
-test('registered table responses omit the row url when a table declares no rowUrl', function (): void {
+test('registered table responses omit the row click when a table declares none', function (): void {
     Lattice::tables([WorkbenchUsersTable::class]);
 
     $row = wire(Table::use(WorkbenchUsersTable::class))['props']['data'][0];
 
-    expect($row)->not->toHaveKey('rowUrl');
+    expect($row)->not->toHaveKey('rowClick');
 });
 
 test('registered table responses prune hidden columns from the row payload', function (): void {
@@ -632,9 +634,9 @@ class WorkbenchProjectedProductsTable extends EloquentTableDefinition
     }
 
     #[Override]
-    public function rowUrl(array $row): ?string
+    public function rowClick(array $row): ?RowClick
     {
-        return "/products/{$row['id']}";
+        return RowClick::make()->href("/products/{$row['id']}");
     }
 }
 

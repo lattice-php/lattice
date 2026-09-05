@@ -8,6 +8,10 @@ import { TableComponent } from "./components/table";
 export const tableComponents: Plugin = {
   components: {
     table: eagerComponent(TableComponent as unknown as RendererComponent<"table">),
+    // A row's click behavior travels on the row payload, where the table reads
+    // its props directly; the node never sits in a schema, so it has nothing
+    // to render.
+    "table.row-click": eagerComponent(() => null),
   } satisfies ComponentRegistryFor<TableNodeType>,
   name: "lattice/table",
 };

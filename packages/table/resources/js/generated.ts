@@ -4,9 +4,11 @@ import type {
   ColumnWidth,
   ContentAlign,
   DateTimeStyle,
+  HttpMethod,
   NumberFormatUnit,
   Side,
 } from "@lattice-php/ui";
+import type { Effect } from "@lattice-php/ui/effects/types";
 
 export type BadgeColumn = {
   align: ContentAlign;
@@ -82,6 +84,7 @@ export type ColumnPropsMap = {
 };
 export type ComponentPropsMap = {
   table: Table;
+  "table.row-click": RowClick;
 };
 export type DateRangeFilter = {
   label: string;
@@ -177,6 +180,14 @@ export type NumberColumn = {
   width: ColumnWidth;
 };
 export type PaginationType = "none" | "simple" | "table" | "infinite";
+export type RowClick = {
+  action: Node | null;
+  effects: Effect[];
+  href: string | null;
+  label: string | null;
+  method: HttpMethod | null;
+  modal: Node<"modal"> | null;
+};
 export type SelectFilter = {
   label: string;
   multiple: boolean;
@@ -220,7 +231,7 @@ export type Table = {
   syncQuery: boolean;
   toolbar: Node[];
 };
-export type TableNodeType = "table";
+export type TableNodeType = "table" | "table.row-click";
 export type TablePagination = {
   readonly currentPage: number | null;
   readonly from: number | null;

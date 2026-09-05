@@ -175,8 +175,12 @@ export function getRowDetail(row: TableRow): Node | null {
     : null;
 }
 
-export function getRowUrl(row: TableRow): string | null {
-  return typeof row.rowUrl === "string" ? row.rowUrl : null;
+export function getRowClick(row: TableRow): Node<"table.row-click"> | null {
+  const click = row.rowClick;
+
+  return typeof click === "object" && click !== null && !Array.isArray(click)
+    ? (click as Node<"table.row-click">)
+    : null;
 }
 
 export function getRowPopover(row: TableRow, columnKey: string): Node | null {
