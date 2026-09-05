@@ -1,6 +1,6 @@
 ---
 title: Row detail
-description: Expandable rows that fold open a lazy Fragment detail, loaded over AJAX when the row opens.
+description: Expandable rows that fold open a lazy Fragment detail, and what a click on a whole row does.
 ---
 
 Override `rowDetail()` to make a row expandable. Each expandable row gets a chevron that folds a detail
@@ -47,7 +47,7 @@ signed per-row endpoint, authorization, the loading skeleton, and per-fragment r
 ## Behavior
 
 - The chevron toggles the row; the rest of the row stays free for [row actions](/tables/actions/) and
-  links.
+  row clicks.
 - Several rows can be open at once.
 - Expansion is client-side and resets when the table reloads, re-sorts, re-filters, or paginates; the
   detail re-fetches each time a row opens.
@@ -57,18 +57,40 @@ signed per-row endpoint, authorization, the loading skeleton, and per-fragment r
 large or expensive detail off the initial table response.
 :::
 
-## Row links
+## Row clicks
 
-Override `rowUrl()` to make a whole row navigate, like a link, to a detail page. Clicking anywhere on
-the row visits the URL; the row gets a hover highlight and a pointer cursor.
+Override `rowClick()` to make the whole row clickable. A `RowClick` carries exactly one behavior —
+the same four a [button or link](/components/buttons/) can carry:
 
 ```php
-public function rowUrl(array $row): ?string
+use Lattice\Table\Components\RowClick;
+
+public function rowClick(array $row): ?RowClick
 {
-    return route('products.edit', $row['id']);
+    return RowClick::make()->href(route('products.edit', $row['id']));
 }
 ```
 
-Return `null` for rows that should not navigate. Clicks on an interactive element inside the row — a
-checkbox, the expand chevron, an action button or link — are left alone. Cmd/ctrl-click and
-middle-click open the URL in a new tab instead of navigating in place.
+| Behavior                                                        | What a click does                                                                                              |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `->href($url)`                                                  | Visits the URL. Cmd/ctrl-click and middle-click open it in a new tab.                                          |
+| `->action(ArchiveProduct::class, ['product_id' => $row['id']])` | Runs the [action](/tables/actions/) — including its confirmation, its action form, and the effects it returns. |
+| `->modal(fn () => Modal::make(...))`                            | Opens the modal.                                                                                               |
+| `->effects(Effects::toast('Saved'))`                            | Dispatches the [effects](/actions/effects/) client-side.                                                       |
+
+Return `null` for rows that should not react to a click. A row whose action the current user may not
+run stays unclickable, so a row click never offers what an action button would hide.
+
+```php
+public function rowClick(array $row): ?RowClick
+{
+    return RowClick::make()->modal(fn (): Modal => Modal::make('product')
+        ->title($row['name'])
+        ->schema([Form::use(EditProductForm::class)]));
+}
+```
+
+A clickable row gets a hover highlight, a pointer cursor, and keyboard focus — <kbd>Enter</kbd> and
+<kbd>Space</kbd> activate it. Clicks on an interactive element inside the row — a checkbox, the
+expand chevron, an action button or link — are left alone, and a row whose action is still running
+ignores further clicks.

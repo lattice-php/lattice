@@ -128,7 +128,7 @@ exposes these hooks beyond `columns()` and `source()`:
 | `actionsLabel()`     | Accessible label for the row-actions column (default "Actions").                              |
 | `actions($row)`      | Per-row [actions](/tables/actions/).                                                          |
 | `rowDetail($row)`    | Expandable [row detail](/tables/row-detail/) fragment.                                        |
-| `rowUrl($row)`       | Makes the whole row clickable — see [Row links](/tables/row-detail/#row-links).               |
+| `rowClick($row)`     | Makes the whole row clickable — see [Row clicks](/tables/row-detail/#row-clicks).             |
 | `bulkActions()`      | [Bulk actions](/tables/actions/#bulk-actions) for selected rows.                              |
 
 Each hook is a method you override. For example, to enable resizable columns with a drag indicator:
