@@ -65,7 +65,10 @@ export type Schema = Node[];
 
 export type Option = {
   readonly data: Record<string, unknown> | null;
+  readonly description?: string | null;
+  readonly group?: string | null;
   readonly label: string;
+  readonly tooltip?: string | null;
   readonly value: string;
 };
 

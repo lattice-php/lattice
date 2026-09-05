@@ -7,17 +7,26 @@
             "options": [
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Light",
+                    "tooltip": null,
                     "value": "light"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Dark",
+                    "tooltip": null,
                     "value": "dark"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "System",
+                    "tooltip": null,
                     "value": "system"
                 }
             ],

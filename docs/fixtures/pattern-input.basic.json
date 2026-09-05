@@ -40,17 +40,26 @@
                                 "options": [
                                     {
                                         "data": null,
+                                        "description": null,
+                                        "group": null,
                                         "label": "4",
+                                        "tooltip": null,
                                         "value": "4"
                                     },
                                     {
                                         "data": null,
+                                        "description": null,
+                                        "group": null,
                                         "label": "5",
+                                        "tooltip": null,
                                         "value": "5"
                                     },
                                     {
                                         "data": null,
+                                        "description": null,
+                                        "group": null,
                                         "label": "6",
+                                        "tooltip": null,
                                         "value": "6"
                                     }
                                 ],

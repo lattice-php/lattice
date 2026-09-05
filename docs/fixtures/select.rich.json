@@ -78,7 +78,10 @@
                         "email": "kontakt@acme.de",
                         "number": "K-10021"
                     },
+                    "description": null,
+                    "group": null,
                     "label": "Acme GmbH",
+                    "tooltip": null,
                     "value": "1"
                 },
                 {
@@ -86,7 +89,10 @@
                         "email": "info@globex.de",
                         "number": "K-10022"
                     },
+                    "description": null,
+                    "group": null,
                     "label": "Globex AG",
+                    "tooltip": null,
                     "value": "2"
                 }
             ],

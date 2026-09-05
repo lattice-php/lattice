@@ -20,11 +20,18 @@ final readonly class Option
 {
     /**
      * @param  array<string, mixed>|null  $data
+     * @param  string|null  $description  Secondary line beneath the label, rendered by
+     *                                    controls that give an option more than one row.
+     * @param  string|null  $group  Section label; controls that render sections (checkbox
+     *                              group) bucket options by it, others ignore it.
      */
     public function __construct(
         public string $label,
         public string $value,
         public ?array $data = null,
+        public ?string $description = null,
+        public ?string $group = null,
+        public ?string $tooltip = null,
     ) {}
 
     /**
@@ -54,7 +61,7 @@ final readonly class Option
     }
 
     /**
-     * @param  Option|array{label: string, value: string, data?: array<string, mixed>|null}|UnitEnum  $option
+     * @param  Option|array{label: string, value: string, data?: array<string, mixed>|null, description?: string|null, group?: string|null, tooltip?: string|null}|UnitEnum  $option
      */
     private static function from(mixed $option): self
     {
@@ -69,6 +76,13 @@ final readonly class Option
             );
         }
 
-        return new self((string) $option['label'], (string) $option['value'], $option['data'] ?? null);
+        return new self(
+            (string) $option['label'],
+            (string) $option['value'],
+            $option['data'] ?? null,
+            $option['description'] ?? null,
+            $option['group'] ?? null,
+            $option['tooltip'] ?? null,
+        );
     }
 }

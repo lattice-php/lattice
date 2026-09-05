@@ -16,17 +16,26 @@
             "options": [
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Germany",
+                    "tooltip": null,
                     "value": "DE"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "Austria",
+                    "tooltip": null,
                     "value": "AT"
                 },
                 {
                     "data": null,
+                    "description": null,
+                    "group": null,
                     "label": "United States",
+                    "tooltip": null,
                     "value": "US"
                 }
             ],

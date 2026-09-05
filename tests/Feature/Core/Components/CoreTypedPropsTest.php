@@ -63,8 +63,8 @@ it('segmented control serializes name label value emits options', function (): v
                 'value' => 'system',
                 'emits' => 'lattice:appearance-change',
                 'options' => [
-                    ['label' => 'Light', 'value' => 'light', 'data' => null],
-                    ['label' => 'Dark', 'value' => 'dark', 'data' => null],
+                    ['label' => 'Light', 'value' => 'light', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
+                    ['label' => 'Dark', 'value' => 'dark', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
                 ],
             ],
         ]);

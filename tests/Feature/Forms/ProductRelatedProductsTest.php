@@ -109,5 +109,5 @@ test('the product form resolves related product labels for prefilled ids', funct
         ->fill(['related_products' => [$related->getKey()]]));
 
     expect(json_encode($form))
-        ->toContain('{"label":"Walnut Desk","value":"'.$related->getKey().'","data":null}');
+        ->toContain('{"label":"Walnut Desk","value":"'.$related->getKey().'","data":null,"description":null,"group":null,"tooltip":null}');
 });

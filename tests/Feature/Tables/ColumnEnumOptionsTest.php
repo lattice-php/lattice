@@ -26,8 +26,8 @@ it('serializes value options from an enum for the cell label lookup', function (
     $props = wire(BadgeColumn::make('status')->enum(ColumnEnumStatus::class))['props'];
 
     expect($props['options'])->toBe([
-        ['label' => 'Draft', 'value' => 'draft', 'data' => null],
-        ['label' => 'Active', 'value' => 'active', 'data' => null],
+        ['label' => 'Draft', 'value' => 'draft', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
+        ['label' => 'Active', 'value' => 'active', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
     ]);
 });
 
@@ -41,8 +41,8 @@ it('translates value option labels through the HasLabel contract', function (): 
     $props = wire(BadgeColumn::make('status')->enum(LabelledColumnEnumStatus::class))['props'];
 
     expect($props['options'])->toBe([
-        ['label' => 'Aktiv', 'value' => 'active', 'data' => null],
-        ['label' => 'Archiviert', 'value' => 'archived', 'data' => null],
+        ['label' => 'Aktiv', 'value' => 'active', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
+        ['label' => 'Archiviert', 'value' => 'archived', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
     ]);
 });
 
@@ -58,8 +58,8 @@ it('derives a select filter from enum() when filterOptions() was never called', 
     expect($filter)->toMatchArray([
         'control' => 'filter.select',
         'options' => [
-            ['label' => 'Draft', 'value' => 'draft', 'data' => null],
-            ['label' => 'Active', 'value' => 'active', 'data' => null],
+            ['label' => 'Draft', 'value' => 'draft', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
+            ['label' => 'Active', 'value' => 'active', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
         ],
         'operators' => ['eq', 'neq'],
         'defaultOperator' => 'eq',
@@ -72,7 +72,7 @@ it('lets an explicit filterOptions() override the enum-derived filter', function
         ->filterOptions(['draft' => 'Only draft']))['props']['filter'];
 
     expect($filter['options'])->toBe([
-        ['label' => 'Only draft', 'value' => 'draft', 'data' => null],
+        ['label' => 'Only draft', 'value' => 'draft', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null],
     ]);
 });
 

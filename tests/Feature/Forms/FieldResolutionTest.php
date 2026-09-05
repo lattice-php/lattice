@@ -52,7 +52,7 @@ it('runs dependsOn closures during resolution', function (): void {
 
     $field->applyResolution(FormData::make(['country' => 'germany']), Request::create('/'));
 
-    expect(wire($field)['props']['options'])->toBe([['label' => 'Germany', 'value' => 'germany', 'data' => null]]);
+    expect(wire($field)['props']['options'])->toBe([['label' => 'Germany', 'value' => 'germany', 'data' => null, 'description' => null, 'group' => null, 'tooltip' => null]]);
 });
 
 it('stores an editable computed default without making the field server-authoritative', function (): void {
