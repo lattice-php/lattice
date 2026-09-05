@@ -13,6 +13,7 @@ enum FieldType: string
 
     case Builder = 'field.builder';
     case Checkbox = 'field.checkbox';
+    case CheckboxGroup = 'field.checkbox-group';
     case Choice = 'field.choice';
     case ColorPicker = 'field.color-picker';
     case DateInput = 'field.date-input';

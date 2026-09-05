@@ -39,6 +39,9 @@ return [
         'block-menu' => 'Insert block',
         'block-menu-empty' => 'No results',
     ],
+    'checkbox-group' => [
+        'select-all' => 'Select all',
+    ],
     'file-upload' => [
         'dropzone' => 'Drop files here or click to browse',
         'remove' => 'Remove :name',

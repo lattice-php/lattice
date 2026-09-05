@@ -45,6 +45,7 @@ export type FilterNodeType =
 export type FormFieldNodeType =
   | "field.builder"
   | "field.checkbox"
+  | "field.checkbox-group"
   | "field.choice"
   | "field.color-picker"
   | "field.date-input"
@@ -69,6 +70,7 @@ export type FormFieldNodeType =
 export type FormNodeType =
   | "field.builder"
   | "field.checkbox"
+  | "field.checkbox-group"
   | "field.choice"
   | "field.color-picker"
   | "field.date-input"
@@ -145,6 +147,7 @@ export type NodeType =
   | "entry.text"
   | "field.builder"
   | "field.checkbox"
+  | "field.checkbox-group"
   | "field.choice"
   | "field.color-picker"
   | "field.date-input"

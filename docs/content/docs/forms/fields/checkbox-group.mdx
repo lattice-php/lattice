@@ -1,0 +1,92 @@
+---
+title: Checkbox group
+description: A visible list of checkboxes for picking several values at once, optionally split into sections.
+---
+
+import ComponentExample from "@components/ComponentExample.astro";
+
+A checkbox group shows every option at once and submits the checked ones as an array. Reach for it
+over a [multiple Select](/forms/fields/select/) when the reader should see the whole catalog —
+permissions, API scopes, notification channels — rather than open a dropdown. Create one with
+`CheckboxGroup::make()` and pass the options with `->options()`.
+
+<ComponentExample
+  php={`CheckboxGroup::make('notifications', 'Notifications')
+    ->options([
+        CheckboxGroup::option('Product updates', 'product'),
+        CheckboxGroup::option('Security alerts', 'security'),
+        CheckboxGroup::option('Weekly digest', 'digest'),
+    ])`}
+  fixture="checkbox-group.basic"
+  values={{ notifications: [] }}
+/>
+
+The field submits a list of the checked values (`['product', 'digest']`). Nothing checked submits an
+empty array, so `handle()` always receives an array. Values are constrained to the configured
+options, the way a [Choice](/forms/fields/choice/) constrains its single value — a submit carrying
+an unknown value fails validation instead of reaching your handler.
+
+## Options from an enum
+
+`->enum()` builds the options from a backed enum. Pass the enum class for every case, or an array of
+cases for a subset.
+
+```php
+CheckboxGroup::make('channels', 'Channels')->enum(Channel::class);
+```
+
+## Descriptions and tooltips
+
+An option carries more than its label: `description` renders a muted second line beneath it, and
+`tooltip` adds an info popover next to it. Both are optional and read well as named arguments.
+
+```php
+CheckboxGroup::option(
+    'Manage orders',
+    'order:manage',
+    description: 'Create, edit, and cancel orders.',
+    tooltip: 'Includes issuing refunds.',
+);
+```
+
+## Sections
+
+Options that carry a `group` label are bucketed into sections in first-seen order; ungrouped options
+stay above them. `->collapsible()` turns each section into a collapsible panel — pass
+`collapsed: true` to start them all closed, which keeps a long catalog scannable.
+
+<ComponentExample
+  php={`CheckboxGroup::make('permissions', 'Permissions')
+    ->columns(2)
+    ->bulkToggleable()
+    ->collapsible()
+    ->options([
+        CheckboxGroup::option('View orders', 'order:view', description: 'order:view', group: 'Sales'),
+        CheckboxGroup::option('Manage orders', 'order:manage', description: 'order:manage', group: 'Sales'),
+        CheckboxGroup::option('View invoices', 'invoice:view', description: 'invoice:view', group: 'Accounting'),
+        CheckboxGroup::option('Manage invoices', 'invoice:manage', description: 'invoice:manage', group: 'Accounting'),
+    ])`}
+  fixture="checkbox-group.groups"
+  values={{ permissions: ["order:view"] }}
+/>
+
+## Columns
+
+`->columns()` lays the checkboxes out in a grid. A bare count applies from the `md` breakpoint up and
+falls back to one column below it; a map sets each breakpoint explicitly.
+
+```php
+CheckboxGroup::make('permissions')->columns(['default' => 1, 'md' => 2, 'xl' => 3]);
+```
+
+## Selecting everything
+
+`->bulkToggleable()` adds a select-all checkbox above the list, and one per section. Each reflects
+what is currently checked below it: filled when everything is, mixed when only some of it is.
+
+## Common options
+
+`CheckboxGroup` shares label, default value, required, disabled, read-only, and visibility options
+with every field — see [Fields](/forms/fields/overview/). `->required()` demands at least one checked
+box. For validation and conditional behavior, see [Validation](/forms/validation/) and
+[Conditional fields](/forms/conditional-fields/).

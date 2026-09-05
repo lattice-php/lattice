@@ -1,0 +1,53 @@
+[
+    {
+        "props": {
+            "bulkToggleable": false,
+            "collapsed": false,
+            "collapsible": false,
+            "columnWidth": "md",
+            "columns": null,
+            "conditions": null,
+            "dependsOnAny": false,
+            "dependsOnKeys": null,
+            "disabled": false,
+            "editablePrefill": false,
+            "helperText": null,
+            "label": "Notifications",
+            "labelAction": null,
+            "name": "notifications",
+            "options": [
+                {
+                    "data": null,
+                    "description": null,
+                    "group": null,
+                    "label": "Product updates",
+                    "tooltip": null,
+                    "value": "product"
+                },
+                {
+                    "data": null,
+                    "description": null,
+                    "group": null,
+                    "label": "Security alerts",
+                    "tooltip": null,
+                    "value": "security"
+                },
+                {
+                    "data": null,
+                    "description": null,
+                    "group": null,
+                    "label": "Weekly digest",
+                    "tooltip": null,
+                    "value": "digest"
+                }
+            ],
+            "prefillRefreshOn": null,
+            "prefillResetOn": null,
+            "readOnly": false,
+            "required": false,
+            "tooltip": null,
+            "value": null
+        },
+        "type": "field.checkbox-group"
+    }
+]

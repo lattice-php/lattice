@@ -400,6 +400,21 @@ return [
                 'gallery-help-text' => 'Bilder aus der Mediathek auswählen.',
             ],
         ],
+        'checkbox-group' => [
+            'accounting' => 'Buchhaltung',
+            'digest' => 'Wochenrückblick',
+            'invoice-manage' => 'Rechnungen verwalten',
+            'invoice-view' => 'Rechnungen ansehen',
+            'notifications' => 'Benachrichtigungen',
+            'notifications-help' => 'Wähle, welche E-Mails dieses Konto erhält.',
+            'order-manage' => 'Aufträge verwalten',
+            'order-view' => 'Aufträge ansehen',
+            'permissions' => 'Berechtigungen',
+            'product' => 'Produkt-Updates',
+            'sales' => 'Vertrieb',
+            'security' => 'Sicherheitshinweise',
+            'security-tooltip' => 'Werden auch verschickt, wenn alle anderen Kanäle aus sind.',
+        ],
         'showcase' => [
             'age' => 'Alter',
             'birthday' => 'Geburtstag',
@@ -456,6 +471,7 @@ return [
         'dependent-fields' => 'Abhängig & berechnet',
         'field-boolean' => 'Checkbox & Schalter',
         'field-builder' => 'Builder',
+        'field-checkbox-group' => 'Checkbox-Gruppe',
         'field-choice' => 'Auswahl',
         'field-color-picker' => 'Farbwähler',
         'field-date-time' => 'Datum & Uhrzeit',
@@ -693,6 +709,10 @@ return [
             'builder' => [
                 'description' => 'Heterogene Zeilenblöcke im Stapel- oder Tabellen-Layout.',
                 'title' => 'Builder',
+            ],
+            'checkbox-group' => [
+                'description' => 'Mehrfachauswahl als Checkbox-Liste mit Abschnitten, Spalten und Alles-auswählen.',
+                'title' => 'Checkbox-Gruppe',
             ],
             'choice' => [
                 'description' => 'Einfachauswahl mit statischen Optionen.',
