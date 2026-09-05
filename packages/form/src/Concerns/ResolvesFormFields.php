@@ -13,6 +13,7 @@ use Lattice\Form\Components\Select;
 use Lattice\Form\Components\SignedUpload;
 use Lattice\Form\FormData;
 use Lattice\Form\FormSchemaWalker;
+use Lattice\Form\Resolution;
 use Lattice\Form\ResolveResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -75,7 +76,13 @@ trait ResolvesFormFields
             $field = $instance->field;
 
             if ($field->hasPrefill()) {
-                $prefill[$instance->path] = $field->resolvePrefillValue($instance->scope, $data, $request);
+                $suggestion = $field->resolvePrefillValue($instance->scope, $data, $request);
+
+                // An omitted path leaves the client's current value alone;
+                // sending null would clear the field.
+                if ($suggestion !== Resolution::Keep) {
+                    $prefill[$instance->path] = $suggestion;
+                }
             }
 
             if (! $field->isComputed()) {

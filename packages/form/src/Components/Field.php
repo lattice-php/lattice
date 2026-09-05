@@ -13,6 +13,7 @@ use Lattice\Form\Conditions\Condition;
 use Lattice\Form\Conditions\ConditionSet;
 use Lattice\Form\Conditions\FieldConditions;
 use Lattice\Form\FormData;
+use Lattice\Form\Resolution;
 use Lattice\Ui\Components\Component;
 use Lattice\Ui\Concerns\HasLabel;
 use Lattice\Ui\Concerns\HasTooltip;
@@ -417,7 +418,12 @@ abstract class Field extends Component
             ->named('row', $row)
             ->named('form', $form);
 
-        return $this->normalizeValue(Evaluate::resolve($this->prefillResolver, $context));
+        $resolved = Evaluate::resolve($this->prefillResolver, $context);
+
+        // Passed through unnormalized so the caller can tell "no suggestion
+        // this pass" from a resolved value; normalizeValue() would otherwise
+        // flatten the enum case to its name.
+        return $resolved === Resolution::Keep ? $resolved : $this->normalizeValue($resolved);
     }
 
     /**
@@ -450,8 +456,15 @@ abstract class Field extends Component
         }
 
         if ($this->valueResolver instanceof Closure) {
-            $this->value(Evaluate::resolve($this->valueResolver, $context));
-            $this->hasResolvedValue = true;
+            $resolved = Evaluate::resolve($this->valueResolver, $context);
+
+            // Resolution::Keep abstains: the field keeps its current value and
+            // stays non-authoritative, so the validator does not overwrite the
+            // submitted one with it.
+            if ($resolved !== Resolution::Keep) {
+                $this->value($resolved);
+                $this->hasResolvedValue = true;
+            }
         }
 
         $this->resolving = false;
