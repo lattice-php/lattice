@@ -238,12 +238,12 @@ final class TableRegistry extends DefinitionRegistry
         return $result->decorateRows(function (array $row) use ($definition, $rowKeys, $popoverColumns, $linkColumns): array {
             $actions = $this->renderableComponents($definition->actions($row));
             $detail = $this->renderableComponents(array_filter([$definition->rowDetail($row)]));
-            $url = $definition->rowUrl($row);
+            $click = $this->renderableComponents(array_filter([$definition->rowClick($row)]));
             $popovers = $this->popovers($popoverColumns, $row);
             $links = $this->resolvedLinks($linkColumns, $row);
             $projected = array_intersect_key($row, array_flip($rowKeys));
 
-            unset($projected['actions'], $projected['detail'], $projected['rowUrl'], $projected['popovers'], $projected['links']);
+            unset($projected['actions'], $projected['detail'], $projected['rowClick'], $projected['popovers'], $projected['links']);
 
             if ($detail !== []) {
                 $projected['detail'] = $detail[0];
@@ -253,8 +253,8 @@ final class TableRegistry extends DefinitionRegistry
                 $projected['actions'] = $actions;
             }
 
-            if ($url !== null) {
-                $projected['rowUrl'] = $url;
+            if ($click !== []) {
+                $projected['rowClick'] = $click[0];
             }
 
             if ($popovers !== []) {

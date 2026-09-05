@@ -199,6 +199,7 @@ export type NodeType =
   | "stack"
   | "tab"
   | "table"
+  | "table.row-click"
   | "tabs"
   | "text"
   | "tooltip"
@@ -252,7 +253,7 @@ export type SearchNodeType =
   | "search.recent"
   | "search.results";
 export type SignatureExampleNodeType = "signature";
-export type TableNodeType = "table";
+export type TableNodeType = "table" | "table.row-click";
 export type TreeNodeType = "tree";
 export type UiNodeType =
   | "accordion"

@@ -6,6 +6,7 @@ namespace Lattice\Table;
 use Lattice\Core\Contracts\InteractiveComponent;
 use Lattice\Core\Definition;
 use Lattice\Table\Columns\Column;
+use Lattice\Table\Components\RowClick;
 use Lattice\Table\Contracts\TableSource;
 use Lattice\Table\Enums\PaginationType;
 use Lattice\Table\Filters\Filter;
@@ -129,9 +130,12 @@ abstract class TableDefinition extends Definition
     }
 
     /**
+     * What clicking anywhere on the row does: navigate, run an action,
+     * dispatch effects, or open a modal.
+     *
      * @param  array<string, mixed>  $row
      */
-    public function rowUrl(array $row): ?string
+    public function rowClick(array $row): ?RowClick
     {
         return null;
     }

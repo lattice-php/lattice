@@ -5,7 +5,7 @@ import type { TableNode } from "@lattice-php/table/types";
 import { fakeNode } from "@lattice-php/core/test-support";
 import { ActionInteractionProvider } from "@lattice-php/action";
 import { defaultNavigation, NavigationProvider } from "@lattice-php/ui/navigation";
-import { col, pagination, requestOptions, tableFetch, tableQuery } from "../test-support";
+import { col, pagination, requestOptions, rowClick, tableFetch, tableQuery } from "../test-support";
 import { TableComponent } from "./table";
 
 describe("Lattice table component", () => {
@@ -1070,7 +1070,7 @@ describe("column pinning", () => {
   });
 });
 
-describe("row links", () => {
+describe("row clicks", () => {
   const visit = vi.fn();
 
   afterEach(() => {
@@ -1099,7 +1099,9 @@ describe("row links", () => {
   }
 
   it("marks a row carrying a url and visits it when a plain cell is clicked", () => {
-    renderLinkedTable({ data: [{ id: 1, name: "Lamp", rowUrl: "/products/1" }] });
+    renderLinkedTable({
+      data: [{ id: 1, name: "Lamp", rowClick: rowClick({ href: "/products/1" }) }],
+    });
 
     const row = screen.getByRole("cell", { name: "Lamp" }).closest('[data-slot="table-row"]');
 
@@ -1110,13 +1112,25 @@ describe("row links", () => {
     expect(visit).toHaveBeenCalledWith("/products/1");
   });
 
+  it("visits a linked row when it is activated from the keyboard", () => {
+    renderLinkedTable({
+      data: [{ id: 1, name: "Lamp", rowClick: rowClick({ href: "/products/1" }) }],
+    });
+
+    const row = screen.getByRole("cell", { name: "Lamp" }).closest('[data-slot="table-row"]')!;
+
+    fireEvent.keyDown(row, { key: "Enter" });
+
+    expect(visit).toHaveBeenCalledWith("/products/1");
+  });
+
   it("does not navigate when clicking a row action link inside a linked row", () => {
     renderLinkedTable({
       data: [
         {
           id: 1,
           name: "Lamp",
-          rowUrl: "/products/1",
+          rowClick: rowClick({ href: "/products/1" }),
           actions: [{ type: "link", props: { href: "/edit/1", label: "Edit" } }],
         },
       ],
@@ -1141,7 +1155,7 @@ describe("row links", () => {
           },
         }),
       ],
-      data: [{ id: 1, name: "Lamp", rowUrl: "/products/1" }],
+      data: [{ id: 1, name: "Lamp", rowClick: rowClick({ href: "/products/1" }) }],
     });
 
     fireEvent.click(screen.getByTestId("select-row-1"));
@@ -1149,7 +1163,7 @@ describe("row links", () => {
     expect(visit).not.toHaveBeenCalled();
   });
 
-  it("renders no row-link markup for a row without a url", () => {
+  it("renders no row-link markup for a row without a click behavior", () => {
     renderLinkedTable();
 
     const row = screen.getByRole("cell", { name: "Lamp" }).closest('[data-slot="table-row"]');
