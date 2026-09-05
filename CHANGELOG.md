@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.74.0](https://github.com/lattice-php/lattice/compare/0.73.0...0.74.0) (2026-09-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **table:** `TableDefinition::rowUrl()` is removed. Return `RowClick::make()->href(...)` from `rowClick()` instead. Rows now carry a `rowClick` node instead of a `rowUrl` string.
+
+### Features
+
+* **table:** run an action, modal, or effects from a whole-row click ([#592](https://github.com/lattice-php/lattice/issues/592)) ([3e2b71d](https://github.com/lattice-php/lattice/commit/3e2b71d07fcf578fc4365940b5d8a7adfaa18060))
+
+
+### Bug Fixes
+
+* **core:** stop making a declared gate write its own authorize() ([e17458a](https://github.com/lattice-php/lattice/commit/e17458a932eed3d3e68def5269cc90d235907833))
+* **search:** ship the Eloquent provider every consumer was rewriting ([47e3a7f](https://github.com/lattice-php/lattice/commit/47e3a7f6455cbce35e937e479b932156c0c5de9f))
+
 ## [0.73.0](https://github.com/lattice-php/lattice/compare/0.72.2...0.73.0) (2026-09-05)
 
 
