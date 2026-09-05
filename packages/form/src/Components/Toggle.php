@@ -23,6 +23,18 @@ class Toggle extends Field
         return ['boolean'];
     }
 
+    /**
+     * A native DOM form submit posts `on` for a checked box, which the
+     * `boolean` rule in {@see defaultRules()} would reject. Normalize the
+     * recognized boolean spellings before validation and pass anything else
+     * through unchanged, so a bogus value still fails the rule.
+     */
+    #[\Override]
+    public function normalizeInput(mixed $value): mixed
+    {
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $value;
+    }
+
     #[\Override]
     public function castValue(mixed $value): mixed
     {
