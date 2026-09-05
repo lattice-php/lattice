@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.73.0](https://github.com/lattice-php/lattice/compare/0.72.2...0.73.0) (2026-09-05)
+
+
+### Features
+
+* **testing:** assert against the effects a response flashed ([#587](https://github.com/lattice-php/lattice/issues/587)) ([487d8d9](https://github.com/lattice-php/lattice/commit/487d8d9a4402a4ab79cb395df082741c11c471c9))
+
+
+### Bug Fixes
+
+* **core:** give a definition a seam that runs only on its own endpoint ([#591](https://github.com/lattice-php/lattice/issues/591)) ([6a5e8a3](https://github.com/lattice-php/lattice/commit/6a5e8a3cd0869c78b48371d42019913ab84c82da))
+* **form:** let a value resolver decide nothing instead of clearing the field ([#588](https://github.com/lattice-php/lattice/issues/588)) ([6893186](https://github.com/lattice-php/lattice/commit/6893186692257f95ebc79c48f2add5dc0b431de5))
+* **search:** apply the can/on a provider declares ([#589](https://github.com/lattice-php/lattice/issues/589)) ([cd36bd8](https://github.com/lattice-php/lattice/commit/cd36bd894088e6bbb585f6d11eb542dd5b945644))
+
 ## [0.72.2](https://github.com/lattice-php/lattice/compare/0.72.1...0.72.2) (2026-09-05)
 
 
