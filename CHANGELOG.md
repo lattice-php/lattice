@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.72.1](https://github.com/lattice-php/lattice/compare/0.72.0...0.72.1) (2026-09-05)
+
+
+### Bug Fixes
+
+* **core:** infer a closure resolver's model class for page context frames ([#583](https://github.com/lattice-php/lattice/issues/583)) ([b8beb98](https://github.com/lattice-php/lattice/commit/b8beb9812d7e834776d597494c42f06234659ba9))
+
 ## [0.72.0](https://github.com/lattice-php/lattice/compare/0.71.0...0.72.0) (2026-09-04)
 
 
