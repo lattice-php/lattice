@@ -55,6 +55,46 @@ import { SearchBox, SearchInput, SearchResults } from "@lattice-php/search";
 `SearchBox` opens the palette through the nearest `ModalProvider`; the slot components read the
 active search from `SearchProvider`, which `SearchPalette` mounts around its children.
 
+## An Eloquent category
+
+`EloquentSearchProvider` covers the common case: give it the base query, the columns a term matches
+against, and how a record becomes a result. Counting, paging and re-resolving a recorded selection
+are the same for every such provider and come from the base class.
+
+```php
+/**
+ * @extends EloquentSearchProvider<Product>
+ */
+#[AsSearchProvider('products', can: 'products.view')]
+final class ProductSearchProvider extends EloquentSearchProvider
+{
+    public function category(): SearchCategory
+    {
+        return new SearchCategory('products', __('Products'), 'package');
+    }
+
+    protected function query(): Builder
+    {
+        return Product::query()->orderBy('name');
+    }
+
+    protected function searchColumns(): array
+    {
+        return ['name', 'sku'];
+    }
+
+    protected function result(Model $model): SearchResult
+    {
+        return SearchResult::make('products', new SearchResultItem($model->id, $model->name, route('products.show', $model)));
+    }
+}
+```
+
+`query()` is where scopes, ordering and the eager loads `result()` reads belong — it is called per
+request, never memoized. An empty term matches everything, which is what the palette shows before
+anything is typed; a `%` or `_` in the term is escaped so it matches literally. Override
+`matching()` for anything the column list cannot express, such as a relation or a full-text index.
+
 ## Authorizing a provider
 
 A provider is gated exactly like a definition: declare the ability on its attribute, and use
