@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Lattice\Form\Components\Checkbox;
 use Lattice\Form\Components\Select;
 use Lattice\Form\FormDefinition;
@@ -56,6 +57,22 @@ it('casts a string "0" checkbox value to a real false rather than a truthy strin
     expect($validated)->toHaveKey('subscribed')
         ->and($validated['subscribed'])->toBeFalse();
 });
+
+it('accepts the "on" a native DOM form submit posts for a checked box', function (): void {
+    $validated = ruleLessFieldsDefinition()->validate(Request::create('/', 'POST', [
+        'country' => 'de',
+        'subscribed' => 'on',
+    ]));
+
+    expect($validated['subscribed'])->toBeTrue();
+});
+
+it('rejects a checkbox value that is not a boolean spelling at all', function (): void {
+    ruleLessFieldsDefinition()->validate(Request::create('/', 'POST', [
+        'country' => 'de',
+        'subscribed' => 'banana',
+    ]));
+})->throws(ValidationException::class);
 
 it('defaults an unchecked checkbox to false when its key is absent from the request entirely', function (): void {
     $validated = ruleLessFieldsDefinition()->validate(Request::create('/', 'POST', [
