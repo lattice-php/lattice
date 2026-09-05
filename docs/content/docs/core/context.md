@@ -101,17 +101,32 @@ read and by however many definitions. Two `contextModel()` calls in the same `ha
 `authorize()` and the `handle()` that follows it, see the result of one evaluation. A miss ("not
 found") is cached too.
 
-That makes a resolver closure the right place for a once-per-request side effect keyed to the resolved
-value — switching the session's active record to match it, say:
+Memoization is per key **and value**, though, so a resolver is the wrong place for a side effect. A
+page that builds one gated component per workspace — a switcher menu — resolves the key once per
+workspace, and the side effect fires for every one of them, not just the one the request is about.
+Put it in [`activated()`](#preparing-the-request) instead.
+
+## Preparing the request
+
+`Definition::activated()` runs once on the definition's own endpoint, after the gate has passed and
+the trusted context is active — and never while components are merely being built. It is where
+request-wide setup keyed to the resolved context belongs: a signed endpoint runs none of the route
+middleware a page load does, so state a page establishes up front has to be re-established here.
 
 ```php
-Lattice::context('workspace', function (string $value, Request $request): Workspace {
-    $workspace = Workspace::where('slug', $value)->firstOrFail();
-    $request->user()?->switchWorkspace($workspace);
-
-    return $workspace;
-});
+class WorkspaceInvoicesTable extends EloquentTableDefinition
+{
+    public function activated(Request $request): void
+    {
+        $this->contextModel('workspace')->makeCurrent();
+    }
+}
 ```
+
+The work that follows is deferred — a table's builder is executed after `builder()` returns, a form's
+schema serializes after `handle()` — so set state that lasts the request rather than state scoped to
+the call. A page has no `activated()`: its request belongs to the page, and route middleware already
+covers it.
 
 ## Inheritance
 

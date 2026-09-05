@@ -38,6 +38,8 @@ trait InteractsWithComponents
 
         app(ContextScope::class)->activate($context);
 
+        $definition->activated($request);
+
         return [$request, $definition, $context];
     }
 }
