@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.75.0](https://github.com/lattice-php/lattice/compare/0.74.0...0.75.0) (2026-09-05)
+
+
+### Features
+
+* **core:** give options a description, group, and tooltip ([905bae6](https://github.com/lattice-php/lattice/commit/905bae6b13f6df33bf35ae8cfcb24ba7d4f0174d))
+* **form:** add a checkbox group field ([6849eeb](https://github.com/lattice-php/lattice/commit/6849eeb09b8d6366ca2f97a7f45897cab3b7da35))
+
+
+### Bug Fixes
+
+* **tests:** freeze time in the media suite so signed URLs compare ([e0a2d91](https://github.com/lattice-php/lattice/commit/e0a2d91ecffde68cc8055f38d58457b4a5ed1f79))
+
 ## [0.74.0](https://github.com/lattice-php/lattice/compare/0.73.0...0.74.0) (2026-09-05)
 
 
