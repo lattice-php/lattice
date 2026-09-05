@@ -152,9 +152,11 @@ a key registered once cascades through every seam Lattice threads data across:
   parameters. An object parameter seeds the key whose resolver was registered for its class, whatever
   the parameter itself is named — `render(Tenant $current_tenant)` seeds `tenant` because
   `Lattice::context('tenant', Tenant::class)` registered that model, not because of the parameter's
-  name. A scalar parameter seeds the key sharing its own name, when that name is itself registered.
-  `PageSchema::context([...])` extends or overrides the frame explicitly — for a closure-registered key,
-  or anything the convention misses:
+  name. A closure resolver takes part through its declared return type — `fn (string $value): Tenant`
+  records `Tenant` the same way — or through an explicit `model: Tenant::class` when it declares none. A
+  scalar parameter seeds the key sharing its own name, when that name is itself registered.
+  `PageSchema::context([...])` extends or overrides the frame explicitly for anything the convention
+  misses:
 
   ```php
   public function render(PageSchema $schema, Workspace $workspace): PageSchema

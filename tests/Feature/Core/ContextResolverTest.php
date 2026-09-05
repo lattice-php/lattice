@@ -169,6 +169,28 @@ test('a resolver depends on another key through the typed ContextResolutions', f
     expect($resolved->id)->toBe('w5');
 });
 
+test('a closure resolver records its declared return type as the model class for frame matching', function (): void {
+    Lattice::context('widget', fn (string $value): ContextResolverWidget => new ContextResolverWidget($value));
+
+    expect(app(ContextResolvers::class)->keyForModel(new ContextResolverWidget('x')))->toBe('widget');
+});
+
+test('a nullable return type still records the model class', function (): void {
+    Lattice::context('widget', fn (string $value): ContextResolverWidget => new ContextResolverWidget($value));
+
+    expect(app(ContextResolvers::class)->keyForModel(new ContextResolverWidget('x')))->toBe('widget');
+});
+
+test('a builtin return type records no class and an explicit model sets it', function (): void {
+    Lattice::context('widget', fn (string $value): object => new ContextResolverWidget($value));
+
+    expect(app(ContextResolvers::class)->keyForModel(new ContextResolverWidget('x')))->toBeNull();
+
+    Lattice::context('widget', fn (string $value): object => new ContextResolverWidget($value), model: ContextResolverWidget::class);
+
+    expect(app(ContextResolvers::class)->keyForModel(new ContextResolverWidget('x')))->toBe('widget');
+});
+
 final readonly class ContextResolverWidget
 {
     public function __construct(public string $id) {}

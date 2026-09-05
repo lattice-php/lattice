@@ -13,6 +13,8 @@ use Lattice\Core\Contracts\BuildsModelContextResolvers;
 use Lattice\Core\Services\ContextResolvers;
 use Lattice\Core\Support\TypeScript\WireFamily;
 use LogicException;
+use ReflectionFunction;
+use ReflectionNamedType;
 
 final class LatticeRegistry
 {
@@ -48,16 +50,25 @@ final class LatticeRegistry
      * optional key closure (turning a resolved object back into its wire
      * scalar), or with an Eloquent model class name and the sugar builds both
      * from `resolveRouteBinding()`/`getRouteKey()`. A `$keyBy` closure always
-     * wins over the sugar's own.
+     * wins over the sugar's own. The class the key resolves to is what lets a
+     * page frame match a bound route model to the key: the sugar records it,
+     * a closure's declared return type is read for it, and `$model` sets it
+     * explicitly when the closure declares none.
      *
      * @param  Closure|class-string  $resolver
+     * @param  ?class-string  $model
      */
-    public function context(string $key, Closure|string $resolver, ?string $by = null, ?Closure $keyBy = null): void
-    {
+    public function context(
+        string $key,
+        Closure|string $resolver,
+        ?string $by = null,
+        ?Closure $keyBy = null,
+        ?string $model = null,
+    ): void {
         $resolvers = $this->container->make(ContextResolvers::class);
 
         if ($resolver instanceof Closure) {
-            $resolvers->register($key, $resolver, $keyBy);
+            $resolvers->register($key, $resolver, $keyBy, $model ?? $this->returnedClass($resolver));
 
             return;
         }
@@ -79,6 +90,25 @@ final class LatticeRegistry
             $keyBy ?? $builder->keyBy($resolver, $by),
             $resolver,
         );
+    }
+
+    /**
+     * The class a closure resolver declares as its return type, so a page frame
+     * can match a bound route model to the key without an explicit `model:`.
+     *
+     * @return ?class-string
+     */
+    private function returnedClass(Closure $resolver): ?string
+    {
+        $type = new ReflectionFunction($resolver)->getReturnType();
+
+        if (! $type instanceof ReflectionNamedType || $type->isBuiltin()) {
+            return null;
+        }
+
+        $name = $type->getName();
+
+        return class_exists($name) || interface_exists($name) ? $name : null;
     }
 
     /**
