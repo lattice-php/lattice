@@ -10,6 +10,7 @@ use Inertia\Testing\AssertableInertia;
 use JsonSerializable;
 use Lattice\Core\Support\Wire;
 use Lattice\Support\Testing\Assertions\ComponentAssertions;
+use Lattice\Support\Testing\Assertions\EffectAssertions;
 
 trait AssertsLatticeComponents
 {
@@ -39,6 +40,23 @@ trait AssertsLatticeComponents
     public function assertLatticeLayout(TestResponse $response): ComponentAssertions
     {
         return $this->latticeSchemaAssertions($response, 'lattice.layout.schema');
+    }
+
+    /**
+     * The effects flashed onto this response through the `latticeEffects` bag.
+     * A page render drains them client-side, so they never reach the rendered
+     * schema — assert on them here instead of digging through the Inertia page.
+     *
+     * @param  TestResponse<Response>  $response
+     */
+    public function assertLatticeEffects(TestResponse $response): EffectAssertions
+    {
+        $flashed = data_get(AssertableInertia::fromTestResponse($response)->toArray(), 'flash.latticeEffects', []);
+
+        return new EffectAssertions(array_values(array_map(
+            Wire::toArray(...),
+            is_array($flashed) ? $flashed : [],
+        )));
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Lattice\Actions\Components\Action;
 use Lattice\Core\Enums\Op;
+use Lattice\Facades\Effects;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\Textarea;
 use Lattice\Form\Components\TextInput;
@@ -23,6 +24,8 @@ use Lattice\Ui\Components\Menu;
 use Lattice\Ui\Components\MenuItem;
 use Lattice\Ui\Components\Stack;
 use Lattice\Ui\Components\Topbar;
+use Lattice\Ui\Effects\Builtin\Callout;
+use Lattice\Ui\Effects\Builtin\Toast;
 use Lattice\Ui\Enums\Orientation;
 use Lattice\Ui\Enums\Side;
 use Lattice\Ui\Enums\Variant;
@@ -228,4 +231,43 @@ it('asserts against a rendered layout tree', function (): void {
     $this->assertLatticeLayout($this->get('lattice-layout-demo'))
         ->assertRendered('menu-item:home')
         ->component('topbar', 'app-topbar', fn ($bar) => $bar->assertProp('sticky', true));
+});
+
+it('asserts against the effects a page flashed', function (): void {
+    withoutVite();
+
+    Route::get('lattice-demo-effects', function () {
+        Effects::flash(
+            Callout::make('Your trial ends soon.', Variant::Warning)->unique('billing.state'),
+            Effects::toast(Toast::make('Saved.', Variant::Success)),
+        );
+
+        return Inertia::render('lattice/page', ['lattice' => ['schema' => []]]);
+    })->middleware('web');
+
+    $effects = $this->assertLatticeEffects($this->get('lattice-demo-effects'));
+
+    $effects
+        ->assertFlashed('toast')
+        ->assertFlashed('callout', function (array $props): void {
+            expect($props['unique'])->toBe('billing.state')
+                ->and($props['variant'])->toBe('warning');
+        })
+        ->assertNotFlashed('redirect');
+
+    expect($effects->types())->toBe(['callout', 'toast']);
+});
+
+it('reports the flashed types when an expected effect is missing', function (): void {
+    withoutVite();
+
+    Route::get('lattice-demo-no-effects', fn () => Inertia::render('lattice/page', ['lattice' => ['schema' => []]]))
+        ->middleware('web');
+
+    $effects = $this->assertLatticeEffects($this->get('lattice-demo-no-effects'));
+
+    $effects->assertNothingFlashed();
+
+    expect(fn () => $effects->assertFlashed('toast'))
+        ->toThrow(AssertionFailedError::class, 'none');
 });

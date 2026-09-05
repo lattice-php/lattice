@@ -83,6 +83,18 @@ $this->assertLatticeLayout($this->get('/'))
     ->assertRendered('menu-item:settings');
 ```
 
+**Against the effects a response flashed** — a toast, a callout, a redirect. A page render drains
+these client-side, so they never reach the rendered schema:
+
+```php
+$this->assertLatticeEffects($this->post('/products', $payload))
+    ->assertFlashed('toast', fn (array $props) => expect($props['message'])->toBe('Saved.'))
+    ->assertNotFlashed('callout');
+```
+
+`props('toast')` returns the first effect of a type as a plain array (or `null`), `types()` lists
+what was flashed, and `assertNothingFlashed()` asserts the bag is empty.
+
 > Page tests render a real Inertia view. If your front-end assets aren't built in the test
 > environment, call `withoutVite()` first (`use function Pest\Laravel\withoutVite;`).
 
