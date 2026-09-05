@@ -55,6 +55,35 @@ import { SearchBox, SearchInput, SearchResults } from "@lattice-php/search";
 `SearchBox` opens the palette through the nearest `ModalProvider`; the slot components read the
 active search from `SearchProvider`, which `SearchPalette` mounts around its children.
 
+## Authorizing a provider
+
+A provider is gated exactly like a definition: declare the ability on its attribute, and use
+`authorize()` only for what `can` cannot express. A provider that fails is dropped from the
+results, the category list and the counts, and its endpoint refuses a selection recorded against
+it.
+
+```php
+#[AsSearchProvider('products', can: 'products.view')]
+final class ProductSearchProvider implements SearchResultProvider { /* … */ }
+```
+
+A provider has no sealed context of its own, so if the ability needs a subject the provider
+supplies it — declare `on` and implement `ResolvesGateSubject`:
+
+```php
+#[AsSearchProvider('products', can: 'products.view', on: 'workspace')]
+final class ProductSearchProvider implements ResolvesGateSubject, SearchResultProvider
+{
+    public function gateSubject(string $key): ?object
+    {
+        return $key === 'workspace' ? Workspace::current() : null;
+    }
+}
+```
+
+Declaring `on` without that contract throws at registration rather than silently denying every
+request. A subject that resolves to nothing denies, the same as anywhere else in Lattice.
+
 ## Translations
 
 The component's strings ship with inline English defaults. With

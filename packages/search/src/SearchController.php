@@ -5,6 +5,7 @@ namespace Lattice\Search;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Lattice\Core\Authorization;
 use Lattice\Search\Contracts\SearchHistoryRecorder;
 use Lattice\Search\Contracts\SearchResultProvider;
 use Lattice\Search\Enums\SearchMode;
@@ -78,7 +79,7 @@ final readonly class SearchController
         $provider = $this->providers->forCategory($category);
 
         abort_if(! $provider instanceof SearchResultProvider, 404);
-        abort_unless($provider->authorize($request), 403);
+        Authorization::ensure($provider, $request);
 
         $result = $provider->resolve((string) $validated['id'], $request);
 
