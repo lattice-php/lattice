@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Gate;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Search\SearchProviderRegistry;
+use Lattice\Tests\Fixtures\SearchGate\DeclaredOnlySearchProvider;
 use Lattice\Tests\Fixtures\SearchGate\GatedSearchProvider;
 use Lattice\Tests\Fixtures\SearchGate\UnresolvableSubjectSearchProvider;
 
@@ -55,3 +56,15 @@ it('refuses to register a provider that declares on without resolving a subject'
     expect(fn () => app(SearchProviderRegistry::class)->register(UnresolvableSubjectSearchProvider::class))
         ->toThrow(InvalidArgumentException::class, 'ResolvesGateSubject');
 });
+
+it('gates a provider whose only gate is the declaration, with no authorize() written', function (bool $allowed, int $results): void {
+    app(SearchProviderRegistry::class)->register(DeclaredOnlySearchProvider::class);
+    Gate::define('memos.view', fn (?object $user): bool => $allowed);
+
+    getJson('/lattice/search?query=memo')
+        ->assertOk()
+        ->assertJsonCount($results, 'data');
+})->with([
+    'denied' => [false, 0],
+    'allowed' => [true, 1],
+]);

@@ -84,6 +84,10 @@ final class ProductSearchProvider implements ResolvesGateSubject, SearchResultPr
 Declaring `on` without that contract throws at registration rather than silently denying every
 request. A subject that resolves to nothing denies, the same as anywhere else in Lattice.
 
+`SearchResultProvider` requires an `authorize()` because it is an interface and cannot default one.
+When the declaration is the whole gate, take it from
+`Lattice\Core\Concerns\AuthorizesByDeclaration` rather than writing `return true` by hand.
+
 ## Translations
 
 The component's strings ship with inline English defaults. With
