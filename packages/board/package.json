@@ -1,6 +1,6 @@
 {
   "name": "@lattice-php/board",
-  "version": "0.73.0",
+  "version": "0.74.0",
   "private": true,
   "description": "Dev workspace for the board component package; ships to consumers via Composer, not npm.",
   "type": "module",
@@ -9,11 +9,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@lattice-php/action": "0.73.0",
-    "@lattice-php/core": "0.73.0",
-    "@lattice-php/form": "0.73.0",
-    "@lattice-php/lattice": "0.73.0",
-    "@lattice-php/table": "0.73.0",
-    "@lattice-php/ui": "0.73.0"
+    "@lattice-php/action": "0.74.0",
+    "@lattice-php/core": "0.74.0",
+    "@lattice-php/form": "0.74.0",
+    "@lattice-php/lattice": "0.74.0",
+    "@lattice-php/table": "0.74.0",
+    "@lattice-php/ui": "0.74.0"
   }
 }
