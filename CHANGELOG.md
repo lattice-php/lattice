@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.76.0](https://github.com/lattice-php/lattice/compare/0.75.0...0.76.0) (2026-09-10)
+
+
+### Features
+
+* MediaDropzone field, pdf toolbar slot and page-layer seam, form frame clamp ([#598](https://github.com/lattice-php/lattice/issues/598)) ([3896038](https://github.com/lattice-php/lattice/commit/3896038dc04c35636a41be2ba23cfacd2dc39cba))
+
 ## [0.75.0](https://github.com/lattice-php/lattice/compare/0.74.0...0.75.0) (2026-09-05)
 
 
