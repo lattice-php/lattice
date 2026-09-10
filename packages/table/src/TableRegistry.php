@@ -324,11 +324,16 @@ final class TableRegistry extends DefinitionRegistry
     }
 
     /**
-     * The identity keys plus every rendering column's bound row keys. A
-     * visible(false) column stays authoritative for its own key: hidden means
-     * gone from the row payload even when a rendering sibling binds the key
-     * (e.g. a badge colour reference) — unless the key is also a rendering
-     * column's own key or an identity key.
+     * The identity keys plus every rendering column's bound row keys, minus the
+     * keys hidden columns own. A key a rendering column *displays* survives that
+     * subtraction — the cell puts the value on screen either way, so dropping it
+     * buys no privacy and only blanks the cell (a stack binding the key a hidden
+     * searchable sibling owns). A key a rendering column only *references* — a
+     * badge colour, a link placeholder, a currency — does not: it never renders
+     * on its own, so a hidden column stays authoritative for it and the cell
+     * falls back (gray badge, plain text, unformatted number). Identity keys are
+     * never suppressed. Hiding a column is therefore not an authorization
+     * boundary for a key another column displays; gate that column instead.
      *
      * @param  array<int, Column>  $columns
      * @return array<int, string>
@@ -336,19 +341,19 @@ final class TableRegistry extends DefinitionRegistry
     private function rowKeys(array $columns): array
     {
         $keys = self::ROW_IDENTITY_KEYS;
-        $rendered = [];
+        $displayed = [];
         $suppressed = [];
 
         foreach ($columns as $column) {
             if ($column->shouldRender()) {
-                $rendered[] = $column->key();
+                array_push($displayed, ...$column->displayedRowKeys());
                 array_push($keys, ...$column->boundRowKeys());
             } else {
                 $suppressed[] = $column->key();
             }
         }
 
-        $suppressed = array_diff($suppressed, self::ROW_IDENTITY_KEYS, $rendered);
+        $suppressed = array_diff($suppressed, self::ROW_IDENTITY_KEYS, $displayed);
 
         return array_values(array_unique(array_diff($keys, $suppressed)));
     }

@@ -219,16 +219,16 @@ final class TextColumn extends Column implements Filterable, Searchable, Sortabl
     }
 
     /**
-     * Binds the sibling row keys the cell reads besides the value: the badge's
-     * colour key (scalar columns only — multiple() carries colours per chip) and
-     * every `{placeholder}` in the link href except the literal `{value}`.
+     * The sibling row keys the cell reads besides the value: the badge's colour
+     * key (scalar columns only — multiple() carries colours per chip) and every
+     * `{placeholder}` in the link href except the literal `{value}`.
      *
      * @return array<int, string>
      */
     #[\Override]
-    public function boundRowKeys(): array
+    public function referencedRowKeys(): array
     {
-        $keys = parent::boundRowKeys();
+        $keys = [];
 
         if ($this->badge !== null && $this->multiple === null) {
             $keys[] = $this->badge['colorKey'];
