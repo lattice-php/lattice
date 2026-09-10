@@ -1,10 +1,15 @@
-export type MediaRow = {
+/** The display descriptor the upload response, the picker, and the preview endpoint all carry. */
+export type MediaDescriptor = {
   id: number;
   url: string | null;
   /** The library conversion when it was generated, the original otherwise. */
   preview_url: string | null;
   name: string;
   mime_type: string;
+  alt?: string | null;
+};
+
+export type MediaRow = MediaDescriptor & {
   size: number;
   alt: string | null;
   folder_id: number | null;

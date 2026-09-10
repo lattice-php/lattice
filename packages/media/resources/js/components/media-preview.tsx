@@ -4,13 +4,13 @@ import { Icon } from "@lattice-php/ui/icons";
 import { cn } from "@lattice-php/ui/lib/utils";
 import { PreviewableImage } from "@lattice-php/ui/primitives/image-preview";
 import { kindIcon, typeLabel } from "./file-type";
-import type { MediaRow } from "./media-row";
+import type { MediaDescriptor, MediaRow } from "./media-row";
 
-function isImage(row: MediaRow): boolean {
+function isImage(row: MediaDescriptor): boolean {
   return row.mime_type.startsWith("image/");
 }
 
-export function isViewableDocument(row: MediaRow, viewer: Node | undefined): boolean {
+export function isViewableDocument(row: MediaDescriptor, viewer: Node | undefined): boolean {
   return row.mime_type === "application/pdf" && row.url !== null && viewer !== undefined;
 }
 
@@ -19,7 +19,7 @@ export function isViewableDocument(row: MediaRow, viewer: Node | undefined): boo
  * node with the selected file's url patched in. Ids stay distinct so the
  * compact preview and the full view never collide.
  */
-export function documentNode(viewer: Node, row: MediaRow, props: NodeProps = {}): Node {
+export function documentNode(viewer: Node, row: MediaDescriptor, props: NodeProps = {}): Node {
   return {
     ...viewer,
     id: `${viewer.id ?? "media-document"}-${row.id}-${String(props.height ?? "inline")}`,
@@ -34,7 +34,7 @@ export function MediaThumb({
   testId,
 }: {
   className?: string;
-  row: MediaRow;
+  row: MediaDescriptor;
   testId?: string;
 }) {
   if (isImage(row) && row.preview_url !== null) {

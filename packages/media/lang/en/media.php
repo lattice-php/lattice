@@ -21,6 +21,15 @@ return [
         'save' => 'Save',
         'url' => 'URL',
     ],
+    'dropzone' => [
+        'empty' => 'Drop a file here or click to upload.',
+        'remove' => 'Remove file',
+        'uploading' => 'Uploading…',
+        'replace-title' => 'Replace this file?',
+        'replace-description' => ':name is replaced by the dropped file.',
+        'replace-confirm' => 'Replace',
+        'replace-cancel' => 'Keep file',
+    ],
     'sort' => [
         'label' => 'Sort by',
         'name-asc' => 'Name A–Z',

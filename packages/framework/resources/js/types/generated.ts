@@ -52,6 +52,7 @@ export type FormFieldNodeType =
   | "field.date-time-input"
   | "field.file-upload"
   | "field.hidden-input"
+  | "field.media-dropzone"
   | "field.media-picker"
   | "field.number-input"
   | "field.otp"
@@ -77,6 +78,7 @@ export type FormNodeType =
   | "field.date-time-input"
   | "field.file-upload"
   | "field.hidden-input"
+  | "field.media-dropzone"
   | "field.media-picker"
   | "field.number-input"
   | "field.otp"
@@ -111,7 +113,7 @@ export type Listen = {
   readonly visibility: ChannelVisibility;
 };
 export type MapNodeType = "map";
-export type MediumNodeType = "media.library";
+export type MediumNodeType = "media.dropzone-remove" | "media.library";
 export type NodeType =
   | "accordion"
   | "action"
@@ -154,6 +156,7 @@ export type NodeType =
   | "field.date-time-input"
   | "field.file-upload"
   | "field.hidden-input"
+  | "field.media-dropzone"
   | "field.media-picker"
   | "field.number-input"
   | "field.otp"
@@ -176,6 +179,7 @@ export type NodeType =
   | "image"
   | "link"
   | "map"
+  | "media.dropzone-remove"
   | "media.library"
   | "menu"
   | "menu-item"

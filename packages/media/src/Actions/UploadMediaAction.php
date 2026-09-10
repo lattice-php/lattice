@@ -81,13 +81,7 @@ final class UploadMediaAction extends FormActionDefinition
         $media = array_map(
             // A sync queue has already generated the conversions by now, on its
             // own instances — refresh so the descriptors see them.
-            static fn (Media $item): array => [
-                'id' => (int) $item->refresh()->getKey(),
-                'name' => $item->name,
-                'url' => $item->url(),
-                'preview_url' => $item->previewUrl(),
-                'mime_type' => $item->mime_type,
-            ],
+            static fn (Media $item): array => $item->refresh()->descriptor(),
             $this->storeUploads($data->get('files', []), $data->filled('folder_id') ? (int) $data->get('folder_id') : null),
         );
 
