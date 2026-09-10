@@ -10,11 +10,12 @@ use Lattice\Core\Attributes\AsComponent;
 use Lattice\Core\Attributes\SerializationHook;
 use Lattice\Core\Facades\Evaluate;
 use Lattice\Media\Models\Media;
-use Lattice\Ui\Components\Component;
+use Lattice\Ui\Components\ContainerComponent;
+use Lattice\Ui\Contracts\SchemaEntry;
 use LogicException;
 
 #[AsComponent('pdf')]
-final class PdfViewer extends Component
+final class PdfViewer extends ContainerComponent
 {
     public string $url = '';
 
@@ -39,6 +40,9 @@ final class PdfViewer extends Component
     public ?string $standardFontDataUrl = null;
 
     public ?string $wasmUrl = null;
+
+    /** @var list<string> */
+    public array $layers = [];
 
     private Closure|string|null $urlSource = null;
 
@@ -98,6 +102,38 @@ final class PdfViewer extends Component
     public function template(bool $template = true): static
     {
         $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * Components rendered at the end of the viewer's toolbar — a button that
+     * removes the document, a link to its record. They are the node's schema,
+     * so an embedder cloning a template keeps them.
+     *
+     * @param  array<int, SchemaEntry>  $components
+     */
+    public function toolbar(array $components): static
+    {
+        return $this->schema($components);
+    }
+
+    /**
+     * Keys of page layers registered on the client under the `pdf.page-layer`
+     * extension. Each key mounts its component over every rendered page.
+     * The layer contract is an early seam and may still change.
+     *
+     * @param  list<string>  $keys
+     */
+    public function layers(array $keys): static
+    {
+        foreach ($keys as $key) {
+            if (trim($key) === '') {
+                throw new InvalidArgumentException('PdfViewer layers must be non-empty strings.');
+            }
+        }
+
+        $this->layers = array_values(array_unique($keys));
 
         return $this;
     }

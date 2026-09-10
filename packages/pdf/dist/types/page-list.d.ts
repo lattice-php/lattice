@@ -9,6 +9,7 @@ type PageListProps = {
     ref: Ref<PageListHandle>;
     scrollRootRef: RefObject<HTMLDivElement | null>;
     doc: PDFDocumentProxy;
+    layers: string[];
     scale: number;
     baseSize: {
         width: number;
@@ -18,5 +19,5 @@ type PageListProps = {
     search: SearchState;
     onVisiblePageChange(page: number): void;
 };
-export declare function PageList({ ref, scrollRootRef, doc, scale, baseSize, textCache, search, onVisiblePageChange, }: PageListProps): React.ReactElement;
+export declare function PageList({ ref, scrollRootRef, doc, layers, scale, baseSize, textCache, search, onVisiblePageChange, }: PageListProps): React.ReactElement;
 export {};

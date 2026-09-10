@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 export type ToolbarProps = {
     sidebarToggle: boolean;
     sidebarOpen: boolean;
@@ -21,5 +22,7 @@ export type ToolbarProps = {
     downloadable: boolean;
     url: string;
     filename: string | null;
+    /** Content rendered after the built-in controls: the viewer node's own schema. */
+    end?: ReactNode;
 };
 export declare function Toolbar(props: ToolbarProps): React.ReactElement;

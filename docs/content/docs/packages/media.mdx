@@ -162,6 +162,31 @@ MediaPicker::make('file')
     ->uploadLabel(__('imports.upload'));
 ```
 
+## Upload with an inline preview
+
+`MediaDropzone` is a single-file, upload-only picker whose whole face is the file. Empty, the
+face is a click-and-drop target; once a file is stored the face previews it in place — a PDF in
+the [document viewer](/packages/pdf/) when lattice-php/pdf is installed, an image inline, anything
+else as its type icon — with the remove control on the preview (in the viewer's toolbar for PDFs).
+Dropping another file onto a filled face replaces it after a confirmation. The field submits the
+media id like a single `MediaPicker`, so the same rules apply:
+
+```php
+use Lattice\Media\Forms\Components\MediaDropzone;
+use Lattice\Media\Rules\AttachableMedia;
+
+MediaDropzone::make('document', __('invoices.document'))
+    ->category('invoices')
+    ->height('70vh')
+    ->emptyText(__('invoices.drop-document'))
+    ->rules(['nullable', 'integer', new AttachableMedia]);
+```
+
+`height()` sizes the face (an int is pixels, a string any CSS length); the preview fills it. On
+edit, `fill()` the stored id and the face opens on that file. `category()`, `uploadLabel()`, and
+upload rules work as on the picker; `multiple()`, `maxFiles()`, and `attachmentFields()` are
+refused — use `MediaPicker` for those.
+
 ## Labels
 
 Both buttons a picker renders can be relabeled: `pickerLabel()` names the trigger that opens the

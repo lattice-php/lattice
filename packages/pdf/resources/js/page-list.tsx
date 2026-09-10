@@ -13,6 +13,7 @@ type PageListProps = {
   ref: Ref<PageListHandle>;
   scrollRootRef: RefObject<HTMLDivElement | null>;
   doc: PDFDocumentProxy;
+  layers: string[];
   scale: number;
   baseSize: { width: number; height: number };
   textCache: PageTextCache;
@@ -24,6 +25,7 @@ export function PageList({
   ref,
   scrollRootRef,
   doc,
+  layers,
   scale,
   baseSize,
   textCache,
@@ -146,6 +148,7 @@ export function PageList({
             <PdfPage
               currentStart={currentMatch?.page === page ? currentMatch.start : null}
               doc={doc}
+              layers={layers}
               matches={search.matchesForPage(page)}
               onNavigateToPage={scrollToPage}
               pageNumber={page}

@@ -205,6 +205,24 @@ class Media extends Model
     }
 
     /**
+     * The display descriptor every client surface consumes: the upload response,
+     * the picker chips, and the preview endpoint. Urls are temporary, so it is
+     * built freshly on each call.
+     *
+     * @return array{id: int, name: string, url: string|null, preview_url: string|null, mime_type: string}
+     */
+    public function descriptor(): array
+    {
+        return [
+            'id' => (int) $this->getKey(),
+            'name' => $this->name,
+            'url' => $this->url(),
+            'preview_url' => $this->previewUrl(),
+            'mime_type' => $this->mime_type,
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     #[\Override]

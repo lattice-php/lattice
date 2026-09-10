@@ -17,6 +17,11 @@ it(
     };
 
     expect(plugin.name).toBe("media");
-    expect(Object.keys(plugin.components)).toEqual(["media.library", "field.media-picker"]);
+    expect(Object.keys(plugin.components)).toEqual([
+      "media.library",
+      "media.dropzone-remove",
+      "field.media-picker",
+      "field.media-dropzone",
+    ]);
   },
 );

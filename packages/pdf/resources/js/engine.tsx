@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GlobalWorkerOptions } from "pdfjs-dist";
 import { useT } from "@lattice-php/ui/i18n";
 import type { PdfEngineProps } from "./engine-registry";
+import { Renderer } from "@lattice-php/core/renderer";
 import { PageList } from "./page-list";
 import type { PageListHandle } from "./page-list";
 import { Sidebar } from "./sidebar";
@@ -100,6 +101,7 @@ const PdfEngine = ({ node }: PdfEngineProps): React.ReactElement => {
         currentMatch={search.currentIndex + 1}
         currentPage={currentPage}
         downloadable={props.downloadable}
+        end={node.schema && node.schema.length > 0 ? <Renderer nodes={node.schema} /> : null}
         filename={props.filename}
         matchCount={search.matches.length}
         onFitWidth={zoom.fitWidth}
@@ -129,6 +131,7 @@ const PdfEngine = ({ node }: PdfEngineProps): React.ReactElement => {
             <PageList
               baseSize={baseSize}
               doc={doc}
+              layers={props.layers ?? []}
               scrollRootRef={scrollRef}
               onVisiblePageChange={onVisiblePageChange}
               ref={pageListRef}

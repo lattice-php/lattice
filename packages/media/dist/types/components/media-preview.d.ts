@@ -1,16 +1,16 @@
 import { Node, NodeProps } from '@lattice-php/core/types';
-import { MediaRow } from './media-row';
-export declare function isViewableDocument(row: MediaRow, viewer: Node | undefined): boolean;
+import { MediaDescriptor, MediaRow } from './media-row';
+export declare function isViewableDocument(row: MediaDescriptor, viewer: Node | undefined): boolean;
 /**
  * The library serializes one document-viewer template; every preview is that
  * node with the selected file's url patched in. Ids stay distinct so the
  * compact preview and the full view never collide.
  */
-export declare function documentNode(viewer: Node, row: MediaRow, props?: NodeProps): Node;
+export declare function documentNode(viewer: Node, row: MediaDescriptor, props?: NodeProps): Node;
 /** The square face of a card or list row: the derivative, or the type icon. */
 export declare function MediaThumb({ className, row, testId, }: {
     className?: string;
-    row: MediaRow;
+    row: MediaDescriptor;
     testId?: string;
 }): import("react").JSX.Element;
 /**

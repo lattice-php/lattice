@@ -2,8 +2,11 @@ import { page, userEvent } from "vitest/browser";
 import { expect, it, vi } from "vitest";
 import { createRegistry, Renderer } from "@lattice-php/core";
 import { renderWithRegistry } from "@lattice-php/core/browser-test-support";
+import { eagerComponent } from "@lattice-php/core";
 import { fakeNode } from "@lattice-php/core/test-support";
 import type { Plugin } from "@lattice-php/core";
+import type { Schema } from "@lattice-php/core/types";
+import type { PdfPageLayerProps } from "./page-layer-registry";
 import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import pdfUrl from "./fixtures/sample.pdf?url";
 import pdfPlugin from "./plugin";
@@ -20,10 +23,11 @@ const registry = createRegistry(pdfPlugin, { name: "test/pdf-content" });
 const composerRegistry = createRegistry(composerPlugin, { name: "test/pdf-content" });
 const distRegistry = createRegistry(distPlugin as Plugin, { name: "test/pdf-content" });
 
-async function renderViewer(extra: Partial<PdfViewer> = {}, into = registry) {
-  const node = fakeNode({
+function viewerNode(extra: Partial<PdfViewer> = {}, schema?: Schema) {
+  return fakeNode({
     id: "manual",
     type: "pdf",
+    schema,
     props: {
       url: pdfUrl,
       workerUrl,
@@ -40,8 +44,10 @@ async function renderViewer(extra: Partial<PdfViewer> = {}, into = registry) {
       ...extra,
     },
   });
+}
 
-  return renderWithRegistry(<Renderer nodes={[node]} />, into);
+async function renderViewer(extra: Partial<PdfViewer> = {}, into = registry, schema?: Schema) {
+  return renderWithRegistry(<Renderer nodes={[viewerNode(extra, schema)]} />, into);
 }
 
 function renderedCanvas(): HTMLCanvasElement | null {
@@ -294,4 +300,77 @@ it("renders the standalone artifact's engine against the runtime barrel", async 
   await renderViewer({}, distRegistry);
 
   await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0, WAIT).toBe(true);
+});
+
+it("mounts a registered page layer over the rendered page", async () => {
+  const seen: Array<{ page: number; scale: number; width: number }> = [];
+  const layerRegistry = createRegistry(pdfPlugin, {
+    name: "test/pdf-layer",
+    extensions: {
+      "pdf.page-layer": {
+        "test.extract": ({ pageNumber, viewport }: PdfPageLayerProps) => {
+          seen.push({ page: pageNumber, scale: viewport.scale, width: viewport.width });
+
+          return <div data-test={`extract-layer-${pageNumber}`}>layer</div>;
+        },
+      },
+    },
+  });
+
+  await renderViewer({ layers: ["test.extract", "missing.layer"] }, layerRegistry);
+
+  await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0, WAIT).toBe(true);
+  await expect.element(page.getByTestId("extract-layer-1"), WAIT).toBeInTheDocument();
+
+  const layered = document.querySelector('[data-test="pdf-page-layers"]')!;
+  expect(layered.children).toHaveLength(1);
+  expect(seen[0]!.page).toBe(1);
+  expect(seen[0]!.scale).toBeGreaterThan(0);
+  expect(seen[0]!.width).toBeGreaterThan(0);
+});
+
+it("renders toolbar slot content after the built-in controls", async () => {
+  const slotRegistry = createRegistry(pdfPlugin, {
+    name: "test/pdf-slot",
+    components: {
+      "test.slot": eagerComponent(() => (
+        <button data-test="remove-document" type="button">
+          Remove
+        </button>
+      )),
+    },
+  });
+
+  await renderViewer({}, slotRegistry, [{ type: "test.slot", props: {} }] as Schema);
+
+  await expect.element(page.getByTestId("pdf-toolbar-end"), WAIT).toBeInTheDocument();
+  await expect.element(page.getByTestId("remove-document")).toBeInTheDocument();
+});
+
+it("keeps fit-width stable when the viewer fills a flex column", async () => {
+  await renderWithRegistry(
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", width: 900 }}>
+      <div>form fields</div>
+      <div style={{ display: "flex", flexDirection: "column", overflow: "hidden", height: 420 }}>
+        <Renderer nodes={[viewerNode({ height: "100%" })]} />
+      </div>
+    </div>,
+    registry,
+  );
+
+  await expect.poll(() => (renderedCanvas()?.width ?? 0) > 0, WAIT).toBe(true);
+
+  const zoomOf = (): number =>
+    Number(
+      /(\d+)%/.exec(
+        document.querySelector('[data-test="pdf-zoom-level"]')?.textContent ?? "",
+      )?.[1] ?? 0,
+    );
+  const settled = zoomOf();
+
+  await new Promise((resolve) => setTimeout(resolve, 1200));
+
+  expect(settled).toBeGreaterThan(0);
+  expect(zoomOf()).toBe(settled);
+  expect(document.querySelector(".lt-pdf-scroll")!.clientWidth).toBeLessThanOrEqual(460);
 });

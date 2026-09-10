@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { RenderingCancelledException, TextLayer } from "pdfjs-dist";
-import type { PDFDocumentProxy } from "pdfjs-dist";
+import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import { useT } from "@lattice-php/ui/i18n";
 import {
   clearHighlightRanges,
@@ -12,9 +12,12 @@ import type { LinkOverlay } from "./link-annotations";
 import { applyHighlights, matchRanges } from "./search";
 import type { SearchMatch } from "./search";
 import type { PageTextCache } from "./text-cache";
+import { usePdfPageLayerRegistry } from "./page-layer-registry";
+import type { PdfPageViewport } from "./page-layer-registry";
 
 type PdfPageProps = {
   doc: PDFDocumentProxy;
+  layers: string[];
   pageNumber: number;
   scale: number;
   textCache: PageTextCache;
@@ -31,6 +34,7 @@ function warnUnlessCancelled(error: unknown, context: string): void {
 
 export function PdfPage({
   doc,
+  layers,
   pageNumber,
   scale,
   textCache,
@@ -39,6 +43,11 @@ export function PdfPage({
   onNavigateToPage,
 }: PdfPageProps): React.ReactElement {
   const { t } = useT("pdf");
+  const layerRegistry = usePdfPageLayerRegistry();
+  const [rendered, setRendered] = useState<{
+    page: PDFPageProxy;
+    viewport: PdfPageViewport;
+  } | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
@@ -94,6 +103,15 @@ export function PdfPage({
       canvas.style.width = `${Math.floor(viewport.width)}px`;
       canvas.style.height = `${Math.floor(viewport.height)}px`;
       root.style.setProperty("--scale-factor", String(viewport.scale));
+      setRendered({
+        page,
+        viewport: {
+          scale: viewport.scale,
+          rotation: viewport.rotation,
+          width: viewport.width,
+          height: viewport.height,
+        },
+      });
 
       const renderTask = page.render({
         canvas,
@@ -234,6 +252,23 @@ export function PdfPage({
                 style={style}
               />
             );
+          })}
+        </div>
+      ) : null}
+      {rendered && layers.length > 0 ? (
+        <div className="lt-pdf-layers" data-test="pdf-page-layers">
+          {layers.map((key) => {
+            const Layer = layerRegistry[key];
+
+            return Layer ? (
+              <Layer
+                doc={doc}
+                key={key}
+                page={rendered.page}
+                pageNumber={pageNumber}
+                viewport={rendered.viewport}
+              />
+            ) : null;
           })}
         </div>
       ) : null}

@@ -230,14 +230,7 @@ class MediaPicker extends Field implements ProvidesRowFields
                     return null;
                 }
 
-                return [
-                    'id' => (int) $item->getKey(),
-                    'name' => $item->name,
-                    'url' => $item->url(),
-                    'preview_url' => $item->previewUrl(),
-                    'mime_type' => $item->mime_type,
-                    'values' => array_diff_key($row, ['id' => true]),
-                ];
+                return [...$item->descriptor(), 'values' => array_diff_key($row, ['id' => true])];
             })
             ->filter()
             ->all());

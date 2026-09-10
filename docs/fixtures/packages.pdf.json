@@ -7,6 +7,7 @@
             "filename": "sample.pdf",
             "height": "80vh",
             "initialZoom": null,
+            "layers": [],
             "maxHeight": "480px",
             "searchable": true,
             "sidebar": true,

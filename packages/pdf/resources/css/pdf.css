@@ -171,6 +171,12 @@
   pointer-events: none;
 }
 
+.lt-pdf-layers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 .lt-pdf-link {
   position: absolute;
   border-radius: 2px;

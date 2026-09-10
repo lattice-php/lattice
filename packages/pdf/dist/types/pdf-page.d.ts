@@ -3,6 +3,7 @@ import { SearchMatch } from './search';
 import { PageTextCache } from './text-cache';
 type PdfPageProps = {
     doc: PDFDocumentProxy;
+    layers: string[];
     pageNumber: number;
     scale: number;
     textCache: PageTextCache;
@@ -10,5 +11,5 @@ type PdfPageProps = {
     currentStart: number | null;
     onNavigateToPage(page: number): void;
 };
-export declare function PdfPage({ doc, pageNumber, scale, textCache, matches, currentStart, onNavigateToPage, }: PdfPageProps): React.ReactElement;
+export declare function PdfPage({ doc, layers, pageNumber, scale, textCache, matches, currentStart, onNavigateToPage, }: PdfPageProps): React.ReactElement;
 export {};

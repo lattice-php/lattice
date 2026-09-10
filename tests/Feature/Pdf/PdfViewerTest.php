@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Storage;
 use Lattice\Media\Models\Media;
 use Lattice\Pdf\Components\PdfViewer;
+use Lattice\Ui\Components\Button;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 it('serializes the viewer with a resolved url and defaults', function (): void {
@@ -188,3 +189,27 @@ it('serves both bundled pdf locales', function (): void {
 
     expect(__('pdf::pdf.loading'))->toBe('Dokument wird geladen…');
 });
+
+it('serializes toolbar components as its schema and the page layer keys', function (): void {
+    $node = wire(
+        PdfViewer::make('invoice')
+            ->url('https://files.example.test/invoice.pdf')
+            ->toolbar([Button::make('Remove')->key('remove')])
+            ->layers(['accounting.extract', 'accounting.extract']),
+    );
+
+    expect($node['props']['layers'])->toBe(['accounting.extract'])
+        ->and($node['schema'])->toHaveCount(1)
+        ->and($node['schema'][0])->toMatchArray(['type' => 'button', 'key' => 'remove']);
+});
+
+it('serializes without toolbar content or layers by default', function (): void {
+    $node = wire(PdfViewer::make()->url('https://files.example.test/manual.pdf'));
+
+    expect($node['props']['layers'])->toBe([])
+        ->and($node)->not->toHaveKey('schema');
+});
+
+it('rejects blank page layer keys', function (): void {
+    PdfViewer::make()->layers(['']);
+})->throws(InvalidArgumentException::class);

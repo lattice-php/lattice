@@ -21,6 +21,15 @@ return [
         'save' => 'Speichern',
         'url' => 'URL',
     ],
+    'dropzone' => [
+        'empty' => 'Datei hier ablegen oder klicken zum Hochladen.',
+        'remove' => 'Datei entfernen',
+        'uploading' => 'Wird hochgeladen…',
+        'replace-title' => 'Diese Datei ersetzen?',
+        'replace-description' => ':name wird durch die abgelegte Datei ersetzt.',
+        'replace-confirm' => 'Ersetzen',
+        'replace-cancel' => 'Datei behalten',
+    ],
     'sort' => [
         'label' => 'Sortieren nach',
         'name-asc' => 'Name A–Z',

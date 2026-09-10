@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Icon } from "@lattice-php/ui/icons";
 import { useT } from "@lattice-php/ui/i18n";
 
@@ -28,6 +29,8 @@ export type ToolbarProps = {
   downloadable: boolean;
   url: string;
   filename: string | null;
+  /** Content rendered after the built-in controls: the viewer node's own schema. */
+  end?: ReactNode;
 };
 
 export function Toolbar(props: ToolbarProps): React.ReactElement {
@@ -184,6 +187,11 @@ export function Toolbar(props: ToolbarProps): React.ReactElement {
           >
             <Icon className="size-lt-icon-sm" name="download" />
           </a>
+        ) : null}
+        {props.end ? (
+          <div className="lt-pdf-toolbar-end flex items-center gap-1" data-test="pdf-toolbar-end">
+            {props.end}
+          </div>
         ) : null}
       </div>
     </div>

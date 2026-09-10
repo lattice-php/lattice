@@ -25,6 +25,16 @@ export type FormFieldProps = Omit<ComponentProps<"div">, "children" | "id"> & {
   tooltip?: string;
 };
 
+/**
+ * A single track that fills the frame and never grows past it. The implicit
+ * `auto` track sizes to the control's max-content, so a wide control (a pdf
+ * viewer, a table) widens its own field — and a control that measures its
+ * container to size its content then feeds that width back, growing without
+ * bound. Every control already stretches to the track, so clamping it changes
+ * nothing else.
+ */
+const FRAME_TRACK = "grid-cols-[minmax(0,1fr)]";
+
 export function FormField({
   bare = false,
   children,
@@ -52,7 +62,7 @@ export function FormField({
 
   if (bare) {
     return (
-      <div {...props} className={cn("grid gap-1", className)}>
+      <div {...props} className={cn(FRAME_TRACK, "grid gap-1", className)}>
         <Label id={labelId} htmlFor={id} className="sr-only">
           {label}
         </Label>
@@ -63,7 +73,7 @@ export function FormField({
   }
 
   return (
-    <div {...props} className={cn("grid gap-2", className)}>
+    <div {...props} className={cn(FRAME_TRACK, "grid gap-2", className)}>
       <div className="flex min-h-5 items-center">
         <Label id={labelId} htmlFor={id}>
           {label}

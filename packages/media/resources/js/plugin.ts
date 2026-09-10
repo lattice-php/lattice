@@ -8,7 +8,9 @@ export default {
   name: "media",
   components: {
     "media.library": lazyComponent(() => import("./library")),
+    "media.dropzone-remove": lazyComponent(() => import("./dropzone-remove")),
     "field.media-picker": lazyComponent(() => import("./media-picker")),
+    "field.media-dropzone": lazyComponent(() => import("./media-dropzone")),
   },
   extensions: {
     [RICH_EDITOR_EXTENSION]: {
