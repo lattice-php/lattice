@@ -109,6 +109,55 @@ page. When the document carries embedded file attachments, the sidebar gains an 
 listing them for download. `->sidebar(false)` removes the toggle, which suits compact embeds such
 as modals.
 
+## Toolbar slot
+
+Components passed to `->toolbar()` render at the end of the viewer's toolbar, after the built-in
+controls. They are the viewer node's schema, so a template the client clones (the media library's
+inspector, a `MediaDropzone`) keeps them:
+
+```php
+PdfViewer::make('invoice')
+    ->media($invoiceMediaId)
+    ->toolbar([
+        Button::make('Open record')->href(route('invoices.show', $invoice)),
+    ]);
+```
+
+## Page layers
+
+`->layers()` names client-side components that mount over every rendered page, above the canvas
+and the text layer and sized to the page — the seam for selection and annotation tooling an app
+builds itself. Register a layer under the `pdf.page-layer` extension of your plugin and opt a
+viewer into it by key:
+
+```php
+PdfViewer::make('invoice')->media($invoiceMediaId)->layers(['accounting.extract']);
+```
+
+```ts
+import type { PdfPageLayerComponent } from "@lattice-php/pdf";
+
+const ExtractLayer: PdfPageLayerComponent = ({ pageNumber, viewport, page }) => {
+  // viewport: { scale, rotation, width, height } in CSS pixels; page: the pdf.js page proxy
+  return <div className="pointer-events-auto" />;
+};
+
+export default {
+  name: "app",
+  extensions: { "pdf.page-layer": { "accounting.extract": ExtractLayer } },
+} satisfies Plugin;
+```
+
+The layer container ignores pointer events so the text stays selectable; a layer opts its own
+elements back in. Layers mount only while a page is rendered (the viewer virtualizes pages), and
+they re-mount with fresh geometry on every zoom change.
+
+<Info>
+  The page-layer contract is an early seam. It currently hands a layer the page number, the rendered
+  viewport, and the pdf.js page proxy; coordinate transforms, page text, and region rendering are
+  planned additions.
+</Info>
+
 ## Media attachments
 
 With [lattice-php/media](/packages/media/) installed, `->media()` sources the document straight
@@ -120,6 +169,10 @@ PdfViewer::make('manual')->media($product->media('manuals')->first());
 
 It accepts a media id or model instance. An explicit `->filename()` wins over the media's stored
 name.
+
+For a form field that uploads a document and previews it in place, use the media package's
+[`MediaDropzone`](/packages/media/#upload-with-an-inline-preview), which embeds this viewer for
+PDFs and places its remove control in the toolbar slot.
 
 ## In a modal
 

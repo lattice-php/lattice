@@ -8,6 +8,7 @@ export type PdfViewer = {
     filename: string | null;
     height: string;
     initialZoom: number | null;
+    layers: string[];
     maxHeight: string | null;
     searchable: boolean;
     sidebar: boolean;

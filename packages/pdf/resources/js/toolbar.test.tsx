@@ -111,3 +111,17 @@ it("hides search and download when the wire disables them", () => {
   expect(screen.queryByLabelText("Search document…")).not.toBeInTheDocument();
   expect(screen.queryByLabelText("Download")).not.toBeInTheDocument();
 });
+
+it("renders slot content after the built-in controls", () => {
+  render(<Toolbar {...toolbarProps()} end={<button type="button">Remove</button>} />);
+
+  const slot = screen.getByTestId("pdf-toolbar-end");
+  expect(slot).toHaveTextContent("Remove");
+  expect(slot.previousElementSibling).toHaveAttribute("aria-label", "Download");
+});
+
+it("renders no slot container without content", () => {
+  render(<Toolbar {...toolbarProps()} />);
+
+  expect(screen.queryByTestId("pdf-toolbar-end")).not.toBeInTheDocument();
+});

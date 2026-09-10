@@ -884,20 +884,22 @@ function ht(e = {}) {
 		if (u.destroyed) throw Error("Worker was destroyed");
 		pe.evaluatorOptions.hasGPU = e;
 		let s = u.messageHandler.sendWithPromise("GetDocRequest", pe, i ? [i.buffer] : null), d;
-		if (!i) if (c) d = new Lr({
-			pdfDataRangeTransport: c,
-			disableRange: ee,
-			disableStream: te
-		});
-		else if (r) d = new (mt(r))({
-			url: r,
-			httpHeaders: a,
-			withCredentials: o,
-			rangeChunkSize: l,
-			disableRange: ee,
-			disableStream: te
-		});
-		else throw Error("getDocument - expected either `data`, `range`, or `url` parameter.");
+		if (!i) {
+			if (c) d = new Lr({
+				pdfDataRangeTransport: c,
+				disableRange: ee,
+				disableStream: te
+			});
+			else if (r) d = new (mt(r))({
+				url: r,
+				httpHeaders: a,
+				withCredentials: o,
+				rangeChunkSize: l,
+				disableRange: ee,
+				disableStream: te
+			});
+			else throw Error("getDocument - expected either `data`, `range`, or `url` parameter.");
+		}
 		return s.then((e) => {
 			if (u.destroyed) throw Error("Worker was destroyed");
 			let r = new tr(n, e, u.port), i = new fi(r, t, d, me, fe, le);
@@ -1504,7 +1506,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 		static setAttributes({ html: e, element: t, storage: n = null, intent: r, linkService: i }) {
 			let { attributes: a } = t, o = e instanceof HTMLAnchorElement;
 			a.type === "radio" && (a.name = `${a.name}-${r}`);
-			for (let [t, n] of Object.entries(a)) if (n != null && !$t.test(t) && !(r === "richText" && !this._allowedRichTextAttributes.has(t))) switch (t) {
+			for (let [t, n] of Object.entries(a)) if (n != null && !$t.test(t) && (r !== "richText" || this._allowedRichTextAttributes.has(t))) switch (t) {
 				case "class":
 					n.length && e.setAttribute(t, n.join(" "));
 					break;
@@ -2133,7 +2135,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			let i = (n.altKey ? e.ALT : 0) | (n.ctrlKey ? e.CTRL : 0) | (n.metaKey ? e.META : 0) | (n.shiftKey ? e.SHIFT : 0), a = r.find((e) => e.modifiers === i);
 			if (!a) return;
 			let { callback: o, options: { bubbles: s = !1, args: c = [], checker: l = null } } = a;
-			l && !l(t, n) || (o.bind(t, ...c, n)(), s || j(n));
+			(!l || l(t, n)) && (o.bind(t, ...c, n)(), s || j(n));
 		}
 	}, vn = class e {
 		static _colorsMapping = /* @__PURE__ */ new Map([["CanvasText", [
@@ -3192,7 +3194,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			let t = this.#c?.get(e.data.id);
 			if (!t) return;
 			let n = this.#s.getRawValue(t);
-			n && (this.#I === L.NONE && !n.hasBeenModified || n.renderAnnotationElement(e));
+			n && (this.#I !== L.NONE || n.hasBeenModified) && n.renderAnnotationElement(e);
 		}
 		setMissingCanvas(e, t, n) {
 			let r = this.#P?.get(e);
@@ -5420,7 +5422,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			this.styleElement &&= (this.styleElement.remove(), null);
 		}
 		async loadSystemFont({ systemFontInfo: e, disableFontFace: t, _inspectFont: n }) {
-			if (!(!e || this.#e.has(e.loadedName))) {
+			if (e && !this.#e.has(e.loadedName)) {
 				if (D(!t, "loadSystemFont shouldn't be called when `disableFontFace` is set."), this.isFontLoadingAPISupported) {
 					let { loadedName: t, src: r, style: i } = e, a = new FontFace(t, r, i);
 					this.addNativeFontFace(a);
@@ -6732,9 +6734,11 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 					let r = H.transform(n, t.baseTransform);
 					this.matrix && (r = H.transform(r, this.matrix));
 					let i = .001, a = Math.hypot(r[0], r[1]), o = Math.hypot(r[2], r[3]), s = (r[0] * r[2] + r[1] * r[3]) / (a * o);
-					if (Math.abs(s) < i) if (this.isRadial()) {
-						if (Math.abs(a - o) < i) return this._createGradient(e, r);
-					} else return this._createGradient(e, r);
+					if (Math.abs(s) < i) {
+						if (this.isRadial()) {
+							if (Math.abs(a - o) < i) return this._createGradient(e, r);
+						} else return this._createGradient(e, r);
+					}
 				}
 				let a = t.current.getClippedPathBoundingBox(r, M(e)) || [
 					0,
@@ -7022,11 +7026,13 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 						continue;
 					}
 				}
-				if (!i || i(s)) if (m = o[s], h = a[s] ?? null, m !== Nt.dependency) h === null ? this[m](s) : this[m](s, ...h);
-				else for (let e of h) {
-					this.dependencyTracker?.recordNamedData(e, s);
-					let t = e.startsWith("g_") ? f : p;
-					if (!t.has(e)) return t.get(e, n), s;
+				if (!i || i(s)) {
+					if (m = o[s], h = a[s] ?? null, m !== Nt.dependency) h === null ? this[m](s) : this[m](s, ...h);
+					else for (let e of h) {
+						this.dependencyTracker?.recordNamedData(e, s);
+						let t = e.startsWith("g_") ? f : p;
+						if (!t.has(e)) return t.get(e, n), s;
+					}
 				}
 				if (s++, s === c) return s;
 				if (l && ++d > Cr) {
@@ -7423,14 +7429,16 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 		}
 		stroke(e, t, n = !0) {
 			let r = n && this.#h(this.current.strokeAlpha), i = this.ctx, a = this.current.strokeColor;
-			if (i.globalAlpha = this.current.strokeAlpha, this.contentVisible) if (typeof a == "object" && a?.getPattern) {
-				let n = a.isModifyingCurrentTransform() ? i.getTransform() : null;
-				if (i.save(), i.strokeStyle = a.getPattern(i, this, ye(i), Y.STROKE, e), n) {
-					let e = new Path2D();
-					e.addPath(t, i.getTransform().invertSelf().multiplySelf(n)), t = e;
-				}
-				this.rescaleAndStroke(t, !1), i.restore();
-			} else this.rescaleAndStroke(t, !0);
+			if (i.globalAlpha = this.current.strokeAlpha, this.contentVisible) {
+				if (typeof a == "object" && a?.getPattern) {
+					let n = a.isModifyingCurrentTransform() ? i.getTransform() : null;
+					if (i.save(), i.strokeStyle = a.getPattern(i, this, ye(i), Y.STROKE, e), n) {
+						let e = new Path2D();
+						e.addPath(t, i.getTransform().invertSelf().multiplySelf(n)), t = e;
+					}
+					this.rescaleAndStroke(t, !1), i.restore();
+				} else this.rescaleAndStroke(t, !0);
+			}
 			this.dependencyTracker?.recordDependencies(e, K.stroke), n && this.consumePath(e, t, this.current.getClippedPathBoundingBox(Y.STROKE, M(this.ctx))), i.globalAlpha = this.current.fillAlpha, this.#g(r);
 		}
 		closeStroke(e, t) {
@@ -7549,23 +7557,27 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			if ((c.disableFontFace || f || p || m) && !c.missingFile && (h = c.getPathGenerator(this.commonObjs, t)), h && (c.disableFontFace || p || m)) {
 				o.save(), o.translate(n, r), o.scale(u, -u), this.dependencyTracker?.recordCharacterBBox(e, o, c);
 				let t;
-				if (d === z.FILL || d === z.FILL_STROKE) if (i) {
-					t = o.getTransform(), o.setTransform(...i);
-					let e = this.#_(h, t, i);
-					o.fill(e);
-				} else o.fill(h);
-				if (d === z.STROKE || d === z.FILL_STROKE) if (a) {
-					t ||= o.getTransform(), o.setTransform(...a);
-					let { a: e, b: n, c: r, d: i } = t, s = H.inverseTransform(a), c = H.transform([
-						e,
-						n,
-						r,
-						i,
-						0,
-						0
-					], s);
-					H.singularValueDecompose2dScale(c, Z), o.lineWidth *= Math.max(Z[0], Z[1]) / u, o.stroke(this.#_(h, t, a));
-				} else o.lineWidth /= u, o.stroke(h);
+				if (d === z.FILL || d === z.FILL_STROKE) {
+					if (i) {
+						t = o.getTransform(), o.setTransform(...i);
+						let e = this.#_(h, t, i);
+						o.fill(e);
+					} else o.fill(h);
+				}
+				if (d === z.STROKE || d === z.FILL_STROKE) {
+					if (a) {
+						t ||= o.getTransform(), o.setTransform(...a);
+						let { a: e, b: n, c: r, d: i } = t, s = H.inverseTransform(a), c = H.transform([
+							e,
+							n,
+							r,
+							i,
+							0,
+							0
+						], s);
+						H.singularValueDecompose2dScale(c, Z), o.lineWidth *= Math.max(Z[0], Z[1]) / u, o.stroke(this.#_(h, t, a));
+					} else o.lineWidth /= u, o.stroke(h);
+				}
 				o.restore();
 			} else (d === z.FILL || d === z.FILL_STROKE) && (o.fillText(t, n, r), this.dependencyTracker?.recordCharacterBBox(e, o, c, u, n, r, () => o.measureText(t))), (d === z.STROKE || d === z.FILL_STROKE) && (this.dependencyTracker && this.dependencyTracker?.recordCharacterBBox(e, o, c, u, n, r, () => o.measureText(t)).recordDependencies(e, K.stroke), o.strokeText(t, n, r));
 			f && ((this.pendingTextPaths ||= []).push({
@@ -7625,8 +7637,8 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 				n.x += i * g * d, o.restore(), this.compose(), this.#g(a);
 				return;
 			}
-			let T = 0, E;
-			for (E = 0; E < f; ++E) {
+			let T = 0, E = 0;
+			for (; E < f; ++E) {
 				let n = t[E];
 				if (typeof n == "number") {
 					T += m * n * i / 1e3;
@@ -7857,24 +7869,25 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 					n.canvas.height
 				], t, a);
 				let o = this.#l.at(-1);
-				if (this.#e > 0) if (i.hasInnerBackdrop) {
-					let { width: e, height: a } = n.canvas, o = this.canvasFactory.create(e, a), s = o.context;
-					s.drawImage(r.canvas, i.offsetX, i.offsetY, e, a, 0, 0, e, a), s.globalCompositeOperation = "source-over", s.drawImage(n.canvas, 0, 0);
-					let c = this.#f(n.canvas);
-					s.globalCompositeOperation = "destination-in", s.drawImage(c.canvas, 0, 0);
-					let l = this.ctx.globalCompositeOperation, u = this.ctx.globalAlpha, d = this.ctx.filter;
-					this.ctx.save(), this.ctx.setTransform(...t), this.ctx.globalAlpha = 1, V.isCanvasFilterSupported && (this.ctx.filter = "none"), this.ctx.globalCompositeOperation = "destination-out", this.ctx.drawImage(c.canvas, 0, 0), this.ctx.globalCompositeOperation = l, this.ctx.globalAlpha = u, V.isCanvasFilterSupported && (this.ctx.filter = d ?? "none"), this.ctx.drawImage(o.canvas, 0, 0), this.ctx.restore(), this.canvasFactory.destroy(c), this.canvasFactory.destroy(o);
+				if (this.#e > 0) {
+					if (i.hasInnerBackdrop) {
+						let { width: e, height: a } = n.canvas, o = this.canvasFactory.create(e, a), s = o.context;
+						s.drawImage(r.canvas, i.offsetX, i.offsetY, e, a, 0, 0, e, a), s.globalCompositeOperation = "source-over", s.drawImage(n.canvas, 0, 0);
+						let c = this.#f(n.canvas);
+						s.globalCompositeOperation = "destination-in", s.drawImage(c.canvas, 0, 0);
+						let l = this.ctx.globalCompositeOperation, u = this.ctx.globalAlpha, d = this.ctx.filter;
+						this.ctx.save(), this.ctx.setTransform(...t), this.ctx.globalAlpha = 1, V.isCanvasFilterSupported && (this.ctx.filter = "none"), this.ctx.globalCompositeOperation = "destination-out", this.ctx.drawImage(c.canvas, 0, 0), this.ctx.globalCompositeOperation = l, this.ctx.globalAlpha = u, V.isCanvasFilterSupported && (this.ctx.filter = d ?? "none"), this.ctx.drawImage(o.canvas, 0, 0), this.ctx.restore(), this.canvasFactory.destroy(c), this.canvasFactory.destroy(o);
+					} else {
+						let e = o?.backdropCtx ?? null;
+						this.#m(this.ctx, n.canvas, {
+							backdropCanvas: e?.canvas ?? null,
+							destTransform: t,
+							backdropOffset: e ? [o.offsetX + i.offsetX, o.offsetY + i.offsetY] : [0, 0],
+							sourceAlpha: this.ctx.globalAlpha,
+							sourceFilter: this.ctx.filter
+						});
+					}
 				} else {
-					let e = o?.backdropCtx ?? null;
-					this.#m(this.ctx, n.canvas, {
-						backdropCanvas: e?.canvas ?? null,
-						destTransform: t,
-						backdropOffset: e ? [o.offsetX + i.offsetX, o.offsetY + i.offsetY] : [0, 0],
-						sourceAlpha: this.ctx.globalAlpha,
-						sourceFilter: this.ctx.filter
-					});
-				}
-				else {
 					if (i.replaceBackdrop) {
 						let e = new Path2D();
 						e.rect(0, 0, n.canvas.width, n.canvas.height), this.ctx.clip(e), this.ctx.globalCompositeOperation = "copy";
@@ -8084,12 +8097,13 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 				let { lineWidth: e } = this.current, { a: t, b: n, c: r, d: i } = this.ctx.getTransform(), a, o;
 				if (n === 0 && r === 0) {
 					let n = Math.abs(t), r = Math.abs(i);
-					if (n === r) if (e === 0) a = o = 1 / n;
-					else {
-						let t = n * e;
-						a = o = t < 1 ? 1 / t : 1;
-					}
-					else if (e === 0) a = 1 / n, o = 1 / r;
+					if (n === r) {
+						if (e === 0) a = o = 1 / n;
+						else {
+							let t = n * e;
+							a = o = t < 1 ? 1 / t : 1;
+						}
+					} else if (e === 0) a = 1 / n, o = 1 / r;
 					else {
 						let t = n * e, i = r * e;
 						a = t < 1 ? 1 / t : 1, o = i < 1 ? 1 / i : 1;
@@ -10343,10 +10357,12 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			}, { signal: this.#r._signal }), c;
 		}
 		update(e) {
-			if (this.#e) if (this.#t) {
-				let t = H.hexNums[Math.round(this.#n.opacity * 255)];
-				this.#e.value = e + t;
-			} else this.#e.value = e;
+			if (this.#e) {
+				if (this.#t) {
+					let t = H.hexNums[Math.round(this.#n.opacity * 255)];
+					this.#e.value = e + t;
+				} else this.#e.value = e;
+			}
 		}
 		updateOpacity(e) {
 			if (!this.#e || !this.#t) return;
@@ -10797,7 +10813,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			});
 		}
 		updateOC(e) {
-			!this.data.oc || !e || (e.isVisible(this.data.oc) ? this.show() : this.hide());
+			this.data.oc && e && (e.isVisible(this.data.oc) ? this.show() : this.hide());
 		}
 		get width() {
 			return this.data.rect[2] - this.data.rect[0];
@@ -11063,15 +11079,16 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 						let { target: t } = e;
 						if (d && (t.type = l, u && (t.step = u)), s.userValue) {
 							let e = s.userValue;
-							if (d) if (l === "time") {
-								let n = new Date(e);
-								t.value = [
-									n.getHours(),
-									n.getMinutes(),
-									n.getSeconds()
-								].map((e) => e.toString().padStart(2, "0")).join(":");
-							} else t.value = new Date(e - wi).toISOString().split(l === "date" ? "T" : ".", 1)[0];
-							else t.value = e;
+							if (d) {
+								if (l === "time") {
+									let n = new Date(e);
+									t.value = [
+										n.getHours(),
+										n.getMinutes(),
+										n.getSeconds()
+									].map((e) => e.toString().padStart(2, "0")).join(":");
+								} else t.value = new Date(e - wi).toISOString().split(l === "date" ? "T" : ".", 1)[0];
+							} else t.value = e;
 						}
 						s.lastCommittedValue = t.value, s.commitKey = 1, this.data.actions?.Focus || (s.focused = !0);
 					}), n.addEventListener("updatefromsandbox", (n) => {
@@ -13366,7 +13383,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			this.#d && (this.#y({ highlightOutlines: this.#l.getNewOutline(e / 2) }), this.fixAndSetPosition(), this.setDims());
 		}
 		#C() {
-			this.#u === null || !this.parent || (this.parent.drawLayer.remove(this.#u), this.#u = null, this.parent.drawLayer.remove(this.#m), this.#m = null);
+			this.#u !== null && this.parent && (this.parent.drawLayer.remove(this.#u), this.#u = null, this.parent.drawLayer.remove(this.#m), this.#m = null);
 		}
 		#w(e = this.parent) {
 			this.#u === null && ({id: this.#u, clipPathId: this.#r} = e.drawLayer.draw({
@@ -13824,7 +13841,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			this.parent && !e ? (this._uiManager.removeShouldRescale(this), this.#s()) : e && (this._uiManager.addShouldRescale(this), this.#c(e), t = !this.parent && this.div?.classList.contains("selectedEditor")), super.setParent(e), t && this.select();
 		}
 		#s() {
-			this._drawId === null || !this.parent || (this.parent.drawLayer.remove(this._drawId), this._drawId = null, this._drawingOptions.reset());
+			this._drawId !== null && this.parent && (this.parent.drawLayer.remove(this._drawId), this._drawId = null, this._drawingOptions.reset());
 		}
 		#c(e = this.parent) {
 			if (this._drawId === null || this.parent !== e) {
@@ -15103,19 +15120,20 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 		render() {
 			if (this.div) return this.div;
 			let t, n, { _isCopy: r } = this;
-			if (r && (this._isCopy = !1, t = this.x, n = this.y), super.render(), this._drawId === null) if (this.#n) {
-				let { lines: t, mustSmooth: n, areContours: r, description: i, uuid: a, heightInPage: o } = this.#n, { rawDims: { pageWidth: s, pageHeight: c }, rotation: l } = this.parent.viewport, u = va.processDrawnLines({
-					lines: t,
-					pageWidth: s,
-					pageHeight: c,
-					rotation: l,
-					innerMargin: e._INNER_MARGIN,
-					mustSmooth: n,
-					areContours: r
-				});
-				this.addSignature(u, o, i, a);
-			} else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: "" })), this.div.hidden = !0, this._uiManager.getSignature(this);
-			else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: this.#t || "" }));
+			if (r && (this._isCopy = !1, t = this.x, n = this.y), super.render(), this._drawId === null) {
+				if (this.#n) {
+					let { lines: t, mustSmooth: n, areContours: r, description: i, uuid: a, heightInPage: o } = this.#n, { rawDims: { pageWidth: s, pageHeight: c }, rotation: l } = this.parent.viewport, u = va.processDrawnLines({
+						lines: t,
+						pageWidth: s,
+						pageHeight: c,
+						rotation: l,
+						innerMargin: e._INNER_MARGIN,
+						mustSmooth: n,
+						areContours: r
+					});
+					this.addSignature(u, o, i, a);
+				} else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: "" })), this.div.hidden = !0, this._uiManager.getSignature(this);
+			} else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: this.#t || "" }));
 			return r && (this._isCopy = !0, this._moveAfterPaste(t, n)), this.div;
 		}
 		setUuid(e) {
@@ -15983,7 +16001,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			if (this.pageIndex = r, this.#r = t, this.#i = n, i) {
 				let t = e.#p.get(i);
 				if (t?.selectionDiv && (t.selectionDiv.remove(), e.#u.delete(t.selectionDiv)), e.#p.set(i, { drawLayer: this }), e.#f.add(i), this.#n = i, this.#a = new MutationObserver((t) => {
-					if (!(!this.#e || !this.#n?.isConnected || !e.#h())) {
+					if (this.#e && this.#n?.isConnected && e.#h()) {
 						for (let { addedNodes: n } of t) for (let t of n) if (t.nodeType === Node.ELEMENT_NODE && t.classList.contains("endOfContent")) {
 							e.#_();
 							return;
@@ -16447,37 +16465,53 @@ function Ua(e) {
 }
 var Wa = h((() => {}));
 //#endregion
+//#region resources/js/page-layer-registry.ts
+function Ga() {
+	return (0, y.useExtensionRegistry)(Ka);
+}
+var Ka, qa = h((() => {
+	x(), Ka = "pdf.page-layer";
+}));
+//#endregion
 //#region resources/js/pdf-page.tsx
-function Ga(e, t) {
+function Ja(e, t) {
 	e instanceof nn || console.error(`[lattice/pdf] ${t}`, e);
 }
-function Ka({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, currentStart: c, onNavigateToPage: d }) {
-	let { t: f } = (0, y.useT)("pdf"), p = o(null), m = o(null), h = o(null), g = o(null), _ = o({}), [v, b] = s(0), [x, S] = s([]);
+function Ya({ doc: e, layers: t, pageNumber: n, scale: i, textCache: a, matches: c, currentStart: d, onNavigateToPage: f }) {
+	let { t: p } = (0, y.useT)("pdf"), m = Ga(), [h, g] = s(null), _ = o(null), v = o(null), b = o(null), x = o(null), S = o({}), [C, w] = s(0), [T, E] = s([]);
 	return r(() => {
-		let r = !1;
+		let t = !1;
 		return (async () => {
-			let i = await e.getPage(t), a = await La(e, i, i.getViewport({ scale: n }));
-			r || S(a);
+			let r = await e.getPage(n), a = await La(e, r, r.getViewport({ scale: i }));
+			t || E(a);
 		})().catch((e) => {
-			r || Ga(e, `link annotations for page ${t} failed`);
+			t || Ja(e, `link annotations for page ${n} failed`);
 		}), () => {
-			r = !0;
+			t = !0;
 		};
 	}, [
 		e,
-		t,
-		n
+		n,
+		i
 	]), r(() => {
-		let r = p.current, a = m.current, o = h.current;
-		if (!r || !a || !o) return;
+		let t = _.current, r = v.current, o = b.current;
+		if (!t || !r || !o) return;
 		let s = !1, c = null;
 		return (async () => {
-			let l = await e.getPage(t);
+			let l = await e.getPage(n);
 			if (s) return;
-			let u = l.getViewport({ scale: n }), d = window.devicePixelRatio || 1;
-			a.width = Math.floor(u.width * d), a.height = Math.floor(u.height * d), a.style.width = `${Math.floor(u.width)}px`, a.style.height = `${Math.floor(u.height)}px`, r.style.setProperty("--scale-factor", String(u.scale));
+			let u = l.getViewport({ scale: i }), d = window.devicePixelRatio || 1;
+			r.width = Math.floor(u.width * d), r.height = Math.floor(u.height * d), r.style.width = `${Math.floor(u.width)}px`, r.style.height = `${Math.floor(u.height)}px`, t.style.setProperty("--scale-factor", String(u.scale)), g({
+				page: l,
+				viewport: {
+					scale: u.scale,
+					rotation: u.rotation,
+					width: u.width,
+					height: u.height
+				}
+			});
 			let f = l.render({
-				canvas: a,
+				canvas: r,
 				viewport: u,
 				transform: d === 1 ? void 0 : [
 					d,
@@ -16490,70 +16524,70 @@ function Ka({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 			}), p = null;
 			c = () => {
 				f.cancel(), p?.cancel();
-			}, f.promise.catch((e) => Ga(e, `rendering page ${t} failed`));
+			}, f.promise.catch((e) => Ja(e, `rendering page ${n} failed`));
 			try {
-				let { content: e } = await i.get(t);
+				let { content: e } = await a.get(n);
 				if (s) return;
 				o.textContent = "", p = new ai({
 					textContentSource: e,
 					container: o,
 					viewport: u
-				}), await p.render(), s || (g.current = p, b((e) => e + 1));
+				}), await p.render(), s || (x.current = p, w((e) => e + 1));
 			} catch (e) {
-				s || Ga(e, `text layer for page ${t} failed`);
+				s || Ja(e, `text layer for page ${n} failed`);
 			}
 		})().catch((e) => {
-			s || Ga(e, `loading page ${t} failed`);
+			s || Ja(e, `loading page ${n} failed`);
 		}), () => {
-			s = !0, g.current = null, c?.();
+			s = !0, x.current = null, c?.();
 		};
 	}, [
 		e,
-		t,
 		n,
-		i
+		i,
+		a
 	]), r(() => {
-		let e = g.current;
+		let e = x.current;
 		if (!e) return;
 		let t = {
 			textDivs: e.textDivs,
 			items: e.textContentItemsStr,
-			matches: a,
-			currentStart: c
+			matches: c,
+			currentStart: d
 		}, n;
 		if (Da()) {
 			let e = Ha(t);
-			Oa(_.current, e), n = e.current[0]?.getBoundingClientRect();
-		} else Ua(t), n = p.current?.querySelector("mark.lt-pdf-match--current")?.getBoundingClientRect();
-		if (c !== null && n) {
-			let e = p.current?.closest(".lt-pdf-scroll");
+			Oa(S.current, e), n = e.current[0]?.getBoundingClientRect();
+		} else Ua(t), n = _.current?.querySelector("mark.lt-pdf-match--current")?.getBoundingClientRect();
+		if (d !== null && n) {
+			let e = _.current?.closest(".lt-pdf-scroll");
 			if (e) {
 				let t = n.top - e.getBoundingClientRect().top + e.scrollTop;
 				e.scrollTo({ top: Math.max(0, t - e.clientHeight / 2) });
 			}
 		}
 	}, [
-		a,
 		c,
-		v
+		d,
+		C
 	]), r(() => {
-		let e = _.current;
+		let e = S.current;
 		return () => {
 			ka(e);
 		};
 	}, []), /* @__PURE__ */ u("div", {
 		className: "lt-pdf-page",
 		"data-test": "pdf-page",
-		ref: p,
+		ref: _,
 		children: [
-			/* @__PURE__ */ l("canvas", { ref: m }),
+			/* @__PURE__ */ l("canvas", { ref: v }),
 			/* @__PURE__ */ l("div", {
 				className: "lt-pdf-textlayer",
-				ref: h
+				ref: b
 			}),
-			x.length > 0 ? /* @__PURE__ */ l("div", {
+			T.length > 0 ? /* @__PURE__ */ l("div", {
 				className: "lt-pdf-linklayer",
-				children: x.map((e) => {
+				children: T.map((e) => {
 					let t = {
 						left: e.left,
 						top: e.top,
@@ -16561,15 +16595,15 @@ function Ka({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 						height: e.height
 					};
 					return e.url === null ? /* @__PURE__ */ l("a", {
-						"aria-label": f("pdf.link.page", "Go to page {{page}}", { page: e.page }),
+						"aria-label": p("pdf.link.page", "Go to page {{page}}", { page: e.page }),
 						className: "lt-pdf-link",
 						href: `#pdf-page-${e.page}`,
 						onClick: (t) => {
-							t.preventDefault(), d(e.page);
+							t.preventDefault(), f(e.page);
 						},
 						style: t
 					}, e.id) : /* @__PURE__ */ l("a", {
-						"aria-label": f("pdf.link.external", "Open {{url}}", { url: e.url }),
+						"aria-label": p("pdf.link.external", "Open {{url}}", { url: e.url }),
 						className: "lt-pdf-link",
 						href: e.url,
 						rel: "noopener noreferrer",
@@ -16577,25 +16611,38 @@ function Ka({ doc: e, pageNumber: t, scale: n, textCache: i, matches: a, current
 						target: "_blank"
 					}, e.id);
 				})
+			}) : null,
+			h && t.length > 0 ? /* @__PURE__ */ l("div", {
+				className: "lt-pdf-layers",
+				"data-test": "pdf-page-layers",
+				children: t.map((t) => {
+					let r = m[t];
+					return r ? /* @__PURE__ */ l(r, {
+						doc: e,
+						page: h.page,
+						pageNumber: n,
+						viewport: h.viewport
+					}, t) : null;
+				})
 			}) : null
 		]
 	});
 }
-var qa = h((() => {
-	Ea(), x(), Pa(), Ra(), Wa();
+var Xa = h((() => {
+	Ea(), x(), Pa(), Ra(), Wa(), qa();
 }));
 //#endregion
 //#region resources/js/page-list.tsx
-function Ja({ ref: e, scrollRootRef: t, doc: a, scale: c, baseSize: u, textCache: d, search: f, onVisiblePageChange: p }) {
-	let m = o([]), [h, g] = s(/* @__PURE__ */ new Set([1])), _ = Array.from({ length: a.numPages }, (e, t) => t + 1), v = n((e) => {
-		let n = t.current, r = m.current[e - 1];
+function Za({ ref: e, scrollRootRef: t, doc: a, layers: c, scale: u, baseSize: d, textCache: f, search: p, onVisiblePageChange: m }) {
+	let h = o([]), [g, _] = s(/* @__PURE__ */ new Set([1])), v = Array.from({ length: a.numPages }, (e, t) => t + 1), y = n((e) => {
+		let n = t.current, r = h.current[e - 1];
 		n && r && n.scrollTo({ top: Math.max(0, r.offsetTop - 16) });
 	}, [t]);
-	i(e, () => ({ scrollToPage: v }), [v]), r(() => {
+	i(e, () => ({ scrollToPage: y }), [y]), r(() => {
 		let e = t.current;
 		if (!e) return;
 		let n = new IntersectionObserver((e) => {
-			g((t) => {
+			_((t) => {
 				let n = new Set(t);
 				for (let t of e) {
 					let e = Number(t.target.dataset.page);
@@ -16607,7 +16654,7 @@ function Ja({ ref: e, scrollRootRef: t, doc: a, scale: c, baseSize: u, textCache
 			root: e,
 			rootMargin: "100% 0px"
 		});
-		for (let e of m.current) e && n.observe(e);
+		for (let e of h.current) e && n.observe(e);
 		return () => {
 			n.disconnect();
 		};
@@ -16617,8 +16664,8 @@ function Ja({ ref: e, scrollRootRef: t, doc: a, scale: c, baseSize: u, textCache
 		let n = 0, r = () => {
 			cancelAnimationFrame(n), n = requestAnimationFrame(() => {
 				let t = e.scrollTop + e.clientHeight / 2, n = 1;
-				for (let e of m.current) e && e.offsetTop <= t && (n = Number(e.dataset.page));
-				p(n);
+				for (let e of h.current) e && e.offsetTop <= t && (n = Number(e.dataset.page));
+				m(n);
 			});
 		};
 		return e.addEventListener("scroll", r, { passive: !0 }), () => {
@@ -16626,46 +16673,47 @@ function Ja({ ref: e, scrollRootRef: t, doc: a, scale: c, baseSize: u, textCache
 		};
 	}, [
 		a,
-		p,
+		m,
 		t
 	]);
-	let y = f.currentMatch;
+	let b = p.currentMatch;
 	return /* @__PURE__ */ l("div", {
 		className: "lt-pdf-pages",
-		children: _.map((e) => /* @__PURE__ */ l("div", {
+		children: v.map((e) => /* @__PURE__ */ l("div", {
 			className: "lt-pdf-slot",
 			"data-page": e,
 			ref: (t) => {
-				m.current[e - 1] = t;
+				h.current[e - 1] = t;
 			},
 			style: {
-				minHeight: Math.floor(u.height * c),
-				...h.has(e) ? {} : { width: "100%" }
+				minHeight: Math.floor(d.height * u),
+				...g.has(e) ? {} : { width: "100%" }
 			},
-			children: h.has(e) ? /* @__PURE__ */ l(Ka, {
-				currentStart: y?.page === e ? y.start : null,
+			children: g.has(e) ? /* @__PURE__ */ l(Ya, {
+				currentStart: b?.page === e ? b.start : null,
 				doc: a,
-				matches: f.matchesForPage(e),
-				onNavigateToPage: v,
+				layers: c,
+				matches: p.matchesForPage(e),
+				onNavigateToPage: y,
 				pageNumber: e,
-				scale: c,
-				textCache: d
+				scale: u,
+				textCache: f
 			}) : null
 		}, e))
 	});
 }
-var Ya = h((() => {
-	qa();
+var Qa = h((() => {
+	Xa();
 }));
 //#endregion
 //#region resources/js/sidebar.tsx
-async function Xa(e, t) {
+async function $a(e, t) {
 	let n = t.content ?? await e.getAttachmentContent(t.id);
 	if (!n) return;
 	let r = URL.createObjectURL(new Blob([n])), i = document.createElement("a");
 	i.href = r, i.download = t.filename, i.click(), setTimeout(() => URL.revokeObjectURL(r), 0);
 }
-function Za({ doc: e, pageNumber: t, height: n, mounted: i }) {
+function eo({ doc: e, pageNumber: t, height: n, mounted: i }) {
 	let a = o(null);
 	return r(() => {
 		let n = a.current;
@@ -16674,7 +16722,7 @@ function Za({ doc: e, pageNumber: t, height: n, mounted: i }) {
 		return (async () => {
 			let i = await e.getPage(t);
 			if (r) return;
-			let a = i.getViewport({ scale: $a / i.getViewport({ scale: 1 }).width }), s = window.devicePixelRatio || 1;
+			let a = i.getViewport({ scale: no / i.getViewport({ scale: 1 }).width }), s = window.devicePixelRatio || 1;
 			n.width = Math.floor(a.width * s), n.height = Math.floor(a.height * s), n.style.width = `${Math.floor(a.width)}px`, n.style.height = `${Math.floor(a.height)}px`;
 			let c = i.render({
 				canvas: n,
@@ -16699,15 +16747,15 @@ function Za({ doc: e, pageNumber: t, height: n, mounted: i }) {
 	]), /* @__PURE__ */ l("canvas", {
 		height: n,
 		ref: a,
-		width: $a
+		width: no
 	});
 }
-function Qa({ doc: e, baseSize: t, currentPage: n, onSelectPage: i }) {
-	let { t: a } = (0, y.useT)("pdf"), c = o(null), d = o([]), [f, p] = s("pages"), [m, h] = s([]), [g, _] = s(/* @__PURE__ */ new Set()), v = Array.from({ length: e.numPages }, (e, t) => t + 1), b = Math.round(t.height / t.width * $a);
+function to({ doc: e, baseSize: t, currentPage: n, onSelectPage: i }) {
+	let { t: a } = (0, y.useT)("pdf"), c = o(null), d = o([]), [f, p] = s("pages"), [m, h] = s([]), [g, _] = s(/* @__PURE__ */ new Set()), v = Array.from({ length: e.numPages }, (e, t) => t + 1), b = Math.round(t.height / t.width * no);
 	r(() => {
 		let t = !1;
 		return e.getAttachments().then((e) => {
-			t || !e || h([...e.entries()].map(([e, t]) => ({
+			!t && e && h([...e.entries()].map(([e, t]) => ({
 				id: e,
 				filename: t.filename,
 				content: t.content ?? null
@@ -16771,7 +16819,7 @@ function Qa({ doc: e, baseSize: t, currentPage: n, onSelectPage: i }) {
 					d.current[t - 1] = e;
 				},
 				type: "button",
-				children: [/* @__PURE__ */ l(Za, {
+				children: [/* @__PURE__ */ l(eo, {
 					doc: e,
 					height: b,
 					mounted: g.has(t),
@@ -16785,7 +16833,7 @@ function Qa({ doc: e, baseSize: t, currentPage: n, onSelectPage: i }) {
 				children: m.map((t) => /* @__PURE__ */ l("li", { children: /* @__PURE__ */ u("button", {
 					className: "lt-pdf-attachment",
 					"data-test": "pdf-attachment",
-					onClick: () => void Xa(e, t),
+					onClick: () => void $a(e, t),
 					type: "button",
 					children: [/* @__PURE__ */ l("span", {
 						className: "truncate",
@@ -16800,12 +16848,12 @@ function Qa({ doc: e, baseSize: t, currentPage: n, onSelectPage: i }) {
 		})]
 	});
 }
-var $a, eo = h((() => {
-	x(), $a = 128;
+var no, ro = h((() => {
+	x(), no = 128;
 }));
 //#endregion
 //#region resources/js/toolbar.tsx
-function to(e) {
+function io(e) {
 	let { t } = (0, y.useT)("pdf"), [n, i] = s(String(e.currentPage)), [a, o] = s(!1);
 	r(() => {
 		i(String(e.currentPage)), o(!1);
@@ -16826,7 +16874,7 @@ function to(e) {
 			e.sidebarToggle ? /* @__PURE__ */ l("button", {
 				"aria-label": t("pdf.sidebar.toggle", "Toggle sidebar"),
 				"aria-pressed": e.sidebarOpen,
-				className: no,
+				className: ao,
 				onClick: e.onToggleSidebar,
 				type: "button",
 				children: /* @__PURE__ */ l(y.Icon, {
@@ -16859,7 +16907,7 @@ function to(e) {
 				children: [
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.zoom.out", "Zoom out"),
-						className: no,
+						className: ao,
 						disabled: !e.canZoomOut,
 						onClick: e.onZoomOut,
 						type: "button",
@@ -16875,7 +16923,7 @@ function to(e) {
 					}),
 					/* @__PURE__ */ l("button", {
 						"aria-label": t("pdf.zoom.in", "Zoom in"),
-						className: no,
+						className: ao,
 						disabled: !e.canZoomIn,
 						onClick: e.onZoomIn,
 						type: "button",
@@ -16894,73 +16942,81 @@ function to(e) {
 			}),
 			/* @__PURE__ */ u("div", {
 				className: "ml-auto flex items-center gap-1",
-				children: [e.searchable ? /* @__PURE__ */ u(c, { children: [
-					/* @__PURE__ */ u("div", {
-						className: "flex h-7 items-center gap-1 rounded-lt-sm border border-lt-border px-2",
-						children: [/* @__PURE__ */ l(y.Icon, {
-							"aria-hidden": "true",
-							className: "size-lt-icon-sm text-lt-muted-fg",
-							name: "search"
-						}), /* @__PURE__ */ l("input", {
-							"aria-label": t("pdf.search.placeholder", "Search document…"),
-							className: "w-36 bg-transparent text-sm outline-none placeholder:text-lt-muted-fg",
-							onChange: (t) => e.onQueryChange(t.target.value),
-							placeholder: t("pdf.search.placeholder", "Search document…"),
-							type: "search",
-							value: e.query
-						})]
-					}),
-					e.query.trim() === "" ? null : /* @__PURE__ */ l("span", {
-						"aria-live": "polite",
-						className: "text-sm text-lt-muted-fg tabular-nums",
-						"data-test": "pdf-match-count",
-						children: e.matchCount === 0 ? t("pdf.search.no-matches", "No matches") : t("pdf.search.matches", "{{current}} of {{total}}", {
-							current: e.currentMatch,
-							total: e.matchCount
+				children: [
+					e.searchable ? /* @__PURE__ */ u(c, { children: [
+						/* @__PURE__ */ u("div", {
+							className: "flex h-7 items-center gap-1 rounded-lt-sm border border-lt-border px-2",
+							children: [/* @__PURE__ */ l(y.Icon, {
+								"aria-hidden": "true",
+								className: "size-lt-icon-sm text-lt-muted-fg",
+								name: "search"
+							}), /* @__PURE__ */ l("input", {
+								"aria-label": t("pdf.search.placeholder", "Search document…"),
+								className: "w-36 bg-transparent text-sm outline-none placeholder:text-lt-muted-fg",
+								onChange: (t) => e.onQueryChange(t.target.value),
+								placeholder: t("pdf.search.placeholder", "Search document…"),
+								type: "search",
+								value: e.query
+							})]
+						}),
+						e.query.trim() === "" ? null : /* @__PURE__ */ l("span", {
+							"aria-live": "polite",
+							className: "text-sm text-lt-muted-fg tabular-nums",
+							"data-test": "pdf-match-count",
+							children: e.matchCount === 0 ? t("pdf.search.no-matches", "No matches") : t("pdf.search.matches", "{{current}} of {{total}}", {
+								current: e.currentMatch,
+								total: e.matchCount
+							})
+						}),
+						/* @__PURE__ */ l("button", {
+							"aria-label": t("pdf.search.previous", "Previous match"),
+							className: ao,
+							disabled: e.matchCount === 0,
+							onClick: e.onPreviousMatch,
+							type: "button",
+							children: /* @__PURE__ */ l(y.Icon, {
+								className: "size-lt-icon-sm",
+								name: "chevron-left"
+							})
+						}),
+						/* @__PURE__ */ l("button", {
+							"aria-label": t("pdf.search.next", "Next match"),
+							className: ao,
+							disabled: e.matchCount === 0,
+							onClick: e.onNextMatch,
+							type: "button",
+							children: /* @__PURE__ */ l(y.Icon, {
+								className: "size-lt-icon-sm",
+								name: "chevron-right"
+							})
 						})
-					}),
-					/* @__PURE__ */ l("button", {
-						"aria-label": t("pdf.search.previous", "Previous match"),
-						className: no,
-						disabled: e.matchCount === 0,
-						onClick: e.onPreviousMatch,
-						type: "button",
+					] }) : null,
+					e.downloadable ? /* @__PURE__ */ l("a", {
+						"aria-label": t("pdf.download", "Download"),
+						className: ao,
+						download: e.filename ?? "",
+						href: e.url,
 						children: /* @__PURE__ */ l(y.Icon, {
 							className: "size-lt-icon-sm",
-							name: "chevron-left"
+							name: "download"
 						})
-					}),
-					/* @__PURE__ */ l("button", {
-						"aria-label": t("pdf.search.next", "Next match"),
-						className: no,
-						disabled: e.matchCount === 0,
-						onClick: e.onNextMatch,
-						type: "button",
-						children: /* @__PURE__ */ l(y.Icon, {
-							className: "size-lt-icon-sm",
-							name: "chevron-right"
-						})
-					})
-				] }) : null, e.downloadable ? /* @__PURE__ */ l("a", {
-					"aria-label": t("pdf.download", "Download"),
-					className: no,
-					download: e.filename ?? "",
-					href: e.url,
-					children: /* @__PURE__ */ l(y.Icon, {
-						className: "size-lt-icon-sm",
-						name: "download"
-					})
-				}) : null]
+					}) : null,
+					e.end ? /* @__PURE__ */ l("div", {
+						className: "lt-pdf-toolbar-end flex items-center gap-1",
+						"data-test": "pdf-toolbar-end",
+						children: e.end
+					}) : null
+				]
 			})
 		]
 	});
 }
-var no, ro = h((() => {
-	x(), no = "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
+var ao, oo = h((() => {
+	x(), ao = "rounded-lt-sm p-1.5 hover:bg-lt-muted disabled:pointer-events-none disabled:opacity-40";
 }));
 //#endregion
 //#region resources/js/text-cache.ts
-async function io(e) {
+async function so(e) {
 	let t = e.streamTextContent().getReader(), n = {
 		items: [],
 		styles: {},
@@ -16972,14 +17028,14 @@ async function io(e) {
 		n.lang ??= r.lang, Object.assign(n.styles, r.styles), n.items.push(...r.items);
 	}
 }
-function ao(e) {
+function co(e) {
 	let t = /* @__PURE__ */ new Map();
 	return {
 		numPages: e.numPages,
 		get(n) {
 			let r = t.get(n);
 			return r || (r = e.getPage(n).then(async (e) => {
-				let t = await io(e);
+				let t = await so(e);
 				return {
 					content: t,
 					items: t.items.map((e) => "str" in e ? e.str : "")
@@ -16988,10 +17044,10 @@ function ao(e) {
 		}
 	};
 }
-var oo = h((() => {}));
+var lo = h((() => {}));
 //#endregion
 //#region resources/js/use-pdf-document.ts
-function so(e) {
+function uo(e) {
 	let [t, n] = s({
 		doc: null,
 		error: !1
@@ -17030,12 +17086,12 @@ function so(e) {
 		e.wasmUrl
 	]), t;
 }
-var co = h((() => {
+var fo = h((() => {
 	Ea();
 }));
 //#endregion
 //#region resources/js/use-search.ts
-function lo(e) {
+function po(e) {
 	let [t, n] = s(""), [i, o] = s([]), [c, l] = s(-1);
 	r(() => {
 		if (!e || t.trim() === "") {
@@ -17054,7 +17110,7 @@ function lo(e) {
 			})().catch((e) => {
 				n || (console.error("[lattice/pdf] search failed", e), o([]), l(-1));
 			});
-		}, uo);
+		}, mo);
 		return () => {
 			n = !0, clearTimeout(r);
 		};
@@ -17084,15 +17140,15 @@ function lo(e) {
 		}
 	};
 }
-var uo, fo = h((() => {
-	Wa(), uo = 250;
+var mo, ho = h((() => {
+	Wa(), mo = 250;
 }));
 //#endregion
 //#region resources/js/use-zoom.ts
-function po(e) {
-	return Math.min(go, Math.max(ho, e));
+function go(e) {
+	return Math.min(yo, Math.max(vo, e));
 }
-function mo(e) {
+function _o(e) {
 	let [t, n] = s(e.initialZoom ?? "fit-width"), [i, a] = s(null);
 	r(() => {
 		let t = e.containerRef.current;
@@ -17105,40 +17161,40 @@ function mo(e) {
 			n.disconnect();
 		};
 	}, [e.containerRef]);
-	let o = i !== null && e.baseWidth !== null && e.baseWidth > 0 ? po((i - vo) / e.baseWidth) : null, c = t === "fit-width" ? o : t;
+	let o = i !== null && e.baseWidth !== null && e.baseWidth > 0 ? go((i - xo) / e.baseWidth) : null, c = t === "fit-width" ? o : t;
 	return {
 		scale: c,
 		percent: c === null ? null : Math.round(c * 100),
 		isFitWidth: t === "fit-width",
-		canZoomIn: c === null || c < go,
-		canZoomOut: c === null || c > ho,
+		canZoomIn: c === null || c < yo,
+		canZoomOut: c === null || c > vo,
 		zoomIn() {
-			n(po((c ?? 1) * _o));
+			n(go((c ?? 1) * bo));
 		},
 		zoomOut() {
-			n(po((c ?? 1) / _o));
+			n(go((c ?? 1) / bo));
 		},
 		fitWidth() {
 			n("fit-width");
 		}
 	};
 }
-var ho, go, _o, vo, yo = h((() => {
-	ho = .25, go = 4, _o = 1.25, vo = 32;
-})), bo = /* @__PURE__ */ g({ default: () => xo }), xo, So = h((() => {
-	Ea(), x(), Ya(), eo(), ro(), oo(), co(), fo(), yo(), xo = ({ node: e }) => {
+var vo, yo, bo, xo, So = h((() => {
+	vo = .25, yo = 4, bo = 1.25, xo = 32;
+})), Co = /* @__PURE__ */ g({ default: () => wo }), wo, To = h((() => {
+	Ea(), x(), Qa(), ro(), oo(), lo(), fo(), ho(), So(), wo = ({ node: e }) => {
 		let { t } = (0, y.useT)("pdf"), i = e.props;
 		Jr.workerSrc !== i.workerUrl && (Jr.workerSrc = i.workerUrl);
-		let { doc: c, error: d } = so({
+		let { doc: c, error: d } = uo({
 			url: i.url,
 			cmapUrl: i.cmapUrl,
 			standardFontDataUrl: i.standardFontDataUrl,
 			wasmUrl: i.wasmUrl
-		}), f = a(() => c ? ao(c) : null, [c]), [p, m] = s(null), h = o(null), g = o(null), [_, v] = s(1), b = mo({
+		}), f = a(() => c ? co(c) : null, [c]), [p, m] = s(null), h = o(null), g = o(null), [_, v] = s(1), b = _o({
 			containerRef: h,
 			baseWidth: p?.width ?? null,
 			initialZoom: i.initialZoom
-		}), x = lo(i.searchable ? f : null), [S, C] = s(!1);
+		}), x = po(i.searchable ? f : null), [S, C] = s(!1);
 		r(() => {
 			if (!c) {
 				m(null), v(1);
@@ -17172,7 +17228,7 @@ var ho, go, _o, vo, yo = h((() => {
 			children: t("pdf.error", "The document could not be loaded.")
 		}) : /* @__PURE__ */ u("div", {
 			className: "lt-pdf-engine",
-			children: [/* @__PURE__ */ l(to, {
+			children: [/* @__PURE__ */ l(io, {
 				onToggleSidebar: () => C((e) => !e),
 				sidebarOpen: S,
 				sidebarToggle: i.sidebar && c !== null,
@@ -17181,6 +17237,7 @@ var ho, go, _o, vo, yo = h((() => {
 				currentMatch: x.currentIndex + 1,
 				currentPage: _,
 				downloadable: i.downloadable,
+				end: e.schema && e.schema.length > 0 ? /* @__PURE__ */ l(y.Renderer, { nodes: e.schema }) : null,
 				filename: i.filename,
 				matchCount: x.matches.length,
 				onFitWidth: b.fitWidth,
@@ -17197,7 +17254,7 @@ var ho, go, _o, vo, yo = h((() => {
 				zoomPercent: b.percent
 			}), /* @__PURE__ */ u("div", {
 				className: "lt-pdf-body",
-				children: [S && i.sidebar && c && p ? /* @__PURE__ */ l(Qa, {
+				children: [S && i.sidebar && c && p ? /* @__PURE__ */ l(to, {
 					baseSize: p,
 					currentPage: _,
 					doc: c,
@@ -17205,9 +17262,10 @@ var ho, go, _o, vo, yo = h((() => {
 				}) : null, /* @__PURE__ */ l("div", {
 					className: "lt-pdf-scroll",
 					ref: h,
-					children: c && f && p && b.scale !== null ? /* @__PURE__ */ l(Ja, {
+					children: c && f && p && b.scale !== null ? /* @__PURE__ */ l(Za, {
 						baseSize: p,
 						doc: c,
+						layers: i.layers ?? [],
 						scrollRootRef: h,
 						onVisiblePageChange: T,
 						ref: g,
@@ -17228,14 +17286,14 @@ var ho, go, _o, vo, yo = h((() => {
 }));
 //#endregion
 //#region resources/js/engine-registry.ts
-function Co() {
-	return (0, y.useExtensionRegistry)(wo);
+function Eo() {
+	return (0, y.useExtensionRegistry)(Do);
 }
-var wo, To = h((() => {
-	x(), wo = "pdf.engine";
-})), Eo = /* @__PURE__ */ g({ default: () => Do }), Do, Oo = h((() => {
-	x(), To(), Do = ({ node: t }) => {
-		let { t: n } = (0, y.useT)("pdf"), r = Co().engine;
+var Do, Oo = h((() => {
+	x(), Do = "pdf.engine";
+})), ko = /* @__PURE__ */ g({ default: () => Ao }), Ao, jo = h((() => {
+	x(), Oo(), Ao = ({ node: t }) => {
+		let { t: n } = (0, y.useT)("pdf"), r = Eo().engine;
 		return t.props.url === "" ? null : r ? /* @__PURE__ */ l("div", {
 			className: "lt-pdf",
 			"data-test": (0, y.nodeIdentity)(t),
@@ -17260,11 +17318,11 @@ var wo, To = h((() => {
 //#endregion
 //#region resources/js/plugin.ts
 x();
-var ko = t(() => Promise.resolve().then(() => (So(), bo))), Ao = {
+var Mo = t(() => Promise.resolve().then(() => (To(), Co))), No = {
 	name: "lattice/pdf",
-	components: { pdf: (0, y.lazyComponent)(() => Promise.resolve().then(() => (Oo(), Eo))) },
-	extensions: { "pdf.engine": { engine: ko } },
+	components: { pdf: (0, y.lazyComponent)(() => Promise.resolve().then(() => (jo(), ko))) },
+	extensions: { "pdf.engine": { engine: Mo } },
 	i18n: { namespace: "pdf" }
 };
 //#endregion
-export { Ao as default };
+export { No as default };
