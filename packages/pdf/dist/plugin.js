@@ -884,22 +884,20 @@ function ht(e = {}) {
 		if (u.destroyed) throw Error("Worker was destroyed");
 		pe.evaluatorOptions.hasGPU = e;
 		let s = u.messageHandler.sendWithPromise("GetDocRequest", pe, i ? [i.buffer] : null), d;
-		if (!i) {
-			if (c) d = new Lr({
-				pdfDataRangeTransport: c,
-				disableRange: ee,
-				disableStream: te
-			});
-			else if (r) d = new (mt(r))({
-				url: r,
-				httpHeaders: a,
-				withCredentials: o,
-				rangeChunkSize: l,
-				disableRange: ee,
-				disableStream: te
-			});
-			else throw Error("getDocument - expected either `data`, `range`, or `url` parameter.");
-		}
+		if (!i) if (c) d = new Lr({
+			pdfDataRangeTransport: c,
+			disableRange: ee,
+			disableStream: te
+		});
+		else if (r) d = new (mt(r))({
+			url: r,
+			httpHeaders: a,
+			withCredentials: o,
+			rangeChunkSize: l,
+			disableRange: ee,
+			disableStream: te
+		});
+		else throw Error("getDocument - expected either `data`, `range`, or `url` parameter.");
 		return s.then((e) => {
 			if (u.destroyed) throw Error("Worker was destroyed");
 			let r = new tr(n, e, u.port), i = new fi(r, t, d, me, fe, le);
@@ -1506,7 +1504,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 		static setAttributes({ html: e, element: t, storage: n = null, intent: r, linkService: i }) {
 			let { attributes: a } = t, o = e instanceof HTMLAnchorElement;
 			a.type === "radio" && (a.name = `${a.name}-${r}`);
-			for (let [t, n] of Object.entries(a)) if (n != null && !$t.test(t) && (r !== "richText" || this._allowedRichTextAttributes.has(t))) switch (t) {
+			for (let [t, n] of Object.entries(a)) if (n != null && !$t.test(t) && !(r === "richText" && !this._allowedRichTextAttributes.has(t))) switch (t) {
 				case "class":
 					n.length && e.setAttribute(t, n.join(" "));
 					break;
@@ -2135,7 +2133,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			let i = (n.altKey ? e.ALT : 0) | (n.ctrlKey ? e.CTRL : 0) | (n.metaKey ? e.META : 0) | (n.shiftKey ? e.SHIFT : 0), a = r.find((e) => e.modifiers === i);
 			if (!a) return;
 			let { callback: o, options: { bubbles: s = !1, args: c = [], checker: l = null } } = a;
-			(!l || l(t, n)) && (o.bind(t, ...c, n)(), s || j(n));
+			l && !l(t, n) || (o.bind(t, ...c, n)(), s || j(n));
 		}
 	}, vn = class e {
 		static _colorsMapping = /* @__PURE__ */ new Map([["CanvasText", [
@@ -3194,7 +3192,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			let t = this.#c?.get(e.data.id);
 			if (!t) return;
 			let n = this.#s.getRawValue(t);
-			n && (this.#I !== L.NONE || n.hasBeenModified) && n.renderAnnotationElement(e);
+			n && (this.#I === L.NONE && !n.hasBeenModified || n.renderAnnotationElement(e));
 		}
 		setMissingCanvas(e, t, n) {
 			let r = this.#P?.get(e);
@@ -5422,7 +5420,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			this.styleElement &&= (this.styleElement.remove(), null);
 		}
 		async loadSystemFont({ systemFontInfo: e, disableFontFace: t, _inspectFont: n }) {
-			if (e && !this.#e.has(e.loadedName)) {
+			if (!(!e || this.#e.has(e.loadedName))) {
 				if (D(!t, "loadSystemFont shouldn't be called when `disableFontFace` is set."), this.isFontLoadingAPISupported) {
 					let { loadedName: t, src: r, style: i } = e, a = new FontFace(t, r, i);
 					this.addNativeFontFace(a);
@@ -6734,11 +6732,9 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 					let r = H.transform(n, t.baseTransform);
 					this.matrix && (r = H.transform(r, this.matrix));
 					let i = .001, a = Math.hypot(r[0], r[1]), o = Math.hypot(r[2], r[3]), s = (r[0] * r[2] + r[1] * r[3]) / (a * o);
-					if (Math.abs(s) < i) {
-						if (this.isRadial()) {
-							if (Math.abs(a - o) < i) return this._createGradient(e, r);
-						} else return this._createGradient(e, r);
-					}
+					if (Math.abs(s) < i) if (this.isRadial()) {
+						if (Math.abs(a - o) < i) return this._createGradient(e, r);
+					} else return this._createGradient(e, r);
 				}
 				let a = t.current.getClippedPathBoundingBox(r, M(e)) || [
 					0,
@@ -7026,13 +7022,11 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 						continue;
 					}
 				}
-				if (!i || i(s)) {
-					if (m = o[s], h = a[s] ?? null, m !== Nt.dependency) h === null ? this[m](s) : this[m](s, ...h);
-					else for (let e of h) {
-						this.dependencyTracker?.recordNamedData(e, s);
-						let t = e.startsWith("g_") ? f : p;
-						if (!t.has(e)) return t.get(e, n), s;
-					}
+				if (!i || i(s)) if (m = o[s], h = a[s] ?? null, m !== Nt.dependency) h === null ? this[m](s) : this[m](s, ...h);
+				else for (let e of h) {
+					this.dependencyTracker?.recordNamedData(e, s);
+					let t = e.startsWith("g_") ? f : p;
+					if (!t.has(e)) return t.get(e, n), s;
 				}
 				if (s++, s === c) return s;
 				if (l && ++d > Cr) {
@@ -7429,16 +7423,14 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 		}
 		stroke(e, t, n = !0) {
 			let r = n && this.#h(this.current.strokeAlpha), i = this.ctx, a = this.current.strokeColor;
-			if (i.globalAlpha = this.current.strokeAlpha, this.contentVisible) {
-				if (typeof a == "object" && a?.getPattern) {
-					let n = a.isModifyingCurrentTransform() ? i.getTransform() : null;
-					if (i.save(), i.strokeStyle = a.getPattern(i, this, ye(i), Y.STROKE, e), n) {
-						let e = new Path2D();
-						e.addPath(t, i.getTransform().invertSelf().multiplySelf(n)), t = e;
-					}
-					this.rescaleAndStroke(t, !1), i.restore();
-				} else this.rescaleAndStroke(t, !0);
-			}
+			if (i.globalAlpha = this.current.strokeAlpha, this.contentVisible) if (typeof a == "object" && a?.getPattern) {
+				let n = a.isModifyingCurrentTransform() ? i.getTransform() : null;
+				if (i.save(), i.strokeStyle = a.getPattern(i, this, ye(i), Y.STROKE, e), n) {
+					let e = new Path2D();
+					e.addPath(t, i.getTransform().invertSelf().multiplySelf(n)), t = e;
+				}
+				this.rescaleAndStroke(t, !1), i.restore();
+			} else this.rescaleAndStroke(t, !0);
 			this.dependencyTracker?.recordDependencies(e, K.stroke), n && this.consumePath(e, t, this.current.getClippedPathBoundingBox(Y.STROKE, M(this.ctx))), i.globalAlpha = this.current.fillAlpha, this.#g(r);
 		}
 		closeStroke(e, t) {
@@ -7557,27 +7549,23 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			if ((c.disableFontFace || f || p || m) && !c.missingFile && (h = c.getPathGenerator(this.commonObjs, t)), h && (c.disableFontFace || p || m)) {
 				o.save(), o.translate(n, r), o.scale(u, -u), this.dependencyTracker?.recordCharacterBBox(e, o, c);
 				let t;
-				if (d === z.FILL || d === z.FILL_STROKE) {
-					if (i) {
-						t = o.getTransform(), o.setTransform(...i);
-						let e = this.#_(h, t, i);
-						o.fill(e);
-					} else o.fill(h);
-				}
-				if (d === z.STROKE || d === z.FILL_STROKE) {
-					if (a) {
-						t ||= o.getTransform(), o.setTransform(...a);
-						let { a: e, b: n, c: r, d: i } = t, s = H.inverseTransform(a), c = H.transform([
-							e,
-							n,
-							r,
-							i,
-							0,
-							0
-						], s);
-						H.singularValueDecompose2dScale(c, Z), o.lineWidth *= Math.max(Z[0], Z[1]) / u, o.stroke(this.#_(h, t, a));
-					} else o.lineWidth /= u, o.stroke(h);
-				}
+				if (d === z.FILL || d === z.FILL_STROKE) if (i) {
+					t = o.getTransform(), o.setTransform(...i);
+					let e = this.#_(h, t, i);
+					o.fill(e);
+				} else o.fill(h);
+				if (d === z.STROKE || d === z.FILL_STROKE) if (a) {
+					t ||= o.getTransform(), o.setTransform(...a);
+					let { a: e, b: n, c: r, d: i } = t, s = H.inverseTransform(a), c = H.transform([
+						e,
+						n,
+						r,
+						i,
+						0,
+						0
+					], s);
+					H.singularValueDecompose2dScale(c, Z), o.lineWidth *= Math.max(Z[0], Z[1]) / u, o.stroke(this.#_(h, t, a));
+				} else o.lineWidth /= u, o.stroke(h);
 				o.restore();
 			} else (d === z.FILL || d === z.FILL_STROKE) && (o.fillText(t, n, r), this.dependencyTracker?.recordCharacterBBox(e, o, c, u, n, r, () => o.measureText(t))), (d === z.STROKE || d === z.FILL_STROKE) && (this.dependencyTracker && this.dependencyTracker?.recordCharacterBBox(e, o, c, u, n, r, () => o.measureText(t)).recordDependencies(e, K.stroke), o.strokeText(t, n, r));
 			f && ((this.pendingTextPaths ||= []).push({
@@ -7637,8 +7625,8 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 				n.x += i * g * d, o.restore(), this.compose(), this.#g(a);
 				return;
 			}
-			let T = 0, E = 0;
-			for (; E < f; ++E) {
+			let T = 0, E;
+			for (E = 0; E < f; ++E) {
 				let n = t[E];
 				if (typeof n == "number") {
 					T += m * n * i / 1e3;
@@ -7869,25 +7857,24 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 					n.canvas.height
 				], t, a);
 				let o = this.#l.at(-1);
-				if (this.#e > 0) {
-					if (i.hasInnerBackdrop) {
-						let { width: e, height: a } = n.canvas, o = this.canvasFactory.create(e, a), s = o.context;
-						s.drawImage(r.canvas, i.offsetX, i.offsetY, e, a, 0, 0, e, a), s.globalCompositeOperation = "source-over", s.drawImage(n.canvas, 0, 0);
-						let c = this.#f(n.canvas);
-						s.globalCompositeOperation = "destination-in", s.drawImage(c.canvas, 0, 0);
-						let l = this.ctx.globalCompositeOperation, u = this.ctx.globalAlpha, d = this.ctx.filter;
-						this.ctx.save(), this.ctx.setTransform(...t), this.ctx.globalAlpha = 1, V.isCanvasFilterSupported && (this.ctx.filter = "none"), this.ctx.globalCompositeOperation = "destination-out", this.ctx.drawImage(c.canvas, 0, 0), this.ctx.globalCompositeOperation = l, this.ctx.globalAlpha = u, V.isCanvasFilterSupported && (this.ctx.filter = d ?? "none"), this.ctx.drawImage(o.canvas, 0, 0), this.ctx.restore(), this.canvasFactory.destroy(c), this.canvasFactory.destroy(o);
-					} else {
-						let e = o?.backdropCtx ?? null;
-						this.#m(this.ctx, n.canvas, {
-							backdropCanvas: e?.canvas ?? null,
-							destTransform: t,
-							backdropOffset: e ? [o.offsetX + i.offsetX, o.offsetY + i.offsetY] : [0, 0],
-							sourceAlpha: this.ctx.globalAlpha,
-							sourceFilter: this.ctx.filter
-						});
-					}
+				if (this.#e > 0) if (i.hasInnerBackdrop) {
+					let { width: e, height: a } = n.canvas, o = this.canvasFactory.create(e, a), s = o.context;
+					s.drawImage(r.canvas, i.offsetX, i.offsetY, e, a, 0, 0, e, a), s.globalCompositeOperation = "source-over", s.drawImage(n.canvas, 0, 0);
+					let c = this.#f(n.canvas);
+					s.globalCompositeOperation = "destination-in", s.drawImage(c.canvas, 0, 0);
+					let l = this.ctx.globalCompositeOperation, u = this.ctx.globalAlpha, d = this.ctx.filter;
+					this.ctx.save(), this.ctx.setTransform(...t), this.ctx.globalAlpha = 1, V.isCanvasFilterSupported && (this.ctx.filter = "none"), this.ctx.globalCompositeOperation = "destination-out", this.ctx.drawImage(c.canvas, 0, 0), this.ctx.globalCompositeOperation = l, this.ctx.globalAlpha = u, V.isCanvasFilterSupported && (this.ctx.filter = d ?? "none"), this.ctx.drawImage(o.canvas, 0, 0), this.ctx.restore(), this.canvasFactory.destroy(c), this.canvasFactory.destroy(o);
 				} else {
+					let e = o?.backdropCtx ?? null;
+					this.#m(this.ctx, n.canvas, {
+						backdropCanvas: e?.canvas ?? null,
+						destTransform: t,
+						backdropOffset: e ? [o.offsetX + i.offsetX, o.offsetY + i.offsetY] : [0, 0],
+						sourceAlpha: this.ctx.globalAlpha,
+						sourceFilter: this.ctx.filter
+					});
+				}
+				else {
 					if (i.replaceBackdrop) {
 						let e = new Path2D();
 						e.rect(0, 0, n.canvas.width, n.canvas.height), this.ctx.clip(e), this.ctx.globalCompositeOperation = "copy";
@@ -8097,13 +8084,12 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 				let { lineWidth: e } = this.current, { a: t, b: n, c: r, d: i } = this.ctx.getTransform(), a, o;
 				if (n === 0 && r === 0) {
 					let n = Math.abs(t), r = Math.abs(i);
-					if (n === r) {
-						if (e === 0) a = o = 1 / n;
-						else {
-							let t = n * e;
-							a = o = t < 1 ? 1 / t : 1;
-						}
-					} else if (e === 0) a = 1 / n, o = 1 / r;
+					if (n === r) if (e === 0) a = o = 1 / n;
+					else {
+						let t = n * e;
+						a = o = t < 1 ? 1 / t : 1;
+					}
+					else if (e === 0) a = 1 / n, o = 1 / r;
 					else {
 						let t = n * e, i = r * e;
 						a = t < 1 ? 1 / t : 1, o = i < 1 ? 1 / i : 1;
@@ -10357,12 +10343,10 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			}, { signal: this.#r._signal }), c;
 		}
 		update(e) {
-			if (this.#e) {
-				if (this.#t) {
-					let t = H.hexNums[Math.round(this.#n.opacity * 255)];
-					this.#e.value = e + t;
-				} else this.#e.value = e;
-			}
+			if (this.#e) if (this.#t) {
+				let t = H.hexNums[Math.round(this.#n.opacity * 255)];
+				this.#e.value = e + t;
+			} else this.#e.value = e;
 		}
 		updateOpacity(e) {
 			if (!this.#e || !this.#t) return;
@@ -10813,7 +10797,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			});
 		}
 		updateOC(e) {
-			this.data.oc && e && (e.isVisible(this.data.oc) ? this.show() : this.hide());
+			!this.data.oc || !e || (e.isVisible(this.data.oc) ? this.show() : this.hide());
 		}
 		get width() {
 			return this.data.rect[2] - this.data.rect[0];
@@ -11079,16 +11063,15 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 						let { target: t } = e;
 						if (d && (t.type = l, u && (t.step = u)), s.userValue) {
 							let e = s.userValue;
-							if (d) {
-								if (l === "time") {
-									let n = new Date(e);
-									t.value = [
-										n.getHours(),
-										n.getMinutes(),
-										n.getSeconds()
-									].map((e) => e.toString().padStart(2, "0")).join(":");
-								} else t.value = new Date(e - wi).toISOString().split(l === "date" ? "T" : ".", 1)[0];
-							} else t.value = e;
+							if (d) if (l === "time") {
+								let n = new Date(e);
+								t.value = [
+									n.getHours(),
+									n.getMinutes(),
+									n.getSeconds()
+								].map((e) => e.toString().padStart(2, "0")).join(":");
+							} else t.value = new Date(e - wi).toISOString().split(l === "date" ? "T" : ".", 1)[0];
+							else t.value = e;
 						}
 						s.lastCommittedValue = t.value, s.commitKey = 1, this.data.actions?.Focus || (s.focused = !0);
 					}), n.addEventListener("updatefromsandbox", (n) => {
@@ -13383,7 +13366,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			this.#d && (this.#y({ highlightOutlines: this.#l.getNewOutline(e / 2) }), this.fixAndSetPosition(), this.setDims());
 		}
 		#C() {
-			this.#u !== null && this.parent && (this.parent.drawLayer.remove(this.#u), this.#u = null, this.parent.drawLayer.remove(this.#m), this.#m = null);
+			this.#u === null || !this.parent || (this.parent.drawLayer.remove(this.#u), this.#u = null, this.parent.drawLayer.remove(this.#m), this.#m = null);
 		}
 		#w(e = this.parent) {
 			this.#u === null && ({id: this.#u, clipPathId: this.#r} = e.drawLayer.draw({
@@ -13841,7 +13824,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			this.parent && !e ? (this._uiManager.removeShouldRescale(this), this.#s()) : e && (this._uiManager.addShouldRescale(this), this.#c(e), t = !this.parent && this.div?.classList.contains("selectedEditor")), super.setParent(e), t && this.select();
 		}
 		#s() {
-			this._drawId !== null && this.parent && (this.parent.drawLayer.remove(this._drawId), this._drawId = null, this._drawingOptions.reset());
+			this._drawId === null || !this.parent || (this.parent.drawLayer.remove(this._drawId), this._drawId = null, this._drawingOptions.reset());
 		}
 		#c(e = this.parent) {
 			if (this._drawId === null || this.parent !== e) {
@@ -15120,20 +15103,19 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 		render() {
 			if (this.div) return this.div;
 			let t, n, { _isCopy: r } = this;
-			if (r && (this._isCopy = !1, t = this.x, n = this.y), super.render(), this._drawId === null) {
-				if (this.#n) {
-					let { lines: t, mustSmooth: n, areContours: r, description: i, uuid: a, heightInPage: o } = this.#n, { rawDims: { pageWidth: s, pageHeight: c }, rotation: l } = this.parent.viewport, u = va.processDrawnLines({
-						lines: t,
-						pageWidth: s,
-						pageHeight: c,
-						rotation: l,
-						innerMargin: e._INNER_MARGIN,
-						mustSmooth: n,
-						areContours: r
-					});
-					this.addSignature(u, o, i, a);
-				} else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: "" })), this.div.hidden = !0, this._uiManager.getSignature(this);
-			} else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: this.#t || "" }));
+			if (r && (this._isCopy = !1, t = this.x, n = this.y), super.render(), this._drawId === null) if (this.#n) {
+				let { lines: t, mustSmooth: n, areContours: r, description: i, uuid: a, heightInPage: o } = this.#n, { rawDims: { pageWidth: s, pageHeight: c }, rotation: l } = this.parent.viewport, u = va.processDrawnLines({
+					lines: t,
+					pageWidth: s,
+					pageHeight: c,
+					rotation: l,
+					innerMargin: e._INNER_MARGIN,
+					mustSmooth: n,
+					areContours: r
+				});
+				this.addSignature(u, o, i, a);
+			} else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: "" })), this.div.hidden = !0, this._uiManager.getSignature(this);
+			else this.div.setAttribute("data-l10n-args", JSON.stringify({ description: this.#t || "" }));
 			return r && (this._isCopy = !0, this._moveAfterPaste(t, n)), this.div;
 		}
 		setUuid(e) {
@@ -16001,7 +15983,7 @@ var P, Ct, wt, Tt, F, I, Et, Dt, Ot, L, R, kt, z, At, B, jt, Mt, Nt, Pt, Ft, It,
 			if (this.pageIndex = r, this.#r = t, this.#i = n, i) {
 				let t = e.#p.get(i);
 				if (t?.selectionDiv && (t.selectionDiv.remove(), e.#u.delete(t.selectionDiv)), e.#p.set(i, { drawLayer: this }), e.#f.add(i), this.#n = i, this.#a = new MutationObserver((t) => {
-					if (this.#e && this.#n?.isConnected && e.#h()) {
+					if (!(!this.#e || !this.#n?.isConnected || !e.#h())) {
 						for (let { addedNodes: n } of t) for (let t of n) if (t.nodeType === Node.ELEMENT_NODE && t.classList.contains("endOfContent")) {
 							e.#_();
 							return;
@@ -16755,7 +16737,7 @@ function to({ doc: e, baseSize: t, currentPage: n, onSelectPage: i }) {
 	r(() => {
 		let t = !1;
 		return e.getAttachments().then((e) => {
-			!t && e && h([...e.entries()].map(([e, t]) => ({
+			t || !e || h([...e.entries()].map(([e, t]) => ({
 				id: e,
 				filename: t.filename,
 				content: t.content ?? null
