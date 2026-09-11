@@ -897,6 +897,17 @@ return [
                 'items' => 'Artikel',
                 'sku' => 'SKU',
                 'qty' => 'Menge',
+                'shipping' => 'Versand',
+                'delivery-slot' => 'Lieferfenster',
+            ],
+            'shipping' => [
+                'standard' => 'Standard',
+                'express' => 'Express',
+            ],
+            'delivery' => [
+                'standard' => 'Innerhalb von 3–5 Werktagen',
+                'express-morning' => 'Nächster Werktag, vormittags',
+                'express-afternoon' => 'Nächster Werktag, nachmittags',
             ],
         ],
     ],
