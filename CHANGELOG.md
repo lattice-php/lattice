@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.76.1](https://github.com/lattice-php/lattice/compare/0.76.0...0.76.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **core:** autowire evaluated closures through the current container ([#602](https://github.com/lattice-php/lattice/issues/602)) ([a0997ec](https://github.com/lattice-php/lattice/commit/a0997eca0b6e44338b12746551268b2d464e844f))
+* **table:** keep row keys a rendering column displays ([#600](https://github.com/lattice-php/lattice/issues/600)) ([037f3ec](https://github.com/lattice-php/lattice/commit/037f3ecbacf7dfafeb2a06ec226a1f935e0e4d3a))
+* **vite:** scan every framework package for Tailwind utilities ([#601](https://github.com/lattice-php/lattice/issues/601)) ([2fbcfe0](https://github.com/lattice-php/lattice/commit/2fbcfe018716036aba932c5dccdbc745bb315ede))
+
 ## [0.76.0](https://github.com/lattice-php/lattice/compare/0.75.0...0.76.0) (2026-09-10)
 
 
