@@ -169,6 +169,46 @@ test('a resolver depends on another key through the typed ContextResolutions', f
     expect($resolved->id)->toBe('w5');
 });
 
+test('a resolver reading the context resolves the same value again under another parent', function (): void {
+    Lattice::context('client', fn (string $value, array $context): ContextResolverWidget => new ContextResolverWidget($context['realm'].'/'.$value));
+
+    $resolutions = app(ContextResolutions::class);
+    $acme = $resolutions->resolve('client', '5', ['realm' => 'acme', 'client' => '5']);
+    $globex = $resolutions->resolve('client', '5', ['realm' => 'globex', 'client' => '5']);
+    assert($acme instanceof ContextResolverWidget && $globex instanceof ContextResolverWidget);
+
+    expect($acme->id)->toBe('acme/5')
+        ->and($globex->id)->toBe('globex/5');
+});
+
+test('a resolver ignoring the context still runs once per value across parents', function (): void {
+    Lattice::context('widget', function (string $value): ContextResolverWidget {
+        ContextResolverWidgetAction::$calls++;
+
+        return new ContextResolverWidget($value);
+    });
+
+    $resolutions = app(ContextResolutions::class);
+    $resolutions->resolve('widget', 'w1', ['realm' => 'acme', 'widget' => 'w1']);
+    $resolutions->resolve('widget', 'w1', ['realm' => 'globex', 'widget' => 'w1']);
+
+    expect(ContextResolverWidgetAction::$calls)->toBe(1);
+});
+
+test('a typed contextModel returns the resolved object and rejects a resolver returning another class', function (): void {
+    Lattice::context('widget', fn (string $value): ContextResolverWidget => new ContextResolverWidget($value));
+    Lattice::actions([ContextResolverTypedAction::class]);
+
+    $this->callAction(ContextResolverTypedAction::class, [], ['widget' => 'w1', 'expects' => ContextResolverWidget::class])
+        ->assertOk()
+        ->assertJsonPath('data.id', 'w1');
+
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->callAction(ContextResolverTypedAction::class, [], ['widget' => 'w1', 'expects' => Product::class]))
+        ->toThrow(LogicException::class, 'Context [widget] resolved to [ContextResolverWidget], which is not a [Workbench\App\Models\Product].');
+});
+
 test('a closure resolver records its declared return type as the model class for frame matching', function (): void {
     Lattice::context('widget', fn (string $value): ContextResolverWidget => new ContextResolverWidget($value));
 
@@ -269,5 +309,23 @@ final class ContextResolverWidgetAction extends ActionDefinition
         assert($widget instanceof ContextResolverWidget);
 
         return ActionResult::success(['id' => $widget->id]);
+    }
+}
+
+#[AsAction('context-resolver.typed')]
+final class ContextResolverTypedAction extends ActionDefinition
+{
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Typed');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        /** @var class-string $expects */
+        $expects = $this->contextString('expects');
+        $widget = $this->contextModel('widget', $expects);
+
+        return ActionResult::success(['id' => $widget instanceof ContextResolverWidget ? $widget->id : null]);
     }
 }

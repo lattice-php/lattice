@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lattice\Tests;
 
 use Lattice\Support\Testing\ChecksWorkbenchAssets;
+use Lattice\Support\Testing\KeepsBrowserConnectionsAlive;
 use Pest\Browser\Api\ArrayablePendingAwaitablePage;
 use Pest\Browser\Api\PendingAwaitablePage;
 use Pest\Browser\Playwright\Playwright;
@@ -13,6 +14,7 @@ use Workbench\App\Models\User;
 class BrowserTestCase extends TestCase
 {
     use ChecksWorkbenchAssets;
+    use KeepsBrowserConnectionsAlive;
 
     protected ?User $workbenchUser = null;
 
@@ -22,8 +24,6 @@ class BrowserTestCase extends TestCase
         parent::setUp();
 
         $this->assertWorkbenchManifestExists();
-
-        \startBrowserHttpServerWithLongKeepAlive();
 
         // CI runners are slower than Playwright's tight 5s default, which
         // intermittently trips browser actions/assertions under load.

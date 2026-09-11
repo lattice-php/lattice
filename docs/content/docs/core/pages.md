@@ -154,14 +154,15 @@ too.
 
 `#[AsPage]` declares how the page is routed and framed:
 
-| Argument     | Purpose                                                                                                                                                                         |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `route`      | The URL path. Supports parameters (`/products/{product}/edit`).                                                                                                                 |
-| `name`       | The route name. Defaults to the route segments joined by dots (`products.edit`), falling back to the class name without its `Page` suffix.                                      |
-| `layout`     | The [layout](/core/layouts/) the page renders into — a [`PageLayout`](/advanced/enums/#pages) or a registered layout key. Defaults to `PageLayout::None` (no shell).            |
-| `width`      | The measure the content is capped to, centred in the layout slot — a [`PageWidth`](/advanced/enums/#pages) (`Full`, `Large`, `Medium`, `Small`). Defaults to `PageWidth::Full`. |
-| `middleware` | Extra middleware for the page's route — a string or an array, merged after the `lattice.pages.middleware` config default (`['web']`).                                           |
-| `can`        | Abilities the current user must pass before the page renders — a string or an array. See [Authorization](/core/authorization/).                                                 |
+| Argument     | Purpose                                                                                                                                                                          |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `route`      | The URL path. Supports parameters (`/products/{product}/edit`).                                                                                                                  |
+| `name`       | The route name. Defaults to the route segments joined by dots (`products.edit`), falling back to the class name without its `Page` suffix.                                       |
+| `layout`     | The [layout](/core/layouts/) the page renders into — a [`PageLayout`](/advanced/enums/#pages) or a registered layout key. Defaults to `PageLayout::None` (no shell).             |
+| `width`      | The measure the content is capped to, centred in the layout slot — a [`PageWidth`](/advanced/enums/#pages) (`Full`, `Large`, `Medium`, `Small`). Defaults to `PageWidth::Full`.  |
+| `middleware` | Extra middleware for the page's route — a string or an array, merged after the `lattice.pages.middleware` config default (`['web']`).                                            |
+| `can`        | Abilities the current user must pass before the page renders — a string or an array. See [Authorization](/core/authorization/).                                                  |
+| `endpoints`  | An [endpoint area](/introduction/configuration/#endpoint-areas) registered with `Lattice::endpoints()` — the page's components call back into that area's routes and middleware. |
 
 ```php
 use Lattice\Core\Enums\PageWidth;
@@ -184,8 +185,8 @@ that must not be public.
 
 ## Shared base pages
 
-`layout`, `width`, and `middleware` are inherited: a page that omits one of them takes the nearest
-value set by a parent class. Put the shared framing on a base page once, and concrete pages declare
+`layout`, `width`, `middleware`, and `endpoints` are inherited: a page that omits one of them takes
+the nearest value set by a parent class. Put the shared framing on a base page once, and concrete pages declare
 only their own route:
 
 ```php

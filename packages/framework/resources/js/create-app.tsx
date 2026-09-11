@@ -1,5 +1,5 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
-import { createInertiaApp } from "@inertiajs/react";
+import { createInertiaApp, router } from "@inertiajs/react";
 import { useEffect, useState, type ReactElement, type ReactNode } from "react";
 import { initializeAppearance, seedAppearance } from "./appearance";
 import { setRefRefreshEndpoint } from "@lattice-php/core/api";
@@ -114,6 +114,12 @@ function AwaitReady({ ready, children }: { ready: Promise<unknown>; children: Re
   return isReady ? children : null;
 }
 
+function applyRefRefreshEndpoint(shared: unknown): void {
+  if (isRecord(shared) && isRecord(shared.urls) && typeof shared.urls.refreshRef === "string") {
+    setRefRefreshEndpoint(shared.urls.refreshRef);
+  }
+}
+
 /**
  * Bootstrap an Inertia app with the Lattice shell: the page/layout resolvers
  * (server-driven Lattice pages and normal Inertia pages alike), the Provider —
@@ -140,6 +146,9 @@ export function createLatticeApp({
   setDefaultRegistry(activeRegistry);
   setRequestHeaderProvider(localeHeader);
   registerRefRenewal();
+  // A ref refreshes only in the endpoint area it was minted for, so a visit to
+  // a page served from another area has to take the refresh endpoint along.
+  router.on("navigate", (event) => applyRefRefreshEndpoint(event.detail.page.props.lattice));
 
   const i18nEnabled = i18n !== false;
   const pluginI18n = plugins?.flatMap((plugin) => (plugin.i18n ? [plugin.i18n] : [])) ?? [];
@@ -174,13 +183,7 @@ export function createLatticeApp({
             .getElementById(inertiaOptions.id ?? "app")
             ?.hasAttribute("data-server-rendered") === true;
 
-        if (
-          isRecord(shared) &&
-          isRecord(shared.urls) &&
-          typeof shared.urls.refreshRef === "string"
-        ) {
-          setRefRefreshEndpoint(shared.urls.refreshRef);
-        }
+        applyRefRefreshEndpoint(shared);
 
         // Loaded on demand so apps without the shared i18n prop never ship the
         // i18next backend; the disabled-config call still stores the timezone.

@@ -22,6 +22,7 @@ use Lattice\Core\LatticeRegistry;
  * @method static void searchProviders(class-string<\Lattice\Search\Contracts\SearchResultProvider>|array<int, class-string<\Lattice\Search\Contracts\SearchResultProvider>> $providers)
  * @method static \Lattice\Search\SearchProviderRegistry searchProviderRegistry()
  * @method static void context(string $key, \Closure|class-string $resolver, ?string $by = null, ?\Closure $keyBy = null, ?class-string $model = null)
+ * @method static void endpoints(string $name, string $prefix, array<int, string>|string $middleware = [])
  * @method static void extend(string $name, \Closure $factory, int $priority = 0)
  * @method static void theme(\Lattice\Theme\Theme|\Closure $theme)
  * @method static void translations(string $namespace, string $path)

@@ -266,6 +266,33 @@ $this->loadFragment(SalesChart::class)
     ->assertOk();
 ```
 
+A table response addresses its rows through `rows()` and `row($id)`; `row()` fails, listing the ids the
+table did return, when no row matches. Each `TableRow` exposes its values, its row actions as a
+component tree, the ids of every action and link among them (menus and groups flattened), and its row
+click:
+
+```php
+$row = $this->loadTable(UsersTable::class)->assertOk()->row($user->id);
+
+expect($row->value('email'))->toBe($user->email)
+    ->and($row->actionIds())->toBe(['users.block', 'users.delete'])
+    ->and($row->clickHref())->toBe("/users/{$user->id}");
+```
+
+Pass the identifying field as the second argument — `row($uuid, 'uuid')` — when the rows are not keyed
+by `id`.
+
+A component whose definition denies the current user is never rendered, so the helpers above cannot
+build its ref. `callDeniedAction()`, `submitDeniedForm()`, `loadDeniedTable()`, `loadDeniedFragment()`,
+and `callDeniedBulkAction()` seal the ref directly against the definition's key and call the live
+endpoint, to assert the `403` a real request gets:
+
+```php
+$this->actingAs($member)
+    ->loadDeniedFragment(ActivityChangesFragment::class, ['activity' => $activity->id])
+    ->assertForbidden();
+```
+
 Action responses also provide typed assertions for [effects](/actions/effects/), keeping tests
 independent of wire discriminators and payload structure:
 
@@ -314,6 +341,24 @@ response rather than the redirect-back-with-errors path of a non-JSON post. Asse
 `assertJsonValidationErrors()` (not `assertSessionHasErrors()`), and for multi-step flows that
 reuse a single sealed ref, build the request by hand instead.
 :::
+
+## Browser tests
+
+pest-plugin-browser serves the app from an in-process server that closes a connection after 15 idle
+seconds, while Chrome keeps pooled connections for minutes. A request Chrome sends on a connection the
+server is closing dies at the network level — a dynamic import fails to load, an Inertia submit
+vanishes without an error — typically after an assertion has polled the DOM for a while. Use
+`KeepsBrowserConnectionsAlive` on your browser test case to start that server with an hour-long
+keep-alive instead; the test case runs its `setUpKeepsBrowserConnectionsAlive()` on its own:
+
+```php
+use Lattice\Support\Testing\KeepsBrowserConnectionsAlive;
+
+abstract class BrowserTestCase extends TestCase
+{
+    use KeepsBrowserConnectionsAlive;
+}
+```
 
 ## Test selectors
 

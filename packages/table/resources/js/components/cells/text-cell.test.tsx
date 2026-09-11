@@ -36,6 +36,20 @@ describe("TextCell", () => {
     expect(screen.getByText("New, Sale")).toBeInTheDocument();
   });
 
+  it("labels each item of a list value through the column options", () => {
+    renderCell(
+      {
+        options: [
+          { label: "Authorization code", value: "authorization_code" },
+          { label: "Refresh token", value: "refresh_token" },
+        ],
+      },
+      ["authorization_code", "refresh_token"],
+    );
+
+    expect(screen.getByText("Authorization code, Refresh token")).toBeInTheDocument();
+  });
+
   it("renders a css row colour as an inline tone pair", () => {
     renderCell({ badge: { colorKey: "color" } }, "Active", { color: "#dc2626" });
 

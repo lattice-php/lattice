@@ -24,6 +24,7 @@ final class RequestReferenceIdentity implements ResolvesReferenceIdentity
             sessionHash: $request->hasSession()
                 ? hash('sha256', $request->session()->getId())
                 : null,
+            area: app(EndpointAreas::class)->current()->name,
         );
     }
 }

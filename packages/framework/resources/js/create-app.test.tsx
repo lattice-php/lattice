@@ -1,10 +1,11 @@
 import type { Page as InertiaPage, VisitOptions } from "@inertiajs/core";
-import { createInertiaApp as inertiaCreateInertiaApp } from "@inertiajs/react";
+import { createInertiaApp as inertiaCreateInertiaApp, router } from "@inertiajs/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { stubMatchMedia } from "@lattice-php/core/test-support";
+import { refreshRef, setRefRefreshEndpoint } from "@lattice-php/core/api";
+import { jsonResponse, stubMatchMedia } from "@lattice-php/core/test-support";
 import { configureI18nFromPageProps as uiConfigureI18nFromPageProps } from "@lattice-php/ui/i18n/page-props";
 
 vi.mock("@inertiajs/react", async () =>
@@ -67,6 +68,29 @@ afterEach(() => {
 });
 
 describe("createLatticeApp", () => {
+  it("refreshes refs through the endpoint of the page a visit lands on", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () => jsonResponse({ ref: "renewed-ref" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    createLatticeApp();
+
+    const onNavigate = vi.mocked(router.on).mock.calls.find(([event]) => event === "navigate")?.[1];
+    onNavigate?.(
+      new CustomEvent("inertia:navigate", {
+        detail: {
+          page: fakePage({ lattice: { urls: { refreshRef: "/account/lattice/refs/refresh" } } }),
+        },
+      }),
+    );
+
+    await refreshRef("sealed-ref");
+
+    expect(fetchMock).toHaveBeenCalledWith("/account/lattice/refs/refresh", expect.anything());
+
+    setRefRefreshEndpoint("/lattice/refs/refresh");
+    vi.unstubAllGlobals();
+  });
+
   it("resolves server-driven lattice pages", () => {
     createLatticeApp();
 

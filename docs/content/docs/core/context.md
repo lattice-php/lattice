@@ -65,6 +65,11 @@ Every `Definition` (form, table, action, bulk action, fragment, layout) reads co
   `LogicException` when no resolver is registered for the key at all.
 - **`contextModelOrNull('key')`** — the same resolution, returning `null` instead of aborting.
 
+Pass the class you expect as the second argument — `contextModel('workspace', Workspace::class)` —
+and the result is typed as that class for static analysis. It still resolves through the registered
+resolver; a result of any other class means the resolver is registered wrong and throws a
+`LogicException`.
+
 ```php
 use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
@@ -88,11 +93,19 @@ incomplete component is simply hidden, and a strict accessor's `abort(404)` woul
 down with it. See [Authorization](/core/authorization/) for the same rule applied to `can`.
 :::
 
-`Lattice\Core\Concerns\ResolvesContextModels` keeps its explicit two-argument form —
-`contextModel('workspace', Workspace::class, by: 'slug')` — which resolves through the model's own route
-binding directly, with nothing registered. Its one-argument form, `contextModel('workspace')`, delegates
-to the registry above and asserts the result is an Eloquent model, throwing a `LogicException`
-otherwise.
+`Lattice\Core\Concerns\ResolvesContextModels` narrows the same accessors to Eloquent models. A key
+with a registered resolver resolves through it, typed form included, so the resolver's own rules —
+a dependent resolver's ownership check — always apply. A key with **no** resolver resolves through
+the model's own route binding instead, and so does an explicit `by` column, even when a resolver is
+registered for the key:
+
+```php
+$workspace = $this->contextModel('workspace', Workspace::class); // the registered resolver
+$owner = $this->contextModel('owner', User::class, by: 'email'); // route binding on `email`
+```
+
+The one-argument form, `contextModel('workspace')`, asserts the resolved object is an Eloquent model,
+throwing a `LogicException` otherwise.
 
 ## Memoization
 
@@ -100,6 +113,11 @@ A resolver runs **at most once per request** for a given key and scalar value, h
 read and by however many definitions. Two `contextModel()` calls in the same `handle()`, or an
 `authorize()` and the `handle()` that follows it, see the result of one evaluation. A miss ("not
 found") is cached too.
+
+A resolver that reads the surrounding context — a `$context` parameter, or another key through a typed
+`ContextResolutions` — can answer the same value differently under another parent: a client looked up
+within the realm the context names. Its results are memoized per key, value, **and** context, so two
+components under different realms never share one resolution.
 
 Memoization is per key **and value**, though, so a resolver is the wrong place for a side effect. A
 page that builds one gated component per workspace — a switcher menu — resolves the key once per

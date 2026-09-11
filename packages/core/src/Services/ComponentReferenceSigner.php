@@ -28,6 +28,7 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
             'context' => $context,
             'user_id' => $identity->userId,
             'session' => $identity->sessionHash,
+            'area' => $identity->area,
             'expires_at' => now()->addMinutes($this->lifetime())->timestamp,
         ];
 
@@ -97,7 +98,9 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
 
     /**
      * Decrypt a token and verify everything that does not depend on the caller's
-     * expectations or the clock: payload structure and the user/session binding.
+     * expectations or the clock: payload structure and the user/session/area
+     * binding. The area check keeps a reference minted behind one area's
+     * middleware from being replayed — or refreshed — through another's.
      *
      * @return array<string, mixed>|null
      */
@@ -124,6 +127,10 @@ final readonly class ComponentReferenceSigner implements SignsComponentReference
         }
 
         if (! $this->sessionMatches($identity, $payload['session'] ?? null)) {
+            return null;
+        }
+
+        if (($payload['area'] ?? null) !== $identity->area) {
             return null;
         }
 

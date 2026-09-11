@@ -33,5 +33,9 @@ BadgeColumn::make('status')->colors([
 ]);
 ```
 
+A cell whose value is a list — a JSON array cast, say — renders one pill per item, each labelled
+through the column's [`options()`](/tables/columns/overview/#value-labels) and coloured through its
+`colors()` map.
+
 When the colour lives on the row instead of a fixed map — a `status_color` field — a
 [Text column's `->badge()`](/tables/columns/text/#as-a-badge) reads it per row.

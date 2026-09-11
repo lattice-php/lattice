@@ -16,6 +16,7 @@ use Lattice\Actions\Components\Action;
 use Lattice\Actions\Components\BulkAction;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Attributes\AsBulkAction;
+use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Attributes\DefinitionAttribute;
 use Lattice\Core\Contracts\SignsComponentReferences;
 use Lattice\Core\Services\ComponentReferenceSigner;
@@ -26,6 +27,7 @@ use Lattice\Form\FormDefinition;
 use Lattice\Form\FormRegistry;
 use Lattice\Fragments\Components\Fragment;
 use Lattice\Fragments\FragmentDefinition;
+use Lattice\Fragments\FragmentRegistry;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\Components\Table;
 use Lattice\Table\TableDefinition;
@@ -157,13 +159,9 @@ trait InteractsWithLatticeComponents
     public function callDeniedAction(string $action, array $data = [], array $context = []): LatticeTestResponse
     {
         $key = $this->deniedDefinitionKey($action, AsAction::class);
+        $ref = $this->sealDeniedRef('action', $key, $context);
 
-        return $this->latticeRequest(
-            'post',
-            app(ActionRegistry::class)->endpointFor($key),
-            $data,
-            $this->sealDeniedRef('action', $key, $context),
-        );
+        return $this->latticeRequest('post', app(ActionRegistry::class)->endpointFor($key), $data, $ref);
     }
 
     /**
@@ -175,13 +173,9 @@ trait InteractsWithLatticeComponents
     public function submitDeniedForm(string $form, array $data = [], array $context = []): LatticeTestResponse
     {
         $key = $this->deniedDefinitionKey($form, AsForm::class);
+        $ref = $this->sealDeniedRef('form', $key, $context);
 
-        return $this->latticeRequest(
-            'post',
-            app(FormRegistry::class)->endpointFor($key),
-            $data,
-            $this->sealDeniedRef('form', $key, $context),
-        );
+        return $this->latticeRequest('post', app(FormRegistry::class)->endpointFor($key), $data, $ref);
     }
 
     /**
@@ -193,14 +187,28 @@ trait InteractsWithLatticeComponents
     public function loadDeniedTable(string $table, array $query = [], array $context = []): LatticeTestResponse
     {
         $key = $this->deniedDefinitionKey($table, AsTable::class);
+        $ref = $this->sealDeniedRef('table', $key, $context);
         $url = app(TableRegistry::class)->endpointFor($key);
 
         if ($query !== []) {
             $url .= '?'.http_build_query($query);
         }
 
+        return $this->latticeTestResponse($this->getJson($url, $this->latticeHeaders($ref)));
+    }
+
+    /**
+     * @param  class-string<FragmentDefinition>  $fragment
+     * @param  array<string, mixed>  $context
+     * @return LatticeTestResponse<Response>
+     */
+    public function loadDeniedFragment(string $fragment, array $context = []): LatticeTestResponse
+    {
+        $key = $this->deniedDefinitionKey($fragment, AsFragment::class);
+        $ref = $this->sealDeniedRef('fragment', $key, $context);
+
         return $this->latticeTestResponse(
-            $this->getJson($url, $this->latticeHeaders($this->sealDeniedRef('table', $key, $context))),
+            $this->getJson(app(FragmentRegistry::class)->endpointFor($key), $this->latticeHeaders($ref)),
         );
     }
 
@@ -216,13 +224,9 @@ trait InteractsWithLatticeComponents
     public function callDeniedBulkAction(string $bulkAction, array $data = [], array $context = []): LatticeTestResponse
     {
         $key = $this->deniedDefinitionKey($bulkAction, AsBulkAction::class);
+        $ref = $this->sealDeniedRef('action.bulk', $key, $context);
 
-        return $this->latticeRequest(
-            'post',
-            app(BulkActionRegistry::class)->endpointFor($key),
-            $data,
-            $this->sealDeniedRef('action.bulk', $key, $context),
-        );
+        return $this->latticeRequest('post', app(BulkActionRegistry::class)->endpointFor($key), $data, $ref);
     }
 
     /**
@@ -245,6 +249,10 @@ trait InteractsWithLatticeComponents
     }
 
     /**
+     * Seal before minting the endpoint: the identity refresh rebinds the
+     * request the endpoint's area is read from as well, so a URL minted
+     * first would follow the previous dispatch's area.
+     *
      * @param  array<string, mixed>  $context
      */
     private function sealDeniedRef(string $type, string $key, array $context): string

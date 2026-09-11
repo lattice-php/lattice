@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Services\EndpointAreas;
+use Lattice\Core\Values\EndpointArea;
 
 final class CalendarServiceProvider extends ServiceProvider
 {
@@ -22,12 +24,11 @@ final class CalendarServiceProvider extends ServiceProvider
     {
         Lattice::translations('calendar', __DIR__.'/../lang');
 
-        // Core's routes file has no contribution seam, so the package registers
-        // its endpoint itself, mirroring core's group conventions
-        // (config lattice.calendars.{middleware,endpoint}).
-        Route::middleware(config('lattice.calendars.middleware', ['web', 'auth']))
-            ->match(['get', 'patch'], (string) config('lattice.calendars.endpoint', 'lattice/calendars/{calendar}'), CalendarController::class)
-            ->where('calendar', '.*')
-            ->name('lattice.calendars.show');
+        $this->app->make(EndpointAreas::class)->routes(static function (EndpointArea $area): void {
+            Route::middleware($area->middleware('calendars'))
+                ->match(['get', 'patch'], $area->uri('calendars/{calendar}', 'lattice.calendars.endpoint'), CalendarController::class)
+                ->where('calendar', '.*')
+                ->name($area->routeName('lattice.calendars.show'));
+        });
     }
 }

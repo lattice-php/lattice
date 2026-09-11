@@ -6,6 +6,7 @@ namespace Workbench\App\Forms;
 use Illuminate\Http\Request;
 use Lattice\Facades\Effects;
 use Lattice\Form\Attributes\AsForm;
+use Lattice\Form\Components\Choice;
 use Lattice\Form\Components\Form;
 use Lattice\Form\Components\Repeater;
 use Lattice\Form\Components\TextInput;
@@ -31,6 +32,13 @@ class CheckoutWizardForm extends FormDefinition
                         TextInput::make('name', __('workbench.pages.wizard.fields.name'))->required(),
                         TextInput::make('email', __('workbench.pages.wizard.fields.email'))
                             ->rules(['required', 'email']),
+                        Choice::make('shipping', __('workbench.pages.wizard.fields.shipping'))
+                            ->options([
+                                Choice::option(__('workbench.pages.wizard.shipping.standard'), 'standard'),
+                                Choice::option(__('workbench.pages.wizard.shipping.express'), 'express'),
+                            ])
+                            ->value('standard')
+                            ->required(),
                     ]),
                 WizardStep::make('items')
                     ->description(__('workbench.pages.wizard.steps.items.description'))
@@ -40,6 +48,15 @@ class CheckoutWizardForm extends FormDefinition
                             TextInput::make('qty', __('workbench.pages.wizard.fields.qty'))
                                 ->rules(['required', 'integer']),
                         ]),
+                        Choice::make('delivery_slot', __('workbench.pages.wizard.fields.delivery-slot'))
+                            ->dependsOn('shipping', fn (Choice $component, callable $get): Choice => $component->options(
+                                $get('shipping') === 'express'
+                                    ? [
+                                        Choice::option(__('workbench.pages.wizard.delivery.express-morning'), 'express-morning'),
+                                        Choice::option(__('workbench.pages.wizard.delivery.express-afternoon'), 'express-afternoon'),
+                                    ]
+                                    : [Choice::option(__('workbench.pages.wizard.delivery.standard'), 'standard')],
+                            )),
                     ]),
                 WizardStep::make('review')
                     ->description(__('workbench.pages.wizard.steps.review.description'))

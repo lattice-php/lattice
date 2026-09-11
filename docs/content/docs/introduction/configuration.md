@@ -59,6 +59,48 @@ Endpoint URLs are minted from the named routes, so they honour your app's base p
 subdirectory installs included. To serve a type from a different path, register your own route
 under the same name after Lattice's routes load; the components pick it up automatically.
 
+### Endpoint areas
+
+Every page's components call back into the same endpoints, behind the same middleware. When part of
+your app signs users in differently — a customer portal on the `customer` guard, an account page on
+its own domain behind a tenant-resolving middleware — mount the endpoints a second time for it with
+`Lattice::endpoints()` from a service provider's `boot()`:
+
+```php
+use Lattice\Core\Facades\Lattice;
+
+Lattice::endpoints('portal', prefix: 'portal/lattice', middleware: ['web', 'auth:customer']);
+```
+
+The area gets the full set of component endpoints — forms, tables, actions, bulk actions, fragments,
+remote-source tokens, the ref refresh, and the board, calendar, tree, and block-editor endpoints of
+the installed packages — below its prefix, behind exactly the middleware you pass, named
+`lattice.{area}.…` (`lattice.portal.forms.handle`). The default routes stay as they are.
+Notifications and search are app-wide services, not component endpoints, and keep their own routes.
+
+A page opts in with `endpoints` on its [`#[AsPage]`](/core/pages/#the-aspage-attribute) attribute:
+
+```php
+#[AsPage(route: '/portal', middleware: 'auth:customer', endpoints: 'portal')]
+final class PortalPage extends Page {}
+```
+
+A page you cannot annotate — one a package renders from its own controller — joins the area through
+the `UseEndpointArea` middleware on its route instead:
+
+```php
+use Lattice\Http\Middleware\UseEndpointArea;
+
+Route::middleware(['web', 'auth:customer', UseEndpointArea::class.':portal'])->group(/* … */);
+```
+
+Every endpoint minted while that page renders points into the area, and so does every endpoint a
+request to the area builds in turn — a lazy table's row actions, a fragment's form, a modal's form.
+The [signed reference](/advanced/security/) of each component is bound to the area it was minted
+for: replayed against another area's endpoints — or refreshed through another area's ref refresh —
+it is refused with a `403`, so a request can never escape the middleware its page was served
+behind.
+
 The `notifications` block also takes `per_page`, `polling_interval`, and `prune_after_days` — see
 [Notifications](/components/notifications/#configuration).
 
