@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.77.0](https://github.com/lattice-php/lattice/compare/0.76.1...0.77.0) (2026-09-11)
+
+
+### Features
+
+* **core:** mount the component endpoints per endpoint area ([aea1987](https://github.com/lattice-php/lattice/commit/aea198788c7fc7f491477aa0e403428b560c6259))
+* **core:** type contextModel() while resolving through the registered resolver ([df2c5c0](https://github.com/lattice-php/lattice/commit/df2c5c0efcc4653a5766616f8f2b1da62bba6e57))
+* **framework:** add loadDeniedFragment() to the component test helpers ([49b7c37](https://github.com/lattice-php/lattice/commit/49b7c372ffc7ca1cc2780f1d84282244fa7e5cfe))
+* **framework:** address table response rows in tests ([f30d45b](https://github.com/lattice-php/lattice/commit/f30d45b00b22b9f2b9529afb041fc1038046d35a))
+* **framework:** select an endpoint area by route middleware ([fc4ed0d](https://github.com/lattice-php/lattice/commit/fc4ed0d9cb244d6a1462872be571ffbabc156a42))
+* **framework:** ship the browser keep-alive fix as a test case trait ([acfd81b](https://github.com/lattice-php/lattice/commit/acfd81be3a8a8eb28b740283a95541011a39ee9c))
+* **table:** label each item of a list-valued cell through its options ([753ce24](https://github.com/lattice-php/lattice/commit/753ce2407c9541f139ee7e0299c2a6a3b5a4f797))
+
+
+### Bug Fixes
+
+* **core:** memoize a context-reading resolver per context ([e16f777](https://github.com/lattice-php/lattice/commit/e16f777e1ca4fdc5146e34bcc6c874ab9b90b234))
+* **framework:** build the component helpers' request on the application URL ([36f260d](https://github.com/lattice-php/lattice/commit/36f260d16b4acc0dbcd7caa9de40ad10ff84768d))
+
 ## [0.76.1](https://github.com/lattice-php/lattice/compare/0.76.0...0.76.1) (2026-09-11)
 
 
