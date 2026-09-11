@@ -5,23 +5,27 @@ declare(strict_types=1);
 namespace Lattice\Core\Support\Evaluation;
 
 use Closure;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Contracts\Container\Container;
 use ReflectionFunction;
 use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
 use ReflectionUnionType;
 
+/**
+ * Autowires through the container that is current when a closure is evaluated,
+ * never one captured at construction: the evaluator is a singleton built at
+ * boot, and a long-running worker such as Octane serves each request from a
+ * cloned container it makes current, so the boot container would hand out an
+ * earlier request's scoped services.
+ */
 final readonly class Evaluator
 {
     /**
      * @param  list<class-string>  $nonAutowirableTypes
      */
-    public function __construct(
-        private Container $container,
-        private array $nonAutowirableTypes = [],
-    ) {}
+    public function __construct(private array $nonAutowirableTypes = []) {}
 
     public function context(): EvaluationContext
     {
@@ -63,9 +67,11 @@ final readonly class Evaluator
                 continue;
             }
 
-            if (class_exists($class) || interface_exists($class) || $this->container->bound($class)) {
+            $container = Container::getInstance();
+
+            if (class_exists($class) || interface_exists($class) || $container->bound($class)) {
                 try {
-                    return $this->container->make($class);
+                    return $container->make($class);
                 } catch (BindingResolutionException) {
                 }
             }

@@ -23,7 +23,7 @@ final class EvaluatorStub implements PingableStub
 interface UnboundEvaluatorContract {}
 
 beforeEach(function (): void {
-    $this->evaluator = new Evaluator(new Container);
+    $this->evaluator = new Evaluator;
 });
 
 it('returns non-closures unchanged', function (): void {
@@ -84,15 +84,28 @@ it('resolves a typed parameter to an assignable context utility (contravariance)
 });
 
 it('does not autowire a non-autowirable base type and throws instead', function (): void {
-    $evaluator = new Evaluator(new Container, [EvaluatorStub::class]);
+    $evaluator = new Evaluator([EvaluatorStub::class]);
 
     $evaluator->resolve(fn (EvaluatorStub $stub): EvaluatorStub => $stub, new EvaluationContext);
 })->throws(UnresolvableEvaluationParameter::class);
 
 it('resolves a non-autowirable type when it is provided via the context', function (): void {
-    $evaluator = new Evaluator(new Container, [EvaluatorStub::class]);
+    $evaluator = new Evaluator([EvaluatorStub::class]);
     $stub = new EvaluatorStub('provided');
     $context = (new EvaluationContext)->typed(EvaluatorStub::class, $stub);
 
     expect($evaluator->resolve(fn (EvaluatorStub $stub): EvaluatorStub => $stub, $context))->toBe($stub);
+});
+
+it('resolves container services through the container that is current when it evaluates', function (): void {
+    $booted = Container::getInstance();
+    $sandbox = clone $booted;
+    $sandbox->instance(EvaluatorStub::class, $current = new EvaluatorStub('sandbox'));
+    Container::setInstance($sandbox);
+
+    try {
+        expect($this->evaluator->resolve(fn (EvaluatorStub $stub): EvaluatorStub => $stub, new EvaluationContext))->toBe($current);
+    } finally {
+        Container::setInstance($booted);
+    }
 });
