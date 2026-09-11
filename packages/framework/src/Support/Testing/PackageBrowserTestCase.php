@@ -9,6 +9,7 @@ use Pest\Browser\Playwright\Playwright;
 abstract class PackageBrowserTestCase extends PackageTestCase
 {
     use ChecksWorkbenchAssets;
+    use KeepsBrowserConnectionsAlive;
 
     protected function setUp(): void
     {

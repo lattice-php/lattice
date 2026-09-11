@@ -335,7 +335,8 @@ abstract class TestCase extends PackageTestCase
 
 For Pest browser suites, extend `PackageBrowserTestCase` instead — it additionally fails fast with
 an actionable message when the workbench Vite build is missing or a stale dev-server marker is left
-behind, and widens Playwright's timeout for CI runners.
+behind, widens Playwright's timeout for CI runners, and keeps the browser's connections to the test
+server alive (see [Browser tests](/testing/overview/#browser-tests)).
 
 See [Registry and types](/extending/registry-and-types/) for how the `type` string couples the two sides, and how generated types keep `node.props` sound.
 

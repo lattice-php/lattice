@@ -342,6 +342,24 @@ response rather than the redirect-back-with-errors path of a non-JSON post. Asse
 reuse a single sealed ref, build the request by hand instead.
 :::
 
+## Browser tests
+
+pest-plugin-browser serves the app from an in-process server that closes a connection after 15 idle
+seconds, while Chrome keeps pooled connections for minutes. A request Chrome sends on a connection the
+server is closing dies at the network level — a dynamic import fails to load, an Inertia submit
+vanishes without an error — typically after an assertion has polled the DOM for a while. Use
+`KeepsBrowserConnectionsAlive` on your browser test case to start that server with an hour-long
+keep-alive instead; the test case runs its `setUpKeepsBrowserConnectionsAlive()` on its own:
+
+```php
+use Lattice\Support\Testing\KeepsBrowserConnectionsAlive;
+
+abstract class BrowserTestCase extends TestCase
+{
+    use KeepsBrowserConnectionsAlive;
+}
+```
+
 ## Test selectors
 
 Lattice uses `data-test` as its standard test-hook attribute.
