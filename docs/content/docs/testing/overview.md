@@ -266,6 +266,22 @@ $this->loadFragment(SalesChart::class)
     ->assertOk();
 ```
 
+A table response addresses its rows through `rows()` and `row($id)`; `row()` fails, listing the ids the
+table did return, when no row matches. Each `TableRow` exposes its values, its row actions as a
+component tree, the ids of every action and link among them (menus and groups flattened), and its row
+click:
+
+```php
+$row = $this->loadTable(UsersTable::class)->assertOk()->row($user->id);
+
+expect($row->value('email'))->toBe($user->email)
+    ->and($row->actionIds())->toBe(['users.block', 'users.delete'])
+    ->and($row->clickHref())->toBe("/users/{$user->id}");
+```
+
+Pass the identifying field as the second argument — `row($uuid, 'uuid')` — when the rows are not keyed
+by `id`.
+
 A component whose definition denies the current user is never rendered, so the helpers above cannot
 build its ref. `callDeniedAction()`, `submitDeniedForm()`, `loadDeniedTable()`, `loadDeniedFragment()`,
 and `callDeniedBulkAction()` seal the ref directly against the definition's key and call the live

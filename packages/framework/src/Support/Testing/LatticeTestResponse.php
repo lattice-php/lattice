@@ -98,6 +98,51 @@ final class LatticeTestResponse extends TestResponse
     }
 
     /**
+     * The rows of a table endpoint response.
+     *
+     * @return list<TableRow>
+     */
+    public function rows(): array
+    {
+        $rows = $this->json('data');
+
+        Assert::assertIsArray($rows, 'Expected the Lattice table response [data] value to be an array of rows.');
+
+        return array_values(array_map(
+            static function (mixed $row): TableRow {
+                Assert::assertIsArray($row, 'Expected every Lattice table row to be an array.');
+
+                return new TableRow($row);
+            },
+            $rows,
+        ));
+    }
+
+    /**
+     * The row whose `$key` field equals `$id`, compared as strings so an int
+     * key matches a string id and vice versa. Fails when no row matches.
+     */
+    public function row(string|int $id, string $key = 'id'): TableRow
+    {
+        $rows = $this->rows();
+
+        foreach ($rows as $row) {
+            $value = $row->value($key);
+
+            if (is_scalar($value) && (string) $value === (string) $id) {
+                return $row;
+            }
+        }
+
+        Assert::fail(sprintf(
+            'Expected a Lattice table row with [%s] = [%s]. Rows have: %s.',
+            $key,
+            $id,
+            json_encode(array_map(static fn (TableRow $row): mixed => $row->value($key), $rows), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
+        ));
+    }
+
+    /**
      * @param  array<string, mixed>|null  $props
      */
     private function assertEffect(Effect $expected, ?array $props = null): static

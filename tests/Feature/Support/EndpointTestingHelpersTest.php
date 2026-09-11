@@ -8,6 +8,7 @@ use Lattice\Actions\ActionDefinition;
 use Lattice\Actions\ActionResult;
 use Lattice\Actions\BulkActionDefinition;
 use Lattice\Actions\Components\Action as ActionComponent;
+use Lattice\Actions\Components\ActionGroup;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Attributes\AsBulkAction;
 use Lattice\Core\Attributes\AsFragment;
@@ -20,10 +21,12 @@ use Lattice\Support\Testing\LatticeTestResponse;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
 use Lattice\Table\Columns\TextColumn;
+use Lattice\Table\Components\RowClick;
 use Lattice\Table\Contracts\TableSource;
 use Lattice\Table\TableDefinition;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Link;
 use Lattice\Ui\Components\Modal;
 use Lattice\Ui\Components\Text;
 use Lattice\Ui\Enums\HttpMethod;
@@ -162,6 +165,30 @@ test('loadTable seals the ref and gets the table endpoint with query parameters'
         ->assertJsonPath('query.perPage', 10);
 });
 
+test('a table response addresses its rows by id with their actions and row click', function (): void {
+    Lattice::tables([HelperRowsTable::class]);
+    Lattice::actions([HelperDemoAction::class]);
+
+    $response = $this->loadTable(HelperRowsTable::class)->assertOk();
+    $grace = $response->row('2');
+
+    expect($response->rows())->toHaveCount(2)
+        ->and($grace->value('name'))->toBe('Grace')
+        ->and($grace->clickHref())->toBe('/people/2')
+        ->and($grace->actionIds())->toBe(['helper.demo', 'people.profile'])
+        ->and($grace->actions()->firstOfTypeOrFail('action', 'helper.demo')->prop('label'))->toBe('Helper demo');
+});
+
+test('a missing table row fails with the ids the table returned', function (): void {
+    Lattice::tables([HelperRowsTable::class]);
+    Lattice::actions([HelperDemoAction::class]);
+
+    $response = $this->loadTable(HelperRowsTable::class)->assertOk();
+
+    expect(fn () => $response->row(99))
+        ->toThrow(AssertionFailedError::class, 'Expected a Lattice table row with [id] = [99]. Rows have: [1,2].');
+});
+
 test('submitForm followed by callAction in the same test both succeed', function (): void {
     Lattice::forms([HelperDemoForm::class]);
     Lattice::actions([HelperDemoAction::class]);
@@ -268,6 +295,38 @@ class HelperDemoTable extends TableDefinition
             ]),
             selection: fn (array $keys): Collection => collect($keys),
         );
+    }
+}
+
+#[AsTable('helper.rows')]
+final class HelperRowsTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [TextColumn::make('name')];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            ['id' => 1, 'name' => 'Ada'],
+            ['id' => 2, 'name' => 'Grace'],
+        ]));
+    }
+
+    #[Override]
+    public function actions(array $row): array
+    {
+        return [ActionGroup::make('helper.row-menu')->actions([
+            ActionComponent::use(HelperDemoAction::class, ['team' => 'row-team']),
+            Link::make('Profile', 'people.profile')->href('/people/'.$row['id'].'/profile'),
+        ])];
+    }
+
+    #[Override]
+    public function rowClick(array $row): RowClick
+    {
+        return RowClick::make()->href('/people/'.$row['id']);
     }
 }
 
