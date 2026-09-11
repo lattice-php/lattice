@@ -29,7 +29,7 @@ final class StackColumn extends Column implements ContainerComponent
      * @return array<int, string>
      */
     #[\Override]
-    public function boundRowKeys(): array
+    public function displayedRowKeys(): array
     {
         $keys = [];
 

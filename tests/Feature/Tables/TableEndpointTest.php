@@ -456,6 +456,35 @@ test('a badge colour key without a hidden column claiming it ships in the row pa
         ->and($row['helper'])->toBe('green');
 });
 
+test('a stack column keeps the keys it displays when hidden search columns own them', function (): void {
+    Lattice::tables([WorkbenchHiddenSearchStackUsersTable::class]);
+
+    $ref = $this->latticeRef(wire(Table::use(WorkbenchHiddenSearchStackUsersTable::class)));
+    $row = $this->latticeGet('/lattice/tables/workbench.hidden-search-stack-users', $ref)
+        ->assertOk()
+        ->json('data.0');
+
+    expect($row)->toBeArray();
+
+    expect(array_keys($row))->toBe(['id', 'name', 'email'])
+        ->and($row['name'])->toBe('Taylor')
+        ->and($row['email'])->toBe('taylor@example.com');
+});
+
+test('a hidden column owning an identity key does not prune it from the row payload', function (): void {
+    Lattice::tables([WorkbenchHiddenIdentityUsersTable::class]);
+
+    $ref = $this->latticeRef(wire(Table::use(WorkbenchHiddenIdentityUsersTable::class)));
+    $row = $this->latticeGet('/lattice/tables/workbench.hidden-identity-users', $ref)
+        ->assertOk()
+        ->json('data.0');
+
+    expect($row)->toBeArray();
+
+    expect(array_keys($row))->toBe(['id', 'name'])
+        ->and($row['id'])->toBe(1);
+});
+
 test('a hidden column referenced by a visible badge column is still pruned from the row payload', function (): void {
     Lattice::tables([WorkbenchHiddenBadgeHelperUsersTable::class]);
 
@@ -678,6 +707,55 @@ class WorkbenchBadgeHelperUsersTable extends TableDefinition
             [
                 'status' => 'Active',
                 'helper' => 'green',
+            ],
+        ]));
+    }
+}
+
+#[AsTable('workbench.hidden-search-stack-users')]
+class WorkbenchHiddenSearchStackUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name')->searchable()->visible(false),
+            TextColumn::make('email')->searchable()->visible(false),
+            StackColumn::make('member')->schema([
+                Text::bound('name'),
+                Text::bound('email'),
+            ]),
+        ];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            [
+                'id' => 1,
+                'name' => 'Taylor',
+                'email' => 'taylor@example.com',
+            ],
+        ]));
+    }
+}
+
+#[AsTable('workbench.hidden-identity-users')]
+class WorkbenchHiddenIdentityUsersTable extends TableDefinition
+{
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('id')->visible(false),
+            TextColumn::make('name'),
+        ];
+    }
+
+    public function source(): TableSource
+    {
+        return new CallbackTableSource(fn (TableQuery $query): TableResult => TableResult::make([
+            [
+                'id' => 1,
+                'name' => 'Taylor',
             ],
         ]));
     }

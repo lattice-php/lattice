@@ -62,13 +62,36 @@ abstract class Column implements JsonSerializable, Renderable
 
     /**
      * The row keys this column binds — what the registry whitelists into each
-     * decorated row. Container columns override to collect their children's.
+     * decorated row: the keys it displays plus the ones it only references.
      *
      * @return array<int, string>
      */
     public function boundRowKeys(): array
     {
+        return array_values(array_unique([...$this->displayedRowKeys(), ...$this->referencedRowKeys()]));
+    }
+
+    /**
+     * The row keys whose values the cell renders as its content. Container
+     * columns override to collect their children's.
+     *
+     * @return array<int, string>
+     */
+    public function displayedRowKeys(): array
+    {
         return [$this->key];
+    }
+
+    /**
+     * The row keys the cell reads to decorate content it draws from elsewhere —
+     * a badge colour, a link placeholder, a currency. Never rendered on their
+     * own, so a hidden sibling owning one keeps it off the wire.
+     *
+     * @return array<int, string>
+     */
+    public function referencedRowKeys(): array
+    {
+        return [];
     }
 
     /**
