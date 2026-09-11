@@ -79,6 +79,36 @@ test('the one-argument contextModel aborts when the record does not exist', func
         ->assertNotFound();
 });
 
+test('a typed contextModel resolves through the registered resolver and keeps its ownership rules', function (): void {
+    Lattice::context('product', fn (string|int $value, array $context): ?Product => Product::query()
+        ->where('sku', $context['catalog'] ?? null)
+        ->find($value));
+    Lattice::actions([WorkbenchTypedContextModelAction::class]);
+
+    $product = Product::factory()->create(['name' => 'Catalog Product', 'sku' => 'CAT-1']);
+
+    $this->callAction(WorkbenchTypedContextModelAction::class, [], ['product' => $product->getKey(), 'catalog' => 'CAT-1'])
+        ->assertOk()
+        ->assertJsonPath('data.name', 'Catalog Product');
+
+    $this->callAction(WorkbenchTypedContextModelAction::class, [], ['product' => $product->getKey(), 'catalog' => 'OTHER'])
+        ->assertNotFound();
+});
+
+test('an explicit by column route-binds even when a resolver is registered for the key', function (): void {
+    Lattice::context('sku', fn (string $value): ?Product => null);
+
+    Product::factory()->create(['name' => 'Keyed Product', 'sku' => 'KEYED-1']);
+    $bySku = Product::factory()->create(['name' => 'Skued Product', 'sku' => 'SKUED-1']);
+
+    $this->callAction(WorkbenchContextModelAction::class, [], [
+        'product_id' => $bySku->getKey(),
+        'sku' => 'SKUED-1',
+    ])
+        ->assertOk()
+        ->assertJsonPath('data.bySku', 'Skued Product');
+});
+
 test('an OrNull accessor in a render-time authorize hides the component instead of aborting', function (): void {
     Lattice::actions([ContextGatedAction::class]);
 
@@ -141,5 +171,21 @@ final class WorkbenchRegistryContextModelAction extends ActionDefinition
         return ActionResult::success([
             'name' => $product->name,
         ]);
+    }
+}
+
+#[AsAction('workbench.typed-context-model-reader')]
+final class WorkbenchTypedContextModelAction extends ActionDefinition
+{
+    use ResolvesContextModels;
+
+    public function definition(ActionComponent $action): ActionComponent
+    {
+        return $action->label('Typed context model reader');
+    }
+
+    public function handle(Request $request): ActionResult
+    {
+        return ActionResult::success(['name' => $this->contextModel('product', Product::class)->name]);
     }
 }

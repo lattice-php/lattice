@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Lattice\Core\Contracts\Authorizable;
 use Lattice\Core\Contracts\ResolvesGateSubject;
 use Lattice\Core\Services\ContextResolutions;
+use LogicException;
 
 abstract class Definition implements Authorizable, ResolvesGateSubject
 {
@@ -122,11 +123,17 @@ abstract class Definition implements Authorizable, ResolvesGateSubject
      * authorize() use {@see contextModelOrNull()} instead, or a missing key
      * takes the whole page down rather than hiding the component. Throws
      * when no resolver is registered for the key; register one with
-     * `Lattice::context()`.
+     * `Lattice::context()`. Pass `$model` to have the result typed: a result
+     * of any other class is a misregistered resolver and throws.
+     *
+     * @template TModel of object
+     *
+     * @param  class-string<TModel>|null  $model
+     * @return ($model is null ? object : TModel)
      */
-    protected function contextModel(string $key): object
+    protected function contextModel(string $key, ?string $model = null): object
     {
-        $resolved = $this->contextModelOrNull($key);
+        $resolved = $this->contextModelOrNull($key, $model);
 
         if ($resolved === null) {
             abort(404);
@@ -135,9 +142,26 @@ abstract class Definition implements Authorizable, ResolvesGateSubject
         return $resolved;
     }
 
-    protected function contextModelOrNull(string $key): ?object
+    /**
+     * @template TModel of object
+     *
+     * @param  class-string<TModel>|null  $model
+     * @return ($model is null ? object|null : TModel|null)
+     */
+    protected function contextModelOrNull(string $key, ?string $model = null): ?object
     {
-        return app(ContextResolutions::class)->resolve($key, $this->context($key), $this->context);
+        $resolved = app(ContextResolutions::class)->resolve($key, $this->context($key), $this->context);
+
+        if ($resolved === null || $model === null || $resolved instanceof $model) {
+            return $resolved;
+        }
+
+        throw new LogicException(sprintf(
+            'Context [%s] resolved to [%s], which is not a [%s].',
+            $key,
+            $resolved::class,
+            $model,
+        ));
     }
 
     /**

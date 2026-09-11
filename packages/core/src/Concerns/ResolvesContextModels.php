@@ -5,17 +5,19 @@ namespace Lattice\Core\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
 use Lattice\Core\Definition;
+use Lattice\Core\Services\ContextResolvers;
 use LogicException;
 
 /**
- * Resolves a context value into an Eloquent record. With an explicit
- * `$model`, resolution goes through the model's own route binding, so a
- * context key resolves exactly as the same value would in a route —
- * `getRouteKeyName()` overrides and custom `resolveRouteBinding()` included.
- * Without one, resolution delegates to the registered resolver via
- * {@see Definition::contextModel()}/`contextModelOrNull()`, asserting the
- * result is an Eloquent model. Opt-in rather than part of {@see Definition}
- * because the package does not depend on illuminate/database.
+ * Resolves a context value into an Eloquent record. A key with a resolver
+ * registered through `Lattice::context()` resolves through it — so the
+ * resolver's own rules, such as a dependent resolver's ownership check,
+ * always apply — and an explicit `$model` asserts the result's class. A key
+ * without a resolver, or an explicit `$by` column, resolves through the
+ * model's own route binding instead, exactly as the same value would in a
+ * route — `getRouteKeyName()` overrides and custom `resolveRouteBinding()`
+ * included. Opt-in rather than part of {@see Definition} because the
+ * package does not depend on illuminate/database.
  *
  * @phpstan-require-extends Definition
  */
@@ -29,10 +31,6 @@ trait ResolvesContextModels
      */
     protected function contextModel(string $key, ?string $model = null, ?string $by = null): Model
     {
-        if ($model === null) {
-            return $this->assertModel($key, parent::contextModel($key));
-        }
-
         $resolved = $this->contextModelOrNull($key, $model, $by);
 
         if ($resolved === null) {
@@ -58,8 +56,8 @@ trait ResolvesContextModels
      */
     protected function contextModelOrNull(string $key, ?string $model = null, ?string $by = null): ?Model
     {
-        if ($model === null) {
-            $resolved = parent::contextModelOrNull($key);
+        if ($model === null || ($by === null && app(ContextResolvers::class)->has($key))) {
+            $resolved = parent::contextModelOrNull($key, $model);
 
             return $resolved === null ? null : $this->assertModel($key, $resolved);
         }
