@@ -12,6 +12,13 @@ export function formatCell(value: unknown, column?: TableColumn, options?: Forma
     return "";
   }
 
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => formatCell(item, column, options))
+      .filter((label) => label !== "")
+      .join(", ");
+  }
+
   const date = (column?.props as ColumnPropsOf<"column.text"> | null)?.date;
 
   if (date) {
