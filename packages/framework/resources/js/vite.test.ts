@@ -485,6 +485,73 @@ describe("lattice Vite helper", () => {
     }
   });
 
+  it("appends a @source per framework package to the wrapper, after every @import", () => {
+    const appRoot = mkdtempSync(path.join(tmpdir(), "lattice-css-"));
+    const uiCssPath = path.join(appRoot, "node_modules/@lattice-php/ui/dist/lattice.css");
+    const tableDist = path.join(appRoot, "node_modules/@lattice-php/table/dist");
+
+    try {
+      const plugin = componentPackagesPlugin(
+        [
+          {
+            name: "acme/signature",
+            dir: path.join(appRoot, "vendor/acme/signature"),
+            plugin: path.join(appRoot, "vendor/acme/signature/resources/js/plugin.ts"),
+            css: path.join(appRoot, "vendor/acme/signature/resources/css/signature.css"),
+          },
+        ],
+        appRoot,
+        uiCssPath,
+        { frameworkSources: [tableDist] },
+      );
+      const config = plugin.config as unknown as (c: { root: string }) => {
+        resolve: { alias: Record<string, string> };
+      };
+      const buildStart = plugin.buildStart as unknown as () => void;
+
+      const wrapperPath = config({ root: appRoot }).resolve.alias["@lattice-php/lattice/css"];
+
+      buildStart();
+
+      const lines = readFileSync(wrapperPath, "utf8").split("\n");
+
+      expect(lines.at(-1)).toBe(`@source ${JSON.stringify(tableDist)};`);
+      expect(lines.findIndex((line) => line.startsWith("@source"))).toBeGreaterThan(
+        lines.findLastIndex((line) => line.startsWith("@import")),
+      );
+    } finally {
+      rmSync(appRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("scans every installed framework package's compiled output, which Tailwind skips inside node_modules", () => {
+    const appRoot = process.cwd();
+    const plugins = lattice({ appRoot, icons: false }) as Plugin[];
+    const componentPackages = plugins.find(
+      (plugin) => plugin?.name === "lattice:component-packages",
+    );
+
+    if (!componentPackages) {
+      throw new Error("expected the component-packages plugin");
+    }
+
+    const config = componentPackages.config as unknown as (c: { root: string }) => {
+      resolve: { alias: Record<string, string> };
+    };
+    const buildStart = componentPackages.buildStart as unknown as () => void;
+    const wrapperPath = config({ root: appRoot }).resolve.alias["@lattice-php/lattice/css"];
+
+    buildStart();
+
+    const wrapper = readFileSync(wrapperPath, "utf8");
+
+    for (const name of ["lattice", "core", "action", "form", "table", "ui"]) {
+      expect(wrapper).toContain(
+        `@source ${JSON.stringify(path.join(appRoot, "node_modules/@lattice-php", name, "dist"))};`,
+      );
+    }
+  });
+
   it("resolves @lattice-php/lattice/css and ui/css to the generated wrapper in both source-link and package-link mode, overriding latticeConfig's own alias", async () => {
     const { mergeConfig } = await import("vite");
     const appRoot = process.cwd();
