@@ -169,6 +169,32 @@ test('a resolver depends on another key through the typed ContextResolutions', f
     expect($resolved->id)->toBe('w5');
 });
 
+test('a resolver reading the context resolves the same value again under another parent', function (): void {
+    Lattice::context('client', fn (string $value, array $context): ContextResolverWidget => new ContextResolverWidget($context['realm'].'/'.$value));
+
+    $resolutions = app(ContextResolutions::class);
+    $acme = $resolutions->resolve('client', '5', ['realm' => 'acme', 'client' => '5']);
+    $globex = $resolutions->resolve('client', '5', ['realm' => 'globex', 'client' => '5']);
+    assert($acme instanceof ContextResolverWidget && $globex instanceof ContextResolverWidget);
+
+    expect($acme->id)->toBe('acme/5')
+        ->and($globex->id)->toBe('globex/5');
+});
+
+test('a resolver ignoring the context still runs once per value across parents', function (): void {
+    Lattice::context('widget', function (string $value): ContextResolverWidget {
+        ContextResolverWidgetAction::$calls++;
+
+        return new ContextResolverWidget($value);
+    });
+
+    $resolutions = app(ContextResolutions::class);
+    $resolutions->resolve('widget', 'w1', ['realm' => 'acme', 'widget' => 'w1']);
+    $resolutions->resolve('widget', 'w1', ['realm' => 'globex', 'widget' => 'w1']);
+
+    expect(ContextResolverWidgetAction::$calls)->toBe(1);
+});
+
 test('a closure resolver records its declared return type as the model class for frame matching', function (): void {
     Lattice::context('widget', fn (string $value): ContextResolverWidget => new ContextResolverWidget($value));
 

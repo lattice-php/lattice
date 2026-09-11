@@ -101,6 +101,11 @@ read and by however many definitions. Two `contextModel()` calls in the same `ha
 `authorize()` and the `handle()` that follows it, see the result of one evaluation. A miss ("not
 found") is cached too.
 
+A resolver that reads the surrounding context — a `$context` parameter, or another key through a typed
+`ContextResolutions` — can answer the same value differently under another parent: a client looked up
+within the realm the context names. Its results are memoized per key, value, **and** context, so two
+components under different realms never share one resolution.
+
 Memoization is per key **and value**, though, so a resolver is the wrong place for a side effect. A
 page that builds one gated component per workspace — a switcher menu — resolves the key once per
 workspace, and the side effect fires for every one of them, not just the one the request is about.

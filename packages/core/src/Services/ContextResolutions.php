@@ -4,19 +4,29 @@ declare(strict_types=1);
 namespace Lattice\Core\Services;
 
 use BackedEnum;
+use Closure;
 use Illuminate\Http\Request;
 use Lattice\Core\Support\Evaluation\Evaluator;
 use LogicException;
+use ReflectionFunction;
+use ReflectionNamedType;
 
 /**
  * Request-scoped evaluation of {@see ContextResolvers}: a resolver runs at
  * most once per request for a given key/value pair, however many definitions
- * ask for it, and the miss ("not found") is cached too.
+ * ask for it, and the miss ("not found") is cached too. A resolver that reads
+ * the surrounding context — a `$context` parameter, or another key through
+ * this class — can answer the same value differently under another parent
+ * (a client looked up within a realm), so its results are cached per
+ * context as well.
  */
 final class ContextResolutions
 {
     /** @var array<string, object|null> */
     private array $cache = [];
+
+    /** @var array<string, bool> */
+    private array $readsContext = [];
 
     public function __construct(
         private readonly ContextResolvers $resolvers,
@@ -38,13 +48,16 @@ final class ContextResolutions
             return null;
         }
 
+        $resolve = $this->resolvers->resolver($key) ?? throw $this->unregistered($key);
         $cacheKey = $key.'|'.$value;
+
+        if ($this->readsContext[$key] ??= $this->readsContext($resolve)) {
+            $cacheKey .= '|'.$this->fingerprint($context);
+        }
 
         if (array_key_exists($cacheKey, $this->cache)) {
             return $this->cache[$cacheKey];
         }
-
-        $resolve = $this->resolvers->resolver($key) ?? throw $this->unregistered($key);
 
         $result = $this->evaluator->resolve($resolve, $this->evaluator->context()
             ->named('value', $value)
@@ -69,7 +82,7 @@ final class ContextResolutions
 
         $keyClosure = $this->resolvers->keyClosure($key);
 
-        if (! $keyClosure instanceof \Closure) {
+        if (! $keyClosure instanceof Closure) {
             if (method_exists($model, 'getRouteKey')) {
                 $routeKey = $model->getRouteKey();
 
@@ -141,6 +154,32 @@ final class ContextResolutions
         }
 
         return $context;
+    }
+
+    private function readsContext(Closure $resolve): bool
+    {
+        foreach (new ReflectionFunction($resolve)->getParameters() as $parameter) {
+            $type = $parameter->getType();
+
+            if ($parameter->getName() === 'context' || ($type instanceof ReflectionNamedType && $type->getName() === self::class)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    private function fingerprint(array $context): string
+    {
+        ksort($context);
+
+        return hash('xxh128', serialize(array_map(
+            static fn (mixed $value): mixed => is_object($value) ? $value::class.'#'.spl_object_id($value) : $value,
+            $context,
+        )));
     }
 
     private function unregistered(string $key): LogicException
