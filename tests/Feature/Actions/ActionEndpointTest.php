@@ -30,6 +30,15 @@ test('registered actions can be handled through the package endpoint', function 
         ->assertJsonPath('effects.1.props.component', 'workbench.users');
 });
 
+test('component helpers call the endpoint on the application host', function (): void {
+    config(['app.url' => 'https://console.test']);
+    Lattice::actions([WorkbenchPingAction::class]);
+
+    $response = $this->callAction(WorkbenchPingAction::class, ['name' => 'Taylor'], ['team' => 'trusted-team'])->assertOk();
+
+    expect($response->baseRequest?->getSchemeAndHttpHost())->toBe('https://console.test');
+});
+
 test('registered actions can return a locale change effect', function (): void {
     $ref = $this->latticeRef(wire(ActionComponent::use(SetLocaleAction::class)
         ->context(['locale' => 'de'])));
