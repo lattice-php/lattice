@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as IlluminateResponse;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
 use Lattice\Actions\ActionDefinition;
@@ -18,6 +19,7 @@ use Lattice\Form\Components\Form;
 use Lattice\Form\Components\TextInput;
 use Lattice\Form\FormDefinition;
 use Lattice\Http\LatticeResponse;
+use Lattice\Http\Middleware\UseEndpointArea;
 use Lattice\Http\Page;
 use Lattice\LatticeServiceProvider;
 use Lattice\Support\Testing\ComponentNode;
@@ -149,6 +151,17 @@ test('components an area endpoint builds while serving its request stay in the a
         ->json('data');
 
     expect(areaRowAction($rows)['props']['endpoint'])->toBe('/account/lattice/actions/area.revoke-token');
+});
+
+test('a route the page cannot annotate selects its endpoint area through middleware', function (): void {
+    $user = workbenchTestUser();
+
+    Router::get('/area/rendered', fn (): AreaConsolePage => new AreaConsolePage)
+        ->middleware(['web', 'auth:account', UseEndpointArea::class.':account']);
+
+    $page = $this->actingAs($user, 'account')->get('/area/rendered')->assertOk();
+
+    expect(areaForm(areaSchema($page))->prop('action'))->toBe('/account/lattice/forms/area.name');
 });
 
 test('a page naming an unregistered endpoint area fails loudly', function (): void {

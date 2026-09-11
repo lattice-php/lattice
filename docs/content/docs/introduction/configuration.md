@@ -85,6 +85,15 @@ A page opts in with `endpoints` on its [`#[AsPage]`](/core/pages/#the-aspage-att
 final class PortalPage extends Page {}
 ```
 
+A page you cannot annotate — one a package renders from its own controller — joins the area through
+the `UseEndpointArea` middleware on its route instead:
+
+```php
+use Lattice\Http\Middleware\UseEndpointArea;
+
+Route::middleware(['web', 'auth:customer', UseEndpointArea::class.':portal'])->group(/* … */);
+```
+
 Every endpoint minted while that page renders points into the area, and so does every endpoint a
 request to the area builds in turn — a lazy table's row actions, a fragment's form, a modal's form.
 The [signed reference](/advanced/security/) of each component is bound to the area it was minted
