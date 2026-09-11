@@ -45,6 +45,7 @@ export function lattice(options: LatticeViteOptions = {}): PluginOption[] {
     optionalPeersPlugin(),
     componentPackagesPlugin(packages, appRoot, resolveUiCssPath(options, appRoot, root), {
       requireComposer: true,
+      frameworkSources: resolveFrameworkSourcePaths(options, appRoot, root),
     }),
     typescriptPlugin(options),
   ];
@@ -94,6 +95,68 @@ function resolveUiCssPath(
     const cssRelative = typeof cssExport === "string" ? cssExport : cssExport?.default;
 
     return typeof cssRelative === "string" ? path.resolve(packageDir, cssRelative) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Every npm package whose components carry Tailwind utilities, paired with its
+ * directory in this monorepo. `@lattice-php/ui`'s stylesheet `@source`s its own
+ * compiled output for consumers that import it without this plugin, and stays
+ * on the list so the set is "all of them" rather than "all but the one another
+ * file happens to cover". Nothing reached the packages that depend on ui, so a
+ * utility only they use — `px-lt-cell-x`, table's
+ * `md:grid-cols-[var(--lattice-table-columns)]` row grid — was never compiled
+ * and the component rendered unstyled with no error anywhere.
+ */
+const FRAMEWORK_COMPONENT_PACKAGES = [
+  { name: "@lattice-php/lattice", dir: "framework" },
+  { name: "@lattice-php/core", dir: "core" },
+  { name: "@lattice-php/action", dir: "action" },
+  { name: "@lattice-php/form", dir: "form" },
+  { name: "@lattice-php/table", dir: "table" },
+  { name: "@lattice-php/ui", dir: "ui" },
+];
+
+/**
+ * The directories Tailwind must scan for those packages' utilities — the
+ * uncompiled component sources in source-link mode, each installed package's
+ * compiled output otherwise. An app's `node_modules` is outside Tailwind's
+ * automatic content detection, so these only get scanned when named here.
+ * A package that isn't installed is skipped rather than fatal, matching
+ * `resolveUiCssPath`.
+ */
+function resolveFrameworkSourcePaths(
+  options: LatticeViteOptions,
+  appRoot: string,
+  root: string,
+): string[] {
+  if (options.source) {
+    return FRAMEWORK_COMPONENT_PACKAGES.map(({ dir }) =>
+      path.resolve(root, "..", dir, "resources/js"),
+    );
+  }
+
+  return FRAMEWORK_COMPONENT_PACKAGES.flatMap(({ name }) => {
+    const packageDir = resolveInstalledPackageDir(appRoot, name);
+    const distDir = packageDir ? resolvePackageDistDir(packageDir) : undefined;
+
+    return distDir ? [distDir] : [];
+  });
+}
+
+/**
+ * The directory holding a package's compiled output, read off the entry point
+ * it publishes rather than assumed to be `dist/`, so a package that changes
+ * its build output keeps being scanned.
+ */
+function resolvePackageDistDir(packageDir: string): string | undefined {
+  try {
+    const packageJson = JSON.parse(readFileSync(path.join(packageDir, "package.json"), "utf8"));
+    const entry = packageJson.exports?.["."]?.import ?? packageJson.module ?? packageJson.main;
+
+    return typeof entry === "string" ? path.resolve(packageDir, path.dirname(entry)) : undefined;
   } catch {
     return undefined;
   }
@@ -284,9 +347,10 @@ function componentPackagesCss(packages: LatticeComponentPackage[]): string {
  * (the docs site, the standalone bundle, a package building itself) import it
  * without this plugin at all. When `uiCssPath` is given (the app actually
  * uses this plugin), both specifiers are instead aliased to a generated
- * wrapper — `@import` of the real stylesheet plus every discovered package's
- * `@source`/`@import` — so a consumer's existing single import picks up every
- * package with no per-package import of their own. `virtual:lattice/css`
+ * wrapper — `@import` of the real stylesheet, every discovered package's
+ * `@source`/`@import`, and a `@source` per framework npm package — so a
+ * consumer's existing single import picks up every package's utilities with
+ * no per-package import or `@source` of their own. `virtual:lattice/css`
  * exposes just the package-only half the same way, for anyone composing their
  * own wrapper. Tailwind's `@import` resolver reads the resolved file straight
  * off disk — it never calls back into a Vite plugin's `load` — so neither can
@@ -299,7 +363,7 @@ export function componentPackagesPlugin(
   packages: LatticeComponentPackage[],
   appRoot?: string,
   uiCssPath?: string,
-  options: { requireComposer?: boolean } = {},
+  options: { requireComposer?: boolean; frameworkSources?: string[] } = {},
 ): Plugin {
   const installedJsonPath = appRoot
     ? path.resolve(appRoot, "vendor/composer/installed.json")
@@ -354,7 +418,13 @@ export function componentPackagesPlugin(
         mkdirSync(path.dirname(generatedWrapperCssPath), { recursive: true });
         writeFileSync(
           generatedWrapperCssPath,
-          [`@import ${JSON.stringify(uiCssPath)};`, componentPackagesCss(packages)].join("\n"),
+          [
+            `@import ${JSON.stringify(uiCssPath)};`,
+            componentPackagesCss(packages),
+            ...(options.frameworkSources ?? []).map((dir) => `@source ${JSON.stringify(dir)};`),
+          ]
+            .filter((section) => section !== "")
+            .join("\n"),
         );
       }
     },
