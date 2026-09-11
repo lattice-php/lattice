@@ -38,6 +38,20 @@ a column with no header — useful for an avatar or icon column.
 TextColumn::make('created_at')->label('Registered');
 ```
 
+## Value labels
+
+`->options([value => label])` — or `->enum(Status::class)` — shows each cell value by its label
+instead of the raw value. A cell whose value is a list, such as a JSON array cast, labels every item
+and joins them; a [Badge column](/tables/columns/badge/) renders one pill per item instead.
+
+```php
+TextColumn::make('grant_types')->options([
+    'authorization_code' => 'Authorization code',
+    'client_credentials' => 'Client credentials',
+    'refresh_token' => 'Refresh token',
+]);
+```
+
 ## Alignment
 
 `->align(ContentAlign::Start|Center|End)` sets the cell alignment. Text columns default to `Start`;
