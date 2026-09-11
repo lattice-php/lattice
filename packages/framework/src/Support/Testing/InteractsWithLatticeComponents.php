@@ -286,11 +286,14 @@ trait InteractsWithLatticeComponents
      * already treats as a wildcard match, so the seal matches whatever session
      * the next request ends up with. Binding via `app()->instance('request', ...)`
      * triggers Auth's rebind callback, which reinstalls a user resolver
-     * delegating to the auth manager — so `actingAs()` keeps working.
+     * delegating to the auth manager — so `actingAs()` keeps working. The
+     * request is built on `app.url`, because every URL minted until the next
+     * dispatch takes its host from it: the endpoint the helper calls, and any
+     * host-dependent routing in the application under test.
      */
     private function refreshLatticeRequestIdentity(): void
     {
-        app()->instance('request', Request::create('/'));
+        app()->instance('request', Request::create((string) config('app.url', 'http://localhost')));
     }
 
     /**
