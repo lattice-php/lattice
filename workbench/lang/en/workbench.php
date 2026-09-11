@@ -897,6 +897,17 @@ return [
                 'items' => 'Items',
                 'sku' => 'SKU',
                 'qty' => 'Quantity',
+                'shipping' => 'Shipping',
+                'delivery-slot' => 'Delivery slot',
+            ],
+            'shipping' => [
+                'standard' => 'Standard',
+                'express' => 'Express',
+            ],
+            'delivery' => [
+                'standard' => 'Within 3–5 business days',
+                'express-morning' => 'Next business day, morning',
+                'express-afternoon' => 'Next business day, afternoon',
             ],
         ],
     ],

@@ -71,3 +71,29 @@ it('lets the rail jump back to a visited step but not ahead', function (): void 
         ->assertValue('name', 'Taylor')
         ->assertNoSmoke();
 });
+
+it('prepares a later step for the preselected choice without the user picking one', function (): void {
+    $page = $this->visitAsWorkbenchUser('/form/wizard');
+
+    $page->fill('@name', 'Taylor')
+        ->fill('@email', 'taylor@example.com')
+        ->click('@wizard-next');
+
+    assertSeeEventually($page, 'Within 3–5 business days');
+
+    $page->assertNoSmoke();
+});
+
+it('prepares a later step for the choice the user picks', function (): void {
+    $page = $this->visitAsWorkbenchUser('/form/wizard');
+
+    $page->fill('@name', 'Taylor')
+        ->fill('@email', 'taylor@example.com')
+        ->click('text=Express')
+        ->click('@wizard-next');
+
+    assertSeeEventually($page, 'Next business day, afternoon');
+
+    $page->assertDontSee('Within 3–5 business days')
+        ->assertNoSmoke();
+});
