@@ -11,6 +11,7 @@ use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Exceptions\UnknownComponent;
 use Lattice\Core\Services\ContextResolutions;
 use Lattice\Core\Services\ContextScope;
+use Lattice\Core\Services\EndpointAreas;
 use Spatie\Attributes\Attributes;
 
 /**
@@ -109,12 +110,13 @@ abstract class DefinitionRegistry
 
     /**
      * Minted from the named route so the path honours the app's base path —
-     * subdirectory installs included. Apps needing a different path
+     * subdirectory installs included — and points into the request's
+     * endpoint area ({@see EndpointAreas}). Apps needing a different path
      * re-register the route under the same name.
      */
     public function endpointFor(string $key): string
     {
-        return route($this->routeName(), [$this->name() => $key], absolute: false);
+        return $this->container->make(EndpointAreas::class)->route($this->routeName(), [$this->name() => $key]);
     }
 
     protected function routeName(): string

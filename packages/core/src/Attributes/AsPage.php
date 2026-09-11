@@ -27,6 +27,10 @@ use Lattice\Core\Enums\PageWidth;
  * `Page::gateSubject()` (used by `toResponse()`/`callAction()`) both resolve
  * the subject through the same `Lattice\Support\GateSubjects::fromRoute()`,
  * so the middleware and the page body can never disagree.
+ *
+ * `endpoints` names an area registered with `Lattice::endpoints()`: the
+ * component endpoints the page mints point at that area's routes, behind its
+ * middleware, instead of the default `lattice/…` ones.
  */
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class AsPage implements DeclaresGate
@@ -48,6 +52,7 @@ final readonly class AsPage implements DeclaresGate
         public array|string|null $middleware = null,
         string|BackedEnum|array $can = [],
         public ?string $on = null,
+        public ?string $endpoints = null,
     ) {
         $this->can = Authorization::abilities($can);
     }

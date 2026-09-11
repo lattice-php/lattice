@@ -10,6 +10,8 @@ use Lattice\Blocks\Attributes\AsBlockEditor;
 use Lattice\Blocks\Http\BlockEditorController;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Services\EndpointAreas;
+use Lattice\Core\Values\EndpointArea;
 
 final class BlocksServiceProvider extends ServiceProvider
 {
@@ -31,12 +33,11 @@ final class BlocksServiceProvider extends ServiceProvider
             __DIR__.'/../resources/views' => $this->app->resourcePath('views/vendor/blocks'),
         ], 'lattice-blocks-views');
 
-        // Core's routes file has no contribution seam, so the package registers
-        // its endpoint itself, mirroring core's group conventions
-        // (config lattice.blocks.{middleware,endpoint}).
-        Route::middleware(config('lattice.blocks.middleware', ['web', 'auth']))
-            ->match(['post', 'patch'], (string) config('lattice.blocks.endpoint', 'lattice/block-editors/{editor}'), BlockEditorController::class)
-            ->where('editor', '.*')
-            ->name('lattice.block-editors.show');
+        $this->app->make(EndpointAreas::class)->routes(static function (EndpointArea $area): void {
+            Route::middleware($area->middleware('blocks'))
+                ->match(['post', 'patch'], $area->uri('block-editors/{editor}', 'lattice.blocks.endpoint'), BlockEditorController::class)
+                ->where('editor', '.*')
+                ->name($area->routeName('lattice.block-editors.show'));
+        });
     }
 }

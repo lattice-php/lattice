@@ -11,6 +11,7 @@ use InvalidArgumentException;
 use Lattice\Core\Attributes\WireType;
 use Lattice\Core\Contracts\BuildsModelContextResolvers;
 use Lattice\Core\Services\ContextResolvers;
+use Lattice\Core\Services\EndpointAreas;
 use Lattice\Core\Support\TypeScript\WireFamily;
 use LogicException;
 use ReflectionFunction;
@@ -109,6 +110,19 @@ final class LatticeRegistry
         $name = $type->getName();
 
         return class_exists($name) || interface_exists($name) ? $name : null;
+    }
+
+    /**
+     * Mounts every component endpoint once more below `$prefix`, behind
+     * `$middleware` instead of each group's configured stack. A page opts in
+     * with `#[AsPage(endpoints: $name)]`: the endpoints minted while it renders,
+     * and while its components' own requests are served, point at this mount.
+     *
+     * @param  array<int, string>|string  $middleware
+     */
+    public function endpoints(string $name, string $prefix, array|string $middleware = []): void
+    {
+        $this->container->make(EndpointAreas::class)->register($name, $prefix, $middleware);
     }
 
     /**

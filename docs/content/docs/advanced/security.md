@@ -16,11 +16,12 @@ reference is an **encrypted** payload containing:
 - the component **type** and **key** (which definition this is for),
 - the **context** you attached with `->context()`,
 - the current **user id** and a hash of the **session**,
+- the [endpoint area](/introduction/configuration/#endpoint-areas) it was minted for,
 - an **expiry** timestamp.
 
 On the way back, the endpoint decrypts the reference and rejects the request (`403`) if the type or
-key doesn't match, the token has expired, or the user or session no longer matches the one it was
-issued to. Only then does it run.
+key doesn't match, the token has expired, or the user, session, or endpoint area no longer matches
+the one it was issued to. Only then does it run.
 
 :::caution
 A reference proves **authenticity, not entitlement**. It says the server issued this component to

@@ -5,6 +5,7 @@ namespace Lattice\Support\Frontend;
 
 use Composer\InstalledVersions;
 use Illuminate\Support\Facades\File;
+use Lattice\Core\Services\EndpointAreas;
 use Lattice\Theme\ThemeRenderer;
 use RuntimeException;
 
@@ -68,7 +69,7 @@ final class StandaloneAssets
         $plugins = array_values(array_unique([...$publishedPlugins, ...$configuredPlugins]));
         $config = array_filter([
             'spriteUrl' => $this->versionedUrl('sprite.svg'),
-            'refreshRefUrl' => route('lattice.refs.refresh', absolute: false),
+            'refreshRefUrl' => app(EndpointAreas::class)->route('lattice.refs.refresh'),
             'echo' => $frontend['echo'] ?? null,
             'plugins' => $plugins !== [] ? $plugins : null,
         ], static fn (mixed $value): bool => $value !== null);

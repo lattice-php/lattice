@@ -2,9 +2,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Lattice\Core\Services\EndpointAreas;
+use Lattice\Core\Values\EndpointArea;
 use Lattice\Table\Http\Controllers\TableController;
 
-Route::middleware(config('lattice.tables.middleware', ['web', 'auth']))
-    ->get('lattice/tables/{table}', TableController::class)
-    ->where('table', '.*')
-    ->name('lattice.tables.show');
+app(EndpointAreas::class)->routes(static function (EndpointArea $area): void {
+    Route::middleware($area->middleware('tables'))
+        ->get($area->uri('tables/{table}'), TableController::class)
+        ->where('table', '.*')
+        ->name($area->routeName('lattice.tables.show'));
+});

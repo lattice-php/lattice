@@ -11,6 +11,7 @@ use Lattice\Core\Services\ComponentReferenceSigner;
 use Lattice\Core\Services\ContextResolutions;
 use Lattice\Core\Services\ContextResolvers;
 use Lattice\Core\Services\ContextScope;
+use Lattice\Core\Services\EndpointAreas;
 use Lattice\Core\Services\RequestReferenceIdentity;
 use Lattice\Core\Support\Evaluation\Evaluator;
 
@@ -29,6 +30,7 @@ final class CoreServiceProvider extends ServiceProvider
         $this->app->scoped(ContextResolutions::class);
         $this->app->singleton(DiscoveryManifest::class);
         $this->app->singleton(PageMetadataResolver::class);
+        $this->app->singleton(EndpointAreas::class);
     }
 
     public function boot(): void
