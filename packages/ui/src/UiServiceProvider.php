@@ -23,7 +23,7 @@ final class UiServiceProvider extends ServiceProvider
         $this->app->register(CoreServiceProvider::class);
 
         $this->app->singleton(SlotRegistry::class);
-        $this->app->singleton(Evaluator::class, fn ($app): Evaluator => new Evaluator($app, [Component::class]));
+        $this->app->singleton(Evaluator::class, fn (): Evaluator => new Evaluator([Component::class]));
         $this->app->singleton(EffectRegistry::class, fn (): EffectRegistry => EffectRegistry::withBuiltins());
         $this->app->scoped(EffectFlasher::class);
         $this->app->scoped(BreadcrumbTrail::class);
