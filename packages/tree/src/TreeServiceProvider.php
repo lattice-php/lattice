@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Services\EndpointAreas;
+use Lattice\Core\Values\EndpointArea;
 
 final class TreeServiceProvider extends ServiceProvider
 {
@@ -22,12 +24,11 @@ final class TreeServiceProvider extends ServiceProvider
     {
         Lattice::translations('tree', __DIR__.'/../lang');
 
-        // Core's routes file has no contribution seam, so the package registers
-        // its endpoint itself, mirroring core's group conventions
-        // (config lattice.trees.{middleware,endpoint}).
-        Route::middleware(config('lattice.trees.middleware', ['web', 'auth']))
-            ->get((string) config('lattice.trees.endpoint', 'lattice/trees/{tree}'), TreeController::class)
-            ->where('tree', '.*')
-            ->name('lattice.trees.show');
+        $this->app->make(EndpointAreas::class)->routes(static function (EndpointArea $area): void {
+            Route::middleware($area->middleware('trees'))
+                ->get($area->uri('trees/{tree}', 'lattice.trees.endpoint'), TreeController::class)
+                ->where('tree', '.*')
+                ->name($area->routeName('lattice.trees.show'));
+        });
     }
 }

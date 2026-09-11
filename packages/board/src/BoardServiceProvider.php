@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Services\EndpointAreas;
+use Lattice\Core\Values\EndpointArea;
 
 final class BoardServiceProvider extends ServiceProvider
 {
@@ -22,12 +24,11 @@ final class BoardServiceProvider extends ServiceProvider
     {
         Lattice::translations('board', __DIR__.'/../lang');
 
-        // Core's routes file has no contribution seam, so the package registers
-        // its endpoint itself, mirroring core's group conventions
-        // (config lattice.boards.{middleware,endpoint}).
-        Route::middleware(config('lattice.boards.middleware', ['web', 'auth']))
-            ->get((string) config('lattice.boards.endpoint', 'lattice/boards/{board}'), BoardController::class)
-            ->where('board', '.*')
-            ->name('lattice.boards.show');
+        $this->app->make(EndpointAreas::class)->routes(static function (EndpointArea $area): void {
+            Route::middleware($area->middleware('boards'))
+                ->get($area->uri('boards/{board}', 'lattice.boards.endpoint'), BoardController::class)
+                ->where('board', '.*')
+                ->name($area->routeName('lattice.boards.show'));
+        });
     }
 }

@@ -36,6 +36,7 @@ use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Core\LatticeRegistry;
 use Lattice\Core\PageMetadata;
+use Lattice\Core\Services\EndpointAreas;
 use Lattice\Core\Wire\WireSourceCatalog;
 use Lattice\Form\FormServiceProvider;
 use Lattice\Fragments\FragmentDefinition;
@@ -147,7 +148,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
             // and is expanded into the nested position at resolve time.
             $inertia->share([
                 'lattice.urls' => fn (): array => [
-                    'refreshRef' => route('lattice.refs.refresh', absolute: false),
+                    'refreshRef' => app(EndpointAreas::class)->route('lattice.refs.refresh'),
                 ],
                 // Lets the SSR render start from the user's theme instead of "system".
                 'lattice.appearance' => function (): ?string {

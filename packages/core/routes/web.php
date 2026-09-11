@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Lattice\Core\Http\Controllers\RefRefreshController;
+use Lattice\Core\Services\EndpointAreas;
+use Lattice\Core\Values\EndpointArea;
 
-Route::middleware(config('lattice.refs.middleware', ['web']))
-    ->post('lattice/refs/refresh', RefRefreshController::class)
-    ->name('lattice.refs.refresh');
+app(EndpointAreas::class)->routes(static function (EndpointArea $area): void {
+    Route::middleware($area->middleware('refs', ['web']))
+        ->post($area->uri('refs/refresh'), RefRefreshController::class)
+        ->name($area->routeName('lattice.refs.refresh'));
+});

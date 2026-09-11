@@ -19,6 +19,7 @@ use Lattice\Core\Facades\Lattice;
 use Lattice\Core\PageMetadata;
 use Lattice\Core\Services\ContextResolvers;
 use Lattice\Core\Services\ContextScope;
+use Lattice\Core\Services\EndpointAreas;
 use Lattice\Core\Support\Wire;
 use Lattice\Http\Middleware\AuthorizeGateSubject;
 use Lattice\Realtime\Listen;
@@ -110,6 +111,7 @@ abstract class Page implements PageContract, ResolvesGateSubject, Responsable
 
         $request = app(Request::class);
 
+        $this->activateEndpointArea();
         Authorization::ensure($this, $request);
         app(ContextScope::class)->activate($this->contextFrame($request));
 
@@ -121,6 +123,7 @@ abstract class Page implements PageContract, ResolvesGateSubject, Responsable
      */
     public function toResponse($request): HttpResponse
     {
+        $this->activateEndpointArea();
         Authorization::ensure($this, $request);
         app(ContextScope::class)->activate($this->contextFrame($request));
 
@@ -171,6 +174,15 @@ abstract class Page implements PageContract, ResolvesGateSubject, Responsable
         }
 
         return $frame;
+    }
+
+    private function activateEndpointArea(): void
+    {
+        $area = PageMetadata::for($this)->endpoints;
+
+        if ($area !== null) {
+            app(EndpointAreas::class)->activate($area);
+        }
     }
 
     private function pageResponse(string $method, mixed $schema): Response

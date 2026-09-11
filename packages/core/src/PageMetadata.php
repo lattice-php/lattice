@@ -31,6 +31,7 @@ final readonly class PageMetadata
         public ?array $middleware,
         public array $can,
         public ?string $on,
+        public ?string $endpoints,
     ) {}
 
     /** @param  PageContract|class-string<PageContract>  $page */
@@ -55,6 +56,7 @@ final readonly class PageMetadata
             middleware: self::inheritedMiddleware($class),
             can: self::inherited($class, fn (AsPage $a): ?array => $a->can() === [] ? null : $a->can()) ?? [],
             on: self::inherited($class, fn (AsPage $a): ?string => $a->on()),
+            endpoints: self::inherited($class, fn (AsPage $a): ?string => $a->endpoints),
         );
     }
 
@@ -70,7 +72,7 @@ final readonly class PageMetadata
     }
 
     /**
-     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can: array<int, string>, on: string|null}
+     * @return array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can: array<int, string>, on: string|null, endpoints: string|null}
      */
     public function toArray(): array
     {
@@ -83,15 +85,16 @@ final readonly class PageMetadata
             'width' => $this->serialize($this->width),
             'can' => $this->can,
             'on' => $this->on,
+            'endpoints' => $this->endpoints,
         ];
     }
 
     /**
-     * `can`/`on` default for descriptors cached by a manifest built before
-     * they existed, so an upgrade works without regenerating the discovery
-     * cache.
+     * `can`/`on`/`endpoints` default for descriptors cached by a manifest
+     * built before they existed, so an upgrade works without regenerating the
+     * discovery cache.
      *
-     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can?: array<int, string>, on?: string|null}  $descriptor
+     * @param  array{class: class-string, route: string|null, name: string, middleware: array<int, string>|null, layout: string, width: string, can?: array<int, string>, on?: string|null, endpoints?: string|null}  $descriptor
      */
     public static function fromArray(array $descriptor): self
     {
@@ -104,6 +107,7 @@ final readonly class PageMetadata
             middleware: $descriptor['middleware'],
             can: $descriptor['can'] ?? [],
             on: $descriptor['on'] ?? null,
+            endpoints: $descriptor['endpoints'] ?? null,
         );
     }
 
