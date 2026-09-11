@@ -9,10 +9,12 @@ use Lattice\Actions\BulkActionDefinition;
 use Lattice\Actions\Components\Action as ActionComponent;
 use Lattice\Core\Attributes\AsAction;
 use Lattice\Core\Attributes\AsBulkAction;
+use Lattice\Core\Attributes\AsFragment;
 use Lattice\Core\Facades\Lattice;
 use Lattice\Form\Attributes\AsForm;
 use Lattice\Form\Components\Form;
 use Lattice\Form\FormDefinition;
+use Lattice\Fragments\FragmentDefinition;
 use Lattice\Table\Attributes\AsTable;
 use Lattice\Table\CallbackTableSource;
 use Lattice\Table\Columns\TextColumn;
@@ -20,6 +22,8 @@ use Lattice\Table\Contracts\TableSource;
 use Lattice\Table\TableDefinition;
 use Lattice\Table\TableQuery;
 use Lattice\Table\TableResult;
+use Lattice\Ui\Components\Text;
+use Lattice\Ui\PageSchema;
 use Symfony\Component\HttpFoundation\Response;
 
 test('a plain callAction cannot even build the request for a denied action', function (): void {
@@ -46,6 +50,12 @@ test('loadDeniedTable seals the ref directly and reaches the endpoint as a 403',
     Lattice::tables([DeniedHelperTable::class]);
 
     $this->loadDeniedTable(DeniedHelperTable::class)->assertForbidden();
+});
+
+test('loadDeniedFragment seals the ref directly and reaches the endpoint as a 403', function (): void {
+    Lattice::fragments([DeniedHelperFragment::class]);
+
+    $this->loadDeniedFragment(DeniedHelperFragment::class, ['record' => 1])->assertForbidden();
 });
 
 test('callDeniedBulkAction seals the ref directly and reaches the endpoint as a 403', function (): void {
@@ -129,6 +139,21 @@ final class DeniedHelperBulkAction extends BulkActionDefinition
     public function handle(Collection $records, Request $request): ActionResult
     {
         return ActionResult::success();
+    }
+
+    #[Override]
+    public function authorize(Request $request): bool
+    {
+        return false;
+    }
+}
+
+#[AsFragment('helper.denied-fragment')]
+final class DeniedHelperFragment extends FragmentDefinition
+{
+    public function schema(PageSchema $schema): PageSchema
+    {
+        return $schema->component(Text::make('Denied fragment'));
     }
 
     #[Override]

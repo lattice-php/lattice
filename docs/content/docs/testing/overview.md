@@ -266,6 +266,17 @@ $this->loadFragment(SalesChart::class)
     ->assertOk();
 ```
 
+A component whose definition denies the current user is never rendered, so the helpers above cannot
+build its ref. `callDeniedAction()`, `submitDeniedForm()`, `loadDeniedTable()`, `loadDeniedFragment()`,
+and `callDeniedBulkAction()` seal the ref directly against the definition's key and call the live
+endpoint, to assert the `403` a real request gets:
+
+```php
+$this->actingAs($member)
+    ->loadDeniedFragment(ActivityChangesFragment::class, ['activity' => $activity->id])
+    ->assertForbidden();
+```
+
 Action responses also provide typed assertions for [effects](/actions/effects/), keeping tests
 independent of wire discriminators and payload structure:
 
