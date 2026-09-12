@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use Lattice\Core\Attributes\DefinitionAttribute;
 use Lattice\Core\Discovery\DiscoveryManifest;
 use Lattice\Core\Exceptions\UnknownComponent;
+use Lattice\Core\Http\Middleware\DefinitionMiddleware;
 use Lattice\Core\Services\ContextResolutions;
 use Lattice\Core\Services\ContextScope;
 use Spatie\Attributes\Attributes;
@@ -105,6 +106,31 @@ abstract class DefinitionRegistry
         }
 
         return $this->make($definitions[$key]);
+    }
+
+    /**
+     * The stack the definition's endpoint runs behind, as its attribute
+     * declares it — null when it declares none, leaving the configured default
+     * in place. Read per request by {@see DefinitionMiddleware}, because one
+     * catch-all route serves every definition of a kind and so cannot carry
+     * their stacks at registration time the way a page's route does.
+     *
+     * An unknown key also yields null: the controller is what turns that into
+     * an UnknownComponent, and it has to be reached for that to happen.
+     *
+     * @return array<int, string>|null
+     */
+    public function middlewareFor(string $key): ?array
+    {
+        $definition = $this->definitions()[$key] ?? null;
+
+        if ($definition === null) {
+            return null;
+        }
+
+        $attribute = Attributes::get($definition, $this->attributeClass());
+
+        return $attribute instanceof DefinitionAttribute ? $attribute->middleware() : null;
     }
 
     /**

@@ -2,22 +2,26 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Lattice\Actions\BulkActionRegistry;
+use Lattice\Core\Http\Middleware\DefinitionMiddleware;
+use Lattice\Fragments\FragmentRegistry;
 use Lattice\Http\Controllers\BulkActionController;
 use Lattice\Http\Controllers\FragmentController;
 use Lattice\Http\Controllers\NotificationController;
 use Lattice\Http\Controllers\RemoteSourceTokenController;
+use Lattice\Remote\RemoteSourceRegistry;
 
-Route::middleware(config('lattice.bulk-actions.middleware'))
+Route::middleware(DefinitionMiddleware::for(BulkActionRegistry::class, 'bulkAction', 'lattice.bulk-actions.middleware'))
     ->match(['post', 'put', 'patch', 'delete'], 'lattice/bulk-actions/{bulkAction}', BulkActionController::class)
     ->where('bulkAction', '.*')
     ->name('lattice.bulk-actions.handle');
 
-Route::middleware(config('lattice.fragments.middleware'))
+Route::middleware(DefinitionMiddleware::for(FragmentRegistry::class, 'fragment', 'lattice.fragments.middleware'))
     ->get('lattice/fragments/{fragment}', FragmentController::class)
     ->where('fragment', '.*')
     ->name('lattice.fragments.show');
 
-Route::middleware(config('lattice.remote-sources.middleware'))
+Route::middleware(DefinitionMiddleware::for(RemoteSourceRegistry::class, 'source', 'lattice.remote-sources.middleware'))
     ->post('lattice/remote-sources/{source}/token', RemoteSourceTokenController::class)
     ->where('source', '.*')
     ->name('lattice.remote-sources.token');

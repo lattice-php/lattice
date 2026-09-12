@@ -51,9 +51,13 @@ return [
         'plugins' => [],
     ],
 
+    // Every default below applies only to pages and definitions that declare
+    // no middleware of their own. A `middleware:` on #[AsPage] or on a
+    // definition attribute replaces its group's default outright — spell the
+    // whole stack out there, `web` included.
+    //
     // Pages ship unauthenticated by default; authorization is opt-in via
-    // attribute middleware, `can`, or Page::authorize(). Attribute middleware
-    // is merged after this default, never replacing it.
+    // attribute middleware, `can`, or Page::authorize().
     'pages' => [
         'middleware' => ['web'],
     ],

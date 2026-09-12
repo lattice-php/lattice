@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Http\Middleware\DefinitionMiddleware;
 
 final class BoardServiceProvider extends ServiceProvider
 {
@@ -25,7 +26,7 @@ final class BoardServiceProvider extends ServiceProvider
         // Core's routes file has no contribution seam, so the package registers
         // its endpoint itself, mirroring core's group conventions
         // (config lattice.boards.{middleware,endpoint}).
-        Route::middleware(config('lattice.boards.middleware', ['web', 'auth']))
+        Route::middleware(DefinitionMiddleware::for(BoardRegistry::class, 'board', 'lattice.boards.middleware'))
             ->get((string) config('lattice.boards.endpoint', 'lattice/boards/{board}'), BoardController::class)
             ->where('board', '.*')
             ->name('lattice.boards.show');

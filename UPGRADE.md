@@ -1,5 +1,39 @@
 # Upgrade Guide
 
+## 0.76 → 0.77
+
+### Declared middleware replaces the configured default
+
+`#[AsPage(middleware: …)]` used to be merged *after* `config('lattice.pages.middleware')`. It now
+**replaces** it, and the same argument is available on every definition attribute — `#[AsForm]`,
+`#[AsTable]`, `#[AsAction]`, `#[AsBulkAction]`, `#[AsFragment]`, `#[AsRemoteSource]`, `#[AsTree]`,
+`#[AsCalendar]`, `#[AsBoard]`, `#[AsBlockEditor]` — where it replaces that group's
+`config('lattice.<group>.middleware')` default.
+
+Merging could only ever add to the default, so an endpoint could never drop the `auth` the
+definition defaults carry. A definition reachable before a session exists — a two-factor enrolment
+form served mid-login — now says so itself instead of forcing the app to loosen the default for
+every form:
+
+```php
+#[AsForm('auth.two-factor.setup', middleware: ['web'])]
+final class TwoFactorSetupForm extends FormDefinition { /* … */ }
+```
+
+Audit every `#[AsPage(middleware: …)]` you have: the declared stack is now the whole stack, so a
+page that relied on `web` arriving from the config default must spell it out.
+
+```php
+#[AsPage(route: '/products', middleware: 'auth')]        // 0.76: ['web', 'auth']
+#[AsPage(route: '/products', middleware: ['web', 'auth'])] // 0.77
+```
+
+`middleware: []` now means *no middleware at all* rather than "fall back to the default". Omit the
+argument to take the default.
+
+Declared `can` abilities are unaffected: they are still appended after the stack, and a definition's
+`can`/`authorize()` still run on its endpoint whatever middleware it declares.
+
 ## 0.61 → 0.62
 
 The layout chrome — sidebar, topbar, breadcrumbs, menus, dropdowns, callouts, and the toaster — now

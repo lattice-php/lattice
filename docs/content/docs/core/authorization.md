@@ -51,9 +51,10 @@ includes a bulk action, gated by its own declaration _and_ its table's.
 :::caution
 A page's `can` (or `middleware`) does **not** protect the definitions rendered on it. Every definition
 is reached through its own endpoint (`lattice/tables/{table}`, `lattice/actions/{action}`, …), which
-runs the middleware in `config('lattice.<group>.middleware')` — `['web', 'auth']` by default — and
-then the definition's own gate. Putting `can: 'admin.users.manage'` on a page gates who can _load_ the
-page; it does not gate the table on it. Declare the ability on the definition too.
+runs the middleware the definition [declares](/introduction/configuration/#endpoints-and-middleware)
+or, failing that, `config('lattice.<group>.middleware')` — `['web', 'auth']` by default — and then the
+definition's own gate. Putting `can: 'admin.users.manage'` on a page gates who can _load_ the page; it
+does not gate the table on it. Declare the ability on the definition too.
 :::
 
 ## Declaring a gate subject with `on`

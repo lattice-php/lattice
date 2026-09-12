@@ -10,6 +10,7 @@ use Lattice\Blocks\Attributes\AsBlockEditor;
 use Lattice\Blocks\Http\BlockEditorController;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Http\Middleware\DefinitionMiddleware;
 
 final class BlocksServiceProvider extends ServiceProvider
 {
@@ -34,7 +35,7 @@ final class BlocksServiceProvider extends ServiceProvider
         // Core's routes file has no contribution seam, so the package registers
         // its endpoint itself, mirroring core's group conventions
         // (config lattice.blocks.{middleware,endpoint}).
-        Route::middleware(config('lattice.blocks.middleware', ['web', 'auth']))
+        Route::middleware(DefinitionMiddleware::for(BlockEditorRegistry::class, 'editor', 'lattice.blocks.middleware'))
             ->match(['post', 'patch'], (string) config('lattice.blocks.endpoint', 'lattice/block-editors/{editor}'), BlockEditorController::class)
             ->where('editor', '.*')
             ->name('lattice.block-editors.show');

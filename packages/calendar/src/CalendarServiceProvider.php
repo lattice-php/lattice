@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Lattice\Core\Discovery\DiscoveryKinds;
 use Lattice\Core\Facades\Lattice;
+use Lattice\Core\Http\Middleware\DefinitionMiddleware;
 
 final class CalendarServiceProvider extends ServiceProvider
 {
@@ -25,7 +26,7 @@ final class CalendarServiceProvider extends ServiceProvider
         // Core's routes file has no contribution seam, so the package registers
         // its endpoint itself, mirroring core's group conventions
         // (config lattice.calendars.{middleware,endpoint}).
-        Route::middleware(config('lattice.calendars.middleware', ['web', 'auth']))
+        Route::middleware(DefinitionMiddleware::for(CalendarRegistry::class, 'calendar', 'lattice.calendars.middleware'))
             ->match(['get', 'patch'], (string) config('lattice.calendars.endpoint', 'lattice/calendars/{calendar}'), CalendarController::class)
             ->where('calendar', '.*')
             ->name('lattice.calendars.show');

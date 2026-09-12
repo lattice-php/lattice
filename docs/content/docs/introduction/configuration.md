@@ -55,6 +55,20 @@ Change the middleware stack per type:
 ],
 ```
 
+A single definition can declare its own stack on its attribute, which **replaces** the group default
+rather than adding to it — the only way an endpoint can drop what the default carries. A two-factor
+enrolment form reached mid-login, before any session exists, needs `web` but must not run `auth`:
+
+```php
+#[AsForm('auth.two-factor.setup', middleware: ['web'])]
+final class TwoFactorSetupForm extends FormDefinition { /* … */ }
+```
+
+The same argument exists on `#[AsTable]`, `#[AsAction]`, `#[AsBulkAction]`, `#[AsFragment]`,
+`#[AsRemoteSource]`, `#[AsTree]`, `#[AsCalendar]`, `#[AsBoard]`, and `#[AsBlockEditor]`. Dropping
+`auth` drops authentication only: a `can` on the attribute and the definition's `authorize()` still
+run. See [Authorization](/core/authorization/).
+
 Endpoint URLs are minted from the named routes, so they honour your app's base path —
 subdirectory installs included. To serve a type from a different path, register your own route
 under the same name after Lattice's routes load; the components pick it up automatically.

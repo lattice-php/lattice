@@ -18,6 +18,12 @@ use Lattice\Core\Definition;
  * {@see Definition::authorize()}, so an override cannot widen what the
  * attribute declared. `on` names the context key whose resolved value becomes
  * the gate subject; without it the check stays subject-less, as it always was.
+ *
+ * `middleware` is the stack the definition's endpoint runs behind. It
+ * replaces the `lattice.<group>.middleware` default rather than adding to it,
+ * so a definition reachable before login (a two-factor enrolment form served
+ * mid-login, say) can drop `auth` without the app loosening the default for
+ * every other definition. `can` and `authorize()` still run either way.
  */
 abstract class DefinitionAttribute implements DeclaresGate
 {
@@ -27,11 +33,22 @@ abstract class DefinitionAttribute implements DeclaresGate
     private readonly array $can;
 
     /**
-     * @param  string|BackedEnum|array<int, string|BackedEnum>  $can
+     * @var array<int, string>|null
      */
-    public function __construct(public readonly string $key, string|BackedEnum|array $can = [], private readonly ?string $on = null)
-    {
+    private readonly ?array $middleware;
+
+    /**
+     * @param  string|BackedEnum|array<int, string|BackedEnum>  $can
+     * @param  array<int, string>|string|null  $middleware
+     */
+    public function __construct(
+        public readonly string $key,
+        string|BackedEnum|array $can = [],
+        private readonly ?string $on = null,
+        array|string|null $middleware = null,
+    ) {
         $this->can = Authorization::abilities($can);
+        $this->middleware = $middleware === null ? null : array_values((array) $middleware);
     }
 
     public function can(): array
@@ -42,5 +59,13 @@ abstract class DefinitionAttribute implements DeclaresGate
     public function on(): ?string
     {
         return $this->on;
+    }
+
+    /**
+     * @return array<int, string>|null
+     */
+    public function middleware(): ?array
+    {
+        return $this->middleware;
     }
 }
