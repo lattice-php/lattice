@@ -196,6 +196,10 @@ final class LatticeServiceProvider extends PackageServiceProvider
      * from a developer-owned controller, never dispatched by Lattice itself),
      * so it is skipped here rather than passed to `Route::get()`.
      *
+     * Declared middleware replaces the `lattice.pages.middleware` default
+     * rather than merging with it, so a page can drop what the default
+     * carries. The declared stack is the whole stack: spell `web` out.
+     *
      * Routes register most-specific first because the router matches in
      * registration order: discovery order would let `/orders/{order}` swallow
      * `/orders/create`. `route:cache` compiles this same order, so the fix
@@ -219,8 +223,7 @@ final class LatticeServiceProvider extends PackageServiceProvider
             Route::get($page->route, [$page->class, 'render'])
                 ->name($page->name)
                 ->middleware(array_values(array_unique([
-                    ...config('lattice.pages.middleware', ['web']),
-                    ...$page->middleware ?? [],
+                    ...$page->middleware ?? config('lattice.pages.middleware', ['web']),
                     ...array_map(
                         static fn (string $ability): string => $page->on === null
                             ? 'can:'.$ability

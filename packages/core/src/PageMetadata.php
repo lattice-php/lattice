@@ -15,8 +15,8 @@ final readonly class PageMetadata
 {
     /**
      * `$middleware` holds only what the class hierarchy declares (null when
-     * nothing does) — the route merges it after the `lattice.pages.middleware`
-     * default at registration time, so the default applies everywhere.
+     * nothing does) — the route falls back to the `lattice.pages.middleware`
+     * default at registration time, and a declared stack replaces it.
      *
      * @param  class-string  $class
      * @param  array<int, string>|null  $middleware

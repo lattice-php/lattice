@@ -160,7 +160,7 @@ too.
 | `name`       | The route name. Defaults to the route segments joined by dots (`products.edit`), falling back to the class name without its `Page` suffix.                                      |
 | `layout`     | The [layout](/core/layouts/) the page renders into — a [`PageLayout`](/advanced/enums/#pages) or a registered layout key. Defaults to `PageLayout::None` (no shell).            |
 | `width`      | The measure the content is capped to, centred in the layout slot — a [`PageWidth`](/advanced/enums/#pages) (`Full`, `Large`, `Medium`, `Small`). Defaults to `PageWidth::Full`. |
-| `middleware` | Extra middleware for the page's route — a string or an array, merged after the `lattice.pages.middleware` config default (`['web']`).                                           |
+| `middleware` | The middleware stack for the page's route — a string or an array. It **replaces** the `lattice.pages.middleware` config default (`['web']`), so spell the whole stack out, `web` included. |
 | `can`        | Abilities the current user must pass before the page renders — a string or an array. See [Authorization](/core/authorization/).                                                 |
 
 ```php
@@ -172,14 +172,15 @@ use Lattice\Core\Enums\PageLayout;
     name: 'products.index',
     layout: PageLayout::App,
     width: PageWidth::Medium,
-    middleware: 'auth',
+    middleware: ['web', 'auth'],
 )]
 ```
 
 :::caution
-Pages are **not authenticated by default** — the default stack is `['web']` only. Add `auth` via the
-attribute (or a shared base page), or gate access with [`authorize()`](#authorization), for any page
-that must not be public.
+Pages are **not authenticated by default** — the default stack is `['web']` only. Declare
+`middleware: ['web', 'auth']` on the page (or a shared base page), or gate access with
+[`authorize()`](#authorization), for any page that must not be public. The attribute replaces the
+default rather than adding to it, so a stack that omits `web` gets no session.
 :::
 
 ## Shared base pages
@@ -189,7 +190,7 @@ value set by a parent class. Put the shared framing on a base page once, and con
 only their own route:
 
 ```php
-#[AsPage(layout: PageLayout::App, width: PageWidth::Full, middleware: 'auth')]
+#[AsPage(layout: PageLayout::App, width: PageWidth::Full, middleware: ['web', 'auth'])]
 abstract class AppPage extends Page {}
 
 #[AsPage(route: '/products', name: 'products.index')]

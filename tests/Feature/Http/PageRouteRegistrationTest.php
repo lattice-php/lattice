@@ -53,7 +53,7 @@ final class RegBarePage extends RegBasePage
     }
 }
 
-#[AsPage(route: '/auth', name: 'auth.index', middleware: 'auth')]
+#[AsPage(route: '/auth', name: 'auth.index', middleware: ['web', 'auth'])]
 final class RegAuthPage extends RegBasePage
 {
     public function render(PageSchema $schema): PageSchema
@@ -180,8 +180,8 @@ test('the page middleware default is configurable', function (): void {
     expect($route->gatherMiddleware())->toBe(['web', 'auth']);
 });
 
-test('attribute middleware merges after the configured default without duplicates', function (): void {
-    config(['lattice.pages.middleware' => ['web']]);
+test('attribute middleware replaces the configured default', function (): void {
+    config(['lattice.pages.middleware' => ['web', 'auth']]);
     Lattice::pages([RegWidgetsPage::class, RegAuthPage::class]);
 
     new LatticeServiceProvider(app())->bootPages();
@@ -193,14 +193,15 @@ test('attribute middleware merges after the configured default without duplicate
         ->and($widgetsRoute->gatherMiddleware())->toBe(['web']);
 });
 
-test('an empty middleware attribute keeps the configured default', function (): void {
+test('an empty middleware attribute registers no middleware at all', function (): void {
+    config(['lattice.pages.middleware' => ['web', 'auth']]);
     Lattice::pages([RegBarePage::class]);
 
     new LatticeServiceProvider(app())->bootPages();
 
     $route = namedRoute('bare.index');
 
-    expect($route->gatherMiddleware())->toBe(['web']);
+    expect($route->gatherMiddleware())->toBe([]);
 });
 
 test('a declared ability registers as can middleware after the page middleware', function (): void {
@@ -214,7 +215,7 @@ test('a declared ability registers as can middleware after the page middleware',
         ->toBe(['web', 'can:manage-widgets', 'can:inspect-widgets']);
 });
 
-test('a page with empty attribute middleware still registers its declared ability after the default', function (): void {
+test('a page with empty attribute middleware still registers its declared ability', function (): void {
     Lattice::pages([RegGuardedBarePage::class]);
 
     new LatticeServiceProvider(app())->bootPages();
@@ -222,7 +223,7 @@ test('a page with empty attribute middleware still registers its declared abilit
     $route = namedRoute('guarded-bare.index');
 
     expect($route->gatherMiddleware())
-        ->toBe(['web', 'can:manage-widgets']);
+        ->toBe(['can:manage-widgets']);
 });
 
 test('a child page registers the can middleware for an ability declared only on its abstract parent', function (): void {

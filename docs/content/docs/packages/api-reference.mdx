@@ -77,7 +77,7 @@ use Lattice\Core\Attributes\AsPage;
 use Lattice\Http\Page;
 use Lattice\Ui\PageSchema;
 
-#[AsPage(route: 'docs', name: 'docs', middleware: ['auth'])]
+#[AsPage(route: 'docs', name: 'docs', middleware: ['web', 'auth'])]
 final class ApiDocsPage extends Page
 {
     public function render(PageSchema $schema, Generator $generator): PageSchema
