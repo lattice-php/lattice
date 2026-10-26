@@ -31,4 +31,20 @@ describe("Stack in a browser", () => {
       "calc(56px + 72px)",
     );
   });
+
+  it("keeps a child with unbreakable content inside the stack's width", async () => {
+    const screen = await render(
+      <div style={{ width: 200 }}>
+        <Stack>
+          <div data-test="wide">
+            <span style={{ display: "inline-block", width: 600 }}>Wide</span>
+          </div>
+        </Stack>
+      </div>,
+    );
+
+    const wide = screen.getByTestId("wide").element();
+
+    expect(wide.getBoundingClientRect().width).toBe(200);
+  });
 });

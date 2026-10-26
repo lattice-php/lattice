@@ -89,7 +89,9 @@ export function Stack({
       className={cn(
         isFlex
           ? cn("flex", direction === "horizontal" ? "flex-wrap" : "flex-col")
-          : "grid content-start",
+          : // One track no wider than the stack: a child with long unbreakable
+            // content otherwise widens the implicit `auto` track past the stack.
+            "grid grid-cols-[minmax(0,1fr)] content-start",
         isFlex ? flexAlignments[align] : gridAlignments[align],
         stackGaps[gap],
         stackWidths[width],
