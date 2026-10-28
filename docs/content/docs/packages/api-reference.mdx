@@ -148,8 +148,10 @@ Only point the reference at documents you trust.
 
 Every operation carries a playground: path, query, and header parameters render as typed
 inputs (enum parameters become selects), JSON request bodies get an editor pre-filled with an
-example derived from the schema, and **Execute** sends the request from the browser against the
-server selected in the picker — responses stream into a live panel with status and headers.
+example derived from the schema, any other media type except form fields — `application/pdf`,
+`image/png`, `application/octet-stream` — gets a file picker whose file is sent as the raw body,
+and **Execute** sends the request from the browser against the server selected in the picker —
+responses stream into a live panel with status and headers.
 
 ```php
 ApiReference::make()
@@ -158,7 +160,9 @@ ApiReference::make()
 ```
 
 `->token()` pre-fills `Authorization: Bearer` for operations whose security scheme accepts a
-bearer token. Requests are plain browser `fetch` calls, so the API must be same-origin or send
+bearer token. Without `->token()`, `->tokenSource()` or a resolver, the playground shows an
+**Access token** field instead; the entered token is kept while switching operations and never
+appears in the snippets. Requests are plain browser `fetch` calls, so the API must be same-origin or send
 CORS headers for the reference's origin.
 
 ### Lazy scoped tokens
@@ -250,6 +254,32 @@ Props mirror the PHP component — `operation`, `tags`, `defaultOperation`, `tit
 
 Icons ship inside the package: the component provides its own sprite when no `SpriteProvider`
 is mounted above it, and a host-provided sprite always wins.
+
+### Without a build step
+
+The npm package also ships a self-contained bundle in `dist-browser/`: one ES module with React
+inside and a compiled stylesheet, for pages that have no React app and no Tailwind build — a
+service that serves its own API reference, for example. Load both from a CDN with a pinned
+version and call `mount()` with the same props as the component; it returns a function that
+unmounts the reference again:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@lattice-php/api-reference@<version>/dist-browser/api-reference.css"
+/>
+<main id="reference"></main>
+<script type="module">
+  import { mount } from "https://cdn.jsdelivr.net/npm/@lattice-php/api-reference@<version>/dist-browser/api-reference.js";
+
+  mount(document.getElementById("reference"), { url: "/openapi.json" });
+</script>
+```
+
+Bundlers import the same files as `@lattice-php/api-reference/browser` and
+`@lattice-php/api-reference/browser.css`. A server that serves the reference next to its API can
+declare `servers: [{ "url": "/" }]`, so the playground sends requests to the origin that served
+the page.
 
 ### In Astro
 

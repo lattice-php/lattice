@@ -72,6 +72,23 @@ describe("javascriptSnippet", () => {
   });
 });
 
+describe("file bodies", () => {
+  const request: BuiltRequest = {
+    method: "POST",
+    url: "https://api.example.test/v1/analyze",
+    headers: { "Content-Type": "application/pdf" },
+    body: new File(["%PDF-1.7"], "invoice.pdf", { type: "application/pdf" }),
+  };
+
+  it("uploads the file by name in cURL", () => {
+    expect(curlSnippet.generate(request)).toContain("--data-binary '@invoice.pdf'");
+  });
+
+  it("passes the file as the fetch body in JavaScript", () => {
+    expect(javascriptSnippet.generate(request)).toContain("    body: file\n});");
+  });
+});
+
 describe("authorization redaction", () => {
   it.each([
     ["cURL", curlSnippet],

@@ -1,4 +1,9 @@
-import { isJsonMediaType, parameterKey, type RequestValues } from "./request-state";
+import {
+  isFileMediaType,
+  isJsonMediaType,
+  parameterKey,
+  type RequestValues,
+} from "./request-state";
 import type { Contract, Operation, Param, SecuritySchemeRef } from "./types";
 import { isRecord } from "./utils";
 import { parseDate, toDate } from "@lattice-php/ui/format/temporal";
@@ -13,7 +18,7 @@ export type BuiltRequest = {
   method: string;
   url: string;
   headers: Record<string, string>;
-  body: string | null;
+  body: string | File | null;
 };
 
 export type BuildRequestResult =
@@ -74,7 +79,7 @@ export function buildRequest(input: {
   }
 
   const headers = buildHeaders(parameters, input.values);
-  const body = input.values.body.trim() === "" ? null : input.values.body;
+  const body = requestBody(selectedContract, input.values);
 
   if (!Object.keys(headers).some((name) => name.toLowerCase() === "accept")) {
     headers.Accept = "application/json";
@@ -97,6 +102,14 @@ export function buildRequest(input: {
     },
     errors: null,
   };
+}
+
+function requestBody(contract: Contract | null, values: RequestValues): string | File | null {
+  if (contract !== null && isFileMediaType(contract.mediaType)) {
+    return values.file ?? null;
+  }
+
+  return values.body.trim() === "" ? null : values.body;
 }
 
 export function isBearerAccessTokenScheme(scheme: SecuritySchemeRef): boolean {
@@ -368,8 +381,22 @@ function validateBody(
   }
 
   const contract = operation.requests.find((candidate) => candidate.mediaType === values.mediaType);
-  if (contract === undefined || !isJsonMediaType(contract.mediaType)) {
-    errors.request = "The selected JSON media type is not available for this operation.";
+  if (contract === undefined) {
+    errors.request = "The selected media type is not available for this operation.";
+
+    return null;
+  }
+
+  if (isFileMediaType(contract.mediaType)) {
+    if (contract.required && !values.file) {
+      errors.body = "Choose a file to send as the request body.";
+    }
+
+    return contract;
+  }
+
+  if (!isJsonMediaType(contract.mediaType)) {
+    errors.request = "The selected media type cannot be sent from the playground.";
 
     return null;
   }

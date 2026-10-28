@@ -1,7 +1,8 @@
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, type Plugin, type UserConfig } from "vite";
 import dts from "vite-plugin-dts";
 import { standalonePluginConfig } from "../vite.standalone.ts";
 
@@ -11,7 +12,7 @@ function libraryEntries(): string[] {
   return readdirSync(sourceRoot, { recursive: true, encoding: "utf8" })
     .filter((file) => /\.(ts|tsx)$/.test(file))
     .filter((file) => !/\.(test(-d)?|d)\.(ts|tsx)$/.test(file))
-    .filter((file) => file !== "test-support.ts")
+    .filter((file) => file !== "test-support.ts" && file !== "browser.tsx")
     .map((file) => path.join(sourceRoot, file));
 }
 
@@ -44,9 +45,51 @@ function withExplicitExtensions(content: string): string {
   );
 }
 
+/**
+ * One ES module with React and the Lattice packages bundled, plus the compiled
+ * stylesheet, so a page without a build step can render the reference.
+ */
+function browserConfig(): UserConfig {
+  const packages = path.resolve(import.meta.dirname, "..");
+
+  return {
+    publicDir: false,
+    plugins: [react(), tailwindcss()],
+    define: { "process.env.NODE_ENV": JSON.stringify("production") },
+    resolve: {
+      alias: {
+        "@lattice-php/core": path.join(packages, "core/resources/js"),
+        "@lattice-php/form": path.join(packages, "form/resources/js"),
+        "@lattice-php/ui": path.join(packages, "ui/resources/js"),
+      },
+    },
+    build: {
+      outDir: "dist-browser",
+      emptyOutDir: true,
+      sourcemap: false,
+      cssCodeSplit: false,
+      lib: {
+        entry: path.join(sourceRoot, "browser.tsx"),
+        formats: ["es"],
+        fileName: () => "api-reference.js",
+        cssFileName: "api-reference",
+      },
+      rollupOptions: {
+        // Vite keeps whitespace in lib-mode ES output for downstream tree
+        // shaking; this bundle is final, so rolldown minifies it fully.
+        output: { codeSplitting: false, minify: true },
+      },
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   if (mode === "standalone") {
     return standalonePluginConfig(import.meta.dirname, { outDir: "dist-standalone" });
+  }
+
+  if (mode === "browser") {
+    return browserConfig();
   }
 
   return {
@@ -59,6 +102,7 @@ export default defineConfig(({ mode }) => {
           "resources/js/**/*.test.*",
           "resources/js/**/*.test-d.*",
           "resources/js/test-support.*",
+          "resources/js/browser.tsx",
         ],
         compilerOptions: {
           paths: {

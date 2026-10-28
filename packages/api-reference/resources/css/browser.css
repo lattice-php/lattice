@@ -1,0 +1,13 @@
+/*
+ * The browser bundle inlines ui, form and core, so their sources must be
+ * scanned too; automatic detection would also pick up stale build output.
+ */
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "../../../ui/resources/css/lattice.css";
+
+@source "../js";
+@source "../../../core/resources/js";
+@source "../../../form/resources/js";
+@source "../../../ui/resources/js";
+@source not "../../../*/resources/js/**/*.test.*";

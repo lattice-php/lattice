@@ -25,8 +25,10 @@ export const javascriptSnippet: SnippetTemplate = {
       lines.push(request.body === null ? "    }" : "    },");
     }
 
-    if (request.body !== null) {
+    if (typeof request.body === "string") {
       lines.push(`    body: ${JSON.stringify(request.body)}`);
+    } else if (request.body !== null) {
+      lines.push("    body: file");
     }
 
     lines.push("});");

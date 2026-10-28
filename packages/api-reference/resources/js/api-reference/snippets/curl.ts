@@ -13,8 +13,10 @@ export const curlSnippet: SnippetTemplate = {
       ),
     ];
 
-    if (request.body !== null) {
+    if (typeof request.body === "string") {
       argumentsList.push(`--data ${shellQuote(request.body)}`);
+    } else if (request.body !== null) {
+      argumentsList.push(`--data-binary ${shellQuote(`@${request.body.name}`)}`);
     }
 
     if (argumentsList.length === 2) {

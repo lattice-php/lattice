@@ -36,7 +36,7 @@ Route::middleware('web')->get('/standalone-package-demo', function () {
 });
 
 Route::middleware('web')->get('/fixtures/sample.pdf', fn (): ResponseFactory|\Illuminate\Http\Response => response(
-    (string) file_get_contents(dirname(__DIR__).'/fixtures/sample.pdf'),
+    (string) file_get_contents(__DIR__.'/../fixtures/sample.pdf'),
     headers: ['Content-Type' => 'application/pdf'],
 ));
 

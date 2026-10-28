@@ -33,6 +33,8 @@
       "import": "./dist/index.js"
     },
     "./css": "./dist/api-reference.css",
+    "./browser": "./dist-browser/api-reference.js",
+    "./browser.css": "./dist-browser/api-reference.css",
     "./plugin": {
       "types": "./dist/plugin.d.ts",
       "import": "./dist/plugin.js"
@@ -45,6 +47,7 @@
   },
   "files": [
     "dist",
+    "dist-browser",
     "dist-standalone"
   ],
   "publishConfig": {
@@ -52,10 +55,11 @@
   },
   "scripts": {
     "build": "vite build",
+    "build:browser": "vite build --mode browser",
     "build:plugin": "npm run build",
     "build:sprite": "node scripts/generate-sprite.mjs",
     "build:standalone": "vite build --mode standalone",
-    "prepack": "npm run build",
+    "prepack": "npm run build && npm run build:browser",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
