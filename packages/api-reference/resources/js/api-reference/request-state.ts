@@ -6,6 +6,7 @@ export type RequestValues = {
   parameters: Record<string, string>;
   mediaType: string | null;
   body: string;
+  file?: File | null;
 };
 
 export function parameterKey(param: Param): string {
@@ -22,8 +23,28 @@ export function isJsonMediaType(mediaType: string | null): boolean {
   return normalized === "application/json" || normalized.endsWith("+json");
 }
 
+const FORM_MEDIA_TYPES = new Set(["application/x-www-form-urlencoded", "multipart/form-data"]);
+
+/**
+ * A request body sent as a file the user picks: any media type that is
+ * neither JSON nor form fields, such as `application/pdf` or `image/png`.
+ */
+export function isFileMediaType(mediaType: string | null): boolean {
+  if (mediaType === null || isJsonMediaType(mediaType)) {
+    return false;
+  }
+
+  return !FORM_MEDIA_TYPES.has(mediaType.split(";", 1)[0].trim().toLowerCase());
+}
+
 export function jsonRequestContracts(operation: Operation): Contract[] {
   return operation.requests.filter((contract) => isJsonMediaType(contract.mediaType));
+}
+
+export function sendableRequestContracts(operation: Operation): Contract[] {
+  return operation.requests.filter(
+    (contract) => isJsonMediaType(contract.mediaType) || isFileMediaType(contract.mediaType),
+  );
 }
 
 export function initialRequestValues(operation: Operation, components?: unknown): RequestValues {
@@ -32,10 +53,14 @@ export function initialRequestValues(operation: Operation, components?: unknown)
       group.params.map((param) => [parameterKey(param), initialParameterValue(param)]),
     ),
   );
-  const contract = jsonRequestContracts(operation)[0];
+  const contract = sendableRequestContracts(operation)[0];
 
   if (contract === undefined) {
     return { parameters, mediaType: null, body: "" };
+  }
+
+  if (isFileMediaType(contract.mediaType)) {
+    return { parameters, mediaType: contract.mediaType, body: "", file: null };
   }
 
   return {

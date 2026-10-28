@@ -4,6 +4,7 @@ import { ApiReference } from "./ApiReference";
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("ApiReference", () => {
@@ -285,6 +286,85 @@ describe("ApiReference", () => {
     await expect.element(listProducts).toHaveAttribute("aria-expanded", "true");
     await expect.element(createProduct).toHaveAttribute("aria-expanded", "false");
     expect(window.location.hash).toBe("#get-products");
+
+    window.history.replaceState(null, "", window.location.pathname);
+  });
+
+  it("asks for a bearer token when the host supplies none and keeps it across operations", async () => {
+    window.history.replaceState(null, "", window.location.pathname);
+    const fetchMock = vi.fn().mockResolvedValue(new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const operation = (summary: string) => ({
+      summary,
+      tags: ["Documents"],
+      security: [{ bearer: [] }],
+      responses: { "200": { description: "OK" } },
+    });
+
+    const screen = await render(
+      <ApiReference
+        defaultOperation="get-documents"
+        hideHeader
+        spec={{
+          openapi: "3.1.0",
+          info: { title: "Documents", version: "1.0.0" },
+          servers: [{ url: "https://api.example.test" }],
+          components: { securitySchemes: { bearer: { type: "http", scheme: "bearer" } } },
+          paths: {
+            "/documents": { get: operation("List documents") },
+            "/archive": { get: operation("List archive") },
+          },
+        }}
+      />,
+    );
+
+    await expect
+      .element(screen.getByText("Live requests send the access token entered below."))
+      .toBeVisible();
+    await screen.getByLabelText("Access token").fill("entered-token");
+    await screen.getByRole("button", { name: /^List archive/ }).click();
+    await expect.element(screen.getByLabelText("Access token")).toHaveValue("entered-token");
+    await screen.getByRole("button", { name: "Execute" }).click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("https://api.example.test/archive");
+    expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("Authorization")).toBe(
+      "Bearer entered-token",
+    );
+    await expect
+      .element(screen.getByLabelText("Request snippet", { exact: true }))
+      .not.toMatchTextContent("entered-token");
+
+    window.history.replaceState(null, "", window.location.pathname);
+  });
+
+  it("shows no token field when the host supplies the token", async () => {
+    window.history.replaceState(null, "", window.location.pathname);
+
+    const screen = await render(
+      <ApiReference
+        defaultOperation="get-documents"
+        hideHeader
+        token="host-token"
+        spec={{
+          openapi: "3.1.0",
+          info: { title: "Documents", version: "1.0.0" },
+          components: { securitySchemes: { bearer: { type: "http", scheme: "bearer" } } },
+          paths: {
+            "/documents": {
+              get: {
+                summary: "List documents",
+                security: [{ bearer: [] }],
+                responses: { "200": { description: "OK" } },
+              },
+            },
+          },
+        }}
+      />,
+    );
+
+    await expect.element(screen.getByText("Access token supplied by the host page.")).toBeVisible();
+    await expect.element(screen.getByLabelText("Access token")).not.toBeInTheDocument();
 
     window.history.replaceState(null, "", window.location.pathname);
   });

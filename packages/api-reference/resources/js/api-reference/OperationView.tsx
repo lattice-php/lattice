@@ -10,6 +10,7 @@ type OperationViewProps = {
   operationId: string | null;
   baseUrl?: string | null;
   token?: string | null;
+  onTokenChange?: ((token: string) => void) | null;
   remoteTokens?: RemoteAccess[] | null;
   resolveAccessToken?: ResolveAccessToken | null;
   expandDepth?: number;
@@ -22,6 +23,7 @@ export function OperationView({
   operationId,
   baseUrl,
   token,
+  onTokenChange,
   remoteTokens,
   resolveAccessToken,
   expandDepth = 2,
@@ -57,6 +59,7 @@ export function OperationView({
         operation={operation}
         baseUrl={operation.serverUrl}
         token={token ?? null}
+        onTokenChange={onTokenChange ?? null}
         remoteTokens={remoteTokens ?? null}
         resolveAccessToken={resolveAccessToken ?? null}
         components={components}

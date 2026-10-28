@@ -474,6 +474,54 @@ describe("buildRequest", () => {
     });
   });
 
+  it("sends the chosen file as the body of a binary media type", () => {
+    const pdf = requestContract({ mediaType: "application/pdf", schema: null, required: true });
+    const file = new File(["%PDF-1.7"], "invoice.pdf", { type: "application/pdf" });
+
+    const result = buildRequest({
+      operation: operation([], [pdf]),
+      baseUrl: "https://api.example.test",
+      values: values([], { mediaType: "application/pdf", file }),
+      token: null,
+    });
+
+    expect(result.request?.body).toBe(file);
+    expect(result.request?.headers["Content-Type"]).toBe("application/pdf");
+  });
+
+  it("requires a file for a required binary body", () => {
+    const pdf = requestContract({ mediaType: "application/pdf", schema: null, required: true });
+
+    expect(
+      buildRequest({
+        operation: operation([], [pdf]),
+        baseUrl: "https://api.example.test",
+        values: values([], { mediaType: "application/pdf", file: null }),
+        token: null,
+      }),
+    ).toEqual({
+      request: null,
+      errors: {
+        parameters: {},
+        body: "Choose a file to send as the request body.",
+        request: null,
+      },
+    });
+  });
+
+  it("refuses a selected form media type", () => {
+    const form = requestContract({ mediaType: "multipart/form-data" });
+
+    expect(
+      buildRequest({
+        operation: operation([], [form]),
+        baseUrl: "https://api.example.test",
+        values: values([], { mediaType: "multipart/form-data" }),
+        token: null,
+      }).errors?.request,
+    ).toBe("The selected media type cannot be sent from the playground.");
+  });
+
   it.each(["Cookie", "Cookie2", "Set-Cookie", "Host", "Content-Length", "Origin"])(
     "rejects the forbidden %s header",
     (name) => {

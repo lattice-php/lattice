@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import { operation, parameter, requestContract } from "../test-support";
 import {
   initialRequestValues,
+  isFileMediaType,
   isJsonMediaType,
   jsonRequestContracts,
   parameterKey,
+  sendableRequestContracts,
 } from "./request-state";
 
 describe("parameterKey", () => {
@@ -27,6 +29,26 @@ describe("request JSON media types", () => {
     const json = requestContract({ mediaType: "application/json" });
 
     expect(jsonRequestContracts(operation([], [form, problem, json]))).toEqual([problem, json]);
+  });
+});
+
+describe("request file media types", () => {
+  it("sends every media type that is neither JSON nor form fields as a file", () => {
+    expect(isFileMediaType("application/pdf")).toBe(true);
+    expect(isFileMediaType("text/xml; charset=utf-8")).toBe(true);
+    expect(isFileMediaType("application/octet-stream")).toBe(true);
+    expect(isFileMediaType("application/json")).toBe(false);
+    expect(isFileMediaType("multipart/form-data")).toBe(false);
+    expect(isFileMediaType("application/x-www-form-urlencoded")).toBe(false);
+    expect(isFileMediaType(null)).toBe(false);
+  });
+
+  it("offers JSON and file contracts in document order and skips form contracts", () => {
+    const pdf = requestContract({ mediaType: "application/pdf" });
+    const form = requestContract({ mediaType: "multipart/form-data" });
+    const json = requestContract({ mediaType: "application/json" });
+
+    expect(sendableRequestContracts(operation([], [pdf, form, json]))).toEqual([pdf, json]);
   });
 });
 
@@ -102,6 +124,14 @@ describe("initialRequestValues", () => {
       mediaType: "application/problem+json",
       body: '{\n  "title": "Invalid",\n  "status": 422\n}',
     });
+  });
+
+  it("selects a leading file contract without a file", () => {
+    const values = initialRequestValues(
+      operation([], [requestContract({ mediaType: "application/pdf", schema: null })]),
+    );
+
+    expect(values).toEqual({ parameters: {}, mediaType: "application/pdf", body: "", file: null });
   });
 
   it("pretty-prints a schema-derived example with component references", () => {
