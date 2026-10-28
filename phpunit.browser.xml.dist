@@ -3,7 +3,7 @@
      Pest's Test Impact Analysis (tia) disables itself on testsuite-filtered runs. -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/browser-bootstrap.php"
          colors="true"
          cacheDirectory=".phpunit.browser.cache"
          failOnRisky="true"
