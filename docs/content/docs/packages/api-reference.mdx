@@ -255,6 +255,32 @@ Props mirror the PHP component — `operation`, `tags`, `defaultOperation`, `tit
 Icons ship inside the package: the component provides its own sprite when no `SpriteProvider`
 is mounted above it, and a host-provided sprite always wins.
 
+### Without a build step
+
+The npm package also ships a self-contained bundle in `dist-browser/`: one ES module with React
+inside and a compiled stylesheet, for pages that have no React app and no Tailwind build — a
+service that serves its own API reference, for example. Load both from a CDN with a pinned
+version and call `mount()` with the same props as the component; it returns a function that
+unmounts the reference again:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@lattice-php/api-reference@<version>/dist-browser/api-reference.css"
+/>
+<main id="reference"></main>
+<script type="module">
+  import { mount } from "https://cdn.jsdelivr.net/npm/@lattice-php/api-reference@<version>/dist-browser/api-reference.js";
+
+  mount(document.getElementById("reference"), { url: "/openapi.json" });
+</script>
+```
+
+Bundlers import the same files as `@lattice-php/api-reference/browser` and
+`@lattice-php/api-reference/browser.css`. A server that serves the reference next to its API can
+declare `servers: [{ "url": "/" }]`, so the playground sends requests to the origin that served
+the page.
+
 ### In Astro
 
 Mount the component as a React island. It renders on the server, so `client:load` prerenders
