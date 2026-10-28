@@ -50,7 +50,7 @@ function namedRoute(string $name): Route
 function discoverFixtures(): void
 {
     config(['lattice.discover' => [
-        dirname(__DIR__).'/Fixtures/Discovery',
+        __DIR__.'/../Fixtures/Discovery',
     ]]);
 
     app(DiscoveryManifest::class)->clear();
@@ -122,7 +122,7 @@ function inMemoryOptionSource(array $people): OptionSource
 
 function fixturePath(string $name): string
 {
-    return dirname(__DIR__).'/Fixtures/'.$name;
+    return __DIR__.'/../Fixtures/'.$name;
 }
 
 /**
