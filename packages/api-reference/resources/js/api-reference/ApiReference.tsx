@@ -30,7 +30,7 @@ export type ApiReferenceProps = {
   title?: string | null;
   expandDepth?: number;
   twoColumnBreakpoint?: Breakpoint;
-  /** Pre-fills the playground's bearer token. */
+  /** Pre-fills the playground's bearer token. Without a token or resolver the playground asks for one. */
   token?: string | null;
   /** Sealed per-scope-set token accesses; execute fetches a scoped token lazily. Wins over token. */
   remoteTokens?: RemoteAccess[] | null;
@@ -139,6 +139,13 @@ export function ApiReference({
     };
   }, [url]);
 
+  const [enteredToken, setEnteredToken] = useState("");
+  const hostSuppliesToken =
+    (token !== null && token !== "") ||
+    (remoteTokens !== null && remoteTokens.length > 0) ||
+    resolveAccessToken !== null;
+  const playgroundToken = hostSuppliesToken ? token : enteredToken;
+  const onTokenChange = hostSuppliesToken ? null : setEnteredToken;
   const rawNavigation = useMemo(() => (spec ? buildNavigation(spec) : null), [spec]);
   const navigation = useMemo(
     () =>
@@ -275,7 +282,8 @@ export function ApiReference({
             spec={spec}
             operationId={operation}
             baseUrl={selectedServerUrlFor(operation)}
-            token={token}
+            token={playgroundToken}
+            onTokenChange={onTokenChange}
             remoteTokens={remoteTokens}
             resolveAccessToken={resolveAccessToken}
             expandDepth={expandDepth}
@@ -363,7 +371,8 @@ export function ApiReference({
                           spec={spec}
                           operationId={id}
                           baseUrl={selectedServerUrlFor(id)}
-                          token={token}
+                          token={playgroundToken}
+                          onTokenChange={onTokenChange}
                           remoteTokens={remoteTokens}
                           resolveAccessToken={resolveAccessToken}
                           expandDepth={expandDepth}

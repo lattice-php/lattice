@@ -41,8 +41,9 @@ import {
 } from "./request-builder";
 import {
   initialRequestValues,
-  jsonRequestContracts,
+  isFileMediaType,
   parameterKey,
+  sendableRequestContracts,
   type RequestValues,
 } from "./request-state";
 import { SnippetPanel, type SnippetLanguage } from "./SnippetPanel";
@@ -611,6 +612,8 @@ function accessTokenDescription(authMode: PlaygroundAuthMode): string {
       return "A scoped access token is fetched automatically when you execute a request. If that fails, sign in again.";
     case "static":
       return "Access token supplied by the host page.";
+    case "entered":
+      return "Live requests send the access token entered below.";
     case "none":
       return "No access token is configured for live requests.";
   }
@@ -737,16 +740,52 @@ function SecurityRequirementRow({
   );
 }
 
+function AccessTokenField({
+  idPrefix,
+  token,
+  onChange,
+}: {
+  idPrefix: string;
+  token: string;
+  onChange: (token: string) => void;
+}): React.ReactNode {
+  return (
+    <FormFieldFrame id={`${idPrefix}-access-token`} label="Access token" className="mt-3">
+      {(controlProps) => (
+        <Input
+          {...controlProps}
+          type="password"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder="Bearer token"
+          value={token}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      )}
+    </FormFieldFrame>
+  );
+}
+
 function SecuritySection({
   security,
   components,
   authMode,
+  idPrefix,
+  token,
+  onTokenChange,
 }: {
   security: SecurityRequirement[];
   components: unknown;
   authMode: PlaygroundAuthMode;
+  idPrefix: string;
+  token: string | null;
+  onTokenChange: ((token: string) => void) | null;
 }): React.ReactNode {
   if (security.length === 0) return null;
+
+  const acceptsAccessToken = security.some((requirement) =>
+    requirement.schemes.some(isBearerAccessTokenScheme),
+  );
 
   return (
     <section className="mb-6">
@@ -765,6 +804,9 @@ function SecuritySection({
           />
         </div>
       ))}
+      {authMode === "entered" && acceptsAccessToken && onTokenChange !== null ? (
+        <AccessTokenField idPrefix={idPrefix} token={token ?? ""} onChange={onTokenChange} />
+      ) : null}
     </section>
   );
 }
@@ -773,6 +815,8 @@ type RequestPlaygroundProps = {
   operation: Operation;
   baseUrl: string | null;
   token: string | null;
+  /** Lets the user enter the bearer token; the host owns the value so it survives switching operations. */
+  onTokenChange?: ((token: string) => void) | null;
   remoteTokens?: RemoteAccess[] | null;
   resolveAccessToken?: ResolveAccessToken | null;
   components: unknown;
@@ -781,7 +825,7 @@ type RequestPlaygroundProps = {
   hideHeaderIdentity?: boolean;
 };
 
-export type PlaygroundAuthMode = "lazy" | "static" | "none";
+export type PlaygroundAuthMode = "lazy" | "static" | "entered" | "none";
 
 const REDACTED_TOKEN = "<YOUR_TOKEN>";
 
@@ -826,6 +870,7 @@ export function RequestPlayground({
   operation,
   baseUrl,
   token,
+  onTokenChange = null,
   remoteTokens = null,
   resolveAccessToken = null,
   components,
@@ -858,9 +903,9 @@ export function RequestPlayground({
       params: group.params.filter((param) => !groupedParameterKeys.has(parameterKey(param))),
     }))
     .filter((group) => group.params.length > 0);
-  const jsonContracts = jsonRequestContracts(operation);
+  const requestContracts = sendableRequestContracts(operation);
   const selectedContract =
-    jsonContracts.find((contract) => contract.mediaType === values.mediaType) ?? null;
+    requestContracts.find((contract) => contract.mediaType === values.mediaType) ?? null;
   const tokenScopes = useMemo(() => operationTokenScopes(operation), [operation]);
   const remoteAccess = useMemo(
     () => remoteAccessForScopes(remoteTokens, tokenScopes),
@@ -901,14 +946,20 @@ export function RequestPlayground({
     return null;
   }, [resolveAccessToken, tokenScopes, callbackResolver, remoteAccess]);
   const authMode: PlaygroundAuthMode =
-    tokenResolver !== null ? "lazy" : token !== null && token !== "" ? "static" : "none";
+    tokenResolver !== null
+      ? "lazy"
+      : onTokenChange !== null
+        ? "entered"
+        : token !== null && token !== ""
+          ? "static"
+          : "none";
   const previewToken = authMode === "lazy" ? REDACTED_TOKEN : token;
   const buildResult = useMemo(
     () => buildRequest({ operation, baseUrl, values, token: previewToken }),
     [operation, baseUrl, values, previewToken],
   );
   const nonInteractiveParameterLimitations = parameterLimitationsWithoutControls(operation);
-  const hasUnsupportedRequestBody = operation.requests.length > 0 && jsonContracts.length === 0;
+  const hasUnsupportedRequestBody = operation.requests.length > 0 && requestContracts.length === 0;
   const requestBodyRequired = selectedContract?.required ?? false;
   const twoColumnLayout = TWO_COLUMN_LAYOUTS[twoColumnBreakpoint];
   const snippet = useMemo(() => {
@@ -971,13 +1022,20 @@ export function RequestPlayground({
     setValues((current) => ({ ...current, body }));
   }
 
+  function updateFile(file: File | null): void {
+    setValues((current) => ({ ...current, file }));
+  }
+
   function updateMediaType(mediaType: string): void {
-    const contract = jsonContracts.find((candidate) => candidate.mediaType === mediaType);
+    const contract = requestContracts.find((candidate) => candidate.mediaType === mediaType);
 
     setValues((current) => ({
       ...current,
       mediaType,
-      body: contract === undefined ? "" : prettyJson(initialRequestExample(contract, components)),
+      body:
+        contract === undefined || isFileMediaType(contract.mediaType)
+          ? ""
+          : prettyJson(initialRequestExample(contract, components)),
     }));
   }
 
@@ -1083,6 +1141,9 @@ export function RequestPlayground({
           security={operation.security}
           components={components}
           authMode={authMode}
+          idPrefix={idPrefix}
+          token={token}
+          onTokenChange={onTokenChange}
         />
         {parameterGroups.length > 0 || queryParameterGroups.length > 0 || pagination !== null ? (
           <section className="mb-6">
@@ -1164,19 +1225,19 @@ export function RequestPlayground({
                   </li>
                 ))}
                 {hasUnsupportedRequestBody ? (
-                  <li>Only JSON request bodies can be sent from the playground.</li>
+                  <li>Only JSON and file request bodies can be sent from the playground.</li>
                 ) : null}
               </ul>
             </section>
           ) : null}
 
-          {jsonContracts.length > 0 ? (
+          {requestContracts.length > 0 ? (
             <section className="flex flex-col gap-3">
-              {jsonContracts.length > 1 ? (
+              {requestContracts.length > 1 ? (
                 <FormFieldFrame
                   id={`${idPrefix}-request-media-type`}
                   label="Content type"
-                  className="min-w-0 basis-full flex-1 sm:basis-48"
+                  className="min-w-0"
                 >
                   {(controlProps) => (
                     <NativeSelect
@@ -1184,7 +1245,7 @@ export function RequestPlayground({
                       value={values.mediaType ?? ""}
                       onChange={(event) => updateMediaType(event.target.value)}
                     >
-                      {jsonContracts.map((contract) => (
+                      {requestContracts.map((contract) => (
                         <option key={contract.mediaType} value={contract.mediaType ?? ""}>
                           {contract.mediaType}
                         </option>
@@ -1193,7 +1254,15 @@ export function RequestPlayground({
                   )}
                 </FormFieldFrame>
               ) : null}
-              {selectedContract !== null ? (
+              {selectedContract !== null && isFileMediaType(selectedContract.mediaType) ? (
+                <RequestFileField
+                  idPrefix={idPrefix}
+                  mediaType={selectedContract.mediaType ?? ""}
+                  required={requestBodyRequired}
+                  error={buildResult.errors?.body ?? undefined}
+                  onChange={updateFile}
+                />
+              ) : selectedContract !== null ? (
                 <RequestBodyEditor
                   idPrefix={idPrefix}
                   schema={selectedContract.schema}
@@ -1255,6 +1324,41 @@ export function RequestPlayground({
         </div>
       </aside>
     </div>
+  );
+}
+
+function RequestFileField({
+  idPrefix,
+  mediaType,
+  required,
+  error,
+  onChange,
+}: {
+  idPrefix: string;
+  mediaType: string;
+  required: boolean;
+  error: string | undefined;
+  onChange: (file: File | null) => void;
+}): React.ReactNode {
+  return (
+    <FormFieldFrame
+      id={`${idPrefix}-request-file`}
+      label="Request body"
+      required={required}
+      helperText={`The file is sent as ${mediaType}.`}
+      error={error}
+    >
+      {(controlProps) => (
+        <Input
+          {...controlProps}
+          type="file"
+          accept={mediaType}
+          required={required}
+          data-field-key="body"
+          onChange={(event) => onChange(event.target.files?.[0] ?? null)}
+        />
+      )}
+    </FormFieldFrame>
   );
 }
 

@@ -1525,3 +1525,51 @@ describe("RequestPlayground remote token access", () => {
     );
   });
 });
+
+describe("RequestPlayground file bodies", () => {
+  it("uploads a file as the body of a binary media type", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const screen = await render(
+      <RequestPlayground
+        operation={playgroundOperation({
+          paramGroups: [],
+          requests: [
+            requestContract({ mediaType: "application/pdf", schema: null, required: true }),
+            requestContract({ mediaType: "application/json", required: true }),
+          ],
+        })}
+        baseUrl="https://api.example.test"
+        token={null}
+        components={null}
+      />,
+    );
+    const execute = screen.getByRole("button", { name: "Execute" });
+
+    await expect.element(screen.getByLabelText("Content type")).toHaveValue("application/pdf");
+    await expect.element(screen.getByText("The file is sent as application/pdf.")).toBeVisible();
+
+    await execute.click();
+    await expect
+      .element(screen.getByText("Choose a file to send as the request body."))
+      .toBeVisible();
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    const file = new File(["%PDF-1.7"], "invoice.pdf", { type: "application/pdf" });
+    await userEvent.upload(screen.getByLabelText("Request body"), file);
+
+    await expect
+      .element(screen.getByLabelText("Request snippet", { exact: true }))
+      .toMatchTextContent("--data-binary '@invoice.pdf'");
+
+    await execute.click();
+
+    await expect.poll(() => fetchMock.mock.calls.length).toBe(1);
+    const body: unknown = fetchMock.mock.calls[0]?.[1]?.body;
+    expect(body).toBeInstanceOf(File);
+    expect((body as File).name).toBe("invoice.pdf");
+    expect(new Headers(fetchMock.mock.calls[0]?.[1]?.headers).get("Content-Type")).toBe(
+      "application/pdf",
+    );
+  });
+});
