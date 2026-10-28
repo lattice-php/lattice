@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.78.0](https://github.com/lattice-php/lattice/compare/0.77.0...0.78.0) (2026-10-28)
+
+
+### Features
+
+* **api-reference:** send files and entered tokens from the playground ([b97a5c2](https://github.com/lattice-php/lattice/commit/b97a5c228a00f42f1a41240c9fc052c2ede380a0))
+* **api-reference:** ship a self-contained browser bundle ([36ee76b](https://github.com/lattice-php/lattice/commit/36ee76bf2b1163fd50c01168fb71ca2e08e2e779))
+
+
+### Bug Fixes
+
+* **ui:** keep a vertical stack's children within its width ([#608](https://github.com/lattice-php/lattice/issues/608)) ([87f1d07](https://github.com/lattice-php/lattice/commit/87f1d0786d7dd99a41538585fe1d064649336149))
+
 ## [0.77.0](https://github.com/lattice-php/lattice/compare/0.76.1...0.77.0) (2026-09-11)
 
 
