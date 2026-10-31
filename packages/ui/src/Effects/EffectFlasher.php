@@ -9,6 +9,10 @@ use Inertia\Inertia;
  * Accumulates effects across a request and flashes them, as a single array,
  * into the `latticeEffects` flash bag. Drained client-side by useFlashEffects.
  * Bound as `scoped` so the buffer resets each request.
+ *
+ * The bag is appended to, never replaced: a redirect carries the effects of
+ * the request before it in the bag, and a middleware flashing on the page
+ * request that follows must not drop them before the page drains the bag.
  */
 final class EffectFlasher
 {
@@ -25,7 +29,9 @@ final class EffectFlasher
 
         array_push($this->effects, ...$effects);
 
-        Inertia::flash('latticeEffects', $this->effects);
+        $flashed = Inertia::getFlashed()['latticeEffects'] ?? [];
+
+        Inertia::flash('latticeEffects', [...(is_array($flashed) ? array_values($flashed) : []), ...$effects]);
     }
 
     /**
