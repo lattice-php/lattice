@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.78.1](https://github.com/lattice-php/lattice/compare/0.78.0...0.78.1) (2026-10-31)
+
+
+### Bug Fixes
+
+* **ui:** append to the flashed effects instead of replacing them ([#611](https://github.com/lattice-php/lattice/issues/611)) ([941128e](https://github.com/lattice-php/lattice/commit/941128ed38776637ac5dd1c2ce06108a68335707))
+
 ## [0.78.0](https://github.com/lattice-php/lattice/compare/0.77.0...0.78.0) (2026-10-28)
 
 
